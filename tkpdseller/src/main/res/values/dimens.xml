@@ -29,8 +29,6 @@
 
     <dimen name="no_margin">0dp</dimen>
 
-    <!-- Product -->
-    <dimen name="product_inner_expandable_padding">7dp</dimen>
 
     <dimen name="image_select_view_height">150dp</dimen>
 
@@ -72,6 +70,7 @@
 
     <dimen name="opportunity_showcase_padding">12dp</dimen>
     <dimen name="image_width_variant">80dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
 
 
 </resources>

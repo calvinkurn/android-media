@@ -10,17 +10,22 @@ public interface IReferralPresenter {
 
     void initialize();
 
+    void checkLoginAndFetchReferralCode();
+
     void shareApp(FragmentManager fragmentManager);
 
     void getReferralVoucherCode();
 
     void copyVoucherCode(String code);
 
-    String getReferralContents();
+    String getReferralSubHeader();
 
     String getHowItWorks();
 
     String getVoucherCodeFromCache();
 
     Boolean isAppShowReferralButtonActivated();
+
+    String getReferralTitleDesc();
 }
+

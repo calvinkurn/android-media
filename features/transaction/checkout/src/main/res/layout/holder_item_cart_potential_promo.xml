@@ -5,10 +5,8 @@
                 android:id="@+id/rl_promo_suggestion_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:background="@drawable/bg_ticker_promo_checkout_module"
                 android:padding="@dimen/dp_8">
 

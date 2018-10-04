@@ -69,10 +69,14 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_completion_dob, container, false);
         unbinder = ButterKnife.bind(this, parentView);
-        initView(parentView);
-        setViewListener();
-        initialVar();
-        setUpFields();
+        if (this.view != null && this.view.getView() != null) {
+            initView(parentView);
+            setViewListener();
+            initialVar();
+            setUpFields();
+        } else if (getActivity() != null) {
+            getActivity().finish();
+        }
         return parentView;
     }
 
@@ -80,6 +84,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     protected void initView(View view) {
@@ -89,7 +94,6 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer);
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
-//        skip = this.view.getSkipButton();
         progress = this.view.getView().findViewById(R.id.progress);
         proceed.setEnabled(false);
         this.view.canProceed(false);

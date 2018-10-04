@@ -430,6 +430,19 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
                     .isSupportedDelegateDeepLink(url)) {
+                if (url.startsWith(Constants.Applinks.WEBVIEW)){
+                    Uri uri = Uri.parse(url);
+                    String newUrl = uri.getQueryParameter("url");
+                    if (!TextUtils.isEmpty(newUrl)){
+                        newUrl = Uri.decode(newUrl);
+                        // Check if url should redirect to applink
+                        // Replace old url to new applink
+                        if (((IDigitalModuleRouter) getActivity().getApplication()).isSupportedDelegateDeepLink(newUrl)) {
+                            url = newUrl;
+                        }
+
+                    }
+                }
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;

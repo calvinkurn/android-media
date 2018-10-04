@@ -53,12 +53,14 @@ public class DeepLinkChecker {
     public static final int REFERRAL = 19;
     public static final int TOKOPOINT = 20;
     public static final int GROUPCHAT = 21;
+    public static final int SALE = 22;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "pesawat";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
+    private static final String MYBILLS = "mybills";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -81,6 +83,8 @@ public class DeepLinkChecker {
                 return FLIGHT;
             else if (isPromo(linkSegment))
                 return PROMO;
+            else if(isSale(linkSegment))
+                return SALE;
             else if (isInvoice(linkSegment))
                 return INVOICE;
             else if (isBlog(linkSegment))
@@ -122,6 +126,10 @@ public class DeepLinkChecker {
         }
     }
 
+    private static boolean isMyBills(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(MYBILLS);
+    }
+
     private static boolean isGroupChat(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(GROUPCHAT_SEGMENT);
     }
@@ -153,7 +161,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO));
+    }
+    private static boolean isSale(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
@@ -176,6 +187,14 @@ public class DeepLinkChecker {
     private static boolean isDiscoveryPage(List<String> linkSegment) {
         return (linkSegment.get(0).equals("b") && linkSegment.size() == 2 ||
                 linkSegment.get(0).equals("discovery") && linkSegment.size() == 2);
+    }
+
+    private static boolean isEGold(List<String> linkSegment) {
+        return linkSegment.get(0).equals("emas");
+    }
+
+    private static boolean isMutualFund(List<String> linkSegment) {
+        return linkSegment.get(0).equals("reksa-dana");
     }
 
     public static String getDiscoveryPageId(String url) {
@@ -202,7 +221,9 @@ public class DeepLinkChecker {
                 && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment))
-                && !isTokoPoint(linkSegment);
+                && !isTokoPoint(linkSegment)
+                && !isEGold(linkSegment)
+                && !isMutualFund(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -213,7 +234,10 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl")
                 && !linkSegment.get(0).equals("referral"))
-                && !isTokoPoint(linkSegment);
+                && !isTokoPoint(linkSegment)
+                && !isEGold(linkSegment)
+                && !isMutualFund(linkSegment)
+                && !isMyBills(linkSegment);
     }
 
     private static boolean isSearch(String url) {

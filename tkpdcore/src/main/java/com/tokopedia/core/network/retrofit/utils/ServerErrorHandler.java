@@ -58,5 +58,7 @@ public class ServerErrorHandler {
         LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
     }
 
-
+    public static void sendForceLogoutTokenAnalytics(String url) {
+        AnalyticsLog.logForceLogoutToken(url);
+    }
 }

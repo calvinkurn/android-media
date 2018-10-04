@@ -3,15 +3,18 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
@@ -28,6 +31,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -37,6 +41,7 @@ import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -99,9 +104,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageTextViewHolder locationHolder;
     ImageTextViewHolder addressHolder;
 
-    EventComponent eventComponent;
+    private EventComponent eventComponent;
     @Inject
     EventsDetailsPresenter mPresenter;
+    private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     public static String FROM = "from";
 
@@ -141,6 +147,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         tvExpandableDescription.setInterpolator(new OvershootInterpolator());
         tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
         setupToolbar();
         toolbar.setTitle("Events");
@@ -182,7 +192,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         hideProgressBar();
-        startActivity(intent);
+        startActivityForResult(intent, requestCode);
 
     }
 
@@ -194,10 +204,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         if (homedata.getMinStartDate() > 0) {
             if (homedata.getMinStartDate() == homedata.getMaxEndDate()) {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate());
             } else {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
-                        + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(homedata.getMaxEndDate());
             }
         } else {
             timeView.setVisibility(View.GONE);
@@ -253,7 +263,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
         textViewTitle.setText(data.getTitle());
-        tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
+        if (data.getLongRichDesc() != null && !TextUtils.isEmpty(data.getLongRichDesc()))
+            tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
 
         String tnc = data.getTnc();
         if (Utils.isNotNullOrEmpty(tnc)) {
@@ -354,7 +365,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }

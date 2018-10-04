@@ -7,6 +7,7 @@ package com.tokopedia.discovery.newdiscovery.domain.model;
 public class BadgeModel {
     private String imageUrl;
     private String title;
+    private boolean isShown;
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -22,5 +23,13 @@ public class BadgeModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean isShown() {
+        return isShown;
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
     }
 }

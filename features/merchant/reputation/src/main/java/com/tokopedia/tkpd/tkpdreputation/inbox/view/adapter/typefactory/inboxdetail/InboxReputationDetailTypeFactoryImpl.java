@@ -2,9 +2,11 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inboxde
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.LoadingInboxReputationDetailViewholder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.viewholder.inboxdetail.InboxReputationDetailItemViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
@@ -38,6 +40,11 @@ public class InboxReputationDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(LoadingModel viewModel) {
+        return LoadingInboxReputationDetailViewholder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -46,6 +53,8 @@ public class InboxReputationDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                     reputationListener);
         else if (type == InboxReputationDetailItemViewHolder.LAYOUT)
             viewHolder = new InboxReputationDetailItemViewHolder(view, viewListener);
+        else if (type == LoadingInboxReputationDetailViewholder.LAYOUT)
+            viewHolder = new LoadingInboxReputationDetailViewholder(view);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

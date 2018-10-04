@@ -39,6 +39,10 @@ import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+@Deprecated
+/**
+ * Please use {@link com.tokopedia.user.session.UserSession} instead.
+ */
 public class SessionHandler {
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
@@ -81,6 +85,7 @@ public class SessionHandler {
     private static final String EMAIL = "EMAIL";
     private static final String PROFILE_PICTURE = "PROFILE_PICTURE";
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
+    public static final String INSTAGRAM_CACHE_KEY = "instagram_cache_key";
 
     private Context context;
     private String email;
@@ -196,6 +201,8 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,  INSTAGRAM_CACHE_KEY);
+        localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
         if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
             WebView webView = (WebView) ((AppCompatActivity) context).findViewById(R.id.webview);
@@ -225,9 +232,6 @@ public class SessionHandler {
             });
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
-        }
-        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 

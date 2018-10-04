@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
@@ -149,6 +149,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
         } else {
             if (isUsingTracking) {
                 SearchTracking.eventSearchResultFilterJourney(
+                        this,
                         getResources().getString(R.string.title_category),
                         category.getName(), true, true);
             }

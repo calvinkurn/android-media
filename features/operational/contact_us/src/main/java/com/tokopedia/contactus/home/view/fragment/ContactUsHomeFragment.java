@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsEventTracking;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.common.customview.ShadowTransformer;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
@@ -34,9 +37,8 @@ import com.tokopedia.contactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 
 import java.util.List;
 
@@ -67,6 +69,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     TextView btnFullPurchaseList;
     @BindView(R2.id.txt_hi_user)
     TextView txtHiUser;
+
+    @BindView(R2.id.txt_user_info)
+     TextView txtUserMessage;
 
     String msgId;
     @BindView(R2.id.pager_indicator)
@@ -112,7 +117,8 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
-            startActivity(new Intent(getContext(), InboxTicketActivity.class));
+            ContactUsTracking.eventInboxClick();
+            startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -185,6 +191,11 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setChatBotMessage(String message) {
+        txtUserMessage.setText(Html.fromHtml(message));
+    }
+
+    @Override
     public void setHighMessageUserName(String userName) {
         txtHiUser.setText(String.format(getResources().getString(R.string.hai_user), userName));
     }
@@ -192,23 +203,28 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
 
     @OnClick(R2.id.btn_view_more)
     public void onViewClicked() {
+        ContactUsTracking.eventLihatBantuanClick();
         RouteManager.route(getContext(), ContactUsURL.ARTICLE_POPULAR_URL);
     }
 
     @OnClick(R2.id.view_full_purchaselist)
     public void onViewFullClicked() {
+        ContactUsTracking.eventLihatTransaksiClick();
         startActivity(BuyerPurchaseListActivity.getInstance(getContext()));
     }
 
 
     @OnClick(R2.id.btn_contact_us)
     public void onBtnContactUsClicked() {
+        ContactUsTracking.eventHomeHubungiKamiClick();
         startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), ContactUsURL.NAVIGATE_NEXT_URL, "Hubungi Kami"));
     }
 
     @OnClick(R2.id.btn_chat_toped)
     public void onBtnChatClicked() {
-        startActivity(ChatRoomActivity.getChatBotIntent(getContext(), msgId));
+        ContactUsTracking.eventChatBotOkClick();
+        startActivity(((ContactUsModuleRouter)(getContext().getApplicationContext()))
+                .getChatBotIntent(getContext(),msgId));
     }
 
     @Override

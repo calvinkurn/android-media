@@ -3,16 +3,15 @@ package com.tokopedia.checkout.view.di.module;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.mapper.IMapperUtil;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
-import com.tokopedia.checkout.view.adapter.CartRemoveProductAdapter;
+import com.tokopedia.checkout.view.common.adapter.CartRemoveProductAdapter;
 import com.tokopedia.checkout.view.di.scope.CartRemoveProductScope;
-import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemAdapter;
-import com.tokopedia.checkout.view.view.cartlist.removecartitem.RemoveCartItemPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.removecartitem.RemoveCartItemAdapter;
+import com.tokopedia.checkout.view.feature.removecartitem.RemoveCartItemPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,7 +46,7 @@ public class CartRemoveProductModule {
     @Provides
     @CartRemoveProductScope
     RecyclerView.ItemDecoration provideCartItemDecoration() {
-        return new CartItemDecoration((int) context.getResources().getDimension(R.dimen.new_margin_med), false, 0);
+        return new CartItemDecoration();
     }
 
     @Provides

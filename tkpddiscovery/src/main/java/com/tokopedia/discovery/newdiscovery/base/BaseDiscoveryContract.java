@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -44,6 +45,8 @@ public interface BaseDiscoveryContract {
         void showTimeoutErrorNetwork(String message);
 
         void onHandleImageSearchResponseSuccess();
+
+        void showImageNotSupportedError();
     }
 
     interface Presenter<D extends View> {

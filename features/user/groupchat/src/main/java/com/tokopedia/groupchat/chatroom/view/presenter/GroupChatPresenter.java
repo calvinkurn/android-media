@@ -6,6 +6,7 @@ import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
+import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
@@ -79,6 +80,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void getChannelInfo(String channelUuid) {
+        getChannelInfo(channelUuid, false);
+    }
+
+    @Override
+    public void getChannelInfo(String channelUuid, boolean reInit) {
         getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid),
                 new Subscriber<ChannelInfoViewModel>() {
                     @Override
@@ -114,5 +120,32 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
         channelHandlerUseCase.execute(channelUrl, channelHandlerId, listener);
+    }
+
+    public void enterChannelAfterRefresh(String userId, String channelUrl, String userName, String
+            userAvatar, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken) {
+        loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
+                userAvatar, new LoginGroupChatUseCase.LoginGroupChatListener() {
+                    @Override
+                    public void onSuccessEnterChannel(OpenChannel openChannel) {
+                        getView().onSuccessEnterRefreshChannel(openChannel);
+
+                    }
+
+                    @Override
+                    public void onErrorEnterChannel(String errorMessage) {
+                        loginGroupChatListener.onErrorEnterChannel(errorMessage);
+                    }
+
+                    @Override
+                    public void onUserBanned(String errorMessage) {
+
+                    }
+
+                    @Override
+                    public void onChannelNotFound(String sendBirdErrorMessage) {
+
+                    }
+                }, sendBirdToken);
     }
 }

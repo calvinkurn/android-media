@@ -116,8 +116,7 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
         if (visibility == View.VISIBLE) {
             favRecyclerView.setVisibility(View.GONE);
             title.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             favRecyclerView.setVisibility(View.VISIBLE);
             title.setVisibility(View.VISIBLE);
         }
@@ -135,7 +134,7 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }

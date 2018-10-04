@@ -4,9 +4,12 @@
     package="com.tokopedia.core"
     android:installLocation="preferExternal">
 
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="16"-->
+        <!--android:targetSdkVersion="25"-->
+        <!--tools:overrideLibrary="com.readystatesoftware.chuck" />-->
+
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission
@@ -55,7 +58,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/qc_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/ic_new_logo"
         android:resizeableActivity="false"
@@ -229,16 +232,13 @@
             android:name=".invoice.activity.InvoiceRendererActivity"
             android:label="@string/title_activity_download_invoice" />
         <activity
-            android:name=".GalleryBrowser"
-            android:label="@string/title_activity_gallery_browser"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".tracking.activity.TrackingActivity"
             android:label="Tracking"
             android:screenOrientation="portrait" />
         <activity
             android:name=".DeveloperOptions"
             android:label="@string/title_activity_developer_options"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".TermPrivacy"
@@ -267,6 +267,7 @@
         <activity
             android:name=".home.BannerWebView"
             android:label="@string/title_activity_deep_link"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.TopPicksWebView"
@@ -327,6 +328,7 @@
         <activity
             android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
             android:label="@string/app_name"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.SimpleWebViewActivity"
@@ -353,25 +355,12 @@
             android:name=".manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".newgallery.GalleryActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.seller.opportunity.snapshot.SnapShotProduct"
             android:label="@string/title_activity_snapshot"
             android:screenOrientation="portrait" />
         <activity
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".apprating.nps.FeedbackActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
-
-        <activity android:name=".apprating.nps.FeedbackThankPageActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/fb_app_title"/>
 
         <activity
             android:name=".shopinfo.activity.ShopDiscussionActivity"
@@ -397,6 +386,8 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".share.ShareBroadcastReceiver"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

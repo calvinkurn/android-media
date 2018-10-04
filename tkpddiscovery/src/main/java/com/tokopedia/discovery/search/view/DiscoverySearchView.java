@@ -304,13 +304,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s != null) {
+                    String keyword = s.toString();
+
                     if (copyText) {
-                        s = s.subSequence(0, s.length() - 1);
+                        keyword = keyword.trim();
                         copyText = false;
                     }
-                    mUserQuery = s;
+                    mUserQuery = keyword;
                     if (queryListener != null) {
-                        queryListener.onQueryChanged(s.toString());
+                        queryListener.onQueryChanged(keyword);
                     }
                 }
             }
@@ -686,14 +688,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
-        if (finishOnClose) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showKeyboard(mSearchSrcTextView);
-                }
-            }, 500);
-        }
         showSearch(animate);
         initShowCase();
     }

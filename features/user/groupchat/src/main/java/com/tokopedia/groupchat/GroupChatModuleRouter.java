@@ -11,9 +11,6 @@ import android.support.v4.app.FragmentManager;
 
 public interface GroupChatModuleRouter {
 
-    String ENABLE_GROUPCHAT_ROOM = "enable_groupchat_room";
-    String ENABLE_GROUPCHAT_IDLE_KICK = "enable_groupchat_idle_kick";
-
     Intent getHomeIntent(Context context);
 
     Intent getInboxChannelsIntent(Context context);
@@ -28,12 +25,6 @@ public interface GroupChatModuleRouter {
                                     listener);
 
     String getNotificationPreferenceConstant();
-
-    boolean isEnabledGroupChat();
-
-    boolean isEnabledGroupChatRoom();
-
-    boolean isEnabledIdleKick();
 
     public interface ShareListener {
         void onGenerateLink(String shareContents, String shareUri);

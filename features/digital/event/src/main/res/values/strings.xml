@@ -22,6 +22,7 @@
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
     <string name="pay_button">Lanjut Pembayaran</string>
+    <string name="date_hint">DD/MM/YY</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
@@ -65,7 +66,7 @@
     <string name="total">TOTAL:</string>
     <string name="pilihan_kursi">Pilihan Kursi:</string>
     <string name="detail_tiket">Detail Tiket</string>
-    <string name="promo_section">Gunakan Kode Promo Tokopedia</string>
+    <string name="promo_section">Gunakan Kode Promo atau Kupon</string>
     <string name="jadwal">Jadwal</string>
     <string name="ubah_jadwal">Ubah Jadwal</string>
     <string name="ubah_lokasi">Ubah Lokasi</string>
@@ -83,6 +84,32 @@
     <string name="select_seat">Silakan pilih %1$d kursi</string>
     <string name="hasil_tidak">Hasil pencarian Anda tidak dapat ditemukan.</string>
     <string name="kunci_filter">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
+    <string name="sale_not_started">Belum Mulai</string>
+    <string name="login_daftar_transaksi">Masuk ke Tokopedia untuk melihat daftar transaksi Anda</string>
+    <string name="rincian_harga">Rincian Harga</string>
+    <string name="biaya_layanan">Biaya Layanan</string>
+    <string name="total_diskon">Total Diskon</string>
+    <string name="discount">- Rp %1$d</string>
+    <string name="event_kategory">Kategori</string>
+    <string name="event_kalender_event">Kalender Event</string>
+    <string name="event_rentang_waktu">Rentang Waktu</string>
+    <string name="event_everyday">Tersedia Setiap Hari</string>
+    <string name="event_simpan">Simpan</string>
+    <string name="event_open_trip">Open Trip</string>
+    <string name="event_hiburan">Hiburan</string>
+    <string name="event_aktivitas">Aktivitas</string>
+    <string name="event_musik">Musik</string>
+    <string name="event_olahraga">Olahraga</string>
+    <string name="event_teater">Teater</string>
+    <string name="event_seminar">Seminar</string>
+    <string name="event_internasional">Internasional</string>
+    <string name="event_mulai_dari_tanggal">Mulai Dari Tanggal</string>
+    <string name="event_close_filter_screen">Close Filter Screen</string>
+    <string name="event_bulan_depan">Bulan Depan</string>
+    <string name="event_minggu_depan">Minggu Depan</string>
+    <string name="event_besok">Besok</string>
+    <string name="event_hari_ini">Hari Ini</string>
+
 
     <!-- need to changed -->
 

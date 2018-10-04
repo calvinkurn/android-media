@@ -14,4 +14,5 @@ public interface GMCommonRepository {
 
     Observable<List<GMFeaturedProduct>> getFeaturedProductList(String shopId);
 
+    Observable<Boolean> setCashback(String string, int cashback);
 }

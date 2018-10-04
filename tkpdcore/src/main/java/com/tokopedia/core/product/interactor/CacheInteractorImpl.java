@@ -243,6 +243,7 @@ public class CacheInteractorImpl implements CacheInteractor {
         PromoAttributes promoAttributes = new PromoAttributes();
         if (!promoWidget.getPromoWidgetList().isEmpty()) {
             promoAttributes = promoWidget.getPromoWidgetList().get(0).getPromoAttributes();
+            promoAttributes.setCustomPromoId(promoWidget.getPromoWidgetList().get(0).getId());
         }
         promoAttributes.setTargetType(targetType);
         promoAttributes.setUserId(userId);

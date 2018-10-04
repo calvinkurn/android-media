@@ -20,6 +20,7 @@ import rx.functions.Func1;
  */
 public class GetCartListUseCase extends UseCase<CartListData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
+    public static final String PARAM_CART_IDS = "PARAM_CART_IDS";
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;
     private final Context context;
@@ -36,13 +37,8 @@ public class GetCartListUseCase extends UseCase<CartListData> {
     public Observable<CartListData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
-        return cartRepository.getCartList(param)
-                .map(new Func1<CartDataListResponse, CartListData>() {
-                    @Override
-                    public CartListData call(CartDataListResponse cartDataListResponse) {
-                        return cartMapper.convertToCartItemDataList(context, cartDataListResponse);
-                    }
-                });
+        return cartRepository.getShopGroupList(param)
+                .map(cartDataListResponse -> cartMapper.convertToCartItemDataList(context, cartDataListResponse));
     }
 
 }

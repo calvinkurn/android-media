@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -14,7 +13,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
@@ -24,7 +23,7 @@ import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
 

@@ -9,6 +9,8 @@ package com.tokopedia.applink;
 public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
+    String HOME_ACCOUNT = "tokopedia://home/account";
+    String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -22,6 +24,7 @@ public interface ApplinkConst {
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -44,6 +47,7 @@ public interface ApplinkConst {
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
+    String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
@@ -61,8 +65,11 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
+    String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
+    String GROUPCHAT_LIST = "tokopedia://groupchat";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
     String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
@@ -81,26 +88,78 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
-
+    String PROFILE_COMPLETION = "tokopedia://profilecompletion";
+    String HOWTOPAY = "tokopedia://howtopay";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
+    String DIGITAL_ORDER = "tokopedia://digital/order";
+    String EVENTS_ORDER = "tokopedia://events/order";
+    String DEALS_ORDER = "tokopedia://deals/order";
+    String FLIGHT_ORDER = "tokopedia://pesawat/order";
+
+    String BUYER_INFO = "tokopedia://buyerinfo";
+    String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String INTEREST_PICK ="tokopedia://interestpick";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
+
+    String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
-    String ORDER_TRACKING = "tokopedia://order/tracking";
+    String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
+
+    String FLIGHT = "tokopedia://pesawat";
+
+    String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
+    String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_TRANSACTION = "tokopedia://seller";
+    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
+    String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String CONTACT_US = "tokopedia://contact-us";
+    String CONTACT_US_NATIVE = "tokopedia://contactus";
+
+    String ORDER_LIST = "tokopedia://order";
+    String TOKOPOINTS = "tokopedia://tokopoints";
+    String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
+
+    String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_PAYMENT = "tokopedia://setting/payment";
+    String SETTING_ACCOUNT = "tokopedia://setting/account";
+    String SETTING_PASSWORD = "tokopedia://setting/password";
+    String SETTING_PROFILE = "tokopedia://setting/profile";
+    String NOTIFICATION = "tokopedia://notification";
+    String PMS = "tokopedia://buyer/payment";
+    String PURCHASE_ORDER = "tokopedia://buyer/order";
+    String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+    String PURCHASE_HISTORY = "tokopedia://buyer/history";
+
+    String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
+    String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
+    String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
+
+    String DEPOSIT = "tokopedia://saldo";
+    String INSTANT_LOAN = "tokopedia://loan";
+    String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
+
+    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+    String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

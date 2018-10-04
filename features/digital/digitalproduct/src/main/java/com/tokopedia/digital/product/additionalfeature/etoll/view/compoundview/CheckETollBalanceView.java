@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.tokopedia.digital.utils.NFCUtils;
 public class CheckETollBalanceView extends LinearLayout {
 
     private TextView textLabelNote;
-    private TextView buttonFeature;
+    private AppCompatButton buttonFeature;
 
     private LinearLayout viewRemainingBalance;
     private TextView textCardNumber;

@@ -929,7 +929,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         etQuantity.getText().toString());
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));
-                presenter.setCacheCart(this);
                 break;
             case ATCIntentService.RESULT_ADD_TO_CART_RUNNING:
                 showProgressLoading();
@@ -1008,6 +1007,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     private void showBuyError(String errorMessage) {

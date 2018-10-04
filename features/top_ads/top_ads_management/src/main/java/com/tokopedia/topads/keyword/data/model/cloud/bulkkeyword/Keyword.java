@@ -14,7 +14,7 @@ public class Keyword {
     private String groupId;
     @SerializedName("price_bid")
     @Expose
-    private String priceBid;
+    private double priceBid;
     @SerializedName("keyword_type_id")
     @Expose
     private String keywordTypeId;
@@ -35,11 +35,11 @@ public class Keyword {
         this.groupId = groupId;
     }
 
-    public String getPriceBid() {
+    public double getPriceBid() {
         return priceBid;
     }
 
-    public void setPriceBid(String priceBid) {
+    public void setPriceBid(double priceBid) {
         this.priceBid = priceBid;
     }
 

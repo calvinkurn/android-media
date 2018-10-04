@@ -44,7 +44,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
-    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart/";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String DIGITAL_WEBSITE_DOMAIN = "https://pulsa.tokopedia.com/";
@@ -639,11 +639,9 @@ public class TkpdBaseURL {
     }
 
     public static class Mojito {
-        public static final String PATH_USER = "v1.0.3/users/";
         public static final String PATH_PRODUCT = "users/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
-        public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
         public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
@@ -660,6 +658,7 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
         public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
+        public static final String API_V1_WISHLIST_COUNT = "/wishlist/count/v1";
     }
 
     public static class KunyitTalk {
@@ -730,7 +729,6 @@ public class TkpdBaseURL {
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
         public static final String GET_FEATURED_PRODUCTS = "/v1/mobile/featured_product/{shopId}?json=1";
-        public static final String SET_CASHBACK_PRODUCTS = "/v1/cashback/set";
         public static final String GET_CASHBACK_PRODUCTS = "v1/tx/cashback";
     }
 
@@ -798,6 +796,7 @@ public class TkpdBaseURL {
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
         public static final String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class TrainWebsite {
@@ -929,6 +928,7 @@ public class TkpdBaseURL {
         public static final String SET_TEMPLATE = "tc/v1/templates";
         public static final String SET_TEMPLATE_OLD = "tc/v1/update_chat_templates";
         public static final String CREATE_TEMPLATE = "tc/v1/templates";
+        public static final String GET_EXISTING_CHAT = "/tc/v1/existing_chat";
     }
 
     public static class Reputation {
@@ -1007,7 +1007,7 @@ public class TkpdBaseURL {
     }
 
     public class Referral {
-        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/v2/referral/code";
     }
 
     public class Promo {

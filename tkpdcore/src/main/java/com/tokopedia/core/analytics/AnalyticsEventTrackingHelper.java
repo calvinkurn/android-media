@@ -77,6 +77,12 @@ public class AnalyticsEventTrackingHelper {
         sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_PROFILE, map);
     }
 
+    public static void hamburgerTokoCardClick(String landingScreen) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
+        sendEventToAnalytics(FirebaseEvent.Home.HAMBURGER_TOKOCARD, map);
+    }
+
 
     public static void sendEventToAnalytics(String eventName, Map<String, Object> data){
          TrackAnalytics.sendEvent(eventName,data, MainApplication.getAppContext());

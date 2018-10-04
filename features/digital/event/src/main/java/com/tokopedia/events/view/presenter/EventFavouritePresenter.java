@@ -53,7 +53,8 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventFavouriteC
     }
 
     @Override
-    public void setEventLike(final CategoryItemsViewModel model, final int position) {
+    public void removeEventLike(final CategoryItemsViewModel model, final int position) {
+        Utils.getSingletonInstance().removeLikedEvent(model.getId());
         Subscriber<LikeUpdateResultDomain> subscriber = new Subscriber<LikeUpdateResultDomain>() {
             @Override
             public void onCompleted() {

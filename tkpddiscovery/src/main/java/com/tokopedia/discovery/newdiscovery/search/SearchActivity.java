@@ -7,27 +7,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
@@ -44,6 +46,8 @@ import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +72,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, BottomSheetListener {
+        implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -76,6 +80,7 @@ public class SearchActivity extends DiscoveryActivity
 
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
     private static final String EXTRA_FORCE_SWIPE_TO_SHOP = "FORCE_SWIPE_TO_SHOP";
+    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
 
     private ProductListFragment productListFragment;
     private CatalogFragment catalogFragment;
@@ -84,18 +89,23 @@ public class SearchActivity extends DiscoveryActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
+    private TextView buttonFilter;
+    private TextView buttonSort;
+    private View searchNavDivider;
+    private View searchNavContainer;
 
     private String productTabTitle;
     private String catalogTabTitle;
     private String shopTabTitle;
     private boolean forceSwipeToShop;
-
     private BottomSheetFilterView bottomSheetFilterView;
+    private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private MenuItem menuChangeGrid;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -115,6 +125,12 @@ public class SearchActivity extends DiscoveryActivity
         return intent;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
     public static Intent newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtras(bundle);
@@ -123,11 +139,13 @@ public class SearchActivity extends DiscoveryActivity
 
     public static void moveTo(AppCompatActivity activity,
                               ProductViewModel productViewModel,
-                              boolean forceSwipeToShop) {
+                              boolean forceSwipeToShop,
+                              boolean isActivityPaused) {
         if (activity != null) {
             Intent intent = new Intent(activity, SearchActivity.class);
             intent.putExtra(EXTRA_PRODUCT_VIEW_MODEL, productViewModel);
             intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, forceSwipeToShop);
+            intent.putExtra(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
             activity.startActivity(intent);
         }
     }
@@ -135,6 +153,7 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GraphqlClient.init(this);
         initInjector();
 
         if (savedInstanceState != null) {
@@ -153,9 +172,12 @@ public class SearchActivity extends DiscoveryActivity
         initResources();
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
+
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
 
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
@@ -170,12 +192,6 @@ public class SearchActivity extends DiscoveryActivity
             }
         } else {
             searchView.showSearch(true, false);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    KeyboardHandler.showSoftKeyboard(SearchActivity.this);
-                }
-            }, 200);
         }
 
         if (intent != null &&
@@ -278,7 +294,6 @@ public class SearchActivity extends DiscoveryActivity
                 DaggerSearchComponent.builder()
                         .appComponent(getApplicationComponent())
                         .build();
-
         searchComponent.inject(this);
     }
 
@@ -354,13 +369,13 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(catalogTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), catalogTabTitle);
                         break;
                     case TAB_THIRD_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
                         break;
                 }
             }
@@ -406,10 +421,10 @@ public class SearchActivity extends DiscoveryActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case TAB_PRODUCT:
-                        SearchTracking.eventSearchResultTabClick(productTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), productTabTitle);
                         break;
                     case TAB_SECOND_POSITION:
-                        SearchTracking.eventSearchResultTabClick(shopTabTitle);
+                        SearchTracking.eventSearchResultTabClick(getActivityContext(), shopTabTitle);
                         break;
                 }
             }
@@ -427,6 +442,10 @@ public class SearchActivity extends DiscoveryActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
         bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
+        buttonFilter = findViewById(R.id.button_filter);
+        buttonSort = findViewById(R.id.button_sort);
+        searchNavDivider = findViewById(R.id.search_nav_divider);
+        searchNavContainer = findViewById(R.id.search_nav_container);
     }
 
     @Override
@@ -452,6 +471,26 @@ public class SearchActivity extends DiscoveryActivity
             }
         });
         initBottomSheetListener();
+        initSearchNavigationListener();
+    }
+
+    private void initSearchNavigationListener() {
+        buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onFilterClick();
+                }
+            }
+        });
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onSortClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -471,13 +510,11 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onShow() {
                 hideBottomNavigation();
-                disableAutoShowBottomNav();
             }
 
             @Override
             public void onHide() {
-                enableAutoShowBottomNav();
-                forceShowBottomNav();
+                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -493,26 +530,17 @@ public class SearchActivity extends DiscoveryActivity
 
             @Override
             public void launchFilterCategoryPage(Filter filter, String selectedCategoryRootId, String selectedCategoryId) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(getResources().getString(R.string.title_category));
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), getResources().getString(R.string.title_category));
                 FilterDetailActivityRouter.launchCategoryActivity(SearchActivity.this,
                         filter, selectedCategoryRootId, selectedCategoryId, true);
             }
 
             @Override
             public void launchFilterDetailPage(Filter filter) {
-                SearchTracking.eventSearchResultNavigateToFilterDetail(filter.getTitle());
+                SearchTracking.eventSearchResultNavigateToFilterDetail(getActivityContext(), filter.getTitle());
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
-    }
-
-    private void forceShowBottomNav() {
-        SearchSectionFragment selectedFragment
-                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
-
-        if (selectedFragment != null) {
-            selectedFragment.showBottomBarNavigation(true);
-        }
     }
 
     private void sendBottomSheetHideEventForProductList() {
@@ -598,5 +626,63 @@ public class SearchActivity extends DiscoveryActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         bottomSheetFilterView.onSaveInstanceState(outState);
+    }
+
+    private Context getActivityContext() {
+        return this;
+    }
+
+    @Override
+    public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
+        if (isSortEnabled) {
+            buttonSort.setVisibility(View.VISIBLE);
+            searchNavDivider.setVisibility(View.VISIBLE);
+        } else {
+            buttonSort.setVisibility(View.GONE);
+            searchNavDivider.setVisibility(View.GONE);
+        }
+        this.searchNavigationClickListener = clickListener;
+    }
+
+    @Override
+    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
+        if (menuChangeGrid != null) {
+            menuChangeGrid.setIcon(iconResId);
+            menuChangeGrid.setTitle(titleResId);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        menuChangeGrid = menu.findItem(R.id.action_change_grid);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_change_grid) {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onChangeGridClick();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showBottomNavigation() {
+        searchNavContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBottomNavigation() {
+        searchNavContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSearchingStart(String keyword) {
+        super.onSearchingStart(keyword);
+        hideBottomNavigation();
     }
 }

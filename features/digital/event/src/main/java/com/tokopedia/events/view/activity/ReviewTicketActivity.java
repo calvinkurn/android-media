@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
@@ -18,12 +19,14 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -36,6 +39,7 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
 
@@ -129,15 +133,21 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView seatNumbers;
     @BindView(R2.id.goto_promo)
     View gotoPromo;
+    @BindView(R2.id.rl_section_discount)
+    View sectionDiscount;
+    @BindView(R2.id.tv_discount)
+    TextView tvDiscount;
 
-    EventComponent eventComponent;
+    private int baseFare;
+    private int convFees;
+
+    private EventComponent eventComponent;
     @Inject
     EventReviewTicketPresenter mPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,11 +212,9 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
-        int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
-        tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
-        int convFees = packageViewModel.getConvenienceFee();
-        tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
-        tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
+        baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
+        convFees = packageViewModel.getConvenienceFee();
+        updateTotalPrice(baseFare, convFees, 0);
         buttonTextview.setText(getString(R.string.pay_button));
         tvTicketCntType.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
@@ -284,14 +292,9 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
-    }
-
-    @Override
-    public RequestParams getParams() {
-        return null;
     }
 
     @Override
@@ -306,12 +309,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvPromoSuccessMsg.setVisibility(View.VISIBLE);
         batal.setVisibility(View.VISIBLE);
         edPromoLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showCashbackMessage(String text) {
-        tvPromoCashbackMsg.setText(text);
-        tvPromoCashbackMsg.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -427,6 +424,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @OnClick(R2.id.batal)
     void dismissPromoCode() {
         mPresenter.updatePromoCode("");
+        showDiscountSection(0, false);
+        updateTotalPrice(baseFare, convFees, 0);
     }
 
     @OnClick({R2.id.info_email,
@@ -476,6 +475,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             }
         } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             hideProgressBar();
+            long discount = 0;
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
                     mPresenter.updatePromoCode(data.getExtras().getString(
@@ -484,6 +484,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                     showPromoSuccessMessage(data.getExtras().getString(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_MESSAGE),
                             getResources().getColor(R.color.green_nob));
+                    discount = data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
                     mPresenter.updatePromoCode(data.getExtras().getString(
@@ -492,9 +493,24 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                     showPromoSuccessMessage(data.getExtras().getString(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_MESSAGE
                     ), getResources().getColor(R.color.green_nob));
+                    discount = data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_DISCOUNT_AMOUNT);
+
                     break;
                 default:
                     break;
+            }
+            if (discount > 0) {
+                showDiscountSection(discount, true);
+            } else
+                showDiscountSection(discount, false);
+            updateTotalPrice(baseFare, convFees, discount);
+        } else if (requestCode == ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (data != null) {
+                String url = data.getStringExtra(ScroogePGUtil.SUCCESS_MSG_URL) + "?from_payment=true";
+                RouteManager.route(this, url);
+                LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+                manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
+                this.finish();
             }
         }
     }
@@ -524,6 +540,23 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         holder.setImage(resID);
         holder.setTextView(label);
 
+    }
+
+    private void showDiscountSection(long discount, boolean show) {
+        if (show) {
+            tvDiscount.setText(String.format(getString(R.string.discount), discount));
+            sectionDiscount.setVisibility(View.VISIBLE);
+        } else {
+            tvDiscount.setText("");
+            sectionDiscount.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateTotalPrice(int baseFare, int convFee, long discount) {
+        tvBaseFare.setText(String.format(getString(R.string.price_holder), CurrencyUtil.convertToCurrencyString(baseFare)));
+        tvConvFees.setText(String.format(getString(R.string.price_holder), CurrencyUtil.convertToCurrencyString(convFee)));
+        int total = (int) (baseFare + convFee - discount);
+        tvTotalPrice.setText(String.format(getString(R.string.price_holder), CurrencyUtil.convertToCurrencyString(total)));
     }
 
     @Override

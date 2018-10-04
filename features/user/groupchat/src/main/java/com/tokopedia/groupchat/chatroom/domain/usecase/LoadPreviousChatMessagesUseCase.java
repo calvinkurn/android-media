@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 public class LoadPreviousChatMessagesUseCase {
 
-    public static final int PARAM_LIMIT_MESSAGE = 30;
+    public static final int PARAM_LIMIT_MESSAGE = 20;
     public static final boolean PARAM_IS_REVERSE = true;
 
     GroupChatMessagesMapper mapper;

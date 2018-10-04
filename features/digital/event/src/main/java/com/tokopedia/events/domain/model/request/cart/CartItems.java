@@ -60,7 +60,7 @@ public class CartItems implements Parcelable {
 		this.promocode = in.readString();
 	}
 
-	public static final Parcelable.Creator<CartItems> CREATOR = new Parcelable.Creator<CartItems>() {
+	public static final Creator<CartItems> CREATOR = new Creator<CartItems>() {
 		@Override
 		public CartItems createFromParcel(Parcel source) {
 			return new CartItems(source);

@@ -142,7 +142,7 @@ public class FacadeShopTransaction {
                                                 gson.fromJson(jsonObject.toString(), OrderShippingData.class);
                                         listener.OnSuccess(getNewOrderModel(data), data);
 
-                                    } catch (JSONException je) {
+                                    } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
                                 } else {
@@ -232,7 +232,7 @@ public class FacadeShopTransaction {
                                                 gson.fromJson(jsonObject.toString(), OrderShippingData.class);
                                         listener.OnSuccess(getStatusModel(data), data);
 
-                                    } catch (JSONException je) {
+                                    } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
                                 } else {
@@ -399,7 +399,7 @@ public class FacadeShopTransaction {
                                                 gson.fromJson(jsonObject.toString(), OrderShippingData.class);
                                         listener.OnSuccess(getShippingModel(data), data);
 
-                                    } catch (JSONException je) {
+                                    } catch (Throwable je) {
                                         Log.e(STUART, FACADE_SHOP_TRANSACTION + je.getLocalizedMessage());
                                     }
                                 } else {

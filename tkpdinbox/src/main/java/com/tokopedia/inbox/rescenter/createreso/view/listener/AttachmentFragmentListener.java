@@ -1,9 +1,10 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
+import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attachment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
@@ -29,9 +30,11 @@ public interface AttachmentFragmentListener {
         void addAttachmentFile(AttachmentViewModel attachmentViewModel);
 
         List<AttachmentViewModel> getAttachmentListFromAdapter();
+
+        Context getContext();
     }
 
-    interface Presenter extends CustomerPresenter<AttachmentFragmentListener.View> {
+    interface Presenter extends CustomerPresenter<View> {
 
         void initResultViewModel(ResultViewModel resultViewModel);
 
@@ -39,9 +42,9 @@ public interface AttachmentFragmentListener {
 
         void btnContinueClicked();
 
-        void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data);
+        void handleImageResult(int resultCode, Intent data);
 
-        void handleNewGalleryResult(int resultCode, Intent data);
+        void handleVideoResult(int resultCode, Intent data);
 
         void onAdapterChanged(List<AttachmentViewModel> attachmentViewModelList);
     }

@@ -27,10 +27,10 @@ public class SnackbarManager {
             Kirisame.print("Queue " + text);
 
         Button snackBarAction = (Button) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
-        snackBarAction.setTextColor(ContextCompat.getColor(activity, R.color.tkpd_main_green));
-
-        snack.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.black_seventy_percent_));
-
+        if (activity != null) {
+            snackBarAction.setTextColor(ContextCompat.getColor(activity, R.color.tkpd_main_green));
+            snack.getView().setBackgroundColor(ContextCompat.getColor(activity, R.color.black_seventy_percent_));
+        }
         return snack;
     }
 

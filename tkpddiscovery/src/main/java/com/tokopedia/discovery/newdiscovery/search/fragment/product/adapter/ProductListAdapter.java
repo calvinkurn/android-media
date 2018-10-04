@@ -6,17 +6,25 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,24 +42,58 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     private int startFrom;
     private int totalData;
     private Context context;
-    private GuidedSearchViewModel guidedSearch;
+    private LoadingModel loadingModel;
+    private TopAdsSwitcher topAdsSwitcher;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
         this.context = context;
         this.typeFactory = typeFactory;
+        loadingModel = new LoadingModel();
+    }
+
+    public void setTopAdsSwitcher(TopAdsSwitcher topAdsSwitcher) {
+        this.topAdsSwitcher = topAdsSwitcher;
     }
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+        AbstractViewHolder viewHolder = typeFactory.createViewHolder(view, viewType);
+        if(viewHolder instanceof TopAdsViewHolder){
+            setTopAdsSwitcher((TopAdsViewHolder) viewHolder);
+        }
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
+    }
+
+    @Override
+    public void changeListView() {
+        super.changeListView();
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.LIST);
+        }
+    }
+
+    @Override
+    public void changeDoubleGridView() {
+        super.changeDoubleGridView();
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.GRID);
+        }
+    }
+
+    @Override
+    public void changeSingleGridView() {
+        super.changeSingleGridView();
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.BIG);
+        }
     }
 
     @Override
@@ -90,22 +132,39 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         this.startFrom = start;
     }
 
-    public void setWishlistButtonEnabled(int adapterPosition, boolean isEnabled) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
-            ((ProductItem) list.get(adapterPosition)).setWishlistButtonEnabled(isEnabled);
+    public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlistButtonEnabled(isEnabled);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlisted(isWishlisted);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
         }
     }
 
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
+        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItem) {
             ((ProductItem) list.get(adapterPosition)).setWishlisted(isWishlisted);
+            notifyItemChanged(adapterPosition);
         }
-    }
-
-    public void showEmpty(String query) {
-        clearData();
-        list.add(mappingEmptySearch(query));
-        notifyDataSetChanged();
     }
 
     public void showEmpty() {
@@ -120,15 +179,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
         emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
         emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
-        emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
-        return emptySearchModel;
-    }
-
-    private EmptySearchModel mappingEmptySearch(String query) {
-        emptySearchModel = new EmptySearchModel();
-        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
-        emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
-        emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
         emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
         return emptySearchModel;
     }
@@ -175,34 +225,31 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
-    public void addGuidedSearch(String currentKey, String currentPage) {
-        if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
-            for (GuidedSearchViewModel.Item item : guidedSearch.getItemList()) {
-                item.setPreviousKey(currentKey);
-                item.setCurrentPage(currentPage);
-            }
-            int start = getItemCount();
-            list.add(guidedSearch);
-            notifyItemInserted(start);
+    public boolean isTopAds(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof TopAdsViewModel;
+    }
+
+    @Override
+    public int getIconTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case TkpdState.RecyclerView.VIEW_PRODUCT:
+                return R.drawable.ic_list_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
+                return R.drawable.ic_grid_default_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return R.drawable.ic_grid_box_green;
+            default:
+                return R.drawable.ic_grid_default_green;
         }
     }
 
-    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
-        this.guidedSearch = guidedSearch;
+    public void addLoading() {
+        this.list.add(loadingModel);
+        notifyDataSetChanged();
     }
 
-    public boolean isGuidedSearch(int position) {
-        return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
-    }
-
-    public boolean hasGuidedSearch() {
-        return guidedSearch != null;
-    }
-
-    public void updateQuickFilter(List<Option> quickFilterOptions) {
-        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
-            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
-            notifyItemChanged(ADAPTER_POSITION_HEADER);
-        }
+    public void removeLoading() {
+        this.list.remove(loadingModel);
+        notifyDataSetChanged();
     }
 }

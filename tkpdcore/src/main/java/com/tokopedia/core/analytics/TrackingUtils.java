@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -73,6 +74,14 @@ public class TrackingUtils extends TrackingConfig {
         } else {
             return ConnectivityUtils.CONN_UNKNOWN;
         }
+    }
+
+    public static void setMoEUserAttributes(Context context, @Nullable CustomerWrapper customerWrapper) {
+        if(customerWrapper != null) {
+            getMoEngine().setUserData(customerWrapper, "GRAPHQL");
+        }
+        if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(context.getApplicationContext())))
+                PushManager.getInstance().refreshToken(context.getApplicationContext(), FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     public static void setMoEUserAttributes(UserData profileData) {
@@ -179,7 +188,7 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().logoutEvent();
     }
 
-    private static String extractFirstSegment(String inputString, String separator) {
+    public static String extractFirstSegment(String inputString, String separator) {
         String firstSegment = "";
         if (!TextUtils.isEmpty(inputString)) {
             String token[] = inputString.split(separator);
@@ -205,7 +214,7 @@ public class TrackingUtils extends TrackingConfig {
         return firstName;
     }
 
-    private static String normalizePhoneNumber(String phoneNum) {
+    public static String normalizePhoneNumber(String phoneNum) {
         if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else
@@ -629,7 +638,7 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().eventNetworkError(error);
     }
 
-    static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+    public static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
         listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
@@ -649,6 +658,7 @@ public class TrackingUtils extends TrackingConfig {
         listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
         listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        listViewEvent.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_VALUE_PRODUCTTYPE);
         listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
         if (productsId.length() > 0) {
             listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
@@ -746,6 +756,10 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
         getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
+    }
+
+    public static void setMoEngagePushPreference(Boolean status) {
+        getMoEngine().setPushPreference(status);
     }
 }
 

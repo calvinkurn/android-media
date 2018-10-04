@@ -52,10 +52,10 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processInvoice(Context context, OrderDetailData data) {
+    public void processInvoice(Context context, OrderDetailData data, boolean seller) {
         AppUtils.InvoiceDialog(
                 context, data.getInvoiceUrl(),
-                data.getInvoiceNumber()
+                data.getInvoiceNumber(), seller
         );
     }
 

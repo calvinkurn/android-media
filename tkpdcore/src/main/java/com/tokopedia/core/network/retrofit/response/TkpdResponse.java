@@ -52,8 +52,8 @@ public class TkpdResponse {
         try {
             jsonResponse = new JSONObject(strResponse);
             status = jsonResponse.getString("status");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            // Do nothing
             return null;
         }
 
@@ -71,8 +71,8 @@ public class TkpdResponse {
                 msgError.add("");
                 isError = false;
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            // Do nothing
         }
 
         try {
@@ -83,8 +83,8 @@ public class TkpdResponse {
             }
 
             isNullData = jsonData == null && jsonDataArray == null;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            // Do nothing
             jsonData = null;
         }
 
@@ -97,8 +97,7 @@ public class TkpdResponse {
             }
 
             isNullData = jsonDataArray == null && jsonData == null;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
             jsonDataArray = null;
         }
 
@@ -120,8 +119,8 @@ public class TkpdResponse {
             } else {
                 msgStatus.add("");
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            // Do nothing
         }
 
         TkpdResponse tkpdResponse = new TkpdResponse();
@@ -176,8 +175,12 @@ public class TkpdResponse {
     }
 
     private void setJsonData(@NonNull JSONObject jsonData) {
-        this.stringData = jsonData.toString();
-        this.jsonData = jsonData;
+        try {
+            this.stringData = jsonData.toString();
+            this.jsonData = jsonData;
+        } catch (Throwable throwable) {
+
+        }
     }
 
     private void setJsonDataArray(@NonNull JSONArray jsonDataArray) {

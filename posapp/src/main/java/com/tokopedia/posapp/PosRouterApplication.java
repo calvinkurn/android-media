@@ -1,7 +1,6 @@
 package com.tokopedia.posapp;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,9 +28,10 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -50,11 +50,11 @@ import com.tokopedia.posapp.cache.PosCacheHandler;
 import com.tokopedia.posapp.cache.view.service.SchedulerService;
 import com.tokopedia.posapp.di.component.DaggerPosAppComponent;
 import com.tokopedia.posapp.di.component.PosAppComponent;
+import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
+import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.posapp.react.di.component.DaggerPosReactNativeComponent;
 import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
 import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
-import com.tokopedia.posapp.outlet.view.activity.OutletActivity;
-import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import java.io.IOException;
@@ -94,21 +94,6 @@ public class PosRouterApplication extends MainApplication implements
         super.onCreate();
         initializeDagger();
         initDaggerInjector();
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void removeInstopedToken() {
-
     }
 
     @Override
@@ -245,6 +230,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getLoginIntent(Context context) {
         return PosLoginActivity.getPosLoginIntent(context);
+    }
+
+    @Override
+    public Intent getOrderListIntent(Context context) {
+        return null;
     }
 
     @Override
@@ -448,6 +438,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getTalkIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -543,8 +538,23 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart) {
         return null;
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return null;
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+
     }
 
     @Override
@@ -623,6 +633,12 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void showForceLogoutTokenDialog(String response) {
+        ServerErrorHandler.showForceLogoutDialog();
+        ServerErrorHandler.sendForceLogoutAnalytics(response);
+    }
+
+    @Override
     public void showServerError(Response response) {
 
     }
@@ -650,7 +666,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void registerShake(String screenName) {
+    public void registerShake(String screenName, Activity activity) {
 
     }
 
@@ -725,11 +741,28 @@ public class PosRouterApplication extends MainApplication implements
         }
     }
 
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return false;
+    }
+
     public PosAppComponent getPosAppComponent() {
-        if(posAppComponent == null) {
+        if (posAppComponent == null) {
             posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
         }
 
         return posAppComponent;
+    }
+
+    @Override
+    public Intent getSettingBankIntent(Context context) {
+//        There is no setting bank in pos
+        return null;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        //        There is no change password in pos
+        return null;
     }
 }

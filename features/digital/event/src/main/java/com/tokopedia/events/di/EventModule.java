@@ -2,9 +2,10 @@ package com.tokopedia.events.di;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
@@ -13,12 +14,9 @@ import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.EventRepositoryData;
 import com.tokopedia.events.data.EventsDataStoreFactory;
 import com.tokopedia.events.data.source.EventsApi;
@@ -32,7 +30,10 @@ import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,6 +47,11 @@ import retrofit2.Retrofit;
 
 @Module
 public class EventModule {
+
+    private static final int NET_READ_TIMEOUT = 60;
+    private static final int NET_WRITE_TIMEOUT = 60;
+    private static final int NET_CONNECT_TIMEOUT = 60;
+    private static final int NET_RETRY = 1;
 
     Context thisContext;
 
@@ -80,48 +86,43 @@ public class EventModule {
     }
 
     @Provides
+    ThreadExecutor provideThreadExecutor() {
+        return new JobExecutor();
+    }
+
+    @Provides
+    PostExecutionThread providePostExecutionThread() {
+        return new UIThread();
+    }
+
+    @Provides
     @EventQualifier
     @EventScope
-    Retrofit provideEventRetrofit(@EventQualifier OkHttpClient okHttpClient,
+    Retrofit provideEventRetrofit(OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.EVENTS_DOMAIN).client(okHttpClient).build();
     }
 
-    @EventQualifier
     @Provides
+    OkHttpClient provideOkHttp(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor) {
+        return ((EventModuleRouter) thisContext.getApplicationContext()).getOkHttpClient(eventInerceptors, loggingInterceptor);
+    }
+
+    @Provides
+    @EventQualifier
     @EventScope
-    OkHttpClient provideOkHttpClientEvent(EventInerceptors eventInerceptors,
-                                          OkHttpRetryPolicy okHttpRetryPolicy,
-                                          ChuckInterceptor chuckInterceptor,
-                                          DebugInterceptor debugInterceptor,
-                                          HttpLoggingInterceptor loggingInterceptor) {
-
-        return OkHttpFactory.create().buildDaggerClientBearerEvents(
-                eventInerceptors,
-                okHttpRetryPolicy,
-                chuckInterceptor,
-                debugInterceptor,
-                loggingInterceptor
+    OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return new OkHttpRetryPolicy(
+                NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY
         );
-
     }
 
 
     @EventScope
     @Provides
     EventInerceptors provideEventInterCeptor(Context context) {
-        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        String oAuthString = "Bearer " + ((EventModuleRouter) thisContext.getApplicationContext()).getSession().getAccessToken();
         return new EventInerceptors(oAuthString, context);
-    }
-
-    @Provides
-    @EventScope
-    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        return new HttpLoggingInterceptor().setLevel(loggingLevel);
     }
 
     @Provides
@@ -166,10 +167,8 @@ public class EventModule {
 
     @Provides
     @EventScope
-    PostVerifyCartUseCase providesPostVerifyCartUseCase(ThreadExecutor threadExecutor,
-                                                        PostExecutionThread postExecutionThread,
-                                                        EventRepository eventRepository) {
-        return new PostVerifyCartUseCase(threadExecutor, postExecutionThread, eventRepository);
+    VerifyCartUseCase provideVerifyCartUseCase(EventRepository eventRepository) {
+        return new VerifyCartUseCase(eventRepository);
     }
 
     @Provides
@@ -196,12 +195,12 @@ public class EventModule {
 
     @Provides
     @EventScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context, SessionHandler sessionHandler) {
+    ProfileSourceFactory providesProfileSourceFactory(Context context) {
         return new ProfileSourceFactory(context,
                 new PeopleService(),
                 new ProfileMapper(),
                 new GlobalCacheManager(),
-                sessionHandler);
+                ((EventModuleRouter) thisContext.getApplicationContext()).getSessionHandler());
     }
 
     @Provides
@@ -219,5 +218,17 @@ public class EventModule {
                 threadExecutor, postExecutionThread, profileRepository);
     }
 
+    @Provides
+    @EventScope
+    VerifyCartWrapper providesVerifyCartWrapper(VerifyCartUseCase useCase) {
+        return new VerifyCartWrapper(useCase);
+    }
+
+
+    @Provides
+    @EventScope
+    EventBaseContract.EventBasePresenter providesEventFilterPresenter() {
+        return new EventFilterPresenterImpl();
+    }
 
 }

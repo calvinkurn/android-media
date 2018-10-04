@@ -4,8 +4,6 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -56,6 +54,7 @@ import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
@@ -110,12 +109,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     TkpdProgressDialog progressDialog;
     RegisterEmailPresenter presenter;
+    private RegisterAnalytics analytics;
 
     @Inject
     SessionHandler sessionHandler;
 
     public static RegisterEmailFragment createInstance() {
         return new RegisterEmailFragment();
+    }
+
+    public static RegisterEmailFragment createInstanceWithEmail(Bundle bundle) {
+        RegisterEmailFragment fragment = new RegisterEmailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -133,6 +139,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = RegisterEmailDependencyInjector.getPresenter(this);
+        analytics = RegisterAnalytics.initAnalytics(getActivity());
 
     }
 
@@ -178,6 +185,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void prepareView(View view) {
+        if (getArguments() != null) {
+            email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
+        }
+
         String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
                 " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
@@ -329,6 +340,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
+    /**
+     * This textwatcher cause lag on UI.
+     * the owner of this code should fix this.
+     * @param editText
+     * @return
+     */
     private TextWatcher phoneWatcher(final EditText editText) {
         return new TextWatcher() {
 
@@ -474,20 +491,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         RegisterEmailFragmentPermissionsDispatcher
                 .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
-        registerPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int id, KeyEvent event) {
-                if (id == com.tokopedia.core.R.id.register_button || id == EditorInfo.IME_NULL) {
-                    presenter.onRegisterClicked();
-                    return true;
-                }
-                return false;
+        registerPassword.setOnEditorActionListener((v, id, event) -> {
+            if (id == com.tokopedia.core.R.id.register_button || id == EditorInfo.IME_NULL) {
+                analytics.eventRegisterWithEmail();
+                presenter.onRegisterClicked();
+                return true;
             }
+            return false;
         });
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventRegisterWithEmail();
                 presenter.onRegisterClicked();
             }
         });
@@ -778,7 +794,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 }
                 break;
             case REQUEST_AUTO_LOGIN:
-                if (resultCode == Activity.RESULT_OK) {
+                if (getActivity()!= null && resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {

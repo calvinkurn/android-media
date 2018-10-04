@@ -2,6 +2,7 @@ package com.tokopedia.contactus.orderquery.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -32,7 +33,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private Context context;
-    private ContactUsRetrofitInteractorImpl networkInteractor;
     private SubmitTicketUseCase submitTicketUseCase;
 
     @Inject
@@ -55,7 +55,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     @Override
     public void onSendButtonClick() {
-        this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject("submitTicket", getSendTicketParam());
@@ -144,10 +143,15 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
         pass.setMessageBody(getView().getDescription());
         pass.setAttachment(getView().getImageList());
         pass.setName(SessionHandler.getLoginName(context));
+
+
+
         if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
             pass.setOrderId(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
-        if (submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId() > 0)
-            pass.setInvoiceNumber(String.valueOf(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getId()));
+
+        if(submitTicketInvoiceData.getBuyerPurchaseList().getDetail()!= null && !TextUtils.isEmpty(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getCode())) {
+            pass.setInvoiceNumber(submitTicketInvoiceData.getBuyerPurchaseList().getDetail().getCode());
+        }
         return pass;
     }
 

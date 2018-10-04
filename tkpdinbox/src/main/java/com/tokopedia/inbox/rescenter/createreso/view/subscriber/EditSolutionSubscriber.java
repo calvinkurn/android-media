@@ -2,12 +2,18 @@ package com.tokopedia.inbox.rescenter.createreso.view.subscriber;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.CurrentSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.FreeReturnDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionMessageDomain;
+import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.SolutionProblemAmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.CurrentSolutionViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionMessageViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionProblemAmountModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 
@@ -50,13 +56,37 @@ public class EditSolutionSubscriber extends Subscriber<EditSolutionResponseDomai
     private SolutionResponseViewModel mappingSolutionResponseViewModel(
             EditSolutionResponseDomain domain) {
         return new SolutionResponseViewModel(
+                domain.getCurrentSolution() != null ?
+                        mappingCurrentSolution(domain.getCurrentSolution()) :
+                        null,
                 domain.getSolutions() != null ?
                         mappingSolutionViewModelList(domain.getSolutions()) :
                         new ArrayList<SolutionViewModel>(),
                 null,
                 domain.getFreeReturn() != null ?
                         mappingFreeReturnViewModel(domain.getFreeReturn()) :
+                        null,
+                domain.getComplaints() != null ?
+                        SolutionSubscriber.mappingSolutionComplaintDomain(domain.getComplaints()) :
+                        null,
+                domain.getMessage() != null ?
+                        mappingSolutionMessageViewModel(domain.getMessage()) :
                         null);
+    }
+
+    private CurrentSolutionViewModel mappingCurrentSolution(CurrentSolutionDomain domain) {
+        return new CurrentSolutionViewModel(
+                domain.getId(),
+                domain.getName(),
+                domain.getMessage(),
+                domain.getIdentifier(),
+                domain.getAmount() != null ?
+                        mappingAmountViewModel(domain.getAmount()) :
+                        null);
+    }
+
+    private static SolutionMessageViewModel mappingSolutionMessageViewModel(SolutionMessageDomain domain) {
+        return new SolutionMessageViewModel(domain.getConfirm());
     }
 
     private List<SolutionViewModel> mappingSolutionViewModelList(
@@ -76,6 +106,11 @@ public class EditSolutionSubscriber extends Subscriber<EditSolutionResponseDomai
 
     private AmountViewModel mappingAmountViewModel(AmountDomain domain) {
         return new AmountViewModel(domain.getIdr(),
+                domain.getInteger());
+    }
+
+    private SolutionProblemAmountModel mappingAmountViewModel(SolutionProblemAmountDomain domain) {
+        return new SolutionProblemAmountModel(domain.getIdr(),
                 domain.getInteger());
     }
 

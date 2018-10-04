@@ -3,16 +3,19 @@ package com.tokopedia.contactus.orderquery.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.contactus.R;
+
 public class ImageUpload implements Parcelable {
 
-    String imageId;
-    String fileLoc;
-    String picSrc;
-    String picSrcLarge;
-    String picObj;
-    int position;
-    String description;
-    boolean isSelected = false;
+    private String imageId;
+    private String fileLoc;
+    private String picSrc;
+    private String picSrcLarge;
+    private String picObj;
+    private int position;
+    private String description;
+    private boolean isSelected = false;
+    private int imgSrc = R.drawable.ic_upload;
 
     public ImageUpload() {
 
@@ -116,6 +119,14 @@ public class ImageUpload implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public int getImgSrc() {
+        return imgSrc;
+    }
+
+    public void setImgSrc(int imgSrc) {
+        this.imgSrc = imgSrc;
     }
 
     @Override

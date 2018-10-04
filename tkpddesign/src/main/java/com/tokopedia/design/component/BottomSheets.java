@@ -3,14 +3,14 @@ package com.tokopedia.design.component;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
@@ -21,9 +21,11 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
-    private View inflatedView;
-
     public abstract int getLayoutResourceId();
+
+    public int getBaseLayoutResourceId(){
+        return R.layout.widget_bottomsheet;
+    }
 
     public abstract void initView(View view);
 
@@ -40,7 +42,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     private BottomSheetBehavior bottomSheetBehavior;
-
+    private View inflatedView;
+    
     public interface BottomSheetDismissListener {
         void onDismiss();
     }
@@ -51,7 +54,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        inflatedView = View.inflate(getContext(), R.layout.widget_bottomsheet, null);
+        inflatedView = View.inflate(getContext(), getBaseLayoutResourceId(), null);
 
         configView(inflatedView);
 
@@ -90,13 +93,8 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         TextView textViewTitle = parentView.findViewById(R.id.tv_title);
         textViewTitle.setText(title());
 
-        ImageButton btnClose = parentView.findViewById(R.id.btn_close);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCloseButtonClick();
-            }
-        });
+        View layoutTitle = parentView.findViewById(R.id.layout_title);
+        layoutTitle.setOnClickListener(v -> onCloseButtonClick());
 
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
@@ -152,5 +150,22 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
         bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
+    }
+
+    protected void updateHeight(int height) {
+        ViewGroup.LayoutParams params = inflatedView.getLayoutParams();
+        params.height = height;
+        inflatedView.setLayoutParams(params);
+        inflatedView.setMinimumHeight(height);
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        bottomSheetBehavior.setPeekHeight(height);
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        try {
+            super.show(manager, tag);
+        } catch (IllegalStateException e) { /*ignore*/ }
     }
 }

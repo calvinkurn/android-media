@@ -66,9 +66,6 @@ public class EventBookTicketPresenter
     private EventsDetailsViewModel dataModel;
     private List<LocationDateModel> locationDateModels;
 
-    public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
-    public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
-
     @Inject
     public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, ProfileUseCase profileCase) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
@@ -97,7 +94,7 @@ public class EventBookTicketPresenter
         generateLocationDateModels();
         getView().renderFromDetails(dataModel);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
@@ -132,14 +129,16 @@ public class EventBookTicketPresenter
                 if (objectResponse.getStatus() != 400) {
                     if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        reviewTicketIntent.putExtra(EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
+                        reviewTicketIntent.putExtra("event_detail", dataModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     } else {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                        reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra("event_detail", dataModel);
+                        getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
                     }
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
@@ -149,7 +148,7 @@ public class EventBookTicketPresenter
     }
 
     @Override
-    public void onActivityResult(int requestCode) {
+    public void onActivityResult(int requestCode, int resultCode) {
         if (requestCode == getView().getRequestCode()) {
             if (SessionHandler.isV4Login(getView().getActivity())) {
                 getProfile();
@@ -316,7 +315,7 @@ public class EventBookTicketPresenter
     }
 
     private void scrollToLastIfNeeded() {
-        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 2) {
+        if (schedulesList.get(mSelectedSchedule).getPackages().size() > 1) {
             mChildFragment.setDecorationHeight(getView().getButtonLayoutHeight() + px);
             if (mSelectedPackage == schedulesList.get(mSelectedSchedule).getPackages().size() - 1)
                 mChildFragment.scrollToLast();
@@ -327,7 +326,7 @@ public class EventBookTicketPresenter
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
         getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
     }
 
@@ -337,7 +336,7 @@ public class EventBookTicketPresenter
             LocationDateModel model = new LocationDateModel();
             model.setmLocation(viewModel.getCityName());
             if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+                model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
             else
                 model.setDate("");
             locationDateModels.add(model);

@@ -8,24 +8,21 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.exception.model.TomeErrorResponse;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
-import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,13 +54,6 @@ public class ShopModule {
     @Provides
     SimpleDataResponseMapper<ShopModel> provideShopModelMapper(){
         return new SimpleDataResponseMapper<>();
-    }
-
-    @ShopQualifier
-    @ShopScope
-    @Provides
-    public TomeApi provideTomeApi(@ShopQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
     }
 
     @ShopQualifier
@@ -105,16 +95,6 @@ public class ShopModule {
     @Provides
     public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(TomeErrorResponse.class);
-    }
-
-    @ShopScope
-    @Provides
-    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context){
-        if(context instanceof SellerModuleRouter) {
-            return new ShopOpenTracking((SellerModuleRouter)context);
-        }else{
-            return null;
-        }
     }
 
     @ShopScope

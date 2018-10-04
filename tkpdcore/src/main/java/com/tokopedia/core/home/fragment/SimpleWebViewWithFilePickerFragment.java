@@ -1,7 +1,7 @@
 package com.tokopedia.core.home.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,7 +9,9 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,14 +27,17 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import static android.app.Activity.RESULT_OK;
 
-public class SimpleWebViewWithFilePickerFragment extends Fragment {
+public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
     private static final String SEAMLESS = "seamless";
     public static final int PROGRESS_COMPLETED = 100;
+    private static WebViewClient webViewClient;
     private ProgressBar progressBar;
     private TkpdWebView webview;
     private ValueCallback<Uri> callbackBeforeL;
@@ -106,6 +112,8 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
     }
 
     private class MyWebClient extends WebViewClient {
+        private static final String APPLINK_SCHEME = "tokopedia://";
+
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -129,13 +137,51 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            final Uri uri = Uri.parse(url);
+            return onOverrideUrl(uri);
+        }
 
-    }
+        @TargetApi(Build.VERSION_CODES.N)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            return onOverrideUrl(request.getUrl());
+        }
 
-    public SimpleWebViewWithFilePickerFragment() {
+
+        protected boolean onOverrideUrl(Uri url) {
+            String urlString = url.toString();
+            try {
+                if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
+                        && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
+                    ((TkpdInboxRouter) getActivity().getApplicationContext())
+                            .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
+                                    Bundle());
+                    return true;
+                } else if (urlString.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, url);
+                    startActivity(intent);
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+        }
+
+
     }
 
     public static SimpleWebViewWithFilePickerFragment createInstance(String url) {
+        return createInstanceWithWebClient(url, null);
+    }
+    public static SimpleWebViewWithFilePickerFragment createInstanceWithWebClient(String url, WebViewClient client) {
+        webViewClient = client;
         SimpleWebViewWithFilePickerFragment fragment = new SimpleWebViewWithFilePickerFragment();
         Bundle args = new Bundle();
         if (!TextUtils.isEmpty(url)) {
@@ -164,7 +210,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
+            if(callbackAfterL != null) callbackAfterL.onReceiveValue(results);
             callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
@@ -190,18 +236,21 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         else {
             webview.loadAuthUrl(url);
         }
-        webview.setWebViewClient(new SimpleWebViewWithFilePickerFragment.MyWebClient());
+        if(webViewClient == null)
+            webview.setWebViewClient(new SimpleWebViewWithFilePickerFragment.MyWebClient());
+        else
+            webview.setWebViewClient(webViewClient);
         webview.setWebChromeClient(new SimpleWebViewWithFilePickerFragment.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            webview.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
         }
         getActivity().setProgressBarIndeterminateVisibility(true);
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setBuiltInZoomControls(false);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
         return view;
@@ -213,6 +262,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         }
     }
 
+    @Override
     public WebView getWebview() {
         return webview;
     }

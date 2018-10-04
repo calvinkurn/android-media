@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.orderquery.view.OrderQueryTicketActivity;
 
@@ -43,12 +44,13 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
 
     private BuyerPurchaseList buyerPurchaseList;
 
-    ContactUsPurchaseViewHolder(View view) {
+    ContactUsPurchaseViewHolder(View view, String type) {
         super(view);
         ButterKnife.bind(this, view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ContactUsTracking.eventHomeInvoiceClick(type,txtOrderId.getText().toString());
                 view.getContext().startActivity(OrderQueryTicketActivity.getOrderQueryTicketIntent(view.getContext(), buyerPurchaseList));
             }
         });
@@ -60,8 +62,12 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
         txtOrderDate.setText(lastUpdatedDate(buyerPurchaseList.getDetail().getCreateTime()));
         ImageHandler.loadImageThumbs(imgProduct.getContext(), imgProduct, buyerPurchaseList.getProducts().get(0).getImage());
         txtProductName.setText(buyerPurchaseList.getProducts().get(0).getName());
-        txtMoreItem.setText(String.format(txtMoreItem.getContext().getResources().getString(R.string.more_items),
-                buyerPurchaseList.getProducts().size() - 1));
+        if(buyerPurchaseList.getProducts().size() > 1) {
+            txtMoreItem.setText(String.format(txtMoreItem.getContext().getResources().getString(R.string.more_items),
+                    buyerPurchaseList.getProducts().size() - 1));
+        }else {
+            txtMoreItem.setVisibility(View.INVISIBLE);
+        }
         txtTotalPrice.setText(buyerPurchaseList.getDetail().getTotalAmount());
         txtInvalidMsg.setText(buyerPurchaseList.getDetail().getStatus());
     }

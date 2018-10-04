@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
@@ -26,16 +27,21 @@ import butterknife.OnClick;
 
 public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.ImageViewHolder> {
 
-    public ArrayList<ImageUpload> getImageUpload() {
-        return imageUpload;
-    }
+    private final OnSelectImageClick onSelectImageClick;
 
-    ArrayList<ImageUpload> imageUpload = new ArrayList<>();
+
+    private static final int VIEW_UPLOAD_BUTTON = 100;
+    private int maxPicUpload = 5;
+
+    private ArrayList<ImageUpload> imageUpload;
 
     private Context context;
 
-    public ImageUploadAdapter(Context context) {
+    public ImageUploadAdapter(Context context, OnSelectImageClick onSelectImageClick) {
         this.context = context;
+        this.onSelectImageClick = onSelectImageClick;
+        imageUpload = new ArrayList<>();
+        imageUpload.add(new ImageUpload());
     }
 
     @Override
@@ -55,12 +61,32 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     }
 
     public void addImage(ImageUpload image) {
-        imageUpload.add(image);
-        notifyDataSetChanged();
+        if (imageUpload.size() < maxPicUpload) {
+            image.setImgSrc(-1);
+            imageUpload.add(imageUpload.size() - 1, image);
+            notifyDataSetChanged();
+        } else if (imageUpload.size() == maxPicUpload && imageUpload.get(maxPicUpload - 1).getImgSrc() != -1) {
+            imageUpload.remove(imageUpload.size() - 1);
+            image.setImgSrc(-1);
+            imageUpload.add(image);
+            notifyDataSetChanged();
+            Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
+        }
     }
 
+    public ArrayList<ImageUpload> getImageUpload() {
+        ArrayList<ImageUpload> imageList = new ArrayList<>();
+        for (ImageUpload image : imageUpload) {
+            if (image.getImgSrc() == -1)
+                imageList.add(image);
+        }
+        return imageList;
+    }
 
-
+    public void clearAll() {
+        imageUpload.clear();
+        imageUpload.add(new ImageUpload());
+    }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
 
@@ -68,6 +94,8 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         @BindView(R2.id.selected_image)
         ImageView selectedImage;
+        @BindView(R2.id.delete_image)
+        ImageView deleteImage;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -76,13 +104,39 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         public void setImage(ImageUpload image) {
             this.image = image;
-            ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+            if (image.getImgSrc() != -1) {
+                selectedImage.setImageResource(image.getImgSrc());
+                deleteImage.setVisibility(View.GONE);
+                selectedImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onSelectImageClick.onClick();
+                    }
+                });
+            } else {
+                ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+                selectedImage.setOnClickListener(null);
+                deleteImage.setVisibility(View.VISIBLE);
+            }
         }
 
         @OnClick(R2.id.delete_image)
         public void onViewClicked() {
-            imageUpload.remove(imageUpload.indexOf(image));
+            if (imageUpload.size() == maxPicUpload) {
+                ImageUpload lastImg = imageUpload.get(getAdapterPosition());
+                if (lastImg.getImgSrc() == -1) {
+                    lastImg.setImgSrc(R.drawable.ic_upload);
+                }
+            } else {
+                imageUpload.remove(image);
+            }
             notifyDataSetChanged();
         }
+
+
+    }
+
+    public interface OnSelectImageClick {
+        public void onClick();
     }
 }

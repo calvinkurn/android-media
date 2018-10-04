@@ -15,10 +15,6 @@ import okhttp3.Interceptor;
 
 public interface ProfileModuleRouter {
 
-    void doFollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
-
-    void doUnfollowKolPost(int id, FollowKolSubscriber followKolPostSubscriber);
-
     BaseDaggerFragment getKolPostFragment(String userId,
                                           int postId,
                                           Intent resultIntent,
@@ -31,4 +27,6 @@ public interface ProfileModuleRouter {
     Intent getLoginIntent(Context context);
 
     Intent getProfileCompletionIntent(Context context);
+
+    Intent getManagePeopleIntent(Context context);
 }

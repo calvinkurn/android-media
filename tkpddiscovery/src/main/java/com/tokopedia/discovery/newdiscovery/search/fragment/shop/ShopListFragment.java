@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.SearchTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
@@ -24,6 +22,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
@@ -237,7 +236,6 @@ public class ShopListFragment extends SearchSectionFragment
         if (isHasNextPage) {
             adapter.addLoading();
         }
-        showBottomBarNavigation(true);
     }
 
     private void enrichPositionData(List<ShopViewModel.ShopItem> shopItemList, int startRow) {
@@ -252,21 +250,14 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            adapter.showEmptyState(message);
-            SearchTracking.eventSearchNoResult(query, getScreenName(), getSelectedFilter());
+            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
+            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
     @Override
     public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        showBottomBarNavigation(false);
     }
 
     @Override
@@ -282,38 +273,10 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop();
-                        openFilterActivity();
-                        return true;
-                    case 1:
-                        switchLayoutType();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
-    }
-
-    @Override
     public void onItemClicked(ShopViewModel.ShopItem shopItem, int adapterPosition) {
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
         lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
@@ -321,9 +284,19 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void onFavoriteButtonClicked(ShopViewModel.ShopItem shopItem,
                                         int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(query, shopItem.getShopName(),
+        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
+    }
+
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -353,6 +326,11 @@ public class ShopListFragment extends SearchSectionFragment
                 }
             }
         };
+    }
+
+    @Override
+    protected boolean isSortEnabled() {
+        return false;
     }
 
     @Override
@@ -425,7 +403,7 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     protected void switchLayoutType() {
         super.switchLayoutType();
-        
+
         if (!getUserVisibleHint()) {
             return;
         }
@@ -445,7 +423,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        showBottomBarNavigation(false);
         loadShopFirstTime();
     }
 

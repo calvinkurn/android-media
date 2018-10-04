@@ -2,8 +2,8 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.topads.dashboard.data.model.data.Product;

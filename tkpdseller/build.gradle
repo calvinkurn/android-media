@@ -16,16 +16,6 @@ buildscript {
     }
 }
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'TkpdSeller']
-            }
-        }
-    }
-}
-
 project.ext {
     artifactId = 'seller'
     groupId = 'com.tokopedia.seller'
@@ -39,16 +29,22 @@ dependencies {
     }
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.williamchart)
+    implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.goldMerchantCommon)
+    implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.features.shopCommon)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productDraftDatabase)
 
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.features.districtRecommendation)
-    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.features.districtrecommendation)
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)
@@ -99,6 +95,11 @@ dependencies {
     }
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
     }
 }
 

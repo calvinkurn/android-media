@@ -19,10 +19,14 @@ public interface ContactUsModuleRouter {
     Intent getHomeIntent(Context context);
 
     Intent getHelpUsIntent(Context context);
+
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
+
     Intent getWebviewActivityWithIntent(Context context, String url);
 
     void actionNavigateByApplinksUrl(Activity activity, String s, Bundle bundle);
 
     Intent getTopProfileIntent(Context context, String loginID);
+
+    String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

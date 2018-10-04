@@ -45,6 +45,9 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/sp_20</item>
     </style>
+    <style name="TextView.TitleBig.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
     <style name="TextView.TitleBig.Bold">
         <item name="android:textStyle">bold</item>
     </style>
@@ -55,9 +58,18 @@
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 
+    <style name="TextView.TitleMedium">
+        <item name="android:textSize">@dimen/sp_17</item>
+    </style>
+    <style name="TextView.TitleMedium.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Title">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/sp_16</item>
+    </style>
+    <style name="TextView.Title.White">
+        <item name="android:textColor">@color/white</item>
     </style>
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
@@ -94,6 +106,9 @@
     </style>
     <style name="TextView.Small.Bold">
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Small.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
     <style name="TextView.Small.Bold.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
@@ -147,6 +162,19 @@
     </style>
     <style name="TextView.Micro.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="TextView.Micro.Green.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Micro.BlackPrimary">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+    <style name="TextView.Micro.Orange">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+    <style name="TextView.Micro.Orange.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
     <style name="TextView.Micro.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>

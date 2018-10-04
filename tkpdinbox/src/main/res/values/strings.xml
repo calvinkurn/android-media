@@ -45,6 +45,7 @@
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
     <string name="label_buyer_complaint">Komplain Pembeli:</string>
+    <string name="label_amount_complaint">Dana yang ingin dikembalikan</string>
     <string name="label_reason_complaint">Alasan Komplain:</string>
     <string name="label_complaint_attachment">Lampiran Bukti:</string>
     <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
@@ -76,28 +77,6 @@
         Pesan</string>
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
-
-    <string name="security_info_chat">Mohon berhati-hati bila pengguna lain meminta Anda berkomunikasi dan bertransaksi di luar Tokopedia.</string>
-    <string name="security_info_chat_link">Cek panduan keamanan disini.</string>
-
-    <string name="no_existing_chat"> Tidak Ada Chat</string>
-    <string name="no_existing_chat_user"> Tidak ada pengguna atau chat
-yang ditemukan</string>
-    <string name="please_try_chat"> Silakan mengirim chat untuk\nmemulai percakapan</string>
-    <string name="old_message_warn"> Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: </string>
-    <string name="delete_message_warn"> Jumlah pesan yang bisa dihapus hanya </string>
-    <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
-    <string name="delete_choose">"Pilih chat yang dihapus"</string>
-    <string name="connected_websocket">"Terhubung!"</string>
-    <string name="is_typing">"sedang mengetik"</string>
-    <string name="just_now">"baru saja"</string>
-    <string name="delete_error">"Gagal mengirim pesan."</string>
-    <string name="delete_chat">"Hapus chat?"</string>
-    <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
-    <string name="search_chat_user">"Cari chat atau pengguna"</string>
-    <string name="resend">"Kirim Ulang"</string>
-    <string name="delete">"Hapus"</string>
-    <string name="cancel">"Batal"</string>
 
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
     <string name="error_no_connection_retrying">Terjadi gangguan pada koneksi. Mencoba
@@ -140,6 +119,13 @@ yang ditemukan</string>
     <!--step 2-->
     <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
     <string name="string_input_amount">Masukkan Jumlah Uang</string>
+    <string name="string_qty">Qty</string>
+    <string name="string_max_refund">Maksimal</string>
+    <string name="string_fund_want_refunded">Dana yang ingin dikembalikan</string>
+    <string name="string_total_refunded">Total Dana Bermasalah</string>
+    <string name="string_current_solution">Solusi Sekarang</string>
+    <string name="string_other_solution">Pilih Solusi Lain</string>
+    <string name="string_solution_message">$solution.message</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>
@@ -260,27 +246,6 @@ yang ditemukan</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="add_template_chat_title">Tambah Template Pesan</string>
-    <string name="edit_template_chat_title">Ubah Template Pesan</string>
-    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
-    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
-    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
-    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
-    <string name="success_delete_template_chat">Template berhasil dihapus</string>
-    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
-    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
-    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
-        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
-    <string name="delete_chat_template">"Hapus template?"</string>
-    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
-    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
-    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
-
-    <string name="title_info_list_template">"Kelola Template Pesan"</string>
-    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
-    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
-
-
     <!--reso inbox-->
     <string name="string_buyer">Pembeli:</string>
     <string name="string_seller">Penjual:</string>
@@ -313,13 +278,7 @@ yang ditemukan</string>
     <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
     <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>
-
-    <string name="string_attach_invoice_activity_title">Pilih Transaksi</string>
-
-    <string name="title_personal">Personal</string>
-    <string name="title_community">Group Chat</string>
-    <string name="chat_title">Chat ( %d )</string>
-
-    <!-- attach invoice -->
-    <string name="total_invoice">Total: </string>
+    <string name="title_video">Video</string>
+    <string name="title_image">Gambar</string>
+    <string name="choose_video">Pilih Video</string>
 </resources>

@@ -61,6 +61,9 @@ public class RechargeCategoryDetail {
     @SerializedName("other_banners")
     @Expose
     private List<OperatorBannerEntity> otherBanners;
+    @SerializedName("guides")
+    @Expose
+    private List<GuideEntity> guides;
 
     public String getId() {
         return id;
@@ -192,5 +195,13 @@ public class RechargeCategoryDetail {
 
     public void setOtherBanners(List<OperatorBannerEntity> otherBanners) {
         this.otherBanners = otherBanners;
+    }
+
+    public List<GuideEntity> getGuides() {
+        return guides;
+    }
+
+    public void setGuides(List<GuideEntity> guides) {
+        this.guides = guides;
     }
 }

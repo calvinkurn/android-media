@@ -14,6 +14,7 @@ import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -129,20 +130,34 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
                 btnDecrement.setClickable(false);
             }
-            if (holderViewModel.getAvailable() > 0) {
-                tvSoldOut.setVisibility(View.INVISIBLE);
-                buttonLayout.setVisibility(View.VISIBLE);
-                setTvTicketNameColor(mContext.getResources().getColor(R.color.black_70));
-                setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_54));
-                setTicketSalePriceColor(mContext.getResources().getColor(R.color.price_pdp));
+            Date now = new Date(System.currentTimeMillis());
+            Date startDate = new Date(holderViewModel.getStartDate() * 1000L);
+            Date endDate = new Date(holderViewModel.getEndDate() * 1000L);
+            if (now.compareTo(startDate) >= 0 && now.compareTo(endDate) <= 0) {
+                if (holderViewModel.getAvailable() > 0) {
+                    tvSoldOut.setVisibility(View.INVISIBLE);
+                    buttonLayout.setVisibility(View.VISIBLE);
+                    setTvTicketNameColor(mContext.getResources().getColor(R.color.black_70));
+                    setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_54));
+                    setTicketSalePriceColor(mContext.getResources().getColor(R.color.price_pdp));
+                } else {
+                    noSale();
+                }
+            } else if (now.compareTo(startDate) < 0) {
+                tvSoldOut.setText(mContext.getResources().getString(R.string.sale_not_started));
+                noSale();
             } else {
-                tvSoldOut.setVisibility(View.VISIBLE);
-                buttonLayout.setVisibility(View.INVISIBLE);
-                setTvTicketNameColor(mContext.getResources().getColor(R.color.black_38));
-                setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_38));
-                setTicketSalePriceColor(mContext.getResources().getColor(R.color.black_38));
+                noSale();
             }
 
+        }
+
+        private void noSale() {
+            tvSoldOut.setVisibility(View.VISIBLE);
+            buttonLayout.setVisibility(View.INVISIBLE);
+            setTvTicketNameColor(mContext.getResources().getColor(R.color.black_38));
+            setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_38));
+            setTicketSalePriceColor(mContext.getResources().getColor(R.color.black_38));
         }
 
         @OnClick(R2.id.btn_increment)

@@ -42,7 +42,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     private ImageView osBadge;
     private TextView time;
     private View shareButton;
-    private View buyButton;
 
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
@@ -55,7 +54,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         shopAvatar = itemView.findViewById(R.id.shop_avatar);
         time = itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
-        buyButton = itemView.findViewById(R.id.buy_button);
         gmBadge = itemView.findViewById(R.id.gold_merchant);
         osBadge = itemView.findViewById(R.id.official_store);
         RecyclerView recyclerView = itemView.findViewById(R.id.product_list);
@@ -200,7 +198,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public void setFooter(final ActivityCardViewModel viewModel) {
         if (viewModel.getListProduct().size() > 1) {
             shareButton.setVisibility(View.GONE);
-            buyButton.setVisibility(View.GONE);
             shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -215,13 +212,6 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
             });
         } else {
             shareButton.setVisibility(View.GONE);
-            buyButton.setVisibility(View.GONE);
-            buyButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewListener.onGoToBuyProduct(viewModel.getListProduct().get(0));
-                }
-            });
         }
     }
 }

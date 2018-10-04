@@ -53,7 +53,7 @@ public class EventBookTicketContract {
         void setLocationDate(String location, String date, SchedulesViewModel datas);
     }
 
-    public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {
+    public interface Presenter extends CustomerPresenter<EventBookTicketView> {
 
         void initialize();
 
@@ -64,7 +64,7 @@ public class EventBookTicketContract {
 
         void validateSelection();
 
-        void onActivityResult(int requestCode);
+        void onActivityResult(int requestCode,int resultCode);
 
         void payTicketsClick(String title);
 

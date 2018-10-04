@@ -33,11 +33,11 @@ public class EventFavouriteContract {
 
     }
 
-    public interface Presenter extends CustomerPresenter<EventFavouriteContract.EventFavouriteView> {
+    public interface Presenter extends CustomerPresenter<EventFavouriteView> {
 
         public String getSCREEN_NAME();
 
-        void setEventLike(CategoryItemsViewModel model, int position);
+        void removeEventLike(CategoryItemsViewModel model, int position);
 
         void shareEvent(CategoryItemsViewModel model);
     }

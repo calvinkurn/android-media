@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,8 @@ import javax.inject.Inject;
 
 public class KolPostFragment extends BaseDaggerFragment implements
         KolPostListener.View,
-        KolPostListener.View.ViewHolder {
+        KolPostListener.View.ViewHolder,
+        KolPostListener.View.Like {
 
     public static final String PARAM_IS_LIKED = "is_liked";
     public static final String PARAM_TOTAL_LIKES = "total_likes";
@@ -61,10 +63,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
 
+    protected boolean canLoadMore = true;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
-    private boolean canLoadMore = true;
     private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {
@@ -100,7 +102,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initVar();
         initView(parentView);
         setViewListener();
-        presenter.initView(userId);
 
         if (getActivity().getApplicationContext() instanceof KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
@@ -116,6 +117,18 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
 
         return parentView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchDataFirstTime();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
     }
 
     private void initVar() {
@@ -146,10 +159,18 @@ public class KolPostFragment extends BaseDaggerFragment implements
                 if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
                         canLoadMore &&
                         !adapter.isLoading()) {
-                    presenter.getKolPost(userId);
+                    fetchData();
                 }
             }
         });
+    }
+
+    protected void fetchDataFirstTime() {
+        presenter.initView(userId);
+    }
+
+    protected void fetchData() {
+        presenter.getKolPost(userId);
     }
 
     @Override
@@ -202,7 +223,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void onEmptyKolPost() {
         adapter.removeErrorNetwork();
         adapter.removeLoading();
-        adapter.showEmpty();
+        adapter.showEmpty(true);
     }
 
     @Override
@@ -210,7 +231,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getKolPost(userId);
+                fetchData();
             }
         });
     }
@@ -229,40 +250,58 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onGoToKolProfile(int page, int rowNumber, String userId, int postId) {
+    public void onGoToKolProfile(int rowNumber, String userId, int postId) {
     }
 
     @Override
-    public void onOpenKolTooltip(int page, int rowNumber, String url) {
-        ((KolRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), url);
+    public void onGoToKolProfileUsingApplink(int rowNumber, String applink) {
     }
 
     @Override
-    public void onFollowKolClicked(int page, int rowNumber, int id) {
-        presenter.followKol(id, rowNumber, this);
+    public void onOpenKolTooltip(int rowNumber, String url) {
+        kolRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
-    public void onUnfollowKolClicked(int page, int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber, this);
-
+    public void onFollowKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.followKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
-    public void onLikeKolClicked(int page, int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
+    public void onUnfollowKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
-    public void onUnlikeKolClicked(int page, int rowNumber, int id) {
-        presenter.unlikeKol(id, rowNumber, this);
-
+    public void onLikeKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
-    public void onGoToKolComment(int page, int rowNumber, KolPostViewModel kolPostViewModel) {
+    public void onUnlikeKolClicked(int rowNumber, int id) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unlikeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
+    }
+
+    @Override
+    public void onGoToKolComment(int rowNumber, int id) {
         Intent intent = KolCommentActivity.getCallingIntent(
-                getContext(), kolPostViewModel.getId(), rowNumber
+                getContext(), id, rowNumber
         );
         startActivityForResult(intent, KOL_COMMENT_CODE);
     }
@@ -299,7 +338,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();
@@ -339,7 +378,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();

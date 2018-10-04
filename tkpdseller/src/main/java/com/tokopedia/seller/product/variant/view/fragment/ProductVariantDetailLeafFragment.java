@@ -21,18 +21,18 @@ import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelSwitch;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.constant.StockTypeDef;
-import com.tokopedia.seller.product.edit.utils.ProductPriceRangeUtils;
-import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.StockTypeDef;
+import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
-import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
-import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
+import com.tokopedia.product.manage.item.common.util.CurrencyUsdTextWatcher;
 
 import java.util.List;
 
@@ -79,6 +79,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         int getStockType();
 
         boolean isOfficialStore();
+
+        boolean hasWholesale();
     }
 
     public static ProductVariantDetailLeafFragment newInstance() {
@@ -153,6 +155,10 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
         }
         counterInputPrice.addTextChangedListener(numberTextWatcher);
         counterInputPrice.setCounterValue(productVariantCombinationViewModel.getPriceVar());
+        if(listener.hasWholesale()){
+            counterInputPrice.setEnabled(false);
+        }
+
 
         lvTitle.setTitle(listener.getVariantName());
         lvTitle.setSummary(productVariantCombinationViewModel.getLeafString());
@@ -166,10 +172,10 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                     counterInputViewStock.removeTextChangedListener(this);
                     String sString = StringUtils.omitNonNumeric(s.toString());
                     int stock;
-                    if (TextUtils.isEmpty(sString)) {
+                    if (TextUtils.isEmpty(sString) || sString.equals("0")) {
                         stock = 1;
                     } else {
-                        stock = Integer.parseInt(sString);
+                        stock = (int)counterInputViewStock.getDoubleValue();
                     }
                     counterInputViewStock.setValue(stock);
                     checkStockValid(stock);

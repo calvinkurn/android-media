@@ -25,6 +25,7 @@ import com.tkpd.library.ui.utilities.NoResultHandler;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -62,7 +63,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Use in reflection by TkpdRouter
  * If you want to rename the class or refactor its package, rename also the route
+ *
+ * use ShopSettings Module
  */
+@Deprecated
 public class EtalaseShopEditor extends TActivity {
 
     public static final String STUART = "STUART";
@@ -123,7 +127,11 @@ public class EtalaseShopEditor extends TActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.etalase_shop_editor, menu);
+        if (GlobalConfig.isCustomerApp()) {
+            getMenuInflater().inflate(R.menu.etalase_shop_editor_dark, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.etalase_shop_editor, menu);
+        }
         if (IsAllowShop.equals("0")) {
             for (int i = 0; i < menu.size(); i++)
                 menu.getItem(i).setVisible(false);
@@ -382,7 +390,7 @@ public class EtalaseShopEditor extends TActivity {
                                                 processSuccessAddEtalase(data, eName);
                                             }
                                         } catch (JSONException je) {
-                                            Log.e(STUART, EtalaseShopEditor.class.getSimpleName() + je.getLocalizedMessage());
+
                                         }
                                     }
                                 } else {

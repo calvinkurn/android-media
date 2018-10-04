@@ -8,15 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 /**
@@ -142,6 +141,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("prod_name", data.getInfo().getProductName());
             bundle.putString("is_owner", String.valueOf(data.getShopInfo().getShopIsOwner()));
             bundle.putString("product_image", data.getProductImages().get(0).getImageSrc300());
+            bundle.putString("product_price", data.getInfo().getProductPrice());
             listener.onProductTalkClicked(bundle);
             if(data != null) {
                 TrackingUtils.sendMoEngageClickDiskusi(data);

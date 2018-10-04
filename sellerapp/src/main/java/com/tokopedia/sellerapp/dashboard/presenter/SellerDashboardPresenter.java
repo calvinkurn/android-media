@@ -11,6 +11,12 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
+import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
@@ -35,18 +41,21 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     private final NewNotificationUseCase newNotificationUseCase;
     private final CacheApiClearAllUseCase cacheApiClearAllUseCase;
     private final UpdateShopScheduleUseCase updateShopScheduleUseCase;
+    private final GetProductListSellingUseCase getProductListSellingUseCase;
 
     @Inject
     public SellerDashboardPresenter(GetShopInfoWithScoreUseCase getShopInfoWithScoreUseCase,
                                     GetTickerUseCase getTickerUseCase,
                                     NewNotificationUseCase newNotificationUseCase,
                                     CacheApiClearAllUseCase cacheApiClearAllUseCase,
-                                    UpdateShopScheduleUseCase updateShopScheduleUseCase) {
+                                    UpdateShopScheduleUseCase updateShopScheduleUseCase,
+                                    GetProductListSellingUseCase getProductListSellingUseCase) {
         this.getShopInfoWithScoreUseCase = getShopInfoWithScoreUseCase;
         this.getTickerUseCase = getTickerUseCase;
         this.newNotificationUseCase = newNotificationUseCase;
         this.cacheApiClearAllUseCase = cacheApiClearAllUseCase;
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
+        this.getProductListSellingUseCase = getProductListSellingUseCase;
     }
 
     public void getShopInfoWithScore(){
@@ -172,6 +181,29 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
         };
     }
 
+    public void getProductList(){
+        getProductListSellingUseCase.execute(GetProductListSellingUseCase.createRequestParamsManageProduct(0,
+                "", CatalogProductOption.WITH_AND_WITHOUT, ConditionProductOption.ALL_CONDITION, "", 0,
+                PictureStatusProductOption.WITH_AND_WITHOUT, SortProductOption.POSITION), getSubscriberGetListProduct());
+    }
+
+    private Subscriber<ProductListSellerModel> getSubscriberGetListProduct() {
+        return new Subscriber<ProductListSellerModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(ProductListSellerModel productListSellerModel) {
+
+            }
+        };
+    }
     @Override
     public void detachView() {
         super.detachView();

@@ -54,6 +54,10 @@ public interface ChatroomContract {
 
         void autoAddSprintSaleAnnouncement(SprintSaleViewModel sprintSaleViewModel, ChannelInfoViewModel channelInfoViewModel);
 
+        void addQuickReply(String text);
+
+        void onSuccessSendQuickReply(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel);
+
         interface ImageAnnouncementViewHolderListener {
             void onImageAnnouncementClicked(String url);
         }
@@ -82,6 +86,8 @@ public interface ChatroomContract {
         void initMessageFirstTime(OpenChannel mChannel);
 
         void sendReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
+
+        void sendQuickReply(PendingChatViewModel pendingChatViewModel, OpenChannel mChannel);
 
         void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery);
 

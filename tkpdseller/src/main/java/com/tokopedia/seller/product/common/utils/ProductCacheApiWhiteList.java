@@ -2,8 +2,8 @@ package com.tokopedia.seller.product.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.edit.constant.ProductUrl;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeProductApi;
+import com.tokopedia.product.manage.item.common.util.ProductUrl;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,8 @@ public class ProductCacheApiWhiteList {
         // Product catalog
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.ACE_DOMAIN,
                 TkpdBaseURL.Ace.PATH_SEARCH + TkpdBaseURL.Ace.PATH_CATALOG, ONE_DAY));
+        // image catalog on picker image add product
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(CatalogConstant.URL_HADES, CatalogConstant.URL_GET_CATALOG_IMAGE, ONE_HOUR));
 
         return cacheApiWhiteList;
     }
