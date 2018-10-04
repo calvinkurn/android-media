@@ -454,4 +454,5 @@
     <string name="flight_cancellation_support_docs_description">Harap unggah bukti identitas penumpang yang valid. Jika bukti identitas penumpang salah, pengembalian dana tidak akan diproses</string>
     <string name="flight_change_search_content_button">Ganti Pencarian</string>
     <string name="flight_cancellation_less_than_6_hours_confirmation_dialog">OK</string>
+    <string name="flight_search_best_pairing_tag">Best Pairing</string>
 </resources>
