@@ -547,11 +547,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getStore(), that.getStore())
                 .append(getRecipientAddressModel(), that.getRecipientAddressModel())
                 .append(isUseCourierRecommendation(), that.isUseCourierRecommendation())
-                .append(getShippingId(), that.getShippingId())
-                .append(getSpId(), that.getSpId())
-                .append(getDropshiperName(), that.getDropshiperName())
-                .append(getDropshiperPhone(), that.getDropshiperPhone())
-                .append(isInsurance(), that.isInsurance())
                 .isEquals();
     }
 
@@ -582,11 +577,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getStore())
                 .append(getRecipientAddressModel())
                 .append(isUseCourierRecommendation())
-                .append(getShippingId())
-                .append(getSpId())
-                .append(getDropshiperName())
-                .append(getDropshiperPhone())
-                .append(isInsurance())
                 .toHashCode();
     }
 }
