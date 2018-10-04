@@ -213,30 +213,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     tvLocationName.setText(location.getName());
                 }
                 break;
-
-//            case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
-//                if (resultCode == RESULT_OK) {
-//                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-//                    if (!tvLocationName.getText().equals(location1.getName())) {
-//                        tvLocationName.setText(location1.getName());
-//                        mPresenter.getDealsList(true);
-//                    }
-//
-//
-//                }
-//                break;
-//            case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
-//                if (resultCode == RESULT_OK) {
-//                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-//                    if (!tvLocationName.getText().equals(location1.getName())) {
-//                        tvLocationName.setText(location1.getName());
-//                        mPresenter.getDealsList(true);
-//                    } else {
-//                        mPresenter.getDealsList(false);
-//                    }
-//
-//                }
-//                break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
                 if (resultCode == RESULT_OK) {
                     if (getActivity() != null && getActivity().getApplication() != null) {
