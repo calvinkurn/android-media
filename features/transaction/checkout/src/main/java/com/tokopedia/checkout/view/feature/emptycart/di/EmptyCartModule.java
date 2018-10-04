@@ -5,11 +5,9 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartContract;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartPresenter;
-import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 

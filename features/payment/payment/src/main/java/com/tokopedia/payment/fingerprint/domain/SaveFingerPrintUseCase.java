@@ -9,7 +9,6 @@ import com.tokopedia.usecase.UseCase;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
 
 /**

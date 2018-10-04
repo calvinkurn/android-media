@@ -5,12 +5,9 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyCouponRedeem;
 import com.tokopedia.loyalty.domain.entity.request.RequestBodyValidateRedeem;
-import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-
-import java.util.List;
 
 import rx.Observable;
 

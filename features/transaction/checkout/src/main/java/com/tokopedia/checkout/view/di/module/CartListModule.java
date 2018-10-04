@@ -20,7 +20,6 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;

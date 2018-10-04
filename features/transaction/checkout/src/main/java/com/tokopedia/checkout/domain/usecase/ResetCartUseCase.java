@@ -1,15 +1,9 @@
 package com.tokopedia.checkout.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.ResetAndShipmentFormCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
-import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

@@ -2,7 +2,6 @@ package com.tokopedia.payment.fingerprint.di;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;

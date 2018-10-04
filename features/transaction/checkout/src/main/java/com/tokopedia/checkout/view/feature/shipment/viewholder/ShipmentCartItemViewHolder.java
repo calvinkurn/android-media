@@ -13,7 +13,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 /**
