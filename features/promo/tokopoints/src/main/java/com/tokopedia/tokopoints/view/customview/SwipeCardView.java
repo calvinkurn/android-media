@@ -22,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 public class SwipeCardView extends CardView implements View.OnTouchListener {
 
@@ -67,10 +68,10 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
 
         mBtnCopyCode.setOnClickListener(view -> {
             ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("tokopedia_tokopoints_coupon", mTextCoupon.getText().toString());
+            ClipData clip = ClipData.newPlainText(CommonConstant.CLIPBOARD_COUPON_CODE, mTextCoupon.getText().toString());
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(getContext(), "Copied to clipboard", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.tp_mes_copy_code), Toast.LENGTH_LONG).show();
             }
         });
     }

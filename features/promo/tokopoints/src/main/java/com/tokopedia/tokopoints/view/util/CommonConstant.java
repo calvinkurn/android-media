@@ -25,6 +25,7 @@ public interface CommonConstant {
     String EXTRA_COUPON_ID = "extra_coupon_id";
     String EXTRA_COUPON_TITLE = "extra_coupon_title";
     String EXTRA_COUPON_POINT = "extra_coupon_point";
+    String CLIPBOARD_COUPON_CODE = "tokopedia_tokopoints_coupon";
     int MAX_COUPON_RE_FETCH_COUNT = 3;
     int COUPON_RE_FETCH_DELAY_S = 5;
     long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
