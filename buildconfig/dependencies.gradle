@@ -102,6 +102,8 @@ ext {
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
+    artifactIdLogisticAddAddress = 'logisticaddaddress'
+    artifactIdLogisticListAddress = 'logisticlistaddress'
     logisticGroupVersion = '2.22'
 
     networkDependencies = [
@@ -392,7 +394,8 @@ ext {
             logisticdata                : ":features:logistic:logisticdata",
             logisticanalytics           : ":features:logistic:logisticanalytics",
             logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
-            logisticaddaddress    : ":features:logistic:logisticaddaddress",
+            logisticlistaddress         : ":features:logistic:logisticlistaddress",
+            logisticaddaddress          : ":features:logistic:logisticaddaddress",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
             tracking                    : ":features:logistic:tracking",
