@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.onboarding.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -72,12 +73,14 @@ public class RecommendProductFragment extends BaseDaggerFragment
         name.setText(viewModel.getProductName());
         commission.setText(viewModel.getCommission());
         recommendBtn.setOnClickListener(v -> {
-            RouteManager.route(
+            Intent intent = RouteManager.getIntent(
                     getContext(),
                     ApplinkConst.AFFILIATE_CREATE_POST
                             .replace(PRODUCT_ID_BRACKET, productId)
                             .replace(AD_ID_BRACKET, viewModel.getAdId())
             );
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
     }
 
@@ -119,7 +122,9 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     private void initView() {
         seeOther.setOnClickListener(v -> {
-            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
     }
 }

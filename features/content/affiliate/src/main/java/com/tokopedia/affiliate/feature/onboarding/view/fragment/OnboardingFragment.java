@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.onboarding.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.DomainInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 
 import java.util.Objects;
@@ -103,9 +105,11 @@ public class OnboardingFragment extends Fragment {
         title.setText(R.string.af_complete_profile);
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
-        goBtn.setOnClickListener(view ->
-                Toast.makeText(getContext(), "Going to explore~", Toast.LENGTH_SHORT).show()
-        );
+        goBtn.setOnClickListener(view -> {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        });
         commission.setVisibility(View.GONE);
     }
 }
