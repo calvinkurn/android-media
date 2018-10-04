@@ -14,22 +14,34 @@ import com.tokopedia.abstraction.R;
 
 public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
+    private boolean usePaddingLeft = true;
 
     public DividerItemDecoration(Context context) {
-        this(context, context.getResources().getDrawable(R.drawable.bg_list_separator));
+        this(context, context.getResources().getDrawable(R.drawable.bg_line_separator_thin));
     }
 
     public DividerItemDecoration(Context context, Drawable drawable) {
         mDivider = drawable;
     }
 
+    public void setUsePaddingLeft(boolean usePaddingLeft) {
+        this.usePaddingLeft = usePaddingLeft;
+    }
+
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        int left = parent.getPaddingLeft();
+        int left = usePaddingLeft?
+                parent.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_16)
+                : 0;
         int right = parent.getWidth() - parent.getPaddingRight();
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
+
+            if (i == (childCount - 1)) {
+                continue;
+            }
+
             View child = parent.getChildAt(i);
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();

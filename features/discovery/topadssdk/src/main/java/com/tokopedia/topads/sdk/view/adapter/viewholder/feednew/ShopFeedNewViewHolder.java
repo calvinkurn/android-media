@@ -79,7 +79,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
         itemView.setOnClickListener(onShopItemClicked());
         header.setOnClickListener(onShopItemClicked());
-        favoriteText.setOnClickListener(onAddFavorite());
+        favoriteButton.setOnClickListener(onAddFavorite());
     }
 
     public View.OnClickListener onShopItemClicked() {
@@ -109,8 +109,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         Shop shop = data.getShop();
 
         if (shop != null) {
-            imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getsUrl(),
-                    shopImage);
+            imageLoader.loadImage(shop, shopImage);
             if (shop.getImageProduct() != null) {
                 generateThumbnailImages(shop.getImageProduct());
             }
@@ -155,12 +154,12 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
         Drawable drawable;
         if (isFavorite) {
             favoriteButton.setSelected(true);
-            text = context.getString(R.string.favorit);
+            text = context.getString(R.string.topads_following);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_check_favorite);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.label_color));
         } else {
             favoriteButton.setSelected(false);
-            text = context.getString(R.string.favoritkan);
+            text = context.getString(R.string.topads_follow);
             drawable = AppCompatResources.getDrawable(context, R.drawable.ic_add_white_24px);
             favoriteText.setTextColor(ContextCompat.getColor(context, R.color.white));
         }

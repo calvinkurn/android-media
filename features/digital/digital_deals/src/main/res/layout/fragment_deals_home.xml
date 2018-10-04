@@ -104,10 +104,10 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+                    <com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager
                         android:id="@+id/deals_bannerpager"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/banner_height_deals" />
+                        android:layout_height="wrap_content" />
 
 
                     <com.tokopedia.design.viewpagerindicator.CirclePageIndicator

@@ -4,9 +4,12 @@
     package="com.tokopedia.core"
     android:installLocation="preferExternal">
 
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="16"-->
+        <!--android:targetSdkVersion="25"-->
+        <!--tools:overrideLibrary="com.readystatesoftware.chuck" />-->
+
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission
@@ -264,6 +267,7 @@
         <activity
             android:name=".home.BannerWebView"
             android:label="@string/title_activity_deep_link"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.TopPicksWebView"
@@ -324,6 +328,7 @@
         <activity
             android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
             android:label="@string/app_name"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.SimpleWebViewActivity"
@@ -381,6 +386,8 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".share.ShareBroadcastReceiver"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

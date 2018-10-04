@@ -10,10 +10,8 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
-import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -27,6 +25,7 @@ import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
+import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -300,7 +299,8 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException) {
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException
+                        || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
                     couponData.setErrorMessage(e.getMessage());
                     view.couponError();
                 } else {
@@ -395,7 +395,7 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     @Override
     public void parseAndSubmitEventVoucher(String jsonbody, CouponData data, String platform) {
         JsonObject requestBody;
-        if (jsonbody != null || jsonbody.length() > 0) {
+        if (jsonbody != null && jsonbody.length() > 0) {
             JsonElement jsonElement = new JsonParser().parse(jsonbody);
             requestBody = jsonElement.getAsJsonObject();
             if (platform.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EVENT_STRING))

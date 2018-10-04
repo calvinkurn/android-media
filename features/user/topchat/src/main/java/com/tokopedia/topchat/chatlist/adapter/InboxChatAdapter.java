@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,6 +128,19 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         } else if (!list.isEmpty() && list.size() > position) {
             removeChecked(position);
             presenter.getView().showErrorWarningDelete(MAX_MESSAGE_DELETE);
+        }
+    }
+
+    public void removeWithMessageId(String messageId){
+        if(list != null && !list.isEmpty() && !TextUtils.isEmpty(messageId)) {
+            for (Visitable visitable : list) {
+                if (visitable instanceof ChatListViewModel
+                        && messageId.equals(((ChatListViewModel) visitable).getId())) {
+                    int position = list.indexOf(visitable);
+                    list.remove(visitable);
+//                    notifyItemRemoved(position);
+                }
+            }
         }
     }
 

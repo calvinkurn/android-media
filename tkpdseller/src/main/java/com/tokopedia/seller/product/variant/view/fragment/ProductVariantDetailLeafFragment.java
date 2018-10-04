@@ -172,7 +172,7 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
                     counterInputViewStock.removeTextChangedListener(this);
                     String sString = StringUtils.omitNonNumeric(s.toString());
                     int stock;
-                    if (TextUtils.isEmpty(sString)) {
+                    if (TextUtils.isEmpty(sString) || sString.equals("0")) {
                         stock = 1;
                     } else {
                         stock = (int)counterInputViewStock.getDoubleValue();

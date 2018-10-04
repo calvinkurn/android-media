@@ -248,7 +248,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_product_manage, menu);
+        if(GlobalConfig.isCustomerApp()) {
+            inflater.inflate(R.menu.menu_product_manage_dark, menu);
+        } else {
+            inflater.inflate(R.menu.menu_product_manage, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -287,7 +291,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
                 actionMode = mode;
-                getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
+                if(GlobalConfig.isCustomerApp()) {
+                    getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode_dark, menu);
+                } else {
+                    getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
+                }
                 setAdapterActionMode(true);
                 return true;
             }
@@ -812,7 +820,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 super.onLoadFailed(e, errorDrawable);
                 hideLoadingProgress();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-                e.printStackTrace();
             }
         });
     }

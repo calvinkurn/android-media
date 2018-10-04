@@ -44,12 +44,24 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <activity
+            android:name=".ProductModalActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/title_activity_product_modal"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+
+        <activity
             android:name=".DinkFailedActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".DinkSuccessActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".estimasiongkir.presentation.activity.RatesEstimationDetailActivity"
+            android:label="@string/label_rates_estimation_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
 
     </application>
 

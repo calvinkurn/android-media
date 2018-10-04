@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.design.label.LabelView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/logisticLabelView"
-    style="@style/LabelLayout"
-    android:minHeight="@dimen/dp_64"
-    android:paddingRight="@dimen/dp_8"
-    android:paddingEnd="@dimen/dp_8"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_64"
     app:lv_image="@drawable/ic_smiley_good"
     app:lv_image_width="@dimen/dp_64"
     app:lv_image_height="@dimen/dp_32"

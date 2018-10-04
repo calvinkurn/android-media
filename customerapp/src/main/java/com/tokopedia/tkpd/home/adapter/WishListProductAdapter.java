@@ -46,7 +46,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import java.util.List;
 
@@ -283,7 +283,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
                 viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
             } else {
-                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
+                viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
                 viewHolder.location.setText(product.getShopLocation());
             }
             setProductImage(viewHolder, product.getImgUri());
@@ -312,7 +312,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_authorize_grey, 0, 0, 0);
             viewHolder.location.setText(context.getResources().getString(com.tokopedia.core.R.string.authorized));
         } else {
-            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey, 0, 0, 0);
+            viewHolder.location.setCompoundDrawablesWithIntrinsicBounds(com.tokopedia.core.R.drawable.ic_icon_location_grey_wishlist, 0, 0, 0);
             viewHolder.location.setText(product.getShopLocation());
         }
         setProductImage(viewHolder, product.getImgUri());

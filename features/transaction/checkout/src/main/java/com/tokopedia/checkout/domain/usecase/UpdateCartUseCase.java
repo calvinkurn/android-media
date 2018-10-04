@@ -25,6 +25,7 @@ import rx.functions.Func1;
 public class UpdateCartUseCase extends UseCase<UpdateCartData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART
             = "PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART";
+    public static final String PARAM_CARTS = "carts";
 
     private final ICartRepository cartRepository;
     private final ICartMapper cartMapper;

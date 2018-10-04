@@ -4,6 +4,7 @@ import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ShopGridViewModel;
@@ -95,5 +96,11 @@ public class ModelConverter {
                         visitable).getData()));
             }
         }
+    }
+
+    public static Item convertToCarouselListViewModel(Data data) {
+        ProductCarouselListViewModel viewModel = new ProductCarouselListViewModel();
+        viewModel.setData(data);
+        return viewModel;
     }
 }

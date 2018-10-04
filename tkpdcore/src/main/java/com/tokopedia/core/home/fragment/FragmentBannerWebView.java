@@ -28,6 +28,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -40,7 +41,7 @@ import retrofit2.http.Url;
 /**
  * Created by Nisie on 8/25/2015.
  */
-public class FragmentBannerWebView extends Fragment {
+public class FragmentBannerWebView extends Fragment implements GeneralWebView {
 
     private static final String SEAMLESS = "seamless";
     private static final String TOKOPEDIA_LINK = "tokopedia.com";
@@ -290,7 +291,7 @@ public class FragmentBannerWebView extends Fragment {
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
         return view;

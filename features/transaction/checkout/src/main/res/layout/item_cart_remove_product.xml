@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_shadow">
+    android:background="@drawable/bg_checkout_shadow">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                     style="@style/TextSmallMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_8"
                     android:layout_toEndOf="@id/tv_text_sender"
                     android:layout_toRightOf="@id/tv_text_sender"

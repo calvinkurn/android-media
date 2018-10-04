@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,9 +30,11 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -47,7 +50,10 @@ import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.Chat;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
@@ -70,40 +76,28 @@ public class InboxChatFragment extends BaseDaggerFragment
         , SearchInputView.Listener, SearchInputView.ResetListener
         , WebSocketInterface {
 
+    public boolean isMustRefresh = false;
     RecyclerView mainList;
 
-    SwipeToRefresh swipeToRefresh;
-
 //    FloatingActionButton fab;
-
+    SwipeToRefresh swipeToRefresh;
     View searchLoading;
-
     @Inject
     InboxChatPresenter presenter;
-
     InboxChatAdapter adapter;
     RefreshHandler refreshHandler;
-
     boolean isRetryShowing = false;
-    public boolean isMustRefresh = false;
-
     LinearLayoutManager layoutManager;
     TkpdProgressDialog progressDialog;
     SnackbarRetry snackbarRetry;
     Snackbar snackbarUndo;
     SearchInputView searchInputView;
-    private InboxChatTypeFactory typeFactory;
-
     boolean isMultiActionEnabled = false;
     ActionMode.Callback callbackContext;
     ActionMode contextMenu;
+    private InboxChatTypeFactory typeFactory;
     private View notifier;
     private TextView sendBroadcast;
-
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
 
     public static InboxChatFragment createInstance(String navigation) {
         InboxChatFragment fragment = new InboxChatFragment();
@@ -111,6 +105,11 @@ public class InboxChatFragment extends BaseDaggerFragment
         bundle.putString(InboxMessageConstant.PARAM_NAV, navigation);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -123,6 +122,23 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.inbox_chat_organize, menu);
+        MenuItem organize = menu.findItem(R.id.action_organize);
+        if (organize != null) {
+            organize.setIcon(getDetailMenuItem());
+            organize.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+    }
+
+    private Drawable getDetailMenuItem() {
+        TextDrawable drawable = new TextDrawable(getContext());
+        drawable.setText(getResources().getString(R.string.option_organize));
+        if (GlobalConfig.isSellerApp()) {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        } else {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+        }
+        drawable.setTextSize(16.0f);
+        return drawable;
     }
 
     @Override
@@ -192,8 +208,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 getActivity().getMenuInflater().inflate(presenter.getMenuID(), menu);
                 isMultiActionEnabled = true;
                 presenter.setInActionMode(true);
-                if(getActivity() instanceof InboxChatActivity){
-                    ((InboxChatActivity)getActivity()).hideIndicators();
+                if (getActivity() instanceof InboxChatActivity) {
+                    ((InboxChatActivity) getActivity()).hideIndicators();
                 }
                 return true;
             }
@@ -223,8 +239,8 @@ public class InboxChatFragment extends BaseDaggerFragment
                 isMultiActionEnabled = false;
                 presenter.setInActionMode(false);
                 enableActions();
-                if(getActivity() instanceof InboxChatActivity){
-                    ((InboxChatActivity)getActivity()).showIndicators();
+                if (getActivity() instanceof InboxChatActivity) {
+                    ((InboxChatActivity) getActivity()).showIndicators();
                 }
             }
         };
@@ -549,6 +565,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
             }
+        } else if(requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
+                  resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
+                  data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID) ) {
+            presenter.refreshData();
         }
 
         presenter.createWebSocket();
@@ -569,8 +589,8 @@ public class InboxChatFragment extends BaseDaggerFragment
             UnifyTracking.eventTopChatSearch(TopChatAnalytics.Category.INBOX_CHAT,
                     TopChatAnalytics.Action.INBOX_CHAT_SEARCH,
                     TopChatAnalytics.Name.INBOX_CHAT);
-            if(getActivity() instanceof InboxChatActivity){
-                ((InboxChatActivity)getActivity()).hideIndicators();
+            if (getActivity() instanceof InboxChatActivity) {
+                ((InboxChatActivity) getActivity()).hideIndicators();
             }
         } else {
             onSearchReset();
@@ -588,8 +608,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         refreshHandler.setPullEnabled(true);
         presenter.resetSearch();
         setHasOptionsMenu(true);
-        if(getActivity() instanceof InboxChatActivity){
-            ((InboxChatActivity)getActivity()).showIndicators();
+        if (getActivity() instanceof InboxChatActivity) {
+            ((InboxChatActivity) getActivity()).showIndicators();
         }
     }
 
@@ -684,8 +704,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void reloadNotifDrawer() {
-        if(getActivity() instanceof InboxChatActivity){
-            ((InboxChatActivity)getActivity()).updateNotifDrawerData();
+        if (getActivity() instanceof InboxChatActivity) {
+            ((InboxChatActivity) getActivity()).updateNotifDrawerData();
         }
     }
 

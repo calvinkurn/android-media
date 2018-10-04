@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.topads.sdk.view.TopAdsView
+    <com.tokopedia.topads.sdk.widget.TopAdsView
         android:id="@+id/ads"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

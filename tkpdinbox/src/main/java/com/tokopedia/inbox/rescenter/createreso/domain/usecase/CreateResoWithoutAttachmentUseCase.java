@@ -1,12 +1,12 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.CreateResoWithoutAttachmentRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.createreso.CreateResoWithoutAttachmentDomain;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,30 +19,23 @@ public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithou
     public static final String PARAM_RESULT = "result";
     public static final String PARAM_RESOLUTION_ID = "resolutionID";
 
-    private CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public CreateResoWithoutAttachmentUseCase(ThreadExecutor threadExecutor,
-                                              PostExecutionThread postExecutionThread,
-                                              CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.createResoWithoutAttachmentRepository = createResoWithoutAttachmentRepository;
+    @Inject
+    public CreateResoWithoutAttachmentUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<CreateResoWithoutAttachmentDomain> createObservable(RequestParams requestParams) {
-        return createResoWithoutAttachmentRepository.createResoWithoutAttachment(requestParams);
+        return createResolutionSource.createResoWithoutAttachmentResponse(requestParams);
     }
 
     public RequestParams createResoStep1Params(ResultViewModel resultViewModel) {
-        try {
-            RequestParams params = RequestParams.create();
-            params.putString(ORDER_ID, resultViewModel.orderId);
-            params.putString(PARAM_RESULT, resultViewModel.writeToJson().toString());
-            return params;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        RequestParams params = RequestParams.create();
+        params.putString(ORDER_ID, resultViewModel.orderId);
+        params.putObject(PARAM_RESULT, resultViewModel.writeToJson());
+        return params;
     }
 
 }

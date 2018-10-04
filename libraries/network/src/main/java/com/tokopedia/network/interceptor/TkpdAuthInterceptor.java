@@ -135,7 +135,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
-
         JSONObject json;
         try {
             json = new JSONObject(bodyResponse);

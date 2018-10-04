@@ -1,6 +1,7 @@
 package com.tokopedia.core;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -9,7 +10,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
@@ -21,10 +24,12 @@ import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 
-
+@DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
+    public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
+    public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     //developer test
 
     private TextView vCustomIntent;
@@ -36,6 +41,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private AppCompatEditText remoteConfigValueEditText;
     private AppCompatButton remoteConfigCheckBtn;
     private AppCompatButton remoteConfigSaveBtn;
+    private ToggleButton toggleReactDeveloperMode;
+    private SharedPreferences sharedPreferences;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -79,6 +86,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigValueEditText = findViewById(R.id.et_remote_config_value);
         remoteConfigCheckBtn = findViewById(R.id.btn_remote_config_check);
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
+
+        toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
     }
 
     private void initListener() {
@@ -111,6 +120,29 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void onClick(View v) {
                 startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"), 789);
+            }
+        });
+
+        sharedPreferences = getSharedPreferences(SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(IS_RELEASE_MODE)){
+            boolean stateReleaseMode = sharedPreferences.getBoolean(IS_RELEASE_MODE, false);
+            toggleReactDeveloperMode.setChecked(stateReleaseMode);
+        }
+
+        toggleReactDeveloperMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    Toast.makeText(DeveloperOptions.this, "React Native set to released mode", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_RELEASE_MODE, true);
+                    editor.apply();
+                } else {
+                    Toast.makeText(DeveloperOptions.this, "React Native set to development mode", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(IS_RELEASE_MODE, false);
+                    editor.apply();
+                }
             }
         });
 

@@ -25,8 +25,10 @@ abstract class TopAdsNewBaseStepperFragment<T : TopAdsKeywordNewStepperModel> : 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null && arguments != null){
-            stepperModel = arguments!!.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+        arguments?.let {
+            if (savedInstanceState == null){
+                stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            }
         }
     }
 

@@ -1,10 +1,14 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +43,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private final Context context;
     private BaseKolView baseKolView;
+    private FrameLayout containerView;
     private ImageView reviewImage;
     private TextView tooltip;
     private View tooltipClickArea;
@@ -47,7 +53,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private Type type;
 
     public enum Type {
-        PROFILE, FEED
+        PROFILE, FEED, EXPLORE
     }
 
     public KolPostViewHolder(View itemView,
@@ -57,7 +63,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.viewListener = viewListener;
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
+        context = itemView.getContext();
         topShadow = itemView.findViewById(R.id.top_shadow);
+        containerView = itemView.findViewById(R.id.container_view);
 
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
@@ -68,12 +76,21 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @Override
     public void bind(KolPostViewModel element) {
-        baseKolView.bind(element);
-
         if (type == Type.PROFILE && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
         } else {
             topShadow.setVisibility(View.GONE);
+        }
+
+        if (type == Type.EXPLORE) {
+            containerView.setBackground(null);
+            containerView.setBackgroundColor(
+                    MethodChecker.getColor(context, R.color.white)
+            );
+        } else {
+            containerView.setBackground(
+                    MethodChecker.getDrawable(context, R.drawable.shadow_top_bottom)
+            );
         }
 
         reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
@@ -90,7 +107,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         );
 
         ImageHandler.loadImageWithTarget(
-                reviewImage.getContext(),
+                context,
                 element.getKolImage(),
                 new SimpleTarget<Bitmap>() {
                     @Override
@@ -106,9 +123,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         } else {
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltip.setText(element.getTagsCaption());
+            element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
         setListener(element);
+
+        baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
     }
 
@@ -117,22 +137,20 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         baseKolView.onViewRecycled();
 
         reviewImage.setImageDrawable(
-                MethodChecker.getDrawable(
-                        reviewImage.getContext(),
-                        R.drawable.ic_loading_image)
+                MethodChecker.getDrawable(context, R.drawable.ic_loading_image)
         );
     }
 
     @Override
     public void onAvatarClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }
 
     @Override
     public void onNameClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }
@@ -320,5 +338,21 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         String campaignType = type + KolEventTracking.EventLabel.FEED_CAMPAIGN_TYPE_SUFFIX;
         return contentType + " - " + campaignType;
+    }
+
+    private ClickableSpan getUrlClickableSpan(KolPostViewModel element) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                tooltipAreaClicked(element);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+                ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+            }
+        };
     }
 }

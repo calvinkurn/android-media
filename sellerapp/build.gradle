@@ -253,6 +253,7 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.districtrecommendation)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -260,6 +261,8 @@ dependencies {
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.topchat)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.productManageList)
@@ -271,6 +274,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.withdraw)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

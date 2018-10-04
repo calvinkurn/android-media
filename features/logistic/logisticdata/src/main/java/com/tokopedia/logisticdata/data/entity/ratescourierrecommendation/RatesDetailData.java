@@ -1,0 +1,83 @@
+package com.tokopedia.logisticdata.data.entity.ratescourierrecommendation;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+/**
+ * Created by Irfan Khoirul on 02/08/18.
+ */
+
+public class RatesDetailData implements Parcelable {
+
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("services")
+    @Expose
+    private List<ServiceData> services;
+
+    public RatesDetailData() {
+    }
+
+    protected RatesDetailData(Parcel in) {
+        id = in.readString();
+        type = in.readString();
+        services = in.createTypedArrayList(ServiceData.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeTypedList(services);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RatesDetailData> CREATOR = new Creator<RatesDetailData>() {
+        @Override
+        public RatesDetailData createFromParcel(Parcel in) {
+            return new RatesDetailData(in);
+        }
+
+        @Override
+        public RatesDetailData[] newArray(int size) {
+            return new RatesDetailData[size];
+        }
+    };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public List<ServiceData> getServices() {
+        return services;
+    }
+
+    public void setServices(List<ServiceData> services) {
+        this.services = services;
+    }
+}

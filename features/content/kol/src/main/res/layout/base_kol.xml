@@ -24,7 +24,7 @@
     <View
         android:id="@+id/separator2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="0.5dp"
         android:background="@color/grey_300" />
 
     <LinearLayout
@@ -131,12 +131,13 @@
         android:padding="@dimen/dp_10"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
+        android:textColorLink="@color/tkpd_main_green"
         tools:text="The snapback’s predecessor, the baseball cap, must be proud of its stylish spawn. Compared to fitted baseball caps worn by pro players, snapback are less expensive and much more attuned to contemporary urban culture. But earliest versions of the snapbac… Read More" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="0.5dp"
         android:background="@color/grey_300" />
 
     <LinearLayout
@@ -223,5 +224,12 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_separator"
+        android:layout_width="match_parent"
+        android:background="@color/bg_button_border_outline"
+        android:layout_height="0.5dp"
+        android:visibility="visible"/>
 
 </LinearLayout>

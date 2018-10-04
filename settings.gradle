@@ -20,7 +20,7 @@ apply from: "libraries/settings-libraries.gradle"
 
 include 'customerapp'
 include 'tkpdloyalty'
-include 'tkpdride'
+//include 'tkpdride'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
