@@ -10,10 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.RecommendProductContract;
+import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProductViewModel;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 
 /**
@@ -23,6 +27,8 @@ public class RecommendProductFragment extends BaseDaggerFragment
         implements RecommendProductContract.View {
 
     private static final String DEFAULT_PRODUCT_ID = "0";
+    private static final String PRODUCT_ID_BRACKET = "{product_id}";
+    private static final String AD_ID_BRACKET = "{ad_id}";
 
     private ImageView image;
     private TextView name;
@@ -61,8 +67,18 @@ public class RecommendProductFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetProductInfo() {
-
+    public void onSuccessGetProductInfo(RecommendProductViewModel viewModel) {
+        ImageHandler.loadImageRounded2(image.getContext(), image, viewModel.getProductImage());
+        name.setText(viewModel.getProductName());
+        commission.setText(viewModel.getCommission());
+        recommendBtn.setOnClickListener(v -> {
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.AFFILIATE_CREATE_POST
+                            .replace(PRODUCT_ID_BRACKET, productId)
+                            .replace(AD_ID_BRACKET, viewModel.getAdId())
+            );
+        });
     }
 
     @Override
@@ -102,5 +118,8 @@ public class RecommendProductFragment extends BaseDaggerFragment
     }
 
     private void initView() {
+        seeOther.setOnClickListener(v -> {
+            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+        });
     }
 }
