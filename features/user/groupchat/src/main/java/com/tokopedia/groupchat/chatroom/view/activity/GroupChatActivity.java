@@ -196,6 +196,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private boolean canShowDialog = true;
     private boolean isFirstTime;
     private boolean shouldRefreshAfterLogin = false;
+    private boolean youtubeIsFullScreen = false;
     private BroadcastReceiver notifReceiver;
 
     public View rootView, loading, main;
@@ -374,6 +375,19 @@ public class GroupChatActivity extends BaseSimpleActivity
                             @Override
                             public void onError(YouTubePlayer.ErrorReason errorReason) {
                                 Log.i(TAG, errorReason.getDeclaringClass() + " onError: " + errorReason.name());
+                            }
+                        });
+
+                        youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+                            @Override
+                            public void onFullscreen(boolean b) {
+                                youtubeIsFullScreen = b;
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        youTubePlayer.play();
+                                    }
+                                }, YOUTUBE_DELAY);
                             }
                         });
                     }
@@ -735,6 +749,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+        if(youtubeIsFullScreen && youTubePlayer != null){
+            youTubePlayer.setFullscreen(false);
+            return;
+        }
+
         if (currentlyLoadingFragment() || hasErrorEmptyState()) {
             finish();
             super.onBackPressed();
