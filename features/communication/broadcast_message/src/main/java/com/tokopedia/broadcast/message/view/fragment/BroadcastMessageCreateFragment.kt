@@ -142,7 +142,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     private fun openImagePicker() {
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.bm_choose_picture),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
                     GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     ImagePickerEditorBuilder(
@@ -186,9 +186,9 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 isShowDialogWhenBack = true
             } else if (requestCode == REQUEST_MOVE_PREVIEW){
                 val needRefresh = data.getBooleanExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, false)
-                val data = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, needRefresh)
+                val isNeedRefresh = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, needRefresh)
                 activity?.run {
-                    setResult(Activity.RESULT_OK, data)
+                    setResult(Activity.RESULT_OK, isNeedRefresh)
                     finish()
                 }
             }

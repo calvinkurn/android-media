@@ -1,5 +1,6 @@
 package com.tokopedia.broadcast.message.view.fragment
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -71,6 +73,8 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
             }
         }
         mutationModel?.let { setupPreview(it) }
+        scroll_view.post { ObjectAnimator.ofInt(scroll_view, "scrollY",  container_screen.height)
+                .setDuration(3000).start(); }
     }
 
     private fun setupPreview(model: BlastMessageMutation) {
