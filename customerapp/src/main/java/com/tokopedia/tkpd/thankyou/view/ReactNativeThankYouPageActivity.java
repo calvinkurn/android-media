@@ -150,12 +150,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     @Override
     public void onBackPressed() {
         if (isDigital()) {
-            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-                @Override
-                public void onDismiss() {
-                    closeThankyouPage();
-                }
-            });
+            AdvancedAppRatingDialog.show(this, this::closeThankyouPage);
         } else {
             closeThankyouPage();
         }

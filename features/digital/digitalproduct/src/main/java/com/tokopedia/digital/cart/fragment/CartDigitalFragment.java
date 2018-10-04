@@ -754,12 +754,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
-                        @Override
-                        public void onDismiss() {
-                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                            closeView();
-                        }
+                    AdvancedAppRatingDialog.show(getActivity(), () -> {
+                        getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                        closeView();
                     });
 
                     presenter.onPaymentSuccess(passData.getCategoryId());
@@ -767,12 +764,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
-                            getString(R.string.alert_payment_canceled_or_failed_digital_module)
+                            getActivity().getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
-                    showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
+                    showToastMessage(getActivity().getString(R.string.alert_payment_canceled_digital_module));
                     presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 default:
