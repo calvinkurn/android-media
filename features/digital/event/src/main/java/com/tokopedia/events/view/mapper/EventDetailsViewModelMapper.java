@@ -42,7 +42,6 @@ public class EventDetailsViewModelMapper {
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
         target.setCityName(source.getCityName());
-        target.setAddress(source.getSchedules().get(0).getAddressDetail().getCity());
         String dateRange = "";
         if (source.getMinStartDate() != 0) {
             if (source.getMinStartDate() == source.getMaxEndDate()) {
@@ -55,6 +54,7 @@ public class EventDetailsViewModelMapper {
         target.setTimeRange(dateRange);
         if (source.getSchedules() != null) {
             int size = source.getSchedules().size();
+            target.setAddress(source.getSchedules().get(0).getAddressDetail().getCity());
             List<SchedulesViewModel> schedules = new ArrayList<>(size);
             for (ScheduleDomain item : source.getSchedules()) {
                 SchedulesViewModel schedulesViewModel = new SchedulesViewModel();
