@@ -35,7 +35,7 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="@dimen/dp_10">
 
-                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
+                <com.tokopedia.datepicker.range.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_start_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                     android:layout_weight="1"
                     app:date_picker_title="@string/label_top_ads_show_time_start"/>
 
-                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
+                <com.tokopedia.datepicker.range.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_start_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
+                <com.tokopedia.datepicker.range.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_end_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                     android:layout_weight="1"
                     app:date_picker_title="@string/label_top_ads_show_time_end"/>
 
-                <com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView
+                <com.tokopedia.datepicker.range.view.widget.DatePickerLabelView
                     android:id="@+id/date_picker_show_time_end_time"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

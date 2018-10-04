@@ -33,7 +33,7 @@ public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
     @Override
     public Observable<VerifyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        boolean flag = requestParams.getBoolean("ispromocodecase", false);
+        boolean flag = requestParams.getBoolean(Utils.Constants.ISSEATINGEVENT, false);
         return eventRepository.verifyCard(requestBody, flag);
     }
 }

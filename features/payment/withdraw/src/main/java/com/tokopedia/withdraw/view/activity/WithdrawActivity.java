@@ -10,18 +10,49 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
+import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
+import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
+import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
+
+import javax.inject.Inject;
 
 public class WithdrawActivity extends BaseSimpleActivity {
 
+
+    @Inject
+    WithdrawAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolbar();
+        initInjector();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        analytics.sendScreen(this, getScreenName());
+    }
+
+    private void initInjector() {
+        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
+                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                .build();
+
+        DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
+                .build().inject(this);
+    }
+
+    @Override
+    public String getScreenName() {
+        return WithdrawAnalytics.SCREEN_WITHDRAW;
     }
 
     private void setToolbar() {
@@ -56,5 +87,10 @@ public class WithdrawActivity extends BaseSimpleActivity {
         return intent;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        analytics.eventClickBackArrow();
+    }
+    
 }

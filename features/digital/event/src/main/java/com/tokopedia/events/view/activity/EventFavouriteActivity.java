@@ -116,8 +116,7 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
         if (visibility == View.VISIBLE) {
             favRecyclerView.setVisibility(View.GONE);
             title.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             favRecyclerView.setVisibility(View.VISIBLE);
             title.setVisibility(View.VISIBLE);
         }
