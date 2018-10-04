@@ -1,16 +1,27 @@
 package com.tokopedia.flight.searchV2.data.db
 
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * Created by Rizky on 21/09/18.
  */
-class FlightSearchCombinedDataDbSource(private val comboDao: ComboDao) {
+class FlightSearchCombinedDataDbSource @Inject constructor(private val flightComboDao: FlightComboDao) {
 
-    fun getSearchCombined(journeyId: String): Observable<List<Combo>> {
+    fun getSearchCombined(journeyId: String): Observable<List<FlightComboTable>> {
         return Observable.create {
-            it.onNext(comboDao.findCombosByJourneyId(journeyId))
+            it.onNext(flightComboDao.findCombosByJourneyId(journeyId))
         }
+    }
+
+    fun getAllCombos(): Observable<List<FlightComboTable>> {
+        return Observable.create {
+            it.onNext(flightComboDao.findAllCombos())
+        }
+    }
+
+    fun insert(item: List<FlightComboTable>) {
+        flightComboDao.insert(item)
     }
 
 }
