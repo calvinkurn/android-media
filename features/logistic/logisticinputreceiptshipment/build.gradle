@@ -17,10 +17,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = "${artifactIdLogisticTracking}"
+    artifactId = "${artifactIdLogisticInputReceiptShipment}"
     groupId = "${groupIdLogistic}"
     versionName = "${logisticGroupVersion}"
-    artifactName = "${artifactIdLogisticTracking}-release"
+    artifactName = "${artifactIdLogisticInputReceiptShipment}-release"
 }
 
 dependencies {
