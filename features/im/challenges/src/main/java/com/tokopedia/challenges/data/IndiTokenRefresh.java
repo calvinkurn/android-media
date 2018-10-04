@@ -9,6 +9,7 @@ import com.tokopedia.challenges.data.model.IndiTokenModel;
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class IndiTokenRefresh {
 
     public void refreshToken() throws IOException {
         indiSession.clearToken();
-        Call<String> responseCall = getRetrofit().create(IndiApi.class).getAccessToken();
+        Call<String> responseCall = getRetrofit().create(IndiApi.class).getAccessToken(AuthUtil.KEY.INDI_API_KEY);
 
         String tokenResponse = null;
         try {
@@ -71,7 +72,7 @@ public class IndiTokenRefresh {
         params.put(CLIENT_USER_NAME, userSession.getName());
         params.put(CLIENT_USER_IMAGE_URL, userSession.getProfilePicture());
 
-        Call<String> responseCall = getRetrofit().create(IndiApi.class).mapUser(params, token);
+        Call<String> responseCall = getRetrofit().create(IndiApi.class).mapUser(params, token, AuthUtil.KEY.INDI_API_KEY);
 
         String responseString = null;
         try {

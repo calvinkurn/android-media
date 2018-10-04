@@ -91,5 +91,11 @@
     <string name="ch_must_approved_msg">Semua postingan dari peserta harus disetujui oleh Tokopedia</string>
     <string name="ch_not_participated_error_msg">Anda belum bergabung dalam Challenge mana pun.  Coba beberapa saat lagi.</string>
     <string name="ch_pending_status_msg">Menunggu Pengecekan</string>
+    <string name="ch_try_again">Coba lagi</string>
+    <string name="ch_oops">Oops!</string>
+    <string name="ch_post_share_text"><![CDATA[Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s]]></string>
+    <string name="ch_challenge_share_text">Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s</string>
+    <string name="ch_under_review_text">Under Review</string>
+    <string name="ch_upload_not_allowed_text">Upload Not allowed for this Challenge</string>
 
 </resources>

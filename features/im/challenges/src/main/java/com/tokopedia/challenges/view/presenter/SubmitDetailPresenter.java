@@ -162,7 +162,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                     getView().setSubmittResult(submissionResult);
                     setDataInFields(submissionResult);
                 } else {
-                    getView().showDialogInfo("Under Review", getView().getActivity().getString(R.string.ch_must_approved_msg));
+                    getView().showDialogInfo(getView().getActivity().getString(R.string.ch_under_review_text), getView().getActivity().getString(R.string.ch_must_approved_msg));
                 }
             }
         });
@@ -194,7 +194,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 ChallengeSettings settings = res1.getData();
                 Result result = res2.getData();
                 if (!settings.isUploadAllowed() || result == null) {
-                    getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+                    getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_upload_not_allowed_text)); // update challenge as per UX
                 } else {
                     getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, result.getId(), result.getTitle(), result.getDescription()));
                     getView().getActivity().finish();

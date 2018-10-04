@@ -55,9 +55,6 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
 
-    public static final String POST_SHARE_TEXT = "Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s";
-    public static final String CHALLENGE_SHARE_TEXT = "Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s";
-
     @Inject
     public ShareBottomSheetPresenter(PostMapBranchUrlUseCase postMapBranchUrlUseCase) {
         this.postMapBranchUrlUseCase = postMapBranchUrlUseCase;
@@ -162,9 +159,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
     private String getShareContents(boolean isChallenge, String url, String challengeTitle) {
         if (isChallenge) {
-            return String.format(CHALLENGE_SHARE_TEXT, challengeTitle, url);
+            return String.format(getView().getActivity().getString(R.string.ch_challenge_share_text), challengeTitle, url);
         } else {
-            return String.format(POST_SHARE_TEXT, challengeTitle, url);
+            return String.format(getView().getActivity().getString(R.string.ch_post_share_text), challengeTitle, url);
         }
     }
 

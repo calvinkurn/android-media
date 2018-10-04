@@ -113,7 +113,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
                 getActivity(), getView(),
                 "",
                 getString(R.string.ch_network_error_msg),
-                "Coba lagi", R.drawable.ic_offline2,
+                getString(R.string.ch_try_again), R.drawable.ic_offline2,
                 getMySubmissionsRetryListener()
         );
     }
@@ -124,9 +124,9 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         swipeRefreshLayout.setVisibility(View.GONE);
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
-                "Oops!",
+                getString(R.string.ch_oops),
                 getString(R.string.ch_not_participated_error_msg) ,
-                "Coba Lagi", R.drawable.empty_mysubmission_active,
+                getString(R.string.ch_try_again), R.drawable.empty_mysubmission_active,
                 getMySubmissionsRetryListener()
         );
     }

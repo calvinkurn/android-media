@@ -25,12 +25,11 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
 
     private boolean isLoading;
     private boolean isLastPage;
-    public final static String TAG = "url";
-    private List<String> brands;
-    GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
+    private GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
     private RequestParams searchParams = RequestParams.create();
     private int pageStart = 0;
     private int pageSize = 20;
+    private int totalItems = 20;
     private String sortType = Utils.QUERY_PARAM_KEY_SORT_RECENT;
     private String challengeId;
 
@@ -103,6 +102,9 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                 }
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResponse.class);
                 SubmissionResponse submissionResponse = res1.getData();
+                if (submissionResponse != null) {
+                    totalItems = submissionResponse.getFound();
+                }
                 isLoading = false;
                 getView().removeFooter();
                 if (submissionResponse != null && submissionResponse.getSubmissionResults() != null
@@ -126,7 +128,11 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         if (!isLoading && !isLastPage) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) {
-                loadMoreItems(false);
+                if (pageStart + pageSize <= totalItems)
+                    loadMoreItems(false);
+                else
+                    getView().removeFooter();
+
             } else {
                 getView().addFooter();
             }

@@ -174,9 +174,9 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         swipeRefreshLayout.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
-                "",
+                getString(R.string.ch_oops),
                 getString(R.string.ch_network_error_msg),
-                "Coba lagi", R.drawable.ic_offline2,
+                getString(R.string.ch_try_again), R.drawable.ic_offline2,
                 getChallengesRetryListener()
         );
     }
@@ -192,9 +192,9 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         }
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
-                "Oops!",
+                getString(R.string.ch_oops),
                 error_msg,
-                "Coba lagi", R.drawable.empty_challenge_active,
+                getString(R.string.ch_try_again), R.drawable.empty_challenge_active,
                 getChallengesRetryClickedListener()
         );
 

@@ -17,12 +17,10 @@ import retrofit2.http.POST;
  */
 public interface IndiApi {
 
-    @Headers("x-api-key: EERIxwXF644c1E1To5puL8xNP5PvLHSv240PyNYf")
     @GET(ChallengesUrl.Auth.ACCESS_TOKEN)
-    Call<String> getAccessToken();
+    Call<String> getAccessToken(@Header("x-api-key") String apiKey);
 
-    @Headers("x-api-key: EERIxwXF644c1E1To5puL8xNP5PvLHSv240PyNYf")
     @FormUrlEncoded
     @POST(ChallengesUrl.MANAGE.USER_MAP)
-    Call<String> mapUser(@FieldMap Map<String, String> params, @Header("authorization") String token);
+    Call<String> mapUser(@FieldMap Map<String, String> params, @Header("authorization") String token, @Header("x-api-key") String apiKey);
 }
