@@ -14,8 +14,15 @@ public class AttributesResponse {
     @Expose
     private List<ComboResponse> combos;
 
+    @SerializedName("is_best_pair")
+    @Expose
+    private boolean isBestPairing;
+
     public List<ComboResponse> getCombos() {
         return combos;
     }
 
+    public boolean isBestPairing() {
+        return isBestPairing;
+    }
 }

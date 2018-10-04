@@ -35,6 +35,7 @@ public class FlightJourneyViewModel {
     private int totalNumeric; // Fare 693000
     private String comboPrice; // "Rp 500.000"
     private int comboPriceNumeric; // Fare 500000
+    private boolean isBestPairing;
     private String beforeTotal; // original price
     private RefundableEnum isRefundable;
     private boolean isReturning;
@@ -48,8 +49,9 @@ public class FlightJourneyViewModel {
                                   String arrivalAirportName, String arrivalAirportCity, int arrivalTimeInt,
                                   int totalTransit, int addDayArrival, String duration, int durationMinute,
                                   String total, int totalNumeric, String comboPrice, int comboPriceNumeric,
-                                  String beforeTotal, RefundableEnum isRefundable, boolean isReturning,
-                                  FlightFareViewModel fare, List<Route> routeList, List<FlightAirlineDB> airlineDataList) {
+                                  boolean isBestPairing, String beforeTotal, RefundableEnum isRefundable,
+                                  boolean isReturning, FlightFareViewModel fare, List<Route> routeList,
+                                  List<FlightAirlineDB> airlineDataList) {
         this.term = term;
         this.id = id;
         this.type = type;
@@ -71,6 +73,7 @@ public class FlightJourneyViewModel {
         this.totalNumeric = totalNumeric;
         this.comboPrice = comboPrice;
         this.comboPriceNumeric = comboPriceNumeric;
+        this.isBestPairing = isBestPairing;
         this.beforeTotal = beforeTotal;
         this.isRefundable = isRefundable;
         this.isReturning = isReturning;
@@ -161,6 +164,10 @@ public class FlightJourneyViewModel {
 
     public int getComboPriceNumeric() {
         return comboPriceNumeric;
+    }
+
+    public boolean isBestPairing() {
+        return isBestPairing;
     }
 
     public String getBeforeTotal() {
