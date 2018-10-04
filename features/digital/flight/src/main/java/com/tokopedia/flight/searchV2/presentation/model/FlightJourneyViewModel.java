@@ -18,7 +18,6 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
 
     private String term;
     private String id;
-    private String type;
     private String departureAirport;
     private String departureAirportName; // merge result
     private String departureAirportCity; // merge result
@@ -45,7 +44,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     private List<Route> routeList;
     private List<FlightAirlineDB> airlineDataList; // merge result
 
-    public FlightJourneyViewModel(String term, String id, String type, String departureAirport,
+    public FlightJourneyViewModel(String term, String id, String departureAirport,
                                   String departureAirportName, String departureAirportCity, String departureTime,
                                   int departureTimeInt, String arrivalAirport, String arrivalTime,
                                   String arrivalAirportName, String arrivalAirportCity, int arrivalTimeInt,
@@ -56,7 +55,6 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
                                   List<FlightAirlineDB> airlineDataList) {
         this.term = term;
         this.id = id;
-        this.type = type;
         this.departureAirport = departureAirport;
         this.departureAirportName = departureAirportName;
         this.departureAirportCity = departureAirportCity;
@@ -90,10 +88,6 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
 
     public String getId() {
         return id;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getDepartureAirport() {

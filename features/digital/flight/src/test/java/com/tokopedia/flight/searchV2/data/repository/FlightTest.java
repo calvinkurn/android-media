@@ -51,7 +51,7 @@ public class FlightTest {
         List<FlightJourneyTable> flightJourneyTables = new ArrayList<>();
         flightJourneyTables.add(new FlightJourneyTable());
 
-        when(flightSearchSingleDataDbSource.getSearchSingle())
+        when(flightSearchSingleDataDbSource.findAllJourneys())
                 .thenReturn(Observable.just(flightJourneyTables));
 
         when(flightSearchDataCloudSource.getData(Mockito.any()))

@@ -7,15 +7,15 @@ import android.support.annotation.NonNull;
 /**
  * Created by Rizky on 02/10/18.
  */
-@Entity(primaryKeys = { "journeyId", "comboJourneyId" },
-        foreignKeys = {
-                @ForeignKey(entity = FlightJourneyTable.class,
-                        parentColumns = "id",
-                        childColumns = "journeyId"),
-                @ForeignKey(entity = FlightComboTable.class,
-                        parentColumns = "journeyId",
-                        childColumns = "comboJourneyId")
-        })
+//@Entity(primaryKeys = { "journeyId", "comboJourneyId" },
+//        foreignKeys = {
+//                @ForeignKey(entity = FlightJourneyTable.class,
+//                        parentColumns = "id",
+//                        childColumns = "journeyId"),
+//                @ForeignKey(entity = FlightComboTable.class,
+//                        parentColumns = "journeyId",
+//                        childColumns = "comboJourneyId")
+//        })
 public class FlightJourneyComboJoinTable {
     @NonNull
     private String journeyId;

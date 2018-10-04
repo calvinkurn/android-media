@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -55,6 +58,9 @@ public class FlightJourneyTable {
     private boolean isBestPairing;
     private String beforeTotal;
     private int sortPrice;
+    private boolean isReturn;
+    @Ignore
+    private RefundableEnum isRefundable;
     @Ignore
     private List<FlightRouteTable> routes;
 
@@ -71,7 +77,8 @@ public class FlightJourneyTable {
                               String childCombo, int childNumeric, int childNumericCombo, String infant,
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
-                              boolean isBestPairing, String beforeTotal, List<FlightRouteTable> routes) {
+                              boolean isBestPairing, String beforeTotal, int sortPrice, boolean isReturn,
+                              RefundableEnum isRefundable, List<FlightRouteTable> routes) {
         this.id = id;
         this.term = term;
         this.departureAirport = departureAirport;
@@ -108,6 +115,9 @@ public class FlightJourneyTable {
         this.totalNumericCombo = totalNumericCombo;
         this.isBestPairing = isBestPairing;
         this.beforeTotal = beforeTotal;
+        this.sortPrice = sortPrice;
+        this.isReturn = isReturn;
+        this.isRefundable = isRefundable;
         this.routes = routes;
     }
 
@@ -398,6 +408,30 @@ public class FlightJourneyTable {
 
     public void setBeforeTotal(String beforeTotal) {
         this.beforeTotal = beforeTotal;
+    }
+
+    public int getSortPrice() {
+        return sortPrice;
+    }
+
+    public void setSortPrice(int sortPrice) {
+        this.sortPrice = sortPrice;
+    }
+
+    public boolean isReturn() {
+        return isReturn;
+    }
+
+    public void setReturn(boolean aReturn) {
+        isReturn = aReturn;
+    }
+
+    public RefundableEnum getIsRefundable() {
+        return isRefundable;
+    }
+
+    public void setIsRefundable(RefundableEnum isRefundable) {
+        this.isRefundable = isRefundable;
     }
 
     public List<FlightRouteTable> getRoutes() {
