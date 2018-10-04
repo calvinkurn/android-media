@@ -253,6 +253,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 if (!TextUtils.isEmpty(voteInfoViewModel.getVoteInfoUrl())) {
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
+                    analytics.eventActionClickVoteInfo();
                 }
 
             }

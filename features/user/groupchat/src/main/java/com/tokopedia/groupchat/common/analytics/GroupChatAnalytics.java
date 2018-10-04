@@ -49,6 +49,8 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_LEAVE_ROOM = "leave room";
     private static final String EVENT_ACTION_PLAY_VIDEO = "click on play button video";
     private static final String EVENT_ACTION_WATCH_VIDEO_DURATION = "watch duration play";
+    private static final String EVENT_ACTION_CLICK_VOTE_INFO = "click on info vote link";
+    private static final String EVENT_ACTION_CLICK_OFFICIAL_PARTNER = "click on official partner link";
 
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
@@ -276,4 +278,23 @@ public class GroupChatAnalytics {
                 channelId +" - "+duration
         );
     }
+
+
+    public void eventActionClickVoteInfo() {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_VOTE_INFO,
+                ""
+        );
+    }
+
+    public void eventActionClickOfficialPartner(String officialPartner) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_OFFICIAL_PARTNER,
+                officialPartner
+        );
+    }
+
+
 }
