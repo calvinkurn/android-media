@@ -392,6 +392,7 @@ ext {
             logisticdata                : ":features:logistic:logisticdata",
             logisticanalytics           : ":features:logistic:logisticanalytics",
             logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
+            logisticaddaddress    : ":features:logistic:logisticaddaddress",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
             tracking                    : ":features:logistic:tracking",
