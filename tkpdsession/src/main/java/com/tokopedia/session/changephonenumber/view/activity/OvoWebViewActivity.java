@@ -14,16 +14,21 @@ import com.tokopedia.session.changephonenumber.view.fragment.OvoWebViewFragment;
 
 public class OvoWebViewActivity extends BaseWebViewActivity {
 
-    private static String OVO_URL = "https://17-feature-m-staging.tokopedia.com/user/profile/edit/phone";
+    public static final String URL = "WEBVIEW_URL";
+    private String url;
 
-    public static Intent newInstance(Context context) {
+    public static Intent newInstance(Context context, String url) {
         Intent intent = new Intent(context, OvoWebViewActivity.class);
+        intent.putExtra(URL, url);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return OvoWebViewFragment.newInstance(OVO_URL);
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            url = getIntent().getExtras().getString(URL);
+        }
+        return OvoWebViewFragment.newInstance(url);
     }
 
     @Nullable

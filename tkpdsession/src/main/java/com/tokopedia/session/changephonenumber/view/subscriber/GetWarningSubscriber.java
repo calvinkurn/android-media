@@ -31,7 +31,7 @@ public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
     @Override
     public void onNext(WarningViewModel object) {
         if (object.isOvoEligible()) {
-            view.goToOvoWebView();
+            view.goToOvoWebView(object.getUrlOvo());
         } else {
             view.onGetWarningSuccess(object);
         }
