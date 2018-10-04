@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.DomainInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
@@ -35,10 +37,11 @@ public class DomainInputFragment extends BaseDaggerFragment {
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
 
-    public static DomainInputFragment newInstance() {
+    private String productId = "";
+
+    public static DomainInputFragment newInstance(@NonNull Bundle bundle) {
         DomainInputFragment fragment = new DomainInputFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -74,6 +77,10 @@ public class DomainInputFragment extends BaseDaggerFragment {
 
     private void initVar() {
         userSession = new UserSession(getContext());
+
+        if (getArguments() != null) {
+            productId = getArguments().getString(DomainInputActivity.PARAM_PRODUCT_ID, "");
+        }
     }
 
     private void initView() {
@@ -103,9 +110,16 @@ public class DomainInputFragment extends BaseDaggerFragment {
             }
         });
         saveBtn.setOnClickListener(view -> {
-            startActivity(
-                    OnboardingActivity.createIntent(getContext(), OnboardingActivity.FINISH_TRUE)
-            );
+            if (!TextUtils.isEmpty(productId)) {
+
+            } else {
+                startActivity(
+                        OnboardingActivity.createIntent(
+                                getContext(),
+                                OnboardingActivity.FINISH_TRUE
+                        )
+                );
+            }
         });
     }
 
