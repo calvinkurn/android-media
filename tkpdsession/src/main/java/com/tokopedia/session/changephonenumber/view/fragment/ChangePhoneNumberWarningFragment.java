@@ -29,7 +29,8 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.activity.OvoWebViewActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 import com.tokopedia.user.session.UserSession;
 
@@ -38,7 +39,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel
+        .BALANCE_THRESHOLD_FOR_WARNING;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -132,7 +134,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ((SessionRouter)getActivity().getApplicationContext()).getWithdrawIntent(getActivity());
+                Intent intent = ((SessionRouter) getActivity().getApplicationContext())
+                        .getWithdrawIntent(getActivity());
                 Bundle bundle = new Bundle();
                 bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE,
                         viewModel.getTokopediaBalance());
@@ -205,7 +208,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     @Override
     public void onGetValidateOtpStatusSuccess(Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             startActivityForResult(
                     ChangePhoneNumberInputActivity.newInstance(
                             getContext(),
@@ -216,8 +219,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                                     null
                     ),
                     REQUEST_CHANGE_PHONE_NUMBER);
-        }
-        else {
+        } else {
             loadWarningPage();
         }
     }
@@ -227,7 +229,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         loadWarningPage();
     }
 
-    private void loadWarningPage(){
+    private void loadWarningPage() {
         if (viewModel.getTokocashNumber() <= 0
                 && viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
             goToNextActivity();
@@ -275,13 +277,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                     && viewModel.getTokocashNumber() > 0) {
                 UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageTokocash());
-            }
-            else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
+            } else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
                     && viewModel.getTokocashNumber() <= 0) {
                 UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageSaldo());
-            }
-            else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
+            } else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
                     && viewModel.getTokocashNumber() > 0) {
                 UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageBoth());
@@ -314,9 +314,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                                             new ArrayList<>(viewModel.getWarningList()) : null
                             ),
                             REQUEST_CHANGE_PHONE_NUMBER);
-                }
-
-                else if (resultCode == Activity.RESULT_CANCELED){
+                } else if (resultCode == Activity.RESULT_CANCELED) {
                     getActivity().finish();
                 }
                 break;
@@ -367,10 +365,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void goToOvoWebView(String url) {
         startActivity(OvoWebViewActivity.newInstance(getContext(), url));
-        getActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
-    public Integer getUserId(){
+    public Integer getUserId() {
         return Integer.parseInt(userSession.getUserId());
     }
 }

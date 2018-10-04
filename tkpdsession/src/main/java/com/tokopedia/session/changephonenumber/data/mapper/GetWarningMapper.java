@@ -37,7 +37,7 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
                 model.setWarningList(data.getWarning());
                 model.setHasBankAccount(data.getHasBankAccount());
                 model.setOvoEligible(data.isOvoEligible());
-                model.setUrlOvo("https://m-staging.tokopedia.com/user/profile/edit/phone");
+                model.setUrlOvo(data.getRedirectUrl());
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
