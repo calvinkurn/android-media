@@ -7,6 +7,6 @@ import dagger.Component
 
 @BroadcastMessageCreateScope
 @Component(modules = arrayOf(BroadcastMessageCreateModule::class), dependencies = arrayOf(BroadcastMessageComponent::class))
-interface BroadcasteMessageCreateComponent{
+interface BroadcastMessageCreateComponent{
     fun inject(fragment: BroadcastMessageCreateFragment)
 }

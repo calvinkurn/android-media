@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.attachproduct.view.activity.BMAttachProductActivity;
+import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.attachproduct.view.adapter.AttachProductListAdapter;
 import com.tokopedia.topchat.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
 import com.tokopedia.topchat.attachproduct.view.presenter.AttachProductContract;
@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class BMAttachProductFragment extends AttachProductFragment {
+public class BroadcastMessageAttachProductFragment extends AttachProductFragment {
     private final static int MAX_CHECKED = 3;
     private Button chooseButton;
     private HashSet<Integer> productIds = new HashSet<>();
     private ArrayList<AttachProductItemViewModel> checkedList = new ArrayList<>();
 
-    public static BMAttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
+    public static BroadcastMessageAttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
         Bundle args = new Bundle();
-        BMAttachProductFragment fragment = new BMAttachProductFragment();
+        BroadcastMessageAttachProductFragment fragment = new BroadcastMessageAttachProductFragment();
         fragment.setActivityContract(checkedUIView);
         fragment.setArguments(args);
         return fragment;
@@ -42,9 +42,9 @@ public class BMAttachProductFragment extends AttachProductFragment {
         try {
             if (activity != null && activity.getIntent() != null){
                 Intent intent = activity.getIntent();
-                List<Integer> ids = intent.getIntegerArrayListExtra(BMAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_IDS_KEY);
+                List<Integer> ids = intent.getIntegerArrayListExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_IDS_KEY);
                 List<HashMap<String, String>> products =
-                        (List<HashMap<String, String>>) intent.getSerializableExtra(BMAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_HASH_KEY);
+                        (List<HashMap<String, String>>) intent.getSerializableExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_HASH_KEY);
 
                 productIds.addAll(ids);
                 updateButtonBasedOnChecked(productIds.size());

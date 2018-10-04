@@ -191,7 +191,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.topchat.attachproduct.view.activity.BMAttachProductActivity;
+import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -227,7 +227,8 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter, BroadcastMessageRouter {
+        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
+        BroadcastMessageRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1603,22 +1604,19 @@ public abstract class SellerRouterApplication extends MainApplication
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
 
+    @NonNull
     @Override
-    public void gotoBroadcastMessageList(@NonNull Context context, Fragment fragment) {
-        if (fragment == null){
-            context.startActivity(BroadcastMessageListActivity.createIntent(context));
-        } else {
-            fragment.startActivity(BroadcastMessageListActivity.createIntent(context));
-        }
+    public Intent getBroadcastMessageListIntent(@NonNull Context context) {
+        return BroadcastMessageListActivity.createIntent(context);
     }
 
     @NonNull
     @Override
-    public Intent getBMAttachProductIntent(@NonNull Context context, @NonNull String shopId,
+    public Intent getBroadcastMessageAttachProductIntent(@NonNull Context context, @NonNull String shopId,
                                            @NonNull String shopName, boolean isSeller,
                                            @NonNull List<Integer> selectedIds,
                                            @NonNull ArrayList<HashMap<String, String>> hashProducts) {
-        return BMAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
+        return BroadcastMessageAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 
     @Override

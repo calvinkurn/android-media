@@ -119,39 +119,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.inbox_chat_organize, menu);
-        MenuItem organize = menu.findItem(R.id.action_organize);
-        if (organize != null) {
-            organize.setIcon(getDetailMenuItem());
-            organize.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-    }
-
-    private Drawable getDetailMenuItem() {
-        TextDrawable drawable = new TextDrawable(getContext());
-        drawable.setText(getResources().getString(R.string.option_organize));
-        if (GlobalConfig.isSellerApp()) {
-            drawable.setTextColor(getContext().getResources().getColor(R.color.white));
-        } else {
-            drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-        }
-        drawable.setTextSize(16.0f);
-        return drawable;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_organize) {
-            setOptionsMenu();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         GraphqlClient.init(context);
@@ -194,7 +161,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             sendBroadcast.setVisibility(View.VISIBLE);
             sendBroadcast.setOnClickListener(v -> {
                 if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
-                    ((BroadcastMessageRouter) getActivity().getApplication()).gotoBroadcastMessageList(getContext(), this);
+                    startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
                 }
             });
         } else {

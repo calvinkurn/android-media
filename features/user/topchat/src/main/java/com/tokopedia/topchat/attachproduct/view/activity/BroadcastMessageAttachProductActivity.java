@@ -8,19 +8,25 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.attachproduct.view.fragment.BMAttachProductFragment;
+import com.tokopedia.topchat.attachproduct.view.fragment.BroadcastMessageAttachProductFragment;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BMAttachProductActivity extends AttachProductActivity {
+public class BroadcastMessageAttachProductActivity extends AttachProductActivity {
     public static final String TOKOPEDIA_ATTACH_PRODUCT_IDS_KEY = "TKPD_ATTACH_PRODUCT_IDS";
     public static final String TOKOPEDIA_ATTACH_PRODUCT_HASH_KEY = "TKPD_ATTACH_PRODUCT_HASH";
 
+    public static final String PARAM_PRODUCT_ID = "id";
+    public static final String PARAM_PRODUCT_NAME = "name";
+    public static final String PARAM_PRODUCT_PRICE = "price";
+    public static final String PARAM_PRODUCT_URL = "url";
+    public static final String PARAM_PRODUCT_THUMBNAIL = "thumbnail";
+
     public static Intent createInstance(Context context, String shopId, String shopName, boolean isSeller) {
-        Intent intent = new Intent(context, BMAttachProductActivity.class);
+        Intent intent = new Intent(context, BroadcastMessageAttachProductActivity.class);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY,shopId);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,isSeller);
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY,shopName);
@@ -49,7 +55,7 @@ public class BMAttachProductActivity extends AttachProductActivity {
         if(fragment != null){
             return fragment;
         }else{
-            fragment = BMAttachProductFragment.newInstance(this);
+            fragment = BroadcastMessageAttachProductFragment.newInstance(this);
             return fragment;
         }
     }
@@ -60,11 +66,11 @@ public class BMAttachProductActivity extends AttachProductActivity {
         ArrayList<HashMap<String, String>> results = new ArrayList<>();
         for (ResultProduct product : products){
             HashMap<String, String> item = new HashMap<>();
-            item.put("id", product.getProductId().toString());
-            item.put("name", product.getName());
-            item.put("price", product.getPrice());
-            item.put("url", product.getProductUrl());
-            item.put("thumbnail", product.getProductImageThumbnail());
+            item.put(PARAM_PRODUCT_ID, product.getProductId().toString());
+            item.put(PARAM_PRODUCT_NAME, product.getName());
+            item.put(PARAM_PRODUCT_PRICE, product.getPrice());
+            item.put(PARAM_PRODUCT_URL, product.getProductUrl());
+            item.put(PARAM_PRODUCT_THUMBNAIL, product.getProductImageThumbnail());
             results.add(item);
         }
 

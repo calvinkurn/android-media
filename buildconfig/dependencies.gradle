@@ -3,10 +3,10 @@ ext {
     compileSdkVersion = 27
     minSdkVersion = 16
     targetSdkVersion = 27
-    buildToolsVersion = "27.0.3"
+    buildToolsVersion = "28.0.2"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.40"
+    kotlinVersion = "1.2.71"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
@@ -379,7 +379,7 @@ ext {
             withdraw              : ":features:payment:withdraw",
             productDraftDatabase  : ":features:merchant:product_draft_database",
             broadcastMessage      : ":features:communication:broadcast_message",
-            broadcastMessageCommon   : ":features:communication:bm_common",
+            broadcastMessageCommon   : ":features:communication:broadcast_message_common",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
             updateinactivephone   : ":features:user:updateinactivephone"

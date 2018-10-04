@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
@@ -35,8 +34,6 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
-import com.tokopedia.broadcast.message.view.activity.BroadcastMessageListActivity;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
@@ -82,8 +79,6 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -153,7 +148,6 @@ import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.EventModuleRouter;
-import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -228,7 +222,6 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -345,7 +338,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
-import com.tokopedia.topchat.attachproduct.view.activity.BMAttachProductActivity;
+import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -362,13 +355,11 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -454,7 +445,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsWebViewRouter,
         BankRouter,
         ShopSettingRouter,
-        BroadcastMessageRouter,
         ChangePasswordRouter,
         TrainRouter,
         WithdrawRouter,
@@ -2881,24 +2871,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCategoryPickerIntent(Context context, int categoryId) {
         return CategoryPickerActivity.createIntent(context, categoryId);
-    }
-
-    @Override
-    public void gotoBroadcastMessageList(@NonNull Context context, Fragment fragment) {
-        if (fragment == null){
-            context.startActivity(BroadcastMessageListActivity.createIntent(context));
-        } else {
-            fragment.startActivity(BroadcastMessageListActivity.createIntent(context));
-        }
-    }
-
-    @NonNull
-    @Override
-    public Intent getBMAttachProductIntent(@NonNull Context context, @NonNull String shopId,
-                                           @NonNull String shopName, boolean isSeller,
-                                           @NonNull List<Integer> selectedIds,
-                                           @NonNull ArrayList<HashMap<String, String>> hashProducts) {
-        return BMAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 
     @Override

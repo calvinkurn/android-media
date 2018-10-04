@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -21,7 +20,7 @@ import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
-import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcasteMessageCreateComponent
+import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessageCreateComponent
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
 import com.tokopedia.broadcast.message.data.model.MyProduct
 import com.tokopedia.broadcast.message.data.model.ProductPayloadMutation
@@ -45,6 +44,12 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         private const val REQUEST_CODE_PRODUCT = 0x02
         private const val PARAM_PRODUCT_RESULT = "TKPD_ATTACH_PRODUCT_RESULTS"
         private const val REQUEST_MOVE_PREVIEW = 0x03
+
+        private const val PARAM_PRODUCT_ID = "id"
+        private const val PARAM_PRODUCT_NAME = "name"
+        private const val PARAM_PRODUCT_PRICE = "price"
+        private const val PARAM_PRODUCT_URL = "url"
+        private const val PARAM_PRODUCT_THUMBNAIL = "thumbnail"
     }
 
     @Inject lateinit var userSession: UserSession
@@ -64,7 +69,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         if (app == null) return
 
         if (app is BroadcastMessageRouter && context != null){
-            startActivityForResult(app.getBMAttachProductIntent(context!!, userSession.shopId, shopName,
+            startActivityForResult(app.getBroadcastMessageAttachProductIntent(context!!, userSession.shopId, shopName,
                     !userSession.shopId.isNullOrEmpty(), productIds, hashProducList), REQUEST_CODE_PRODUCT)
         }
     }
@@ -72,7 +77,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        DaggerBroadcasteMessageCreateComponent.builder()
+        DaggerBroadcastMessageCreateComponent.builder()
                 .broadcastMessageComponent(getComponent(BroadcastMessageComponent::class.java))
                 .build().inject(this)
         presenter.attachView(this)
@@ -168,9 +173,11 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 hashProducList.addAll(productList)
                 productList.forEach {
                     productIds.add(it.get("id")?.toInt() ?: -1)
-                    selectedProducts.add(MyProduct(productId = it.get("id")?.toInt() ?: -1,
-                            productName = it.get("name") ?: "", productPrice = it.get("price") ?: "Rp0",
-                            productThumbnail = it.get("thumbnail") ?: "", productUrl = it.get("url") ?: ""))
+                    selectedProducts.add(MyProduct(productId = it.get(PARAM_PRODUCT_ID)?.toInt() ?: -1,
+                            productName = it.get(PARAM_PRODUCT_NAME) ?: "",
+                            productPrice = it.get(PARAM_PRODUCT_PRICE) ?: "Rp0",
+                            productThumbnail = it.get(PARAM_PRODUCT_THUMBNAIL) ?: "",
+                            productUrl = it.get(PARAM_PRODUCT_URL) ?: ""))
                 }
 
                 productAdapter.clearProducts()
