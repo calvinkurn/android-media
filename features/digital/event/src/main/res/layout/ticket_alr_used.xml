@@ -26,28 +26,26 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/sp_20"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:textColor="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_25"
         android:gravity="center_horizontal"
-        android:text="Tiket Telah Digunakan"
+        android:text="@string/owner_profile_ticket_used"
         />
 
     <TextView
         android:id="@+id/ticket_redeem_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
+        android:textSize="@dimen/sp_12"
         android:fontFamily="sans-serif"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_gravity="center"
         android:textStyle="normal"
-        android:textColor="@color/black_38"
-        android:text="Diredeem pada 24 Juni 2018, 13.59 WIB"
-        />
+        android:textColor="@color/black_38" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,7 +68,6 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:textStyle="normal"
             android:textColor="@color/black_38"
-            android:text="32 menit yang lalu"
             />
 
     </LinearLayout>
@@ -78,7 +75,7 @@
     <ImageView
         android:id="@+id/divider2"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="@dimen/dp_3"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/dash_line_grey" />
 

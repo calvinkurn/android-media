@@ -189,7 +189,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         mPresenter.initialize();
         mPresenter.attachView(this);
         mPresenter.getEventDetails();
-//        mPresenter.checkForScan();
     }
 
     @Override

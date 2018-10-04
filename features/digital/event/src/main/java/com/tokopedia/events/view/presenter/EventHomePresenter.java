@@ -163,10 +163,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
-        } else if (id == R.id.action_scan_qr_code) {
-            Intent intent = new Intent(getView().getActivity(), ScanQRCodeActivity.class);
-            getView().navigateToActivityRequest(intent, 100);
-            return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");

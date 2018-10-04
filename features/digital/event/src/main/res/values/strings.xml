@@ -111,6 +111,8 @@
     <string name="event_besok">Besok</string>
     <string name="event_hari_ini">Hari Ini</string>
     <string name="owner_profile">Data Pemilik Tiket</string>
+    <string name="owner_profile_ticket_redeemed">Tiket Berhasil Diredeem</string>
+    <string name="owner_profile_ticket_used">Tiket Telah Digunakan</string>
     <string name="userName">Nama Lengkap</string>
     <string name="userGender">Jenis Kelamin</string>
     <string name="userDob">Tanggal Lahir</string>
