@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.onboarding.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.DomainInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -110,16 +112,19 @@ public class DomainInputFragment extends BaseDaggerFragment {
             }
         });
         saveBtn.setOnClickListener(view -> {
+            Intent intent;
             if (!TextUtils.isEmpty(productId)) {
-
+                intent = RecommendProductActivity.createIntent(
+                        getContext(),
+                        productId
+                );
             } else {
-                startActivity(
-                        OnboardingActivity.createIntent(
-                                getContext(),
-                                OnboardingActivity.FINISH_TRUE
-                        )
+                intent = OnboardingActivity.createIntent(
+                        getContext(),
+                        OnboardingActivity.FINISH_TRUE
                 );
             }
+            startActivity(intent);
         });
     }
 
