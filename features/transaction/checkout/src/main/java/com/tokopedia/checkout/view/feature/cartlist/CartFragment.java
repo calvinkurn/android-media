@@ -387,7 +387,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return view -> {
             if (message == null) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
-                sendAnalyticsOnButtonCheckoutClicked();
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
@@ -1112,6 +1111,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
+            sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
                 if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
@@ -1523,12 +1523,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     protected String getScreenName() {
         return ConstantTransactionAnalytics.ScreenName.CART;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
