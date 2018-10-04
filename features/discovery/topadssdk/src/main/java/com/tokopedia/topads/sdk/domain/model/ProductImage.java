@@ -20,7 +20,7 @@ public class ProductImage implements Parcelable {
     private static final String KEY_S_ECS = "s_ecs";
     private static final String KEY_XS_ECS = "xs_ecs";
 
-    @SerializedName(KEY_M_ECS)
+    @SerializedName(KEY_M_URL)
     private String m_url;
     @SerializedName(KEY_S_URL)
     private String s_url;
