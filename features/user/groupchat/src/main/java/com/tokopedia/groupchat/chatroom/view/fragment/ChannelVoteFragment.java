@@ -164,6 +164,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBarWithTimer.setListener(this);
+        voteRecyclerView.setNestedScrollingEnabled(false);
         KeyboardHandler.DropKeyboard(getContext(), getView());
         Parcelable temp = getArguments().getParcelable(VOTE);
         showVoteLayout((VoteInfoViewModel) temp);
