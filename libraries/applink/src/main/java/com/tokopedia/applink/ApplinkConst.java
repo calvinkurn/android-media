@@ -163,7 +163,7 @@ public interface ApplinkConst {
 
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
-    String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding?product_id={product_id}";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
 
     String CHALLENGE = "tokopedia://challenges";

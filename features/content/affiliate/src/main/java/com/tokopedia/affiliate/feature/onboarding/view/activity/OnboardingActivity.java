@@ -17,7 +17,9 @@ public class OnboardingActivity extends BaseSimpleActivity {
 
     @DeepLink(ApplinkConst.AFFILIATE_ONBOARDING)
     public static Intent createApplinkIntent(Context context, Bundle bundle) {
-        return createIntent(context, false);
+        Intent intent = createIntent(context, false);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     public static Intent createIntent(Context context) {
