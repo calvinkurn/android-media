@@ -1,5 +1,7 @@
 package com.tokopedia.flight.searchV2.data.db
 
+import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import rx.Observable
 import javax.inject.Inject
 
@@ -10,9 +12,11 @@ class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
         private val flightRouteDao: FlightRouteDao) {
 
-    fun getSearchSingle(): Observable<List<FlightJourneyTable>> {
+    fun findAllJourneys(): Observable<List<JourneyAndRoutesJava>> {
         val journeys = arrayListOf<FlightJourneyTable>()
-        return Observable.just(journeys)
+        return Observable.create {
+            it.onNext(flightJourneyDao.findAllJourneys())
+        }
     }
 
     fun insert(items: List<FlightJourneyTable>) {
@@ -24,6 +28,14 @@ class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun insert(item: FlightJourneyTable) {
         flightJourneyDao.insert(item)
+    }
+
+    fun getFilteredJourneys(isReturn: Boolean, sortOption: FlightSortOption, filterModel: FlightFilterModel):
+            Observable<List<JourneyAndRoutesJava>> {
+        return Observable.create {
+            it.onNext(flightJourneyDao.findFilteredJourneys(isReturn, filterModel.journeyId,
+                    filterModel.isBestPairing))
+        }
     }
 
 }
