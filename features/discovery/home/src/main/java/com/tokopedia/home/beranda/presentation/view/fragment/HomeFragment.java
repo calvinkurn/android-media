@@ -136,8 +136,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
-
     private boolean scrollToRecommendList = false;
+    private boolean isTraceStopped = false;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -149,8 +149,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
+        trace = TrackingUtils.startTrace("beranda_trace");
     }
 
     @Override
@@ -222,13 +222,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (trace != null)
-            trace.stop();
     }
 
     @Override
@@ -629,6 +622,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void hideLoading() {
         refreshLayout.setRefreshing(false);
+        if (trace != null && !isTraceStopped) {
+            trace.stop();
+            isTraceStopped = true;
+        }
     }
 
     @Override
