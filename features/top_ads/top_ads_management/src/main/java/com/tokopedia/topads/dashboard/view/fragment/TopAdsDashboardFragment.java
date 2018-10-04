@@ -43,6 +43,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.TopAdsWebViewActivity;
 import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
 import com.tokopedia.topads.dashboard.constant.TopAdsAddingOption;
@@ -192,6 +193,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void initTicker(View view) {
         tickerView = view.findViewById(R.id.ticker_view);
+        tickerView.setListMessage(new ArrayList<>());
+        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
+            @Override
+            public void onClick(View view, String messageClick) {
+                startActivity(TopAdsWebViewActivity.createIntent(getContext(), messageClick));
+            }
+        });
+        tickerView.buildView();
     }
 
     private void initEmptyStateView(View view) {
@@ -436,6 +445,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void loadData() {
+        tickerView.clearMessage();
         swipeToRefresh.setRefreshing(true);
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit));
         topAdsDashboardPresenter.getShopInfo();
@@ -627,7 +637,14 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     @Override
     public void onLoadTopAdsShopDepositSuccess(DataDeposit dataDeposit) {
         snackbarRetry.hideRetrySnackbar();
+        FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
         depositValueTextView.setText(dataDeposit.getAmountFmt());
+        if (freeDeposit.getNominal() > 0) {
+            tickerView.addMessage(0, getString(R.string.top_ads_template_credit_bonus,
+                    freeDeposit.getNominalFmt(),
+                    freeDeposit.getRemainingDays() + ""));
+            tickerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -709,15 +726,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onSuccessGetTicker(List<String> message) {
-        tickerView.setListMessage(new ArrayList<>(message));
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
-            @Override
-            public void onClick(View view, String messageClick) {
-                startActivity(TopAdsWebViewActivity.createIntent(getContext(), messageClick));
-            }
-        });
-        tickerView.buildView();
+        tickerView.addAllMessage(message);
         tickerView.setVisibility(View.VISIBLE);
     }
 

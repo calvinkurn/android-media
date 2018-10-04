@@ -1,6 +1,8 @@
 package com.tokopedia.profile.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
 import com.tokopedia.profile.view.listener.TopProfileActivityListener;
 
 import rx.Subscriber;
@@ -9,7 +11,7 @@ import rx.Subscriber;
  * @author by milhamj on 01/03/18.
  */
 
-public class FollowKolSubscriber extends Subscriber<Boolean> {
+public class FollowKolSubscriber extends Subscriber<GraphqlResponse> {
 
     private final TopProfileActivityListener.View view;
 
@@ -32,7 +34,9 @@ public class FollowKolSubscriber extends Subscriber<Boolean> {
     }
 
     @Override
-    public void onNext(Boolean isSuccess) {
+    public void onNext(GraphqlResponse response) {
+        FollowKolQuery query = response.getData(FollowKolQuery.class);
+        Boolean isSuccess = query.getData().getData().getStatus() == 1;
         if (view != null) {
             if (isSuccess) {
                 view.onSuccessFollowKol();

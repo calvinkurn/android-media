@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.di.component;
 
 import com.tokopedia.checkout.view.di.module.CartAddressChoiceModule;
 import com.tokopedia.checkout.view.di.scope.CartAddressChoiceScope;
-import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceFragment;
+import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceFragment;
 
 import dagger.Component;
 

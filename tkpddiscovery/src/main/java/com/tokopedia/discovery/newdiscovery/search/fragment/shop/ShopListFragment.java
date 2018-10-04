@@ -236,7 +236,6 @@ public class ShopListFragment extends SearchSectionFragment
         if (isHasNextPage) {
             adapter.addLoading();
         }
-        showBottomBarNavigation(true);
     }
 
     private void enrichPositionData(List<ShopViewModel.ShopItem> shopItemList, int startRow) {
@@ -251,8 +250,7 @@ public class ShopListFragment extends SearchSectionFragment
         isNextPageAvailable = false;
         adapter.removeLoading();
         if (adapter.isListEmpty()) {
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            adapter.showEmptyState(message);
+            adapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.shop_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
@@ -260,12 +258,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_SHOP_TAB;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        showBottomBarNavigation(false);
     }
 
     @Override
@@ -278,34 +270,6 @@ public class ShopListFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         onFirstTimeLaunch();
-    }
-
-    @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop(getActivity());
-                        openFilterActivity();
-                        return true;
-                    case 1:
-                        switchLayoutType();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
     }
 
     @Override
@@ -323,6 +287,16 @@ public class ShopListFragment extends SearchSectionFragment
         SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), query, shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
+    }
+
+    @Override
+    public void onBannerAdsClicked(String appLink) {
+
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -352,6 +326,11 @@ public class ShopListFragment extends SearchSectionFragment
                 }
             }
         };
+    }
+
+    @Override
+    protected boolean isSortEnabled() {
+        return false;
     }
 
     @Override
@@ -444,7 +423,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        showBottomBarNavigation(false);
         loadShopFirstTime();
     }
 

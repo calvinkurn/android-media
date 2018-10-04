@@ -41,8 +41,10 @@ public class MoveToSaldoPresenter extends BaseDaggerPresenter<MoveToSaldoContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().wrappingDataFailed();
-                getView().hideProgressLoading();
+                if (isViewAttached()) {
+                    getView().wrappingDataFailed();
+                    getView().hideProgressLoading();
+                }
             }
 
             @Override
@@ -55,6 +57,7 @@ public class MoveToSaldoPresenter extends BaseDaggerPresenter<MoveToSaldoContrac
 
     @Override
     public void destroyView() {
+        detachView();
         if (moveToSaldoUseCase != null) moveToSaldoUseCase.unsubscribe();
     }
 }

@@ -24,7 +24,7 @@
     <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
 
     <string name="gmsubscribe_current_product_selector">Paket Berlangganan</string>
-    <string name="gmsubscribe_extend_product_selector">Paket Perpanjang Otomatis</string>
+    <string name="gmsubscribe_extend_product_selector">Paket Perpanjangan</string>
     <string name="gmsubscribe_product_button_subscribe">Berlangganan</string>
     <string name="gmsubscribe_product_button_change">Ubah</string>
     <string name="gmsubscribe_product_button_activate">Aktifkan</string>
@@ -36,7 +36,7 @@
     <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
     <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
 
-    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan</string>
     <string name="gmsubscribe_auto_package_price">Harga</string>
     <string name="gmsubscribe_auto_package_next_subscribe">Tanggal Tagihan Berikutnya</string>
     <string name="gmsubscribe_auto_package_payment_method">Metode Pembayaran</string>

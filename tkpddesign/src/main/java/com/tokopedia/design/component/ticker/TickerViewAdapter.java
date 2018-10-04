@@ -1,6 +1,9 @@
 package com.tokopedia.design.component.ticker;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.text.Spannable;
@@ -9,6 +12,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import com.tokopedia.design.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hangnadi on 8/16/17.
@@ -26,32 +31,43 @@ import java.util.ArrayList;
 class TickerViewAdapter extends PagerAdapter {
 
     private ArrayList<String> listMessage;
-    private ArrayList<Integer> listBackGroundColor;
+    private int backgroundColor;
     private ArrayList<Integer> listTextColor;
     private int defaultLinkColor;
+    private float textSize;
     private TickerView.OnPartialTextClickListener listener;
     private boolean isUnderlinedLink = true;
 
+    private View tickerBackground;
+    private TextView tickerMessage;
+    private Context context;
+
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
-                             ArrayList<Integer> listBackGroundColor,
+                             int backgroundColor,
                              int defaultLinkColor,
+                             float textSize,
                              ArrayList<String> listMessage,
                              TickerView.OnPartialTextClickListener listener) {
         this.listTextColor = listTextColor;
-        this.listBackGroundColor = listBackGroundColor;
+        this.backgroundColor = backgroundColor;
         this.defaultLinkColor = defaultLinkColor;
+        this.textSize = textSize;
         this.listMessage = listMessage;
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(final ViewGroup container, final int position) {
+    public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.item_ticker, container, false);
-        View tickerBackground = view.findViewById(R.id.ticker_background);
-        TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
+        context = view.getContext();
 
-        tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
+        tickerBackground = view.findViewById(R.id.ticker_background);
+        tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
+        tickerMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+        tickerBackground.setBackgroundColor(backgroundColor);
         tickerMessage.setTextColor(listTextColor.get(position));
         tickerMessage.setLinkTextColor(defaultLinkColor);
         tickerMessage.setMovementMethod(new SelectableSpannedMovementMethod());
@@ -110,8 +126,8 @@ class TickerViewAdapter extends PagerAdapter {
         this.listMessage = listMessage;
     }
 
-    public void setListBackGroundColor(ArrayList<Integer> listBackGroundColor) {
-        this.listBackGroundColor = listBackGroundColor;
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public void setListTextColor(ArrayList<Integer> listTextColor) {
@@ -124,6 +140,18 @@ class TickerViewAdapter extends PagerAdapter {
 
     public void setListener(TickerView.OnPartialTextClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setPadding(int top, int right, int bottom, int left) {
+        tickerBackground.setPadding(left, top, right, bottom);
+    }
+
+    public void setTextAppearance(int appearance) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tickerMessage.setTextAppearance(appearance);
+        } else {
+            tickerMessage.setTextAppearance(context, appearance);
+        }
     }
 
     @SuppressWarnings("deprecation")

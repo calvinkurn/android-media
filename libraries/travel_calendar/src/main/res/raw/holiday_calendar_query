@@ -1,0 +1,1 @@
+{ flightHoliday(lang: "id-id", countryID:"ID") { id  attributes { date label } }}

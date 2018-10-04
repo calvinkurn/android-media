@@ -11,8 +11,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -66,7 +70,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, BottomSheetListener {
+        implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -83,6 +87,10 @@ public class SearchActivity extends DiscoveryActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
+    private TextView buttonFilter;
+    private TextView buttonSort;
+    private View searchNavDivider;
+    private View searchNavContainer;
 
     private String productTabTitle;
     private String catalogTabTitle;
@@ -90,11 +98,13 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
 
     private BottomSheetFilterView bottomSheetFilterView;
+    private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private MenuItem menuChangeGrid;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -431,6 +441,10 @@ public class SearchActivity extends DiscoveryActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
         bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
+        buttonFilter = findViewById(R.id.button_filter);
+        buttonSort = findViewById(R.id.button_sort);
+        searchNavDivider = findViewById(R.id.search_nav_divider);
+        searchNavContainer = findViewById(R.id.search_nav_container);
     }
 
     @Override
@@ -456,6 +470,26 @@ public class SearchActivity extends DiscoveryActivity
             }
         });
         initBottomSheetListener();
+        initSearchNavigationListener();
+    }
+
+    private void initSearchNavigationListener() {
+        buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onFilterClick();
+                }
+            }
+        });
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onSortClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -475,13 +509,11 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onShow() {
                 hideBottomNavigation();
-                disableAutoShowBottomNav();
             }
 
             @Override
             public void onHide() {
-                enableAutoShowBottomNav();
-                forceShowBottomNav();
+                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -508,15 +540,6 @@ public class SearchActivity extends DiscoveryActivity
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
-    }
-
-    private void forceShowBottomNav() {
-        SearchSectionFragment selectedFragment
-                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
-
-        if (selectedFragment != null) {
-            selectedFragment.showBottomBarNavigation(true);
-        }
     }
 
     private void sendBottomSheetHideEventForProductList() {
@@ -606,5 +629,59 @@ public class SearchActivity extends DiscoveryActivity
 
     private Context getActivityContext() {
         return this;
+    }
+
+    @Override
+    public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
+        if (isSortEnabled) {
+            buttonSort.setVisibility(View.VISIBLE);
+            searchNavDivider.setVisibility(View.VISIBLE);
+        } else {
+            buttonSort.setVisibility(View.GONE);
+            searchNavDivider.setVisibility(View.GONE);
+        }
+        this.searchNavigationClickListener = clickListener;
+    }
+
+    @Override
+    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
+        if (menuChangeGrid != null) {
+            menuChangeGrid.setIcon(iconResId);
+            menuChangeGrid.setTitle(titleResId);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        menuChangeGrid = menu.findItem(R.id.action_change_grid);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_change_grid) {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onChangeGridClick();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showBottomNavigation() {
+        searchNavContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBottomNavigation() {
+        searchNavContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSearchingStart(String keyword) {
+        super.onSearchingStart(keyword);
+        hideBottomNavigation();
     }
 }

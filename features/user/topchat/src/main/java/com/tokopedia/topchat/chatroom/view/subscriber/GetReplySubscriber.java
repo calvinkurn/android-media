@@ -38,8 +38,16 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
     @Override
     public void onNext(ChatRoomViewModel model) {
         view.setViewEnabled(true);
-        if(model.getChatList().size()>0) view.setResult(model);
-        else view.hideMainLoading();
+        view.setResult(model);
         presenter.finishRequest();
+        if(!view.isChatBot()) {
+            presenter.getUserStatus(model.getInterlocutorId(), model.getInterlocutorRole());
+            if(model.getInterlocutorRole() != null &&
+                    model.getInterlocutorRole().equalsIgnoreCase(ChatRoomPresenter.SELLER)) {
+                presenter.getFollowStatus(model.getInterlocutorId());
+            } else {
+                view.setMenuVisible(true);
+            }
+        }
     }
 }

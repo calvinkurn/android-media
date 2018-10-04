@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
 
@@ -24,6 +25,7 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     private List<Visitable> list;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
+    private LoadingMoreModel loadingMoreModel;
     private final FeedPlusDetailTypeFactory typeFactory;
 
     public DetailFeedAdapter(FeedPlusDetailTypeFactory typeFactory) {
@@ -31,6 +33,7 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         this.typeFactory = typeFactory;
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
+        this.loadingMoreModel = new LoadingMoreModel();
     }
 
     @Override
@@ -58,30 +61,45 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
 
     public void addList(ArrayList<Visitable> list) {
         this.list.addAll(list);
+        notifyDataSetChanged();
     }
 
     public void add(Visitable item) {
-        this.list.add(item);
+        int position = getItemCount();
+        if (this.list.add(item)) {
+            notifyItemInserted(position);
+        }
+    }
+
+    public void remove(Visitable item) {
+        int position = this.list.indexOf(item);
+        if (this.list.remove(item)) {
+            notifyItemRemoved(position);
+        }
     }
 
     public void showEmpty() {
-        this.list.add(emptyModel);
-        notifyDataSetChanged();
+        add(emptyModel);
     }
 
     public void dismissEmpty() {
-        this.list.remove(emptyModel);
-        notifyDataSetChanged();
+        remove(emptyModel);
     }
 
     public void showLoading() {
-        this.list.add(loadingModel);
-        notifyDataSetChanged();
+        add(loadingModel);
     }
 
     public void dismissLoading() {
-        this.list.remove(loadingModel);
-        notifyDataSetChanged();
+        remove(loadingModel);
+    }
+
+    public void showLoadingMore() {
+        add(loadingMoreModel);
+    }
+
+    public void dismissLoadingMore() {
+        remove(loadingMoreModel);
     }
 
     public boolean isLoading() {
