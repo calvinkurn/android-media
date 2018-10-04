@@ -160,7 +160,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
-                    ratesDataConverter, showCaseObjectList, !TextUtils.isEmpty(shipmentCostModel.getPromoMessage()));
+                    ratesDataConverter, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder(
@@ -606,6 +606,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (itemAdapter instanceof RecipientAddressModel) {
                     ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
                 }
             }
         } else {
@@ -622,11 +624,23 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (itemAdapter instanceof RecipientAddressModel) {
                     ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
                 }
             }
         }
         updateShipmentCostModel();
         notifyItemChanged(getShipmentCostPosition());
+    }
+
+    private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel,
+                                              boolean hasExtraMarginTop) {
+        if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
+                shipmentCartItemModelList.get(0) != null &&
+                shipmentCartItemModel.getShopId() == shipmentCartItemModelList.get(0).getShopId()) {
+            shipmentCartItemModel.setStateHasExtraMarginTop(hasExtraMarginTop);
+            notifyItemChanged(iteration);
+        }
     }
 
     public void updateItemPromoVoucher(CartItemPromoHolderData cartPromo) {

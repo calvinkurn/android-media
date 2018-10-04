@@ -359,12 +359,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                List<ShipmentData> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
                                RatesDataConverter ratesDataConverter,
-                               ArrayList<ShowCaseObject> showCaseObjectList,
-                               boolean isPromoApplied) {
+                               ArrayList<ShowCaseObject> showCaseObjectList) {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
         }
-        renderMarginFirstItem(shipmentCartItemModel, isPromoApplied);
+        renderMarginFirstItem(shipmentCartItemModel);
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
@@ -409,14 +408,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel, boolean isPromoApplied) {
+    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel) {
         // Only set margin for first item on multiple address
-        if (shipmentCartItemModel.getRecipientAddressModel() != null && isPromoApplied) {
-            if (getAdapterPosition() == 1) {
-                setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
-            } else {
-                setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
-            }
+        if (shipmentCartItemModel.isStateHasExtraMarginTop()) {
+            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
+        } else {
+            setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
         }
     }
 

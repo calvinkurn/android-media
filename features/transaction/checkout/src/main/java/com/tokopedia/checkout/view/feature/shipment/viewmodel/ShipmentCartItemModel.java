@@ -69,6 +69,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean stateDropshipperHasError;
     private boolean stateLoadingCourierState;
     private boolean stateHasLoadCourierState;
+    private boolean stateHasExtraMarginTop;
 
     // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
@@ -117,6 +118,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isInsurance = in.readByte() != 0;
         stateLoadingCourierState = in.readByte() != 0;
         stateHasLoadCourierState = in.readByte() != 0;
+        stateHasExtraMarginTop = in.readByte() != 0;
     }
 
     @Override
@@ -158,6 +160,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (isInsurance ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
     }
 
     @Override
@@ -214,6 +217,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setInsurance(shipmentCartItemModel.isInsurance());
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
+        newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
 
         return newShipmentCartItemModel;
     }
@@ -512,6 +516,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setStateHasLoadCourierState(boolean stateHasLoadCourierState) {
         this.stateHasLoadCourierState = stateHasLoadCourierState;
+    }
+
+    public boolean isStateHasExtraMarginTop() {
+        return stateHasExtraMarginTop;
+    }
+
+    public void setStateHasExtraMarginTop(boolean stateHasExtraMarginTop) {
+        this.stateHasExtraMarginTop = stateHasExtraMarginTop;
     }
 
     @Override
