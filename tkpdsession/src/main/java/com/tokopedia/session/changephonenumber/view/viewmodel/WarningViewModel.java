@@ -23,6 +23,7 @@ public class WarningViewModel implements Parcelable {
     private List<String> warningList;
     private boolean hasBankAccount;
     private boolean isOtpValidate;
+    private boolean isOvoEligible;
 
     public WarningViewModel() {
     }
@@ -91,6 +92,14 @@ public class WarningViewModel implements Parcelable {
         isOtpValidate = otpValidate;
     }
 
+    public boolean isOvoEligible() {
+        return isOvoEligible;
+    }
+
+    public void setOvoEligible(boolean ovoEligible) {
+        isOvoEligible = ovoEligible;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -105,6 +114,8 @@ public class WarningViewModel implements Parcelable {
         dest.writeString(this.action);
         dest.writeStringList(this.warningList);
         dest.writeByte(this.hasBankAccount ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOtpValidate ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isOvoEligible ? (byte) 1 : (byte) 0);
     }
 
     protected WarningViewModel(Parcel in) {
@@ -115,6 +126,8 @@ public class WarningViewModel implements Parcelable {
         this.action = in.readString();
         this.warningList = in.createStringArrayList();
         this.hasBankAccount = in.readByte() != 0;
+        this.isOtpValidate = in.readByte() != 0;
+        this.isOvoEligible = in.readByte() != 0;
     }
 
     public static final Creator<WarningViewModel> CREATOR = new Creator<WarningViewModel>() {

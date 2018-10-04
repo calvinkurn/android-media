@@ -27,6 +27,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
+import com.tokopedia.session.changephonenumber.view.activity.OvoWebViewActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
@@ -361,6 +362,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                         }
                     });
         }
+    }
+
+    @Override
+    public void goToOvoWebView() {
+        startActivity(OvoWebViewActivity.newInstance(getContext()));
+        getActivity().finish();
     }
 
     public Integer getUserId(){

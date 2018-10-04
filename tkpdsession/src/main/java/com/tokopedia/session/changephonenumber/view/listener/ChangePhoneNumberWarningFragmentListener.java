@@ -22,6 +22,8 @@ public interface ChangePhoneNumberWarningFragmentListener {
 
         void onGetValidateOtpStatusError();
 
+        void goToOvoWebView();
+
         Integer getUserId();
     }
 
