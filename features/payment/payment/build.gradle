@@ -2,13 +2,9 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'payment'
-    groupId = 'com.tokopedia.payment'
-    versionName = "${tkpdPaymentVersion}"
-    artifactName ="payment-release"
+repositories {
+    maven { url 'https://hansel.io/maven' }
 }
-
 buildscript {
     repositories {
         mavenCentral()
@@ -17,6 +13,13 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+project.ext {
+    artifactId = "${artifactIdPayment}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${groupIdPayment}-release"
 }
 
 dependencies {

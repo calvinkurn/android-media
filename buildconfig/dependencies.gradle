@@ -88,10 +88,12 @@ ext {
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
 
+    //SCOPE TRANSACTION
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
     artifactIdTransactionAnalytics = 'transactionanalytics'
     artifactIdTransactionData = 'transactiondata'
+    artifactIdTransactionInvoice = 'transactioninvoice'
     transactionGroupVersion = '2.22'
 
     //SCOPE LOGISTIC
@@ -105,6 +107,13 @@ ext {
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
     logisticGroupVersion = '2.22'
+
+    groupIdPayment = 'com.tokopedia.payment'
+    artifactIdPayment = 'payment'
+    artifactIdPaymentSetting = 'payment_setting'
+    artifactIdPaymentManagementSystem = 'pms'
+    artifactIdWithdraw = 'withdraw'
+    paymentGroupVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -378,6 +387,7 @@ ext {
             recentview                  : ":features:discovery:recentview",
             content                     : ":tkpdcontent",
             checkout                    : ":features:transaction:checkout",
+            transactionInvoice          : ":features:transaction:transactioninvoice",
             gamification                : ":features:promo:gamification",
             groupchat                   : ":features:user:groupchat",
             profile                     : ":features:user:profile",

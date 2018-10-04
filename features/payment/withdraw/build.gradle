@@ -16,11 +16,12 @@ buildscript {
 }
 
 project.ext {
-    artifactId = 'withdraw'
-    groupId = 'com.tokopedia.withdraw'
-    versionName = "${tkpdWithdrawVersion}"
-    artifactName = "withdraw-release"
+    artifactId = "${artifactIdWithdraw}"
+    groupId = "${groupIdPayment}"
+    versionName = "${paymentGroupVersion}"
+    artifactName = "${artifactIdWithdraw}-release"
 }
+
 
 dependencies {
 
