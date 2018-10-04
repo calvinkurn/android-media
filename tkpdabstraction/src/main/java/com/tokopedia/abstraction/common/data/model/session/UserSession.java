@@ -4,6 +4,10 @@ package com.tokopedia.abstraction.common.data.model.session;
  * Created by nathan on 11/28/17.
  */
 
+@Deprecated
+/**
+ * Please use UserSession module instead.
+ */
 public interface UserSession {
 
     String getAccessToken();
@@ -19,4 +23,12 @@ public interface UserSession {
     String getShopId();
 
     boolean hasShop();
+
+    String getName();
+
+    String getProfilePicture();
+
+    boolean isMsisdnVerified();
+
+    boolean isHasPassword();
 }

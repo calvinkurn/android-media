@@ -4,15 +4,15 @@ import android.view.View;
 
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartConfig;
-import com.tokopedia.seller.common.williamchart.base.BaseWilliamChartModel;
-import com.tokopedia.seller.common.williamchart.util.GMStatisticUtil;
+import com.db.williamchart.base.BaseWilliamChartConfig;
+import com.db.williamchart.base.BaseWilliamChartModel;
+import com.db.williamchart.util.GMStatisticUtil;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.gm.statistic.view.model.GMGraphViewWithPreviousModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.widget.LineChartContainerWidget;
-import com.tokopedia.seller.common.williamchart.Tools;
-import com.tokopedia.seller.common.williamchart.view.LineChartView;
+import com.db.williamchart.Tools;
+import com.db.williamchart.view.LineChartView;
 
 import java.util.List;
 

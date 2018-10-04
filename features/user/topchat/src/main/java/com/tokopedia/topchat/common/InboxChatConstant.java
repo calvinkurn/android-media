@@ -1,0 +1,20 @@
+package com.tokopedia.topchat.common;
+
+/**
+ * Created by stevenfredian on 11/15/17.
+ */
+
+public interface InboxChatConstant {
+
+    String PARCEL = "parcel";
+
+    int MODE_WEBSOCKET = 1;
+    int MODE_API = 2;
+
+    String UPLOADING = "Uploaded Image";
+
+    String USER_TAG = "Pengguna";
+    String ADMIN_TAG = "Administrator";
+    String OFFICIAL_TAG = "Official";
+    String SELLER_TAG = "Penjual";
+}

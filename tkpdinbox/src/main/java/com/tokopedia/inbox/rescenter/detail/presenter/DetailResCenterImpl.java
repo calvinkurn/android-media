@@ -249,7 +249,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
         String shippingID = Uri.parse(url).getQueryParameter("ship_id");
         String shippingRefNum = Uri.parse(url).getQueryParameter("ship_ref");
         view.startActivityForResult(
-                InputShippingActivity.createEditPageIntent(context,
+                InputShippingActivity.createEditPageIntentFromDetail(context,
                         view.getResolutionID(),
                         conversationID,
                         shippingID,
@@ -261,7 +261,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
     @Override
     public void onNewShippingClickListener(Context context) {
-        view.startActivityForResult(InputShippingActivity.createNewPageIntent(context, view.getResolutionID()), REQUEST_INPUT_SHIPPING);
+        view.startActivityForResult(InputShippingActivity.createNewPageIntentFromDetail(context, view.getResolutionID()), REQUEST_INPUT_SHIPPING);
     }
 
     @Override

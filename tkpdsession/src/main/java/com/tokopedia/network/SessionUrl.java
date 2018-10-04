@@ -7,6 +7,7 @@ package com.tokopedia.network;
 public class SessionUrl {
     public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
+    public static String CHANGE_PHONE_DOMAIN = "https://m.tokopedia.com/";
 
     public static final String PATH_GET_TOKEN = "token";
     public static final String PATH_GET_INFO = "info";
@@ -26,6 +27,9 @@ public class SessionUrl {
         public static final String VALIDATE_OTP = BASE_OTP + "/validate";
         public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
         public static final String PATH_GET_METHOD_LIST = BASE_OTP + "/ws/mode-list";
+        public static final String REQUEST_OTP_REGISTER = BASE_OTP + "/request";
+        public static final String VERIFY_OTP_REGISTER = BASE_OTP + "/validate";
+        public static final String VALIDATE_OTP_STATUS = BASE_OTP + "/get-validation-status";
     }
 
     public class Image {
@@ -57,4 +61,34 @@ public class SessionUrl {
     public static class User {
         public static final String PATH_MAKE_LOGIN = "v4/session/make_login.pl";
     }
+
+    public static class Register {
+        public static final String BASE_ACCOUNTS = "/api/v1/account";
+        public static final String BASE_REGISTER = BASE_ACCOUNTS + "/register";
+        public static final String BASE_UPDATE = BASE_ACCOUNTS + "/update";
+        public static final String PATH_REGISTER_PHONE_NUMBER = BASE_REGISTER;
+        public static final String PATH_REGISTER_EMAIL = BASE_REGISTER;
+        public static final String PATH_REGISTER_MSISDN_CHECK = BASE_REGISTER + "/msisdn/check";
+        public static final String PATH_REGISTER_EMAIL_CHECK = BASE_REGISTER + "/email/check";
+        public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
+        public static final String PATH_SEND_VERIFICATION_EMAIL = BASE_ACCOUNTS + "/email/verify/send";
+        public static final String PATH_REGISTER_VALIDATION = BASE_REGISTER + "/check";
+    }
+
+    public static class UpdateProfile {
+        public static final String BASE_ACCOUNTS = "/api/v1/account";
+        public static final String BASE_UPDATE = BASE_ACCOUNTS + "/update";
+        public static final String PATH_UPDATE_ACCOUNT = BASE_UPDATE;
+        public static final String PATH_ADD_EMAIL = BASE_UPDATE;
+        public static final String PATH_CHANGE_NAME = BASE_UPDATE;
+        public static final String PATH_ADD_PASSWORD = BASE_UPDATE;
+
+    }
+
+    public static class ChangePhone {
+        public static final String WEBVIEW_CHANGE_PHONE_NUMBER = "user/activation/inactive-phone";
+        public static final String PATH_WEBVIEW_CHANGE_PHONE_NUMBER =
+                CHANGE_PHONE_DOMAIN + WEBVIEW_CHANGE_PHONE_NUMBER;
+    }
+
 }

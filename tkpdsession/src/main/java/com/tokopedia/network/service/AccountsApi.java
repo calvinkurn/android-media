@@ -3,6 +3,7 @@ package com.tokopedia.network.service;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.session.changephonenumber.data.model.ValidateOtpStatusData;
 
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> makeLogin(@FieldMap Map<String, String> params);
 
     @GET(SessionUrl.PATH_DISCOVER_LOGIN)
-    Observable<Response<TkpdResponse>> discoverLogin(@QueryMap TKPDMapParam<String, Object> parameters);
+    Observable<Response<TkpdResponse>> discoverLogin(@QueryMap Map<String, Object> parameters);
 
     @FormUrlEncoded
     @POST(SessionUrl.CREATE_PASSWORD)
@@ -134,4 +135,52 @@ public interface AccountsApi {
     @GET(SessionUrl.OTP.PATH_GET_METHOD_LIST)
     Observable<Response<String>> getVerificationMethodList(@QueryMap TKPDMapParam<String,
             Object> parameters);
+
+
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_MSISDN_CHECK)
+    Observable<Response<TkpdResponse>> checkMsisdnRegisterPhoneNumber(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.OTP.REQUEST_OTP_REGISTER)
+    Observable<Response<TkpdResponse>> requestRegisterOtp(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.OTP.VERIFY_OTP_REGISTER)
+    Observable<Response<TkpdResponse>> verifyRegisterOtp(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_EMAIL_CHECK)
+    Observable<Response<TkpdResponse>> checkEmail(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_ADD_EMAIL)
+    Observable<Response<TkpdResponse>> addEmail(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_SEND_VERIFICATION_EMAIL)
+    Observable<Response<TkpdResponse>> requestVerification(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_CHANGE_NAME)
+    Observable<Response<TkpdResponse>> changeName(@FieldMap Map<String,
+            Object> parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.UpdateProfile.PATH_ADD_PASSWORD)
+    Observable<Response<TkpdResponse>> addPassword(@FieldMap Map<String,
+            Object> parameters);
+
+    @GET(SessionUrl.OTP.VALIDATE_OTP_STATUS)
+    Observable<Response<ValidateOtpStatusData>> validateOtpStatus(@QueryMap Map<String, Object>
+                                                                 parameters);
+
+    @FormUrlEncoded
+    @POST(SessionUrl.Register.PATH_REGISTER_VALIDATION)
+    Observable<Response<TkpdResponse>> validateRegister(@FieldMap Map<String, Object>
+                                                                          parameters);
 }

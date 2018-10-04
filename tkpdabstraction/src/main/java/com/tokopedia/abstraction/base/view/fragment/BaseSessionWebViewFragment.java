@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -44,7 +45,13 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         return userSession.getUserId();
     }
 
-    private String getMitraToppersUrl() {
+    @Nullable
+    @Override
+    protected String getAccessToken() {
+        return userSession.getAccessToken();
+    }
+
+    protected String getMitraToppersUrl() {
         return url;
     }
 }

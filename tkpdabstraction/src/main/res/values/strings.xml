@@ -2,11 +2,12 @@
     <string name="app_name">abstraction</string>
 
     <string name="label_next">Selanjutnya</string>
+    <string name="label_remove">Hapus</string>
     <string name="label_choose">Pilih</string>
     <string name="label_done">Selesai</string>
     <string name="title_no_result">Tidak ada hasil</string>
     <string name="title_loading">Loading</string>
-    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
+    <string name="label_add">Tambah</string>
     <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
     <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
     <string name="msg_network_error_1">Terjadi kesalahan koneksi</string>
@@ -42,4 +43,9 @@
     <string name="webview_label_menu">Menu</string>
     <string name="webview_label_menu_home">Beranda</string>
     <string name="webview_label_menu_help">Bantuan</string>
+
+    <!-- app update -->
+    <string name="appupdate_update">Update</string>
+    <string name="appupdate_later">Nanti</string>
+    <string name="appupdate_close">Tutup</string>
 </resources>

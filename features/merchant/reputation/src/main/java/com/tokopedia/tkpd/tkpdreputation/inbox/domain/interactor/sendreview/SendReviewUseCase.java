@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview;
 
-import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -120,7 +119,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     addListImageUploadToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<List<UploadImageDomain>, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewRequestModel> call(@Nullable List<UploadImageDomain>
+            public Observable<SendReviewRequestModel> call(List<UploadImageDomain>
                                                                    uploadImageDomains) {
                 if (!sendReviewRequestModel.getPostKey().isEmpty()) {
                     for (int i = 0; i < uploadImageDomains.size(); i++) {
@@ -183,7 +182,7 @@ public class SendReviewUseCase extends UseCase<SendReviewDomain> {
     addGenerateHostResultToRequestModel(final SendReviewRequestModel sendReviewRequestModel) {
         return new Func1<GenerateHostDomain, Observable<SendReviewRequestModel>>() {
             @Override
-            public Observable<SendReviewRequestModel> call(@Nullable GenerateHostDomain
+            public Observable<SendReviewRequestModel> call(GenerateHostDomain
                                                                    generateHostDomain) {
                 if (generateHostDomain != null) {
                     sendReviewRequestModel.setUploadHost(generateHostDomain.getUploadHost());

@@ -1,7 +1,7 @@
 package com.tokopedia.gm.statistic.view.widget.config;
 
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.common.williamchart.renderer.StringFormatRenderer;
+import com.db.williamchart.renderer.StringFormatRenderer;
 
 /**
  * Created by sebastianuskh on 12/20/16.

@@ -9,6 +9,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.util.SessionHandler;
 
+import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
 
 /**
@@ -25,6 +26,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         CommonUtils.dumper(TAG + " RefreshedToken: " + refreshedToken);
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
+        Hansel.setNewToken(this, refreshedToken);
     }
 
     @Override

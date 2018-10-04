@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="TextInputLayoutv2">
+    <declare-styleable name="TkpdHintTextInputLayout">
         <!-- will override android:textColorHint -->
         <attr name="defaultTextColorLabel" format="reference|color" />
         <attr name="focusedTextColorLabel" format="reference|color" />
@@ -25,6 +25,7 @@
 
         <attr name="helperEnabled" format="boolean"/>
         <attr name="helperTextAppearance" format="reference"/>
+
         <!-- Text to set as helper string -->
         <attr name="helper" format="string"/>
 

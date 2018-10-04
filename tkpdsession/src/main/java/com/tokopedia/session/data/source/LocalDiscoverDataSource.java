@@ -32,8 +32,8 @@ public class LocalDiscoverDataSource {
                 .map(new Func1<String, DiscoverViewModel>() {
                     @Override
                     public DiscoverViewModel call(String s) {
-                        if (getCache() != null) {
-                            return CacheUtil.convertStringToModel(getCache(),
+                        if (getCache(s) != null) {
+                            return CacheUtil.convertStringToModel(getCache(s),
                                     new TypeToken<DiscoverViewModel>() {
                                     }.getType());
                         } else {
@@ -50,7 +50,7 @@ public class LocalDiscoverDataSource {
                 });
     }
 
-    private String getCache() {
-        return globalCacheManager.getValueString(KEY_DISCOVER);
+    private String getCache(String source) {
+        return globalCacheManager.getValueString(KEY_DISCOVER + source);
     }
 }

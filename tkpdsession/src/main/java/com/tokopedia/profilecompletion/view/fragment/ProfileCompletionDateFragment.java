@@ -1,11 +1,12 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,9 @@ import android.widget.AutoCompleteTextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.util.Events;
 import com.tokopedia.profilecompletion.view.util.Properties;
-import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.session.R;
 
 import java.text.DateFormatSymbols;
@@ -38,6 +39,8 @@ import rx.functions.Func3;
 
 public class ProfileCompletionDateFragment extends BaseDaggerFragment {
 
+    private final static int YEAR_MIN = 1937;
+    private final static int YEAR_MAX = 2007;
 
     public static final String TAG = "date";
     private AutoCompleteTextView month;
@@ -66,10 +69,14 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_completion_dob, container, false);
         unbinder = ButterKnife.bind(this, parentView);
-        initView(parentView);
-        setViewListener();
-        initialVar();
-        setUpFields();
+        if (this.view != null && this.view.getView() != null) {
+            initView(parentView);
+            setViewListener();
+            initialVar();
+            setUpFields();
+        } else if (getActivity() != null) {
+            getActivity().finish();
+        }
         return parentView;
     }
 
@@ -77,6 +84,7 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     protected void initView(View view) {
@@ -86,7 +94,6 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
         actvContainer = view.findViewById(R.id.autoCompleteTextViewContainer);
         proceed = this.view.getView().findViewById(R.id.proceed);
         skip = this.view.getView().findViewById(R.id.skip);
-//        skip = this.view.getSkipButton();
         progress = this.view.getView().findViewById(R.id.progress);
         proceed.setEnabled(false);
         this.view.canProceed(false);
@@ -137,6 +144,30 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View view) {
                 presenter.skipView(TAG);
+            }
+        });
+
+        year.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 4) {
+                    int theYear = Integer.parseInt(charSequence.toString());
+                    if (theYear < YEAR_MIN) {
+                        year.setText(String.valueOf(YEAR_MIN));
+                    } else if (theYear > YEAR_MAX) {
+                        year.setText(String.valueOf(YEAR_MAX));
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -210,4 +241,5 @@ public class ProfileCompletionDateFragment extends BaseDaggerFragment {
     protected void initInjector() {
 
     }
+
 }

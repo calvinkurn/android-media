@@ -1,6 +1,6 @@
 package com.tokopedia.gm.featured.view.adapter.model;
 
-import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.product.manage.item.common.util.ItemIdType;
 
 /**
  * Created by normansyahputa on 9/6/17.
@@ -61,8 +61,12 @@ public class GMFeaturedProductModel implements ItemIdType {
         this.imageUrl = imageUrl;
     }
 
-    @Override
     public String getId() {
+        return Long.toString(productId);
+    }
+
+    @Override
+    public String getItemId() {
         return Long.toString(productId);
     }
 

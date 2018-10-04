@@ -197,10 +197,14 @@ public class ManagePeopleProfileIntentService extends IntentService {
                             public PeopleProfilePass call(PeopleProfilePass peopleProfilePass, Response<TkpdResponse> response) {
                                 if (response.isSuccessful()) {
                                     Profile temp = response.body().convertDataObj(Profile.class);
-
-                                    if (temp.isSuccess()) {
-                                        peopleProfilePass.setSuccess(true);
+                                    if (temp != null) {
+                                        if (temp.isSuccess()) {
+                                            peopleProfilePass.setSuccess(true);
+                                        } else {
+                                            throw new RuntimeException(response.body().getErrorMessages().get(0));
+                                        }
                                     } else {
+                                        peopleProfilePass.setSuccess(false);
                                         throw new RuntimeException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {

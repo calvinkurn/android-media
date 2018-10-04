@@ -115,7 +115,7 @@
     <!--android:layout_height="25dp"-->
     <!--android:layout_width="wrap_content"-->
     <!--android:scaleType="centerCrop"-->
-    <!--android:src="@drawable/cab_dollar_symbol"-->
+    <!--app:srcCompat="@drawable/cab_dollar_symbol"-->
     <!--android:textColor="@color/black" />-->
 
     <!--<TextView-->

@@ -1,5 +1,6 @@
 package com.tokopedia.core.deposit.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,18 +8,23 @@ import android.util.Log;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractor;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.core.deposit.interactor.DepositRetrofitInteractor;
 import com.tokopedia.core.deposit.interactor.DepositRetrofitInteractorImpl;
 import com.tokopedia.core.deposit.listener.DepositFragmentView;
-import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.deposit.model.SummaryDepositParam;
+import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
+import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -31,7 +37,7 @@ import java.util.Map;
 /**
  * Created by Nisie on 3/30/16.
  */
-public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
+public class DepositFragmentPresenterImpl implements DepositFragmentPresenter, MerchantSaldoDetailsActionListener {
 
     public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
     public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
@@ -54,28 +60,32 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
     @Override
-    public void onDrawClicked() {
-
-        depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
-            @Override
-            public void onSuccess(SummaryWithdraw result) {
-                if (result.getSummary().getSummaryUseableDeposit() > 0) {
-                    Intent intent = new Intent(viewListener.getContext(), WithdrawActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSummary().getSummaryUseableDepositIdr()));
-                    bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSummary().getSummaryUseableDeposit()));
-                    intent.putExtras(bundle);
-                    viewListener.getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
-                } else {
-                    viewListener.showErrorMessage(viewListener.getString(R.string.error_no_amount_deposit));
+    public void onDrawClicked(Intent intent) {
+        Context context = viewListener.getContext();
+        UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
+        if (session.isHasPassword()) {
+            depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
+                @Override
+                public void onSuccess(SummaryWithdraw result) {
+                    if (result.getSummary().getSummaryUseableDeposit() > 0) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(BUNDLE_TOTAL_BALANCE, String.valueOf(result.getSummary().getSummaryUseableDepositIdr()));
+                        bundle.putString(BUNDLE_TOTAL_BALANCE_INT, String.valueOf(result.getSummary().getSummaryUseableDeposit()));
+                        intent.putExtras(bundle);
+                        viewListener.getActivity().startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
+                    } else {
+                        viewListener.showErrorMessage(viewListener.getString(R.string.error_no_amount_deposit));
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(DepositFragmentPresenterImpl.class.getSimpleName(), e.toString());
-            }
-        });
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(DepositFragmentPresenterImpl.class.getSimpleName(), e.toString());
+                }
+            });
+        } else {
+            viewListener.showWithdrawalNoPassword();
+        }
 
     }
 
@@ -86,6 +96,18 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
         paramEndDate = viewListener.getEndDate();
         paging.resetPage();
         getSummaryDeposit();
+    }
+
+    @Override
+    public void getMerchantSaldoDetails() {
+        viewListener.setLoading();
+        GetMerchantSaldoDetails getMerchantSaldoDetails =
+                new GetMerchantSaldoDetails(viewListener.getContext());
+
+        GetMerchantSaldoDetailsSubscriber getMerchantSaldoDetailsSubscriber =
+                new GetMerchantSaldoDetailsSubscriber(this);
+
+        getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
 
     @Override
@@ -193,9 +215,9 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
                 viewListener.getAdapter().getList().size() == 0) {
             viewListener.setLoading();
 
-        } else if(paging.getPage() == 1){
+        } else if (paging.getPage() == 1) {
             viewListener.showRefreshing();
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(true);
         }
     }
@@ -278,7 +300,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     private void setData(SummaryWithdraw data) {
         viewListener.setBalance(data.getSummary().getSummaryUseableDepositIdr());
         if ((data.getSummary().getSummaryHoldDeposit()) > 0) {
-            viewListener.showHoldWarning(data.getSummary().getSummaryHoldDepositIdr());
+            viewListener.showHoldWarning(data.getWarningHoldDeposit());
         } else {
             viewListener.hideWarning();
         }
@@ -290,7 +312,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
 
         if (paging.CheckNextPage()) {
             viewListener.getAdapter().showLoading(true);
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(false);
         }
     }
@@ -362,4 +384,18 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
 
+    @Override
+    public void hideSaldoPrioritasFragment() {
+        viewListener.hideSaldoPrioritasFragment();
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+        viewListener.showSaldoPrioritasFragment(sellerDetails);
+    }
+
+    @Override
+    public void finishLoading() {
+        viewListener.finishLoading();
+    }
 }

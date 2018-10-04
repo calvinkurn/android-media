@@ -52,13 +52,11 @@ public class RejectOrderFragment extends TkpdFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reject_order_fragment, container, false);
         TextView reason1 = view.findViewById(R.id.reason_1);
-        TextView reason2 = view.findViewById(R.id.reason_2);
         TextView reason3 = view.findViewById(R.id.reason_3);
         TextView reason4 = view.findViewById(R.id.reason_4);
         TextView reason5 = view.findViewById(R.id.reason_5);
         TextView reason6 = view.findViewById(R.id.reason_6);
         reason1.setOnClickListener(onStockEmpty());
-        reason2.setOnClickListener(onVarianEmpty());
         reason3.setOnClickListener(onWrongPriceWeight());
         reason4.setOnClickListener(onStoreClosed());
         reason5.setOnClickListener(onCourierProblem());

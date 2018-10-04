@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:divider="@drawable/bg_line_separator"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingTop="@dimen/margin_small"
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_10"
     android:showDividers="beginning|middle|end">
 
     <com.tokopedia.design.label.LabelView
@@ -15,7 +15,7 @@
         style="@style/LabelLayout"
         app:lv_content_color="@color/tkpd_main_green"
         app:lv_title="@string/mitra_toppers_preapprove_limit"
-        app:lv_title_text_size="@dimen/font_small"
+        app:lv_title_text_size="@dimen/sp_14"
         app:lv_title_text_style="bold" />
 
 </LinearLayout>

@@ -6,6 +6,9 @@ package com.tokopedia.gm.statistic.constant;
 
 import android.support.annotation.IntDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.GROSS_REVENUE;
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.NET_REVENUE;
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.REJECTED_AMOUNT;
@@ -13,7 +16,7 @@ import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.REJECT_
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.SHIPPING_COST;
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.SUCCESS_TRANS;
 import static com.tokopedia.gm.statistic.constant.GMTransactionGraphType.TOTAL_TRANSACTION;
-
+@Retention(RetentionPolicy.SOURCE)
 @IntDef({TOTAL_TRANSACTION, GROSS_REVENUE, NET_REVENUE, REJECTED_AMOUNT, SHIPPING_COST, SUCCESS_TRANS, REJECT_TRANS})
 public @interface GMTransactionGraphType {
     int TOTAL_TRANSACTION = 0;

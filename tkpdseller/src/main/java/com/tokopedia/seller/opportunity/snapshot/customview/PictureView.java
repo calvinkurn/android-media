@@ -11,13 +11,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
-import com.tokopedia.core.product.adapter.ImagePagerAdapter;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.adapter.ImagePagerAdapter;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 import java.util.ArrayList;

@@ -24,11 +24,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -162,10 +160,6 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         final Talk talk = (Talk) data.get(position);
         LabelUtils label = LabelUtils.getInstance(context, holder.UserView);
 
-        talk.setTalkProductId(bundle.getString("product_id"));
-        talk.setTalkProductName(bundle.getString("prod_name"));
-        talk.setTalkProductImage(bundle.getString("product_image"));
-
         if (isShop) {
             ImageHandler.loadImageCircle2(context, holder.UserImageView, String.valueOf(talk.getTalkProductImage()));
             holder.UserImageView.setOnClickListener(goToProduct(talk.getTalkProductId()));
@@ -257,9 +251,11 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
 
             @Override
             public void onClick(View v) {
-                context.startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(context, talkUserId)
-                );
+                if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                    context.startActivity(
+                            ((TkpdCoreRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, talkUserId));
+                }
             }
         };
     }

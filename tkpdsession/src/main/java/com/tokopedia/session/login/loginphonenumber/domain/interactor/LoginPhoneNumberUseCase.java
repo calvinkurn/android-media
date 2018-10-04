@@ -1,12 +1,7 @@
 package com.tokopedia.session.login.loginphonenumber.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -14,11 +9,12 @@ import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -31,22 +27,16 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
     private GetTokenUseCase getTokenUseCase;
     private MakeLoginUseCase makeLoginUseCase;
     private GetUserInfoUseCase getUserInfoUseCase;
-    private SessionHandler sessionHandler;
 
     @Inject
-    public LoginPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                   PostExecutionThread postExecutionThread,
-                                   GetCodeTokoCashUseCase getCodeTokoCashUseCase,
+    public LoginPhoneNumberUseCase(GetCodeTokoCashUseCase getCodeTokoCashUseCase,
                                    GetTokenUseCase getTokenUseCase,
                                    GetUserInfoUseCase getUserInfoUseCase,
-                                   MakeLoginUseCase makeLoginUseCase,
-                                   SessionHandler sessionHandler) {
-        super(threadExecutor, postExecutionThread);
+                                   MakeLoginUseCase makeLoginUseCase) {
         this.getCodeTokoCashUseCase = getCodeTokoCashUseCase;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -56,13 +46,7 @@ public class LoginPhoneNumberUseCase extends UseCase<LoginTokoCashViewModel> {
                 .flatMap(getCodeTokoCash(requestParams))
                 .flatMap(getTokenAccounts())
                 .flatMap(getUserInfo())
-                .flatMap(makeLogin())
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        sessionHandler.clearToken();
-                    }
-                });
+                .flatMap(makeLogin());
     }
 
     private Func1<LoginTokoCashViewModel, Observable<LoginTokoCashViewModel>> getUserInfo() {

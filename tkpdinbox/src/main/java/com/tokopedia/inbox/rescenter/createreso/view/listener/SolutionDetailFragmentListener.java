@@ -1,10 +1,19 @@
 package com.tokopedia.inbox.rescenter.createreso.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionOrderModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
+
+import java.util.List;
 
 /**
  * Created by yoasfs on 24/08/17.
@@ -14,19 +23,9 @@ public interface SolutionDetailFragmentListener {
 
     interface View extends CustomerView {
 
-        void populateDataToView(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
-
-        void updateAmountError(String message);
-
-        void updateBottomButton(int refundAmount);
-
         void submitData(ResultViewModel resultViewModel);
 
         void showDialogCompleteEditAppeal(EditAppealSolutionModel editAppealSolutionModel);
-
-        void updatePriceEditText(String price);
-
-        void showErrorToast(String error);
 
         void successEditSolution(String message);
 
@@ -35,18 +34,31 @@ public interface SolutionDetailFragmentListener {
         void showLoading();
 
         void hideLoading();
+
+        void initDataToList(List<Visitable> itemList);
+
+        Context getContext();
+
+        ComplaintResult getComplaintResult(SolutionOrderModel orderModel);
+
+        void calculateTotalRefund(ComplaintResult complaintResult);
+
+        void initAmountToResult(ComplaintResult complaintResult);
+
+        void initCheckedItem();
+
+        void addRemoveOngkirComplaint(SolutionComplaintModel model);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void initResultViewModel(ResultViewModel resultViewModel, SolutionViewModel solutionViewModel);
+        void initData(SolutionViewModel solutionViewModel,
+                      SolutionResponseViewModel solutionResponseViewModel);
 
-        void initEditAppealSolutionModel(EditAppealSolutionModel editAppealSolutionModel, SolutionViewModel solutionViewModel);
 
-        void onAmountChanged(String amount);
 
-        void onContinueButtonClicked();
+        void onContinueButtonClicked(ResultViewModel resultViewModel, EditAppealSolutionModel editAppealSolutionModel);
 
-        void submitEditAppeal();
+        void submitEditAppeal(EditAppealSolutionModel editAppealSolutionModel);
     }
 }

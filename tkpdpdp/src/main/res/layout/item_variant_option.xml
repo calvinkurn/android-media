@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
-    android:layout_height="wrap_content" android:paddingRight="@dimen/margin_small"
-    android:paddingBottom="@dimen/padding_small">
+    android:layout_height="wrap_content" android:paddingRight="@dimen/dp_10"
+    android:paddingBottom="@dimen/dp_10">
 
 
     <LinearLayout android:id="@+id/variant_container" android:orientation="horizontal" android:layout_width="wrap_content"
@@ -25,8 +25,8 @@
             android:maxLines="1"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center_horizontal"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginRight="@dimen/dp_5"
             android:textSize="@dimen/fontvs"
             android:textColor="@color/black_70" />
 

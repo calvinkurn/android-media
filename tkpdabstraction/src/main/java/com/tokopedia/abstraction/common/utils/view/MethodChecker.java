@@ -11,16 +11,18 @@ import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.telephony.SmsMessage;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
-
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.io.File;
 
@@ -48,10 +50,15 @@ public class MethodChecker {
     }
 
     public static int getColor(Context context, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.getColor(context, id);
-        } else {
-            return context.getResources().getColor(id);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return ContextCompat.getColor(context, id);
+            } else {
+                return context.getResources().getColor(id);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 
@@ -84,6 +91,9 @@ public class MethodChecker {
     }
 
     public static Spanned fromHtml(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return new SpannableStringBuilder("");
+        }
         Spanned result;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
@@ -118,7 +128,7 @@ public class MethodChecker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
         else
-            return context.getResources().getDrawable(resId);
+            return AppCompatResources.getDrawable(context, resId);
     }
 
     public static boolean isTimezoneNotAutomatic(Context context) {

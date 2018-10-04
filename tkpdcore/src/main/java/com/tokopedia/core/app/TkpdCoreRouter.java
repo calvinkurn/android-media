@@ -11,11 +11,15 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
+
+import rx.Observable;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -23,14 +27,11 @@ import com.tokopedia.core.util.SessionHandler;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
+    String EXTRAS = "extras";
 
     void goToManageProduct(Context context);
+
+    void goToEtalaseList(Context context);
 
     void goToDraftProductList(Context context);
 
@@ -160,4 +161,43 @@ public interface TkpdCoreRouter {
     Intent getLoginFacebookIntent(Context context);
 
     Intent getLoginWebviewIntent(Context context, String name, String url);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
+    Observable<TokoCashData> getTokoCashBalance();
+
+    Intent getAddEmailIntent(Context context);
+
+    Intent getAddPasswordIntent(Context context);
+
+    Intent getChangeNameIntent(Context context);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGroupChatIntent(Context context, String channelUrl);
+
+    Intent getInboxChannelsIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
+
+    void sendTrackingGroupChatLeftNavigation();
+
+    String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
+
+    Intent getWithdrawIntent(Context context);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
+    Intent getSettingBankIntent(Context context);
+
+    Intent getChangePasswordIntent(Context context);
+
+    Intent getInboxTalkCallingIntent(Context context);
 }

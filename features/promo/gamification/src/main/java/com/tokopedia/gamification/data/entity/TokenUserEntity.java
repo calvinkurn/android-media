@@ -1,0 +1,75 @@
+package com.tokopedia.gamification.data.entity;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by nabillasabbaha on 3/28/18.
+ */
+
+public class TokenUserEntity {
+
+    @SerializedName("tokenUserID")
+    @Expose
+    private Integer tokenUserID;
+
+    @SerializedName("campaignID")
+    @Expose
+    private Integer campaignID;
+
+    @SerializedName("title")
+    @Expose
+    private String title;
+
+    @SerializedName("unixTimestampFetch")
+    @Expose
+    private Integer unixTimestampFetch;
+
+    @SerializedName("timeRemainingSeconds")
+    @Expose
+    private Integer timeRemainingSeconds;
+
+    @SerializedName("isShowTime")
+    @Expose
+    private Boolean isShowTime;
+
+    @SerializedName("backgroundAsset")
+    @Expose
+    private TokenBackgroundAssetEntity backgroundAsset;
+
+    @SerializedName("tokenAsset")
+    @Expose
+    private TokenAssetEntity tokenAsset;
+
+    public Integer getTokenUserID() {
+        return tokenUserID;
+    }
+
+    public Integer getCampaignID() {
+        return campaignID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getUnixTimestampFetch() {
+        return unixTimestampFetch;
+    }
+
+    public Integer getTimeRemainingSeconds() {
+        return timeRemainingSeconds;
+    }
+
+    public Boolean getShowTime() {
+        return isShowTime;
+    }
+
+    public TokenAssetEntity getTokenAsset() {
+        return tokenAsset;
+    }
+
+    public TokenBackgroundAssetEntity getBackgroundAsset() {
+        return backgroundAsset;
+    }
+}

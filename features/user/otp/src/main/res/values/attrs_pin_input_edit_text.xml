@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PinInputEditText">
+        <attr name="PinInputAnimationType" format="enum">
+            <enum name="popIn" value="0" />
+            <enum name="fromBottom" value="1" />
+            <enum name="none" value="-1" />
+        </attr>
+        <attr name="PinInputCharacterMask" format="string" />
+        <attr name="PinInputRepeatedHint" format="string" />
+        <attr name="PinInputLineStroke" format="dimension" />
+        <attr name="PinInputLineStrokeSelected" format="dimension" />
+        <attr name="PinInputCharacterSpacing" format="dimension" />
+        <attr name="PinInputTextBottomPadding" format="dimension" />
+        <attr name="PinInputLineColors" format="color" />
+        <attr name="PinInputBackgroundDrawable" format="reference" />
+        <attr name="PinInputBackgroundIsSquare" format="boolean" />
+    </declare-styleable>
+</resources>

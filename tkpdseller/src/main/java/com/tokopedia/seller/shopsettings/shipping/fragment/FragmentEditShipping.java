@@ -27,9 +27,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
 import com.tokopedia.seller.shopsettings.shipping.customview.ShippingAddressLayout;
@@ -41,7 +42,7 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 
-import static com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
+import static com.tokopedia.district_recommendation.view.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 
 /**
  * Created by Kris on 2/19/2016.
@@ -360,7 +361,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
 
     @Override
     public void editAddress() {
-        startActivityForResult(DistrictRecommendationActivity.createInstance(getActivity(),
+        startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(getActivity(),
                 editShippingPresenter.getToken()),
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE);
     }
@@ -422,7 +423,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (isAdded() && getActivity() != null) {
-            getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            if(GlobalConfig.isCustomerApp()) {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn_black, menu);
+            } else {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            }
             MenuItem item = menu.findItem(R.id.action_send);
             item.setTitle(getString(R.string.title_action_save_shipping));
         }
@@ -477,15 +482,21 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            LocationPass locationPass = null;
+            LocationPass locationPass = new LocationPass();
+
             if (!editShippingPresenter.getShopInformation().getShopLatitude().isEmpty()
                     && !editShippingPresenter.getShopInformation().getShopLongitude().isEmpty()) {
-                locationPass = new LocationPass();
+
                 locationPass.setLatitude(editShippingPresenter.getShopInformation().getShopLatitude());
                 locationPass.setLongitude(editShippingPresenter.getShopInformation().getShopLongitude());
                 locationPass.setGeneratedAddress(addressLayout.getGoogleMapAddressString());
+            } else {
+                locationPass.setDistrictName(
+                        editShippingPresenter.getShopInformation().getDistrictName()
+                );
+                locationPass.setCityName(editShippingPresenter.getShopInformation().getCityName());
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass);
+            Intent intent = GeolocationActivity.createInstanceIntent(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");

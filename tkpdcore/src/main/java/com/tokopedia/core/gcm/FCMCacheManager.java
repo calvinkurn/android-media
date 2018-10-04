@@ -15,10 +15,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.fragment.SettingsFragment;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -31,10 +33,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -146,7 +144,7 @@ public class FCMCacheManager {
 
     public Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean("notifications_new_message_vibrate", false);
+        return settings.getBoolean(SettingsFragment.SETTING_NOTIFICATION_VIBRATE, false);
     }
 
     public Uri getSoundUri() {
@@ -204,6 +202,11 @@ public class FCMCacheManager {
             case TkpdState.GCMServiceState.GCM_SELLER_INFO:
                 return settings.getBoolean(Constants.Settings.NOTIFICATION_SELLER_INFO, true);
 
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_POINTS:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_LOYALTY:
+            case TkpdState.GCMServiceState.GCM_GROUP_CHAT_COUPON:
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_GROUP_CHAT, false);
             default:
                 return true;
         }
@@ -227,7 +230,7 @@ public class FCMCacheManager {
                 }
             }
         } catch (Exception e) {
-            Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
+            if(!GlobalConfig.DEBUG) Crashlytics.log(Log.ERROR, "PUSH NOTIF - IndexOutOfBounds",
                     "tkp_code:" + Integer.parseInt(data.getString(NOTIFICATION_CODE)) +
                             " size contentArray " + content.size() +
                             " size codeArray " + code.size() +
@@ -278,16 +281,23 @@ public class FCMCacheManager {
 
     public static void checkAndSyncFcmId(final Context context) {
         if (FCMCacheManager.isFcmExpired(context)) {
-            SessionHandler sessionHandler = new SessionHandler(context);
-            if (sessionHandler.isV4Login()) {
-                IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
-                FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
-                tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
-                tokenUpdate.setOsType(String.valueOf(1));
-                tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
-                tokenUpdate.setUserId(sessionHandler.getLoginID());
-                fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
-            }
+            updateGcmId(context);
+        }
+    }
+
+    /**
+     * Only call this method when you need to update GCM Id.
+     * Do not change this method**/
+    public static void updateGcmId(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        if (sessionHandler.isV4Login()) {
+            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
+            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
+            tokenUpdate.setOsType(String.valueOf(1));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
+            tokenUpdate.setUserId(sessionHandler.getLoginID());
+            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
         }
     }
 

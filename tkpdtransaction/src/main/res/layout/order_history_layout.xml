@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="@dimen/padding_med"
+                android:padding="@dimen/dp_20"
                 android:text="Status Pemesanan"
                 android:textSize="@dimen/font_large"
                 android:textStyle="bold" />
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="@dimen/padding_small" />
+                android:padding="@dimen/dp_10" />
 
         </LinearLayout>
 

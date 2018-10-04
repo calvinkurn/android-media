@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 
 /**
  * Created by ricoharisin on 5/30/16.
@@ -81,7 +83,11 @@ public class NetworkErrorHelper {
     }
 
     public static SnackbarRetry createSnackbarWithAction(Activity activity, final RetryClickedListener listener) {
-        return createSnackbarWithAction(activity, activity.getResources().getString(R.string.msg_network_error), listener);
+        String message = "";
+        if (activity != null) {
+            message = activity.getResources().getString(R.string.msg_network_error);
+        }
+        return createSnackbarWithAction(activity, message, listener);
     }
 
     public static SnackbarRetry createSnackbarWithAction(
@@ -112,23 +118,26 @@ public class NetworkErrorHelper {
 
     public static void showSnackbar(Activity activity) {
         if (activity != null) {
-            SnackbarManager.make(activity,
+            ToasterError.make(BaseToaster.getContentView(activity),
                     activity.getResources().getString(R.string.msg_network_error),
-                    Snackbar.LENGTH_SHORT)
-                    .show();
+                    BaseToaster.LENGTH_SHORT).show();
         }
     }
 
     public static void showSnackbar(Activity activity, String error) {
-        if (activity != null) {
-            if (error != null && !error.isEmpty()) {
-                SnackbarManager.make(activity,
-                        error,
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-            } else {
-                showSnackbar(activity);
+        try {
+            if (activity != null) {
+                if (error != null && !error.isEmpty()) {
+                    SnackbarManager.make(activity,
+                            error,
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+                } else {
+                    showSnackbar(activity);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

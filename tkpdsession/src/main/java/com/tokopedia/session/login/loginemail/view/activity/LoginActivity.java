@@ -129,10 +129,21 @@ public class LoginActivity extends TActivity implements HasComponent {
         toolbar.setPadding(0, 0, 30, 0);
     }
 
+    public static Intent getIntentLoginFromRegister(Context context, String email) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginFragment.IS_FROM_REGISTER, true);
+        bundle.putBoolean(LoginFragment.IS_AUTO_FILL, true);
+        bundle.putString(LoginFragment.AUTO_FILL_EMAIL, email);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
     public static Intent getAutomaticLogin(Context context, String email, String password) {
         Intent intent = new Intent(context, LoginActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(LoginFragment.IS_AUTO_LOGIN, true);
+        bundle.putBoolean(LoginFragment.IS_FROM_REGISTER, true);
         bundle.putInt(LoginFragment.AUTO_LOGIN_METHOD, METHOD_EMAIL);
         bundle.putString(LoginFragment.AUTO_LOGIN_EMAIL, email);
         bundle.putString(LoginFragment.AUTO_LOGIN_PASS, password);

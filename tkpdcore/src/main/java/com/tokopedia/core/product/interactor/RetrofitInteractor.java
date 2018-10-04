@@ -3,6 +3,7 @@ package com.tokopedia.core.product.interactor;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
@@ -63,6 +64,9 @@ public interface RetrofitInteractor {
 
     void getProductVariant(@NonNull Context context, @NonNull String productId,
                               @NonNull ProductVariantListener listener);
+
+    void getProductStock(@NonNull Context context, @NonNull String productId,
+                           @NonNull ProductStockListener listener);
 
     void updateRecentView(@NonNull Context context, @NonNull String productId);
 
@@ -167,6 +171,13 @@ public interface RetrofitInteractor {
     interface ProductVariantListener {
 
         void onSucccess(ProductVariant productVariant);
+
+        void onError(String error);
+    }
+
+    interface ProductStockListener {
+
+        void onSucccess(Child productStock);
 
         void onError(String error);
     }

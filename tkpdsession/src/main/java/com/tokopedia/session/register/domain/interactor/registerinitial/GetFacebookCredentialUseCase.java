@@ -14,12 +14,12 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +35,7 @@ public class GetFacebookCredentialUseCase {
     private static final String PARAM_CALLBACK_MANAGER = "PARAM_CALLBACK_MANAGER";
     private static final String PARAM_FRAGMENT = "PARAM_FRAGMENT";
 
-    @Inject
+
     public GetFacebookCredentialUseCase() {
     }
 
@@ -94,8 +94,7 @@ public class GetFacebookCredentialUseCase {
                         try {
                             String email = object.getString("email");
                             subscriber.onSuccess(accessToken, email);
-
-                        } catch (JSONException e) {
+                        } catch (JSONException | NullPointerException e) {
                             LoginManager.getInstance().logOut();
                             subscriber.onError(new ErrorMessageException(
                                     MainApplication.getAppContext().getString(R.string.facebook_error_not_authorized),

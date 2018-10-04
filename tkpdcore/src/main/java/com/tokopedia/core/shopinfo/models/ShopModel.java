@@ -9,6 +9,10 @@ import java.util.List;
 /**
  * Created by Tkpd_Eka on 10/13/2015.
  */
+/**
+ * Get shop info object from tkpd shop
+ */
+@Deprecated
 public class ShopModel implements Parcelable {
 
     public String name;

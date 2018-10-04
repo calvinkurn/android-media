@@ -12,6 +12,7 @@ import okhttp3.Response;
 /**
  * @author Angga.Prasetiyo on 23/12/2015.
  */
+@Deprecated
 public class TkpdBaseInterceptor implements Interceptor {
     private static final String TAG = TkpdBaseInterceptor.class.getSimpleName();
     public static final int SERVER_ERROR_500 = 500;

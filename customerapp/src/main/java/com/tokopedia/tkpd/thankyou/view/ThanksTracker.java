@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.thankyou.view;
 
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
 /**
@@ -9,5 +10,7 @@ import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 public interface ThanksTracker {
     interface Presenter {
         void doAnalytics(ThanksTrackerData data);
+
+        void doAppsFlyerAnalytics(LocalCacheHandler cacheHandler, ThanksTrackerData data);
     }
 }

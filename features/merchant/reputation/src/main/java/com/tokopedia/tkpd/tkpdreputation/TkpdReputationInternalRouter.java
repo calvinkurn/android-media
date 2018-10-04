@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoFragment;
 
 
 public class TkpdReputationInternalRouter {
@@ -17,6 +18,10 @@ public class TkpdReputationInternalRouter {
 
     public static Fragment getReviewShopFragment(String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    public static Fragment getReviewShopInfoFragment(String shopId, String shopDomain) {
+        return ReviewShopInfoFragment.createInstance(shopId, shopDomain);
     }
 
     public static Intent getInboxReputationActivityIntent(Context context) {

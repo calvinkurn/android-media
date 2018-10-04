@@ -10,10 +10,10 @@
         android:id="@+id/tv_ticker_gtm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding_vs"
+        android:layout_margin="@dimen/dp_5"
         android:background="@drawable/bg_yellow_border_yelow"
         android:maxLines="3"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:visibility="gone"
         tools:text="vhashkjalsla asbhdkashahs askjdhasjdhas asdbaksdlasd" />
 
@@ -36,13 +36,13 @@
                 android:id="@id/view_error_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.ErrorProductView
                 android:id="@id/view_error_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.HeaderInfoView
                 android:id="@id/view_header"
@@ -55,8 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/margin_vs"
-                android:paddingTop="@dimen/margin_vs" />
+                android:paddingBottom="@dimen/dp_5"
+                android:paddingTop="@dimen/dp_5" />
 
             <ProgressBar
                 android:id="@id/view_progress"
@@ -76,13 +76,13 @@
                 android:id="@id/view_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.TalkReviewView
                 android:id="@id/view_talk_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.ButtonShareView
                 android:id="@id/view_share"
@@ -93,7 +93,7 @@
                 android:id="@id/view_transaction_success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small" />
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.FreeReturnView
                 android:id="@+id/view_free_return"

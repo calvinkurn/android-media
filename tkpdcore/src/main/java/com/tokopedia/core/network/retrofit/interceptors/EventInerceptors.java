@@ -133,20 +133,18 @@ public class EventInerceptors extends TkpdAuthInterceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         String chainURL = chain.request().url().url().toString();
-        if (chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/verify?")
-                || chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN + "v1/api/expresscart/checkout")) {
+        if (chainURL.contains(TkpdBaseURL.EVENTS_DOMAIN)) {
             final Request originRequest = chain.request();
             Request.Builder newRequest = chain.request().newBuilder();
 
             generateHmacAuthRequest(originRequest, newRequest);
-            newRequest.removeHeader("Authorization")
-                    .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
-                    .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+            newRequest.addHeader("Accounts-Authorization", "Bearer " + SessionHandler.getAccessToken())
+                    .addHeader("X-Tkpd-UserId", SessionHandler.getLoginID(mContext));
 
             final Request finalRequest = newRequest.build();
             Response response = getResponse(chain, finalRequest);
 
-            if (isNeedRelogin(response)) {
+            if (isNeedGcmUpdate(response)) {
                 doRelogin();
                 response = getResponse(chain, finalRequest);
             }

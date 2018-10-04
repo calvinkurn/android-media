@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.campaign.domain.barcode;
 
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
+import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

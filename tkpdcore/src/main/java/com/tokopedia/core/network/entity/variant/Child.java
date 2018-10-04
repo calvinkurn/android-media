@@ -34,7 +34,7 @@ public class Child implements Parcelable {
     private String name;
     @SerializedName("is_buyable")
     @Expose
-    private boolean isBuyable;
+    private boolean isBuyable = false;
     @SerializedName("picture")
     @Expose
     private PictureChild picture;
@@ -50,7 +50,29 @@ public class Child implements Parcelable {
     @SerializedName("campaign")
     @Expose
     private Campaign campaign;
+    @SerializedName("stock_wording")
+    @Expose
+    private String stockWording;
+    @SerializedName("stock_wording_html")
+    @Expose
+    private String stockWordingHtml;
+    @SerializedName("is_limited_stock")
+    @Expose
+    private boolean isLimitedStock;
+    @SerializedName("variant_type")
+    @Expose
+    private String variantType;
+    @SerializedName("always_available")
+    @Expose
+    private boolean alwaysAvailable;
 
+    public boolean isAlwaysAvailable() {
+        return alwaysAvailable;
+    }
+
+    public void setAlwaysAvailable(boolean alwaysAvailable) {
+        this.alwaysAvailable = alwaysAvailable;
+    }
 
     public int getProductId() {
         return productId;
@@ -156,25 +178,36 @@ public class Child implements Parcelable {
         this.campaign = campaign;
     }
 
-    protected Child(Parcel in) {
-        productId = in.readInt();
-        price = in.readInt();
-        stock = in.readInt();
-        sku = in.readString();
-        if (in.readByte() == 0x01) {
-            optionIds = new ArrayList<Integer>();
-            in.readList(optionIds, Integer.class.getClassLoader());
-        } else {
-            optionIds = null;
-        }
-        enabled = in.readByte() != 0x00;
-        name = in.readString();
-        isBuyable = in.readByte() != 0x00;
-        picture = (PictureChild) in.readValue(PictureChild.class.getClassLoader());
-        priceFmt = in.readString();
-        url = in.readString();
-        isWishlist = in.readByte() != 0x00;
-        campaign = (Campaign) in.readValue(Campaign.class.getClassLoader());
+    public String getStockWordingHtml() {
+        return stockWordingHtml;
+    }
+
+    public void setStockWordingHtml(String stockWordingHtml) {
+        this.stockWordingHtml = stockWordingHtml;
+    }
+
+    public String getStockWording() {
+        return stockWording;
+    }
+
+    public void setStockWording(String stockWording) {
+        this.stockWording = stockWording;
+    }
+
+    public boolean isLimitedStock() {
+        return isLimitedStock;
+    }
+
+    public void setLimitedStock(boolean limitedStock) {
+        isLimitedStock = limitedStock;
+    }
+
+    public String getVariantType() {
+        return variantType;
+    }
+
+    public void setVariantType(String variantType) {
+        this.variantType = variantType;
     }
 
     @Override
@@ -184,31 +217,55 @@ public class Child implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(productId);
-        dest.writeInt(price);
-        dest.writeInt(stock);
-        dest.writeString(sku);
-        if (optionIds == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(optionIds);
-        }
-        dest.writeByte((byte) (enabled ? 0x01 : 0x00));
-        dest.writeString(name);
-        dest.writeByte((byte) (isBuyable ? 0x01 : 0x00));
-        dest.writeValue(picture);
-        dest.writeString(priceFmt);
-        dest.writeString(url);
-        dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
-        dest.writeValue(campaign);
+        dest.writeInt(this.productId);
+        dest.writeInt(this.price);
+        dest.writeInt(this.stock);
+        dest.writeString(this.sku);
+        dest.writeList(this.optionIds);
+        dest.writeByte(this.enabled ? (byte) 1 : (byte) 0);
+        dest.writeString(this.name);
+        dest.writeByte(this.isBuyable ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.picture, flags);
+        dest.writeString(this.priceFmt);
+        dest.writeString(this.url);
+        dest.writeByte(this.isWishlist ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.campaign, flags);
+        dest.writeString(this.stockWording);
+        dest.writeString(this.stockWordingHtml);
+        dest.writeByte(this.isLimitedStock ? (byte) 1 : (byte) 0);
+        dest.writeString(this.variantType);
+        dest.writeByte(this.alwaysAvailable ? (byte) 1 : (byte) 0);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<Child> CREATOR = new Parcelable.Creator<Child>() {
+    public Child() {
+    }
+
+    protected Child(Parcel in) {
+        this.productId = in.readInt();
+        this.price = in.readInt();
+        this.stock = in.readInt();
+        this.sku = in.readString();
+        this.optionIds = new ArrayList<Integer>();
+        in.readList(this.optionIds, Integer.class.getClassLoader());
+        this.enabled = in.readByte() != 0;
+        this.name = in.readString();
+        this.isBuyable = in.readByte() != 0;
+        this.picture = in.readParcelable(PictureChild.class.getClassLoader());
+        this.priceFmt = in.readString();
+        this.url = in.readString();
+        this.isWishlist = in.readByte() != 0;
+        this.campaign = in.readParcelable(Campaign.class.getClassLoader());
+        this.stockWording = in.readString();
+        this.stockWordingHtml = in.readString();
+        this.isLimitedStock = in.readByte() != 0;
+        this.variantType = in.readString();
+        this.alwaysAvailable = in.readByte() != 0;
+    }
+
+    public static final Creator<Child> CREATOR = new Creator<Child>() {
         @Override
-        public Child createFromParcel(Parcel in) {
-            return new Child(in);
+        public Child createFromParcel(Parcel source) {
+            return new Child(source);
         }
 
         @Override

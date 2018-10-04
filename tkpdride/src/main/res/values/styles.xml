@@ -46,4 +46,12 @@
     <style name="searchTextPrimaryHiglight">
         <item name="android:textColor">@color/label_text_color</item>
     </style>
+
+    <style name="ChatViewDefault">
+
+        <item name="inputBackgroundColor">@color/white</item>
+        <item name="inputUseEditorAction">false</item>
+        <item name="backgroundColor">@color/white</item>
+
+    </style>
 </resources>

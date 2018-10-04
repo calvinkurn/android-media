@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.common.di.module;
 
 import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 
 import dagger.Module;
@@ -16,8 +17,14 @@ public class ShopDeleteCacheModule {
 
     @DeleteCacheScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
+        return new DeleteShopInfoTomeUseCase();
+    }
+
+    @DeleteCacheScope
+    @Provides
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
     }
 }
 

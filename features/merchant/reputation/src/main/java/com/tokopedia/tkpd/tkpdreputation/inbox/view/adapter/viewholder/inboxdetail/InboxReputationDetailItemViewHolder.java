@@ -17,8 +17,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdreputation.R;
@@ -45,6 +45,11 @@ public class InboxReputationDetailItemViewHolder extends
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     private static final String BY = "Oleh";
+
+    private static final int MENU_EDIT = 101;
+    private static final int MENU_REPORT = 102;
+    private static final int MENU_DELETE = 103;
+    private static final int MENU_SHARE = 104;
 
     private final InboxReputationDetail.View viewListener;
     boolean isReplyOpened = false;
@@ -170,12 +175,12 @@ public class InboxReputationDetailItemViewHolder extends
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_deleted));
 
-            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else if (element.isProductBanned()) {
             productName.setText(
                     MainApplication.getAppContext().getString(R.string.product_is_banned));
 
-            ImageHandler.loadImageWithIdWithoutPlaceholder(productAvatar, R.drawable.ic_product_deleted);
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, R.drawable.ic_product_deleted, 5.0f);
         } else {
             productName.setText(MethodChecker.fromHtml(element.getProductName()));
             productName.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +191,7 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
 
-            ImageHandler.LoadImage(productAvatar, element.getProductAvatar());
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, element.getProductAvatar(), 15.0f);
             productAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -340,14 +345,14 @@ public class InboxReputationDetailItemViewHolder extends
                 @Override
                 public void onClick(View v) {
                     final PopupMenu popup = new PopupMenu(context, v);
-                    popup.getMenu().add(1, R.id.menu_delete, 1,
+                    popup.getMenu().add(1, MENU_DELETE, 1,
                             MainApplication.getAppContext()
                                     .getString(R.string.menu_delete));
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_delete) {
+                            if (item.getItemId() == MENU_DELETE) {
                                 viewListener.onDeleteReviewResponse(element);
                                 return true;
                             } else {
@@ -413,11 +418,9 @@ public class InboxReputationDetailItemViewHolder extends
     private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
         if (element.isReviewIsAnonymous()
                 && element.getTab() != InboxReputationActivity.TAB_BUYER_REVIEW) {
-            return MainApplication.getAppContext().getString(R.string.by) + " " +
-                    getAnonymousName(element.getReviewerName());
+            return getAnonymousName(element.getReviewerName());
         } else {
-            return MainApplication.getAppContext().getString(R.string.by) + " " +
-                    element.getReviewerName();
+            return element.getReviewerName();
         }
     }
 
@@ -440,31 +443,31 @@ public class InboxReputationDetailItemViewHolder extends
             public void onClick(View v) {
                 PopupMenu popup = new PopupMenu(context, v);
                 if (element.isReviewIsEditable())
-                    popup.getMenu().add(1, R.id.menu_edit, 1, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_EDIT, 1, MainApplication.getAppContext()
                             .getString(R.string.menu_edit));
 
                 if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW)
-                    popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_REPORT, 2, MainApplication.getAppContext()
                             .getString(R.string.menu_report));
 
                 if (!TextUtils.isEmpty(element.getProductName()))
-                    popup.getMenu().add(1, R.id.menu_share, 3, MainApplication.getAppContext()
+                    popup.getMenu().add(1, MENU_SHARE, 3, MainApplication.getAppContext()
                             .getString(R.string.menu_share));
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.menu_edit) {
+                        if (item.getItemId() == MENU_EDIT) {
                             viewListener.onEditReview(element);
                             return true;
-                        } else if (item.getItemId() == R.id.menu_report) {
+                        } else if (item.getItemId() == MENU_REPORT) {
                             viewListener.onGoToReportReview(
                                     element.getShopId(),
                                     element.getReviewId()
                             );
                             return true;
-                        } else if (item.getItemId() == R.id.menu_share) {
+                        } else if (item.getItemId() == MENU_SHARE) {
                             viewListener.onShareReview(
                                     element.getProductName(),
                                     element.getProductAvatar(),

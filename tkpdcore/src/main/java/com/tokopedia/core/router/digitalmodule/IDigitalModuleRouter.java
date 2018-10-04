@@ -11,6 +11,8 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 /**
  * @author anggaprasetiyo on 2/23/17.
+ * please use DigitalRouter in digital module for the future development features
+ *
  */
 
 public interface IDigitalModuleRouter {
@@ -29,8 +31,6 @@ public interface IDigitalModuleRouter {
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
 
-    BroadcastReceiver getBroadcastReceiverTokocashPending();
-
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
     Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle);
@@ -41,6 +41,10 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentDigitalWeb(String url);
 
+    Intent getPromoListIntent(Activity activity);
+
+    Intent getPromoDetailIntent(Context context, String slug);
+
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getIntentDeepLinkHandlerActivity();
@@ -48,4 +52,6 @@ public interface IDigitalModuleRouter {
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
     Intent getLoginIntent(Context context);
+
+    Intent getOrderListIntent(Context context);
 }

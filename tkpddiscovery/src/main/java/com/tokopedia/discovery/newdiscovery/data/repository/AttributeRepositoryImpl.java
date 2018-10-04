@@ -28,4 +28,9 @@ public class AttributeRepositoryImpl implements AttributeRepository {
     public Observable<DynamicFilterModel> getDynamicFilter(TKPDMapParam<String, Object> param) {
         return attributeDataSource.getDynamicAttribute(param);
     }
+
+    @Override
+    public Observable<DynamicFilterModel> getDynamicFilterV4(TKPDMapParam<String, Object> param) {
+        return attributeDataSource.getDynamicAttributeV4(param);
+    }
 }

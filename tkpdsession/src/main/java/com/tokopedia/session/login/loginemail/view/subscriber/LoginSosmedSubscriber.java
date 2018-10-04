@@ -1,6 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
@@ -17,6 +18,7 @@ import rx.Subscriber;
  */
 
 public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
+    private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private static final String NOT_ACTIVATED = "belum diaktivasi";
     private final Login.View view;
     private final String email;
@@ -35,31 +37,47 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onError(Throwable e) {
+        Log.e("NORMANSYAH", e.toString());
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+            ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+                @Override
+                public void onForbidden() {
+                    view.onForbidden();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    view.onErrorLogin(errorMessage);
+                }
+            }, e, view.getContext());
         }
     }
 
     @Override
     public void onNext(LoginSosmedDomain loginSosmedDomain) {
-        if (!loginSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-            view.onGoToCreatePasswordPage(loginSosmedDomain.getInfo()
-                    .getGetUserInfoDomainData());
+        if (!loginSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
+            view.onGoToCreatePasswordPage(loginSosmedDomain.getInfo().getGetUserInfoDomainData());
         } else if (loginSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
-                && (isMsisdnVerified(loginSosmedDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+                && !isMsisdnVerified(loginSosmedDomain.getInfo())
+                && GlobalConfig.isSellerApp()) {
+            view.setSmartLock();
+            view.onGoToPhoneVerification();
+        } else if (loginSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains
+                (CHARACTER_NOT_ALLOWED)) {
+            view.onGoToAddName(loginSosmedDomain.getInfo()
+                    .getGetUserInfoDomainData());
+        } else if (loginSosmedDomain.getMakeLoginModel() != null
+                && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginSosmed(loginMethodName);
-        } else if (!isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
-                && !isMsisdnVerified(loginSosmedDomain.getInfo())) {
-            view.setSmartLock();
-            view.onGoToPhoneVerification();
         } else if (isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())) {
             view.setSmartLock();
             view.onGoToSecurityQuestion(
@@ -69,7 +87,6 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

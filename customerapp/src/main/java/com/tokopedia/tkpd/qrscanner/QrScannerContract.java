@@ -24,7 +24,7 @@ public interface QrScannerContract {
 
         void showErrorGetInfo(String message);
 
-        void showErrorNetwork(String message);
+        void showErrorNetwork(Throwable throwable);
 
         int getRequestCodeForQrPayment();
 

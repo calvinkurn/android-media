@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 
@@ -18,6 +19,8 @@ public interface AdapterTypeFactory {
     int type(EmptyModel viewModel);
 
     int type(LoadingModel viewModel);
+
+    int type(LoadingMoreModel viewModel);
 
     int type(ErrorNetworkModel errorNetworkModel);
 

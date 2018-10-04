@@ -15,7 +15,15 @@ public class CouponListDataResponse {
     @Expose
     private List<Coupon> coupons = new ArrayList<>();
 
+    @SerializedName("empty_message")
+    @Expose
+    private EmptyMessage emptyMessage;
+
     public List<Coupon> getCoupons() {
         return coupons;
+    }
+
+    public EmptyMessage getEmptyMessage() {
+        return emptyMessage;
     }
 }

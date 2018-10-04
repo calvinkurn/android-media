@@ -1,7 +1,7 @@
 package com.tokopedia.payment.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,29 +22,44 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
+import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
-import com.tokopedia.payment.listener.ITopPayView;
+import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
+import com.tokopedia.payment.fingerprint.di.FingerprintModule;
+import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment;
+import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+
+import javax.inject.Inject;
 
 
 /**
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends Activity implements ITopPayView {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -59,7 +76,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
     public static final int PAYMENT_FAILED = 7;
     public static final long FORCE_TIMEOUT = 90000L;
 
-    private TopPayPresenter presenter;
+    @Inject
+    TopPayPresenter presenter;
     private WebView scroogeWebView;
     private ProgressBar progressBar;
     private PaymentPassData paymentPassData;
@@ -68,8 +86,13 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private View btnBack;
     private View btnClose;
     private TextView tvTitle;
+    private ProgressDialog progressDialog;
 
-    public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
+    public static final int REQUEST_CODE = 45675;
+    private FingerPrintDialogPayment fingerPrintDialogPayment;
+    private FingerprintDialogRegister fingerPrintDialogRegister;
+    private boolean isInterceptOtp = true;
+    private CommonWebViewClient webChromeWebviewClient;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -81,6 +104,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -98,6 +122,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 }
             }
         }
+        initInjector();
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
@@ -107,11 +132,25 @@ public class TopPayActivity extends Activity implements ITopPayView {
         if (getApplication() instanceof IPaymentModuleRouter) {
             paymentModuleRouter = (IPaymentModuleRouter) getApplication();
         }
-        initialPresenter();
         initView();
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void initInjector() {
+        DaggerFingerprintComponent
+                .builder()
+                .fingerprintModule(new FingerprintModule())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build()
+                .inject(this);
+        presenter.attachView(this);
     }
 
     private void setActionVar() {
@@ -121,23 +160,25 @@ public class TopPayActivity extends Activity implements ITopPayView {
     @SuppressLint("SetJavaScriptEnabled")
     private void setViewListener() {
         progressBar.setIndeterminate(true);
-        scroogeWebView.getSettings().setJavaScriptEnabled(true);
-        scroogeWebView.getSettings().setDomStorageEnabled(true);
-        scroogeWebView.getSettings().setBuiltInZoomControls(false);
-        scroogeWebView.getSettings().setDisplayZoomControls(true);
-        scroogeWebView.getSettings().setAppCacheEnabled(true);
+
+        WebSettings webSettings = scroogeWebView.getSettings();
+
+        String userAgent = String.format("%s [%s/%s]", webSettings.getUserAgentString(), getString(R.string.app_android), BuildConfig.VERSION_NAME);
+        webSettings.setUserAgentString(userAgent);
+
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(true);
+        webSettings.setAppCacheEnabled(true);
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
-        scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
+        scroogeWebView.setWebChromeClient(webChromeWebviewClient);
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
+        btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
-                        && scroogeWebView.getUrl() != null
-                        && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
-                    scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-                else
-                    onBackPressed();
+                onBackPressed();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +190,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     private void initVar() {
-
+        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     private void initView() {
@@ -159,10 +200,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
         btnClose = findViewById(R.id.btn_close);
         scroogeWebView = (WebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-    }
-
-    private void initialPresenter() {
-        presenter = new TopPayPresenter(this);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     private void setupURIPass(Uri data) {
@@ -235,7 +274,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     @Override
     public void onBackPressed() {
-        if (isEndThanksPage()) {
+        if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                && scroogeWebView.getUrl() != null
+                && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
+            scroogeWebView.loadUrl("javascript:handlePopAndroid();");
+        } else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
@@ -244,6 +287,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     @Override
     protected void onDestroy() {
+        presenter.detachView();
         super.onDestroy();
     }
 
@@ -271,6 +315,38 @@ public class TopPayActivity extends Activity implements ITopPayView {
         finish();
     }
 
+    @Override
+    public void onGoToOtpPage(String transactionId, String urlOtp) {
+        fingerPrintDialogPayment.stopListening();
+        fingerPrintDialogPayment.dismiss();
+        presenter.getPostDataOtp(transactionId, urlOtp);
+    }
+
+    @Override
+    public void onSuccessGetPostDataOTP(String postData, String urlOtp) {
+        try {
+            isInterceptOtp = false;
+            scroogeWebView.postUrl(urlOtp, postData.getBytes(CHARSET_UTF_8));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onErrorGetPostDataOtp(Throwable e) {
+        NetworkErrorHelper.showSnackbar(this, ErrorHandler.getErrorMessage(this, e));
+    }
+
+    @Override
+    public void onPaymentFingerPrint(String transactionId, String publicKey, String date, String signature, String userId) {
+        presenter.paymentFingerPrint(transactionId, publicKey, date, signature, userId);
+    }
+
+    @Override
+    public void onRegisterFingerPrint(String transactionId, String publicKey, String date, String signature, String userId) {
+        presenter.registerFingerPrint(transactionId, publicKey, date, signature, userId);
+    }
+
     private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
 
@@ -278,6 +354,17 @@ public class TopPayActivity extends Activity implements ITopPayView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             //Log.d(TAG, "redirect url = " + url);
+
+            if (!url.isEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
+                    paymentModuleRouter.getEnableFingerprintPayment()) {
+                Uri uri = Uri.parse(url);
+                String transactionId = uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID);
+                fingerPrintDialogRegister = FingerprintDialogRegister.createInstance(presenter.getUserId(), transactionId);
+                fingerPrintDialogRegister.setListenerRegister(TopPayActivity.this);
+                fingerPrintDialogRegister.setContext(TopPayActivity.this);
+                fingerPrintDialogRegister.show(getSupportFragmentManager(), "fingerprintRegister");
+                return true;
+            }
 
             /*
               HANYA SEMENTARA HARCODE, NANTI PAKAI APPLINK
@@ -293,13 +380,13 @@ public class TopPayActivity extends Activity implements ITopPayView {
                 );
                 return true;
             } else {
-                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
-                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
-                    paymentModuleRouter.actionAppLinkPaymentModule(
-                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
-                    );
-                    return true;
-                }
+//                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
+//                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
+//                    paymentModuleRouter.actionAppLinkPaymentModule(
+//                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
+//                    );
+//                    return true;
+//                }
             }
 
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
@@ -349,9 +436,25 @@ public class TopPayActivity extends Activity implements ITopPayView {
             }
         }
 
-
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        public WebResourceResponse shouldInterceptRequest(final WebView view, WebResourceRequest request) {
+            if ((request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) ||
+                    request.getUrl().toString().contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) && isInterceptOtp &&
+                    request.getUrl().getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equalsIgnoreCase("true") &&
+                    paymentModuleRouter.getEnableFingerprintPayment()) {
+                fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.getUserId(), request.getUrl().toString(),
+                        request.getUrl().getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID));
+                fingerPrintDialogPayment.setListenerPayment(TopPayActivity.this);
+                fingerPrintDialogPayment.setContext(TopPayActivity.this);
+                fingerPrintDialogPayment.show(getSupportFragmentManager(), "fingerprintPayment");
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.stopLoading();
+                    }
+                });
+            }
             return super.shouldInterceptRequest(view, request);
         }
 
@@ -438,6 +541,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     private class TopPayWebViewChromeClient extends WebChromeClient {
+
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
@@ -483,11 +587,69 @@ public class TopPayActivity extends Activity implements ITopPayView {
         };
     }
 
-    private void hideProgressLoading() {
+    @Override
+    protected void onPause() {
+        if (fingerPrintDialogPayment != null) {
+            fingerPrintDialogPayment.stopListening();
+        }
+        if (fingerPrintDialogRegister != null) {
+            fingerPrintDialogRegister.stopListening();
+        }
+        super.onPause();
+    }
+
+    public void hideProgressLoading() {
         progressBar.setVisibility(View.GONE);
     }
 
-    private void showProgressLoading() {
+    public void showProgressLoading() {
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessRegisterFingerPrint() {
+        fingerPrintDialogRegister.stopListening();
+        fingerPrintDialogRegister.dismiss();
+        NetworkErrorHelper.showGreenCloseSnackbar(this, getString(R.string.fingerprint_label_successed_fingerprint));
+    }
+
+    @Override
+    public void hideProgressBarDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onErrorRegisterFingerPrint(Throwable e) {
+        fingerPrintDialogRegister.onErrorRegisterFingerPrint();
+    }
+
+    @Override
+    public void showErrorRegisterSnackbar() {
+        NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.fingerprint_label_failed_fingerprint));
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void onErrorPaymentFingerPrint(Throwable e) {
+        fingerPrintDialogPayment.onErrorNetworkPaymentFingerPrint();
+    }
+
+    @Override
+    public void onSuccessPaymentFingerprint(String url, String paramEncode) {
+        fingerPrintDialogPayment.stopListening();
+        fingerPrintDialogPayment.dismiss();
+        scroogeWebView.loadUrl(String.format("%1$s?%2$s", url, paramEncode));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
+            webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }

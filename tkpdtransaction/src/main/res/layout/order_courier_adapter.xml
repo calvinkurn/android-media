@@ -9,15 +9,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/dp_10">
 
         <ImageView
             android:id="@+id/courier_logo"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="2"
-            android:layout_marginRight="@dimen/margin_vs"
-            android:layout_marginEnd="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/dp_5"
             tools:src="@drawable/googleg_standard_color_18" />
 
         <TextView

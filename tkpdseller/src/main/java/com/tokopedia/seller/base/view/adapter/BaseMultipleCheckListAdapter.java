@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.product.manage.item.common.util.ItemIdType;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
                     updateChecked(t, position, !checked);
                 }
             });
-            ((BaseMultipleCheckViewHolder<T>) viewHolder).bindObject(t, isChecked(t.getId()));
+            ((BaseMultipleCheckViewHolder<T>) viewHolder).bindObject(t, isChecked(t.getItemId()));
             ((BaseMultipleCheckViewHolder<T>) viewHolder).setCheckedCallback(new BaseMultipleCheckViewHolder.CheckedCallback<T>() {
                 @Override
                 public void onItemChecked(T t, boolean checked) {
@@ -73,7 +74,7 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
     }
 
     protected void updateChecked(T t, int position, boolean checked) {
-        setChecked(t.getId(), checked);
+        setChecked(t.getItemId(), checked);
         if (checkedCallback != null) {
             checkedCallback.onItemChecked(t, checked);
         }
@@ -85,9 +86,9 @@ public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends
         int index = 0;
         for (Iterator<T> iterator = data.iterator(); iterator.hasNext(); index++) {
             T t = iterator.next();
-            if (hashSet.contains(t.getId())) {
+            if (hashSet.contains(t.getItemId())) {
                 deletedItems.add(new Pair<Integer, T>(index, t));
-                hashSet.remove(t.getId());
+                hashSet.remove(t.getItemId());
                 iterator.remove();
             }
         }

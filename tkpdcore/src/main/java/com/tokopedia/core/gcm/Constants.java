@@ -24,9 +24,9 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
-    String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
     String ARG_NOTIFICATION_APPLINK_TOPCHAT = "topchat";
+    String ARG_NOTIFICATION_APPLINK_GROUPCHAT = "groupchat";
     String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
@@ -64,7 +64,6 @@ public interface Constants {
         String HOME_FEED = "tokopedia://home/feed";
         String FEED = "tokopedia://feed";
         String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
-        String HOME_CATEGORY = "tokopedia://home/category";
         String HOME_HOTLIST = "tokopedia://hot";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
@@ -82,6 +81,7 @@ public interface Constants {
         String PRODUCT_ADD = "tokopedia://product/add";
         String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String CART = "tokopedia://cart";
+        String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
         String SELLER_STATUS = "tokopedia://seller/status";
@@ -93,7 +93,6 @@ public interface Constants {
         String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
         String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
         String DIGITAL = "tokopedia://digital";
-        String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
         String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
@@ -120,22 +119,35 @@ public interface Constants {
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
         String PROMO_SALE = "tokopedia://sale/{slug}/";
+        String PROMO_SALE_NO_SLASH = "tokopedia://sale/{slug}";
+        String PROMO_DETAIL = "tokopedia://promo/{slug}";
+        String BRAND_LIST = "tokopedia://official-store/brand";
+        String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
         String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
+        String SUB_PROMO = "tokopedia://sale/{slug}/{category_slug}";
+        String SUB_PROMO_WITH_SLASH = "tokopedia://sale/{slug}/{category_slug}/";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
         String WALLET_TRANSACTION_HISTORY = "tokopedia://wallet/transaction/history";
         String BROWSER = "tokopedia://browser";
-        String FAVORITE = "tokopedia://home/favorite";
+        String PROFILE_COMPLETION = "tokopedia://profilecompletion";
 
         String EVENTS = "tokopedia://events";
-        String EVENTS_ACTIVITIES = "tokopedia://events/activities";
+        String EVENTS_HIBURAN = "tokopedia://hiburan";
         String EVENTS_DETAILS = "tokopedia://events/{event}";
         String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
-        String PROMO_LIST = "tokopedia://promoNative";
         String EXPLORE = "tokopedia://jump/{section}";
 
         String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
+
+        String GROUPCHAT = "tokopedia://groupchat/{channel_id}";
+        String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
+        String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+        String DEPOSIT = "tokopedia://saldo";
+
+        String ORDER_LIST = "tokopedia://order";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -171,6 +183,9 @@ public interface Constants {
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
         String NOTIFICATION_SELLER_INFO = "notification_seller_info";
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
+        String NOTIFICATION_SHAKE_SHAKE ="notification_shake_shake";
+
     }
 
     interface AppLinkQueryParameter {

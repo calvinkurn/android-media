@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 
-
+@Deprecated
 public class InboxTalk extends RecyclerViewItem implements Parcelable {
 
     @SerializedName("talk_shop_id")

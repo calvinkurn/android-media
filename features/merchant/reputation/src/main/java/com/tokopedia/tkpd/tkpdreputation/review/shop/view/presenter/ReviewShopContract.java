@@ -12,7 +12,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopMode
 
 public interface ReviewShopContract {
     interface Presenter extends CustomerPresenter<View> {
-
+        void onDestroy();
     }
 
     interface View extends BaseListViewListener<ReviewShopModelContent> {
@@ -21,7 +21,7 @@ public interface ReviewShopContract {
 
         void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId);
 
-        void onErrorPostLikeDislike(Throwable e);
+        void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus);
 
         void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId);
 

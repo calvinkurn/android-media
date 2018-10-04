@@ -6,6 +6,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -52,9 +53,13 @@ public interface UberProductContract {
 
         void hideFareListHeader();
 
+        void displayNearbyCabs(List<ProductEstimate> productEstimates);
+
         PlacePassViewModel getSource();
 
         void renderNearbyRides(NearbyRides nearbyRides);
+
+        void hideNearbyCabs();
     }
 
     interface Presenter extends CustomerPresenter<View> {

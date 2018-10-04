@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.talk.talkproduct.model.Talk;
 import com.tokopedia.core.talkview.adapter.ProductTalkViewAdapter;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
@@ -32,7 +33,7 @@ public class ProductTalkViewFragment extends TalkViewFragment{
 
     @Override
     protected TalkViewAdapter getAdapter() {
-        return ProductTalkViewAdapter.createAdapter(this, items);
+        return ProductTalkViewAdapter.createAdapter(this, items, (TkpdCoreRouter) getActivity().getApplication());
     }
 
     @Override

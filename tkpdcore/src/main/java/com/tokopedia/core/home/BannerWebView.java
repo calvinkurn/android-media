@@ -9,17 +9,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
-import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
+import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -33,10 +31,12 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
     private static final String FLAG_APP = "?flag_app=1";
     private static final java.lang.String ARGS_PROMO_ID = "promo_id";
-    private FragmentBannerWebView fragment;
+
     public static final String EXTRA_URL = "url";
 
-    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_CATEGORY, Constants.Applinks.PROMO_WITH_DASH})
+    private GeneralWebView generalWebView;
+
+    @DeepLink({Constants.Applinks.PROMO})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         String promoId = bundle.getString(ARGS_PROMO_ID, "");
         String result = TkpdBaseURL.URL_PROMO;
@@ -74,11 +74,11 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_webview_container);
         String url = getIntent().getExtras().getString(EXTRA_URL);
-        fragment = FragmentBannerWebView.createInstance(url);
+        generalWebView = FragmentBannerWebView.createInstance(url);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.container, fragment);
+            fragmentTransaction.add(R.id.container, (FragmentBannerWebView) generalWebView);
             fragmentTransaction.commit();
         }
 
@@ -104,15 +104,15 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
     @Override
     public void catchToWebView(String url) {
-        SimpleWebViewFragment fragment = SimpleWebViewFragment.createInstance(url);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        generalWebView = SimpleWebViewWithFilePickerFragment.createInstance(url);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, (SimpleWebViewWithFilePickerFragment) generalWebView).commit();
     }
 
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebview().canGoBack()) {
-                fragment.getWebview().goBack();
+            if (generalWebView.getWebview().canGoBack()) {
+                generalWebView.getWebview().goBack();
             } else {
                 super.onBackPressed();
             }

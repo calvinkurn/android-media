@@ -2,6 +2,7 @@ package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,8 +58,12 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
 
     private void setDeadLine(OrderShippingList model) {
         deadline.setText(model.getOrderDeadline().getDeadLineProcess());
-        deadlineColoredBorder.setBackgroundColor(Color
-                .parseColor(model.getOrderDeadline().getDeadlineColor()));
+        try {
+            deadlineColoredBorder.setBackgroundColor(Color
+                    .parseColor(model.getOrderDeadline().getDeadlineColor()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

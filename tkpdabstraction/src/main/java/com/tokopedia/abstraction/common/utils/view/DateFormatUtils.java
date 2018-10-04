@@ -33,7 +33,6 @@ public class DateFormatUtils {
     }
 
     public static String formatDate(String currentFormat, String newFormat, String dateString, Locale locale){
-
         try{
             DateFormat fromFormat = new SimpleDateFormat(currentFormat, locale);
             fromFormat.setLenient(false);
@@ -45,6 +44,12 @@ public class DateFormatUtils {
             e.printStackTrace();
             return dateString;
         }
+    }
 
+    public static String getFormattedDate(long timeInMillis, String format) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(timeInMillis);
+        DateFormat dateFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
+        return dateFormat.format(instance.getTime());
     }
 }

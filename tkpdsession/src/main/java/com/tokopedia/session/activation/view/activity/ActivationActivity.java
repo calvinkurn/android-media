@@ -11,9 +11,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.support.v7.widget.Toolbar;
 
+import com.tokopedia.analytics.RegisterAnalytics;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment;
@@ -26,6 +28,7 @@ public class ActivationActivity extends BasePresenterActivity {
 
     public static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     public static final String INTENT_EXTRA_PARAM_PW = "pw";
+    private RegisterAnalytics analytics;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -65,6 +68,12 @@ public class ActivationActivity extends BasePresenterActivity {
         fragmentTransaction.commit();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
+    }
+
     private void setToolbar() {
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
@@ -75,8 +84,8 @@ public class ActivationActivity extends BasePresenterActivity {
             toolbar.setElevation(10);
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -101,7 +110,13 @@ public class ActivationActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
-        return null;
+        return RegisterAnalytics.Screen.SCREEN_ACCOUNT_ACTIVATION;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {
@@ -111,4 +126,9 @@ public class ActivationActivity extends BasePresenterActivity {
         return callingIntent;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        analytics.eventClickBackEmailActivation();
+    }
 }

@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface IPromoResponseMapper {
 
+    PromoData convertPromoData(PromoResponse promoResponse);
+
     List<PromoData> convertPromoDataList(List<PromoResponse> promoResponseList);
 
     List<PromoMenuData> convertPromoMenuDataList(List<MenuPromoResponse> menuPromoResponseList);

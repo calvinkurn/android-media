@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">withdraw</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="activity_withdraw">Penarikan Saldo</string>
+
+    <string name="title_confirm_account">Pastikan Nomor Rekening &amp; Nama Pemilik Rekening sesuai buku tabungan</string>
+    <string name="title_action_withdraw">Tarik Saldo</string>
+    <string name="title_withdrawal_saldo">Saldo yang Dapat Ditarik</string>
+    <string name="title_withdrawal_nominal">Masukkan Nominal Penarikan Saldo</string>
+    <string name="choose_bank_account">Pilih Rekening Bank</string>
+    <string name="withdrawal_info">Informasi Penarikan Saldo</string>
+    <string name="has_no_bank">Anda belum memiliki rekening bank yang terdaftar di Tokopedia</string>
+    <string name="success_add_bank">Rekening baru berhasil ditambahkan</string>
+    <string name="dot">•</string>
+    <string name="title_account_name">Nama Akun</string>
+    <string name="title_account_number_saldo">Nomor Rekening</string>
+    <string name="title_bank_name">Nama Bank</string>
+    <string name="title_choose_bank">Pilih Nama Bank</string>
+    <string name="title_branch">Cabang</string>
+    <string name="title_otp">Masukkan Kode Verifikasi :</string>
+    <string name="title_password">Kata Sandi</string>
+    <string name="title_forgot_password">Lupa kata sandi?</string>
+    <string name="title_close">Tutup</string>
+    <string name="title_add_account_bank">Tambah Rekening</string>
+    <string name="title_set_account_bank">Atur Rekening</string>
+
+
+    <string name="title_info_withdrawal_1">Minimum Penarikan</string>
+    <string name="body_1">BCA, BNI, BRI, Mandiri- Rp 10.000\nBank lain - Rp 50.000</string>
+    <string name="title_info_withdrawal_2">Biaya Admin</string>
+    <string name="body_info_withdrawal_2">BRI - Rp 1.000\nBiaya transfer antar bank ditanggung pengguna</string>
+    <string name="title_info_withdrawal_3">Waktu Proses Penarikan</string>
+    <string name="body_info_withdrawal_3">BCA, BRI, BNI, CIMB, Mandiri - paling lama 48 jam\nBank lain - paling lama 7 hari kerja (tidak termasuk Sabtu/Minggu/libur) </string>
+    <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
+    <string name="exceed_limit_withdraw">Anda telah melewati batas maksimal penarikan dana per hari</string>
+
+    <string name="error_withdraw_exceed_balance">Saldo Tokopedia Anda tidak mencukupi</string>
+    <string name="withdrawal">Tarik Saldo</string>
+    <string name="confirm_password">Konfirmasi dengan kata sandi akun Tokopedia Anda</string>
+    <string name="tokopedia_password">Kata Sandi Tokopedia</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="indicator_password_error">kata sandi</string>
+    <string name="alert_success_withdraw_title">Penarikan Saldo Sedang Diproses</string>
+    <string name="alert_success_withdraw_positive">Ok</string>
+    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 48 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
+    <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
+
+    <string name="alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
+    <string name="alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>
+    <string name="alert_not_verified_yet_positive">Verifikasi</string>
+    <string name="alert_not_verified_yet_negative">Tidak</string>
+    <string name="label_analytics_success_withdraw">success withdrawal</string>
+
+
+</resources>

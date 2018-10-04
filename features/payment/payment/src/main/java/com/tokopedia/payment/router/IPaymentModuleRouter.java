@@ -24,4 +24,6 @@ public interface IPaymentModuleRouter {
     String getGeneratedOverrideRedirectUrlPayment(String originUrl);
 
     Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl);
+
+    boolean getEnableFingerprintPayment();
 }

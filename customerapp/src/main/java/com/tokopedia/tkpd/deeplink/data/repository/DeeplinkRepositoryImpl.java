@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.Whitelist;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -25,6 +26,7 @@ import rx.functions.Func1;
  */
 
 public class DeeplinkRepositoryImpl implements DeeplinkRepository {
+    private static final long ONE_MONTH = TimeUnit.DAYS.toSeconds(30);
 
     private final String KEY_MAPPING = "KEY_MAPPING";
     private final String KEY_VERSION = "KEY_VERSION";
@@ -55,7 +57,7 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
                     public List<WhitelistItem> call(GlobalCacheManager globalCacheManager) {
                         if (!TextUtils.isEmpty(globalCacheManager.getValueString(KEY_VERSION))) {
                             if (Integer.valueOf(globalCacheManager.getValueString(KEY_VERSION)) <=
-                                    BuildConfig.VERSION_CODE) {
+                                    GlobalConfig.VERSION_CODE) {
                                 return new ArrayList<>();
                             } else {
                                 String cache = globalCacheManager.getValueString(KEY_MAPPING);
@@ -100,13 +102,17 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
             Whitelist whitelist = new Whitelist();
             whitelist.data = whitelistItems;
             globalCacheManager.setValue(gson.toJson(whitelist));
+            globalCacheManager.setCacheDuration(ONE_MONTH);
+            globalCacheManager.store();
         }
     }
 
     private void saveVersionToCache() {
         globalCacheManager.setKey(KEY_VERSION);
         Gson gson = new Gson();
-        globalCacheManager.setValue(gson.toJson(BuildConfig.VERSION_CODE));
+        globalCacheManager.setValue(gson.toJson(GlobalConfig.VERSION_CODE));
+        globalCacheManager.setCacheDuration(ONE_MONTH);
+        globalCacheManager.store();
     }
 
     private List<WhitelistItem> readWhitelistFromFile() {

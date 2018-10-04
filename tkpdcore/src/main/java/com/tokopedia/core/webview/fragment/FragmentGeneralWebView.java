@@ -38,6 +38,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
 
+import java.net.URLDecoder;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -62,6 +64,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private ValueCallback<Uri> callbackBeforeL;
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
+
+    private boolean pageLoaded = false;
 
     public FragmentGeneralWebView() {
         // Required empty public constructor
@@ -92,11 +96,30 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         }
     }
 
+    private String decode(String url) {
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         CommonUtils.dumper("Load URL: " + url);
+        if (overrideUrl(decode(url))) {
+            getActivity().finish();
+            return null;
+        } else {
+            return onCreateWebView(inflater, container, savedInstanceState);
+        }
+    }
+
+    private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(
                 R.layout.fragment_fragment_general_web_view, container, false
         );
@@ -162,6 +185,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 return true;
 
             }
+
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 //  progressBar.setProgress(newProgress);
@@ -204,10 +228,24 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private boolean overrideUrl(String url) {
-        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
-                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
+        if (url == null) {
+            return false;
+        }
+
+        Uri uri = null;
+        try {
+            uri = Uri.parse(url);
+        } catch (Exception ex) {}
+
+        if (uri == null || uri.getHost() == null) {
+            return false;
+        }
+
+        if (((uri.getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                || uri.getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(".pl")) {
-            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            CommonUtils.dumper(DeepLinkChecker.getDeepLinkType(url));
+            switch (DeepLinkChecker.getDeepLinkType(url)) {
                 case DeepLinkChecker.CATEGORY:
                     DeepLinkChecker.openCategory(url, getActivity());
                     return true;
@@ -225,6 +263,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     return true;
                 case DeepLinkChecker.HOME:
                     DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    return true;
+                case DeepLinkChecker.TOKOPOINT:
+                    DeepLinkChecker.openTokoPoint(getActivity(), url);
                     return true;
                 default:
                     return false;
@@ -389,6 +430,19 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             Log.d(TAG, "redirect url = " + url);
             if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
                     .isSupportedDelegateDeepLink(url)) {
+                if (url.startsWith(Constants.Applinks.WEBVIEW)){
+                    Uri uri = Uri.parse(url);
+                    String newUrl = uri.getQueryParameter("url");
+                    if (!TextUtils.isEmpty(newUrl)){
+                        newUrl = Uri.decode(newUrl);
+                        // Check if url should redirect to applink
+                        // Replace old url to new applink
+                        if (((IDigitalModuleRouter) getActivity().getApplication()).isSupportedDelegateDeepLink(newUrl)) {
+                            url = newUrl;
+                        }
+
+                    }
+                }
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;

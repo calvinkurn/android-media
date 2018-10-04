@@ -10,7 +10,7 @@
         android:id="@+id/service_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
 
         tools:text="Reguler" />
 

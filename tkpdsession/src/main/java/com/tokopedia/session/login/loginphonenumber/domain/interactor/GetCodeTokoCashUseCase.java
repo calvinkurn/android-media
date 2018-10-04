@@ -1,11 +1,9 @@
 package com.tokopedia.session.login.loginphonenumber.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.login.loginphonenumber.data.source.TokoCashCodeSource;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -22,10 +20,7 @@ public class GetCodeTokoCashUseCase extends UseCase<CodeTokoCashDomain> {
     private final TokoCashCodeSource tokoCashCodeSource;
 
     @Inject
-    public GetCodeTokoCashUseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  TokoCashCodeSource tokoCashCodeSource) {
-        super(threadExecutor, postExecutionThread);
+    public GetCodeTokoCashUseCase(TokoCashCodeSource tokoCashCodeSource) {
         this.tokoCashCodeSource = tokoCashCodeSource;
     }
 

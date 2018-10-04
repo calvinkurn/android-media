@@ -13,7 +13,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 public class ListProductItemViewHolder extends GridProductItemViewHolder {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.listview_product_item_list;
+    public static final int LAYOUT = R.layout.search_result_product_item_list;
 
     public ListProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView, itemClickListener);

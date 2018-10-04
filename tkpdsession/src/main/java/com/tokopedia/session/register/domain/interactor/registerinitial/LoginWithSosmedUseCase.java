@@ -1,23 +1,19 @@
 package com.tokopedia.session.register.domain.interactor.registerinitial;
 
 import com.facebook.AccessToken;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -29,17 +25,11 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     protected final GetTokenUseCase getTokenUseCase;
     protected final GetUserInfoUseCase getUserInfoUseCase;
     protected final MakeLoginUseCase makeLoginUseCase;
-    private final SessionHandler sessionHandler;
 
     @Inject
-    public LoginWithSosmedUseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  SessionHandler sessionHandler,
-                                  GetTokenUseCase getTokenUseCase,
+    public LoginWithSosmedUseCase(GetTokenUseCase getTokenUseCase,
                                   GetUserInfoUseCase getUserInfoUseCase,
                                   MakeLoginUseCase makeLoginUseCase) {
-        super(threadExecutor, postExecutionThread);
-        this.sessionHandler = sessionHandler;
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
@@ -62,27 +52,13 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
                 .flatMap(new Func1<LoginSosmedDomain, Observable<LoginSosmedDomain>>() {
                     @Override
                     public Observable<LoginSosmedDomain> call(LoginSosmedDomain registerSosmedDomain) {
-                        if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
-                            return makeLogin(registerSosmedDomain);
-                        } else {
-                            return Observable.just(registerSosmedDomain);
-                        }
+                        return makeLogin(registerSosmedDomain);
                     }
-                })
-                .doOnError(clearToken());
-    }
-
-    private Action1<Throwable> clearToken() {
-        return new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                sessionHandler.clearToken();
-            }
-        };
+                });
     }
 
     protected Observable<LoginSosmedDomain> makeLogin(final LoginSosmedDomain
-                                                                 registerSosmedDomain) {
+                                                              registerSosmedDomain) {
         return makeLoginUseCase.getExecuteObservable(MakeLoginUseCase.getParam(
                 String.valueOf(registerSosmedDomain.getInfo().getGetUserInfoDomainData().getUserId())
         ))
@@ -96,7 +72,7 @@ public class LoginWithSosmedUseCase extends UseCase<LoginSosmedDomain> {
     }
 
     protected Observable<LoginSosmedDomain> getInfo(final LoginSosmedDomain
-                                                               registerSosmedDomain) {
+                                                            registerSosmedDomain) {
         return getUserInfoUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap(new Func1<GetUserInfoDomainModel, Observable<LoginSosmedDomain>>() {
                     @Override

@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,22 +21,21 @@ import android.view.Window;
 import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
-import com.tokopedia.core.apprating.SimpleAppRatingDialog;
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationFormActivity;
@@ -74,7 +74,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
-    private LinearLayoutManager layoutManager;
     private InboxReputationDetailAdapter adapter;
     private ShareReviewDialog shareReviewDialog;
     private CallbackManager callbackManager;
@@ -121,17 +120,26 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        if (cacheManager != null)
-            passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
-                    InboxReputationDetailPassModel.class);
-
+        if (cacheManager != null) {
+            try {
+                passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
+                        InboxReputationDetailPassModel.class);
+                setToolbar();
+            } catch (Exception e) {
+                // Ignore cache expired exception
+            }
+        }
         callbackManager = CallbackManager.Factory.create();
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
                 (this);
         adapter = new InboxReputationDetailAdapter(typeFactory);
     }
 
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
+        toolbar.setTitle(passModel.getInvoice());
+        toolbar.setSubtitle(passModel.getCreateTime());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -149,7 +157,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-        listProduct.setLayoutManager(layoutManager);
+        listProduct.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listProduct.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(onRefresh());
 
@@ -455,15 +463,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToProfile(int reviewerId) {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf(reviewerId))
-        );
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(),
+                            String.valueOf(reviewerId)));
+        }
     }
 
     @Override
     public void onGoToShopInfo(int shopId) {
-        Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
     }
 
@@ -499,16 +508,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int shopId) {
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
-        intent.putExtras(bundle);
+        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
     }
 
     @Override
     public void onGoToPeopleProfile(int userId) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), String.valueOf
-                (userId)));
+        if (getActivity().getApplicationContext() instanceof ReputationRouter) {
+            startActivity(((ReputationRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), String.valueOf(userId)));
+        }
     }
 
     private String getReputationSmileyMessage(String name) {

@@ -22,11 +22,11 @@ import rx.Subscriber;
 
 public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.View> implements ReviewShopContract.Presenter {
 
-    private final ReviewShopUseCase shopReviewUseCase;
+    protected final ReviewShopUseCase shopReviewUseCase;
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
-    private final ReviewProductListMapper productReviewListMapper;
-    private final UserSession userSession;
+    protected final ReviewProductListMapper productReviewListMapper;
+    protected final UserSession userSession;
 
     @Inject
     public ReviewShopPresenter(ReviewShopUseCase shopReviewUseCase,
@@ -39,6 +39,21 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.productReviewListMapper = productReviewListMapper;
         this.userSession = userSession;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (shopReviewUseCase != null) {
+            shopReviewUseCase.unsubscribe();
+        }
+
+        if (likeDislikeReviewUseCase != null) {
+            likeDislikeReviewUseCase.unsubscribe();
+        }
+
+        if (deleteReviewResponseUseCase != null) {
+            deleteReviewResponseUseCase.unsubscribe();
+        }
     }
 
     public void deleteReview(String reviewId, String reputationId, String productId){
@@ -77,10 +92,10 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
         getView().showProgressLoading();
         likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopId()),
-                getSubscriberPostLikeDislike(reviewId));
+                getSubscriberPostLikeDislike(reviewId, likeStatus));
     }
 
-    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike(final String reviewId) {
+    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike(final String reviewId, int likeStatus) {
         return new Subscriber<LikeDislikeDomain>() {
             @Override
             public void onCompleted() {
@@ -91,7 +106,7 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
             public void onError(Throwable e) {
                 if(isViewAttached()){
                     getView().hideProgressLoading();
-                    getView().onErrorPostLikeDislike(e);
+                    getView().onErrorPostLikeDislike(e, reviewId, likeStatus);
                 }
             }
 
@@ -108,7 +123,7 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
                 getSubscriberGetShopReview());
     }
 
-    private Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
+    protected Subscriber<DataResponseReviewShop> getSubscriberGetShopReview() {
         return new Subscriber<DataResponseReviewShop>() {
             @Override
             public void onCompleted() {
@@ -128,5 +143,9 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
                         !TextUtils.isEmpty(dataResponseReviewShop.getPaging().getUriNext()));
             }
         };
+    }
+
+    public boolean isMyShop(String shopId) {
+        return userSession.getShopId().equals(shopId);
     }
 }

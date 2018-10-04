@@ -82,7 +82,7 @@ public class NetworkErrorHelper {
 
     @SuppressWarnings("Range")
     public static void showCloseSnackbar(Activity activity, String message) {
-        SnackbarManager.make(activity, message,Snackbar.LENGTH_LONG).setAction(
+        SnackbarManager.make(activity, message, Snackbar.LENGTH_LONG).setAction(
                 activity.getString(R.string.close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -94,7 +94,9 @@ public class NetworkErrorHelper {
 
     @SuppressWarnings("Range")
     public static void showGreenCloseSnackbar(Activity activity, String message) {
-        showGreenCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        if (activity != null) {
+            showGreenCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        }
     }
 
     @SuppressWarnings("Range")
@@ -103,22 +105,28 @@ public class NetworkErrorHelper {
                 message,
                 Snackbar.LENGTH_LONG)
                 .setAction(view.getContext().getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                            @Override
+                            public void onClick(View v) {
 
-                    }
-                }
-        ).show();
+                            }
+                        }
+                ).show();
     }
 
     @SuppressWarnings("Range")
     public static void showRedCloseSnackbar(Activity activity, String message) {
-        showRedCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        if (activity != null) {
+            showRedCloseSnackbar(SnackbarManager.getContentView(activity), message);
+        }
     }
 
+    /**
+     * use ToasterError instead
+     */
+    @Deprecated
     @SuppressWarnings("Range")
     public static void showRedCloseSnackbar(View view, String message) {
-        SnackbarManager.makeRed(view, message,Snackbar.LENGTH_LONG).setAction(
+        SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).setAction(
                 view.getContext().getString(R.string.close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -128,20 +136,49 @@ public class NetworkErrorHelper {
         ).show();
     }
 
+
+    public static void showRedSnackbar(Activity activity, String message) {
+        SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showRedSnackbarShort(Activity activity, String message) {
+        SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void showRedSnackbar(View view, String message) {
+        SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showGreenSnackbar(Activity activity, String message) {
+        SnackbarManager.makeGreen(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showGreenSnackbarShort(Activity activity, String message) {
+        SnackbarManager.makeGreen(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public static void showGreenSnackbar(View view, String message) {
+        SnackbarManager.makeGreen(view, message, Snackbar.LENGTH_LONG).show();
+    }
+
     @SuppressWarnings("Range")
     public static void showSnackbar(Activity activity) {
-        SnackbarManager.make(activity,
-                activity.getResources().getString(R.string.msg_network_error),
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            SnackbarManager.make(activity,
+                    activity.getResources().getString(R.string.msg_network_error),
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     @SuppressWarnings("Range")
     public static void showSnackbar(Activity activity, String error) {
-        SnackbarManager.make(activity,
-                error,
-                Snackbar.LENGTH_SHORT)
-                .show();
+        if (activity != null) {
+            SnackbarManager.make(activity,
+                    error,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     public static void showEmptyState(Context context, final View rootview, final RetryClickedListener listener) {
@@ -152,7 +189,7 @@ public class NetworkErrorHelper {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
+            View retryLoad = inflater.inflate(R.layout.partial_empty_page_error, (ViewGroup) rootview);
             View retryButon = retryLoad.findViewById(R.id.button_retry);
             if (listener != null) {
                 retryButon.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +221,7 @@ public class NetworkErrorHelper {
             );
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
+            View retryLoad = inflater.inflate(R.layout.partial_empty_page_error, (ViewGroup) rootview);
             TextView retryButon = (TextView) retryLoad.findViewById(R.id.button_retry);
             TextView tvTitleMessage = (TextView) retryLoad.findViewById(R.id.message_retry);
             TextView tvSubTitleMessage = (TextView) retryLoad.findViewById(R.id.sub_message_retry);
@@ -225,7 +262,7 @@ public class NetworkErrorHelper {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.CENTER;
             params.weight = 1.0f;
-            View retryLoad = inflater.inflate(R.layout.design_error_network, (ViewGroup) rootview);
+            View retryLoad = inflater.inflate(R.layout.partial_empty_page_error, (ViewGroup) rootview);
             View retryButon = retryLoad.findViewById(R.id.button_retry);
             TextView msgRetry = (TextView) retryLoad.findViewById(R.id.message_retry);
             msgRetry.setText(message);
@@ -278,6 +315,12 @@ public class NetworkErrorHelper {
             });
         }
         dialog.create().show();
+    }
+
+    public static SnackbarRetry createSnackbarRedWithAction(Activity activity, String message, final RetryClickedListener listener) {
+        return new SnackbarRetry(SnackbarManager.makeRed(activity,
+                message,
+                Snackbar.LENGTH_INDEFINITE), listener);
     }
 
     public interface RetryClickedListener {

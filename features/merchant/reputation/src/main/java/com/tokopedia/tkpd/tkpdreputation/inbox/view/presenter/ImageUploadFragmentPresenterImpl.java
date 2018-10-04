@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -16,6 +14,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetS
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.ImageUploadPreviewFragmentView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
@@ -23,9 +22,12 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendRev
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import rx.Subscriber;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by Nisie on 2/12/16.
@@ -55,27 +57,20 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
-
-            int position = viewListener.getAdapter().getList().size();
-            ImageUpload image = new ImageUpload();
-            image.setPosition(position);
-            image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(cameraFileLoc);
-                    break;
-                default:
-                    break;
+        if (requestCode == ImageUploadPreviewFragment.REQUEST_CODE_IMAGE_REVIEW && resultCode == Activity.RESULT_OK && data!= null) {
+            ImageUpload image;
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                for(String url : imageUrlOrPathList){
+                    int position = viewListener.getAdapter().getList().size();
+                    image = new ImageUpload();
+                    image.setPosition(position);
+                    image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
+                    image.setFileLoc(url);
+                    viewListener.getAdapter().addImage(image);
+                    viewListener.setPreviewImage(image);
+                }
             }
-            viewListener.getAdapter().addImage(image);
-            viewListener.setPreviewImage(image);
-
         }
     }
 
@@ -112,43 +107,15 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
             });
 
         } else {
-            File imgFile = new File(arguments.getString(ImageUploadHandler.FILELOC, ""));
 
-            if (imgFile.exists()) {
+            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))) {
+                int position = viewListener.getAdapter().getList().size();
                 final ImageUpload image = new ImageUpload();
-                image.setFileLoc(arguments.getString(ImageUploadHandler.FILELOC, ""));
+                image.setPosition(position);
+                image.setFileLoc(url);
                 image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
-
-                getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(SendReviewPass sendReviewPass) {
-
-                        if (sendReviewPass.getListImage().isEmpty()) {
-                            viewListener.getAdapter().addImage(image);
-                            viewListener.setPreviewImage(image);
-                        } else {
-                            for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
-                                sendReviewPass.getListImage().get(i).setPosition(i);
-                            }
-                            viewListener.getAdapter().addList(sendReviewPass.getListImage());
-                            image.setPosition(viewListener.getAdapter().getList().size());
-                            viewListener.getAdapter().addImage(image);
-                            viewListener.setPreviewImage(image);
-                        }
-
-                    }
-                });
-
+                viewListener.getAdapter().addImage(image);
+                viewListener.setPreviewImage(image);
             }
         }
     }
@@ -234,16 +201,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
         viewListener.getActivity().finish();
 
 
-    }
-
-    @Override
-    public void openImageGallery() {
-        imageUploadHandler.actionImagePicker();
-    }
-
-    @Override
-    public void openCamera() {
-        cameraFileLoc = imageUploadHandler.actionCamera2();
     }
 
     @Override

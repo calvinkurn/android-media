@@ -18,6 +18,6 @@ public class ContainerHolderSingleton {
     }
 
     public static Boolean isContainerHolderAvailable() {
-        return Container != null;
+        return Container != null && Container.getContainer() != null;
     }
 }

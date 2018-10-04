@@ -24,7 +24,8 @@ public class DynamicFilterDetailGeneralActivity
                               String pageTitle,
                               List<Option> optionList,
                               boolean isSearchable,
-                              String searchHint) {
+                              String searchHint,
+                              boolean isUsingTracking) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterDetailGeneralActivity.class);
@@ -32,6 +33,7 @@ public class DynamicFilterDetailGeneralActivity
             intent.putParcelableArrayListExtra(EXTRA_OPTION_LIST, new ArrayList<>(optionList));
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
+            intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.ride.bookingride.di;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.view.activity.PayPendingFareActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.bookingride.view.activity.UberSMSChatActivity;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.EditDeleteCreditCardFragment;
@@ -40,4 +41,6 @@ public interface BookingRideComponent {
     void inject(ManagePaymentOptionsFragment managePaymentOptionsFragment);
 
     void inject(PayPendingFareActivity activity);
+
+    void inject(UberSMSChatActivity uberSMSChatActivity);
 }

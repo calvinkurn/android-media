@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_marginRight="80dp"
-    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginLeft="@dimen/dp_10"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -16,14 +16,14 @@
             android:id="@+id/layout_title"/>
 
         <FrameLayout
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/dp_5"
             android:id="@+id/cv_bubble_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="20dp"
             android:minHeight="25dp"
             android:background="@drawable/bg_bubble_left"
-            android:padding="@dimen/padding_small">
+            android:padding="@dimen/dp_10">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/tv_solution"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/fontvs"
@@ -50,7 +50,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:textSize="@dimen/fontvs"
                     android:textColor="@color/black_54"
                     android:textStyle="bold"
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:id="@+id/tv_reason"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:textSize="@dimen/fontvs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -3,10 +3,9 @@ package com.tokopedia.gm.statistic.view.fragment;
 import android.content.Intent;
 import android.view.View;
 
-import com.tokopedia.seller.base.view.fragment.BaseDatePickerFragment;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
 
 /**

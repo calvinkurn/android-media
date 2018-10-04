@@ -15,6 +15,8 @@ import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
@@ -575,6 +577,16 @@ public class ReputationModule {
     UserSession userSession(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context).getSession();
+        }else{
+            return null;
+        }
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationTracking reputationTracking(@ApplicationContext Context context){
+        if(context instanceof ReputationRouter){
+            return new ReputationTracking((ReputationRouter) context);
         }else{
             return null;
         }

@@ -1,9 +1,11 @@
 package com.tokopedia.ride.common.ride.di;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
@@ -41,8 +43,9 @@ public interface RideComponent {
 
     GiveDriverRatingUseCase giveDriverRatingUseCase();
 
-    TokoCashRepository getTokoCashRepository();
-
     GetLocationAddressUseCase getLocationAddressUseCase();
+
+    @ApplicationContext
+    Context context();
 
 }

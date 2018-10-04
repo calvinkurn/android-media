@@ -1,14 +1,19 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Arrays;
@@ -19,24 +24,28 @@ import java.util.List;
  */
 
 public class ReactNativeHostFactory {
+    private static ReactNativeHostFactory instance;
+    private static SharedPreferences sharedPreferences;
 
+    protected ReactNativeHostFactory() {}
 
     public static ReactNativeHost init(Application application) {
-        /*reactInstanceManager = ReactInstanceManager.builder()
-                .setApplication(application)
-                .setBundleAssetName("index.android.bundle")
-                .setJSMainModuleName("reactscript/index.android")
-                .addPackage(new MainReactPackage())
-                .addPackage(new CoreReactPackage())
-                .setUseDeveloperSupport(true)
-                .setInitialLifecycleState(LifecycleState.RESUMED)
-                .build();*/
+        if(instance == null) instance = new ReactNativeHostFactory();
 
-        return createReactNativeHost(application);
-
+        sharedPreferences = application.getSharedPreferences(DeveloperOptions.SP_REACT_DEVELOPMENT_MODE, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains(DeveloperOptions.IS_RELEASE_MODE)){
+            boolean isReleaseMode = sharedPreferences.getBoolean(DeveloperOptions.IS_RELEASE_MODE, true);
+            if (isReleaseMode){
+                return instance.createReactNativeHost(application);
+            } else {
+                return instance.createReactNativeHostDev(application);
+            }
+        } else {
+            return instance.createReactNativeHost(application);
+        }
     }
 
-    private static ReactNativeHost createReactNativeHost(final Application application) {
+    private ReactNativeHost createReactNativeHost(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             protected String getJSBundleFile() {
@@ -55,7 +64,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static ReactNativeHost createReactNativeHostDev(final Application application) {
+    private ReactNativeHost createReactNativeHostDev(final Application application) {
         return new ReactNativeHost(application) {
             @Override
             public boolean getUseDeveloperSupport() {
@@ -79,7 +88,7 @@ public class ReactNativeHostFactory {
         };
     }
 
-    private static List<ReactPackage> getListPackages(Application application) {
+    protected List<ReactPackage> getListPackages(Application application) {
         return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
                 new CoreReactPackage(),

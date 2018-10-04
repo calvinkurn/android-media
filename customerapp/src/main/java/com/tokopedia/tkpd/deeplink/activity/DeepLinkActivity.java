@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -23,8 +22,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
@@ -137,8 +134,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
-        replaceFragment(ProductShareFragment.newInstance(shareData,false),
-                ProductShareFragment.class.getSimpleName());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_view,
+                        ProductShareFragment.newInstance(shareData,false),
+                        ProductShareFragment.class.getSimpleName())
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -175,11 +176,29 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void goToPage(Intent destination) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        if (getApplicationContext() instanceof TkpdCoreRouter) {
+            taskStackBuilder.addNextIntent(
+                    ((TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
+            );
+        }
+
+        taskStackBuilder.addNextIntent(
+                destination
+        );
+
+        taskStackBuilder.startActivities();
+        finish();
+    }
+
+    @Override
     public void networkError(final Uri uriData) {
         NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.processDeepLinkAction(uriData);
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         });
     }
@@ -299,9 +318,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             } else {
                 presenter.checkUriLogin(uriData);
                 if (presenter.isLandingPageWebView(uriData)) {
-                    presenter.processDeepLinkAction(uriData);
+                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
                 } else {
-                    presenter.processDeepLinkAction(uriData);
+                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
                 }
             }
         }

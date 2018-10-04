@@ -28,14 +28,9 @@ public class ApplinkUtils {
                     Uri.parse(Constants.URL_MARKET + GlobalConfig.PACKAGE_SELLER_APP)
             );
         } else {
-            Intent intentActionView = new Intent(Intent.ACTION_VIEW);
-            intentActionView.setData(Uri.parse(extras.getString(DeepLink.URI)));
-            intentActionView.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            PackageManager manager = context.getPackageManager();
-            List<ResolveInfo> infos = manager.queryIntentActivities(intentActionView, 0);
-            if (infos.size() > 0) {
-                launchIntent = intentActionView;
-            }
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
         }
         return launchIntent;
     }

@@ -98,7 +98,7 @@
                         android:layout_height="38dp"
                         android:background="?attr/selectableItemBackground"
                         android:scaleType="center"
-                        android:src="@drawable/ic_edit_pencil" />
+                        app:srcCompat="@drawable/ic_edit_pencil" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -148,6 +148,6 @@
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="center"
-            android:src="@drawable/ic_edit_pencil" />
+            app:srcCompat="@drawable/ic_edit_pencil" />
     </LinearLayout>
 </LinearLayout>

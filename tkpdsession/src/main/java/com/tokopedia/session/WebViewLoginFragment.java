@@ -130,15 +130,17 @@ public class WebViewLoginFragment extends DialogFragment {
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
-            Bundle bundle = new Bundle();
-            bundle.putString("error", String.valueOf(error));
-            Intent intent = new Intent();
-            intent.putExtra("bundle", bundle);
+            if (isAdded()) {
+                Bundle bundle = new Bundle();
+                bundle.putString("error", String.valueOf(error));
+                Intent intent = new Intent();
+                intent.putExtra("bundle", bundle);
 //            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-            dismiss();
-            if (getActivity() != null)
-                NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler
-                        .getDefaultErrorCodeMessage(ErrorCode.WEBVIEW_ERROR));
+                dismissAllowingStateLoss();
+                if (getActivity() != null)
+                    NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler
+                            .getDefaultErrorCodeMessage(ErrorCode.WEBVIEW_ERROR));
+            }
         }
     }
 
@@ -194,7 +196,7 @@ public class WebViewLoginFragment extends DialogFragment {
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if (getTargetFragment().isVisible()) {
+        if (getTargetFragment().isVisible() && getActivity() != null) {
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
         }
         super.onDismiss(dialog);

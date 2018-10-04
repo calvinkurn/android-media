@@ -26,13 +26,20 @@ import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
+import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
+import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
+import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.datasource.UpdateShopScheduleDataSource;
 import com.tokopedia.seller.shop.setting.data.datasource.cloud.ShopScheduleApi;
 import com.tokopedia.seller.shop.setting.data.repository.UpdateShopScheduleRepositoryImpl;
@@ -61,6 +68,28 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
+    GetProductListSellingRepository productListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
+        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
+    }
+
+    @SellerDashboardScope
+    @Provides
+    GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(GetProductListSellerApi.class);
+    }
+
+    @Provides
+    @SellerDashboardScope
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
+    }
+
+    @SellerDashboardScope
+    @Provides
     GoldMerchantApi provideGoldMerchantApi(@GoldMerchantQualifier Retrofit retrofit) {
         return retrofit.create(GoldMerchantApi.class);
     }
@@ -80,8 +109,8 @@ public class SellerDashboardModule {
 
     @SellerDashboardScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
+        return retrofit.create(TomeProductApi.class);
     }
 
     @SellerDashboardScope
@@ -177,10 +206,16 @@ public class SellerDashboardModule {
                 notificationUseCase, topChatNotificationUseCase);
     }
 
+    @DeleteCacheScope
+    @Provides
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
+        return new DeleteShopInfoTomeUseCase();
+    }
+
     @SellerDashboardScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
     }
 
     @SellerDashboardScope

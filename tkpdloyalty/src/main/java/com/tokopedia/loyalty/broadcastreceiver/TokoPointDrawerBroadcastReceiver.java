@@ -3,12 +3,14 @@ package com.tokopedia.loyalty.broadcastreceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.component.TokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;
@@ -42,7 +44,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(
-                tokoplusRepository.getPointDrawer(AuthUtil.generateParamsNetwork(context))
+                tokoplusRepository.getPointDrawer(CommonUtils.loadRawString(context.getResources(), R.raw.tokopoints_query))
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -94,10 +96,10 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                         DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                         DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA
                 );
-                intentDrawerActivity.putExtra(
-                        DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA,
-                        topPointDrawerData
-                );
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA, topPointDrawerData);
+                intentDrawerActivity.putExtras(bundle);
                 context.sendBroadcast(intentDrawerActivity);
 
             }

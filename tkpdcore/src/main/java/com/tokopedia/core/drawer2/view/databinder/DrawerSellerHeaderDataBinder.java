@@ -2,7 +2,6 @@ package com.tokopedia.core.drawer2.view.databinder;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.tokopedia.core.util.DataBinder;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_CACHE_DEPOSIT;
 
 /**
  * Created by nisie on 5/6/17.
@@ -102,7 +100,8 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
         DrawerData data = new DrawerData();
         DrawerDeposit deposit = new DrawerDeposit();
-        deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
+        deposit.setDeposit("");
+        //deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
 
         data.setDrawerDeposit(deposit);
         return data;

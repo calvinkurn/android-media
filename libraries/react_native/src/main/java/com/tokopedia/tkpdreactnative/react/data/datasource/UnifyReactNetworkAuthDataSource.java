@@ -3,10 +3,12 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 import android.net.Uri;
 
 import com.tokopedia.core.base.common.service.CommonService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import rx.Observable;
 
@@ -26,9 +28,16 @@ public class UnifyReactNetworkAuthDataSource {
 
         Uri uri = Uri.parse(configuration.getUrl());
         CommonService commonService = retrofit.baseUrl(uri.getScheme() + "://" + uri.getHost())
-                .client(OkHttpFactory.create().buildClientReactNativeAuth(configuration.getHeaders()).newBuilder().build())
+                .client(getOkHttpClient(configuration))
                 .build().create(CommonService.class);
         return requestToNetwork(configuration, commonService);
+    }
+
+    private OkHttpClient getOkHttpClient(ReactNetworkingConfiguration configuration) {
+        if(configuration.getUrl().contains("pulsa-api")) {
+            return OkHttpFactory.create().buildClientDigitalAuth(TkpdBaseURL.DigitalApi.HMAC_KEY).newBuilder().build();
+        }
+        return OkHttpFactory.create().buildClientReactNativeAuth(configuration.getHeaders()).newBuilder().build();
     }
 
     private Observable<String> requestToNetwork(ReactNetworkingConfiguration configuration, CommonService commonService) {

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerVertical="true"
     android:orientation="horizontal">
 
@@ -13,7 +14,7 @@
         android:layout_marginEnd="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/circle_green" />
+        app:srcCompat="@drawable/circle_green" />
 
     <TextView
         android:id="@+id/date_range_percentage_dot_text"

@@ -1,23 +1,19 @@
 package com.tokopedia.session.login.loginemail.domain.interactor;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -26,23 +22,17 @@ import rx.functions.Func1;
 
 public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
 
-    private final SessionHandler sessionHandler;
     private final GetTokenUseCase getTokenUseCase;
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final MakeLoginUseCase makeLoginUseCase;
 
     @Inject
-    public LoginEmailUseCase(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             GetTokenUseCase getTokenUseCase,
+    public LoginEmailUseCase(GetTokenUseCase getTokenUseCase,
                              GetUserInfoUseCase getUserInfoUseCase,
-                             MakeLoginUseCase makeLoginUseCase,
-                             SessionHandler sessionHandler) {
-        super(threadExecutor, postExecutionThread);
+                             MakeLoginUseCase makeLoginUseCase) {
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -50,17 +40,7 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
         LoginEmailDomain domain = new LoginEmailDomain();
         return getToken(domain, requestParams)
                 .flatMap(getInfo(domain))
-                .flatMap(makeLogin(domain))
-                .doOnError(resetToken());
-    }
-
-    private Action1<Throwable> resetToken() {
-        return new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                sessionHandler.clearToken();
-            }
-        };
+                .flatMap(makeLogin(domain));
     }
 
     private Func1<LoginEmailDomain, Observable<LoginEmailDomain>> makeLogin(final LoginEmailDomain domain) {

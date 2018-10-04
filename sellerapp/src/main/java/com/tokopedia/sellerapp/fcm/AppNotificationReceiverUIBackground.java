@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -15,23 +14,15 @@ import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
-
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Actions;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -50,7 +41,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
-        if(!isRefreshCart(data)) {
+        if (!isRefreshCart(data)) {
             Map<Integer, Visitable> dedicatedNotification = getCommonDedicatedNotification();
             dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, new TopAdsBelow20kNotification(mContext));
             dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, new TopAdsTopupSuccessNotification(mContext));
@@ -62,28 +53,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isSupportedApplinkNotification(bundle)) {
-                    handleApplinkNotification(bundle);
-                } else if (isDedicatedNotification(bundle)) {
-                    handleDedicatedNotification(bundle);
-                } else {
-                    handlePromotionNotification(bundle);
-                }
-                return true;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
-
+    public void notifyReceiverBackgroundMessage(Bundle data) {
+        if (isSupportedApplinkNotification(data)) {
+            handleApplinkNotification(data);
+        } else if (isDedicatedNotification(data)) {
+            handleDedicatedNotification(data);
+        } else {
+            handlePromotionNotification(data);
+        }
     }
 
     private void handleApplinkNotification(Bundle data) {
@@ -109,27 +86,19 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
-        if(!isRefreshCart(data)) {
+        if (!isRefreshCart(data)) {
             String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
             String category = Uri.parse(applinks).getHost();
             switch (category) {
                 case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                    if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                        if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                                && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                            ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
-                        } else {
-                            String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                            String fullname = data
-                                    .getString("full_name");
-                            applink += "?" + "fullname=" + fullname;
-                            data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                            buildNotifByData(data);
-                        }
-                    }
-                    break;
-                case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                    if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        ((ChatNotifInterface) mActivitiesLifecycleCallbacks.getLiveActivityOrNull()).onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data.getString("full_name");
+                        applink = String.format("%s?fullname=%s", applink, fullname);
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
                         buildNotifByData(data);
                     }
                     break;
@@ -166,7 +135,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private void refreshUI(Bundle data) {
         if (!mActivitiesLifecycleCallbacks.isAppOnBackground()) {
             Activity currentActivity = mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-            if(currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
+            if (currentActivity != null && currentActivity instanceof NotificationReceivedListener) {
                 NotificationReceivedListener listener = (NotificationReceivedListener) currentActivity;
                 listener.onGetNotif();
                 if (isRefreshCart(data)) {

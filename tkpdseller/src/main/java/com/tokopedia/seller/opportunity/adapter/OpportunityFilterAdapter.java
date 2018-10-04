@@ -43,6 +43,9 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
             title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (getAdapterPosition() < 0) {
+                        return;
+                    }
                     if (filterViewModel.getListChild().get(getAdapterPosition()).isExpanded()) {
                         collapseGroup(getAdapterPosition());
                     } else {
@@ -66,8 +69,9 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onFilterSelected(filterViewModel.getPosition(),
-                            filterViewModel.getListChild().get(getAdapterPosition()).getName());
+                    if (getAdapterPosition() >= 0) {
+                        listener.onFilterSelected(filterViewModel.getPosition(), filterViewModel.getListChild().get(getAdapterPosition()).getName());
+                    }
                 }
             });
         }

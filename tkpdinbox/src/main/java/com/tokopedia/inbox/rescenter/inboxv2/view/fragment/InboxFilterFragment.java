@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -170,7 +171,8 @@ public class InboxFilterFragment
                             }
                 });
                 dialog.getDatePicker().setMaxDate(currentTime);
-                if (inboxFilterModel.getDateTo() != null) {
+                if (inboxFilterModel.getDateTo() != null
+                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     dialog.getDatePicker().setMaxDate(inboxFilterModel.getDateTo().getTime());
                 }
                 dialog.show();
@@ -210,7 +212,8 @@ public class InboxFilterFragment
                             }
                         });
                 dialog.getDatePicker().setMaxDate(currentTime);
-                if (inboxFilterModel.getDateFrom() != null) {
+                if (inboxFilterModel.getDateFrom() != null
+                        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     dialog.getDatePicker().setMinDate(inboxFilterModel.getDateFrom().getTime());
                 }
                 dialog.show();

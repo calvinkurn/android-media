@@ -103,7 +103,7 @@ public class DatePickerUtil {
         if (MinYear != 0) {
             Calendar minDate = Calendar.getInstance();
             minDate.set(minDate.get(Calendar.YEAR) - MinYear, minDate.getMinimum(Calendar.MONTH), minDate.getMinimum(Calendar.DATE));
-            dpd.getDatePicker().setMinDate(minDate.getTimeInMillis());
+            dpd.getDatePicker().setMinDate(minDate.getTimeInMillis() - 1000);
         }
 
         if (minDate != 0) {

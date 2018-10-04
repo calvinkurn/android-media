@@ -7,12 +7,15 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.BigGridCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.CatalogHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.GridCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.ListCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 
 /**
@@ -23,11 +26,11 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
         implements CatalogTypeFactory {
 
     private final ItemClickListener mItemClickListener;
-    private final String query;
+    private final Config topAdsConfig;
 
-    public CatalogAdapterTypeFactory(ItemClickListener listener, String query) {
+    public CatalogAdapterTypeFactory(ItemClickListener listener, Config topAdsConfig) {
         this.mItemClickListener = listener;
-        this.query = query;
+        this.topAdsConfig = topAdsConfig;
     }
 
     @Override
@@ -41,17 +44,16 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListCatalogViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridCatalogViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridCatalogViewHolder.LAYOUT;
         }
     }
 
-
-
     @Override
-    public int type(EmptyModel viewModel) {
-        return EmptyViewHolder.LAYOUT;
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptySearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -61,10 +63,12 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
             viewHolder = new ListCatalogViewHolder(parent, mItemClickListener);
         } else if (type == GridCatalogViewHolder.LAYOUT) {
             viewHolder = new GridCatalogViewHolder(parent, mItemClickListener);
-        } else if (type == EmptyViewHolder.LAYOUT) {
-            viewHolder = new EmptyViewHolder(parent, mItemClickListener);
+        } else if (type == BigGridCatalogViewHolder.LAYOUT) {
+            viewHolder = new BigGridCatalogViewHolder(parent, mItemClickListener);
+        } else if (type == EmptySearchViewHolder.LAYOUT) {
+            viewHolder = new EmptySearchViewHolder(parent, mItemClickListener, null);
         } else if (type == CatalogHeaderViewHolder.LAYOUT) {
-            viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, query);
+            viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, topAdsConfig);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

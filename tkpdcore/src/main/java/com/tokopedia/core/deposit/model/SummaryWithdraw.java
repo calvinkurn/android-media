@@ -30,6 +30,9 @@ public class SummaryWithdraw {
     @SerializedName("error_date")
     @Expose
     private int errorDate = 0;
+    @SerializedName("warning_hold_deposit")
+    @Expose
+    private String warningHoldDeposit;
 
     /**
      *
@@ -156,4 +159,7 @@ public class SummaryWithdraw {
         this.errorDate = errorDate;
     }
 
+    public String getWarningHoldDeposit() {
+        return warningHoldDeposit;
+    }
 }

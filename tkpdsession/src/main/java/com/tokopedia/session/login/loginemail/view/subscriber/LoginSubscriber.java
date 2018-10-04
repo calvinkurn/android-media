@@ -1,9 +1,10 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -33,6 +34,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
+        Log.e("NORMANSYAH", e.toString());
         view.enableArrow();
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
@@ -40,23 +42,36 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
+            ErrorHandler.getErrorMessage(new ErrorHandler.ErrorForbiddenListener() {
+                @Override
+                public void onForbidden() {
+                    view.onForbidden();
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    view.onErrorLogin(errorMessage);
+                }
+            }, e, view.getContext());
         }
     }
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
-        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
             view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+                && (!view.isFromRegister() || GlobalConfig.isSellerApp())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
-        } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && !isMsisdnVerified(loginEmailDomain.getInfo())) {
+        } else if (loginEmailDomain.getLoginResult() != null
+                && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
+                && !isMsisdnVerified(loginEmailDomain.getInfo())
+                && view.isFromRegister()) {
             view.setSmartLock();
             view.onGoToPhoneVerification();
         } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
@@ -68,7 +83,6 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
             view.dismissLoadingLogin();
-            view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }

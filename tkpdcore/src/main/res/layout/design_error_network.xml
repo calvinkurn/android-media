@@ -1,14 +1,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/main_retry"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_gravity="center"
-              android:background="@color/tkpd_bg_color"
-              android:gravity="center"
-              android:clickable="true"
-              android:orientation="vertical"
-              android:padding="@dimen/padding_small">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_retry"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/tkpd_bg_color"
+    android:gravity="center"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_small">
 
     <!-- Untuk onRetry satu halaman -->
     <ImageView
@@ -19,7 +20,7 @@
         android:layout_marginBottom="@dimen/margin_med"
         android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center_horizontal"
-        android:src="@drawable/ic_error_network"
+        app:srcCompat="@drawable/ic_error_network"
         tools:ignore="ContentDescription"/>
 
     <TextView

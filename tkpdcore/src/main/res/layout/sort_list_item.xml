@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:paddingTop="15dp"
         android:paddingRight="15dp"
         android:clickable="true"
-        android:drawableRight="@drawable/sort_selector_drawable"
+        app:drawableRightCompat="@drawable/sort_selector_drawable"
         android:textColor="@color/filter_selector"
         android:background="?attr/selectableItemBackground"
         android:textAppearance="?android:attr/textAppearanceMedium" />

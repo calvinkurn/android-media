@@ -2,9 +2,9 @@ package com.tokopedia.inbox.rescenter.detailv2.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
@@ -13,7 +13,6 @@ import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapperV2;
@@ -31,7 +30,6 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolution
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishResolutionUseCase;
-import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GenerateHostV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetNextActionUseCase;
@@ -109,7 +107,7 @@ public class ResolutionDetailModule {
             TrackAwbReturProductUseCase trackAwbReturProductUseCase,
             CancelResolutionUseCase cancelResolutionUseCase,
             AskHelpResolutionUseCase askHelpResolutionUseCase,
-            FinishReturSolutionUseCase finishReturSolutionUseCase,
+            FinishResolutionUseCase finishResolutionUseCase,
             AcceptAdminSolutionUseCase acceptAdminSolutionUseCase,
             AcceptSolutionUseCase acceptSolutionUseCase,
             InputAddressUseCase inputAddressUseCase,
@@ -121,7 +119,7 @@ public class ResolutionDetailModule {
                 trackAwbReturProductUseCase,
                 cancelResolutionUseCase,
                 askHelpResolutionUseCase,
-                finishReturSolutionUseCase,
+                finishResolutionUseCase,
                 acceptAdminSolutionUseCase,
                 acceptSolutionUseCase,
                 inputAddressUseCase,
@@ -160,18 +158,6 @@ public class ResolutionDetailModule {
             PostExecutionThread postExecutionThread,
             ResCenterRepository resCenterRepository) {
         return new AskHelpResolutionUseCase(
-                threadExecutor,
-                postExecutionThread,
-                resCenterRepository);
-    }
-
-    @ResolutionDetailScope
-    @Provides
-    FinishReturSolutionUseCase provideFinishReturSolutionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ResCenterRepository resCenterRepository) {
-        return new FinishReturSolutionUseCase(
                 threadExecutor,
                 postExecutionThread,
                 resCenterRepository);

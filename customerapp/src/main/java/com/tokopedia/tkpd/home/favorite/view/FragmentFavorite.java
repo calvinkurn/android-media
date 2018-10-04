@@ -3,27 +3,25 @@ package com.tokopedia.tkpd.home.favorite.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -31,7 +29,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
@@ -44,9 +41,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -64,6 +58,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     ProgressBar progressBar;
     RelativeLayout mainContent;
     View wishlistNotLoggedIn;
+    Button btnLogin;
 
     @Inject
     FavoritePresenter favoritePresenter;
@@ -79,6 +74,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     private TopAdsShopItem shopItemSelected;
     private Trace trace;
 
+    public static Fragment newInstance() {
+        return new FragmentFavorite();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,11 +95,12 @@ public class FragmentFavorite extends BaseDaggerFragment
         progressBar = (ProgressBar) parentView.findViewById(R.id.include_loading);
         mainContent = (RelativeLayout) parentView.findViewById(R.id.main_content);
         wishlistNotLoggedIn = parentView.findViewById(R.id.partial_empty_wishlist);
+        btnLogin = parentView.findViewById(R.id.btn_login);
 
         if (SessionHandler.isV4Login(getActivity())) {
             prepareView();
             favoritePresenter.attachView(this);
-            checkImpressionOncreate();
+            favoritePresenter.loadInitialData();
         } else {
             wishlistNotLoggedIn.setVisibility(View.VISIBLE);
             mainContent.setVisibility(View.GONE);
@@ -118,6 +117,18 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (btnLogin != null) {
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+                        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -193,6 +204,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
+    public void stopLoadingFavoriteShop() {
+        favoriteAdapter.hideLoading();
+    }
+
+    @Override
     protected void initInjector() {
         DaggerFavoriteComponent daggerFavoriteComponent
                 = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
@@ -237,7 +253,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
         recylerviewScrollListener.resetState();
-        if(trace!=null)
+        if (trace != null)
             trace.stop();
     }
 
@@ -369,19 +385,5 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private boolean isAdapterNotEmpty() {
         return favoriteAdapter.getItemCount() > 0;
-    }
-
-    private void checkImpressionOncreate() {
-        final int indexTabFavorite = 2;
-        if (getActivity() instanceof ParentIndexHome) {
-            if (((ParentIndexHome) getActivity()).getViewPager() != null) {
-                if (!isAdapterNotEmpty()
-                        && ((ParentIndexHome) getActivity())
-                        .getViewPager().getCurrentItem() == indexTabFavorite) {
-
-                    favoritePresenter.loadInitialData();
-                }
-            }
-        }
     }
 }

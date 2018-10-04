@@ -54,6 +54,8 @@ interface FavoriteContract {
         void validateMessageError();
 
         void showErrorAddFavoriteShop();
+
+        void stopLoadingFavoriteShop();
     }
 
     interface Presenter extends CustomerPresenter<View> {

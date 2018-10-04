@@ -25,23 +25,28 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.analytics.OTPAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.tokocashotp.view.viewlistener.Verification;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
+import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -52,13 +57,15 @@ import javax.inject.Inject;
  * @author by nisie on 11/30/17.
  */
 
-public class TokoCashVerificationFragment extends BaseDaggerFragment implements Verification.View {
+public class TokoCashVerificationFragment extends BaseDaggerFragment implements Verification.View
+        , ChooseTokocashAccount.View{
 
     private static final String ARGS_DATA = "ARGS_DATA";
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
     private static final int MAX_INPUT_OTP = 6;
+    private int REQUEST_SECURITY_QUESTION = 101;
 
 
     private static final String CACHE_OTP = "CACHE_OTP";
@@ -191,6 +198,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
             public void afterTextChanged(Editable s) {
                 if (inputOtp.getText().length() == MAX_INPUT_OTP) {
                     enableVerifyButton();
+                    verifyButton.performClick();
                 } else {
                     disableVerifyButton();
                 }
@@ -266,8 +274,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     @Override
     public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
         removeErrorOtp();
-
         resetCountDown();
+
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
@@ -276,8 +284,12 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
                         verifyOtpTokoCashViewModel.getKey()));
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
 
+        if(verifyOtpTokoCashViewModel.getList().size() > 1) {
+            getActivity().finish();
+        }else{
+            presenter.autoLogin(verifyOtpTokoCashViewModel.getKey(), verifyOtpTokoCashViewModel);
+        }
     }
 
     private void resetCountDown() {
@@ -456,5 +468,45 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     public void setData(Bundle bundle) {
         viewModel = createViewModel(bundle);
+    }
+
+    @Override
+    public void onSuccessLogin() {
+        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+        BranchSdkUtils.sendLoginEvent(getActivity());
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorLoginTokoCash(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel) {
+        Intent intent = com.tokopedia.otp.cotp.view.activity.VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getEmail(),
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getPhone());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            onSuccessLogin();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

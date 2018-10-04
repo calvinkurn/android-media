@@ -1,6 +1,5 @@
 package com.tokopedia.analytics;
 
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 /**
@@ -154,6 +153,15 @@ public class LoginAnalytics {
                 Category.REGISTER,
                 Action.REGISTER_SUCCESS,
                 Label.EMAIL
+        );
+    }
+
+    public static EventTracking getEventSuccessRegisterPhoneNumber() {
+        return new EventTracking(
+                Event.REGISTER_CLICK,
+                Category.REGISTER,
+                Action.REGISTER_SUCCESS,
+                Label.PHONE_NUMBER
         );
     }
 

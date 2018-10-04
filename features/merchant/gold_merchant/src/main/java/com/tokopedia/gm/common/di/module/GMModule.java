@@ -7,30 +7,30 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.datepicker.range.data.repository.DatePickerRepositoryImpl;
+import com.tokopedia.datepicker.range.data.source.DatePickerDataSource;
+import com.tokopedia.datepicker.range.domain.DatePickerRepository;
+import com.tokopedia.datepicker.range.domain.interactor.ClearDatePickerUseCase;
+import com.tokopedia.datepicker.range.domain.interactor.FetchDatePickerUseCase;
+import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
+import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
+import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenterImpl;
 import com.tokopedia.gm.cashback.data.repository.GmCashbackRepositoryImpl;
 import com.tokopedia.gm.cashback.data.source.CashbackApi;
 import com.tokopedia.gm.cashback.data.source.GMCashbackDataSource;
 import com.tokopedia.gm.cashback.domain.GMCashbackRepository;
+import com.tokopedia.gm.common.di.scope.GMScope;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepository;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepositoryImpl;
-import com.tokopedia.seller.base.data.repository.DatePickerRepositoryImpl;
-import com.tokopedia.seller.base.data.source.DatePickerDataSource;
-import com.tokopedia.seller.base.domain.DatePickerRepository;
-import com.tokopedia.seller.base.domain.interactor.ClearDatePickerUseCase;
-import com.tokopedia.seller.base.domain.interactor.FetchDatePickerUseCase;
-import com.tokopedia.seller.base.domain.interactor.SaveDatePickerUseCase;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenter;
-import com.tokopedia.seller.base.view.presenter.DatePickerPresenterImpl;
-import com.tokopedia.gm.common.di.scope.GMScope;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -87,8 +87,8 @@ public class GMModule {
 
     @GMScope
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
-        return retrofit.create(TomeApi.class);
+    TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(TomeProductApi.class);
     }
     @Provides
     @GMScope
