@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
+import com.tokopedia.core.network.entity.affiliateProductData.AffiliateProductDataResponse;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -21,11 +23,16 @@ import com.tokopedia.core.util.AppIndexHandler;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Response;
+import rx.Subscriber;
+
 /**
  * ProductDetailPresenter
  * Created by Angga.Prasetiyo on 18/11/2015.
  */
 public interface ProductDetailPresenter {
+
+    void openAffiliatePublishForm(Affiliate affiliate);
 
     void initGetRateEstimationUseCase();
 
@@ -126,4 +133,10 @@ public interface ProductDetailPresenter {
     void initTopAdsSourceTaggingUseCase(Context context);
 
     void saveSource(String source);
+
+    void requestAffiliateProductData(
+            ProductDetailData productDetailData,
+            Subscriber<Response<AffiliateProductDataResponse>> subscriber);
+
+    void renderAffiliateButton(Affiliate affiliate);
 }

@@ -12,7 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
@@ -28,6 +31,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  * @author by Angga.Prasetiyo on 02/11/2015.
  */
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
+
+
     private TextView tvBuy;
     private TextView tvPromoTopAds;
     private TextView tvpPromoHour;
@@ -36,6 +41,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public View containerNewButtonBuy;
     public View btnCart;
     public View btnChat;
+    public View btnByMe;
     public View btnNewBuy;
     private ProgressBar progressBarVariant;
     private TextView tvNewBuy;
@@ -82,6 +88,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         btnNewBuy = findViewById(R.id.container_new_button_buy);
         progressBarVariant = findViewById(R.id.new_variant_progress_bar);
         tvNewBuy = findViewById(R.id.tv_new_buy);
+        btnByMe = findViewById(R.id.action_button_by_me);
     }
 
     @Override
@@ -300,4 +307,20 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
+    public void showByMeButton(boolean show){
+        if (show){
+            btnByMe.setVisibility(VISIBLE);
+        } else{
+            btnByMe.setVisibility(GONE);
+        }
+    }
+
+    public void setByMeButtonListener(Affiliate affiliate){
+        btnByMe.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onByMeClicked(affiliate);
+            }
+        });
+    }
 }

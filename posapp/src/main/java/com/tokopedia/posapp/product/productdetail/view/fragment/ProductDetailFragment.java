@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -248,6 +249,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void closeView() {
+
+    }
+
+    @Override
+    public void onByMeClicked(Affiliate affiliate) {
+
+    }
+
+    @Override
+    public void renderAffiliateButton(Affiliate affiliate) {
 
     }
 

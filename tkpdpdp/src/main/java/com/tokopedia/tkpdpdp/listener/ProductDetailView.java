@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.listener.ViewListener;
@@ -32,6 +33,10 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
+
+    void onByMeClicked(Affiliate affiliate);
+
+    void renderAffiliateButton(Affiliate affiliate);
 
     void onWishlistCountLoaded(String wishlistCountText);
 

@@ -41,14 +41,19 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
+import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
+import com.tokopedia.tkpdpdp.domain.GetAffiliateProductDataUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
@@ -301,6 +306,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Inject
     GetWishlistCountUseCase getWishlistCountUseCase;
 
+    @Inject
+    GetAffiliateProductDataUseCase getAffiliateProductDataUseCase;
+
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();
@@ -351,7 +359,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this);
+        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this,
+                new RetrofitInteractorImpl(), new CacheInteractorImpl(), getAffiliateProductDataUseCase);
         this.presenter.initGetRateEstimationUseCase();
     }
 
@@ -868,6 +877,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onByMeClicked(Affiliate affiliate) {
+        presenter.openAffiliatePublishForm(affiliate);
+    }
+
+    @Override
+    public void renderAffiliateButton(Affiliate affiliate) {
+        buttonBuyView.showByMeButton(true);
+        buttonBuyView.setByMeButtonListener(affiliate);
     }
 
     @Override

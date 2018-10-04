@@ -1,11 +1,13 @@
 package com.tokopedia.core.base.common.service;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.affiliateProductData.AffiliateProductDataResponse;
 
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -25,6 +27,13 @@ public interface TopAdsService {
     @GET
     Observable<Response<String>> productWishlistUrl(@Url String wishlistUrl);
 
+    @GET(TkpdBaseURL.TopAds.PATH_GET_PDP_AFFILIATE_DATA)
+    Observable<Response<AffiliateProductDataResponse>> getPdpAffiliateData(
+            @Query("ui") String ui,
+            @Query("user_id") String userId,
+            @Query("shop_id") String shopId,
+            @Query("product_ids") String productIds
+    );
 }
 
 

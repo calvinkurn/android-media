@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -36,12 +38,13 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
+import com.tokopedia.core.network.entity.affiliateProductData.AffiliateProductDataResponse;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
-import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
@@ -77,11 +80,13 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.domain.GetAffiliateProductDataUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
 import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
@@ -107,6 +112,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -125,6 +131,9 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  */
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
+    private static final String PRODUCT_ID = "product_id";
+    private static final String AD_ID = "ad_id";
+
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
@@ -136,6 +145,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
     private final WishListActionListener wishListActionListener;
+    private final GetAffiliateProductDataUseCase getAffiliateProductUseCase;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
 
@@ -154,14 +164,17 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public ProductDetailPresenterImpl(
             GetWishlistCountUseCase getWishlistCountUseCase,
             ProductDetailView viewListener,
-            WishListActionListener wishListActionListener) {
+            WishListActionListener wishListActionListener,
+            RetrofitInteractor retrofitInteractor,
+            CacheInteractor cacheInteractor,
+            GetAffiliateProductDataUseCase getAffiliateProductDataUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
-        this.retrofitInteractor = new RetrofitInteractorImpl();
-        this.cacheInteractor = new CacheInteractorImpl();
+        this.retrofitInteractor = retrofitInteractor;
+        this.cacheInteractor = cacheInteractor;
         this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-
+        this.getAffiliateProductUseCase = getAffiliateProductDataUseCase;
     }
 
     private void checkWishlistCount(String productId) {
@@ -174,6 +187,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void initRetrofitInteractor() {
         this.retrofitInteractor = new RetrofitInteractorImpl();
+    }
+
+    @Override
+    public void openAffiliatePublishForm(Affiliate affiliate) {
+        RouteManager.route(
+                viewListener.getActivityContext(),
+                ApplinkConst.AFFILIATE_CREATE_POST
+                        .replace(PRODUCT_ID,
+                                String.valueOf(affiliate.getProductId()))
+                        .replace(AD_ID,
+                                String.valueOf(affiliate.getAdId()))
+        );
     }
 
     @Override
@@ -506,6 +531,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
+                            requestAffiliateProductData(
+                                    productDetailData,
+                                    new AffiliateProductDataSubscriber(
+                                            ProductDetailPresenterImpl.this));
 
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
@@ -1016,6 +1045,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
+                        requestAffiliateProductData(
+                                data,
+                                new AffiliateProductDataSubscriber(
+                                        ProductDetailPresenterImpl.this));
+
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
@@ -1317,6 +1351,30 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 //do nothing
             }
         });
+    }
+
+    @Override
+    public void renderAffiliateButton(Affiliate affiliate) {
+        viewListener.renderAffiliateButton(affiliate);
+    }
+
+    @Override
+    public void requestAffiliateProductData(
+            ProductDetailData productDetailData,
+            Subscriber<Response<AffiliateProductDataResponse>> subscriber){
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetAffiliateProductDataUseCase.UI_PARAM,
+                GetAffiliateProductDataUseCase.PARAMS_REQUEST_UI);
+        requestParams.putString(GetAffiliateProductDataUseCase.PRODUCT_ID_PARAM,
+                String.valueOf(productDetailData.getInfo().getProductId()));
+        requestParams.putString(GetAffiliateProductDataUseCase.SHOP_ID_PARAM,
+                String.valueOf(productDetailData.getShopInfo().getShopId()));
+        requestParams.putString(GetAffiliateProductDataUseCase.USER_ID_PARAM,
+                SessionHandler.isV4Login(viewListener.getActivityContext())?
+                        SessionHandler.getLoginID(viewListener.getActivityContext()):
+                        GetAffiliateProductDataUseCase.PARAMS_GUEST_USER_ID);
+
+        getAffiliateProductUseCase.execute(requestParams, subscriber);
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {
