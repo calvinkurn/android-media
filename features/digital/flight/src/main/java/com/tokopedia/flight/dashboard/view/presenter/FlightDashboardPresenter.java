@@ -246,7 +246,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
         getView().showDepartureCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
-//        getView().showDepartureDatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
     }
 
     @Override
