@@ -1,5 +1,6 @@
 package com.tokopedia.flight.searchV2.data.db
 
+import android.arch.persistence.db.SimpleSQLiteQuery
 import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import rx.Observable
@@ -13,7 +14,6 @@ class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightRouteDao: FlightRouteDao) {
 
     fun findAllJourneys(): Observable<List<JourneyAndRoutesJava>> {
-        val journeys = arrayListOf<FlightJourneyTable>()
         return Observable.create {
             it.onNext(flightJourneyDao.findAllJourneys())
         }
@@ -35,6 +35,22 @@ class FlightSearchSingleDataDbSource @Inject constructor(
         return Observable.create {
             it.onNext(flightJourneyDao.findFilteredJourneys(isReturn, filterModel.journeyId,
                     filterModel.isBestPairing))
+        }
+    }
+
+    fun getFilteredJourneys2(isReturn: Boolean, sortOption: FlightSortOption, filterModel: FlightFilterModel):
+            Observable<List<JourneyAndRoutesJava>> {
+        return Observable.create {
+            val sqlQuery = "SELECT * FROM FlightJourneyTable WHERE"
+            val sqlStringBuilder = StringBuilder()
+            sqlStringBuilder.append(sqlQuery)
+            if (filterModel.isSpecialPrice) {
+                sqlStringBuilder.append()
+            }
+
+            val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
+
+            it.onNext(flightJourneyDao.findFilteredJourneys(simpleSQLiteQuery))
         }
     }
 
