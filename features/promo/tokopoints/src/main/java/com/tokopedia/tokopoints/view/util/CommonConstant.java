@@ -18,11 +18,13 @@ public interface CommonConstant {
     int CATALOG_TYPE_FLASH_SALE = 3;
     int MY_COUPON_TAB = 1;
     int MAX_COUPON_TO_SHOW_COUNT = 9;
+    int PIN_COUNT = 4;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
     String EXTRA_COUPON_COUNT = "extra_coupon_count";
     String EXTRA_COUPON_CODE = "coupon_code";
     String EXTRA_CATALOG_CODE = "catalog_code";
     String EXTRA_COUPON_ID = "extra_coupon_id";
+    String EXTRA_PIN_INFO = "extra_pin_info";
     String EXTRA_COUPON_TITLE = "extra_coupon_title";
     String EXTRA_COUPON_POINT = "extra_coupon_point";
     String CLIPBOARD_COUPON_CODE = "tokopedia_tokopoints_coupon";

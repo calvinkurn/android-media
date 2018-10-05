@@ -793,7 +793,11 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             mSwipeCardView.setOnSwipeListener(new SwipeCardView.OnSwipeListener() {
                 @Override
                 public void onComplete() {
-                    mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
+                    if (data.getSwipe().getPin().isPinRequire()) {
+                        showPinPage(data.getRealCode(), data.getSwipe().getPin().getText());
+                    } else {
+                        mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
+                    }
                 }
 
                 @Override
@@ -971,5 +975,22 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     public void onSwipeError(String errorMessage) {
         mSwipeCardView.reset();
         SnackbarManager.make(mSwipeCardView, errorMessage, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void showPinPage(String code, String pinInfo) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
+
+        Fragment fragment = new ValidateMerchantPinFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo);
+        bundle.putString(CommonConstant.EXTRA_COUPON_ID, code);
+        fragment.setArguments(bundle);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
+                .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
+                .commit();
     }
 }

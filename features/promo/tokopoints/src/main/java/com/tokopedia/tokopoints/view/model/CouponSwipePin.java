@@ -8,7 +8,7 @@ public class CouponSwipePin {
     private boolean isPinRequire;
 
     @SerializedName("text")
-    private boolean text;
+    private String text;
 
     public boolean isPinRequire() {
         return isPinRequire;
@@ -18,11 +18,11 @@ public class CouponSwipePin {
         isPinRequire = pinRequire;
     }
 
-    public boolean isText() {
+    public String getText() {
         return text;
     }
 
-    public void setText(boolean text) {
+    public void setText(String text) {
         this.text = text;
     }
 
