@@ -47,10 +47,20 @@ public class MerchantVoucherListWidget extends FrameLayout
     private OnMerchantVoucherListWidgetListener onMerchantVoucherListWidgetListener;
     private View rootView;
 
+    @Override
+    public boolean isOwner() {
+        if (onMerchantVoucherListWidgetListener!= null) {
+            return onMerchantVoucherListWidgetListener.isOwner();
+        } else {
+            return false;
+        }
+    }
+
     public interface OnMerchantVoucherListWidgetListener{
         void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel);
         void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel);
         void onSeeAllClicked();
+        boolean isOwner();
     }
 
     public void setOnMerchantVoucherListWidgetListener(OnMerchantVoucherListWidgetListener onMerchantVoucherListWidgetListener) {

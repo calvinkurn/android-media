@@ -24,6 +24,7 @@ class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantV
     : BaseAdapterTypeFactory() {
     private var onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener? = null
     private var horizontalLayout: Boolean = false
+    private var isVoucherOwner: Boolean = false
 
     init {
         this.onMerchantVoucherViewListener = onMerchantVoucherViewListener

@@ -31,8 +31,8 @@
                 <ImageView
                     android:id="@+id/ivVoucherBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_120"
-                    android:scaleType="centerCrop"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     tools:src="@drawable/bg_rect_rounded_white_shadow" />
 
                 <TextView

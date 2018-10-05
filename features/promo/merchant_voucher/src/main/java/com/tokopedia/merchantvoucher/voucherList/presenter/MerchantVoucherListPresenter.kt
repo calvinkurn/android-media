@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
+import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
@@ -18,11 +19,13 @@ import javax.inject.Inject
 class MerchantVoucherListPresenter @Inject
 constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
+            private val useMerchantVoucherUseCase: UseMerchantVoucherUseCase,
             private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
             private val userSession: UserSession)
     : BaseDaggerPresenter<MerchantVoucherListView>(){
 
-    fun isLogin() = userSession.isLoggedIn
+    fun isLogin() = (userSession.isLoggedIn)
+    fun isMyShop(shopId: String) = (userSession.shopId == shopId)
 
     fun getShopInfo(shopId: String) {
         getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {
@@ -58,13 +61,31 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         })
     }
 
+    fun useMerchantVoucher(voucherCode: String, voucherId:Int) {
+        useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),
+                object : Subscriber<Boolean>() {
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable) {
+                        view?.onErrorUseVoucher(e)
+                    }
+
+                    override fun onNext(success: Boolean) {
+                        // success should be true
+                        view?.onSuccessUseVoucher()
+                    }
+                })
+    }
+
     fun clearCache() {
         deleteShopInfoUseCase.executeSync()
+        getMerchantVoucherListUseCase.clearCache()
     }
 
     override fun detachView() {
         super.detachView()
         getShopInfoUseCase.unsubscribe()
         getMerchantVoucherListUseCase.unsubscribe()
+        useMerchantVoucherUseCase.unsubscribe()
     }
 }

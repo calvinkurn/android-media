@@ -14,10 +14,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
+import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -33,7 +39,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         MerchantVoucherAdapterTypeFactory>(),
         MerchantVoucherListView, MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    var shopId: String? = null
+    lateinit var voucherShopId: String
+    var needRefreshData: Boolean = false
 
     var shopInfo: ShopInfo? = null
         get
@@ -48,7 +55,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun getAdapterTypeFactory(): MerchantVoucherAdapterTypeFactory {
-        return MerchantVoucherAdapterTypeFactory(this)
+        return MerchantVoucherAdapterTypeFactory(this, false)
     }
 
     override fun getScreenName(): String {
@@ -71,11 +78,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun loadData(page: Int) {
-        shopId?.let {
-            presenter?.run {
-                getVoucherList(it)
-            }
-        }
+        presenter.getVoucherList(voucherShopId)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -85,6 +88,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         }
         return recyclerView
     }
+
+    override fun isOwner(): Boolean = presenter.isMyShop(voucherShopId)
 
     override fun onSwipeRefresh() {
         presenter.clearCache()
@@ -108,9 +113,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        arguments?.run {
-            shopId = getString(MerchantVoucherListActivity.SHOP_ID)
-        }
+        voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
         super.onCreate(savedInstanceState)
     }
 
@@ -129,9 +132,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     override fun hasInitialSwipeRefresh() = true
 
     protected open fun getShopInfo() {
-        shopId?.let {
-            presenter.getShopInfo(it)
-        }
+        presenter.getShopInfo(voucherShopId)
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -144,6 +145,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
+        adapter.clearAllElements()
         super.renderList(merchantVoucherViewModelList, false)
     }
 
@@ -169,28 +171,73 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         if (presenter.isLogin() == false) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
-            activity?.finish()
-            return
+        } else if (!presenter.isMyShop(voucherShopId)) {
+            presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }
-        // TODO if login, make call to use the voucher
     }
 
-    override fun onItemClicked(t: MerchantVoucherViewModel?) {
+    override fun onSuccessUseVoucher() {
+        activity?.run {
+            ToasterNormal.make(findViewById(android.R.id.content),
+                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
+                    .setAction(getString(R.string.title_ok)) {
+                        // no-op
+                    }.show()
+
+            presenter.clearCache()
+            presenter.getVoucherList(voucherShopId, 0)
+        }
+    }
+
+    override fun onErrorUseVoucher(e: Throwable) {
+        if (e is MessageTitleErrorException) {
+            activity?.let { it ->
+                Dialog(it, Dialog.Type.PROMINANCE).apply {
+                    setTitle(e.errorMessageTitle)
+                    setDesc(e.message)
+                    setBtnOk(getString(R.string.label_close))
+                    setOnOkClickListener {
+                        dismiss()
+                    }
+                    show()
+                }
+            }
+        } else {
+            activity?.let {
+                ToasterError.showClose(it, ErrorHandler.getErrorMessage(it, e))
+            }
+
+        }
+    }
+
+    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel?) {
         context?.let {
-            val intent = MerchantVoucherDetailActivity.createIntent(it, 1234, t)
-            startActivityForResult(intent, REQUEST_CODE_MERCHANT_DETAIL)
+            merchantVoucherViewModel?.run {
+                val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
+                        this, voucherShopId)
+                startActivityForResult(intent, REQUEST_CODE_MERCHANT_DETAIL)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_MERCHANT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
-                //TODO refresh the UI, show snackbar voucher is used. change the voucher to used.
+                needRefreshData = true
             }
             REQUEST_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
-                //TODO use the voucher marked before.
+                needRefreshData = true
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (needRefreshData) {
+            presenter.clearCache()
+            presenter.getVoucherList(voucherShopId, 0)
+            needRefreshData = false
         }
     }
 

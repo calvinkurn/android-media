@@ -24,7 +24,7 @@ class MerchantVoucherViewHolder(itemView: View,
     }
 
     override fun bind(element: MerchantVoucherViewModel?) {
-        itemView.merchantVoucherView.merchantVoucherViewModel = element
+        itemView.merchantVoucherView.setData(element)
     }
 
 }

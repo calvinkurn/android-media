@@ -18,7 +18,7 @@ data class MerchantVoucherModel(
         @SerializedName("voucher_code")
         @Expose
         var voucherCode: String? = "",
-        @SerializedName("type", alternate = arrayOf("voucherType"))
+        @SerializedName("voucherType")
         @Expose
         var merchantVoucherType: MerchantVoucherType? = null,
         @SerializedName("amount")
@@ -32,7 +32,7 @@ data class MerchantVoucherModel(
         var merchantVoucherOwner: MerchantVoucherOwner,
         @SerializedName("valid_thru")
         @Expose
-        var validThru: Int = 0,
+        var validThru: String = "",
         @SerializedName("tnc")
         @Expose
         var tnc: String? = "",
@@ -45,7 +45,7 @@ data class MerchantVoucherModel(
 )
 
 data class MerchantVoucherType(
-        @SerializedName("type")
+        @SerializedName("voucherType")
         @Expose
         var type: Int = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR,
         @SerializedName("identifier")
@@ -54,7 +54,7 @@ data class MerchantVoucherType(
 )
 
 data class MerchantVoucherAmount(
-        @SerializedName("type")
+        @SerializedName("amount_type")
         @Expose
         var type: Int = MerchantVoucherAmountTypeDef.TYPE_FIXED,
         @SerializedName("amount")

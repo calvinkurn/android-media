@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
@@ -15,30 +16,30 @@ import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterT
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable{
+class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, Parcelable {
 
-    var voucherId:Int = 0
-    var voucherName:String? = ""
-    var voucherCode:String? = ""
+    var voucherId: Int = 0
+    var voucherName: String? = ""
+    var voucherCode: String = ""
 
     @MerchantVoucherTypeDef
-    var merchantVoucherType:Int? = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
+    var merchantVoucherType: Int? = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
     @MerchantVoucherAmountTypeDef
-    var merchantVoucherAmountType:Int? = MerchantVoucherAmountTypeDef.TYPE_FIXED
-    var merchantVoucherAmount:Float? = 0f
-    var minimumSpend:Int = 0
-    var validThru:Long? = 0
-    var tnc:String? = ""
-    var bannerUrl:String? = ""
+    var merchantVoucherAmountType: Int? = MerchantVoucherAmountTypeDef.TYPE_FIXED
+    var merchantVoucherAmount: Float? = 0f
+    var minimumSpend: Int = 0
+    var validThru: Long? = 0
+    var tnc: String? = ""
+    var bannerUrl: String? = ""
     @MerchantVoucherStatusTypeDef
-    var status:Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
+    var status: Int? = MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
     @MerchantVoucherOwnerTypeDef
-    var ownerId:Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
+    var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
 
     constructor(merchantVoucherModel: MerchantVoucherModel) {
         voucherId = merchantVoucherModel.voucherId
         voucherName = merchantVoucherModel.voucherName
-        voucherCode = merchantVoucherModel.voucherCode
+        voucherCode = merchantVoucherModel.voucherCode ?: ""
         merchantVoucherType = merchantVoucherModel.merchantVoucherType?.type ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
         merchantVoucherAmountType = merchantVoucherModel.merchantVoucherAmount?.type ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
         merchantVoucherAmount = merchantVoucherModel.merchantVoucherAmount?.amount ?: 0f
@@ -100,8 +101,7 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
 
 }
 
-
-fun MerchantVoucherViewModel.getTypeString(context: Context) :String{
+fun MerchantVoucherViewModel.getTypeString(context: Context): String {
     return when (this.merchantVoucherType) {
         MerchantVoucherTypeDef.TYPE_CASHBACK -> context.getString(R.string.cashback)
         MerchantVoucherTypeDef.TYPE_DISCOUNT -> context.getString(R.string.discount)
@@ -112,30 +112,42 @@ fun MerchantVoucherViewModel.getTypeString(context: Context) :String{
     }
 }
 
-fun MerchantVoucherViewModel.getAmountString(context: Context) :String{
+fun MerchantVoucherViewModel.getAmountString(context: Context): String {
     return when (this.merchantVoucherAmountType) {
-        MerchantVoucherAmountTypeDef.TYPE_FIXED -> "Rp"+ this.merchantVoucherAmount.toString()
+        MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatRupiahString(this.merchantVoucherAmount!!.toLong())
         MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> this.merchantVoucherAmount.toString() + "%"
         else -> ""
     }
 }
 
-fun MerchantVoucherViewModel.getMinSpendLongString(context: Context) :String{
+fun MerchantVoucherViewModel.getAmountShortString(context: Context): String {
+    return when (this.merchantVoucherAmountType) {
+        MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatSuffixNumbers(this.merchantVoucherAmount!!.toLong())
+        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> this.merchantVoucherAmount.toString() + "%"
+        else -> ""
+    }
+}
+
+fun MerchantVoucherViewModel.getMinSpendLongString(context: Context): String {
     if (this.minimumSpend <= 0) {
         return context.getString(R.string.no_min_spend)
     }
-    return context.getString(R.string.min_spend_x, getMinSpendAmountString(context))
+    return context.getString(R.string.min_spend_x, getMinSpendAmountShortString())
 }
 
-fun MerchantVoucherViewModel.getMinSpendAmountString(context: Context) :String{
-    return this.minimumSpend.toString()
+fun MerchantVoucherViewModel.getMinSpendAmountString(): String {
+    return KMNumbers.formatRupiahString(this.minimumSpend.toLong())
 }
 
-fun MerchantVoucherViewModel.getValidThruString(context: Context) :String{
+fun MerchantVoucherViewModel.getMinSpendAmountShortString(): String {
+    return KMNumbers.formatSuffixNumbers(this.minimumSpend.toLong())
+}
+
+fun MerchantVoucherViewModel.getValidThruString(context: Context): String {
     return this.validThru.toString()
 }
 
-fun MerchantVoucherViewModel.getStatusString(context: Context) :String{
+fun MerchantVoucherViewModel.getStatusString(context: Context): String {
     return when (status) {
         MerchantVoucherStatusTypeDef.TYPE_AVAILABLE -> context.getString(R.string.available)
         MerchantVoucherStatusTypeDef.TYPE_IN_USE -> context.getString(R.string.in_use)

@@ -15,4 +15,8 @@ interface MerchantVoucherDetailView : CustomerView {
 
     fun onErrorGetMerchantVoucherDetail(e: Throwable)
 
+    fun onSuccessUseVoucher()
+
+    fun onErrorUseVoucher(e: Throwable)
+
 }

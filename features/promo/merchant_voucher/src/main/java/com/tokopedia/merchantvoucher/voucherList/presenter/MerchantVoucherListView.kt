@@ -15,6 +15,10 @@ interface MerchantVoucherListView : CustomerView {
 
     fun onErrorGetShopInfo(e: Throwable)
 
+    fun onSuccessUseVoucher()
+
+    fun onErrorUseVoucher(e: Throwable)
+
     fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>)
 
     fun onErrorGetMerchantVoucherList(e: Throwable)
