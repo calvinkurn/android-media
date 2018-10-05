@@ -2,6 +2,10 @@ package com.tokopedia.groupchat.chatroom.websocket;
 
 import android.support.annotation.Nullable;
 
+import com.google.gson.GsonBuilder;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BaseChatViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.WebSocketResponse;
+
 import okhttp3.WebSocket;
 import okio.ByteString;
 
@@ -11,6 +15,8 @@ import okio.ByteString;
 
 public class WebSocketInfo {
     private WebSocket mWebSocket;
+    private BaseChatViewModel baseChatViewModel;
+    private WebSocketResponse response;
     private String mString;
     private ByteString mByteString;
     private boolean onOpen;
@@ -27,6 +33,7 @@ public class WebSocketInfo {
     WebSocketInfo(WebSocket webSocket, String mString) {
         mWebSocket = webSocket;
         this.mString = mString;
+        this.response = new GsonBuilder().create().fromJson(mString, WebSocketResponse.class);
     }
 
     WebSocketInfo(WebSocket webSocket, ByteString byteString) {
@@ -55,6 +62,14 @@ public class WebSocketInfo {
 
     public void setString(String string) {
         this.mString = string;
+    }
+
+    public WebSocketResponse getResponse() {
+        return response;
+    }
+
+    public void setResponse(WebSocketResponse response) {
+        this.response = response;
     }
 
     @Nullable

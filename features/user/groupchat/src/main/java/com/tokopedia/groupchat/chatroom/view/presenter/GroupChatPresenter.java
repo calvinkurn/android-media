@@ -14,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.WebSocketResponse;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
@@ -192,6 +193,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             }
 
             @Override
+            protected void onMessage(@NonNull WebSocketResponse response) {
+                Log.d("MainActivityPojo", String.valueOf(response.getCode()));
+            }
+
+            @Override
             protected void onMessage(@NonNull ByteString byteString) {
                 Log.d("MainActivity", byteString.toString());
             }
@@ -208,61 +214,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                super.onError(e);{
-                    if (mSubscription == null || mSubscription.isUnsubscribed()) {
-                        mSubscription = new CompositeSubscription();
-                    }
-
-                    String magicString = "wss://chat.tokopedia.com" +
-                            "/connect" +
-                            "?os_type=1" +
-                            "&device_id=" + deviceId +
-                            "&user_id=" + userId;
-
-                    WebSocketSubscriber subscriber = new WebSocketSubscriber() {
-                        @Override
-                        protected void onOpen(@NonNull WebSocket webSocket) {
-                            Log.d("MainActivity", " on WebSocket open");
-                        }
-
-                        @Override
-                        protected void onMessage(@NonNull String text) {
-                            Log.d("MainActivity", text);
-                        }
-
-                        @Override
-                        protected void onMessage(@NonNull ByteString byteString) {
-                            Log.d("MainActivity", byteString.toString());
-                        }
-
-                        @Override
-                        protected void onReconnect() {
-                            Log.d("MainActivity", "onReconnect");
-                        }
-
-                        @Override
-                        protected void onClose() {
-                            Log.d("MainActivity", "onClose");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            super.onError(e);
-                        }
-                    };
-                    Subscription subscription = RxWebSocket.get(magicString, accessToken)
-                            //RxLifecycle : https://github.com/dhhAndroid/RxLifecycle
-                            .subscribe(subscriber);
-
-
-                    if (subscriber != null) {
-                        mSubscription.add(subscription);
-                    }
-                }
+                super.onError(e);
+                Log.d("MainActivity", "onError "+e.toString());
             }
         };
         Subscription subscription = RxWebSocket.get(magicString, accessToken)
-                //RxLifecycle : https://github.com/dhhAndroid/RxLifecycle
                 .subscribe(subscriber);
 
 
