@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +15,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
@@ -25,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -34,9 +43,11 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
+import com.tokopedia.events.domain.model.scanticket.ScanResponseInfo;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -103,6 +114,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
     ImageTextViewHolder addressHolder;
+    private Menu mMenu;
 
     private EventComponent eventComponent;
     @Inject
@@ -116,6 +128,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public static final int FROM_HOME_OR_SEARCH = 1;
 
     public static final int FROM_DEEPLINK = 2;
+
+    private static final int CODE = 1001;
 
 
     @DeepLink({Constants.Applinks.EVENTS_DETAILS})
@@ -180,8 +194,24 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     }
 
     @Override
-    public void showMessage(String message) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_scan_ticket, menu);
+        mMenu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_scan_qr_code) {
+            startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
+                    .gotoQrScannerPage(true), CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showMessage(String message) {
     }
 
     @Override
@@ -319,6 +349,11 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         return mainContent;
     }
 
+    @Override
+    public void setMenuItemVisibility(boolean canScanCode) {
+        mMenu.findItem(R.id.action_scan_qr_code).setVisible(canScanCode);
+    }
+
     @OnClick(R2.id.expand_view)
     void setSeemorebutton() {
         if (tvExpandableDescription.isExpanded()) {
@@ -390,5 +425,19 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Gson gson = new Gson();
+        ScanResponseInfo scanResponseInfo = null;
+        if (requestCode == CODE && resultCode == RESULT_OK) {
+            scanResponseInfo = gson.fromJson(data.getStringExtra("scanResult"), ScanResponseInfo.class);
+            Intent intent = new Intent(this, ScanQRCodeActivity.class);
+            intent.putExtra("scanUrl", scanResponseInfo.getUrl());
+            startActivity(intent);
+        }
+
     }
 }
