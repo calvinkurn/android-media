@@ -31,6 +31,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.analytics.mapper.TkpdAnalyticMapper;
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -471,7 +473,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter {
+        TalkRouter,TkpdAppsFlyerRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3035,5 +3037,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return intent;
 
         }
+    }
+
+    @Override
+    public String getAppsFlyerID() {
+        return TrackingUtils.getAfUniqueId();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    public void onAppsFlyerInit() {
+        TkpdAnalyticMapper.getInstance(this).mapAnalytics();
     }
 }
