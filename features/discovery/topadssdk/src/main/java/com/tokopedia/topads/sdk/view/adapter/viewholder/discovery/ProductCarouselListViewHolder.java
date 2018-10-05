@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
@@ -9,15 +10,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
@@ -72,7 +76,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product, productImage, getAdapterPosition(), impressionListener);
+        Glide.with(context).load(product.getImage().getM_ecs()).into(productImage);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -80,6 +84,19 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
             productName.setText(Html.fromHtml(product.getName()));
         }
         productPrice.setText(product.getPriceFormat());
+        if(!product.isLoaded() && ImageLoader.isVisible(productImage)){
+            new ImpresionTask(new ImpressionListener() {
+                @Override
+                public void onSuccess() {
+                    product.setLoaded(true);
+                }
+
+                @Override
+                public void onFailed() {
+                    product.setLoaded(false);
+                }
+            }).execute(product.getImage().getS_url());
+        }
     }
 
     @Override
