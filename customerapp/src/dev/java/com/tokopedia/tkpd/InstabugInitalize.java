@@ -16,7 +16,7 @@ import com.instabug.library.ui.onboarding.WelcomeMessage;
  */
 public class InstabugInitalize {
 
-    private static final String INSTABUG_BETA_KEY = "4684d4ce46e407b41d54108e689f5734";
+    private static final String INSTABUG_BETA_KEY = "38a02b4e225b94a07d2cc2e2019445b7";
 
     public static void init(Application application) {
         new Instabug.Builder(application, INSTABUG_BETA_KEY)
