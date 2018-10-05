@@ -61,15 +61,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
         this.shopProductAdapterTypeFactory = baseListAdapterTypeFactory;
-        shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
+        shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
         shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
-        visitables.add(shopProductPromoViewModel);
         visitables.add(shopMerchantVoucherViewModel);
+        visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
         visitables.add(shopProductEtalaseHighlightViewModel);
         visitables.add(shopProductEtalaseListViewModel);
