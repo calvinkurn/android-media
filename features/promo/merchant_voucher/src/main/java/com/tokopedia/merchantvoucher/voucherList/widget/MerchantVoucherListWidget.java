@@ -126,6 +126,10 @@ public class MerchantVoucherListWidget extends FrameLayout
         tvSeeAll.setVisibility(View.GONE);
     }
 
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
     public void setData(ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelArrayList){
         adapter.clearAllElements();
         if (merchantVoucherViewModelArrayList!= null && merchantVoucherViewModelArrayList.size() > 0) {

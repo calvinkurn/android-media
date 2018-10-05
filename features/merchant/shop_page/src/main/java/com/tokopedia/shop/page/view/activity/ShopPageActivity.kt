@@ -180,7 +180,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
-            if(shopDomain!=null)
+            if (shopDomain != null)
                 presenter.getShopInfoByDomain(shopDomain!!)
         }
     }
@@ -364,6 +364,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun refreshData() {
         presenter.clearCache()
+        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+        if (f != null && f is ShopProductListLimitedFragment) {
+            f.clearCache()
+        }
         getShopInfo()
         swipeToRefresh.isRefreshing = true
     }

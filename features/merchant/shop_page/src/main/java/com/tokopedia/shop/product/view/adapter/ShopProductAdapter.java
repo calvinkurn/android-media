@@ -12,10 +12,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
-import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
+import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -33,6 +33,7 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALAS
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_MERCHANT_VOUCHER_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
@@ -43,6 +44,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private boolean needToShowEtalase = false;
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
+    private ShopMerchantVoucherViewModel shopMerchantVoucherViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
@@ -60,12 +62,14 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         super(baseListAdapterTypeFactory, null);
         this.shopProductAdapterTypeFactory = baseListAdapterTypeFactory;
         shopProductPromoViewModel = new ShopProductPromoViewModel();
+        shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
         shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
         visitables.add(shopProductPromoViewModel);
+        visitables.add(shopMerchantVoucherViewModel);
         visitables.add(shopProductFeaturedViewModel);
         visitables.add(shopProductEtalaseHighlightViewModel);
         visitables.add(shopProductEtalaseListViewModel);
@@ -93,6 +97,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             this.shopProductPromoViewModel = shopProductPromoViewModel;
         }
         setVisitable(DEFAULT_PROMO_POSITION, this.shopProductPromoViewModel);
+    }
+
+    public void setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
+        if (shopMerchantVoucherViewModel == null) {
+            this.shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
+        } else {
+            this.shopMerchantVoucherViewModel = shopMerchantVoucherViewModel;
+        }
+        setVisitable(DEFAULT_MERCHANT_VOUCHER_POSITION, this.shopMerchantVoucherViewModel);
     }
 
     public void setShopProductFeaturedViewModel(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
@@ -200,6 +213,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void clearAllElements() {
         clearPromoData();
+        clearMerchantVoucherData();
         clearFeaturedData();
         clearEtalaseHighlightData();
         clearEtalaseData();
@@ -208,6 +222,10 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     public void clearPromoData() {
         setShopProductPromoViewModel(null);
+    }
+
+    public void clearMerchantVoucherData() {
+        setShopMerchantVoucherViewModel(null);
     }
 
     public void clearFeaturedData() {

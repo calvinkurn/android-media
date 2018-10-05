@@ -186,6 +186,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
             presenter.clearCache()
             presenter.getVoucherList(voucherShopId, 0)
+
+            setResult(Activity.RESULT_OK)
         }
     }
 
@@ -206,7 +208,6 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             activity?.let {
                 ToasterError.showClose(it, ErrorHandler.getErrorMessage(it, e))
             }
-
         }
     }
 
@@ -223,6 +224,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CODE_MERCHANT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK)
                 needRefreshData = true
             }
             REQUEST_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {

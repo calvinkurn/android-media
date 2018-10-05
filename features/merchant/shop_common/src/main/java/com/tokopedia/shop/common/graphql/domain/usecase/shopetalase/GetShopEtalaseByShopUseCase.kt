@@ -43,7 +43,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
         }
     }
 
-    fun setForceNetwork() {
+    fun clearCache() {
         graphQLUseCase.clearCache()
     }
 
