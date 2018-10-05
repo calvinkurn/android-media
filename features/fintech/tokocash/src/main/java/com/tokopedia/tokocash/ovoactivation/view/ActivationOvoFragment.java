@@ -15,8 +15,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashComponentInstance;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
+
+import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 20/09/18.
@@ -29,6 +35,9 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
     private String registeredApplink;
     private String phoneNumber;
     private String changeMsisdnApplink;
+
+    @Inject
+    CacheManager cacheManager;
 
     public static ActivationOvoFragment newInstance(String registeredApplink,
                                                     String phoneNumber, String changeMsisdnApplink) {
@@ -43,7 +52,9 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
     }
 
     @Override
@@ -73,6 +84,7 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
         activationNewAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
                 directPageWithApplink(registeredApplink);
             }
         });
