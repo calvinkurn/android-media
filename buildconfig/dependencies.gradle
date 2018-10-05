@@ -196,7 +196,6 @@ ext {
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
-            trueCaller            : "true.caller.sdk:truecaller:0.5",
             bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
@@ -304,7 +303,6 @@ ext {
             paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
             attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
-
     ]
 
     tkpdLibDependencies = [

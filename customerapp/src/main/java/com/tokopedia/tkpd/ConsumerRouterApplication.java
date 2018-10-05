@@ -1483,6 +1483,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
+    }
+
+    @Override
     public Intent getInboxMessageIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
     }

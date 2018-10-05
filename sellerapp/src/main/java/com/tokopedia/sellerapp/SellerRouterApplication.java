@@ -68,6 +68,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
@@ -1700,5 +1701,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProductPageIntent(Context context, String productId) {
         return ProductInfoActivity.createInstance(context, productId);
+    }
+
+    @Override
+    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
 }

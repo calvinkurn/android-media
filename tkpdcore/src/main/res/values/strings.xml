@@ -1350,10 +1350,6 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_error_otp">Kode Verifikasi Salah</string>
     <string name="title_mismatch_otp">Kode Verifikasi tidak benar.</string>
     <string name="phone_number_otp">Nomor Ponsel</string>
-    <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
-    <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
-    <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
-    <string name="error_code_truecaller">Kode Error %1$d</string>
     <string name="email_otp_error">Terjadi kesalahan. Silakan coba kembali. Kode Error: 1005</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
@@ -2012,7 +2008,6 @@ di Tokopedia Sekarang!</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan klik
         disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
-    <string name="truecaller_verif">Lanjutkan dengan Truecaller</string>
 
     <string name="mark_as_read">Tandai sudah dibaca</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>

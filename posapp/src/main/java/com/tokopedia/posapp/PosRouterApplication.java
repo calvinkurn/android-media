@@ -55,6 +55,7 @@ import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivit
 import com.tokopedia.posapp.react.di.component.DaggerPosReactNativeComponent;
 import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
 import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import java.io.IOException;
@@ -764,5 +765,10 @@ public class PosRouterApplication extends MainApplication implements
     public Intent getChangePasswordIntent(Context context) {
         //        There is no change password in pos
         return null;
+    }
+
+    @Override
+    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
 }
