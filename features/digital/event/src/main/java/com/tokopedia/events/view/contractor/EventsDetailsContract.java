@@ -23,15 +23,9 @@ public class EventsDetailsContract {
         void setHolder(int resID, String label, ImageTextViewHolder holder);
     }
 
-    public interface EventDetailPresenter extends CustomerPresenter<EventDetailsView> {
-
-        void initialize();
-
-        void onDestroy();
+    public interface EventDetailPresenter extends EventBaseContract.EventBasePresenter {
 
         public String getSCREEN_NAME();
-
-
     }
 
 }

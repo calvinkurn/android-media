@@ -34,6 +34,7 @@ import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
+import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 
 import dagger.Module;
@@ -221,6 +222,12 @@ public class EventModule {
     EventBaseContract.EventBasePresenter providesEventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase,
                                                                           PostValidateShowUseCase postValidateShowUseCase) {
         return new EventBookTicketPresenter(seatLayoutUseCase, postValidateShowUseCase);
+    }
+
+    @Provides
+    @EventScope
+    EventBaseContract.EventBasePresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase) {
+        return new EventsDetailsPresenter(getEventDetailsRequestUseCase);
     }
 
 }

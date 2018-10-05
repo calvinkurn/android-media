@@ -11,7 +11,6 @@ import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventBaseContract;
-import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.mapper.EventDetailsViewModelMapper;
 import com.tokopedia.events.view.utils.EventsGAConst;
@@ -42,13 +41,22 @@ public class EventsDetailsPresenter
 
     private int hasSeatLayout;
 
-    @Inject
     public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
     }
 
     @Override
-    public void initialize() {
+    public boolean onClickOptionMenu(int id) {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
 
     }
 
@@ -56,7 +64,6 @@ public class EventsDetailsPresenter
     public void onDestroy() {
 
     }
-
 
     @Override
     public void attachView(EventBaseContract.EventBaseView view) {
@@ -140,5 +147,4 @@ public class EventsDetailsPresenter
         mView.navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
     }
-
 }
