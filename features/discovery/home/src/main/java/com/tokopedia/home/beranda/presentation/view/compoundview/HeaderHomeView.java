@@ -193,6 +193,7 @@ public class HeaderHomeView extends BaseCustomView {
     private void renderTokocashLayoutListener() {
         HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
+        pointsOvo.setVisibility(GONE);
         if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.isWalletDataError()) {
             tokoCashHolder.setOnClickListener(getOnClickRefreshTokocash());
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -222,7 +223,6 @@ public class HeaderHomeView extends BaseCustomView {
 
     private void successRenderTokoCash(HomeHeaderWalletAction homeHeaderWalletAction) {
         tokocashProgressBar.setVisibility(GONE);
-        pointsOvo.setVisibility(GONE);
         tokocashActionContainer.setVisibility(VISIBLE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
@@ -296,7 +296,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setVisibility(GONE);
             imageInfoBtn.setVisibility(GONE);
-            pointsOvo.setVisibility(GONE);
             tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null) {
