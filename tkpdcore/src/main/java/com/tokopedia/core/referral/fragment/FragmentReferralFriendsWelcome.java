@@ -100,7 +100,7 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
         TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
-            showOnBoardingTooltip(getActivity().getString(R.string.acquisition_referral) ,getActivity().getString(R.string.what_is_referral_tokocash) );
+            showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
         welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase()));
