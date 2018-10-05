@@ -50,24 +50,13 @@ public class Jordan {
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
-                // @TODO
-                CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded");
-
                 if (isAppsflyerCallbackHandled) return;
                 isAppsflyerCallbackHandled = true;
 
                 try {
-                    for (String attrName : conversionData.keySet()) {
-                        CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded attribute: " + attrName + " = " +
-                                conversionData.get(attrName));
-                    }
-
                     //get first launch and deeplink
                     String isFirstLaunch = conversionData.get("is_first_launch");
                     String deeplink = conversionData.get("af_dp");
-
-                    //String isFirstLaunch = "true";
-                    //String deeplink = "tokopedia://events";
 
                     if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
                         //open deeplink
