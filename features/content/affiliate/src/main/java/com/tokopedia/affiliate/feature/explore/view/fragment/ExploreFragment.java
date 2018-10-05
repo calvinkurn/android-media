@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -128,11 +130,8 @@ public class ExploreFragment
 
     @Override
     public void onRefresh() {
-        if (!swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(true);
-            resetData();
-            presenter.getFirstData(searchKey);
-        }
+        resetData();
+        presenter.getFirstData(searchKey, true);
     }
 
     private RecyclerView.OnScrollListener getScrollListener() {
@@ -146,6 +145,7 @@ public class ExploreFragment
                         && !TextUtils.isEmpty(cursor)
                         && totalItemCount <= lastVisibleItemPos + ITEM_COUNT){
                     isCanLoadMore = false;
+                    adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(cursor, searchKey);
                 }
             }
@@ -156,7 +156,7 @@ public class ExploreFragment
     public void onSearchSubmitted(String text) {
         resetData();
         searchKey = text;
-        presenter.getFirstData(text);
+        presenter.getFirstData(text, false);
     }
 
     @Override
@@ -167,21 +167,17 @@ public class ExploreFragment
     @Override
     public void onSearchReset() {
         resetData();
-        presenter.getFirstData(searchKey);
+        presenter.getFirstData(searchKey, true);
     }
 
     @Override
     public void showLoading() {
-        if (progressBar.getVisibility() == View.GONE) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+        adapter.addElement(new LoadingModel());
     }
 
     @Override
     public void hideLoading() {
-        if (progressBar.getVisibility() == View.VISIBLE) {
-            progressBar.setVisibility(View.GONE);
-        }
+        adapter.hideLoading();
     }
 
     @Override

@@ -16,7 +16,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @Override
-    public void getFirstData(String searchKey) {
+    public void getFirstData(String searchKey, boolean isPullToRefresh) {
 
 
     }

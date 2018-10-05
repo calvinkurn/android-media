@@ -10,11 +10,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -51,7 +51,6 @@ public class DashboardFragment
     private static final int TEXT_RECOMMENDATION_LEFT = 4;
     private static final int ITEM_COUNT = 5;
 
-    private ProgressBar progressBar;
     private TextView tvRecommendationCount;
     private RecyclerView rvHistory;
     private LinearLayoutManager layoutManager;
@@ -95,7 +94,6 @@ public class DashboardFragment
         cvRecommendation = (CardView) view.findViewById(R.id.item_recommendation_count);
         tvRecommendationCount = (TextView) view.findViewById(R.id.tv_recommendation_count);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         presenter.attachView(this);
         return view;
     }
@@ -103,7 +101,6 @@ public class DashboardFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        progressBar.setVisibility(View.GONE);
         cvRecommendation.setVisibility(View.GONE);
 
         initView();
@@ -117,16 +114,12 @@ public class DashboardFragment
 
     @Override
     public void showLoading() {
-        if (progressBar.getVisibility() == View.GONE) {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+        adapter.addElement(new LoadingModel());
     }
 
     @Override
     public void hideLoading() {
-        if (progressBar.getVisibility() == View.VISIBLE) {
-            progressBar.setVisibility(View.GONE);
-        }
+        adapter.hideLoading();
     }
 
     private void initView() {
@@ -166,7 +159,7 @@ public class DashboardFragment
                         && !TextUtils.isEmpty(cursor)
                         && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
                     isCanLoadMore = false;
-                    adapter.addElement(new LoadingModel());
+                    adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreDashboardItem(cursor);
                 }
             }

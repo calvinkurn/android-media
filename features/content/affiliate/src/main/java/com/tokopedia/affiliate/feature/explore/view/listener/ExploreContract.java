@@ -37,7 +37,7 @@ public interface ExploreContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getFirstData(String searchKey);
+        void getFirstData(String searchKey, boolean isPullToRefresh);
 
         void loadMoreData(String cursor, String searchKey);
     }

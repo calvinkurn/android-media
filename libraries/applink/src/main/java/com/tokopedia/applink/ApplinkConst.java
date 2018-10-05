@@ -165,6 +165,7 @@ public interface ApplinkConst {
     String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding?product_id={product_id}";
     String AFFILIATE_EXPLORE = "tokopedia://affiliate/explore";
+    String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
     String CHALLENGE = "tokopedia://challenges";
 
