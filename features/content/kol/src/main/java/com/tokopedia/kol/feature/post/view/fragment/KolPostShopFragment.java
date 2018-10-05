@@ -68,16 +68,20 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
     @Override
     protected void initInjector() {
-        DaggerKolProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
-                .build()
-                .inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            DaggerKolProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                    .kolProfileModule(new KolProfileModule(this))
+                    .build()
+                    .inject(this);
+        }
     }
 
     private void initVar() {
-        shopId = getArguments().getString(PARAM_SHOP_ID);
-        createPostUrl = getArguments().getString(PARAM_CREATE_POST_URL, "");
+        if (getArguments() != null) {
+            shopId = getArguments().getString(PARAM_SHOP_ID);
+            createPostUrl = getArguments().getString(PARAM_CREATE_POST_URL, "");
+        }
     }
 
     @Override
