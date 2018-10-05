@@ -27,10 +27,12 @@ public class BookingCodeActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(JOB_CODE_EXTRA, getIntent().getExtras().getParcelable(JOB_CODE_EXTRA));
         BookingCodeFragment fragment = new BookingCodeFragment();
-        fragment.setArguments(bundle);
+        if(getIntent().getExtras() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(JOB_CODE_EXTRA, getIntent().getExtras().getParcelable(JOB_CODE_EXTRA));
+            fragment.setArguments(bundle);
+        }
         return fragment;
     }
 
