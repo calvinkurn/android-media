@@ -63,8 +63,6 @@ public class EventReviewTicketsContractor {
 
         void updateNumber(String number);
 
-        void getProfile();
-
         void clickEmailIcon();
 
         void clickMoreinfoIcon();

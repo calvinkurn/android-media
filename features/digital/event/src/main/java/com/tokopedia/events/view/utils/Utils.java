@@ -27,6 +27,7 @@ import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -405,5 +406,10 @@ public class Utils {
         public static final String LIKED_EVENTS = "liked_events";
         public static final String EVENTS_PREFS = "events_prefs";
 
+    }
+
+    public static UserSession getUserSession(Context context) {
+        UserSession userSession = new UserSession(context);
+        return userSession;
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.events.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.view.contractor.EventsLocationContract;

@@ -5,13 +5,12 @@ import android.util.Log;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetProductRatingUseCase;
@@ -166,11 +165,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_PROMO, "");
             return true;
         } else if (id == R.id.action_booked_history) {
-            if (SessionHandler.isV4Login(getView().getActivity()))
+            if (Utils.getUserSession(getView().getActivity()).isLoggedIn())
                 RouteManager.route(getView().getActivity(), ApplinkConst.EVENTS_ORDER);
             else {
                 showOMS = true;
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                Intent intent = ((EventModuleRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
                 getView().navigateToActivityRequest(intent, 1099);
             }
@@ -226,7 +225,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     callbacks.notifyDatasetChanged(position);
             }
         };
-        if (SessionHandler.isV4Login(getView().getActivity())) {
+        if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
             Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
         } else {
             getView().showLoginSnackbar("Please Login to like or share events");
@@ -243,7 +242,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     @Override
     public void onActivityResult(int requestCode) {
         if (requestCode == 1099) {
-            if (SessionHandler.isV4Login(getView().getActivity())) {
+            if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
                 getView().hideProgressBar();
                 if (showFavAfterLogin) {
                     showFavAfterLogin = false;
@@ -275,7 +274,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     public void getEventsList() {
         getView().showProgressBar();
-        getEventsListRequestUsecase.getExecuteObservableAsync(getView().getParams())
+        getEventsListRequestUsecase.getExecuteObservable(getView().getParams())
                 .concatMap((Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>) eventsCategoryDomains -> {
                     categoryViewModels = Utils.getSingletonInstance()
                             .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
@@ -361,8 +360,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     private void startGeneralWebView(String url) {
-        if (getView().getActivity().getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) getView().getActivity().getApplication())
+        if (getView().getActivity().getApplication() instanceof EventModuleRouter) {
+            ((EventModuleRouter) getView().getActivity().getApplication())
                     .actionOpenGeneralWebView(getView().getActivity(), url);
         }
     }
@@ -374,7 +373,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     }
 
     private void getFavouriteItemsAndShow() {
-        if (SessionHandler.isV4Login(getView().getActivity())) {
+        if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
             getUserLikesUseCase.getExecuteObservable(RequestParams.create())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -36,6 +36,10 @@ public interface EventComponent {
 
     EventBaseContract.EventBasePresenter getEventFilterPresenter();
 
+    EventBaseContract.EventBasePresenter getEventBookTicketPresenter();
+
+    EventBaseContract.EventBasePresenter getEventDetailsPresenter();
+
     void inject(EventsHomeActivity activity);
 
     void inject(EventLocationActivity activity);

@@ -6,13 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -60,54 +57,27 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private VerifyCartUseCase verifyCartUseCase;
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private PackageViewModel selectedpkgViewModel;
-    private ProfileUseCase profileUseCase;
-    private ProfileModel profileModel;
     private String email;
     private String number;
     private SelectedSeatViewModel mSelectedSeatViewModel;
-    private FirebaseRemoteConfigImpl remoteConfig;
 
 
     @Inject
-    public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, ProfileUseCase profileCase, PostVerifyCartUseCase postVerifyCartUseCase) {
+    public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, PostVerifyCartUseCase postVerifyCartUseCase) {
         this.verifyCartUseCase = verifyCartUseCase;
-        this.profileUseCase = profileCase;
         this.postVerifyCartUseCase = postVerifyCartUseCase;
     }
 
     public void getProfile() {
         getView().showProgressBar();
-        if (!SessionHandler.isV4Login(getView().getActivity())) {
+        if (!Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
             Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                     getLoginIntent(getView().getActivity());
             getView().navigateToActivityRequest(intent, 1099);
         } else {
-            profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    throwable.printStackTrace();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getProfile();
-                                }
-                            });
-                }
-
-                @Override
-                public void onNext(ProfileModel model) {
-                    profileModel = model;
-                    email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                    number = profileModel.getProfileData().getUserInfo().getUserPhone();
-                    getView().hideProgressBar();
-                }
-            });
+            email = Utils.getUserSession(getView().getActivity()).getEmail();
+            number = ((EventModuleRouter) getView().getActivity().getApplication()).getUserPhoneNumber();
+            getView().hideProgressBar();
         }
     }
 
@@ -124,7 +94,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     @Override
     public void attachView(SeatSelectionContract.SeatSelectionView view) {
         super.attachView(view);
-        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         eventsDetailsViewModel = getView().getActivity().getIntent().getParcelableExtra("event_detail");
         selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
         seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
@@ -146,7 +115,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     @Override
     public void onActivityResult(int requestCode) {
         if (requestCode == 1099) {
-            if (SessionHandler.isV4Login(getView().getActivity())) {
+            if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
                 getProfile();
             } else {
                 getView().hideProgressBar();
@@ -241,7 +210,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
-        sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        sub.setName(Utils.getUserSession(getView().getActivity()).getName());
         config.setSubConfig(sub);
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
@@ -340,7 +309,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     private boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
+        return ((EventModuleRouter) getView().getActivity().getApplication()).getBooleanRemoteConfig(Utils.Constants.EVENT_OMS, false);
     }
 
 }

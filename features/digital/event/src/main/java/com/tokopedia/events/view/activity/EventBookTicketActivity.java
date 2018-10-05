@@ -1,9 +1,9 @@
 package com.tokopedia.events.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
@@ -15,14 +15,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
@@ -42,7 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EventBookTicketActivity
-        extends TActivity implements EventBookTicketContract.EventBookTicketView {
+        extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView {
 
 
     //    @BindView(R2.id.collasing_toolbar)
@@ -55,8 +51,6 @@ public class EventBookTicketActivity
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.imgv_seating_layout)
     ImageView imgvSeatingLayout;
     @BindView(R2.id.main_content)
@@ -77,8 +71,7 @@ public class EventBookTicketActivity
     View buttonCountLayout;
 
     private EventComponent eventComponent;
-    @Inject
-    EventBookTicketPresenter mPresenter;
+    EventBookTicketPresenter bookTicketPresenter;
     private String title;
 
     private LocationDateBottomSheetFragment locationFragment;
@@ -90,46 +83,34 @@ public class EventBookTicketActivity
 
 
     @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getEventBookTicketPresenter();
+        bookTicketPresenter = (EventBookTicketPresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.book_ticket_layout;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.book_ticket_layout);
-        ButterKnife.bind(this);
-
-        executeInjector();
-
-        mPresenter.attachView(this);
-
-        mPresenter.getTicketDetails();
-        appBar.setTitle(R.string.book_ticket_title);
-        setSupportActionBar(appBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
     @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
-        appBar.setTitle(detailsViewModel.getTitle());
-        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        toolbar.setTitle(detailsViewModel.getTitle());
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         title = detailsViewModel.getTitle();
         if (detailsViewModel.getSchedulesViewModels() != null) {
             if (detailsViewModel.getSchedulesViewModels().size() > 1) {
@@ -145,11 +126,6 @@ public class EventBookTicketActivity
         else
             tvDate.setVisibility(View.GONE);
         setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
-    }
-
-    @Override
-    public RequestParams getParams() {
-        return null;
     }
 
     @Override
@@ -180,15 +156,13 @@ public class EventBookTicketActivity
 
     @Override
     public void showProgressBar() {
-        progBar.setVisibility(View.VISIBLE);
-        progressBarLayout.setVisibility(View.VISIBLE);
+        super.showProgressBar();
         buttonPayTickets.setClickable(false);
     }
 
     @Override
     public void hideProgressBar() {
-        progBar.setVisibility(View.GONE);
-        progressBarLayout.setVisibility(View.GONE);
+        super.hideProgressBar();
         buttonPayTickets.setClickable(true);
     }
 
@@ -200,11 +174,6 @@ public class EventBookTicketActivity
     @Override
     public void hideSeatmap() {
         seatMap.setVisibility(View.GONE);
-    }
-
-    @Override
-    public View getRootView() {
-        return mainContent;
     }
 
     @Override
@@ -236,13 +205,13 @@ public class EventBookTicketActivity
                 findFragmentById(R.id.bookticket_fragment_holder);
         if (fragmentAddTickets == null) {
             fragmentAddTickets = FragmentAddTickets.newInstance(10);
-            fragmentAddTickets.setData(schedulesViewModel.getPackages(), mPresenter);
+            fragmentAddTickets.setData(schedulesViewModel.getPackages(), bookTicketPresenter);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.bookticket_fragment_holder, fragmentAddTickets);
             transaction.addToBackStack(BOOK_TICKET_FRAGMENT);
             transaction.commit();
         } else {
-            fragmentAddTickets.setData(schedulesViewModel.getPackages(), mPresenter);
+            fragmentAddTickets.setData(schedulesViewModel.getPackages(), bookTicketPresenter);
             fragmentAddTickets.resetAdapter();
         }
     }
@@ -257,16 +226,9 @@ public class EventBookTicketActivity
         eventComponent.inject(this);
     }
 
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
     @OnClick(R2.id.pay_tickets)
     void payTickets() {
-        mPresenter.payTicketsClick(title);
+        bookTicketPresenter.payTicketsClick(title);
     }
 
     @OnClick(R2.id.tv_ubah_jadwal)
@@ -274,24 +236,14 @@ public class EventBookTicketActivity
         if (locationFragment == null)
             locationFragment = new LocationDateBottomSheetFragment();
 
-        locationFragment.setData(mPresenter.getLocationDateModels());
-        locationFragment.setPresenter(mPresenter);
+        locationFragment.setData(bookTicketPresenter.getLocationDateModels());
+        locationFragment.setPresenter(bookTicketPresenter);
         locationFragment.show(getSupportFragmentManager(), "bottomsheetfragment");
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode, resultCode);
-    }
-
-    @Override
     public void onBackPressed() {
+        mPresenter.onBackPressed();
         if (locationFragment != null && locationFragment.isVisible())
             super.onBackPressed();
         else
@@ -301,7 +253,7 @@ public class EventBookTicketActivity
 
     @Override
     public String getScreenName() {
-        return mPresenter.getSCREEN_NAME();
+        return bookTicketPresenter.getSCREEN_NAME();
     }
 
     @Override
@@ -311,4 +263,8 @@ public class EventBookTicketActivity
     }
 
 
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
 }

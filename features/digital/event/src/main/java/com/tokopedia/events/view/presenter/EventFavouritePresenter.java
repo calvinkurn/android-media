@@ -4,8 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
@@ -72,7 +71,7 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventFavouriteC
                 Log.d("UPDATEEVENTLIKE", "onNext");
             }
         };
-        if (SessionHandler.isV4Login(getView().getActivity())) {
+        if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
             Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
         }
     }

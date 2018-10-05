@@ -9,13 +9,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -76,8 +73,6 @@ public class EventReviewTicketPresenter
     private CheckoutPaymentUseCase checkoutPaymentUseCase;
     private PostPaymentUseCase postPaymentUseCase;
     private PostInitCouponUseCase postInitCouponUseCase;
-    private ProfileUseCase profileUseCase;
-    private ProfileModel profileModel;
     private String promocode;
     private String email;
     private String number;
@@ -88,15 +83,12 @@ public class EventReviewTicketPresenter
     private RequestParams paymentparams;
     private String INVALID_EMAIL = "Invalid Email";
     private JsonObject cartData;
-    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     EventReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
-                               ProfileUseCase profileUseCase,
                                PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase) {
         this.verifyCartUseCase = usecase;
         this.checkoutPaymentUseCase = payment;
-        this.profileUseCase = profileUseCase;
         this.postInitCouponUseCase = couponUseCase;
         this.postVerifyCartUseCase = postVerifyCartUseCase;
         this.postPaymentUseCase = postPaymentUseCase;
@@ -149,36 +141,14 @@ public class EventReviewTicketPresenter
         this.number = umber;
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
     public void getProfile() {
         getView().showProgressBar();
-        profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().getActivity().startActivity(intent);
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                number = profileModel.getProfileData().getUserInfo().getUserPhone();
-                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
-                getView().setPhoneNumber(number);
-                autoApplyCoupon();
-                getView().hideProgressBar();
-            }
-        });
+        email = Utils.getUserSession(getView().getActivity()).getEmail();
+        number = ((EventModuleRouter) getView().getActivity().getApplication()).getUserPhoneNumber();
+        getView().setEmailID(email);
+        getView().setPhoneNumber(number);
+        autoApplyCoupon();
+        getView().hideProgressBar();
     }
 
     @Override
@@ -224,7 +194,7 @@ public class EventReviewTicketPresenter
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
-        sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        sub.setName(Utils.getUserSession(getView().getActivity()).getName());
         config.setSubConfig(sub);
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
@@ -284,7 +254,7 @@ public class EventReviewTicketPresenter
         meta.setEntityPassengers(passengerItems);
         EntityAddress address = new EntityAddress();
         address.setAddress("");
-        address.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        address.setName(Utils.getUserSession(getView().getActivity()).getName());
         address.setCity("");
         address.setEmail(this.email);
         address.setMobile(this.number);
@@ -332,7 +302,6 @@ public class EventReviewTicketPresenter
     public void attachView(EventReviewTicketsContractor.EventReviewTicketsView view) {
         super.attachView(view);
         getView().showProgressBar();
-        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         Intent intent = view.getActivity().getIntent();
         this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
         this.checkoutData = intent.getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
@@ -591,7 +560,7 @@ public class EventReviewTicketPresenter
     }
 
     private boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
+        return ((EventModuleRouter)getView().getActivity().getApplication()).getBooleanRemoteConfig(Utils.Constants.EVENT_OMS, false);
     }
 
 

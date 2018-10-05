@@ -10,8 +10,11 @@
             android:name=".view.activity.EventsHomeActivity"
             android:theme="@style/EventAppTheme" />
         <activity android:name=".view.activity.EventLocationActivity" />
-        <activity android:name=".view.activity.EventDetailsActivity" />
-        <activity android:name=".view.activity.EventBookTicketActivity" />
+        <activity android:name=".view.activity.EventDetailsActivity"
+            android:label="Events"/>
+        <activity
+            android:name=".view.activity.EventBookTicketActivity"
+            android:label="@string/book_ticket_title" />
         <activity android:name=".view.activity.ReviewTicketActivity" />
         <activity android:name=".view.activity.EventSearchActivity" />
         <activity android:name=".view.activity.SeatSelectionActivity"></activity>

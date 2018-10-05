@@ -41,7 +41,7 @@ public class EventFilterPresenterImpl
     }
 
     @Override
-    public void onActivityResult(int requestCode) {
+    public void onActivityResult(int requestCode,int resultCode) {
 
     }
 

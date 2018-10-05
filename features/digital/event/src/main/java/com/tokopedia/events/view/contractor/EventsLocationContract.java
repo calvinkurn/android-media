@@ -2,10 +2,10 @@ package com.tokopedia.events.view.contractor;
 
 import android.app.Activity;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

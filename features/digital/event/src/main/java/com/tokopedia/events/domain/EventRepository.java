@@ -1,7 +1,7 @@
 package com.tokopedia.events.domain;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;

@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 

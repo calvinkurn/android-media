@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -39,6 +40,11 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
         initPresenter();
         ButterKnife.bind(this);
         mPresenter.attachView(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mPresenter.onClickOptionMenu(item.getItemId());
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -18,8 +16,7 @@ public class GetEventSeatLayoutUseCase extends UseCase<List<SeatLayoutItem>> {
 
     private final EventRepository eventRepository;
 
-    public GetEventSeatLayoutUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetEventSeatLayoutUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

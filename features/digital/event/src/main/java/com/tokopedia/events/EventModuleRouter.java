@@ -1,8 +1,11 @@
 package com.tokopedia.events;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+
 import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -16,7 +19,13 @@ public interface EventModuleRouter {
 
     public UserSession getSession();
 
-    public SessionHandler getSessionHandler();
+    public Intent getLoginIntent(Context context);
+
+    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
+
+    String getUserPhoneNumber();
+
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     String ACTION_CLOSE_ACTIVITY = "action_close_activity";
 }

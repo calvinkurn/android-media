@@ -32,6 +32,7 @@ import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 
@@ -82,7 +83,7 @@ public class EventModule {
     GetEventsListRequestUseCase provideGetEventsListRequestUseCase(ThreadExecutor threadExecutor,
                                                                    PostExecutionThread postExecutionThread,
                                                                    EventRepository eventRepository) {
-        return new GetEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetEventsListRequestUseCase(eventRepository);
     }
 
     @Provides
@@ -130,7 +131,7 @@ public class EventModule {
     GetEventsLocationListRequestUseCase provideGetEventsLocationListRequestUseCase(ThreadExecutor threadExecutor,
                                                                                    PostExecutionThread postExecutionThread,
                                                                                    EventRepository eventRepository) {
-        return new GetEventsLocationListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetEventsLocationListRequestUseCase(eventRepository);
     }
 
     @Provides
@@ -138,7 +139,7 @@ public class EventModule {
     GetEventsListByLocationRequestUseCase provideGetEventsListByLocationRequestUseCase(ThreadExecutor threadExecutor,
                                                                                        PostExecutionThread postExecutionThread,
                                                                                        EventRepository eventRepository) {
-        return new GetEventsListByLocationRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetEventsListByLocationRequestUseCase(eventRepository);
     }
 
     @Provides
@@ -146,7 +147,7 @@ public class EventModule {
     GetEventDetailsRequestUseCase provideGetEventDetailsRequestUseCase(ThreadExecutor threadExecutor,
                                                                        PostExecutionThread postExecutionThread,
                                                                        EventRepository eventRepository) {
-        return new GetEventDetailsRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetEventDetailsRequestUseCase(eventRepository);
     }
 
     @Provides
@@ -154,7 +155,7 @@ public class EventModule {
     GetSearchEventsListRequestUseCase provideGetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor,
                                                                                PostExecutionThread postExecutionThread,
                                                                                EventRepository eventRepository) {
-        return new GetSearchEventsListRequestUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetSearchEventsListRequestUseCase(eventRepository);
     }
 
     @Provides
@@ -162,7 +163,7 @@ public class EventModule {
     PostValidateShowUseCase providesPostValidateShowUseCase(ThreadExecutor threadExecutor,
                                                             PostExecutionThread postExecutionThread,
                                                             EventRepository eventRepository) {
-        return new PostValidateShowUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new PostValidateShowUseCase(eventRepository);
     }
 
     @Provides
@@ -176,7 +177,7 @@ public class EventModule {
     GetEventSeatLayoutUseCase providesGetEventSeatLayoutUseCase(ThreadExecutor threadExecutor,
                                                                 PostExecutionThread postExecutionThread,
                                                                 EventRepository eventRepository) {
-        return new GetEventSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetEventSeatLayoutUseCase(eventRepository);
     }
 
     @Provides
@@ -184,29 +185,13 @@ public class EventModule {
     GetSearchNextUseCase providesGetSearchNextUseCase(ThreadExecutor threadExecutor,
                                                       PostExecutionThread postExecutionThread,
                                                       EventRepository eventRepository) {
-        return new GetSearchNextUseCase(threadExecutor, postExecutionThread, eventRepository);
+        return new GetSearchNextUseCase(eventRepository);
     }
 
     @Provides
     @EventScope
     Context getActivityContext() {
         return thisContext;
-    }
-
-    @Provides
-    @EventScope
-    ProfileSourceFactory providesProfileSourceFactory(Context context) {
-        return new ProfileSourceFactory(context,
-                new PeopleService(),
-                new ProfileMapper(),
-                new GlobalCacheManager(),
-                ((EventModuleRouter) thisContext.getApplicationContext()).getSessionHandler());
-    }
-
-    @Provides
-    @EventScope
-    ProfileRepository providesProfileRepository(ProfileSourceFactory profileSourceFactory) {
-        return new ProfileRepositoryImpl(profileSourceFactory);
     }
 
     @Provides
@@ -229,6 +214,13 @@ public class EventModule {
     @EventScope
     EventBaseContract.EventBasePresenter providesEventFilterPresenter() {
         return new EventFilterPresenterImpl();
+    }
+
+    @Provides
+    @EventScope
+    EventBaseContract.EventBasePresenter providesEventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase,
+                                                                          PostValidateShowUseCase postValidateShowUseCase) {
+        return new EventBookTicketPresenter(seatLayoutUseCase, postValidateShowUseCase);
     }
 
 }
