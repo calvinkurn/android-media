@@ -1,4 +1,4 @@
-package com.tokopedia.flight.search.view.activity;
+package com.tokopedia.flight.searchV2.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,25 +16,19 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-//import com.tokopedia.flight.searchV2.presentation.view.FlightSearchTestingFragment;
-
+import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
 
 public class FlightSearchActivity extends BaseFlightActivity
         implements FlightSearchFragment.OnFlightSearchFragmentListener {
-    protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+
+    public static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final int REQUEST_CODE_BOOKING = 10;
     private static final int REQUEST_CODE_RETURN = 11;
     protected String dateString;
     protected String passengerString;
     protected String classString;
     protected FlightSearchPassDataViewModel passDataViewModel;
-
-    public static void start(Context context, FlightSearchPassDataViewModel passDataViewModel) {
-        Intent intent = getCallingIntent(context, passDataViewModel);
-        context.startActivity(intent);
-    }
 
     public static Intent getCallingIntent(Context context, FlightSearchPassDataViewModel passDataViewModel) {
         Intent intent = new Intent(context, FlightSearchActivity.class);
@@ -43,20 +37,25 @@ public class FlightSearchActivity extends BaseFlightActivity
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        initializeDataFromExtras();
+        super.onCreate(savedInstanceState);
+
+        setupSearchToolbar();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return FlightSearchFragment.newInstance(passDataViewModel);
+    }
+
+    @Override
     public String getScreenName() {
         return FlightAnalytics.Screen.SEARCH;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        initializeDataFromIntent();
-        super.onCreate(savedInstanceState);
-
-        setupFlightToolbar();
-    }
-
-    private void initializeDataFromIntent() {
-        passDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
+    private void initializeDataFromExtras() {
+        passDataViewModel = getIntent().getExtras().getParcelable(EXTRA_PASS_DATA);
         initializeToolbarData();
     }
 
@@ -68,28 +67,6 @@ public class FlightSearchActivity extends BaseFlightActivity
         );
         passengerString = buildPassengerTextFormatted(passDataViewModel.getFlightPassengerViewModel());
         classString = passDataViewModel.getFlightClass().getTitle();
-    }
-
-    protected FlightAirportViewModel getDepartureAirport() {
-        return passDataViewModel.getDepartureAirport();
-    }
-
-    protected FlightAirportViewModel getArrivalAirport() {
-        return passDataViewModel.getArrivalAirport();
-    }
-
-    private void setupFlightToolbar() {
-        toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
-        String title = getDepartureAirport().getCityName() + " ➝ " + getArrivalAirport().getCityName();
-        String subtitle = dateString + " | " + passengerString + " | " + classString;
-        updateTitle(title, subtitle);
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
-//        return FlightSearchTestingFragment.newInstance(passDataViewModel);
-        return null;
     }
 
     protected String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
@@ -106,20 +83,20 @@ public class FlightSearchActivity extends BaseFlightActivity
         return passengerFmt;
     }
 
-    @Override
-    public void selectFlight(String selectedFlightID) {
-        if (passDataViewModel.isOneWay()) {
-            startActivityForResult(FlightBookingActivity.getCallingIntent(this, passDataViewModel, selectedFlightID), REQUEST_CODE_BOOKING);
-        } else {
-            startActivityForResult(FlightSearchReturnActivity.getCallingIntent(this, passDataViewModel, selectedFlightID), REQUEST_CODE_RETURN);
-        }
+    protected FlightAirportViewModel getDepartureAirport() {
+        return passDataViewModel.getDepartureAirport();
     }
 
-    @Override
-    public void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel) {
-        this.passDataViewModel = flightSearchPassDataViewModel;
-        initializeToolbarData();
-        setupFlightToolbar();
+    protected FlightAirportViewModel getArrivalAirport() {
+        return passDataViewModel.getArrivalAirport();
+    }
+
+    private void setupSearchToolbar() {
+        toolbar.setContentInsetStartWithNavigation(0);
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
+        String title = getDepartureAirport().getCityName() + " ➝ " + getArrivalAirport().getCityName();
+        String subtitle = dateString + " | " + passengerString + " | " + classString;
+        updateTitle(title, subtitle);
     }
 
     @Override
@@ -148,5 +125,25 @@ public class FlightSearchActivity extends BaseFlightActivity
                 }
                 break;
         }
+    }
+
+    @Override
+    public void selectFlight(String selectedFlightID) {
+        if (passDataViewModel.isOneWay()) {
+            startActivityForResult(FlightBookingActivity
+                            .getCallingIntent(this, passDataViewModel, selectedFlightID),
+                    REQUEST_CODE_BOOKING);
+        } else {
+            startActivityForResult(FlightSearchReturnActivity
+                            .getCallingIntent(this, passDataViewModel, selectedFlightID),
+                    REQUEST_CODE_RETURN);
+        }
+    }
+
+    @Override
+    public void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel) {
+        this.passDataViewModel = flightSearchPassDataViewModel;
+        initializeToolbarData();
+        setupSearchToolbar();
     }
 }

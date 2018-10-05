@@ -1,8 +1,10 @@
 package com.tokopedia.flight.searchV2.presentation.model;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * Created by User on 10/30/2017.
  */
 
-public class FlightJourneyViewModel {
+public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterTypeFactory> {
 
     public static final int ONE_HOURS_DAY = 2400;
 
@@ -168,7 +170,7 @@ public class FlightJourneyViewModel {
         return beforeTotal;
     }
 
-    public RefundableEnum getIsRefundable() {
+    public RefundableEnum isRefundable() {
         return isRefundable;
     }
 
@@ -188,4 +190,8 @@ public class FlightJourneyViewModel {
         return airlineDataList;
     }
 
+    @Override
+    public int type(FlightSearchAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
 }

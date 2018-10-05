@@ -1,0 +1,96 @@
+package com.tokopedia.flight.searchV2.presentation.contract;
+
+import android.app.Activity;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+
+import java.util.List;
+
+/**
+ * @author by furqan on 01/10/18.
+ */
+
+public interface FlightSearchContract {
+
+    interface View extends CustomerView {
+
+        Activity getActivity();
+
+        FlightSearchPassDataViewModel getFlightSearchPassData();
+
+        boolean isReturning();
+
+        boolean isNeedRefreshFromCache();
+
+        boolean isDoneLoadData();
+
+        boolean isNeedRefreshAirline();
+
+        void loadInitialData();
+
+        void fetchFlightSearchData();
+
+        void reloadDataFromCache();
+
+        void addToolbarElevation();
+
+        void addBottomPaddingForSortAndFilterActionButton();
+
+        void setUIMarkFilter();
+
+        void setNeedRefreshFromCache(boolean needRefreshFromCache);
+
+        void setFlightSearchPassData(FlightSearchPassDataViewModel passDataViewModel);
+
+        void setSelectedSortItem(int itemId);
+
+        void setNeedRefreshAirline(boolean needRefresh);
+
+        void renderFlightSearch(List<FlightJourneyViewModel> journeyViewModelList);
+
+        void showDepartureDateMaxTwoYears(int resId);
+
+        void showDepartureDateShouldAtLeastToday(int resId);
+
+        void showReturnDateShouldGreaterOrEqual(int resId);
+
+        void showFilterAndSortView();
+
+        void showEmptyFlightStateView();
+
+        void showNoRouteFlightEmptyState(String message);
+
+        void hideHorizontalProgress();
+
+        void hideFilterAndSortView();
+
+        void removeToolbarElevation();
+
+        void removeBottomPaddingForSortAndFilterActionButton();
+
+        void clearAdapterData();
+
+        void finishFragment();
+
+        void navigateToNextPage(String selectedId);
+
+    }
+
+    interface Presenter {
+
+        void initialize();
+
+        void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+
+        void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+
+        void onSearchItemClicked(FlightJourneyViewModel journeyViewModel);
+
+        void onSuccessDateChanged(int year, int month, int dayOfMonth);
+
+        void setDelayHorizontalProgress();
+    }
+
+}
