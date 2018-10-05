@@ -13,7 +13,9 @@ import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetRecentViewSub
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartActionFieldData;
@@ -53,6 +55,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     private final CompositeSubscription compositeSubscription;
     private List<WishlistViewModel> wishlistViewModels = new ArrayList<>();
     private List<RecentViewViewModel> recentViewViewModels = new ArrayList<>();
+    private List<Product> recommendationViewModels = new ArrayList<>();
 
     @Inject
     public EmptyCartPresenter(GetCartListUseCase getCartListUseCase,
@@ -146,6 +149,19 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     @Override
     public List<RecentViewViewModel> getRecentViewListModels() {
         return recentViewViewModels;
+    }
+
+    @Override
+    public void setRecommendationList(List<Item> list) {
+        recommendationViewModels.clear();
+        for (Item item : list) {
+            if (item instanceof ProductFeedViewModel) {
+                ProductFeedViewModel productFeedViewModel = (ProductFeedViewModel) item;
+                if (productFeedViewModel.getData() != null && productFeedViewModel.getData().getProduct() != null) {
+                    recommendationViewModels.add(productFeedViewModel.getData().getProduct());
+                }
+            }
+        }
     }
 
     @Override
@@ -278,6 +294,27 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
 
     @Override
     public Map<String, Object> generateEmptyCartAnalyticViewProductRecommendationDataLayer() {
-        return null;
+        List<Map<String, Object>> productsData = new ArrayList<>();
+        for (int i = 0; i < recommendationViewModels.size(); i++) {
+            EnhancedECommerceEmptyCartProductData enhancedECommerceEmptyCartProductData =
+                    new EnhancedECommerceEmptyCartProductData();
+            enhancedECommerceEmptyCartProductData.setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceEmptyCartProductData.setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceEmptyCartProductData.setPosition(String.valueOf(i + 1));
+            enhancedECommerceEmptyCartProductData.setPrice(String.valueOf(recommendationViewModels.get(i).getPriceFormat()
+                    .replace("Rp", "")
+                    .replace(".", "")
+                    .replace(" ", "")));
+            enhancedECommerceEmptyCartProductData.setProductID(recommendationViewModels.get(i).getId());
+            enhancedECommerceEmptyCartProductData.setProductName(recommendationViewModels.get(i).getName());
+            enhancedECommerceEmptyCartProductData.setVariant(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
+            enhancedECommerceEmptyCartProductData.setList(EnhancedECommerceEmptyCartActionFieldData.VALUE_SECTION_NAME_RECOMMENDATION);
+            productsData.add(enhancedECommerceEmptyCartProductData.getProduct());
+        }
+
+        EnhancedECommerceEmptyCartData enhancedECommerceEmptyCart = new EnhancedECommerceEmptyCartData();
+        enhancedECommerceEmptyCart.setImpressionData(productsData);
+
+        return enhancedECommerceEmptyCart.getData();
     }
 }

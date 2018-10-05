@@ -40,6 +40,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -51,6 +52,8 @@ import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -526,7 +529,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
+        presenter.setRecommendationList(list);
+        cartPageAnalytics.enhancedEcommerceProductViewRecommendationOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductRecommendationDataLayer());
         cvRecommendation.setVisibility(View.VISIBLE);
         tvRecommendationSeeAllBottom.setVisibility(View.VISIBLE);
     }
