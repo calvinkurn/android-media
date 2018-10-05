@@ -10,4 +10,8 @@
         <attr name="vchDashGap" format="dimension" />
         <attr name="vchDashColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="MerchantVoucherListWidget">
+        <attr name="titleString" format="string" />
+    </declare-styleable>
 </resources>

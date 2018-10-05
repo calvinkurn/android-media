@@ -1,10 +1,10 @@
 package com.tokopedia.graphql.domain;
 
 
-import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.data.repository.GraphqlRepositoryImpl;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -22,10 +22,12 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
     private List<GraphqlRequest> mRequests;
     private GraphqlCacheStrategy mCacheStrategy;
+    private GraphqlRepositoryImpl graphqlRepository;
 
     @Inject
     public GraphqlUseCase() {
         this.mRequests = new ArrayList<>();
+        graphqlRepository = new GraphqlRepositoryImpl();
     }
 
     /**
@@ -67,12 +69,18 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mCacheStrategy = cacheStrategy;
     }
 
+    public void clearCache(){
+        if (mRequests != null && !mRequests.isEmpty()) {
+            graphqlRepository.clearCache(mRequests, mCacheStrategy);
+        }
+    }
+
     @Override
     public Observable<GraphqlResponse> createObservable(RequestParams params) {
         if (mRequests == null || mRequests.isEmpty()) {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
 
-        return ObservableFactory.create(mRequests, mCacheStrategy);
+        return graphqlRepository.getResponse(mRequests, mCacheStrategy);
     }
 }

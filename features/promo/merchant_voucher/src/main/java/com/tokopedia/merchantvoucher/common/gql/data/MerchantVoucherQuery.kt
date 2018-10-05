@@ -11,9 +11,23 @@ import java.util.ArrayList
  * Created by hendry on 08/08/18.
  */
 
-data class MerchantVoucherQuery(@SerializedName("shopShowcases")
-                            @Expose
-                            override var result: GraphQLResult<ArrayList<MerchantVoucherModel>>? = null)
-    : HasGraphQLResult<ArrayList<MerchantVoucherModel>> {
+data class MerchantVoucherQuery(@SerializedName("getPublicMerchantVoucherList")
+                                @Expose
+                                var result: MerchantVoucherQueryResult? = null) {
+}
+
+
+data class MerchantVoucherQueryResult(@SerializedName("vouchers")
+                                      @Expose
+                                      var vouchers: ArrayList<MerchantVoucherModel>? = null,
+                                      @SerializedName("error_code")
+                                      @Expose
+                                      var errorCode: Int? = null,
+                                      @SerializedName("error_message_title")
+                                      @Expose
+                                      var errorMessageTitle: String? = null,
+                                      @SerializedName("error_message")
+                                      @Expose
+                                      var errorMessage: String? = null) {
 
 }

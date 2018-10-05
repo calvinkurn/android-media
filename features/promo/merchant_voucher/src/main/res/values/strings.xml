@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">@string/merchant_voucher</string>
     <string name="merchant_voucher">Voucher Toko</string>
     <string name="merchant_voucher_x">Voucher Toko %1$s</string>
@@ -9,5 +9,14 @@
     <string name="status_colon">Status:</string>
     <string name="see">Lihat</string>
     <string name="terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="voucher_title_x_x">%1$s %2$s</string>
+    <string name="cashback">Cashback</string>
+    <string name="discount">Diskon</string>
+    <string name="free_ongkir">Gratis Ongkir</string>
+    <string name="min_spend_x">*Min. Pembelian %1$s</string>
+    <string name="out_of_stock">Habis</string>
+    <string name="in_use">Diterapkan</string>
+    <string name="no_min_spend" tools:ignore="ExtraTranslation">Tidak ada minimum pembelian</string>
+    <string name="available">Tersedia</string>
 
 </resources>

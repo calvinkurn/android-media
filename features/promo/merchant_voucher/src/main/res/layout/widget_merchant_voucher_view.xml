@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_80"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/dp_4"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:baselineAligned="false"
-    android:id="@+id/vgVoucherView">
+    android:id="@+id/vgVoucherView"
+    android:gravity="center_vertical">
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="0.65"
         android:orientation="vertical"
-        android:padding="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_12"
         android:layout_gravity="center_vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,6 +25,7 @@
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 tools:src="@mipmap/ic_launcher"
+                android:scaleType="centerInside"
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_gravity="center_vertical"/>
             <TextView
@@ -64,10 +67,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Button.Submit.White.Border"
+            android:textSize="@dimen/sp_12"
             android:text="@string/use_voucher"
             android:minWidth="@dimen/dp_40"
             android:minHeight="@dimen/dp_8"
             android:padding="@dimen/dp_8"/>
+
+        <TextView
+            android:id="@+id/tvVoucherStatus"
+            style="@style/TextView.Micro.BlackSecondary.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_11"
+            tools:text="@string/out_of_stock"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingBottom="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:gravity="center"
+            android:background="@drawable/bg_rect_rounded_light_gray"/>
     </LinearLayout>
 
 </LinearLayout>

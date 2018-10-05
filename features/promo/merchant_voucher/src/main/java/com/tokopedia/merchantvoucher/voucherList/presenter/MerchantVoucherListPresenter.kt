@@ -39,8 +39,8 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         })
     }
 
-    fun getVoucherList(shopId: String) {
-        getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(),
+    fun getVoucherList(shopId: String, numVoucher: Int = 0) {
+        getMerchantVoucherListUseCase.execute(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher),
                 object : Subscriber<ArrayList<MerchantVoucherModel>>() {
             override fun onCompleted() {}
 

@@ -1,6 +1,8 @@
 package com.tokopedia.merchantvoucher.voucherList.adapter
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -17,16 +19,23 @@ import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVouc
  * Created by hendry on 01/10/18.
  */
 
-class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener)
+class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener,
+                                        horizontalLayout: Boolean = false)
     : BaseAdapterTypeFactory() {
     private var onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener? = null
+    private var horizontalLayout: Boolean = false
 
     init {
         this.onMerchantVoucherViewListener = onMerchantVoucherViewListener
+        this.horizontalLayout = horizontalLayout
     }
 
     fun type(viewModel: MerchantVoucherViewModel): Int {
-        return MerchantVoucherViewHolder.LAYOUT
+        if (horizontalLayout) {
+            return MerchantVoucherViewHolder.HORIZONTAL_LAYOUT
+        } else {
+            return MerchantVoucherViewHolder.LAYOUT
+        }
     }
 
     override fun type(viewModel: LoadingModel): Int {
@@ -36,7 +45,8 @@ class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantV
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == LoadingShimmeringListViewHolder.LAYOUT) {
             LoadingShimmeringGridViewHolder(parent)
-        } else if (type == MerchantVoucherViewHolder.LAYOUT) {
+        } else if (type == MerchantVoucherViewHolder.LAYOUT ||
+                type == MerchantVoucherViewHolder.HORIZONTAL_LAYOUT) {
             MerchantVoucherViewHolder(parent, onMerchantVoucherViewListener)
         } else {
             super.createViewHolder(parent, type)

@@ -16,6 +16,7 @@ class MerchantVoucherViewHolder(itemView: View,
 
     companion object {
         val LAYOUT = R.layout.item_merchant_voucher
+        val HORIZONTAL_LAYOUT = R.layout.item_merchant_voucher_horizontal
     }
 
     init {

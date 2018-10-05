@@ -3,9 +3,11 @@ package com.tokopedia.merchantvoucher.common.gql.domain.usecase
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
+import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLMerchantListMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLResultMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
@@ -25,28 +27,30 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()
-//                val withDefault = requestParams.getBoolean(WITH_DEFAULT, true)
-//                variables[WITH_DEFAULT] = withDefault
+                val shopId = requestParams.getInt(SHOP_ID, 0)
+                variables[SHOP_ID] = shopId
+                val numVoucher = requestParams.getInt(NUM_VOUCHER, 0)
+                variables[NUM_VOUCHER] = numVoucher
                 return variables
             }
-        }
-        setForceNetwork(false)
-        graphQLUseCase.useCacheAfterNetworkSuccess = true
-    }
 
-    fun setForceNetwork(forceNetwork: Boolean) {
-        graphQLUseCase.forceNetwork = forceNetwork
+            override fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
+                //TODO use cache?
+                return null
+            }
+        }
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<ArrayList<MerchantVoucherModel>> {
         return graphQLUseCase.createObservable(requestParams)
-                .flatMap(GraphQLResultMapper())
+                .flatMap(GraphQLMerchantListMapper())
+                .doOnError { graphQLUseCase.clearCache() }
                 //TODO remove below, just for test.
-                .onErrorResumeNext {
-                    val jsonString = """{"shopShowcases":{"result":[{"id":"etalase","name":"Semua Etalase","count":0,"type":-1,"highlighted":false,"alias":"etalase","useAce":true},{"id":"sold","name":"Produk Terjual","count":0,"type":-1,"highlighted":true,"alias":"sold","useAce":true},{"id":"discount","name":"Discount","count":1,"type":1,"highlighted":false,"alias":"Powerbank","useAce":true},{"id":"7598623","name":"Powerbank","count":1,"type":1,"highlighted":true,"alias":"Powerbank","useAce":true},{"id":"7583097","name":"Kabel Data","count":1,"type":1,"highlighted":false,"alias":"Kabel Data","useAce":true},{"id":"7598627","name":"Charger & Car Charger","count":1,"type":1,"highlighted":false,"alias":"Charger & Car Charger","useAce":true},{"id":"7583082","name":"Tas","count":1,"type":1,"highlighted":false,"alias":"tas","useAce":true},{"id":"7598633","name":"Audio","count":1,"type":1,"highlighted":false,"alias":"audio","useAce":true},{"id":"7600154","name":"Screen Protector","count":1,"type":1,"highlighted":false,"alias":"Screen Protector","useAce":true},{"id":"11131981","name":"Konektor","count":1,"type":1,"highlighted":false,"alias":"Konektor","useAce":true}],"error":{"message":""}}}"""
-                    val response = Gson().fromJson(jsonString, MerchantVoucherQuery::class.java)
-                    Observable.just(response).flatMap(GraphQLResultMapper())
-                }
+//                .onErrorResumeNext {
+//                    val jsonString = """{"getPublicMerchantVoucherList":{"vouchers":[{"voucher_id":2,"voucher_name":"World","voucher_code":"WORLD1","type":{"type":2,"identifier":"free-shipping"},"amount":{"type":1,"amount":17.5},"minimum_spend":500000,"owner":{"owner_id":15635,"identifier":"seller"},"valid_thru":1538971024,"tnc":"Term and Condition","banner":{"desktop_url":"https://www.tokopedia.com/","mobile_url":"https://m.tokopedia.com/"},"status":{"status":2,"identifier":"in-use"},"in_use_expiry":1538627824},{"voucher_id":1,"voucher_name":"Hello","voucher_code":"HELLO1","type":{"type":1,"identifier":"discount"},"amount":{"type":1,"amount":13.5},"minimum_spend":500000,"owner":{"owner_id":15635,"identifier":"seller"},"valid_thru":1538798224,"tnc":"Term and Condition","banner":{"desktop_url":"https://www.tokopedia.com/","mobile_url":"https://m.tokopedia.com/"},"status":{"status":1,"identifier":"available"},"in_use_expiry":0}],"error_code":0,"error_message_title":"","error_message":""}}"""
+//                    val response = Gson().fromJson(jsonString, MerchantVoucherQuery::class.java)
+//                    Observable.just(response).flatMap(GraphQLMerchantListMapper())
+//                }
     }
 
     override fun unsubscribe() {
@@ -56,12 +60,14 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
 
     companion object {
 
-//        val WITH_DEFAULT = "withDefault"
+        val SHOP_ID = "shop_id"
+        val NUM_VOUCHER = "num_voucher"
 
         @JvmStatic
-        fun createRequestParams(): RequestParams {
+        fun createRequestParams(shopId:String, numVoucher: Int): RequestParams {
             val requestParams = RequestParams.create()
-//            requestParams.putBoolean(WITH_DEFAULT, withDefault)
+            requestParams.putInt(SHOP_ID, shopId.toInt())
+            requestParams.putInt(NUM_VOUCHER, numVoucher)
             return requestParams
         }
     }

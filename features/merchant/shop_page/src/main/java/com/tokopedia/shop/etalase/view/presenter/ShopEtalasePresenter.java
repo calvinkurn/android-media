@@ -62,7 +62,7 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
     public void clearEtalaseCache(){
-        getShopEtalaseByShopUseCase.setForceNetwork(true);
+        getShopEtalaseByShopUseCase.setForceNetwork();
     }
 
 }

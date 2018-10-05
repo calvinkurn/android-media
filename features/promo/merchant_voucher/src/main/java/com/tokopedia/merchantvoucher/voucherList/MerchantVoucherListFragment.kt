@@ -29,16 +29,14 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
 
-open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>(),
+open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel,
+        MerchantVoucherAdapterTypeFactory>(),
         MerchantVoucherListView, MerchantVoucherView.OnMerchantVoucherViewListener {
 
     var shopId: String? = null
 
     var shopInfo: ShopInfo? = null
         get
-
-    // only load data only if view created already
-    var viewCreated: Boolean = false
 
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter
@@ -179,7 +177,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
     override fun onItemClicked(t: MerchantVoucherViewModel?) {
         context?.let {
-            val intent = MerchantVoucherDetailActivity.createIntent(it, 1234)
+            val intent = MerchantVoucherDetailActivity.createIntent(it, 1234, t)
             startActivityForResult(intent, REQUEST_CODE_MERCHANT_DETAIL)
         }
     }

@@ -7,7 +7,6 @@
 
     <include layout="@layout/partial_merchant_voucher_detail_loading" />
 
-
     <LinearLayout
         android:id="@+id/vgContent"
         android:layout_width="match_parent"
@@ -44,6 +43,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:textSize="@dimen/sp_18"
                     tools:text="Lebaran Extra Cashback 20.000" />
 
                 <LinearLayout
@@ -61,6 +61,7 @@
                         app:srcCompat="@drawable/ic_price_green" />
 
                     <TextView
+                        android:id="@+id/tvMinTransactionLabel"
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,6 +106,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/vgVoucherStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_24"
@@ -138,19 +140,23 @@
                 </LinearLayout>
 
                 <TextView
-                    style="@style/TextView.Title.Bold"
+                    android:id="@+id/tvTncLabel"
+                    style="@style/TextView.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_36"
                     android:layout_marginRight="@dimen/dp_16"
+                    android:textSize="@dimen/sp_18"
                     android:text="@string/terms_and_conditions" />
 
                 <WebView
-                    android:id="@+id/webView"
+                    android:id="@+id/webViewTnc"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
