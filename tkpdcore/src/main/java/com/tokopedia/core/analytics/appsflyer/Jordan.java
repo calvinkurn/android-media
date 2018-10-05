@@ -1,17 +1,13 @@
 package com.tokopedia.core.analytics.appsflyer;
 
 import android.app.Application;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
-import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
@@ -20,7 +16,6 @@ import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
-import com.tokopedia.core.gcm.Constants;
 
 import java.util.Map;
 
@@ -34,6 +29,7 @@ public class Jordan {
 
     private Context context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
+    private static boolean isAppsflyerCallbackHandled;
 
     private Jordan(Context ctx) {
         context = ctx;
@@ -55,6 +51,31 @@ public class Jordan {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
                 // @TODO
+                CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded");
+
+                if (isAppsflyerCallbackHandled) return;
+                isAppsflyerCallbackHandled = true;
+
+                try {
+                    for (String attrName : conversionData.keySet()) {
+                        CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded attribute: " + attrName + " = " +
+                                conversionData.get(attrName));
+                    }
+
+                    //get first launch and deeplink
+                    String isFirstLaunch = conversionData.get("is_first_launch");
+                    String deeplink = conversionData.get("af_dp");
+
+                    //String isFirstLaunch = "true";
+                    //String deeplink = "tokopedia://events";
+
+                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                        //open deeplink
+                        AppsflyerContainer.setDefferedDeeplinkPathIfExists(deeplink);
+                    }
+                } catch (ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
@@ -77,6 +98,7 @@ public class Jordan {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
             appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
+
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             CommonUtils.dumper("Error key Appsflyer");

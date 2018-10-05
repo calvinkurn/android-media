@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -62,8 +63,6 @@ public class NewOnboardingActivity extends OnboardingActivity {
         setSkip();
         setNext();
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
-
-        GotoApplinkiFinstalledViaAppslfyerLink();
     }
 
     private void initView() {
@@ -132,8 +131,14 @@ public class NewOnboardingActivity extends OnboardingActivity {
     public void onDonePressed() {
         UnifyTracking.eventOnboardingSkip(pager.getCurrentItem() + 1);
         SessionHandler.setFirstTimeUserNewOnboard(this, false);
-        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-        startActivity(intent);
+        if (TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
+            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            startActivity(intent);
+        } else {
+            Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+            homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, AppsflyerContainer.getDefferedDeeplinkPathIfExists());
+            startActivity(homeIntent);
+        }
         finish();
     }
 
@@ -227,49 +232,5 @@ public class NewOnboardingActivity extends OnboardingActivity {
                 }
             });
         }
-    }
-
-    private void GotoApplinkiFinstalledViaAppslfyerLink() {
-        CommonUtils.dumper("OnBoadrding GotoApplinkiFinstalledViaAppslfyerLink");
-
-        AppsFlyerLib.getInstance().registerConversionListener(this, new AppsFlyerConversionListener() {
-            @Override
-            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
-                CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded");
-
-                if (isAppsflyerCallbackHandled) return;
-                isAppsflyerCallbackHandled = true;
-
-                try {
-                    for (String attrName : conversionData.keySet()) {
-                        CommonUtils.dumper("OnBoadrding onInstallConversionDataLoaded attribute: " + attrName + " = " +
-                                conversionData.get(attrName));
-                    }
-
-                    //get first launch and deeplink
-                    String isFirstLaunch = conversionData.get("is_first_launch");
-                    String deeplink = conversionData.get("af_dp");
-
-                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
-                        //open deeplink
-                        RouteManager.route(NewOnboardingActivity.this, deeplink);
-                    }
-                } catch (ActivityNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onInstallConversionFailure(String error) {
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {
-            }
-
-            @Override
-            public void onAttributionFailure(String s) {
-            }
-        });
     }
 }
