@@ -22,4 +22,3 @@ public interface SearchBarRouter {
 
     Intent gotoSearchPage(Context context);
 }
-
