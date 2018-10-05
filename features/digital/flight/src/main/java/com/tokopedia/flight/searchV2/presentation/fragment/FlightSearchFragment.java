@@ -1,13 +1,13 @@
 package com.tokopedia.flight.searchV2.presentation.fragment;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,8 +19,9 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -37,12 +38,10 @@ import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
-import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapter;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.searchV2.presentation.model.FlightSearchViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
 
@@ -60,7 +59,7 @@ import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchAc
  * @author by furqan on 01/10/18.
  */
 
-public class FlightSearchFragment extends BaseDaggerFragment
+public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewModel, FlightSearchAdapterTypeFactory>
         implements FlightSearchContract.View, FlightSearchAdapterTypeFactory.OnFlightSearchListener,
         ErrorNetworkModel.OnRetryListener {
 
@@ -84,8 +83,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
     protected FlightSearchPassDataViewModel passDataViewModel;
     protected OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private FlightAirportCombineModelList flightAirportCombineModelList;
-    private FlightSearchViewModel flightSearchViewModel;
-    private FlightSearchAdapter adapter;
 
     private boolean needRefreshFromCache;
     private boolean needRefreshAirline = true;
@@ -97,7 +94,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
     private FlightFilterModel flightFilterModel;
     private HorizontalProgressBar progressBar;
     private SwipeToRefresh swipeToRefresh;
-    private RecyclerView recyclerView;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle bundle = new Bundle();
@@ -138,8 +134,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
         setUpProgress();
         setUpBottomAction(view);
         setUpSwipeRefresh(view);
-        setUpRecyclerView(view);
-
         showFilterAndSortView();
         return view;
     }
@@ -182,6 +176,38 @@ public class FlightSearchFragment extends BaseDaggerFragment
     }
 
     @Override
+    public RecyclerView getRecyclerView(View view) {
+        return (RecyclerView) view.findViewById(R.id.recycler_view);
+    }
+
+    @Override
+    protected FlightSearchAdapterTypeFactory getAdapterTypeFactory() {
+        return new FlightSearchAdapterTypeFactory(this);
+    }
+
+    @NonNull
+    @Override
+    protected BaseListAdapter<FlightJourneyViewModel, FlightSearchAdapterTypeFactory> createAdapterInstance() {
+        BaseListAdapter<FlightJourneyViewModel, FlightSearchAdapterTypeFactory> adapter = super.createAdapterInstance();
+        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
+        errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
+        errorNetworkModel.setOnRetryListener(this);
+        adapter.setErrorNetworkModel(errorNetworkModel);
+        return adapter;
+    }
+
+    @Override
+    protected boolean callInitialLoadAutomatically() {
+        return false;
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        onFlightSearchFragmentListener = (OnFlightSearchFragmentListener) context;
+    }
+
+    @Override
     public FlightSearchPassDataViewModel getFlightSearchPassData() {
         return passDataViewModel;
     }
@@ -212,6 +238,11 @@ public class FlightSearchFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void loadData(int page) {
+
+    }
+
+    @Override
     public void fetchFlightSearchData() {
 
     }
@@ -230,7 +261,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
     @Override
     public void addBottomPaddingForSortAndFilterActionButton() {
         float scale = getResources().getDisplayMetrics().density;
-        recyclerView.setPadding(
+        getRecyclerView(getView()).setPadding(
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
@@ -297,13 +328,21 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void showEmptyFlightStateView() {
-        adapter.addElement(getEmptyDataViewModel());
+        getAdapter().addElement(getEmptyDataViewModel());
     }
 
     @Override
     public void showNoRouteFlightEmptyState(String message) {
-        adapter.clearAllElements();
-        adapter.addElement(getNoFlightRouteDataViewModel(message));
+        getAdapter().clearAllElements();
+        getAdapter().addElement(getNoFlightRouteDataViewModel(message));
+    }
+
+    @Override
+    public void showGetListError(Throwable e) {
+        this.addToolbarElevation();
+        progressBar.setVisibility(View.GONE);
+        removeBottomPaddingForSortAndFilterActionButton();
+        super.showGetListError(e);
     }
 
     @Override
@@ -323,7 +362,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void removeBottomPaddingForSortAndFilterActionButton() {
-        recyclerView.setPadding(
+        getRecyclerView(getView()).setPadding(
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
                 EMPTY_MARGIN,
@@ -333,7 +372,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void clearAdapterData() {
-        adapter.setElement(new ArrayList<>());
+        getAdapter().setElement(new ArrayList<>());
     }
 
     @Override
@@ -350,7 +389,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void onRetryClicked() {
-        adapter.clearAllElements();
+        getAdapter().clearAllElements();
         flightSearchPresenter.initialize();
     }
 
@@ -370,16 +409,34 @@ public class FlightSearchFragment extends BaseDaggerFragment
         flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition);
     }
 
+    @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel) {
         flightSearchPresenter.onSearchItemClicked(journeyViewModel);
     }
 
+    @Override
+    public void onSwipeRefresh() {
+        removeBottomPaddingForSortAndFilterActionButton();
+        super.onSwipeRefresh();
+    }
+
     public void onResetFilterClicked() {
         flightFilterModel = new FlightFilterModel();
-        adapter.clearAllNonDataElement();
+        getAdapter().clearAllNonDataElement();
         showLoading();
         setUIMarkFilter();
         reloadDataFromCache();
+    }
+
+    @Override
+    protected boolean isLoadMoreEnabledByDefault() {
+        return false;
+    }
+
+    @Override
+    protected void hideLoading() {
+        super.hideLoading();
+        hideSwipeRefreshLoad();
     }
 
     public void onChangeDateClicked() {
@@ -536,23 +593,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
         return emptyResultViewModel;
     }
 
-    private void setUpRecyclerView(View view) {
-        FlightSearchAdapterTypeFactory adapterTypeFactory = new FlightSearchAdapterTypeFactory(this);
-        adapter = new FlightSearchAdapter(adapterTypeFactory, new ArrayList<>());
-
-        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
-        errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
-        errorNetworkModel.setOnRetryListener(this);
-        adapter.setErrorNetworkModel(errorNetworkModel);
-
-        recyclerView = view.findViewById(R.id.recycler_view);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-
-        showLoading();
-    }
-
     private void setUpCombinationAirport() {
         List<String> departureAirportList;
         String departureAirportCode = getDepartureAirport().getAirportCode();
@@ -595,17 +635,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
         }
     }
 
-    private void showLoading() {
-        adapter.showLoading();
-    }
-
-    private void hideLoading() {
-        swipeToRefresh.setEnabled(true);
-        swipeToRefresh.setRefreshing(false);
-
-        adapter.hideLoading();
-    }
-
     private void setMinMaxDatePicker(DatePicker datePicker) {
         Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
         maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
@@ -635,6 +664,11 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     private void showMessageErrorInSnackbar(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
+    }
+
+    private void hideSwipeRefreshLoad() {
+        swipeToRefresh.setEnabled(true);
+        swipeToRefresh.setRefreshing(false);
     }
 
     public interface OnFlightSearchFragmentListener {
