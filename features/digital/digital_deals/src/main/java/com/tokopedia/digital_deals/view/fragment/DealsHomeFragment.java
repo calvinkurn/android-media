@@ -166,16 +166,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
 
         appBarLayout = view.findViewById(R.id.app_bar_layout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset == 0) {
-                    hideSearchButton();
-                } else {
-                    showSearchButton();
-                }
-                Log.d("Offest Changed", "Offset : " + verticalOffset);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            if (verticalOffset == 0) {
+                hideSearchButton();
+            } else {
+                showSearchButton();
             }
+            Log.d("Offest Changed", "Offset : " + verticalOffset);
         });
         img = getResources().getDrawable(R.drawable.ic_location_2);
         tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
