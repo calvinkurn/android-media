@@ -96,7 +96,7 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, AppEventTracking.EventLabel.HOME);
             closeView();
         });
-
+        TextViewHelpLink.setVisibility(presenter.isShowReferralHelpLink() ? View.VISIBLE : View.GONE);
         TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");

@@ -69,4 +69,8 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     public String getHelpButtonContentSubtitle() {
         return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, view.getActivity().getString(R.string.what_is_referral_tokocash));
     }
+
+    public boolean isShowReferralHelpLink() {
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
+    }
 }
