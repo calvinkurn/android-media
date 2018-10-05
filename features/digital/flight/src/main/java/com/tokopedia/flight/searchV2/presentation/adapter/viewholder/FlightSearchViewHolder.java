@@ -174,6 +174,16 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     }
 
     private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
-
+        if (flightJourneyViewModel.isBestPairing()) {
+            bestPairingTag.setVisibility(View.VISIBLE);
+            savingPrice.setVisibility(View.VISIBLE);
+            savingPrice.setText(flightJourneyViewModel.getTotal());
+            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
+                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
+        } else {
+            bestPairingTag.setVisibility(View.GONE);
+            discountTag.setVisibility(View.GONE);
+            savingPrice.setVisibility(View.GONE);
+        }
     }
 }
