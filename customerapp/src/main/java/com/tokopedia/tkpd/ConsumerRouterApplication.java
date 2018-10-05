@@ -2159,11 +2159,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getWithdrawIntent(Context context) {
-        if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
-            return WithdrawActivity.getCallingIntent(context);
-        else {
-            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
-        }
+        return WithdrawActivity.getCallingIntent(context);
     }
 
     @Override
@@ -2628,29 +2624,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopNotesIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopBasicDataIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
     @Override
-    public @NonNull Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
+    public @NonNull
+    Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
+
     /**
      * Global Nav Router
      */
