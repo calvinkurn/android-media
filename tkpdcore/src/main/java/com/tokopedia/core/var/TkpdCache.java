@@ -280,6 +280,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String SHOW_TOKOCARD = "app_enable_toko_card";
         public static final String APP_ENABLE_UPDATE_INACTIVE_PHONE = "app_enable_update_inactive_phone";
         public static final String SALDO_PRIORITAS_NATIVE_ANDROID = "mainapp_saldo_prioritas_native_android";
+        public static final String SHOW_REFERRAL_HELP_LINK = "app_show_apa_itu_tokocash_referral";
     }
 
 }
