@@ -31,4 +31,6 @@ public interface IHomeRouter {
     void goToManageShop(Context context);
 
     Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
+
+    String getExtraBroadcastReceiverWallet();
 }

@@ -1766,6 +1766,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getExtraBroadcastReceiverWallet() {
+        return "Broadcast Wallet";
+    }
+
+    @Override
     public Observable<WalletModel> getTokoCashAccountBalance() {
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
                 tokoCashComponent.getPendingCasbackUseCase())

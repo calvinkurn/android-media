@@ -30,6 +30,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 
 public class HeaderHomeView extends BaseCustomView {
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
+    private static final String WALLET_TYPE = "OVO";
     private HomeCategoryListener listener;
     private HeaderViewModel headerViewModel;
 
@@ -211,7 +212,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashProgressBar.setVisibility(VISIBLE);
             tokocashActionContainer.setVisibility(GONE);
         } else {
-            if (!TextUtils.isEmpty(homeHeaderWalletAction.getWalletType()) && homeHeaderWalletAction.getWalletType().equals("OVO")) {
+            if (!TextUtils.isEmpty(homeHeaderWalletAction.getWalletType()) && homeHeaderWalletAction.getWalletType().equals(WALLET_TYPE)) {
                 successRenderOvo(homeHeaderWalletAction);
             } else {
                 successRenderTokoCash(homeHeaderWalletAction);

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
@@ -103,24 +104,7 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
                 } else if (e instanceof HttpErrorException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
-                    // this is from server error handler util (tokocash)
-                    if (e instanceof ServerErrorRequestDeniedException) {
-                        ServerErrorHandler.sendForceLogoutAnalytics(
-                                ((ServerErrorRequestDeniedException) e).getUrl()
-                        );
-                        ServerErrorHandler.showForceLogoutDialog();
-                    } else if (e instanceof ServerErrorMaintenanceException) {
-                        ServerErrorHandler.showMaintenancePage();
-                    } else if (e instanceof ServerErrorTimeZoneException) {
-                        ServerErrorHandler.showTimezoneErrorSnackbar();
-                    } else {
-                        if (((ServerErrorException) e).getErrorCode() >= 500)
-                            ServerErrorHandler.sendErrorNetworkAnalytics(
-                                    ((ServerErrorException) e).getUrl(),
-                                    ((ServerErrorException) e).getErrorCode()
-                            );
-                        ServerErrorHandler.showServerErrorSnackbar();
-                    }
+                    getView().showErrorNetwork(ErrorHandler.getErrorMessage(context, e));
                 } else {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }

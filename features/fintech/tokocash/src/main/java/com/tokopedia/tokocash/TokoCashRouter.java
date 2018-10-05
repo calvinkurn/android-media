@@ -43,4 +43,6 @@ public interface TokoCashRouter {
     long getLongConfig(String key);
 
     Intent getWebviewActivityWithIntent(Context context, String url);
+
+    String getExtraBroadcastReceiverWallet();
 }

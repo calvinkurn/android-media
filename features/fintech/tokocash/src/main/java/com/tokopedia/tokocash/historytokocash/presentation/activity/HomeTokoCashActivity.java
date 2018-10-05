@@ -99,9 +99,10 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
     }
 
     private void sendBroadcastTokocash() {
-        Intent intent = new Intent("Broadcast Wallet");
+        Intent intent = new Intent(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
         Bundle extras = new Bundle();
-        extras.putString("Broadcast Wallet", "Broadcast Wallet");
+        extras.putString(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet(),
+                ((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
         intent.putExtras(extras);
         sendBroadcast(intent);
     }

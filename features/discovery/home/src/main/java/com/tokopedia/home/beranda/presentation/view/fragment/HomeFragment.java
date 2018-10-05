@@ -135,7 +135,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
+        args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -209,7 +209,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        if(SessionHandler.isV4Login(getActivity())) {
+        if (SessionHandler.isV4Login(getActivity())) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
         presenter.attachView(this);
@@ -617,7 +617,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             presenter.fetchNextPageFeed();
         }
     }
@@ -784,7 +784,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             scrollToRecommendList();
         }
 
@@ -865,7 +865,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if(isVisible()) {
+        if (isVisible()) {
             presenter.hitBannerImpression(bannerSlidesModel);
         }
     }
@@ -938,7 +938,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         getActivity().registerReceiver(
                 tokoCashBroadcaseReceiver,
-                new IntentFilter("Broadcast Wallet")
+                new IntentFilter(((IHomeRouter)getActivity()).getExtraBroadcastReceiverWallet())
         );
     }
 
@@ -949,13 +949,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().unregisterReceiver(tokoCashBroadcaseReceiver);
     }
 
-    //TODO make new class broadcast receiver
     private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                String data = extras.getString("Broadcast Wallet");
+                String data = extras.getString(((IHomeRouter) getActivity()).getExtraBroadcastReceiverWallet());
                 if (data != null && !data.isEmpty())
                     presenter.getHeaderData(false); // update header data
             }
