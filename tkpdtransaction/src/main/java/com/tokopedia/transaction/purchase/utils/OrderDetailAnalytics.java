@@ -4,6 +4,11 @@ import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.HashMap;
 
+/**
+ * Temporary class to provide analytics in tkpdtransaction
+ * Will be moved soon when refactoring
+ * Will be merged with analytics module
+ */
 public class OrderDetailAnalytics {
 
     ITransactionOrderDetailRouter router;

@@ -62,7 +62,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
 
     @Override
     protected void initInjector() {
-
+        // todo: implement dagger on refactoring to new module
     }
 
     @Override
