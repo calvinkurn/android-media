@@ -206,5 +206,9 @@
     <string name="train_sorting_most_expensive">Harga Termahal</string>
     <string name="train_error_dialog_default_button">OK</string>
     <string name="train_error_dialog_failed_booking">Pemesanan Gagal</string>
+    <string name="travel_homepage_promo_copy_label">Salin</string>
+    <string name="travel_homepage_promo_code_label">Kode Promo:</string>
+    <string name="travel_homepage_promo_label">Promo</string>
+    <string name="travel_homepage_promo_see_all_label">Lihat Semua</string>
 
 </resources>

@@ -46,6 +46,7 @@
     <dimen name="dp_90">90dp</dimen> <!-- not recommended -->
     <dimen name="dp_96">96dp</dimen>
     <dimen name="dp_100">100dp</dimen> <!-- not recommended -->
+    <dimen name="dp_110">110dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_120">120dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->

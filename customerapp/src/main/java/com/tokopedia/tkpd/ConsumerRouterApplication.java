@@ -2483,6 +2483,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getPromoListIntent(Activity activity, String menuId, String subMenuId) {
+        return PromoListActivity.newInstance(activity, menuId, subMenuId);
+    }
+
+    @Override
     public Intent getPromoListIntent(Activity activity) {
         return PromoListActivity.newInstance(activity);
     }
