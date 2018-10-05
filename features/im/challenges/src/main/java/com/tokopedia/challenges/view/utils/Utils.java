@@ -51,14 +51,14 @@ public class Utils {
     public static final String STATUS_WAITING = "Waiting";
     public static final String STATUS_ENCODING = "Encoding";
     public static final String QUERY_PARAM_IS_FROM_NOTIF = "from_notif";
-    public static final  String QUERY_PARAM_FILE_PATH="filePath";
-    public static final  String QUERY_PARAM_CHALLENGE_SETTINGS="challengeSettings";
-    public static final  String QUERY_PARAM_CHANNEL_ID="channelId";
-    public static final  String QUERY_PARAM_CHANNEL_TITLE="channelTitle";
-    public static final  String QUERY_PARAM_CHANNEL_DESC="channelDesc";
+    public static final String QUERY_PARAM_FILE_PATH = "filePath";
+    public static final String QUERY_PARAM_CHALLENGE_SETTINGS = "challengeSettings";
+    public static final String QUERY_PARAM_CHANNEL_ID = "channelId";
+    public static final String QUERY_PARAM_CHANNEL_TITLE = "channelTitle";
+    public static final String QUERY_PARAM_CHANNEL_DESC = "channelDesc";
 
-    public static final String GENERATE_BUZZ_POINT_FIREBASE_KEY ="app_text_how_to_generate_buzz_point";
-    public static final String INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY ="app_ch_instgram_share_instruction_text";
+    public static final String GENERATE_BUZZ_POINT_FIREBASE_KEY = "app_text_how_to_generate_buzz_point";
+    public static final String INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY = "app_ch_instgram_share_instruction_text";
 
     private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
@@ -191,7 +191,7 @@ public class Utils {
                             position = 3;
                             if (finalPosition > position)
                                 finalPosition = position;
-                        }else if (award.getType().equalsIgnoreCase("ThirdPlace")) {
+                        } else if (award.getType().equalsIgnoreCase("ThirdPlace")) {
                             position = 4;
                             if (finalPosition > position)
                                 finalPosition = position;
@@ -244,7 +244,8 @@ public class Utils {
         return url + "?height=500";
     }
 
-    public static void generateText(LinearLayout layout, @NonNull String text) {
+    public static void generateBulletText(LinearLayout layout, @NonNull String text) {
+        layout.removeAllViews();
         for (String each : text.replaceFirst("~", "").split("~")) {
             BulletTextView bulletTextView = new BulletTextView(layout.getContext());
             bulletTextView.setBuzzPoint(each);

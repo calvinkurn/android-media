@@ -471,7 +471,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            Utils.generateText(tvHowBuzzPointsText, buzzPointText);
+            Utils.generateBulletText(tvHowBuzzPointsText, buzzPointText);
         }
     }
 

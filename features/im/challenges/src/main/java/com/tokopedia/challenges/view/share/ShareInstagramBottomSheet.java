@@ -72,9 +72,9 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         LinearLayout llShareInstructions = view.findViewById(R.id.ll_share_instructions);
         String instructionsText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY);
         if (TextUtils.isEmpty(instructionsText)) {
-            Utils.generateText(llShareInstructions, instructionsDefaultText);
+            Utils.generateBulletText(llShareInstructions, instructionsDefaultText);
         } else {
-            Utils.generateText(llShareInstructions, instructionsText);
+            Utils.generateBulletText(llShareInstructions, instructionsText);
         }
         TextView btnCancel = view.findViewById(R.id.btn_cancel);
         TextView btnCopy = view.findViewById(R.id.btn_copy);
