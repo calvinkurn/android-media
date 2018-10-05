@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
@@ -224,6 +225,8 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             @Override
             public void onError(Throwable e) {
                 getView().hideProgressBar();
+                getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_network_error_msg));
+
             }
 
             @Override
@@ -232,7 +235,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 ChallengeSettings settings = res1.getData();
                 if (!settings.isUploadAllowed()) {
-                    getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+                    getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_upload_not_allowed_text)); // update challenge as per UX
                 } else {
                     getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
                 }

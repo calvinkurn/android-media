@@ -52,25 +52,19 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
                 SubmissionResponse mainDataObject = res1.getData();
                 List<SubmissionResult> submissionResultList = mainDataObject.getSubmissionResults();
                 if (submissionResultList != null && submissionResultList.size() > 0) {
-
-                    for (int i = 0; i < submissionResultList.size(); i++) {
-                        SubmissionResult submissionResult = submissionResultList.get(i);
+                    List<SubmissionResult> submissionResultListTemp=new ArrayList<>();
+                    for (SubmissionResult submissionResult:submissionResultList) {
                         int value = ChallengesCacheHandler.getManipulatedValue(submissionResult.getId());
-                        if (value == ChallengesCacheHandler.Manupulated.NOTFOUND.ordinal()) {
-                            continue;
-                        } else if (value == ChallengesCacheHandler.Manupulated.DELETE.ordinal()) {
-                            submissionResultList.remove(submissionResult);
-
+                        if (value == ChallengesCacheHandler.Manupulated.DELETE.ordinal()) {
+                           continue;
                         } else if (value == ChallengesCacheHandler.Manupulated.LIKE.ordinal()) {
                             submissionResult.getMe().setLiked(true);
-
                         } else {
                             submissionResult.getMe().setLiked(false);
-
                         }
+                        submissionResultListTemp.add(submissionResult);
                     }
-
-
+                    mainDataObject.setSubmissionResults(submissionResultListTemp);
                 }
             }
 

@@ -179,20 +179,17 @@ public class Utils {
             for (Awards award : awards) {
                 if (award != null) {
                     if (!TextUtils.isEmpty(award.getType())) {
-                        if (award.getType().equalsIgnoreCase("JudgesPick")) {
-                            finalPosition = 1;
-                            break;
-                        } else if (award.getType().equalsIgnoreCase("FirstPlace")) {
-                            position = 2;
+                        if (award.getType().equalsIgnoreCase("FirstPlace")) {
+                            position = 1;
                             if (finalPosition > position)
                                 finalPosition = position;
 
                         } else if (award.getType().equalsIgnoreCase("SecondPlace")) {
-                            position = 3;
+                            position = 2;
                             if (finalPosition > position)
                                 finalPosition = position;
                         } else if (award.getType().equalsIgnoreCase("ThirdPlace")) {
-                            position = 4;
+                            position = 3;
                             if (finalPosition > position)
                                 finalPosition = position;
                         }

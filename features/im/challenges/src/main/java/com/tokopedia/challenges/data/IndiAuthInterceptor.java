@@ -18,6 +18,7 @@ import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.http2.Header;
 
 /**
  * @author Vishal Gupta on 06/08/2018.
@@ -28,9 +29,6 @@ public class IndiAuthInterceptor implements Interceptor {
     private static final String X_API_KEY = "x-api-key";
     private static final String AUTHORIZATION = "authorization";
     private static final String INDI_USER_ID = "indi-user-id";
-
-    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
-
 
     protected UserSession userSession;
     private IndiSession indiSession;
@@ -53,8 +51,9 @@ public class IndiAuthInterceptor implements Interceptor {
         }
 
         //new request
+        String cache = chain.request().header("Cache-Control");
         Request.Builder newRequest = chain.request().newBuilder()
-                .headers(getHeaderBuilder().build())
+                .headers(getHeaderBuilder(cache).build())
                 .method(originRequest.method(), originRequest.body());
 
         Response response = chain.proceed(newRequest.build());
@@ -96,19 +95,23 @@ public class IndiAuthInterceptor implements Interceptor {
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
         Request original = chain.request();
-
+        String cache = chain.request().header("Cache-Control");
         return chain.request().newBuilder()
-                .headers(getHeaderBuilder().build())
+                .headers(getHeaderBuilder(cache).build())
                 .method(original.method(), original.body())
                 .build();
     }
 
     @NonNull
-    private Headers.Builder getHeaderBuilder() {
+    private Headers.Builder getHeaderBuilder(String cache) {
         Headers.Builder builder = new Headers.Builder();
         builder.add(X_API_KEY, ChallengesUrl.API_KEY);
         builder.add(AUTHORIZATION, indiSession.getAccessToken());
         builder.add(INDI_USER_ID, indiSession.getUserId());
+        if (!TextUtils.isEmpty(cache)) {
+            builder.add("Cache-Control", cache);
+
+        }
         return builder;
     }
 }

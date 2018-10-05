@@ -149,11 +149,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         fromSubmission = getArguments().getBoolean(Utils.QUERY_PARAM_FROM_SUBMISSION);
         if (submissionResult == null) {
             submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
-            // if (getArguments().getBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, false)) {
             ChallengesCacheHandler.resetCache();
-            // }
             presenter.getSubmissionDetails(submissionId);
-
         } else {
             hidProgressBar();
             submissionId = submissionResult.getId();
@@ -388,7 +385,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
             dialog.setTitle(title);
             dialog.setDesc(desc);
-            dialog.setBtnOk("ok");
+            dialog.setBtnOk("OK");
             dialog.setOnOkClickListener(v -> getActivity().finish());
             dialog.show();
         }

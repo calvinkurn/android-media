@@ -22,7 +22,7 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_close" />
+            app:navigationIcon="@drawable/ic_close_default" />
 
 
     </android.support.design.widget.AppBarLayout>

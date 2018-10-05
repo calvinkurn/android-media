@@ -95,7 +95,8 @@
     <string name="ch_oops">Oops!</string>
     <string name="ch_post_share_text"><![CDATA[Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s]]></string>
     <string name="ch_challenge_share_text">Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s</string>
-    <string name="ch_under_review_text">Under Review</string>
-    <string name="ch_upload_not_allowed_text">Upload Not allowed for this Challenge</string>
+    <string name="ch_under_review_text">dalam tinjauan</string>
+    <string name="ch_upload_not_allowed_text">pengunggahan tidak diperbolehkan untuk</string>
+    <string name="ch_insta_instruction_text">~Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan.</string>
 
 </resources>

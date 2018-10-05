@@ -40,7 +40,6 @@ public class ShareInstagramBottomSheet extends BottomSheets {
     private File media;
     boolean isVideo;
     private String hastag;
-    private final String instructionsDefaultText = "~Silakan unggah konten ke Instagram dengan cara manual.~Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan.";
 
     @Override
     public int getLayoutResourceId() {
@@ -72,7 +71,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         LinearLayout llShareInstructions = view.findViewById(R.id.ll_share_instructions);
         String instructionsText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY);
         if (TextUtils.isEmpty(instructionsText)) {
-            Utils.generateBulletText(llShareInstructions, instructionsDefaultText);
+            Utils.generateBulletText(llShareInstructions, getString(R.string.ch_insta_instruction_text));
         } else {
             Utils.generateBulletText(llShareInstructions, instructionsText);
         }

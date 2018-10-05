@@ -90,7 +90,9 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public void createNotification() {
         builder = buildBaseNotification();
         Notification notification = builder
-                .setContentText("Upload In Progress")
+                .setContentText("Sedang mengunggah")
+                .setAutoCancel(false)
+                .setOngoing(true)
                 .setProgress(uploadFingerprints.getTotalParts(), 0, true)
                 .build();
         notificationManager.notify(TAG, notificationID, notification);
