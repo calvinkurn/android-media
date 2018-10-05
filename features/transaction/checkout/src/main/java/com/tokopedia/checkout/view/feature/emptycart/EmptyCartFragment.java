@@ -237,7 +237,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
                     checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
                     REQUEST_CODE_ROUTE_RECENT_VIEW);
         });
-        tvRecommendationSeeAll.setOnClickListener(v -> navigateToHome());
+        tvRecommendationSeeAll.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            navigateToHome();
+        });
         tvRecommendationSeeAllBottom.setOnClickListener(v -> {
             cartPageAnalytics.eventClickLihatLainnya();
             navigateToHome();
@@ -328,13 +331,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             layoutUsedPromo.setVisibility(View.GONE);
         }
         btnContinueShoppingEmptyCart.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
             navigateToHome();
         });
     }
 
     private void navigateToHome() {
         if (getActivity() != null) {
-            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
             startActivity(
                     checkoutModuleRouter.checkoutModuleRouterGetHomeIntent(getActivity())
             );
