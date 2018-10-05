@@ -2,4 +2,5 @@
 <resources>
 
     <color name="user_name_text_color">#e64a4a4a</color>
+    <color name="green_start_color">#77db80</color>
 </resources>
