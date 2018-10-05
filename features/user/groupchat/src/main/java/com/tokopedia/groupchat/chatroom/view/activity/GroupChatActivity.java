@@ -299,7 +299,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                         //set the player style default
                         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-
+                        youTubePlayer.setShowFullscreenButton(false);
                         //cue the 1st video by default
                         youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
                         new Handler().postDelayed(new Runnable() {
