@@ -62,6 +62,8 @@ public interface FlightSearchContract {
 
         void showNoRouteFlightEmptyState(String message);
 
+        void showGetListError(Throwable e);
+
         void hideHorizontalProgress();
 
         void hideFilterAndSortView();
