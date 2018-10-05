@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -200,4 +201,6 @@ public interface TkpdCoreRouter {
     Intent getChangePasswordIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    Intent getAutomaticResetPasswordIntent(Context context, String email);
 }

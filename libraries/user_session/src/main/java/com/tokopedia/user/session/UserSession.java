@@ -6,9 +6,10 @@ import android.text.TextUtils;
 
 /**
  * @author by milhamj on 04/04/18.
+ * Please avoid using this class to get data. Use {@link UserSessionInterface} instead.
  */
 
-public class UserSession {
+public class UserSession implements UserSessionInterface {
     private static final String DEFAULT_EMPTY_SHOP_ID = "0";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
     private static final String IS_LOGIN = "IS_LOGIN";
@@ -264,19 +265,10 @@ public class UserSession {
         editor.apply();
     }
 
-    public static boolean isFirstTimeUser(Context context) {
+    @Override
+    public boolean isFirstTimeUser() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
-    }
-
-    public static boolean setFirstTimeUser(Context context, boolean isFirstTime) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).commit();
-    }
-
-    public static boolean setFirstTimeUserNewOnboard(Context context, boolean isFirstTime) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).commit();
     }
 
     public void logoutSession() {
