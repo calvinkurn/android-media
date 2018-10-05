@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.view.activity.BroadcastMessageListActivity;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
@@ -1607,7 +1608,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @NonNull
     @Override
     public Intent getBroadcastMessageListIntent(@NonNull Context context) {
-        return BroadcastMessageListActivity.createIntent(context);
+        return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
     }
 
     @NonNull

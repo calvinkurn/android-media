@@ -379,6 +379,7 @@ ext {
             withdraw              : ":features:payment:withdraw",
             productDraftDatabase  : ":features:merchant:product_draft_database",
             broadcastMessage      : ":features:communication:broadcast_message",
+            //broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
             broadcastMessageCommon   : ":features:communication:broadcast_message_common",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
