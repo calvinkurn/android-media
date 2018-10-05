@@ -12,12 +12,14 @@ public class GridVoteItemDecoration extends RecyclerView.ItemDecoration {
 
     private int itemCount;
     private int spanCount;
-    private int space;
+    private int dimensionV;
+    private int dimensionH;
     private boolean includeEdge;
 
 
-    public GridVoteItemDecoration(int dimension, int spanCount, int itemCount) {
-        this.space = dimension;
+    public GridVoteItemDecoration(int dimensionH, int dimensionV, int spanCount, int itemCount) {
+        this.dimensionV = dimensionV;
+        this.dimensionH = dimensionH;
         this.spanCount = spanCount;
         this.itemCount = itemCount;
     }
@@ -30,12 +32,12 @@ public class GridVoteItemDecoration extends RecyclerView.ItemDecoration {
         boolean isRight = parent.getChildAdapterPosition(view) % 2 == 1;
 
         if (isLeft) {
-            outRect.right = space / 2;
+            outRect.right = dimensionH / 2;
         } else if (isRight) {
-            outRect.left = space / 2;
+            outRect.left = dimensionH / 2;
         } else {
-            outRect.right = space / 2;
-            outRect.left = space / 2;
+            outRect.right = dimensionH / 2;
+            outRect.left = dimensionH / 2;
         }
 
         int maxRowIndex = (size - 1) / 2;
@@ -45,15 +47,15 @@ public class GridVoteItemDecoration extends RecyclerView.ItemDecoration {
         boolean isBottom = (recentRow == maxRowIndex);
 
         if (isTop) {
-            outRect.bottom = space / 2;
+            outRect.bottom = dimensionV / 2;
         }
         if (isBottom) {
-            outRect.top = space / 2;
+            outRect.top = dimensionV / 2;
         }
 
         if (!isTop && !isBottom) {
-            outRect.bottom = space / 2;
-            outRect.top = space / 2;
+            outRect.bottom = dimensionV / 2;
+            outRect.top = dimensionV / 2;
         }
     }
 }

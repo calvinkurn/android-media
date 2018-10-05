@@ -437,7 +437,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2, voteInfoViewModel.getListOption().size());
+            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), (int) getActivity().getResources().getDimension(R.dimen.dp_16), 2, voteInfoViewModel.getListOption().size());
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);
