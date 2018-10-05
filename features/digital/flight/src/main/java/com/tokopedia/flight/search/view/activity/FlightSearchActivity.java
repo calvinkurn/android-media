@@ -18,7 +18,7 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV2.presentation.view.FlightSearchTestingFragment;
+//import com.tokopedia.flight.searchV2.presentation.view.FlightSearchTestingFragment;
 
 
 public class FlightSearchActivity extends BaseFlightActivity
@@ -88,7 +88,8 @@ public class FlightSearchActivity extends BaseFlightActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchTestingFragment.newInstance(passDataViewModel);
+//        return FlightSearchTestingFragment.newInstance(passDataViewModel);
+        return null;
     }
 
     protected String buildPassengerTextFormatted(FlightPassengerViewModel passData) {
