@@ -16,6 +16,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class GetDetailsSubmissionsUseCase extends RestRequestSupportInterceptorUseCase {
 
     private String postId;

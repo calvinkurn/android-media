@@ -44,6 +44,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSheetContract.View> implements ShareBottomSheetContract.Presenter {
     PostMapBranchUrlUseCase postMapBranchUrlUseCase;
     private static final String PACKAGENAME_WHATSAPP = "com.whatsapp";

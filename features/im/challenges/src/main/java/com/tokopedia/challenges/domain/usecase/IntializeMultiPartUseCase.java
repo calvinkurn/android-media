@@ -7,32 +7,19 @@ import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.utils.Utils;
-import com.tokopedia.common.network.data.ObservableFactory;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
-import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 
 public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseCase {
 

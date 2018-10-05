@@ -2,6 +2,9 @@ package com.tokopedia.challenges.view.service;
 
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 public interface IUploadChallengeServiceContract {
 
     public interface UploadChallengeListener {

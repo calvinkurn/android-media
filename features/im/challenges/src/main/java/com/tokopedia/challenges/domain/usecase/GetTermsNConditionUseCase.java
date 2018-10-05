@@ -6,18 +6,17 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.TermsNCondition;
-import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
-import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 public class GetTermsNConditionUseCase extends RestRequestSupportInterceptorUseCase {
 
 

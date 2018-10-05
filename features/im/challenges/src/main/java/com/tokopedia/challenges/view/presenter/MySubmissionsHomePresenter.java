@@ -19,6 +19,10 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmissionsBaseContract.View> implements MySubmissionsBaseContract.Presenter {
 
     private GetMySubmissionsListUseCase getMySubmissionsListUseCase;

@@ -11,6 +11,10 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class UploadChallengePresenterImpl implements IUploadChallengeServiceContract.UploadChallengePresenter {
     private IUploadChallengeServiceContract.UploadChallengeListener uploadChallengeService;
 

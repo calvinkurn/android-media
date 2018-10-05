@@ -8,7 +8,6 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
-import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
@@ -23,7 +22,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
+
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 
 public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUseCase {
 

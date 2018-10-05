@@ -29,6 +29,10 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContract.View> implements SubmitDetailContract.Presenter {
     private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
     private PostBuzzPointEventUseCase postBuzzPointEventUseCase;

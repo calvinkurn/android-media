@@ -1,5 +1,7 @@
 package com.tokopedia.challenges.view.utils;
-
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 public class LinkDefinition {
     private String url;
     private String title;

@@ -1,7 +1,6 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.content.Intent;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -29,6 +28,9 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeSubmissonContractor.View> implements ChallengeSubmissonContractor.Presenter {
 
     private final GetChallengeSettingUseCase getChallengeSettingUseCase;

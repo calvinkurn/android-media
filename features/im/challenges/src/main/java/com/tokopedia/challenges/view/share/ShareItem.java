@@ -1,5 +1,9 @@
 package com.tokopedia.challenges.view.share;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class ShareItem {
     String title;
     String name;

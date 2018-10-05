@@ -8,6 +8,10 @@ import com.tokopedia.challenges.view.model.Result;
 
 import java.util.List;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public interface ChallengesBaseContract {
     interface View extends CustomerView {
         void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge);

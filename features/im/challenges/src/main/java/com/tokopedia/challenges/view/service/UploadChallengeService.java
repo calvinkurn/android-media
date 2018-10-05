@@ -24,6 +24,10 @@ import com.tokopedia.challenges.view.utils.Utils;
 
 import javax.inject.Inject;
 
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
+
 public class UploadChallengeService extends Service implements IUploadChallengeServiceContract.UploadChallengeListener {
     public static final String TAG = "UploadChallengeService";
     public static final String UPLOAD_FINGERPRINT_KEY = "UploadChallengeService";

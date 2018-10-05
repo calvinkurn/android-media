@@ -5,8 +5,11 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 
 public interface SubmitDetailContract {
     interface Presenter extends CustomerPresenter<View> {

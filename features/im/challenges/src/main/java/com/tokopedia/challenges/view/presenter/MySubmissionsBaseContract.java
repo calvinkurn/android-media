@@ -5,10 +5,13 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 import java.util.List;
+
+/**
+ * Created by Ashwani Tyagi on 13/09/18.
+ */
 
 public interface MySubmissionsBaseContract {
     interface View extends CustomerView {
