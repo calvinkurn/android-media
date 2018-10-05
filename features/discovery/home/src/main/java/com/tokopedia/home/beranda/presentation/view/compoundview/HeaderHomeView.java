@@ -278,6 +278,7 @@ public class HeaderHomeView extends BaseCustomView {
         ivLogoTokocash.setImageResource(R.drawable.wallet_ic_ovo_home);
 
         if (homeHeaderWalletAction.isLinked()) {
+            pointsOvo.setVisibility(VISIBLE);
             tvTitleTokocash.setText(homeHeaderWalletAction.getCashBalance());
             tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -285,7 +286,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setText(homeHeaderWalletAction.getPointBalance());
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
             tvBalanceTokocash.setTypeface(null, Typeface.NORMAL);
-            pointsOvo.setVisibility(VISIBLE);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
