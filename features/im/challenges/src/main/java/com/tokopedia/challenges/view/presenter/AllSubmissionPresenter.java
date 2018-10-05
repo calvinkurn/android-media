@@ -109,6 +109,9 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                 getView().removeFooter();
                 if (submissionResponse != null && submissionResponse.getSubmissionResults() != null
                         && submissionResponse.getSubmissionResults().size() > 0) {
+                    if (pageStart == 0) {
+                        getView().clearList();
+                    }
                     pageStart += submissionResponse.getSubmissionResults().size();
                     getView().addSubmissionToCards(submissionResponse.getSubmissionResults());
                 } else {

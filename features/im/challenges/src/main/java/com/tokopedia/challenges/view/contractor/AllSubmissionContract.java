@@ -18,17 +18,11 @@ public class AllSubmissionContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void navigateToActivity(Intent intent);
-
-        void renderSubmissionList(List<SubmissionResult> brandList);
-
         android.view.View getRootView();
 
         void showProgressBar();
 
         void hideProgressBar();
-
-        void showViews();
 
         void removeFooter();
 
@@ -38,6 +32,7 @@ public class AllSubmissionContract {
 
         LinearLayoutManager getLayoutManager();
 
+        void clearList();
     }
 
     public interface Presenter extends CustomerPresenter<AllSubmissionContract.View> {

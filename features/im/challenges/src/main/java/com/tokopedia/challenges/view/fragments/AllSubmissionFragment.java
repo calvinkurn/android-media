@@ -130,16 +130,6 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     }
 
     @Override
-    public void navigateToActivity(Intent intent) {
-        startActivity(intent);
-    }
-
-    @Override
-    public void renderSubmissionList(List<SubmissionResult> submissionResultList) {
-
-    }
-
-    @Override
     public void showProgressBar() {
         progressBarLayout.setVisibility(View.VISIBLE);
     }
@@ -147,11 +137,6 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Override
     public void hideProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showViews() {
-        baseMainContent.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -252,5 +237,12 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
             ChallengesCacheHandler.setChallengeAllSubmissionssListCache();
         }
 
+    }
+
+    @Override
+    public void clearList() {
+        if (recyclerview.getAdapter() != null) {
+            ((SubmissionItemAdapter) recyclerview.getAdapter()).clearList();
+        }
     }
 }
