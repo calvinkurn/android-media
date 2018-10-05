@@ -279,7 +279,8 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         searchLoading.setVisibility(View.VISIBLE);
         presenter.getMessage();
-        presenter.getBlastMetaData();
+        if (GlobalConfig.isSellerApp())
+            presenter.getBlastMetaData();
     }
 
     @Override

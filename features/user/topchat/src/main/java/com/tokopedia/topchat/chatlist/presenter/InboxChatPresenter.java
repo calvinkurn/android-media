@@ -12,6 +12,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.R;
@@ -329,7 +330,8 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
             pagingHandler.resetPage();
             getView().getRefreshHandler().setRefreshing(true);
             getView().getRefreshHandler().setIsRefreshing(true);
-            getBlastMetaData();
+            if (GlobalConfig.isSellerApp())
+                getBlastMetaData();
             getMessage();
         } else {
             getView().getRefreshHandler().finishRefresh();

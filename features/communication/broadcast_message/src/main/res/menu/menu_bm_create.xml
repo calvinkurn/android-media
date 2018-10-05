@@ -4,9 +4,8 @@
 
     <item
         android:id="@+id/add_bm"
-        android:icon="@drawable/ic_bm_menu_create"
+        android:icon="@drawable/ic_bm_create_selector"
         android:title="@string/create_bm"
-        app:iconTint="@color/menu_state_list"
         app:showAsAction="ifRoom" />
 
 </menu>

@@ -43,6 +43,7 @@
         <TextView style="@style/TextView.Small.BlackSecondary"
             android:id="@+id/message"
             android:layout_margin="@dimen/dp_16"
+            android:lineSpacingExtra="2sp"
             tools:text="Dalam menyambut ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan mena… Selengkapnya"/>
 
         <android.support.v7.widget.RecyclerView
