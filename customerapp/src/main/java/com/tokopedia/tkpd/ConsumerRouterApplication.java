@@ -2314,7 +2314,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                Intent intent = Intent.createChooser(share, "Share link!");
+                Intent intent = Intent.createChooser(share, getString(R.string.share_link));
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 context.startActivity(intent);
             }
