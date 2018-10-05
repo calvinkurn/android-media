@@ -2217,7 +2217,7 @@ di Tokopedia Sekarang!</string>
     <string name="bagi_kode_referral">Bagi kode referral-mu</string>
     <string name="apa_itu_tokocash">Apa itu Cashback?</string>
     <string name="cashback_enter_tokocash"><![CDATA[<font color=\'#8a000000\'>Cashback akan masuk ke Cashback.</font> <br /><font color=\'#399c3f\'>Apa itu Cashback?</font>]]></string>
-    <string name="referral_welcome_header"><![CDATA[<font color=\'#399c3f\'>Givana</font> memberi kamu Promo Referral.]]></string>
+    <string name="referral_welcome_header">Hi memberi kamu Promo Referral.</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
