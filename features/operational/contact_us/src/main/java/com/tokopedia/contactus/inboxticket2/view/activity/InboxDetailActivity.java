@@ -291,10 +291,12 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
-        if (!isCustomReason)
+        if (!isCustomReason) {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
-        else {
+        } else {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendCustomReason(edMessage.getText().toString().trim());
+            edMessage.getText().clear();
+            textToolbar.setVisibility(View.GONE);
             isCustomReason = false;
             ivUploadImg.setVisibility(View.VISIBLE);
         }
