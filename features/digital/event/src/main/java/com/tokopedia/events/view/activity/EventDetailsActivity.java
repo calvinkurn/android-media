@@ -128,6 +128,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public static final int FROM_HOME_OR_SEARCH = 1;
 
     public static final int FROM_DEEPLINK = 2;
+                
+    private static final int CODE = 1001;
 
 
     @DeepLink({Constants.Applinks.EVENTS_DETAILS})
@@ -202,7 +204,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_scan_qr_code) {
             startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
-                    .gotoQrScannerPage(true), 1001);
+                    .gotoQrScannerPage(true), CODE);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -430,7 +432,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         super.onActivityResult(requestCode, resultCode, data);
         Gson gson = new Gson();
         ScanResponseInfo scanResponseInfo = null;
-        if (requestCode == 1001 && resultCode == RESULT_OK) {
+        if (requestCode == CODE && resultCode == RESULT_OK) {
             scanResponseInfo = gson.fromJson(data.getStringExtra("scanResult"), ScanResponseInfo.class);
             Intent intent = new Intent(this, ScanQRCodeActivity.class);
             intent.putExtra("scanUrl", scanResponseInfo.getUrl());
