@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -29,7 +30,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
     private LinearLayout ownerData, ticketSuccessLayouyt, ticketFailureLayout;
     private TextView userNameTitle, userGenderTitle, userDobTitle, userIdentityTitle;
     private ImageView crossIcon1, crossIcon2, crossIcon3;
-    private ConstraintLayout mainContent;
+    private FrameLayout mainContent;
     private ProgressBar progressBar;
     private TextView ticketRedeemDate;
 
