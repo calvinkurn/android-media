@@ -423,4 +423,56 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 String.format(EventLabel.CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY, type)
         );
     }
+
+    public void eventClickLihatLainnya() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void eventClickLihatSemuaWishlist() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_LAINNYA,
+                ""
+        );
+    }
+
+    public void enhancedEcommerceClickProductWishListOnEmptyCart(String position, Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_CLICK,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_WISHLIST,
+                Key.EVENT_LABEL, position,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedEcommerceClickProductLastSeenOnEmptyCart(String position, Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_CLICK,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_LAST_SEEN,
+                Key.EVENT_LABEL, position,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedEcommerceClickProductRecommendationOnEmptyCart(String position, Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_CLICK,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
+                Key.EVENT_LABEL, position,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
 }

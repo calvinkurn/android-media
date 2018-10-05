@@ -1,6 +1,8 @@
 package com.tokopedia.train.common.domain;
 
 import com.tokopedia.train.checkout.data.entity.TrainCheckoutEntity;
+import com.tokopedia.train.homepage.data.entity.BannerDetail;
+import com.tokopedia.train.homepage.presentation.model.TrainPromoViewModel;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherEntity;
 import com.tokopedia.train.search.domain.FilterParam;
@@ -56,4 +58,5 @@ public interface TrainRepository {
 
     Observable<TrainCheckoutEntity> checkout(HashMap<String, Object> parameters);
 
+    Observable<List<BannerDetail>> getBanners(HashMap<String, Object> parameters);
 }

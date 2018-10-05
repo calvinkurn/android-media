@@ -17,6 +17,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
 
@@ -36,6 +37,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     public TopAdsViewHolder(View itemView) {
         super(itemView);
         topAdsWidgetView = (TopAdsWidgetView) itemView;
+        topAdsWidgetView.setDisplayMode(DisplayMode.FEED);
         topAdsWidgetView.setItemClickListener(this);
         this.context = itemView.getContext();
     }

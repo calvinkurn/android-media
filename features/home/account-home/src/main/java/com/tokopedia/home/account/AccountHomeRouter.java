@@ -55,7 +55,7 @@ public interface AccountHomeRouter {
 
     String getStringRemoteConfig(String key, String defaultValue);
 
-    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     Intent getTrainOrderListIntent(Context context);
 
