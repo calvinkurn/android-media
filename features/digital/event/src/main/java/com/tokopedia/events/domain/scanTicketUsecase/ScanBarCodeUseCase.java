@@ -27,7 +27,6 @@ public class ScanBarCodeUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        //Request 1
         Type token = new TypeToken<DataResponse<ScanTicketResponse>>() {
         }.getType();
 

@@ -28,8 +28,6 @@ public class RedeemTicketUseCase extends RestRequestUseCase {
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
-        //Request 1
         Type token = new TypeToken<DataResponse<JsonObject>>() {
         }.getType();
 

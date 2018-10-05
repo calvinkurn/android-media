@@ -128,7 +128,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public static final int FROM_HOME_OR_SEARCH = 1;
 
     public static final int FROM_DEEPLINK = 2;
-                
+
     private static final int CODE = 1001;
 
 

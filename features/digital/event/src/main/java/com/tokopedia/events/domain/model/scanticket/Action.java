@@ -8,30 +8,30 @@ import com.google.gson.annotations.SerializedName;
 
 public class Action implements Parcelable {
 
-@SerializedName("label")
-@Expose
-private String label;
-@SerializedName("name")
-@Expose
-private String name;
-@SerializedName("ui_control")
-@Expose
-private String uiControl;
-@SerializedName("button_type")
-@Expose
-private String buttonType;
-@SerializedName("url_params")
-@Expose
-private UrlParams urlParams;
-@SerializedName("weight")
-@Expose
-private int weight;
-@SerializedName("color")
-@Expose
-private String color;
-@SerializedName("text_color")
-@Expose
-private String textColor;
+    @SerializedName("label")
+    @Expose
+    private String label;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("ui_control")
+    @Expose
+    private String uiControl;
+    @SerializedName("button_type")
+    @Expose
+    private String buttonType;
+    @SerializedName("url_params")
+    @Expose
+    private UrlParams urlParams;
+    @SerializedName("weight")
+    @Expose
+    private int weight;
+    @SerializedName("color")
+    @Expose
+    private String color;
+    @SerializedName("text_color")
+    @Expose
+    private String textColor;
 
     protected Action(Parcel in) {
         label = in.readString();
@@ -56,68 +56,68 @@ private String textColor;
     };
 
     public String getLabel() {
-return label;
-}
+        return label;
+    }
 
-public void setLabel(String label) {
-this.label = label;
-}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-public String getName() {
-return name;
-}
+    public String getName() {
+        return name;
+    }
 
-public void setName(String name) {
-this.name = name;
-}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-public String getUiControl() {
-return uiControl;
-}
+    public String getUiControl() {
+        return uiControl;
+    }
 
-public void setUiControl(String uiControl) {
-this.uiControl = uiControl;
-}
+    public void setUiControl(String uiControl) {
+        this.uiControl = uiControl;
+    }
 
-public String getButtonType() {
-return buttonType;
-}
+    public String getButtonType() {
+        return buttonType;
+    }
 
-public void setButtonType(String buttonType) {
-this.buttonType = buttonType;
-}
+    public void setButtonType(String buttonType) {
+        this.buttonType = buttonType;
+    }
 
-public UrlParams getUrlParams() {
-return urlParams;
-}
+    public UrlParams getUrlParams() {
+        return urlParams;
+    }
 
-public void setUrlParams(UrlParams urlParams) {
-this.urlParams = urlParams;
-}
+    public void setUrlParams(UrlParams urlParams) {
+        this.urlParams = urlParams;
+    }
 
-public int getWeight() {
-return weight;
-}
+    public int getWeight() {
+        return weight;
+    }
 
-public void setWeight(int weight) {
-this.weight = weight;
-}
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
-public String getColor() {
-return color;
-}
+    public String getColor() {
+        return color;
+    }
 
-public void setColor(String color) {
-this.color = color;
-}
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-public String getTextColor() {
-return textColor;
-}
+    public String getTextColor() {
+        return textColor;
+    }
 
-public void setTextColor(String textColor) {
-this.textColor = textColor;
-}
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
 
     @Override
     public int describeContents() {
