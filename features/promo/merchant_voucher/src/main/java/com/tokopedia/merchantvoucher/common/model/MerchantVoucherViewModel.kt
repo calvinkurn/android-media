@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.KMNumbers
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherOwnerTypeDef
@@ -143,8 +144,8 @@ fun MerchantVoucherViewModel.getMinSpendAmountShortString(): String {
     return KMNumbers.formatSuffixNumbers(this.minimumSpend.toLong())
 }
 
-fun MerchantVoucherViewModel.getValidThruString(context: Context): String {
-    return this.validThru.toString()
+fun MerchantVoucherViewModel.getValidThruString(): String {
+    return DateFormatUtils.getFormattedDate(this.validThru.toString(), DateFormatUtils.FORMAT_D_MMMM_YYYY)
 }
 
 fun MerchantVoucherViewModel.getStatusString(context: Context): String {

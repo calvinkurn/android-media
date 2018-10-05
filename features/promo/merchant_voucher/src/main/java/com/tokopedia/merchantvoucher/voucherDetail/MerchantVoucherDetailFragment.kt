@@ -152,7 +152,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             tvMinTransactionLabel.text = getString(R.string.min_transaction_colon)
             tvMinTransaction.text = merchantVoucherViewModel.getMinSpendAmountString()
         }
-        tvValidThru.text = merchantVoucherViewModel.getValidThruString(context!!)
+        tvValidThru.text = merchantVoucherViewModel.getValidThruString()
 
         if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE &&
                 !presenter.isMyShop(voucherShopId)) {
