@@ -45,7 +45,7 @@ class FlightSearchSingleDataDbSource @Inject constructor(
             val sqlStringBuilder = StringBuilder()
             sqlStringBuilder.append(sqlQuery)
             if (filterModel.isSpecialPrice) {
-                sqlStringBuilder.append()
+//                sqlStringBuilder.append()
             }
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
