@@ -1,5 +1,6 @@
 package com.tokopedia.flight.searchV2.data.repository
 
+import android.text.TextUtils
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
@@ -261,6 +262,7 @@ open class FlightSearchRepository @Inject constructor(
                     0,
                     false,
                     isRefundable,
+                    !TextUtils.isEmpty(beforeTotal),
                     routes
             )
         }

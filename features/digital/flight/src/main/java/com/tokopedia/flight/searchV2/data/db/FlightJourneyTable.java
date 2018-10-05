@@ -61,6 +61,7 @@ public class FlightJourneyTable {
     private boolean isReturn;
     @Ignore
     private RefundableEnum isRefundable;
+    private boolean isSpecialPrice;
     @Ignore
     private List<FlightRouteTable> routes;
 
@@ -78,7 +79,7 @@ public class FlightJourneyTable {
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
                               boolean isBestPairing, String beforeTotal, int sortPrice, boolean isReturn,
-                              RefundableEnum isRefundable, List<FlightRouteTable> routes) {
+                              RefundableEnum isRefundable, boolean isSpecialPrice, List<FlightRouteTable> routes) {
         this.id = id;
         this.term = term;
         this.departureAirport = departureAirport;
@@ -118,6 +119,7 @@ public class FlightJourneyTable {
         this.sortPrice = sortPrice;
         this.isReturn = isReturn;
         this.isRefundable = isRefundable;
+        this.isSpecialPrice = isSpecialPrice;
         this.routes = routes;
     }
 
@@ -432,6 +434,14 @@ public class FlightJourneyTable {
 
     public void setIsRefundable(RefundableEnum isRefundable) {
         this.isRefundable = isRefundable;
+    }
+
+    public boolean isSpecialPrice() {
+        return isSpecialPrice;
+    }
+
+    public void setSpecialPrice(boolean specialPrice) {
+        isSpecialPrice = specialPrice;
     }
 
     public List<FlightRouteTable> getRoutes() {
