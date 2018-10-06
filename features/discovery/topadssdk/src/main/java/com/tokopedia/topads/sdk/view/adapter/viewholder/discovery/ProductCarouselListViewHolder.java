@@ -22,6 +22,7 @@ import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
@@ -46,7 +47,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public TextView productName;
     public TextView productPrice;
     public TextView shopLocation;
-    public ImageView productImage;
+    public ImpressedImageView productImage;
     private ImageLoader imageLoader;
     private int clickPosition;
 
@@ -76,7 +77,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     }
 
     private void bindProduct(final Product product) {
-        Glide.with(context).load(product.getImage().getM_ecs()).into(productImage);
+        productImage.setImage(product.getImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -84,19 +85,6 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
             productName.setText(Html.fromHtml(product.getName()));
         }
         productPrice.setText(product.getPriceFormat());
-        if(!product.isLoaded() && ImageLoader.isVisible(productImage)){
-            new ImpresionTask(new ImpressionListener() {
-                @Override
-                public void onSuccess() {
-                    product.setLoaded(true);
-                }
-
-                @Override
-                public void onFailed() {
-                    product.setLoaded(false);
-                }
-            }).execute(product.getImage().getS_url());
-        }
     }
 
     @Override
