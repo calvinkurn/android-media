@@ -140,7 +140,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     public boolean isParticipated(Result challengeResult) {
-        return challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
+        return challengeResult!=null && challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
                 && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
                 || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0);
     }

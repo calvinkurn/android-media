@@ -81,8 +81,11 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
 
         mPresenter.loadMoreItems(true);
         recyclerview.addOnScrollListener(rvOnScrollListener);
+        if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
+            ChallengesCacheHandler.setChallengeAllSubmissionssListCache();//to avoid duplicacy from onstart
+        }
 
-        return view;
+            return view;
     }
 
     @Override
