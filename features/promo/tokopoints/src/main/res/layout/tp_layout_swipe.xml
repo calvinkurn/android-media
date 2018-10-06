@@ -67,7 +67,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:textColor="@color/orange_red"
-                android:textSize="@dimen/tp_text_size_small"
+                android:textSize="@dimen/tp_text_size_regular"
                 android:textStyle="bold" />
 
             <TextView
