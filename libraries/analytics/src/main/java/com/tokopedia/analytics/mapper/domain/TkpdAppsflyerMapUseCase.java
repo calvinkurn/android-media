@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.R;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
-import com.tokopedia.analytics.mapper.model.AnalyticsMappingRequest;
-import com.tokopedia.analytics.mapper.model.AnalyticsMappingResponse;
+import com.tokopedia.analytics.mapper.model.AppsflyerMappingRequest;
+import com.tokopedia.analytics.mapper.model.AppsflyerMappingResponse;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class TkpdAnalyticMapUseCase extends UseCase<Boolean> {
+public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
     private final CacheManager cacheManager;
     Context context;
 
@@ -32,7 +32,7 @@ public class TkpdAnalyticMapUseCase extends UseCase<Boolean> {
 
 
     @Inject
-    public TkpdAnalyticMapUseCase(@ApplicationContext Context context, CacheManager cacheManager) {
+    public TkpdAppsflyerMapUseCase(@ApplicationContext Context context, CacheManager cacheManager) {
         this.context = context;
         this.cacheManager = cacheManager;
     }
@@ -51,21 +51,21 @@ public class TkpdAnalyticMapUseCase extends UseCase<Boolean> {
         if(userID.equals(cacheManager.get(USER_ID)) && appsFlyerId.equals(cacheManager.get(APPSFLYER_ID))) {
             return Observable.just(true);
         }
-        AnalyticsMappingRequest analyticsMappingRequest = new AnalyticsMappingRequest();
-        analyticsMappingRequest.setAppsflyerId(appsFlyerId);
-        analyticsMappingRequest.setCustomerUserId(userID);
-        requestParams.putObject("input",analyticsMappingRequest);
+        AppsflyerMappingRequest appsflyerMappingRequest = new AppsflyerMappingRequest();
+        appsflyerMappingRequest.setAppsflyerId(appsFlyerId);
+        appsflyerMappingRequest.setCustomerUserId(userID);
+        requestParams.putObject("input", appsflyerMappingRequest);
         GraphqlClient.init(context);
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_appsflyer_mapping), AnalyticsMappingResponse.class, requestParams.getParameters());
+                R.raw.gql_appsflyer_mapping), AppsflyerMappingResponse.class, requestParams.getParameters());
 
         String finalUserID = userID;
         String finalAppsFlyerId = appsFlyerId;
         return ObservableFactory.create(Arrays.asList(graphqlRequest), null).map(new Func1<GraphqlResponse, Boolean>() {
             @Override
             public Boolean call(GraphqlResponse graphqlResponse) {
-                AnalyticsMappingResponse response = graphqlResponse.getData(AnalyticsMappingResponse.class);
+                AppsflyerMappingResponse response = graphqlResponse.getData(AppsflyerMappingResponse.class);
                 cacheManager.save(USER_ID, finalUserID,30*24*60*60);
                 cacheManager.save(APPSFLYER_ID, finalAppsFlyerId,30*24*60*60);
                 return response.getAppsflyerMapping().getMsg().equalsIgnoreCase("success")?true:false;

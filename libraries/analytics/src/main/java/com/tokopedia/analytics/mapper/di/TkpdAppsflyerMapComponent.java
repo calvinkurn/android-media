@@ -5,8 +5,8 @@ import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 
 import dagger.Component;
 
-@TkpdAnalyticsMapScope
+@TkpdAppsflyerMapScope
 @Component(dependencies = BaseAppComponent.class)
-public interface TkpdAnalyticsMapComponent {
+public interface TkpdAppsflyerMapComponent {
     void inject(TkpdAppsFlyerMapper tkpdAppsFlyerMapper);
 }

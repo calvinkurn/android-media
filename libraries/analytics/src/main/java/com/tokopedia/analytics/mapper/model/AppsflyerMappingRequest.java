@@ -1,6 +1,6 @@
 package com.tokopedia.analytics.mapper.model;
 
-public class AnalyticsMappingRequest{
+public class AppsflyerMappingRequest {
 	private String customerUserId;
 	private String appsflyerId;
 
@@ -23,7 +23,7 @@ public class AnalyticsMappingRequest{
 	@Override
  	public String toString(){
 		return 
-			"AnalyticsMappingRequest{" + 
+			"AppsflyerMappingRequest{" +
 			"customerUserId = '" + customerUserId + '\'' + 
 			",appsflyerId = '" + appsflyerId + '\'' + 
 			"}";

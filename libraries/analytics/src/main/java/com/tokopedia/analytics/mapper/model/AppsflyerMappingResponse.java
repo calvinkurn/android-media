@@ -2,7 +2,7 @@ package com.tokopedia.analytics.mapper.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AnalyticsMappingResponse{
+public class AppsflyerMappingResponse {
 
 	@SerializedName("appsflyer_mapping")
 	private AppsflyerMapping appsflyerMapping;
@@ -18,7 +18,7 @@ public class AnalyticsMappingResponse{
 	@Override
  	public String toString(){
 		return 
-			"AnalyticsMappingResponse{" + 
+			"AppsflyerMappingResponse{" +
 			"appsflyer_mapping = '" + appsflyerMapping + '\'' + 
 			"}";
 		}

@@ -3,9 +3,9 @@ package com.tokopedia.analytics.mapper;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.analytics.mapper.di.DaggerTkpdAnalyticsMapComponent;
-import com.tokopedia.analytics.mapper.di.TkpdAnalyticsMapComponent;
-import com.tokopedia.analytics.mapper.domain.TkpdAnalyticMapUseCase;
+import com.tokopedia.analytics.mapper.di.DaggerTkpdAppsflyerMapComponent;
+import com.tokopedia.analytics.mapper.di.TkpdAppsflyerMapComponent;
+import com.tokopedia.analytics.mapper.domain.TkpdAppsflyerMapUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ import rx.Subscriber;
 public class TkpdAppsFlyerMapper {
     private static TkpdAppsFlyerMapper ourInstance ;
     @Inject
-    TkpdAnalyticMapUseCase tkpdAnalyticMapUseCase;
+    TkpdAppsflyerMapUseCase tkpdAppsflyerMapUseCase;
     Context context;
 
 
@@ -28,7 +28,7 @@ public class TkpdAppsFlyerMapper {
 
     private TkpdAppsFlyerMapper(Context context) {
         this.context = context;
-        TkpdAnalyticsMapComponent component = DaggerTkpdAnalyticsMapComponent.builder()
+        TkpdAppsflyerMapComponent component = DaggerTkpdAppsflyerMapComponent.builder()
                 .baseAppComponent(((BaseMainApplication) context).getBaseAppComponent())
                 .build();
         component.inject(this);
@@ -36,7 +36,7 @@ public class TkpdAppsFlyerMapper {
 
 
     public void mapAnalytics() {
-        tkpdAnalyticMapUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+        tkpdAppsflyerMapUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
