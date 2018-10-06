@@ -48,7 +48,8 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
             userID = ((TkpdAppsFlyerRouter) context.getApplicationContext()).getUserId();
         }
         //check if userID Same not to go further
-        if(userID.equals(cacheManager.get(USER_ID)) && appsFlyerId.equals(cacheManager.get(APPSFLYER_ID))) {
+        if(userID != null && userID.equals(cacheManager.get(USER_ID))
+                && appsFlyerId != null && appsFlyerId.equals(cacheManager.get(APPSFLYER_ID))) {
             return Observable.just(true);
         }
         AppsflyerMappingRequest appsflyerMappingRequest = new AppsflyerMappingRequest();
