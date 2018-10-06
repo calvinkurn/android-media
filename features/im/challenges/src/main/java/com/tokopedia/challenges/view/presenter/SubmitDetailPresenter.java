@@ -14,6 +14,7 @@ import com.tokopedia.challenges.domain.usecase.PostDeleteSubmissionUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
+import com.tokopedia.challenges.view.model.Collection;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
@@ -76,13 +77,14 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setPointsView(String.valueOf(model.getPoints()));
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
-        getView().setParticipateTitle(model.getCollection().getTitle());
+
         if (model.getAwards() != null) {
             int position = Utils.getWinnerPosition(model.getAwards());
             if (position != -1)
                 getView().setWinnerPosition(String.valueOf(position));
         }
         if (model.getCollection() != null) {
+            getView().setParticipateTitle(model.getCollection().getTitle());
             ChallengesMoengageAnalyticsTracker.challengePostOpen(getView().getActivity(), model.getCollection().getTitle(), model.getCollection().getId(), model.getId(), getParticipatedStatus(model));
         }
     }
@@ -241,5 +243,13 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
         else
             return false;
+    }
+
+    @Override
+    public boolean checkIsPastChallenge(Collection collection) {
+        if(collection==null){
+            return false;
+        }
+        return (System.currentTimeMillis() > Utils.convertUTCToMillis(collection.getEndDate()));
     }
 }

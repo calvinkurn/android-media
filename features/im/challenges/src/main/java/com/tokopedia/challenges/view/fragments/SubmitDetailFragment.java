@@ -367,6 +367,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setSubmittResult(SubmissionResult submissionResult) {
         this.submissionResult = submissionResult;
         getActivity().invalidateOptionsMenu();
+        isPastChallenge = presenter.checkIsPastChallenge(submissionResult.getCollection());
     }
 
     @Override

@@ -46,7 +46,7 @@
         android:gravity="left"
         android:padding="@dimen/dp_16"
         android:visibility="gone"
-        android:text="Share Your content on social media &amp; get more Buzz Points to win!"
+        android:text="@string/ch_share_your_content_msg"
         android:textColor="@color/black_70" />
 
     <android.support.v7.widget.RecyclerView
