@@ -12,21 +12,21 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-public class TkpdAnalyticMapper {
-    private static  TkpdAnalyticMapper ourInstance ;
+public class TkpdAppsFlyerMapper {
+    private static TkpdAppsFlyerMapper ourInstance ;
     @Inject
     TkpdAnalyticMapUseCase tkpdAnalyticMapUseCase;
     Context context;
 
 
-    public static TkpdAnalyticMapper getInstance(Context context) {
-        ourInstance = new TkpdAnalyticMapper(context);
+    public static TkpdAppsFlyerMapper getInstance(Context context) {
+        ourInstance = new TkpdAppsFlyerMapper(context);
 
         return ourInstance;
     }
 
 
-    private TkpdAnalyticMapper(Context context) {
+    private TkpdAppsFlyerMapper(Context context) {
         this.context = context;
         TkpdAnalyticsMapComponent component = DaggerTkpdAnalyticsMapComponent.builder()
                 .baseAppComponent(((BaseMainApplication) context).getBaseAppComponent())

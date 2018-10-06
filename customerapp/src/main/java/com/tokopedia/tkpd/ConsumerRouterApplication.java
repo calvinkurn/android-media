@@ -31,7 +31,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.analytics.mapper.TkpdAnalyticMapper;
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -474,7 +474,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        F_AppFlyer_Mapping
         TalkRouter,TkpdAppsFlyerRouter,
         ScanQrCodeRouter {
 
@@ -3064,6 +3063,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void onAppsFlyerInit() {
-        TkpdAnalyticMapper.getInstance(this).mapAnalytics();
+        TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
 }
