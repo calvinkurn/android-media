@@ -244,7 +244,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     private boolean checkIsPastChallenge(Result challengeResult) {
-        return (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate()));
+        return Utils.checkIsPastChallenge(challengeResult.getEndDate());
     }
 
     private void getSubmissionInChallenge(){

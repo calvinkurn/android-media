@@ -250,6 +250,6 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         if(collection==null){
             return false;
         }
-        return (System.currentTimeMillis() > Utils.convertUTCToMillis(collection.getEndDate()));
+        return Utils.checkIsPastChallenge(collection.getEndDate());
     }
 }

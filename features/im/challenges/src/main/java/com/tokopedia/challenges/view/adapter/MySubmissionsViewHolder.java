@@ -60,6 +60,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(submissionsResult.getStatus())) {
             imgShare.setVisibility(View.GONE);
         }
+        if(Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate())){
+            imgShare.setVisibility(View.GONE);
+        }
 
         itemView.setOnClickListener(view1 -> {
 
