@@ -21,4 +21,7 @@ public class TrainUrl {
 
     public static String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
     public static String HELP_PAGE = BASE_WEB_DOMAIN + "bantuan/produk-digital/tiket-kereta-api/";
+
+    public static String PARAM_TRAIN_MENU_ID = "4";
+    public static String PARAM_TRAIN_SUBMENU_ID = "378";
 }

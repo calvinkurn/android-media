@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private DisplayMode mode = DisplayMode.GRID;
+    private TypedArray styledAttributes;
 
     public TopAdsWidgetView(Context context) {
         super(context);
@@ -59,10 +61,12 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     }
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
+        styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsWidgetView, defStyle, 0);
         inflate(getContext(), R.layout.layout_ads_no_padding, this);
         openTopAdsUseCase = new OpenTopAdsUseCase(context);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setEnableWishlist(styledAttributes.getBoolean(R.styleable.TopAdsWidgetView_enable_wishlist, false));
         gridLayoutManager = new GridLayoutManager(context, GRID_SPAN,
                         GridLayoutManager.VERTICAL, false);
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);

@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -91,29 +92,46 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem) {
+    public void handleWishlistButtonClicked(final ProductItem productItem) {
         if (getView().isUserHasLogin()) {
             getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
                 removeWishlist(productItem.getProductID(), getView().getUserId());
+            } else if(productItem.getProductWishlistUrl() != null){
+                com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
+                        productItem.getProductWishlistUrl());
+                productWishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
             } else {
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
-            com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-            params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
-            productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
-                @Override
-                public void onCompleted() {}
-
-                @Override
-                public void onError(Throwable e) {}
-
-                @Override
-                public void onNext(Response<String> stringResponse) {}
-            });
         } else {
             launchLoginActivity(productItem.getProductID());
         }
+    }
+
+    @NonNull
+    protected Subscriber<Boolean> getWishlistSubscriber(final ProductItem productItem) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
+                getView().notifyAdapter();
+            }
+
+            @Override
+            public void onNext(Boolean result) {
+                if(result){
+                    getView().onSuccessAddWishlist(productItem.getProductID());
+                } else {
+                    getView().notifyAdapter();
+                }
+            }
+        };
     }
 
     private void launchLoginActivity(String productId) {

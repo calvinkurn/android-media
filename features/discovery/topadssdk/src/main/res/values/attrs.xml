@@ -24,4 +24,7 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="TopAdsWidgetView">
+        <attr name="enable_wishlist" format="boolean"  />
+    </declare-styleable>
 </resources>

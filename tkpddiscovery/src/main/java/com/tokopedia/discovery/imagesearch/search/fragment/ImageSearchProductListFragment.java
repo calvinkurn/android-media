@@ -587,7 +587,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onAddWishList(int position, Data data) {
         ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.isWislished());
+        productItem.setWishlisted(data.getProduct().isWishlist());
         productItem.setProductID(data.getProduct().getId());
         presenter.handleWishlistButtonClicked(productItem);
     }

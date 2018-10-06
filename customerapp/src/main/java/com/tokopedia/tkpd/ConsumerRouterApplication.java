@@ -155,6 +155,7 @@ import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -473,7 +474,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter,TkpdAppsFlyerRouter {
+        F_AppFlyer_Mapping
+        TalkRouter,TkpdAppsFlyerRouter,
+        ScanQrCodeRouter {
+
 
     private static final String EXTRA = "extra";
 
@@ -2485,6 +2489,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getPromoListIntent(Activity activity, String menuId, String subMenuId) {
+        return PromoListActivity.newInstance(activity, menuId, subMenuId);
+    }
+
+    @Override
     public Intent getPromoListIntent(Activity activity) {
         return PromoListActivity.newInstance(activity);
     }
@@ -2671,7 +2680,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage() {
-        return QrScannerActivity.newInstance(this);
+        return gotoQrScannerPage(false);
+    }
+
+    @Override
+    public Intent gotoQrScannerPage(boolean needResult) {
+        return QrScannerActivity.newInstance(this, needResult);
     }
 
 

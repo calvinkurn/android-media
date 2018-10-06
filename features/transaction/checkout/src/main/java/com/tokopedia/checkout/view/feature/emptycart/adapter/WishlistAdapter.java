@@ -53,7 +53,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistViewHolder> {
 
     public interface ActionListener {
 
-        void onItemWishListClicked(Wishlist wishlist);
+        void onItemWishListClicked(Wishlist wishlist, int position);
 
     }
 }
