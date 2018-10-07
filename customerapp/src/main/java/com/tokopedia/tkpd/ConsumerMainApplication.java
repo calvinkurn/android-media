@@ -1,9 +1,7 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -13,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.facebook.soloader.SoLoader;
@@ -85,7 +82,6 @@ import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
@@ -138,6 +134,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        InstabugInitalize.init(this);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -261,52 +258,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
 
-        generateTransactionDataModuleBaseUrl();
-        generateLogisticDataModuleBaseUrl();
+        LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
+        TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
+        TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
     }
 
-    private void generateLogisticDataModuleBaseUrl() {
-        switch (BuildConfig.FLAVOR) {
-            case FLAVOR_STAGING:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.STAGING_BASE_URL;
-                break;
-            case FLAVOR_ALPHA:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.ALPHA_BASE_URL;
-                break;
-            default:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.LIVE_BASE_URL;
-                break;
-        }
-    }
-
-    private void generateTransactionDataModuleBaseUrl() {
-        switch (BuildConfig.FLAVOR) {
-            case FLAVOR_STAGING:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.STAGING_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.STAGING_BASE_URL;
-                break;
-            case FLAVOR_ALPHA:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.ALPHA_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.ALPHA_BASE_URL;
-                break;
-            default:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.LIVE_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
-                break;
-        }
-    }
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
