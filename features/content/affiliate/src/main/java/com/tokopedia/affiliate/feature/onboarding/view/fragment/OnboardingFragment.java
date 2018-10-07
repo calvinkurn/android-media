@@ -28,6 +28,8 @@ public class OnboardingFragment extends Fragment {
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
     private static final String FINISH_IMAGE_NAME = "af_onboarding_finish";
     private static final String START_IMAGE_NAME = "af_onboarding_start";
+    //TODO milhamj change to real url
+    private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/";
 
     private ImageView image;
     private TextView title;
@@ -90,6 +92,13 @@ public class OnboardingFragment extends Fragment {
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
         goBtn.setOnClickListener(view1 ->
                 startActivity(UsernameInputActivity.createIntent(getContext()))
+        );
+        commission.setVisibility(View.VISIBLE);
+        commission.setOnClickListener(v ->
+                RouteManager.route(
+                        getContext(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, COMMISSION_URL)
+                )
         );
     }
 
