@@ -15,6 +15,8 @@ public interface UsernameInputContract {
         void hideLoading();
 
         void onSuccessGetUsernameSuggestion(List<String> suggestions);
+
+        void onSuggestionClicked(String username);
     }
     interface Presenter extends CustomerPresenter<View> {
         void getUsernameSuggestion();

@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
@@ -44,6 +45,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
     private View loadingView;
+
+    private SuggestionAdapter adapter;
 
     @Inject
     private UsernameInputContract.Presenter presenter;
@@ -74,8 +77,10 @@ public class UsernameInputFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
         initVar();
         initView();
+        presenter.getUsernameSuggestion();
     }
 
     @Override
@@ -100,6 +105,11 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetUsernameSuggestion(List<String> suggestions) {
+
+    }
+
+    @Override
+    public void onSuggestionClicked(String username) {
 
     }
 
