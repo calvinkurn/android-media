@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.onboarding.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.affiliate.feature.onboarding.data.pojo.GetUsernameSuggestionData;
+import com.tokopedia.affiliate.feature.onboarding.data.pojo.usernamesuggestion.GetUsernameSuggestionData;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 

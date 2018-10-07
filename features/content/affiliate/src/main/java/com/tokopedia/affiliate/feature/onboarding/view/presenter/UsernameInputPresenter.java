@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.onboarding.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.feature.onboarding.domain.usecase.GetUsernameSuggestionUseCase;
+import com.tokopedia.affiliate.feature.onboarding.domain.usecase.RegisterUsernameUseCase;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.subscriber.GetUsernameSuggestionSubscriber;
 
@@ -13,11 +14,14 @@ import javax.inject.Inject;
 public class UsernameInputPresenter extends BaseDaggerPresenter<UsernameInputContract.View>
         implements UsernameInputContract.Presenter {
 
-    private GetUsernameSuggestionUseCase getUsernameSuggestionUseCase;
+    private final GetUsernameSuggestionUseCase getUsernameSuggestionUseCase;
+    private final RegisterUsernameUseCase registerUsernameUseCase;
 
     @Inject
-    public UsernameInputPresenter(GetUsernameSuggestionUseCase getUsernameSuggestionUseCase) {
+    public UsernameInputPresenter(GetUsernameSuggestionUseCase getUsernameSuggestionUseCase,
+                                  RegisterUsernameUseCase registerUsernameUseCase) {
         this.getUsernameSuggestionUseCase = getUsernameSuggestionUseCase;
+        this.registerUsernameUseCase = registerUsernameUseCase;
     }
 
     @Override

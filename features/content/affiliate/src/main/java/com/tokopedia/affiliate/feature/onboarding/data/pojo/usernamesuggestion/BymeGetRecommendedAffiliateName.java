@@ -1,5 +1,5 @@
 
-package com.tokopedia.affiliate.feature.onboarding.data.pojo;
+package com.tokopedia.affiliate.feature.onboarding.data.pojo.usernamesuggestion;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
