@@ -17,8 +17,16 @@ public interface UsernameInputContract {
         void onSuccessGetUsernameSuggestion(List<String> suggestions);
 
         void onSuggestionClicked(String username);
+
+        void onSuccessRegisterUsername();
+
+        void onErrorRegisterUsername(String message);
+
+        void onErrorInputRegisterUsername(String message);
     }
     interface Presenter extends CustomerPresenter<View> {
         void getUsernameSuggestion();
+
+        void registerUsername(String username);
     }
 }

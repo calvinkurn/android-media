@@ -29,6 +29,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
@@ -50,6 +51,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     //TODO milhamj change to real url
     private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/";
 
+    private View mainView;
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
     private PrefixEditText usernameInput;
@@ -78,6 +80,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_username_input, container, false);
+        mainView = view.findViewById(R.id.mainView);
         avatar = view.findViewById(R.id.avatar);
         usernameWrapper = view.findViewById(R.id.usernameWrapper);
         usernameInput = view.findViewById(R.id.usernameInput);
@@ -145,6 +148,35 @@ public class UsernameInputFragment extends BaseDaggerFragment
     @Override
     public void onSuggestionClicked(String username) {
         usernameInput.setText(username.toLowerCase());
+    }
+
+    @Override
+    public void onSuccessRegisterUsername() {
+        Intent intent;
+        if (!TextUtils.isEmpty(productId)) {
+            intent = RecommendProductActivity.createIntent(
+                    getContext(),
+                    productId
+            );
+        } else {
+            intent = OnboardingActivity.createIntent(
+                    getContext(),
+                    OnboardingActivity.FINISH_TRUE
+            );
+        }
+        startActivity(intent);
+    }
+
+    @Override
+    public void onErrorRegisterUsername(String message) {
+        ToasterError.make(mainView, message)
+                .setAction(R.string.title_try_again, v -> registerUsername())
+                .show();
+    }
+
+    @Override
+    public void onErrorInputRegisterUsername(String message) {
+        usernameWrapper.setError(message);
     }
 
     private void initVar(Bundle savedInstanceState) {
@@ -220,20 +252,10 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener getSaveBtnOnClickListener() {
-        return view -> {
-            Intent intent;
-            if (!TextUtils.isEmpty(productId)) {
-                intent = RecommendProductActivity.createIntent(
-                        getContext(),
-                        productId
-                );
-            } else {
-                intent = OnboardingActivity.createIntent(
-                        getContext(),
-                        OnboardingActivity.FINISH_TRUE
-                );
-            }
-            startActivity(intent);
-        };
+        return view -> registerUsername();
+    }
+
+    private void registerUsername() {
+        presenter.registerUsername(usernameInput.getText().toString());
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.affiliate.feature.onboarding.domain.usecase.GetUsernameSugg
 import com.tokopedia.affiliate.feature.onboarding.domain.usecase.RegisterUsernameUseCase;
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.subscriber.GetUsernameSuggestionSubscriber;
+import com.tokopedia.affiliate.feature.onboarding.view.subscriber.RegisterUsernameSubscriber;
 
 import javax.inject.Inject;
 
@@ -34,5 +35,14 @@ public class UsernameInputPresenter extends BaseDaggerPresenter<UsernameInputCon
     public void getUsernameSuggestion() {
         getView().showLoading();
         getUsernameSuggestionUseCase.execute(new GetUsernameSuggestionSubscriber(getView()));
+    }
+
+    @Override
+    public void registerUsername(String username) {
+        getView().showLoading();
+        registerUsernameUseCase.execute(
+                RegisterUsernameUseCase.createRequestParams(username),
+                new RegisterUsernameSubscriber(getView())
+        );
     }
 }
