@@ -52,12 +52,11 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private View loadingView;
 
     private SuggestionAdapter adapter;
-
-    @Inject
-    private UsernameInputContract.Presenter presenter;
-
     private UserSession userSession;
     private String productId = "";
+
+    @Inject
+    UsernameInputContract.Presenter presenter;
 
     public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
         UsernameInputFragment fragment = new UsernameInputFragment();
@@ -97,6 +96,12 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
     protected void initInjector() {
 
     }
@@ -124,7 +129,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuggestionClicked(String username) {
-
+        usernameInput.setText(username);
     }
 
     private void initVar(Bundle savedInstanceState) {
