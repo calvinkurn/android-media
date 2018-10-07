@@ -26,6 +26,8 @@ import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputAct
 import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -45,6 +47,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
+    //TODO milhamj change to real url
+    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/";
 
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
@@ -59,7 +63,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private SuggestionAdapter adapter;
     private UserSession userSession;
     private AfterTextWatcher textWatcher;
-
 
     @Inject
     UsernameInputContract.Presenter presenter;
@@ -165,6 +168,12 @@ public class UsernameInputFragment extends BaseDaggerFragment
         suggestionRv.setAdapter(adapter);
         saveBtn.setOnClickListener(getSaveBtnOnClickListener());
         disableSaveBtn();
+        termsAndCondition.setOnClickListener(v ->
+                RouteManager.route(
+                        getContext(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                )
+        );
     }
 
     private void enableSaveBtn() {
