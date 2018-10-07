@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.onboarding.di;
 
 import com.tokopedia.affiliate.feature.onboarding.domain.usecase.GetUsernameSuggestionUseCase;
-import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
+import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.presenter.UsernameInputPresenter;
 
 import dagger.Module;

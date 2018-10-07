@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.onboarding.view.contract;
+package com.tokopedia.affiliate.feature.onboarding.view.listener;
 
 import android.content.Context;
 

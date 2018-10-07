@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
-import com.tokopedia.affiliate.feature.onboarding.view.contract.RecommendProductContract;
+import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProductContract;
 import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProductViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;

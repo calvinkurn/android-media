@@ -24,7 +24,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivi
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
-import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
+import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;

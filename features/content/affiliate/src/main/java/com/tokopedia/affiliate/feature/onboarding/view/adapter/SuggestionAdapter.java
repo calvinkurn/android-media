@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
+import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
 
 import java.util.ArrayList;
 import java.util.List;

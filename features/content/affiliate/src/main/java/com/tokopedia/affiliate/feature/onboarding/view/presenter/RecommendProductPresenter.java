@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.feature.onboarding.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.affiliate.feature.onboarding.view.contract.RecommendProductContract;
+import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProductContract;
 
 /**
  * @author by milhamj on 10/4/18.
