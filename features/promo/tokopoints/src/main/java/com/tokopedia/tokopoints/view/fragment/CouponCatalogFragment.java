@@ -716,7 +716,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             imgLabel.setImageResource(R.drawable.ic_tp_time);
             label.setVisibility(View.VISIBLE);
             label.setText(data.getUsage().getText());
-            label.setTextColor(ContextCompat.getColor(getAppContext(), R.color.black_70));
             value.setVisibility(View.VISIBLE);
             imgLabel.setVisibility(View.VISIBLE);
             value.setText(data.getUsage().getUsageStr());
@@ -737,7 +736,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
 
-        value.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.medium_green));
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
         btnAction2.setOnClickListener(v -> {
