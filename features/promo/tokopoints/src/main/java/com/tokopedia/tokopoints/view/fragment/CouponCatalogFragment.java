@@ -588,6 +588,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             imgTime.setVisibility(View.VISIBLE);
             timeLabel.setText(data.getExpiredLabel());
             timeValue.setText(data.getExpiredStr());
+            timeValue.setTextColor(ContextCompat.getColor(getAppContext(), R.color.black_70));
         }
 
         //Quota text handling
@@ -715,6 +716,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             imgLabel.setImageResource(R.drawable.ic_tp_time);
             label.setVisibility(View.VISIBLE);
             label.setText(data.getUsage().getText());
+            label.setTextColor(ContextCompat.getColor(getAppContext(), R.color.black_70));
             value.setVisibility(View.VISIBLE);
             imgLabel.setVisibility(View.VISIBLE);
             value.setText(data.getUsage().getUsageStr());
