@@ -10,10 +10,7 @@ import rx.Subscriber;
 
 /**
  * Created by dhh on 2017/11/2.
- * <p>
  * override the method of you want to use
- * <p>
- * 根据业务需求重写你想使用的方法
  */
 
 public abstract class WebSocketSubscriber extends Subscriber<WebSocketInfo> {
