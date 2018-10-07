@@ -141,11 +141,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuggestionClicked(String username) {
-        usernameInput.removeTextChangedListener(textWatcher);
         usernameInput.setText(username.toLowerCase());
-        usernameInput.addTextChangedListener(textWatcher);
-        suggestionCard.setVisibility(View.GONE);
-        enableSaveBtn();
     }
 
     private void initVar(Bundle savedInstanceState) {
