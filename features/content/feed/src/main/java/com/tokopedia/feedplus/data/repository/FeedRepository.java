@@ -18,6 +18,4 @@ public interface FeedRepository {
 
     Observable<FeedResult> getFirstPageFeedsFromLocal();
 
-    Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters);
-
 }

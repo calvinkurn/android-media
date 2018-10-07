@@ -15,6 +15,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
 
     private int primaryImageStringRes;
     private int maximumNoPick;
+    private boolean canReorder;
 
     // to show initial selected image onlist;
     // for example: ("sdcard/image.jpg", "sdcard/image2.jpg"}
@@ -40,6 +41,19 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         setInitialSelectedImagePathList(initialSelectedImagePathList);
         this.placeholderImagePathResList = placeholderImagePathResList;
         this.primaryImageStringRes = primaryImageStringRes;
+    }
+
+    public ImagePickerMultipleSelectionBuilder(ArrayList<String> initialSelectedImagePathList,
+                                               @DrawableRes ArrayList<Integer> placeholderImagePathResList,
+                                               int primaryImageStringRes,
+                                               int maximumNoPick,
+                                               boolean canReorder) {
+        this(initialSelectedImagePathList, placeholderImagePathResList, primaryImageStringRes, maximumNoPick);
+        this.canReorder = canReorder;
+    }
+
+    public boolean isCanReorder() {
+        return canReorder;
     }
 
     private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){
@@ -75,6 +89,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.primaryImageStringRes);
         dest.writeInt(this.maximumNoPick);
+        dest.writeByte(this.canReorder ? (byte) 1 : (byte) 0);
         dest.writeStringList(this.initialSelectedImagePathList);
         dest.writeList(this.placeholderImagePathResList);
     }
@@ -82,6 +97,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     protected ImagePickerMultipleSelectionBuilder(Parcel in) {
         this.primaryImageStringRes = in.readInt();
         this.maximumNoPick = in.readInt();
+        this.canReorder = in.readByte() != 0;
         this.initialSelectedImagePathList = in.createStringArrayList();
         this.placeholderImagePathResList = new ArrayList<Integer>();
         in.readList(this.placeholderImagePathResList, Integer.class.getClassLoader());

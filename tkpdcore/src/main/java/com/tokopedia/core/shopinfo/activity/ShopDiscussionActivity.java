@@ -14,7 +14,10 @@ import com.tokopedia.core.shopinfo.fragment.ShopTalkFragment;
 /**
  * Created by nathan on 3/5/18.
  */
-
+@Deprecated
+/**
+ * Please use ShopTalkActivity instead.
+ */
 public class ShopDiscussionActivity extends BaseSimpleActivity {
     public static final String APP_LINK_EXTRA_SHOP_ID = "shop_id";
     public static final String APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution";
@@ -24,7 +27,6 @@ public class ShopDiscussionActivity extends BaseSimpleActivity {
 
     private String shopId;
 
-    @DeepLink(ApplinkConst.SHOP_TALK)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ShopDiscussionActivity.class)

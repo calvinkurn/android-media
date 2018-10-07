@@ -136,11 +136,11 @@ public class TalkProductFragment extends BasePresenterFragment<TalkProductPresen
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        productID = arguments.getString("product_id");
-        shopID = arguments.getString("shop_id");
-        isShopOwner = arguments.getString("is_owner");
-        productName = arguments.getString("prod_name");
-        productImage = arguments.getString("product_image");
+        productID = arguments.getString("product_id","");
+        shopID = arguments.getString("shop_id","");
+        isShopOwner = arguments.getString("is_owner","0");
+        productName = arguments.getString("prod_name","");
+        productImage = arguments.getString("product_image","");
         bundle = arguments;
     }
 

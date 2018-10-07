@@ -25,6 +25,13 @@
 
                 <include layout="@layout/partial_top_ads_shop_info" />
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/ticker_list"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
