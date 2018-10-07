@@ -398,8 +398,9 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 }
                 adapter.deleteComment(talkId, commentId)
             } else if (adapter.getItemById(talkId) != null
-                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
-                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
+                    && !(adapter.getItemById(talkId) as InboxTalkItemViewModel).talkThread
+                            .listChild.isEmpty()
+                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel).talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
                 ((adapter.getItemById(talkId) as
                         InboxTalkItemViewModel).talkThread.listChild[0] as
                         LoadMoreCommentTalkViewModel).counter -= 1

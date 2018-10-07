@@ -102,4 +102,8 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         typeFactory.setItemImpressionListener(adsItemImpressionListener);
         notifyDataSetChanged();
     }
+
+    public void setEnableWishlist(boolean enableWishlist) {
+        typeFactory.setEnableWishlist(enableWishlist);
+    }
 }
