@@ -37,6 +37,7 @@ public class OnboardingFragment extends Fragment {
     private ButtonCompat goBtn;
     private TextView commission;
 
+    private String productId = "";
     private boolean isOnboardingFinish = false;
 
     public static OnboardingFragment newInstance(@NonNull Bundle bundle) {
@@ -60,16 +61,30 @@ public class OnboardingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVar();
+        initVar(savedInstanceState);
         initView();
     }
 
-    private void initVar() {
-        if (getArguments() != null) {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(OnboardingActivity.PARAM_IS_FINISH, isOnboardingFinish);
+        outState.putString(OnboardingActivity.PARAM_PRODUCT_ID, productId);
+    }
+
+    private void initVar(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            isOnboardingFinish = savedInstanceState.getBoolean(
+                    OnboardingActivity.PARAM_IS_FINISH,
+                    false
+            );
+            productId = savedInstanceState.getString(OnboardingActivity.PARAM_PRODUCT_ID, "");
+        } else if (getArguments() != null) {
             isOnboardingFinish = getArguments().getBoolean(
                     OnboardingActivity.PARAM_IS_FINISH,
                     false
             );
+            productId = getArguments().getString(OnboardingActivity.PARAM_PRODUCT_ID, "");
         }
     }
 
@@ -91,7 +106,7 @@ public class OnboardingFragment extends Fragment {
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
         goBtn.setOnClickListener(view1 ->
-                startActivity(UsernameInputActivity.createIntent(getContext()))
+                startActivity(UsernameInputActivity.createIntent(getContext(), productId))
         );
         commission.setVisibility(View.VISIBLE);
         commission.setOnClickListener(v ->

@@ -12,7 +12,8 @@ import com.tokopedia.applink.ApplinkConst;
 
 public class OnboardingActivity extends BaseSimpleActivity {
 
-    public static final String PARAM_IS_FINISH = "IS_FINISH";
+    public static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_IS_FINISH = "is_finish";
     public static final Boolean FINISH_TRUE = true;
 
     @DeepLink(ApplinkConst.AFFILIATE_ONBOARDING)
