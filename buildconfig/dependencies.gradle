@@ -317,6 +317,10 @@ ext {
             coreLib: "com.aliyun:aliyun-java-sdk-core:${alibabaCoreLibVersion}"
     ]
 
+    instabugDependencies = [
+            instabug: "com.instabug.library:instabug:8.0.3"
+    ]
+
     features = [
             loyalty               : ":tkpdloyalty",
             nps                   : ":features:common:nps",
