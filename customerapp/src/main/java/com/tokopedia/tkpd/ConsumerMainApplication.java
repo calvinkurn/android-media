@@ -136,7 +136,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         super.onCreate();
         initReact();
 
-        checkAppSignature(this);
         if(!checkAppSignature()){
             throw new RuntimeException("please use original tokopedia apps.");
         }
