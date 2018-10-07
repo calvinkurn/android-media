@@ -14,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
+import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.adapter.SuggestionAdapter;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
@@ -29,6 +32,7 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -51,9 +55,11 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private ButtonCompat saveBtn;
     private View loadingView;
 
+    private String productId = "";
     private SuggestionAdapter adapter;
     private UserSession userSession;
-    private String productId = "";
+    private AfterTextWatcher textWatcher;
+
 
     @Inject
     UsernameInputContract.Presenter presenter;
@@ -103,7 +109,13 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent baseAppComponent
+                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                .getBaseAppComponent();
+        DaggerOnboardingComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -129,7 +141,10 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuggestionClicked(String username) {
-        usernameInput.setText(username);
+        usernameInput.removeTextChangedListener(textWatcher);
+        usernameInput.setText(username.toLowerCase());
+        usernameInput.addTextChangedListener(textWatcher);
+        suggestionCard.setVisibility(View.GONE);
     }
 
     private void initVar(Bundle savedInstanceState) {
@@ -164,35 +179,38 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private AfterTextWatcher getUsernameTextWatcher() {
-        return new AfterTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String byMeUsername = usernameInput.getTextWithoutPrefix();
+        if (textWatcher == null) {
+            textWatcher = new AfterTextWatcher() {
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    String byMeUsername = usernameInput.getTextWithoutPrefix();
 
-                if (byMeUsername.length() > USERNAME_MAX_LENGTH) {
-                    usernameInput.removeTextChangedListener(this);
-                    usernameInput.setText(byMeUsername.substring(0, USERNAME_MAX_LENGTH));
-                    usernameInput.addTextChangedListener(this);
-                }
+                    if (byMeUsername.length() > USERNAME_MAX_LENGTH) {
+                        usernameInput.removeTextChangedListener(this);
+                        usernameInput.setText(byMeUsername.substring(0, USERNAME_MAX_LENGTH));
+                        usernameInput.addTextChangedListener(this);
+                    }
 
-                if (byMeUsername.length() < USERNAME_MIN_LENGTH) {
-                    usernameWrapper.setError(String.format(
-                            getString(R.string.af_minimal_character),
-                            USERNAME_MIN_LENGTH)
-                    );
-                    disableSaveBtn();
-                } else {
-                    usernameWrapper.setError(null);
-                    enableSaveBtn();
-                }
+                    if (byMeUsername.length() < USERNAME_MIN_LENGTH) {
+                        usernameWrapper.setError(String.format(
+                                getString(R.string.af_minimal_character),
+                                USERNAME_MIN_LENGTH)
+                        );
+                        disableSaveBtn();
+                    } else {
+                        usernameWrapper.setError(null);
+                        enableSaveBtn();
+                    }
 
-                if (byMeUsername.length() < SHOW_SUGGESTION_LENGTH) {
-                    suggestionCard.setVisibility(View.VISIBLE);
-                } else {
-                    suggestionCard.setVisibility(View.GONE);
+                    if (byMeUsername.length() < SHOW_SUGGESTION_LENGTH) {
+                        suggestionCard.setVisibility(View.VISIBLE);
+                    } else {
+                        suggestionCard.setVisibility(View.GONE);
+                    }
                 }
-            }
-        };
+            };
+        }
+        return textWatcher;
     }
 
     private View.OnClickListener getSaveBtnOnClickListener() {

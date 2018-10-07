@@ -5,6 +5,9 @@ import com.tokopedia.affiliate.feature.onboarding.data.pojo.GetUsernameSuggestio
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Subscriber;
 
 /**
@@ -32,8 +35,19 @@ public class GetUsernameSuggestionSubscriber extends Subscriber<GraphqlResponse>
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         GetUsernameSuggestionData data = graphqlResponse.getData(GetUsernameSuggestionData.class);
-        if (data != null && data.getSuggestion() != null) {
-            view.onSuccessGetUsernameSuggestion(data.getSuggestion().getSuggestions());
+        if (data != null && data.getSuggestion() != null
+                && data.getSuggestion().getSuggestions() != null) {
+            view.onSuccessGetUsernameSuggestion(
+                    convertToLowerCase(data.getSuggestion().getSuggestions())
+            );
         }
+    }
+
+    private List<String> convertToLowerCase(List<String> sourceStrings) {
+        List<String> lowerCaseStrings = new ArrayList<>();
+        for (int i = 0; i < sourceStrings.size(); i++) {
+            lowerCaseStrings.add(sourceStrings.get(i).toLowerCase());
+        }
+        return lowerCaseStrings;
     }
 }
