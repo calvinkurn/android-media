@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.onboarding.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
@@ -10,6 +12,8 @@ import java.util.List;
  */
 public interface UsernameInputContract {
     interface View extends CustomerView {
+        Context getContext();
+
         void showLoading();
 
         void hideLoading();
