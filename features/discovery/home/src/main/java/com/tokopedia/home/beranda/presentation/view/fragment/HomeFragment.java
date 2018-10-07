@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -910,7 +912,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
      */
     @Override
     public Observable<HomeHeaderWalletAction> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
             return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
         }
         return null;
@@ -936,10 +938,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() == null)
             return;
 
-        getActivity().registerReceiver(
-                tokoCashBroadcaseReceiver,
-                new IntentFilter(((IHomeRouter)getActivity()).getExtraBroadcastReceiverWallet())
-        );
+        if (getActivity().getApplication() instanceof IHomeRouter) {
+            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+            getActivity().registerReceiver(
+                    tokoCashBroadcaseReceiver,
+                    new IntentFilter(homeRouter.getExtraBroadcastReceiverWallet())
+            );
+        }
     }
 
     protected void unRegisterBroadcastReceiverTokoCash() {
@@ -953,8 +958,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            if (extras != null) {
-                String data = extras.getString(((IHomeRouter) getActivity()).getExtraBroadcastReceiverWallet());
+            if (extras != null && getActivity().getApplication() instanceof IHomeRouter) {
+                IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+                String data = extras.getString(homeRouter.getExtraBroadcastReceiverWallet());
                 if (data != null && !data.isEmpty())
                     presenter.getHeaderData(false); // update header data
             }
@@ -981,6 +987,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void startDeeplinkShopInfo(String url) {
         if (getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+    }
+
+    @Override
+    public void showPopupIntroOvo(String applinkActivation) {
+        if (RouteManager.isSupportApplink(getActivity(), applinkActivation)) {
+            Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
+            getContext().startActivity(intentBalanceWalet);
+            Activity activity = (Activity) getContext();
+            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+        }
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {

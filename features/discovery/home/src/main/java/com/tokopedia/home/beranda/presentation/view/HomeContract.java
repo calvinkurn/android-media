@@ -66,6 +66,8 @@ public interface HomeContract {
         void startShopInfo(String shopId);
 
         void startDeeplinkShopInfo(String url);
+
+        void showPopupIntroOvo(String applinkActivation);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -76,6 +78,8 @@ public interface HomeContract {
         void getHeaderData(boolean initialStart);
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
+
+        void showPopUpIntroWalletOvo(String applinkActivation);
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 

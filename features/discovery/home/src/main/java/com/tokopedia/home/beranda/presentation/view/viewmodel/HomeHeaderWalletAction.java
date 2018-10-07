@@ -23,7 +23,7 @@ public class HomeHeaderWalletAction implements Parcelable {
     private String cashBalance;
     private int rawCashBalance;
     private String walletType;
-
+    private boolean showAnnouncement;
 
     protected HomeHeaderWalletAction(Parcel in) {
         labelTitle = in.readString();
@@ -41,30 +41,7 @@ public class HomeHeaderWalletAction implements Parcelable {
         cashBalance = in.readString();
         rawCashBalance = in.readInt();
         walletType = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(labelTitle);
-        dest.writeString(balance);
-        dest.writeString(redirectUrlBalance);
-        dest.writeString(appLinkBalance);
-        dest.writeInt(typeAction);
-        dest.writeByte((byte) (visibleActionButton ? 1 : 0));
-        dest.writeString(labelActionButton);
-        dest.writeString(appLinkActionButton);
-        dest.writeByte((byte) (linked ? 1 : 0));
-        dest.writeStringList(abTags);
-        dest.writeString(pointBalance);
-        dest.writeInt(rawPointBalance);
-        dest.writeString(cashBalance);
-        dest.writeInt(rawCashBalance);
-        dest.writeString(walletType);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        showAnnouncement = in.readByte() != 0;
     }
 
     public static final Creator<HomeHeaderWalletAction> CREATOR = new Creator<HomeHeaderWalletAction>() {
@@ -78,6 +55,31 @@ public class HomeHeaderWalletAction implements Parcelable {
             return new HomeHeaderWalletAction[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(labelTitle);
+        parcel.writeString(balance);
+        parcel.writeString(redirectUrlBalance);
+        parcel.writeString(appLinkBalance);
+        parcel.writeInt(typeAction);
+        parcel.writeByte((byte) (visibleActionButton ? 1 : 0));
+        parcel.writeString(labelActionButton);
+        parcel.writeString(appLinkActionButton);
+        parcel.writeByte((byte) (linked ? 1 : 0));
+        parcel.writeStringList(abTags);
+        parcel.writeString(pointBalance);
+        parcel.writeInt(rawPointBalance);
+        parcel.writeString(cashBalance);
+        parcel.writeInt(rawCashBalance);
+        parcel.writeString(walletType);
+        parcel.writeByte((byte) (showAnnouncement ? 1 : 0));
+    }
 
     public String getLabelTitle() {
         return labelTitle;
@@ -197,6 +199,14 @@ public class HomeHeaderWalletAction implements Parcelable {
 
     public void setWalletType(String walletType) {
         this.walletType = walletType;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
+    }
+
+    public void setShowAnnouncement(boolean showAnnouncement) {
+        this.showAnnouncement = showAnnouncement;
     }
 
     public HomeHeaderWalletAction() {

@@ -2,8 +2,11 @@ package com.tokopedia.tokocash.balance.data.mapper;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.balance.data.entity.AbTagEntity;
 import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
@@ -34,8 +37,16 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
         if (balanceTokoCashEntity != null) {
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
+            boolean firstTimePopup = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, true);
+            if (firstTimePopup) {
+                localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, false);
+            }
+
             //create an object if tokocash is not activated
             if (!balanceTokoCashEntity.getLinked()) {
+                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && firstTimePopup);
+
                 String applinkActivation = ((TokoCashRouter) context).getStringRemoteConfig(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
                 if (applinkActivation.isEmpty()) {
                     applinkActivation = balanceTokoCashEntity.getAction().getApplinks();
@@ -62,7 +73,6 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
                 balanceTokoCash.setWalletType(balanceTokoCashEntity.getWalletType());
                 balanceTokoCash.setHelpApplink(balanceTokoCashEntity.getHelpApplink());
                 balanceTokoCash.setTncApplink(balanceTokoCashEntity.getTncApplink());
-                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement());
                 return balanceTokoCash;
             }
 

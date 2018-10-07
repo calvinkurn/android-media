@@ -28,5 +28,8 @@ public class TokocashHomeSubscriber extends Subscriber<HomeHeaderWalletAction> {
     @Override
     public void onNext(HomeHeaderWalletAction homeHeaderWalletAction) {
         presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
+        if (homeHeaderWalletAction.isShowAnnouncement()) {
+            presenter.showPopUpIntroWalletOvo(homeHeaderWalletAction.getAppLinkActionButton());
+        }
     }
 }

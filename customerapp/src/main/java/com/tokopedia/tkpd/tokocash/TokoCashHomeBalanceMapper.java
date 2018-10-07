@@ -30,6 +30,7 @@ public class TokoCashHomeBalanceMapper implements Func1<BalanceTokoCash, HomeHea
         data.setCashBalance(balanceTokoCash.getCashBalance());
         data.setRawCashBalance(balanceTokoCash.getRawCashBalance());
         data.setWalletType(balanceTokoCash.getWalletType());
+        data.setShowAnnouncement(balanceTokoCash.isShowAnnouncement());
         return data;
     }
 }

@@ -328,7 +328,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void openWebView(String url) {
-        Intent intent = ((TokoCashRouter) getActivity()).getWebviewActivityWithIntent(getActivityContext(), url);
+        Intent intent = ((TokoCashRouter) getActivity().getApplication()).getWebviewActivityWithIntent(getActivityContext(), url);
         startActivity(intent);
     }
 

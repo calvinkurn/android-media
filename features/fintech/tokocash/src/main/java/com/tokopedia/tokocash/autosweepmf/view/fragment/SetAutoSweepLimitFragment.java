@@ -204,7 +204,7 @@ public class SetAutoSweepLimitFragment extends BaseDaggerFragment implements Set
 
     @Override
     public Long getLongRemoteConfig(String key) {
-        return ((TokoCashRouter) getActivity()).getLongConfig(key);
+        return ((TokoCashRouter) getActivity().getApplication()).getLongConfig(key);
     }
 
     @Override
