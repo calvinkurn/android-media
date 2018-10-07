@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -38,10 +40,13 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
+    private static final Integer SHOW_SUGGESTION_LENGTH = 1;
 
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
     private PrefixEditText usernameInput;
+    private CardView suggestionCard;
+    private RecyclerView suggestionRv;
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
     private View loadingView;
@@ -68,6 +73,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
         avatar = view.findViewById(R.id.avatar);
         usernameWrapper = view.findViewById(R.id.usernameWrapper);
         usernameInput = view.findViewById(R.id.usernameInput);
+        suggestionCard = view.findViewById(R.id.suggestionCard);
+        suggestionRv = view.findViewById(R.id.suggestionRv);
         termsAndCondition = view.findViewById(R.id.termsAndCondition);
         saveBtn = view.findViewById(R.id.saveBtn);
         loadingView = view.findViewById(R.id.loadingView);
@@ -78,9 +85,15 @@ public class UsernameInputFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        initVar();
+        initVar(savedInstanceState);
         initView();
         presenter.getUsernameSuggestion();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(UsernameInputActivity.PARAM_PRODUCT_ID, productId);
     }
 
     @Override
@@ -105,7 +118,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetUsernameSuggestion(List<String> suggestions) {
-
+        adapter.setList(suggestions);
+        suggestionCard.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -113,18 +127,39 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     }
 
-    private void initVar() {
-        userSession = new UserSession(getContext());
+    private void initVar(Bundle savedInstanceState) {
+        if (userSession == null) {
+            userSession = new UserSession(getContext());
+        }
+        if (adapter == null) {
+            adapter = new SuggestionAdapter(this);
+        }
 
-        if (getArguments() != null) {
+        if (savedInstanceState != null) {
+            productId = savedInstanceState.getString(UsernameInputActivity.PARAM_PRODUCT_ID, "");
+        } else if (getArguments() != null) {
             productId = getArguments().getString(UsernameInputActivity.PARAM_PRODUCT_ID, "");
         }
     }
 
     private void initView() {
         ImageHandler.loadImageCircle2(getContext(), avatar, userSession.getProfilePicture());
+        usernameInput.addTextChangedListener(getUsernameTextWatcher());
+        suggestionRv.setAdapter(adapter);
+        saveBtn.setOnClickListener(getSaveBtnOnClickListener());
+        disableSaveBtn();
+    }
+
+    private void enableSaveBtn() {
+        saveBtn.setEnabled(true);
+    }
+
+    private void disableSaveBtn() {
         saveBtn.setEnabled(false);
-        usernameInput.addTextChangedListener(new AfterTextWatcher() {
+    }
+
+    private AfterTextWatcher getUsernameTextWatcher() {
+        return new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 String byMeUsername = usernameInput.getTextWithoutPrefix();
@@ -145,9 +180,18 @@ public class UsernameInputFragment extends BaseDaggerFragment
                     usernameWrapper.setError(null);
                     enableSaveBtn();
                 }
+
+                if (byMeUsername.length() < SHOW_SUGGESTION_LENGTH) {
+                    suggestionCard.setVisibility(View.VISIBLE);
+                } else {
+                    suggestionCard.setVisibility(View.GONE);
+                }
             }
-        });
-        saveBtn.setOnClickListener(view -> {
+        };
+    }
+
+    private View.OnClickListener getSaveBtnOnClickListener() {
+        return view -> {
             Intent intent;
             if (!TextUtils.isEmpty(productId)) {
                 intent = RecommendProductActivity.createIntent(
@@ -161,14 +205,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
                 );
             }
             startActivity(intent);
-        });
-    }
-
-    private void enableSaveBtn() {
-        saveBtn.setEnabled(true);
-    }
-
-    private void disableSaveBtn() {
-        saveBtn.setEnabled(false);
+        };
     }
 }

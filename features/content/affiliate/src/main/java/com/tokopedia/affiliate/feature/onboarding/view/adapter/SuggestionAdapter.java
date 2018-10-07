@@ -10,14 +10,20 @@ import android.widget.TextView;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by milhamj on 10/4/18.
  */
 public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.ViewHolder> {
-    private List<String> list;
-    private UsernameInputContract.View listener;
+    private final List<String> list;
+    private final UsernameInputContract.View listener;
+
+    public SuggestionAdapter(UsernameInputContract.View listener) {
+        this.list = new ArrayList<>();
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
@@ -38,6 +44,12 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.Vi
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void setList(List<String> suggestions) {
+        this.list.clear();
+        this.list.addAll(suggestions);
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
