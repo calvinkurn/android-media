@@ -233,6 +233,12 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         listener = (OvoFragmentListener) context;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
+    }
+
     interface OvoFragmentListener {
         void setTitleHeader(String titleHeader);
     }

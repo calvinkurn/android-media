@@ -1,6 +1,8 @@
 package com.tokopedia.tokocash.ovoactivation.view;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.common.WalletProvider;
@@ -22,14 +24,16 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
     private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
     private WalletProvider walletProvider;
     private CompositeSubscription compositeSubscription;
+    private CacheManager cacheManager;
 
     @Inject
     public IntroOvoPresenter(CheckNumberOvoUseCase checkNumberOvoUseCase,
                              GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
-                             WalletProvider walletProvider) {
+                             WalletProvider walletProvider, CacheManager cacheManager) {
         this.checkNumberOvoUseCase = checkNumberOvoUseCase;
         this.walletProvider = walletProvider;
         this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
+        this.cacheManager = cacheManager;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -59,6 +63,8 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
                             @Override
                             public void onNext(CheckPhoneOvoModel checkPhoneOvoModel) {
                                 getView().hideProgressBar();
+                                cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+
                                 if (!checkPhoneOvoModel.isAllow()) {
                                     getView().showDialogErrorPhoneNumber(checkPhoneOvoModel.getPhoneActionModel());
                                 } else {

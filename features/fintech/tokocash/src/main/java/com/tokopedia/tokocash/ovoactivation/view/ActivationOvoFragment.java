@@ -36,9 +36,6 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
     private String phoneNumber;
     private String changeMsisdnApplink;
 
-    @Inject
-    CacheManager cacheManager;
-
     public static ActivationOvoFragment newInstance(String registeredApplink,
                                                     String phoneNumber, String changeMsisdnApplink) {
         ActivationOvoFragment fragment = new ActivationOvoFragment();
@@ -52,9 +49,6 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        TokoCashComponent tokoCashComponent =
-                TokoCashComponentInstance.getComponent(getActivity().getApplication());
-        tokoCashComponent.inject(this);
     }
 
     @Override
@@ -84,7 +78,6 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
         activationNewAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
                 directPageWithApplink(registeredApplink);
             }
         });
