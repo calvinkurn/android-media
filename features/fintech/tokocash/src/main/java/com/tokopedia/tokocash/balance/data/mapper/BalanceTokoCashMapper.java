@@ -38,14 +38,15 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
-            boolean firstTimePopup = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, true);
-            if (firstTimePopup) {
-                localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, false);
+            int totalPopUp = localCacheHandler.getInt(CacheUtil.FIRST_TIME_POPUP, 1);
+            if (totalPopUp == 1) {
+                localCacheHandler.putInt(CacheUtil.FIRST_TIME_POPUP, 0);
+                localCacheHandler.applyEditor();
             }
 
             //create an object if tokocash is not activated
             if (!balanceTokoCashEntity.getLinked()) {
-                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && firstTimePopup);
+                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && totalPopUp > 0);
 
                 String applinkActivation = ((TokoCashRouter) context).getStringRemoteConfig(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
                 if (applinkActivation.isEmpty()) {
