@@ -1,9 +1,7 @@
 package com.tokopedia.changephonenumber.di.warning;
 
 import com.tokopedia.changephonenumber.di.ChangePhoneNumberComponent;
-import com.tokopedia.changephonenumber.di.ChangePhoneNumberQualifier;
 import com.tokopedia.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
-import com.tokopedia.user.session.UserSession;
 
 import dagger.Component;
 
@@ -15,7 +13,4 @@ import dagger.Component;
 @Component(modules = ChangePhoneNumberWarningModule.class, dependencies = ChangePhoneNumberComponent.class)
 public interface ChangePhoneNumberWarningComponent {
     void inject(ChangePhoneNumberWarningFragment fragment);
-
-    @ChangePhoneNumberQualifier
-    UserSession provideUserSession();
 }

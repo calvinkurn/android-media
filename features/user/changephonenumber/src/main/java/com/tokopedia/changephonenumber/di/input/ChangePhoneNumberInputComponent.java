@@ -1,9 +1,7 @@
 package com.tokopedia.changephonenumber.di.input;
 
 import com.tokopedia.changephonenumber.di.ChangePhoneNumberComponent;
-import com.tokopedia.changephonenumber.di.ChangePhoneNumberQualifier;
 import com.tokopedia.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
-import com.tokopedia.user.session.UserSession;
 
 import dagger.Component;
 
@@ -15,8 +13,4 @@ import dagger.Component;
 @Component(modules = ChangePhoneNumberInputModule.class, dependencies = ChangePhoneNumberComponent.class)
 public interface ChangePhoneNumberInputComponent {
     void inject(ChangePhoneNumberInputFragment fragment);
-
-    @ChangePhoneNumberQualifier
-    UserSession provideUserSession();
-
 }

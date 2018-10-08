@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.user.session.UserSession;
 
@@ -21,6 +22,8 @@ public interface ChangePhoneNumberComponent {
     UserSession provideUserSession();
 
     ChangePhoneNumberRepository provideRepository();
+
+    ChangePhoneNumberAnalytics provideAnalytics();
 
     @ApplicationContext
     Context provideContext();

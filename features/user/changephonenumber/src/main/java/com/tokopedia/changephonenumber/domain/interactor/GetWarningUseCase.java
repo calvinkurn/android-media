@@ -17,7 +17,6 @@ public class GetWarningUseCase extends UseCase<WarningViewModel> {
     private static final String PARAM_OS_TYPE = "theme";
     private static final String OS_TYPE_ANDROID = "mobile";
 
-    @Inject
     private final ChangePhoneNumberRepository changePhoneNumberRepository;
 
     @Inject

@@ -2,23 +2,26 @@ package com.tokopedia.changephonenumber.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.data.api.ChangePhoneNumberApi;
+import com.tokopedia.changephonenumber.data.interceptor.ChangePhoneNumberInterceptor;
 import com.tokopedia.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.changephonenumber.data.source.CloudValidateNumberSource;
 import com.tokopedia.changephonenumber.data.source.CloudValidateOtpStatus;
 import com.tokopedia.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -28,11 +31,14 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author by alvinatin on 25/09/18.
  */
 
+@ChangePhoneNumberScope
 @Module
 public class ChangePhoneNumberModule {
 
@@ -45,8 +51,8 @@ public class ChangePhoneNumberModule {
     @ChangePhoneNumberQualifier
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
-                                     @ChangePhoneNumberQualifier TkpdAuthInterceptor
-                                             tkpdAuthInterceptor,
+                                     @ChangePhoneNumberQualifier ChangePhoneNumberInterceptor
+                                             changePhoneNumberInterceptor,
                                      @ChangePhoneNumberQualifier OkHttpRetryPolicy retryPolicy,
                                      @ChangePhoneNumberQualifier FingerprintInterceptor
                                              fingerprintInterceptor,
@@ -56,7 +62,7 @@ public class ChangePhoneNumberModule {
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(changePhoneNumberInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(errorResponseInterceptor);
 
@@ -70,9 +76,12 @@ public class ChangePhoneNumberModule {
 
     @Provides
     @ChangePhoneNumberQualifier
-    Retrofit provideRetrofit(@ChangePhoneNumberQualifier OkHttpClient okHttpClient,
-                             Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(ChangePhoneNumberUrl.BASE_URL)
+    Retrofit provideRetrofit(@ChangePhoneNumberQualifier OkHttpClient okHttpClient) {
+        return new Retrofit.Builder().baseUrl(ChangePhoneNumberUrl.BASE_URL)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
     }
@@ -142,12 +151,12 @@ public class ChangePhoneNumberModule {
 
     @Provides
     @ChangePhoneNumberQualifier
-    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                          @ChangePhoneNumberQualifier
+    public ChangePhoneNumberInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                                   @ChangePhoneNumberQualifier
                                                                   NetworkRouter networkRouter,
-                                                          @ChangePhoneNumberQualifier UserSession
+                                                                   @ChangePhoneNumberQualifier UserSession
                                                                       userSession) {
-        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+        return new ChangePhoneNumberInterceptor(context, networkRouter, userSession);
     }
 
 //    @Provides

@@ -60,6 +60,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Inject
     @ChangePhoneNumberQualifier
     UserSession userSession;
+    @Inject
     ChangePhoneNumberAnalytics changePhoneNumberAnalytics;
     private View tokopediaBalanceLayout;
     private View tokocashLayout;

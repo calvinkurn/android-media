@@ -16,8 +16,9 @@ import dagger.Provides;
 public class ChangePhoneNumberWarningModule {
     @ChangePhoneNumberWarningScope
     @Provides
-    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase,
-                                                                                                ValidateOtpStatusUseCase validateOtpStatusUseCase){
+    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter
+            (GetWarningUseCase getWarningUseCase,
+             ValidateOtpStatusUseCase validateOtpStatusUseCase) {
         return new ChangePhoneNumberWarningPresenter(getWarningUseCase, validateOtpStatusUseCase);
     }
 }

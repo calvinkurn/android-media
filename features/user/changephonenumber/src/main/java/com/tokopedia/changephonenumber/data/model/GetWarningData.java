@@ -1,5 +1,6 @@
 package com.tokopedia.changephonenumber.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,20 +11,28 @@ import java.util.List;
 
 public class GetWarningData {
     @SerializedName("is_success")
+    @Expose
     private int isSuccess;
     @SerializedName("warning")
+    @Expose
     private List<String> warning;
     @SerializedName("saldo")
+    @Expose
     private String saldo;
     @SerializedName("tokocash")
+    @Expose
     private String tokocash;
     @SerializedName("saldo_number")
+    @Expose
     private long saldoNumber;
     @SerializedName("tokocash_number")
+    @Expose
     private long tokocashNumber;
     @SerializedName("action")
+    @Expose
     private String action;
     @SerializedName("have_bank_acct")
+    @Expose
     private boolean hasBankAccount;
 
     public int getIsSuccess() {

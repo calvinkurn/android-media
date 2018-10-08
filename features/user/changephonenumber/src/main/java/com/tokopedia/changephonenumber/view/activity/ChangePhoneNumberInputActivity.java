@@ -2,6 +2,7 @@ package com.tokopedia.changephonenumber.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -27,6 +28,20 @@ public class ChangePhoneNumberInputActivity extends BaseSimpleActivity
         intent.putExtra(PARAM_WARNING_LIST, warningList);
         intent.putExtra(PARAM_EMAIL, email);
         return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getExtras();
+        super.onCreate(savedInstanceState);
+    }
+
+    private void getExtras(){
+        if (getIntent().getExtras() != null) {
+            phoneNumber = getIntent().getExtras().getString(PARAM_PHONE_NUMBER);
+            warningList = getIntent().getExtras().getStringArrayList(PARAM_WARNING_LIST);
+            email = getIntent().getExtras().getString(PARAM_EMAIL);
+        }
     }
 
     @Override

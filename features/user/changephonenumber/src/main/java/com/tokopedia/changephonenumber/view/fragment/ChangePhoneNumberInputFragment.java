@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -57,7 +58,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @ChangePhoneNumberQualifier
     UserSession userSession;
 
-    private View progressDialog;
+    private RelativeLayout progressDialog;
     private TextView oldPhoneNumber;
     private EditText newPhoneNumber;
     private TextView nextButton;
@@ -66,7 +67,9 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private String email;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
-    private ChangePhoneNumberAnalytics changePhoneNumberAnalytics;
+
+    @Inject
+    ChangePhoneNumberAnalytics changePhoneNumberAnalytics;
 
     public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email,
                                                              ArrayList<String> warningList) {
@@ -84,7 +87,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input,
+        View parentView = inflater.inflate(R.layout.fragment_input_phone_number,
                 container, false);
         presenter.attachView(this);
         initVar();
@@ -105,14 +108,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
         email = getArguments().getString(PARAM_EMAIL);
-        changePhoneNumberAnalytics = new ChangePhoneNumberAnalytics(getContext());
     }
 
     private void initView(View view) {
         oldPhoneNumber = view.findViewById(R.id.old_phone_number_value);
         newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
         nextButton = view.findViewById(R.id.next_button);
-        progressDialog = view.findViewById(R.id.progress_view);
+        progressDialog = (RelativeLayout) view.findViewById(R.id.loading_view);
 
         oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
     }

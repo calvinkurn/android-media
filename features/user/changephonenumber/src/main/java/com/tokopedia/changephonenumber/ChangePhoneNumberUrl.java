@@ -6,7 +6,7 @@ package com.tokopedia.changephonenumber;
 
 public class ChangePhoneNumberUrl {
 
-    public static final String BASE_URL = "https://accounts.tokopedia.com/";
+    public static String BASE_URL = "https://accounts.tokopedia.com/";
 
     public class MSISDN {
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
