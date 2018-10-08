@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.explore.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
 
 import dagger.Module;
@@ -17,6 +18,6 @@ public class ExploreModule {
     @ExploreScope
     @Provides
     ExplorePresenter provideExplorePresenter(@ApplicationContext Context context) {
-        return new ExplorePresenter();
+        return new ExplorePresenter(new ExploreUseCase(context));
     }
 }
