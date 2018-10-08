@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.broadcast.message.R
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessagePreviewComponent
@@ -36,6 +37,9 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         arguments?.run {
             getParcelable(PARAM_EXTRA_MODEL_MUTATION) as? BlastMessageMutation
         }
+    }
+    private val router: BroadcastMessageRouter? by lazy {
+        activity?.application as? BroadcastMessageRouter
     }
 
     companion object {
@@ -91,6 +95,11 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
     }
 
     private fun submitMessage() {
+        router?.run {
+            sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, null)
+        }
         mutationModel?.let {presenter.sendBlastMessage(it)}
     }
 

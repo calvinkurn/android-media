@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSeller
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageTypeFactory
 import com.tokopedia.broadcast.message.R
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
@@ -34,7 +35,6 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_broadcast_message_list.*
-import java.util.*
 import javax.inject.Inject
 
 class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, BroadcastMessageTypeFactory>(),
@@ -120,7 +120,15 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     private fun gotoCreateBroadcast() {
-        context?.let { startActivityForResult(BroadcastMessageCreateActivity.createIntent(it),
+        activity?.application?.let {
+            if (it is BroadcastMessageRouter){
+                it.sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,null)
+            }
+        }
+        context?.let {
+            startActivityForResult(BroadcastMessageCreateActivity.createIntent(it),
                 REQUEST_ADD_BROADCAST_MESSAGE) }
     }
 

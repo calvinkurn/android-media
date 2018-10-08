@@ -10,4 +10,5 @@ interface BroadcastMessageRouter {
     fun getBroadcastMessageAttachProductIntent(context: Context, shopId: String, shopName: String,
                                  isSeller: Boolean, selectedIds: List<Int>,
                                  selectedHashProducts: ArrayList<HashMap<String, String>>): Intent
+    fun sendEventTracking(event: String, category: String, action: String?, label: String?)
 }

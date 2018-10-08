@@ -4,6 +4,7 @@ object BroadcastMessageConstant{
     const val PARAM_NEED_REFRESH = "is_need_refresh"
 
     const val VALUE_GTM_EVENT_CATEGORY = "inbox-chat"
+    const val VALUE_GTM_EVENT_ACTION_BM_CLICK = "click broadcast button"
     const val VALUE_GTM_EVENT_ACTION_CREATE_CLICK = "broadcast room - click create message"
     const val VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD = "broadcast room - click image upload"
     const val VALUE_GTM_EVENT_ACTION_PICK_IMG = "broadcast room - click select image"
