@@ -256,6 +256,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private void registerUsername() {
-        presenter.registerUsername(usernameInput.getText().toString());
+        presenter.registerUsername(usernameInput.getTextWithoutPrefix());
     }
 }
