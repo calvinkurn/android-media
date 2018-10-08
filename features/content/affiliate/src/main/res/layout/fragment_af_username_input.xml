@@ -50,7 +50,6 @@
             android:layout_marginTop="@dimen/dp_16"
             android:hint="@string/af_type_username"
             android:textColorHint="@color/black_56"
-            app:helper="Harus 3 karakter"
             app:layout_constraintTop_toBottomOf="@id/title">
 
             <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
