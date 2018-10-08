@@ -22,9 +22,11 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -57,6 +59,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -445,6 +448,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             startActivityForResult(
                     digitalModuleRouter.instanceIntentDigitalCategoryList(),
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+            );
+        }
+
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            analyticTracker.sendEventTracking(
+                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                    DigitalEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
+                    DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
             );
         }
     }
@@ -966,7 +979,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         }
     };
-
 
     @Override
     public void onNotifyBadgeNotification(int number) {
