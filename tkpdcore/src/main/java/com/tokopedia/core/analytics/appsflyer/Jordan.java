@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
+import com.tokopedia.core.app.TkpdCoreRouter;
 
 import java.util.Map;
 
@@ -87,6 +88,7 @@ public class Jordan {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
             appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
+            ((TkpdCoreRouter)(context.getApplicationContext())).onAppsFlyerInit();
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
