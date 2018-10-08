@@ -372,6 +372,7 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.di.DaggerTrainComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -2344,9 +2345,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
+                Intent intent = Intent.createChooser(share, getString(R.string.share_link));
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                context.startActivity(intent);
             }
         });
     }
@@ -2478,13 +2480,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventClickUseVoucherCode(voucherCode);
     }
 
     @Override
     public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventVoucherError(errorMessage);
     }
 
