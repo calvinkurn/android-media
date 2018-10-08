@@ -2,6 +2,7 @@ package com.tokopedia.profile.domain.usecase
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.profile.data.pojo.profileheader.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
@@ -97,12 +98,14 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
         return Func1 { graphqlResponse ->
             val data: ProfileHeaderData = graphqlResponse.getData(ProfileHeaderData::class.java)
             val profile: Profile = data.bymeProfileHeader.profile
+            val quota: AffiliatePostQuota = data.affiliatePostQuota
             ProfileHeaderViewModel(
                     profile.name,
                     profile.avatar,
                     profile.totalFollower.formatted,
                     profile.totalFollowing.formatted,
-                    Integer.valueOf(userId),
+                    quota.formatted,
+                    userId,
                     profile.isKol,
                     profile.isFollowed,
                     userId.toString() == userSession.userId
