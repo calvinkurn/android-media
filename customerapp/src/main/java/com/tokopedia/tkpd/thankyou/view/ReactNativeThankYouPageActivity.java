@@ -176,7 +176,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     }
 
     private void resetWalletCache() {
-        if (isDigital() && getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
+        if (getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplicationContext()).getGlobalCacheManager().delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
         }
     }
