@@ -198,6 +198,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.io.IOException;
 import java.util.ArrayList;

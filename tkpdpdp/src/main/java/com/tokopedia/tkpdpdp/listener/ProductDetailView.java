@@ -289,8 +289,6 @@ public interface ProductDetailView extends ViewListener {
 
     void showSuccessWishlistSnackBar();
 
-    void showPromoWidget(PromoAttributes promoAttributes);
-
     void onPromoWidgetCopied();
 
     void showProductCampaign();
@@ -318,6 +316,8 @@ public interface ProductDetailView extends ViewListener {
     void onPromoAdsClicked();
 
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
+
+    void loadPromo();
 
     boolean isSellerApp();
 
