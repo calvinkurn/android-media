@@ -111,7 +111,7 @@ public class TopAdsCarouselView extends LinearLayout implements AdsView, LocalAd
     public void displayAds(List<Item> list, int position) {
         adapter.setList(list);
         if (adsListener != null && list.size() > 0) {
-            adsListener.onTopAdsLoaded();
+            adsListener.onTopAdsLoaded(list);
         }
     }
 
