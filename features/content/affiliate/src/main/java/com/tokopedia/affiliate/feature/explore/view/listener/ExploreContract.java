@@ -31,6 +31,8 @@ public interface ExploreContract {
 
         void onBymeClicked(ExploreViewModel model);
 
+        void onProductClicked(ExploreViewModel model);
+
         void dropKeyboard();
 
     }

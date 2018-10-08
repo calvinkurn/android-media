@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +24,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private ExploreContract.View mainView;
 
     private ImageView ivImage;
-    private FrameLayout btnByme;
+    private RelativeLayout btnByme;
     private TextView tvTitle, tvCommission;
     private RelativeLayout layout;
 
@@ -33,7 +32,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
         super(itemView);
         this.mainView = mainView;
         ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
-        btnByme = (FrameLayout) itemView.findViewById(R.id.iv_byme);
+        btnByme = (RelativeLayout) itemView.findViewById(R.id.iv_byme);
         tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         layout = (RelativeLayout) itemView.findViewById(R.id.main_view);
         tvCommission = (TextView) itemView.findViewById(R.id.tv_commission);
@@ -57,6 +56,10 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private void initViewListener(ExploreViewModel element) {
         btnByme.setOnClickListener(view -> {
             mainView.onBymeClicked(element);
+        });
+
+        layout.setOnClickListener(view -> {
+            mainView.onProductClicked(element);
         });
     }
 

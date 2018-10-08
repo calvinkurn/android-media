@@ -1,0 +1,30 @@
+query GetDashboard($query: String, $cursor: String) {
+  explore(query:query, cursor:$cursor) {
+    products {
+      id
+      image
+      name
+      isActive
+      totalSold
+      totalClick
+      commission
+    }
+    pagination{
+      nextCursor
+    }
+  }
+  affiliateStats{
+    totalCommission
+    productClick
+    profileView
+    productSold
+  }
+  affiliateCheck{
+    isAffiliate
+    status
+  }
+  affiliatePostQuota{
+    formatted
+    number
+  }
+}

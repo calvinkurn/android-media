@@ -15,12 +15,16 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
     private String imageUrl;
     private String title;
     private String commissionString;
+    private String productId;
+    private String productLink;
 
-    public ExploreViewModel(String id, String imageUrl, String title, String commissionString) {
+    public ExploreViewModel(String id, String imageUrl, String title, String commissionString, String productId, String productLink) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
         this.commissionString = commissionString;
+        this.productId = productId;
+        this.productLink = productLink;
     }
 
     public String getId() {
@@ -71,6 +75,8 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
         dest.writeString(this.imageUrl);
         dest.writeString(this.title);
         dest.writeString(this.commissionString);
+        dest.writeString(this.productId);
+        dest.writeString(this.productLink);
     }
 
     protected ExploreViewModel(Parcel in) {
@@ -78,6 +84,8 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
         this.imageUrl = in.readString();
         this.title = in.readString();
         this.commissionString = in.readString();
+        this.productId = in.readString();
+        this.productLink = in.readString();
     }
 
     public static final Creator<ExploreViewModel> CREATOR = new Creator<ExploreViewModel>() {

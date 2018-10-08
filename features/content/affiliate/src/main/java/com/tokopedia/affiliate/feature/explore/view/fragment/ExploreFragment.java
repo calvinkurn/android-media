@@ -192,6 +192,11 @@ public class ExploreFragment
     }
 
     @Override
+    public void onProductClicked(ExploreViewModel model) {
+
+    }
+
+    @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
@@ -259,46 +264,62 @@ public class ExploreFragment
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
-                "Rp. 10.000"));
+                "Rp. 10.000",
+                "1",
+                "1"));
 
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
-                "Rp. 12.000"));
+                "Rp. 12.000",
+                "1",
+                "1"));
         itemList.add(new ExploreViewModel(
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
-                "Rp. 10.000"));
+                "Rp. 10.000",
+                "1",
+                "1"));
 
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
-                "Rp. 12.000"));
+                "Rp. 12.000",
+                "1",
+                "1"));
         itemList.add(new ExploreViewModel(
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
-                "Rp. 10.000"));
+                "Rp. 10.000",
+                "1",
+                "1"));
 
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
-                "Rp. 12.000"));
+                "Rp. 12.000",
+                "1",
+                "1"));
         itemList.add(new ExploreViewModel(
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
-                "Rp. 10.000"));
+                "Rp. 10.000",
+                "1",
+                "1"));
 
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
-                "Rp. 12.000"));
+                "Rp. 12.000",
+                "1",
+                "1"));
 
         onSuccessGetFirstData(itemList,"");
     }

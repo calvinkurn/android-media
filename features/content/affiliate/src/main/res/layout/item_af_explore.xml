@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/dp_8">
+    android:layout_margin="@dimen/dp_8">
 
     <com.tokopedia.design.image.SquareImageView
         android:id="@+id/iv_image"
@@ -16,20 +16,27 @@
         tools:background="@drawable/ic_byme"
         android:layout_alignParentTop="true"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_alignParentRight="true"
         android:id="@+id/iv_byme"
         android:background="@drawable/bg_byme"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32">
+        <View
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/white" />
 
         <ImageView
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:src="@drawable/ic_byme"/>
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_title"
