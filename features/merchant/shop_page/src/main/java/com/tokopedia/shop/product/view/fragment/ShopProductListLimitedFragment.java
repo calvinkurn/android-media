@@ -293,7 +293,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
             shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo));
 
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
 
             shopProductLimitedListPresenter.getProductFeatureListWithAttributes(
                     shopInfo.getInfo().getShopId(),
@@ -890,7 +890,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         }
                     }).show();
             merchantVoucherListPresenter.clearCache();
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
         }
     }
 
@@ -935,8 +935,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         if (needLoadVoucher) {
             merchantVoucherListPresenter.clearCache();
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
             needLoadVoucher = false;
+        }
+    }
+
+    private void loadVoucherList(){
+        if (shopInfo!= null) {
+            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
         }
     }
 
