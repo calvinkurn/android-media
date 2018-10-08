@@ -301,6 +301,7 @@ dependencies {
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
+    implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.withdraw)

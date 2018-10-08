@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sp_14">14sp</dimen>
+    <dimen name="space_nob_s">30dp</dimen>
+    <dimen name="margin_side_button_nob">40dp</dimen>
+    <dimen name="margin_bottom_button_nob">8dp</dimen>
+    <dimen name="padding_button_nob">16dp</dimen>
+</resources>

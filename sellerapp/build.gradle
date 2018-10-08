@@ -222,6 +222,8 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.features.onboarding)
+
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
