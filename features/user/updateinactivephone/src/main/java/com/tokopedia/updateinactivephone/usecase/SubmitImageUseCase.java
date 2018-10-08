@@ -4,11 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.graphql.data.repository.GraphqlRepositoryImpl;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
@@ -61,6 +61,7 @@ public class SubmitImageUseCase {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-        return new GraphqlRepositoryImpl().getResponse(graphqlRequestList, graphqlCacheStrategy);
+        return ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy);
     }
 }
