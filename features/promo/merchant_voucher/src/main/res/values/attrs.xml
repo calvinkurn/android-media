@@ -12,6 +12,6 @@
     </declare-styleable>
 
     <declare-styleable name="MerchantVoucherListWidget">
-        <attr name="titleString" format="string" />
+        <attr name="mvlwTitleString" format="string" />
     </declare-styleable>
 </resources>

@@ -14,7 +14,7 @@
         android:id="@+id/merchantVoucherListWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:titleString="@string/merchant_voucher"
+        app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
         android:clipChildren="false"/>
 

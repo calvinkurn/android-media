@@ -95,7 +95,7 @@ public class MerchantVoucherListWidget extends FrameLayout
     private void applyAttrs(Context context, AttributeSet attributeSet) {
         if (attributeSet != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.MerchantVoucherListWidget);
-            titleString = typedArray.getString(R.styleable.MerchantVoucherListWidget_titleString);
+            titleString = typedArray.getString(R.styleable.MerchantVoucherListWidget_mvlwTitleString);
             typedArray.recycle();
         }
     }
