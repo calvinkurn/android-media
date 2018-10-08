@@ -369,6 +369,22 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     @Override
     public void onDetailClicked(TrainScheduleViewModel trainScheduleViewModel, int adapterPosition) {
+        Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
+                trainScheduleViewModel.getIdSchedule(),
+                trainSearchPassDataViewModel.getAdult(),
+                trainSearchPassDataViewModel.getInfant(),
+                trainScheduleViewModel.getAvailableSeat() > 0);
+        startActivityForResult(intent, REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL);
+    }
+
+    @Override
+    public void onSheduleClicked(TrainScheduleViewModel trainScheduleViewModel) {
+        if (trainScheduleViewModel.getAvailableSeat() > 0) {
+            selectSchedule(trainScheduleViewModel);
+        }
+    }
+
+    private void onScheduleClickAnalytics(TrainScheduleViewModel trainScheduleViewModel) {
         String specialTagging = "";
         if (trainScheduleViewModel.isCheapestFlag()) {
             specialTagging = getString(R.string.train_search_cheapest_tagging);
@@ -384,20 +400,6 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
                 trainScheduleViewModel.getTrainName(),
                 specialTagging
         );
-
-        Intent intent = TrainScheduleDetailActivity.createIntent(getActivity(),
-                trainScheduleViewModel.getIdSchedule(),
-                trainSearchPassDataViewModel.getAdult(),
-                trainSearchPassDataViewModel.getInfant(),
-                trainScheduleViewModel.getAvailableSeat() > 0);
-        startActivityForResult(intent, REQUEST_CODE_OPEN_TRAIN_SCHEDULE_DETAIL);
-    }
-
-    @Override
-    public void onSheduleClicked(TrainScheduleViewModel trainScheduleViewModel) {
-        if (trainScheduleViewModel.getAvailableSeat() > 0) {
-            selectSchedule(trainScheduleViewModel);
-        }
     }
 
     @Override
@@ -419,6 +421,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
             trainScheduleBookingPassData.setDepartureScheduleId(trainScheduleViewModel.getIdSchedule());
             startActivityForResult(TrainBookingPassengerActivity.callingIntent(getActivity(), trainScheduleBookingPassData), NEXT_STEP_REQUEST_CODE);
         }
+        onScheduleClickAnalytics(trainScheduleViewModel);
     }
 
     @Override
