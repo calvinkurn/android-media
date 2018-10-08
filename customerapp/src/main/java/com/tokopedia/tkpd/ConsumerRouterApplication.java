@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -3064,5 +3065,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+    }
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 }
