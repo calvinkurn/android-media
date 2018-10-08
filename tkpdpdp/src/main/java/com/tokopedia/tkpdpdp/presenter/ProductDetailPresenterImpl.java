@@ -131,8 +131,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  */
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
-    private static final String PRODUCT_ID = "product_id";
-    private static final String AD_ID = "ad_id";
+    private static final String PRODUCT_ID = "{product_id}";
+    private static final String AD_ID = "{ad_id}";
 
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
