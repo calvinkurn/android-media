@@ -1,5 +1,5 @@
-query GetDashboard($query: String, $cursor: String) {
-  explore(query:query, cursor:$cursor) {
+query GetDashboard($keyword: String!, $cursor: String!, $filterKey: String!, $filterValue: String!, $sortKey: String!, $sortAsc: Boolean! ) {
+  topadsExploreAffiliateProduct(keyword:$keyword,filter:[{key:$filterKey,value:$filterValue}],nextCursor:$cursor,sort:{key:$sortKey,asc:$sortAsc}) {
     products {
       id
       image
@@ -12,19 +12,5 @@ query GetDashboard($query: String, $cursor: String) {
     pagination{
       nextCursor
     }
-  }
-  affiliateStats{
-    totalCommission
-    productClick
-    profileView
-    productSold
-  }
-  affiliateCheck{
-    isAffiliate
-    status
-  }
-  affiliatePostQuota{
-    formatted
-    number
   }
 }
