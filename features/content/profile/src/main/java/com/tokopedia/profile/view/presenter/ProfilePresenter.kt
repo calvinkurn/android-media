@@ -1,6 +1,5 @@
 package com.tokopedia.profile.view.presenter
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.profile.domain.usecase.GetProfileFirstPage
 import com.tokopedia.profile.view.listener.ProfileContract
@@ -20,11 +19,14 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
         getProfileFirstPage.unsubscribe()
     }
 
-    override fun getProfileFirstPage(userId: String) {
-        getProfileFirstPage.execute(GetProfileFirstPageSubscriber(view))
+    override fun getProfileFirstPage(userId: Int) {
+        getProfileFirstPage.execute(
+                GetProfileFirstPage.createRequestParams(userId),
+                GetProfileFirstPageSubscriber(view)
+        )
     }
 
-    override fun getProfilePost(userId: String) {
+    override fun getProfilePost(userId: Int) {
 
     }
 }

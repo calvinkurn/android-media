@@ -1,5 +1,6 @@
 package com.tokopedia.profile.domain.usecase
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
@@ -16,13 +17,16 @@ import javax.inject.Inject
  * @author by milhamj on 9/21/18.
  */
 class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetProfileHeaderUseCase,
-                                              val getProfilePostUseCase: GetProfilePostUseCase)
+                                              val getProfilePostUseCase: GetProfilePostUseCase,
+                                              val userSession: UserSession)
     : UseCase<ProfileFirstPageViewModel>() {
+
+    var userId = 0
 
     override fun createObservable(requestParams: RequestParams?)
             : Observable<ProfileFirstPageViewModel>? {
-        val userId: String = requestParams?.getString(GetProfileHeaderUseCase.PARAM_USER_ID, "")
-                ?: ""
+        userId = requestParams?.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
+                ?: 0
         return Observable.zip(
                 getHeader(userId),
                 getPost()) { header: ProfileHeaderViewModel, posts: List<ProfilePostViewModel> ->
@@ -30,7 +34,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
         }
     }
 
-    private fun getHeader(userId: String): Observable<ProfileHeaderViewModel> {
+    private fun getHeader(userId: Int): Observable<ProfileHeaderViewModel> {
         return getProfileHeaderUseCase
                 .createObservable(GetProfileHeaderUseCase.createRequestParams(userId))
                 .map(convertToHeader())
@@ -98,11 +102,19 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                     profile.avatar,
                     profile.totalFollower.formatted,
                     profile.totalFollowing.formatted,
-                    0,
+                    Integer.valueOf(userId),
                     profile.isKol,
                     profile.isFollowed,
-                    false
+                    userId.toString() == userSession.userId
             )
+        }
+    }
+
+    companion object {
+        fun createRequestParams(userId: Int): RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putInt(GetProfileHeaderUseCase.PARAM_USER_ID, userId)
+            return requestParams
         }
     }
 }

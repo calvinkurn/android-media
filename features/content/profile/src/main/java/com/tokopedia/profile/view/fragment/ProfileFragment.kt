@@ -28,7 +28,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ProfileContract.View {
 
     override lateinit var userSession: UserSession
-    private var userId: String = "0"
+    private var userId: Int = 0
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -121,7 +121,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun initVar() {
         arguments?.let {
-            userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
+            userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
         }
         userSession = UserSession(context)
     }

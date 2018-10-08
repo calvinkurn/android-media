@@ -28,8 +28,8 @@ interface ProfileContract {
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
 
-        fun getProfileFirstPage(userId: String)
+        fun getProfileFirstPage(userId: Int)
 
-        fun getProfilePost(userId: String)
+        fun getProfilePost(userId: Int)
     }
 }

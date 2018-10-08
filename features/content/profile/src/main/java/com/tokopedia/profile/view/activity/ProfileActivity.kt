@@ -41,7 +41,7 @@ class ProfileActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.PROFILE)
         @JvmStatic
         fun createIntent(context: Context?, extras: Bundle): Intent {
-            return createIntent(context, extras.getString(EXTRA_PARAM_USER_ID, ""))
+            return createIntent(context, extras.getString(EXTRA_PARAM_USER_ID, ZERO))
         }
     }
 
