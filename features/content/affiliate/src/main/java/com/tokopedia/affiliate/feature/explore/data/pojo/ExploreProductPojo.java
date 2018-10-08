@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName;
 public class ExploreProductPojo {
 
     @SerializedName("adId")
-    private int adId;
+    private String adId;
     @SerializedName("productId")
-    private int productId;
+    private String productId;
     @SerializedName("image")
     private String image;
     @SerializedName("name")
@@ -18,19 +18,19 @@ public class ExploreProductPojo {
     @SerializedName("commission")
     private String commission;
 
-    public int getAdId() {
+    public String getAdId() {
         return adId;
     }
 
-    public void setAdId(int adId) {
+    public void setAdId(String adId) {
         this.adId = adId;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

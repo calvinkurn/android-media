@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -29,31 +30,21 @@ public class ExploreUseCase extends GraphqlUseCase {
         this.context = context;
     }
 
-    public GraphqlRequest getRequest(String query,
-                                     String cursor,
-                                     String filterKey,
-                                     String filterValue,
-                                     String sortKey,
-                                     boolean sortAsc) {
+    public GraphqlRequest getRequest(ExploreParams exploreParams) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_dashboard_loadmore),
-                ExploreQuery.class, getParam(query, cursor, filterKey, filterValue, sortKey, sortAsc).getParameters());
+                ExploreQuery.class, getParam(exploreParams).getParameters());
     }
 
-    public static RequestParams getParam(String query,
-                                         String cursor,
-                                         String filterKey,
-                                         String filterValue,
-                                         String sortKey,
-                                         boolean sortAsc) {
+    public static RequestParams getParam(ExploreParams exploreParams) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_KEYWORD, query);
-        params.putString(PARAM_CURSOR, cursor);
-        params.putString(PARAM_FILTER_KEY, filterKey);
-        params.putString(PARAM_FILTER_VALUE, filterValue);
-        params.putString(PARAM_SORT_KEY, sortKey);
-        params.putBoolean(PARAM_SORT_ASC, sortAsc);
+        params.putString(PARAM_KEYWORD, exploreParams.getKeyword());
+        params.putString(PARAM_CURSOR, exploreParams.getCursor());
+        params.putString(PARAM_FILTER_KEY, exploreParams.getFilterKey());
+        params.putString(PARAM_FILTER_VALUE, exploreParams.getFilterValue());
+        params.putString(PARAM_SORT_KEY, exploreParams.getSortKey());
+        params.putBoolean(PARAM_SORT_ASC, exploreParams.isSortAsc());
         return params;
     }
 }

@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -28,6 +27,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.design.text.SearchInputView;
 
@@ -45,18 +45,16 @@ public class ExploreFragment
         SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
+
+    private static final int ITEM_COUNT = 10;
+
     private RecyclerView rvExplore;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private SearchInputView searchView;
     private ExploreAdapter adapter;
     private ImageView ivBack;
-    private ProgressBar progressBar;
-    private static final int ITEM_COUNT = 10;
-
-    private String cursor;
-    private boolean isCanLoadMore;
-    private String searchKey;
+    private ExploreParams exploreParams;
 
     @Inject
     ExplorePresenter presenter;
@@ -75,7 +73,6 @@ public class ExploreFragment
         rvExplore = (RecyclerView) view.findViewById(R.id.rv_explore);
         swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) view.findViewById(R.id.search_input_view);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
         presenter.attachView(this);
         return view;
@@ -89,8 +86,8 @@ public class ExploreFragment
     }
 
     private void initView() {
+        exploreParams = new ExploreParams();
         rvExplore.addOnScrollListener(getScrollListener());
-        resetData();
         searchView.setListener(this);
         searchView.setResetListener(this);
         searchView.getSearchTextView().setOnClickListener(v -> {
@@ -100,11 +97,6 @@ public class ExploreFragment
 //        presenter.getFirstData(searchKey);
     }
 
-    private void resetData() {
-        isCanLoadMore = true;
-        cursor = "";
-        searchKey = "";
-    }
 
     private void initListener() {
         ivBack.setOnClickListener(view -> {
@@ -130,8 +122,8 @@ public class ExploreFragment
 
     @Override
     public void onRefresh() {
-        resetData();
-        presenter.getFirstData(searchKey, true);
+        exploreParams.setFirstData();
+        presenter.getFirstData(exploreParams, true);
     }
 
     private RecyclerView.OnScrollListener getScrollListener() {
@@ -141,12 +133,12 @@ public class ExploreFragment
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
-                if (isCanLoadMore
-                        && !TextUtils.isEmpty(cursor)
+                if (exploreParams.isCanLoadMore()
+                        && !TextUtils.isEmpty(exploreParams.getCursor())
                         && totalItemCount <= lastVisibleItemPos + ITEM_COUNT){
-                    isCanLoadMore = false;
+                    exploreParams.setCanLoadMore(false);
                     adapter.addElement(new LoadingMoreModel());
-                    presenter.loadMoreData(cursor, searchKey);
+                    presenter.loadMoreData(exploreParams);
                 }
             }
         };
@@ -154,9 +146,8 @@ public class ExploreFragment
 
     @Override
     public void onSearchSubmitted(String text) {
-        resetData();
-        searchKey = text;
-        presenter.getFirstData(text, false);
+        exploreParams.setSearchParam(text);
+        presenter.getFirstData(exploreParams, false);
     }
 
     @Override
@@ -166,8 +157,8 @@ public class ExploreFragment
 
     @Override
     public void onSearchReset() {
-        resetData();
-        presenter.getFirstData(searchKey, true);
+        exploreParams.setSearchParam("");
+        presenter.getFirstData(exploreParams, true);
     }
 
     @Override
@@ -203,12 +194,10 @@ public class ExploreFragment
             layoutManager = new GridLayoutManager(getActivity(), 1);
             itemList = new ArrayList<>();
             itemList.add(new EmptyExploreViewModel());
-            isCanLoadMore = false;
-            this.cursor = "";
+            exploreParams.disableLoadMore();
         } else {
             layoutManager = new GridLayoutManager(getActivity(), 2);
-            isCanLoadMore = true;
-            this.cursor = cursor;
+            exploreParams.setCursorForLoadMore(cursor);
         }
         rvExplore.setLayoutManager(layoutManager);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
@@ -233,11 +222,9 @@ public class ExploreFragment
         adapter.addElement(itemList);
         adapter.notifyDataSetChanged();
         if (TextUtils.isEmpty(cursor)) {
-            isCanLoadMore = false;
-            this.cursor = "";
+            exploreParams.disableLoadMore();
         } else {
-            isCanLoadMore = true;
-            this.cursor = cursor;
+            exploreParams.setCursorForLoadMore(cursor);
         }
     }
 
@@ -247,7 +234,7 @@ public class ExploreFragment
                 getActivity(),
                 error,
                 () -> {
-                    presenter.loadMoreData(cursor, searchKey);
+                    presenter.loadMoreData(exploreParams);
                 });
     }
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public interface ExploreContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getFirstData(String searchKey, boolean isPullToRefresh);
+        void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh);
 
-        void loadMoreData(String cursor, String searchKey);
+        void loadMoreData(ExploreParams exploreParams);
     }
 }
