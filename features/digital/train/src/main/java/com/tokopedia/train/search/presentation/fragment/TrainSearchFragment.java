@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainFlowUtil;

@@ -113,7 +113,7 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 trainScheduleViewModel.isFastestFlag(),
                 trainScheduleViewModel.isCheapestFlag());
         trainNameTv.setText(String.format("%s %s", trainScheduleViewModel.getTrainName(), trainScheduleViewModel.getTrainNumber()));
-        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getClassTrain()));
+        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getSubclass()));
         originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()), trainScheduleViewModel.getOrigin()));
         destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
