@@ -41,6 +41,8 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.CartConstant;
@@ -75,6 +77,10 @@ import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
+import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GallerySelectedFragment;
+import com.tokopedia.core.gallery.GalleryType;
+import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -133,6 +139,8 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -404,6 +412,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
@@ -475,6 +484,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         WithdrawRouter,
         NotifCenterRouter,
         EventModuleRouter,
+        ChallengesModuleRouter,
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
@@ -991,6 +1001,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
+    }
+
+    @Override
+    public Intent getGalleryVideoIntent(Context activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofVideoOnly());
+    }
+
+    @Override
+    public Intent getGalleryVideoImageIntent(Context activity) {
+        return GalleryActivity.createIntent(activity, GalleryType.ofAll());
     }
 
     @Override
@@ -2905,6 +2925,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
+        new IndiSession(activity).doLogout();
     }
 
     @Override
@@ -2964,6 +2985,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getResultSelectionPath(Intent data) {
+        MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+        return item.getRealPath();
+    }
+
+    public void onShowRationale(Context context, PermissionRequest request, String permission) {
+        RequestPermissionUtil.onShowRationale(context, request, permission);
+    }
+
+    public void onPermissionDenied(Context context, String permission) {
+        RequestPermissionUtil.onPermissionDenied(context, permission);
+    }
+
+    public void onNeverAskAgain(Context context, String permission) {
+        RequestPermissionUtil.onNeverAskAgain(context, permission);
+    }
+
+
+    @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
         if (activity != null) {
@@ -2999,6 +3039,38 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePasswordIntent(Context context) {
         return ChangePasswordActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.INDI_CHALLENGE_TYPE)
+                .setName(title)
+                .setUri(url)
+                .setSource(channel)
+                .setOgUrl(og_url)
+                .setOgTitle(og_title)
+                .setOgImageUrl(og_image)
+                .setDeepLink(deepLink)
+                .build();
+
+        BranchSdkUtils.generateBranchLink(shareData, context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+
+                listener.onGenerateLink(shareContents, branchUrl);
+            }
+        });
+    }
+
+    @Override
+    public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
+        ShareSocmedHandler.ShareBranchUrl(context, packageName, "text/plain", url, shareContents);
+    }
+
+    @Override
+    public void sendMoengageEvents(String eventName, Map<String, Object> values) {
+        TrackingUtils.sendMoEngageEvents(eventName, values);
     }
 
     @Override
