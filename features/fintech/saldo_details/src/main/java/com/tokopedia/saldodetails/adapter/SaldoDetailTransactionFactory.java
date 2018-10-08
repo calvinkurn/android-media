@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.response.model.Deposit;
 import com.tokopedia.saldodetails.viewholder.SaldoTransactionViewHolder;
@@ -20,13 +22,24 @@ public class SaldoDetailTransactionFactory extends BaseAdapterTypeFactory {
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
+
+        AbstractViewHolder viewHolder;
         if (type == SaldoTransactionViewHolder.LAYOUT) {
             return new SaldoTransactionViewHolder(parent, listener);
+        } else if (type == EmptyViewHolder.LAYOUT) {
+            viewHolder = new EmptyViewHolder(parent);
+        } else {
+            viewHolder = super.createViewHolder(parent, type);
         }
-        return super.createViewHolder(parent, type);
+        return viewHolder;
     }
 
     public int type(Deposit vm) {
         return SaldoTransactionViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EmptyModel viewModel) {
+        return EmptyViewHolder.LAYOUT;
     }
 }
