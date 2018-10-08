@@ -28,4 +28,9 @@ public class CreatePostExampleActivity extends BaseSimpleActivity {
         }
         return CreatePostExampleFragment.createInstance(bundle);
     }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 }
