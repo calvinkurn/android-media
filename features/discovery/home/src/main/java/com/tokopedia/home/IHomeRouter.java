@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -27,4 +28,16 @@ public interface IHomeRouter {
     Intent getInstantLoanIntent(Context context);
 
     void goToManageShop(Context context);
+
+    void goToApplinkActivity(Context context, String applink);
+
+    boolean isSupportApplink(String appLink);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    void goToWallet(Context context, String url);
+
+    void goToProductDetail(Context context, ProductPass productPass);
 }
