@@ -164,6 +164,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
                     OnboardingActivity.FINISH_TRUE
             );
         }
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
@@ -238,7 +239,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
                         enableSaveBtn();
                     }
 
-                    if (byMeUsername.length() < SHOW_SUGGESTION_LENGTH) {
+                    if (byMeUsername.length() < SHOW_SUGGESTION_LENGTH
+                            && adapter.getItemCount() > 0) {
                         suggestionCard.setVisibility(View.VISIBLE);
                     } else {
                         suggestionCard.setVisibility(View.GONE);
