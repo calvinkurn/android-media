@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -25,6 +26,8 @@ public interface IHomeRouter {
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Intent getInstantLoanIntent(Context context);
+
+    Intent getTopAdsProductDetailIntentForHome(Context context, Product product);
 
     void goToManageShop(Context context);
 }

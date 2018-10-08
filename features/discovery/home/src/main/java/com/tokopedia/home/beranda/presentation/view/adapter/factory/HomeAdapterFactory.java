@@ -3,9 +3,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -35,6 +34,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewMo
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -116,7 +116,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         }
     }
 
-    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }

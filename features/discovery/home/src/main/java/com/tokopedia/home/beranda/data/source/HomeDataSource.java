@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.R;

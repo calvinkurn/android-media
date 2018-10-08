@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
