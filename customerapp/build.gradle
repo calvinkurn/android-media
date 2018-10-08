@@ -341,7 +341,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
 
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaOneClick
+
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)

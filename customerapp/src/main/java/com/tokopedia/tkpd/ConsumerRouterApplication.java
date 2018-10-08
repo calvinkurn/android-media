@@ -234,7 +234,6 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
-import com.tokopedia.onboarding.OnboardingRouter;
 import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
@@ -328,6 +327,7 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
+import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -470,8 +470,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter,
-        OnboardingRouter{
+        TalkRouter{
 
     private static final String EXTRA = "extra";
 
@@ -2812,7 +2811,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOnBoardingIntent(Activity activity) {
-        return new Intent(activity, com.tokopedia.onboarding.NewOnboardingActivity.class);
+        return new Intent(activity, NewOnboardingActivity.class);
     }
 
     @Override

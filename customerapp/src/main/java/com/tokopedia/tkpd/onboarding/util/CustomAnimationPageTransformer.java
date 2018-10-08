@@ -1,4 +1,4 @@
-package com.tokopedia.onboarding.util;
+package com.tokopedia.tkpd.onboarding.util;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;

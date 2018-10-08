@@ -1,7 +1,8 @@
-package com.tokopedia.onboarding;
+package com.tokopedia.tkpd.onboarding;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +17,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.tokopedia.onboarding.analytics.ConsumerOnboardingAnalytics;
-import com.tokopedia.onboarding.fragment.NewOnBoardingFragment;
-import com.tokopedia.onboarding.util.CustomAnimationPageTransformer;
+import com.github.paolorotolo.appintro.AppIntro;
+import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformer;
+import com.tokopedia.tkpd.ConsumerRouterApplication;
+import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
+import com.tokopedia.tkpd.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.user.session.UserSession;
 
 import static android.view.View.GONE;
@@ -27,9 +30,8 @@ import static android.view.View.VISIBLE;
 /**
  * Created by steven on 7/25/2017.
  */
-
-public class NewOnboardingActivity extends BaseOnboardingActivity {
-
+public class NewOnboardingActivity extends AppIntro {
+    //
     private static final String SCREEN_NAME = "Screen OnBoarding - ";
     protected View indicator;
     protected View bottom;
@@ -42,7 +44,13 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
     private ConsumerOnboardingAnalytics analytics;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onStart() {
+        super.onStart();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(this);
         analytics = new ConsumerOnboardingAnalytics();
@@ -59,40 +67,40 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
     }
 
     private void initView() {
-        indicator = findViewById(R.id.indicator_container);
-        bottom = findViewById(R.id.bottom);
+        indicator = findViewById(com.tokopedia.onboarding.R.id.indicator_container);
+        bottom = findViewById(com.tokopedia.onboarding.R.id.bottom);
         nextView = (ImageButton) nextButton;
         skipView = (TextView) skipButton;
 
         decorView = getWindow().getDecorView();
         showStatusBar(false);
 
-        fragmentColor = new int[]{R.color.green_nob,
-                R.color.blue_nob,
-                R.color.orange_nob,
-                R.color.green_nob,
-                R.color.blue_nob};
+        fragmentColor = new int[]{com.tokopedia.onboarding.R.color.green_nob,
+                com.tokopedia.onboarding.R.color.blue_nob,
+                com.tokopedia.onboarding.R.color.orange_nob,
+                com.tokopedia.onboarding.R.color.green_nob,
+                com.tokopedia.onboarding.R.color.blue_nob};
     }
 
     private void addSlides() {
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
-                getString(R.string.nonb_1_desc), "onboarding1.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_1_title),
+                getString(com.tokopedia.onboarding.R.string.nonb_1_desc), "onboarding1.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 0));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
-                getString(R.string.nonb_2_desc), "onboarding2.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_2_title),
+                getString(com.tokopedia.onboarding.R.string.nonb_2_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 1));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
-                getString(R.string.nonb_3_desc), "onboarding3.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_3_title),
+                getString(com.tokopedia.onboarding.R.string.nonb_3_desc), "onboarding3.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 2));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
-                getString(R.string.nonb_4_desc), "onboarding4.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_4_title),
+                getString(com.tokopedia.onboarding.R.string.nonb_4_desc), "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 3));
-        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
-                getString(R.string.nonb_5_desc), "onboarding5.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_5_title),
+                getString(com.tokopedia.onboarding.R.string.nonb_5_desc), "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
                 NewOnBoardingFragment.VIEW_ENDING, 4));
     }
@@ -100,7 +108,7 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
     private void setSkip() {
         showSkipButton(false);
         setSkipText("Lewati");
-        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen
+        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(com.tokopedia.onboarding.R.dimen
                 .sp_14));
         skipView.setTypeface(Typeface.DEFAULT_BOLD);
         skipView.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -109,7 +117,7 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
         float density = getResources().getDisplayMetrics().density;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) skipView.getLayoutParams();
         params.leftMargin = (int) (20 * density);
-        setSeparatorColor(getColor(this, R.color.transparent));
+        setSeparatorColor(getColor(this, com.tokopedia.onboarding.R.color.transparent));
     }
 
     @SuppressWarnings("deprecation")
@@ -136,13 +144,13 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-       finishOnboard();
+        finishOnboard();
     }
 
     private void finishOnboard() {
         analytics.eventOnboardingSkip(getApplicationContext(), pager.getCurrentItem() + 1);
         userSession.setFirstTimeUserOnboarding(false);
-        Intent intent = ((OnboardingRouter) getApplicationContext()).getHomeIntent(this);
+        Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
         startActivity(intent);
         finish();
     }
@@ -188,7 +196,7 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
     }
 
     private void setNext() {
-        nextView.setImageResource(R.drawable.next_ic);
+        nextView.setImageResource(com.tokopedia.onboarding.R.drawable.next_ic);
         nextView.setMinimumWidth(0);
         FrameLayout.LayoutParams nextViewLayoutParams =
                 (FrameLayout.LayoutParams) nextView.getLayoutParams();
@@ -243,6 +251,6 @@ public class NewOnboardingActivity extends BaseOnboardingActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_onboarding;
+        return com.tokopedia.onboarding.R.layout.activity_onboarding;
     }
 }

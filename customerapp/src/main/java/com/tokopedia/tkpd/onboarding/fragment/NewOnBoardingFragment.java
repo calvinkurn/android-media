@@ -1,4 +1,4 @@
-package com.tokopedia.onboarding.fragment;
+package com.tokopedia.tkpd.onboarding.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -21,10 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.tokopedia.onboarding.OnboardingRouter;
 import com.tokopedia.onboarding.R;
-import com.tokopedia.onboarding.analytics.ConsumerOnboardingAnalytics;
-import com.tokopedia.onboarding.util.CustomAnimationPageTransformerDelegate;
+import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformerDelegate;
+import com.tokopedia.tkpd.ConsumerRouterApplication;
+import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -37,9 +37,9 @@ import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideRevers
 import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToX;
 import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToXFromCurrentHeight;
 
-/**
- * Created by hafizh HERDI on 3/21/2016.
- */
+///**
+// * Created by hafizh HERDI on 3/21/2016.
+// */
 public class NewOnBoardingFragment extends Fragment implements CustomAnimationPageTransformerDelegate {
 
     private static final String ARG_LOTTIE = "lottie";
@@ -53,6 +53,7 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
     private ImageView imageView;
     private TextView titleView;
     private int position;
+
     private boolean isAnimationPlayed = false;
     private String lottieAsset;
     private ConsumerOnboardingAnalytics analytics;
@@ -210,7 +211,7 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
             userSession.setFirstTimeUserOnboarding(false);
             if (getActivity() != null) {
                 analytics.eventOnboardingStartNow(getActivity().getApplicationContext());
-                Intent intent = ((OnboardingRouter) getActivity().getApplicationContext())
+                Intent intent = ((ConsumerRouterApplication) getActivity().getApplicationContext())
                         .getHomeIntent
                         (getActivity());
                 startActivity(intent);

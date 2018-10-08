@@ -1,8 +1,8 @@
-package com.tokopedia.onboarding.analytics;
+package com.tokopedia.tkpd.onboarding.analytics;
 
 import android.content.Context;
 
-import com.tokopedia.onboarding.OnboardingRouter;
+import com.tokopedia.tkpd.ConsumerRouterApplication;
 
 /**
  * @author by nisie on 10/8/18.
@@ -19,7 +19,7 @@ public class ConsumerOnboardingAnalytics {
 
 
     public void eventOnboardingSkip(Context applicationContext, int skipPage) {
-        ((OnboardingRouter) applicationContext).sendEventTracking(
+        ((ConsumerRouterApplication) applicationContext).sendEventTracking(
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
                 ACTION_ONBOARDING_SKIP,
@@ -29,11 +29,11 @@ public class ConsumerOnboardingAnalytics {
     }
 
     public void sendScreen(Context applicationContext, String screenName) {
-        ((OnboardingRouter) applicationContext).sendScreenName(screenName);
+        ((ConsumerRouterApplication) applicationContext).sendScreenName(screenName);
     }
 
     public void eventOnboardingStartNow(Context applicationContext) {
-        ((OnboardingRouter) applicationContext).sendEventTracking(
+        ((ConsumerRouterApplication) applicationContext).sendEventTracking(
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
                 ACTION_ONBOARDING_START,
