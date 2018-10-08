@@ -227,7 +227,8 @@ public class DeepLinkChecker {
                 && !isTopPicks(linkSegment))
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
-                && !isMutualFund(linkSegment);
+                && !isMutualFund(linkSegment)
+                && !isWalletOvo(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
