@@ -6,7 +6,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -47,7 +46,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        initView();
+        initView()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -57,7 +56,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return recyclerView;
+        return recyclerView
     }
 
     override fun getScreenName(): String? = null
@@ -82,7 +81,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun loadData(page: Int) {
         if (isLoadingInitialData) {
-            presenter.getProfileFirstPage(userId);
+            presenter.getProfileFirstPage(userId)
         } else {
             presenter.getProfilePost(userId)
         }

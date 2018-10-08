@@ -1,15 +1,15 @@
 package com.tokopedia.profile.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.profile.data.pojo.profileheader.Profile
+import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.profile.view.viewmodel.ProfilePostViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.Subscriber
-import rx.functions.Func2
+import rx.functions.Func1
 import javax.inject.Inject
 
 /**
@@ -21,29 +21,19 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
 
     override fun createObservable(requestParams: RequestParams?)
             : Observable<ProfileFirstPageViewModel>? {
+        val userId: String = requestParams?.getString(GetProfileHeaderUseCase.PARAM_USER_ID, "")
+                ?: ""
         return Observable.zip(
-                getHeader(),
-                getPost(),
-                { header: ProfileHeaderViewModel, posts: List<ProfilePostViewModel> ->
-                    ProfileFirstPageViewModel(header, posts)
-                }
-        )
+                getHeader(userId),
+                getPost()) { header: ProfileHeaderViewModel, posts: List<ProfilePostViewModel> ->
+            ProfileFirstPageViewModel(header, posts)
+        }
     }
 
-    private fun getHeader(): Observable<ProfileHeaderViewModel> {
-        //TODO milhamj
-        return Observable.just(
-                ProfileHeaderViewModel(
-                        "Sadam Hussein",
-                        "https://ca.slack-edge.com/T038RGMSP-U7RNUK482-a8a9c33ca937-1024",
-                        "1.5M",
-                        "131",
-                        13,
-                        false,
-                        false,
-                        true
-                )
-        )
+    private fun getHeader(userId: String): Observable<ProfileHeaderViewModel> {
+        return getProfileHeaderUseCase
+                .createObservable(GetProfileHeaderUseCase.createRequestParams(userId))
+                .map(convertToHeader())
     }
 
     private fun getPost(): Observable<List<ProfilePostViewModel>> {
@@ -97,5 +87,22 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                 )
         )
         return Observable.just(posts)
+    }
+
+    private fun convertToHeader(): Func1<GraphqlResponse, ProfileHeaderViewModel> {
+        return Func1 { graphqlResponse ->
+            val data: ProfileHeaderData = graphqlResponse.getData(ProfileHeaderData::class.java)
+            val profile: Profile = data.bymeProfileHeader.profile
+            ProfileHeaderViewModel(
+                    profile.name,
+                    profile.avatar,
+                    profile.totalFollower.formatted,
+                    profile.totalFollowing.formatted,
+                    0,
+                    profile.isKol,
+                    profile.isFollowed,
+                    false
+            )
+        }
     }
 }
