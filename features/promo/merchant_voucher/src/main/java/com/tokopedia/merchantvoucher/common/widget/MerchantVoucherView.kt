@@ -87,8 +87,7 @@ class MerchantVoucherView : CustomVoucherView {
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && isOwner)-> {
                     btnUseVoucher.visibility = View.GONE
-                    tvVoucherStatus.text = context.getString(R.string.available)
-                    tvVoucherStatus.visibility = View.VISIBLE
+                    tvVoucherStatus.visibility = View.GONE
                 }
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_OUT_OF_STOCK) -> {
                     btnUseVoucher.visibility = View.GONE
