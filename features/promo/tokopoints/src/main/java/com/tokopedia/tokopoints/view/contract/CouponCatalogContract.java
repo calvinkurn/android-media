@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogDetailOuter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 
 import java.util.List;
@@ -56,6 +57,10 @@ public interface CouponCatalogContract {
         void onPreValidateError(String title, String message);
 
         void gotoSendGiftPage(int id, String title, String pointStr);
+
+        void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink);
+
+        void onSwipeError(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -68,5 +73,7 @@ public interface CouponCatalogContract {
         void reFetchRealCode(String uniqueCatalogCode);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
+
+        void swipeMyCoupon(String partnerCode, String pin);
     }
 }

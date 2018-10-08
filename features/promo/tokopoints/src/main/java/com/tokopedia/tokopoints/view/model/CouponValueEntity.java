@@ -79,6 +79,17 @@ public class CouponValueEntity {
     @SerializedName("tnc")
     private String tnc;
 
+    @SerializedName("swipe")
+    private CouponSwipeDetail swipe;
+
+    public CouponSwipeDetail getSwipe() {
+        return swipe;
+    }
+
+    public void setSwipe(CouponSwipeDetail swipe) {
+        this.swipe = swipe;
+    }
+
     public String getMinimumUsage() {
         return minimumUsage;
     }
@@ -262,6 +273,7 @@ public class CouponValueEntity {
                 ", overview='" + overview + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +
+                ", swipe=" + swipe +
                 '}';
     }
 }
