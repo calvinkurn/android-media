@@ -63,7 +63,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         this.impressionListener = impressionListener;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
-        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        productImage = (ImpressedImageView) itemView.findViewById(R.id.product_image);
         productName = (TextView) itemView.findViewById(R.id.title);
         productPrice = (TextView) itemView.findViewById(R.id.price);
     }
