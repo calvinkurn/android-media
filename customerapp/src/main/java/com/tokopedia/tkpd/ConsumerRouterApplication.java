@@ -126,13 +126,12 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -268,6 +267,7 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -301,12 +301,12 @@ import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
+import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -470,7 +470,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter{
+        TalkRouter {
 
     private static final String EXTRA = "extra";
 

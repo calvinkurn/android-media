@@ -1,5 +1,4 @@
 include "features:common:nps"
-include "features:common:onboarding"
 include "features:fintech:mitra_toppers"
 include "features:fintech:reksa_dana"
 include "features:fintech:instant_loan"

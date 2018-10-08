@@ -222,8 +222,6 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation project(rootProject.ext.features.onboarding)
-
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -320,6 +318,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
+
+    implementation rootProject.ext.viewDependencies.appIntro
 
     implementation project(rootProject.ext.libraries.fingerprint)
 

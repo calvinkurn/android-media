@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+
 /**
  * Created by stevenfredian on 7/26/17.
  */
@@ -42,30 +44,15 @@ public class OnboardingAnimation {
 
     public static ObjectAnimator fadeText(final TextView v, Context context, int colorFrom, int colorTo) {
         if (v != null) {
-            v.setTextColor(getColor(context, colorFrom));
+            v.setTextColor(MethodChecker.getColor(context, colorFrom));
             ObjectAnimator anim = ObjectAnimator.ofObject(v, "textColor",
                     new ArgbEvaluator(),
-                    getColor(context, colorFrom),
-                    getColor(context, colorTo));
+                    MethodChecker.getColor(context, colorFrom),
+                    MethodChecker.getColor(context, colorTo));
             v.setVisibility(View.VISIBLE);
             return anim;
         }
         return null;
-    }
-
-
-    @SuppressWarnings("deprecation")
-    public static int getColor(Context context, int id) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return ContextCompat.getColor(context, id);
-            } else {
-                return context.getResources().getColor(id);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
 
     public static ObjectAnimator appearText(final TextView v) {
