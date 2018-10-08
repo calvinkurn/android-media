@@ -482,6 +482,11 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    @Override
+    protected void sendScreenAnalytics() {
+        ((GlobalNavRouter) getApplication()).sendIndexScreen(this);
+    }
+
     /**
      * Notification
      */
