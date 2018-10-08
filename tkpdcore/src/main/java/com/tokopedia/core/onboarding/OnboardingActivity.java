@@ -17,7 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 /**
  * Created by hafizh HERDI on 3/7/2016.
  */
-@Deprecated
+
 public class OnboardingActivity extends BaseOnboardingActivity {
 
     protected View decorView;
