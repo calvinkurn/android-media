@@ -299,10 +299,11 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
            String title=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_title", context.getString(R.string.title_menu_wallet_referral));
+            String subTitle=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_subtitle", context.getString(R.string.label_menu_wallet_referral));
             InfoCardViewModel infoCard = new InfoCardViewModel();
             infoCard.setIconRes(R.drawable.ic_tokocash_big);
             infoCard.setMainText(title);
-            infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
+            infoCard.setSecondaryText(subTitle);
             infoCard.setApplink(ApplinkConst.REFERRAL);
             infoCard.setTitleTrack(PEMBELI);
             infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));

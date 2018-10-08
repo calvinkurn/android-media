@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -31,6 +33,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -87,7 +91,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -161,6 +165,7 @@ import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -215,6 +220,8 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -376,6 +383,7 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.di.DaggerTrainComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -481,7 +489,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter {
+        TalkRouter,TkpdAppsFlyerRouter,
+        ScanQrCodeRouter {
+
 
     private static final String EXTRA = "extra";
 
@@ -2358,9 +2368,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent share = new Intent(android.content.Intent.ACTION_SEND);
                 share.setType("text/plain");
-                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 share.putExtra(Intent.EXTRA_TEXT, branchUrl);
-                context.startActivity(Intent.createChooser(share, "Share link!"));
+                Intent intent = Intent.createChooser(share, getString(R.string.share_link));
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                context.startActivity(intent);
             }
         });
     }
@@ -2492,14 +2503,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventClickUseVoucherCode(voucherCode);
     }
 
     @Override
     public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventVoucherError(errorMessage);
+    }
+
+    @Override
+    public Intent getPromoListIntent(Activity activity, String menuId, String subMenuId) {
+        return PromoListActivity.newInstance(activity, menuId, subMenuId);
     }
 
     @Override
@@ -2689,7 +2705,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage() {
-        return QrScannerActivity.newInstance(this);
+        return gotoQrScannerPage(false);
+    }
+
+    @Override
+    public Intent gotoQrScannerPage(boolean needResult) {
+        return QrScannerActivity.newInstance(this, needResult);
     }
 
 
@@ -2726,6 +2747,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getManageAddressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
+    }
+
+    @Override
+    public Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, com.tokopedia.core.manage.people.address.model.Token token, boolean isEdit, boolean isEmptyAddressFirst) {
+        return AddAddressActivity.createInstanceFromCartCheckout(activity, data, token, isEdit, isEmptyAddressFirst);
     }
 
     @Override
@@ -3107,5 +3133,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return intent;
 
         }
+    }
+
+    @Override
+    public String getAppsFlyerID() {
+        return TrackingUtils.getAfUniqueId();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    public void onAppsFlyerInit() {
+        TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+    }
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 }
