@@ -17,4 +17,8 @@ query ProfileHeader ($userIDTarget: Int!) {
           }
        }
     }
+    affiliatePostQuota() {
+        formatted
+        number
+    }
 }
