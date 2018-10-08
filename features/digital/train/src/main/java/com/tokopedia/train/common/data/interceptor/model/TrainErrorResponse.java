@@ -9,11 +9,13 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,16 +47,19 @@ public class TrainErrorResponse extends BaseResponseError {
         return new TrainNetworkException(message, errors);
     }
 
-    private String getConcattedMessage(List<TrainError> errors) {
+    private String getConcattedMessage(List<TrainError> errorsResult) {
         List<String> results = new ArrayList<>();
         Gson gson = new Gson();
-        TrainError error = null;
+        List<TrainError> errors = null;
+        Type errorListType = new TypeToken<ArrayList<TrainError>>() {
+        }.getType();
         for (TrainNetworkError errorNetwork : errorList) {
             try {
-                error = gson.fromJson(errorNetwork.getMessage(), TrainError.class);
-                if (error != null) {
-                    errors.add(error);
-                    results.add(error.getMessage());
+                errors = gson.fromJson(errorNetwork.getMessage(), errorListType);
+                if (errors != null && errors.size() > 0) {
+                    errorsResult.addAll(errors);
+                    for (TrainError error : errors)
+                        results.add(error.getMessage());
                     continue;
                 }
             } catch (JsonSyntaxException e) {
