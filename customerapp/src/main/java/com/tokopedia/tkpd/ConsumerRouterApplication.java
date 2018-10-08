@@ -59,6 +59,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -2855,6 +2856,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getFavoriteFragment() {
         return FragmentFavorite.newInstance();
+    }
+
+    @Override
+    public void sendIndexScreen(Activity activity) {
+        IndexScreenTracking.sendScreen(activity, () -> "ParentIndexHome");
     }
 
     public void doLogoutAccount(Activity activity) {
