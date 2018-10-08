@@ -16,7 +16,7 @@
         app:reverseLayout="false" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/footer"
+        android:id="@+id/footerOwn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -24,7 +24,9 @@
         android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/recommendationQuota"
@@ -35,7 +37,7 @@
             android:textColor="@color/black_54"
             android:textSize="13sp"
             android:textStyle="normal"
-            tools:text="@string/af_profile_rec_qutoa" />
+            tools:text="@string/profile_rec_qutoa" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/addRecommendation"
@@ -44,7 +46,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/af_profile_add_rec"
+            android:text="@string/profile_add_rec"
             android:textAllCaps="false"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary"
@@ -57,10 +59,31 @@
             android:layout_width="@dimen/dp_40"
             android:layout_height="0dp"
             android:padding="@dimen/dp_4"
-            android:src="@drawable/ic_kol_badge"
+            android:src="@drawable/ic_share_white"
             app:layout_constraintBottom_toBottomOf="@id/addRecommendation"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/addRecommendation"
             tools:ignore="ContentDescription" />
     </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/footerOther"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow_top"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_share_profile"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="secondary" />
+    </FrameLayout>
 </RelativeLayout>

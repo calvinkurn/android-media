@@ -11,12 +11,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
+import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
@@ -89,6 +92,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
                                               cursor: String) {
+        addFooter(profileFirstPageViewModel.profileHeaderViewModel)
+
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(profileFirstPageViewModel.profileHeaderViewModel)
         visitables.addAll(profileFirstPageViewModel.profilePostViewModel)
@@ -128,5 +133,25 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun initView() {
 
+    }
+
+    private fun addFooter(headerViewModel: ProfileHeaderViewModel) {
+        if (headerViewModel.isOwner) {
+            footerOwn.visibility = View.VISIBLE
+            footerOther.visibility = View.GONE
+
+            if (!TextUtils.isEmpty(headerViewModel.recommendationQuota)) {
+                recommendationQuota.visibility = View.VISIBLE
+                recommendationQuota.text = headerViewModel.recommendationQuota
+            } else {
+                recommendationQuota.visibility = View.GONE
+            }
+            addRecommendation.setOnClickListener {
+                RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
+            }
+        } else {
+            footerOwn.visibility = View.GONE
+            footerOther.visibility = View.VISIBLE
+        }
     }
 }
