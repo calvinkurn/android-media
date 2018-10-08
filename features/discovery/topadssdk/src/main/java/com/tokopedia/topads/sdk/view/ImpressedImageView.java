@@ -39,7 +39,7 @@ public class ImpressedImageView extends AppCompatImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(isVisible(this) && !image.isImpressed()){
+        if(isVisible(this) && image!=null && !image.isImpressed()){
             new ImpresionTask(new ImpressionListener() {
                 @Override
                 public void onSuccess() {
