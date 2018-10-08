@@ -23,7 +23,7 @@
             <ImageView android:id="@+id/icon_bulb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_bm_bulb_oval_broder"
+                app:srcCompat="@drawable/ic_bm_bulb_oval_border"
                 android:layout_centerVertical="true"/>
 
             <TextView android:id="@+id/bm_quota"
@@ -38,7 +38,6 @@
                 style="@style/TextView.Micro.BlackDisabled"
                 tools:text="@string/template_bm_quota_refill"
                 android:layout_below="@+id/bm_quota"
-                android:layout_marginTop="@dimen/dp_4"
                 android:layout_alignLeft="@+id/bm_quota"
                 android:layout_alignStart="@+id/bm_quota"/>
 

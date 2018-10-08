@@ -81,7 +81,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_80"
             android:background="@color/white"
-            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_24"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
@@ -106,6 +105,8 @@
             app:counterEnabled="true"
             app:counterMaxLength="@integer/message_max_character"
             app:helperEnabled="true"
+            app:helperTextAppearance="@style/BMHelperTextAppearance"
+            app:counterTextAppearance="@style/BMCounterTextAppearance"
             app:helper="@string/message_content_desc">
 
             <EditText

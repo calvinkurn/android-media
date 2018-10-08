@@ -30,7 +30,8 @@
 
             <ProgressBar android:id="@+id/loading"
                 android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"/>
+                android:layout_height="@dimen/dp_18"
+                android:theme="@style/BMAlertDialogStyle"/>
 
             <TextView style="@style/TextView.Micro.BlackSecondary"
                 android:id="@+id/message_progress"

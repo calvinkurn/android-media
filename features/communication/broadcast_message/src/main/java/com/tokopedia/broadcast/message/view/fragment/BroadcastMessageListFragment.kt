@@ -24,9 +24,9 @@ import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageTypeFactory
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
-import com.tokopedia.broadcast.message.common.extensions.toISO8601Date
 import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.extensions.dateToShow
 import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActivity
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter
@@ -34,6 +34,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_broadcast_message_list.*
+import java.util.*
 import javax.inject.Inject
 
 class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, BroadcastMessageTypeFactory>(),
@@ -164,7 +165,9 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
             boldString.setSpan(StyleSpan(Typeface.BOLD), 0, boldString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableBuilder.append(boldString)
             bm_quota.setText(spannableBuilder, TextView.BufferType.SPANNABLE)
-            bm_quota_refill.text = getString(R.string.template_bm_quota_refill, it.expireAt.toISO8601Date().toStringDayMonth())
+            bm_quota_refill.text = getString(
+                    if (it.quota > 0) R.string.template_bm_quota_valid_usage else R.string.template_bm_quota_refill,
+                    it.dateToShow?.toStringDayMonth())
             validToCreate = it.hasActiveQuota
         }
         activity?.invalidateOptionsMenu()
