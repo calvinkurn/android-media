@@ -179,12 +179,6 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment{
     }
 
     @Override
-    public int getDefaultBackgroundColor() {
-        // Return the default background color of the slide.
-        return MethodChecker.getColor(getActivity(),R.color.black);
-    }
-
-    @Override
     protected String getScreenName() {
         return "Screen OnBoarding";
     }

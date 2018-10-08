@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.tokopedia.onboarding.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
 import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;

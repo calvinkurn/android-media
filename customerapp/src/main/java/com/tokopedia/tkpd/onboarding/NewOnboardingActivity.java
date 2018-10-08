@@ -17,6 +17,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.R;
+
 import com.github.paolorotolo.appintro.AppIntro;
 import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformer;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
@@ -31,7 +34,7 @@ import static android.view.View.VISIBLE;
  * Created by steven on 7/25/2017.
  */
 public class NewOnboardingActivity extends AppIntro {
-    //
+
     private static final String SCREEN_NAME = "Screen OnBoarding - ";
     protected View indicator;
     protected View bottom;
@@ -67,40 +70,40 @@ public class NewOnboardingActivity extends AppIntro {
     }
 
     private void initView() {
-        indicator = findViewById(com.tokopedia.onboarding.R.id.indicator_container);
-        bottom = findViewById(com.tokopedia.onboarding.R.id.bottom);
+        indicator = findViewById(R.id.indicator_container);
+        bottom = findViewById(R.id.bottom);
         nextView = (ImageButton) nextButton;
         skipView = (TextView) skipButton;
 
         decorView = getWindow().getDecorView();
         showStatusBar(false);
 
-        fragmentColor = new int[]{com.tokopedia.onboarding.R.color.green_nob,
-                com.tokopedia.onboarding.R.color.blue_nob,
-                com.tokopedia.onboarding.R.color.orange_nob,
-                com.tokopedia.onboarding.R.color.green_nob,
-                com.tokopedia.onboarding.R.color.blue_nob};
+        fragmentColor = new int[]{R.color.green_nob,
+                R.color.blue_nob,
+                R.color.orange_nob,
+                R.color.green_nob,
+                R.color.blue_nob};
     }
 
     private void addSlides() {
-        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_1_title),
-                getString(com.tokopedia.onboarding.R.string.nonb_1_desc), "onboarding1.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
+                getString(R.string.nonb_1_desc), "onboarding1.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 0));
-        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_2_title),
-                getString(com.tokopedia.onboarding.R.string.nonb_2_desc), "onboarding2.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
+                getString(R.string.nonb_2_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 1));
-        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_3_title),
-                getString(com.tokopedia.onboarding.R.string.nonb_3_desc), "onboarding3.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
+                getString(R.string.nonb_3_desc), "onboarding3.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 2));
-        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_4_title),
-                getString(com.tokopedia.onboarding.R.string.nonb_4_desc), "onboarding4.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
+                getString(R.string.nonb_4_desc), "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
                 NewOnBoardingFragment.VIEW_DEFAULT, 3));
-        addSlide(NewOnBoardingFragment.newInstance(getString(com.tokopedia.onboarding.R.string.nonb_5_title),
-                getString(com.tokopedia.onboarding.R.string.nonb_5_desc), "onboarding5.json",
+        addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
+                getString(R.string.nonb_5_desc), "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
                 NewOnBoardingFragment.VIEW_ENDING, 4));
     }
@@ -108,7 +111,7 @@ public class NewOnboardingActivity extends AppIntro {
     private void setSkip() {
         showSkipButton(false);
         setSkipText("Lewati");
-        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(com.tokopedia.onboarding.R.dimen
+        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen
                 .sp_14));
         skipView.setTypeface(Typeface.DEFAULT_BOLD);
         skipView.setGravity(Gravity.LEFT | Gravity.CENTER);
@@ -117,22 +120,9 @@ public class NewOnboardingActivity extends AppIntro {
         float density = getResources().getDisplayMetrics().density;
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) skipView.getLayoutParams();
         params.leftMargin = (int) (20 * density);
-        setSeparatorColor(getColor(this, com.tokopedia.onboarding.R.color.transparent));
+        setSeparatorColor(MethodChecker.getColor(this, R.color.transparent));
     }
 
-    @SuppressWarnings("deprecation")
-    public static int getColor(Context context, int id) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return ContextCompat.getColor(context, id);
-            } else {
-                return context.getResources().getColor(id);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
@@ -196,7 +186,7 @@ public class NewOnboardingActivity extends AppIntro {
     }
 
     private void setNext() {
-        nextView.setImageResource(com.tokopedia.onboarding.R.drawable.next_ic);
+        nextView.setImageResource(R.drawable.next_ic);
         nextView.setMinimumWidth(0);
         FrameLayout.LayoutParams nextViewLayoutParams =
                 (FrameLayout.LayoutParams) nextView.getLayoutParams();
@@ -251,6 +241,6 @@ public class NewOnboardingActivity extends AppIntro {
 
     @Override
     protected int getLayoutId() {
-        return com.tokopedia.onboarding.R.layout.activity_onboarding;
+        return R.layout.activity_onboarding;
     }
 }
