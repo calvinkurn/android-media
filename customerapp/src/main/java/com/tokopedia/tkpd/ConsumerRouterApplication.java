@@ -370,6 +370,7 @@ import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.di.DaggerTrainComponent;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
@@ -2475,13 +2476,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void trainSendTrackingOnClickUseVoucherCode(String voucherCode) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventClickUseVoucherCode(voucherCode);
     }
 
     @Override
     public void trainSendTrackingOnCheckVoucherCodeError(String errorMessage) {
-        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker());
+        TrainAnalytics trainAnalytics = new TrainAnalytics(getAnalyticTracker(), new TrainDateUtil());
         trainAnalytics.eventVoucherError(errorMessage);
     }
 

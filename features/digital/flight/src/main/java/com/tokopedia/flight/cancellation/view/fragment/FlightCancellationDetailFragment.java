@@ -134,7 +134,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
         txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
 
-        txtCancellationDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
+        txtCancellationDate.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
                 flightCancellationListViewModel.getCancellations().getCreateTime()));
         presenter.checkCancellationStatus();
