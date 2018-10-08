@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -150,17 +151,22 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     }
 
     override fun onErrorGetMerchantVoucherList(e: Throwable) {
-        // TODO need custom error network?
-        // adapter.errorNetworkModel = ErrorNetworkModel().apply {  }
+        adapter.errorNetworkModel = ErrorNetworkModel().apply {
+            errorMessage = ErrorHandler.getErrorMessage(context, e)
+            onRetryListener = ErrorNetworkModel.OnRetryListener {
+                presenter.clearCache()
+                shopInfo?.run {
+                    presenter.getVoucherList(info.shopId)
+                }
+            }
+        }
         super.showGetListError(e)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_state
-        //TODO error message when voucher empty
-        //        emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
-        //        emptyModel.content = getString(R.string.change_your_keyword)
+        emptyModel.title = getString(R.string.no_voucher)
         return emptyModel
     }
 

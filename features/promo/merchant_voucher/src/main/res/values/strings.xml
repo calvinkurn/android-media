@@ -20,5 +20,6 @@
     <string name="available">Tersedia</string>
     <string name="retry">Ulangi</string>
     <string name="voucher_use_in_cart">Voucher otomatis diterapkan pada keranjang</string>
+    <string name="no_voucher">Tidak terdapat voucher untuk toko ini</string>
 
 </resources>
