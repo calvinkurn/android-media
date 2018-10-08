@@ -817,7 +817,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
             if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
-                shipmentPresenter.processInitialLoadCheckoutPage(false);
+                shipmentPresenter.processInitialLoadCheckoutPage(true);
             } else {
                 getActivity().setResult(resultCode);
                 getActivity().finish();
