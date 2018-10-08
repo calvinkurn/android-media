@@ -293,13 +293,15 @@ public class InboxDetailActivity extends InboxBaseActivity
     void sendMessage() {
         if (!isCustomReason) {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
+
         } else {
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendCustomReason(edMessage.getText().toString().trim());
-            edMessage.getText().clear();
             textToolbar.setVisibility(View.GONE);
             isCustomReason = false;
             ivUploadImg.setVisibility(View.VISIBLE);
         }
+        edMessage.getText().clear();
+        edMessage.setHint(R.string.type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickSubmitReply,
@@ -392,7 +394,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void askCustomReason() {
         ivUploadImg.setVisibility(View.GONE);
         rvSelectedImages.setVisibility(View.GONE);
-        edMessage.clearComposingText();
+        edMessage.getText().clear();
+        edMessage.setHint(R.string.type_here);
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
