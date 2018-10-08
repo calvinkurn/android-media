@@ -21,6 +21,7 @@ public interface KolEventTracking {
         String HOMEPAGE = "Homepage";
         String KOL_TOP_PROFILE = "kol top profile";
         String CONTENT_FEED = "content feed";
+        String SHOP_PAGE_FEED = "shop page feed";
     }
 
     interface Action {
@@ -35,6 +36,8 @@ public interface KolEventTracking {
         String FEED_UNLIKE_CONTENT = "feed - unlike content";
         String FEED_CLICK_CONTENT_COMMENT = "feed - click content comment";
         String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
+        String SHOP_ITEM_IMPRESSION = "impression-singletag-merchant-all-merchant_post";
+        String SHOP_ITEM_CLICK = "click-singletag-merchant-all-merchant_post-tag";
         String CLICK_PROMPT = "click prompt";
         String CLICK_YOUTUBE_VIDEO = "click youtube video";
     }

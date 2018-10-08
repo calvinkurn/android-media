@@ -14,6 +14,7 @@ import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 public class KolPostShopFragment extends KolPostFragment implements KolPostShopContract.View,
         KolPostShopContract.View.Like {
 
+    private static final String SCREEN_NAME = "ShopPageActivity";
     private static final int CREATE_POST = 888;
     private static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_CREATE_POST_URL = "create_post_url";
@@ -67,10 +69,15 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     }
 
     @Override
+    protected String getScreenName() {
+        return SCREEN_NAME;
+    }
+
+    @Override
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
+                .kolProfileModule(new KolProfileModule())
                 .build()
                 .inject(this);
     }
@@ -78,6 +85,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     private void initVar() {
         shopId = getArguments().getString(PARAM_SHOP_ID);
         createPostUrl = getArguments().getString(PARAM_CREATE_POST_URL, "");
+        typeFactory.setType(KolPostViewHolder.Type.SHOP_PAGE);
     }
 
     @Override
