@@ -49,7 +49,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
     //TODO milhamj change to real url
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/";
+    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
 
     private View mainView;
     private ImageView avatar;

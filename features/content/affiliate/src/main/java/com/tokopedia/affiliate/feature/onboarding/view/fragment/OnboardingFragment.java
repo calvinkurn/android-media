@@ -29,7 +29,7 @@ public class OnboardingFragment extends Fragment {
     private static final String FINISH_IMAGE_NAME = "af_onboarding_finish";
     private static final String START_IMAGE_NAME = "af_onboarding_start";
     //TODO milhamj change to real url
-    private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/";
+    private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
 
     private ImageView image;
     private TextView title;
