@@ -28,6 +28,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputCon
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -169,7 +170,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRegisterUsername(String message) {
-        ToasterError.make(mainView, message)
+        ToasterError.make(mainView, message, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again, v -> registerUsername())
                 .show();
     }
