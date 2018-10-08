@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
     private UserSessionInterface userSession;
 
     protected static final String ARG_TITLE = "title";
+    protected static final String ARG_DRAWABLE = "drawable";
     protected static final String ARG_DESC = "desc";
     protected static final String ARG_BG_COLOR = "bg_color";
     protected static final String ARG_TITLE_COLOR = "title_color";
@@ -72,6 +74,7 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
     protected int bgColor;
     protected int titleColor;
     protected int viewType;
+    protected int descColor;
     protected CharSequence title, description;
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
@@ -102,6 +105,16 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null && getArguments().size() != 0) {
+            drawable = getArguments().getInt(ARG_DRAWABLE);
+            title = getArguments().getCharSequence(ARG_TITLE);
+            description = getArguments().getCharSequence(ARG_DESC);
+            bgColor = getArguments().getInt(ARG_BG_COLOR);
+            titleColor = getArguments().containsKey(ARG_TITLE_COLOR) ? getArguments().getInt(ARG_TITLE_COLOR) : 0;
+            descColor = getArguments().containsKey(ARG_DESC_COLOR) ? getArguments().getInt(ARG_DESC_COLOR) : 0;
+            viewType = descColor = getArguments().containsKey(ARG_VIEW_TYPE) ? getArguments().getInt(ARG_VIEW_TYPE) : VIEW_DEFAULT;
+        }
+
 //        ((NewOnboardingActivity) (getActivity())).setNextResource();
         analytics = new ConsumerOnboardingAnalytics();
         animatorSet = new AnimatorSet();
@@ -197,11 +210,11 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
             userSession.setFirstTimeUserOnboarding(false);
             if (getActivity() != null) {
                 analytics.eventOnboardingStartNow(getActivity().getApplicationContext());
-                ((OnboardingRouter) getActivity().getApplicationContext()).getHomeIntent
+                Intent intent = ((OnboardingRouter) getActivity().getApplicationContext())
+                        .getHomeIntent
                         (getActivity());
-//                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
-//                startActivity(intent);
-//                getActivity().finish();
+                startActivity(intent);
+                getActivity().finish();
             }
         });
         startNow.setVisibility(View.GONE);

@@ -66,4 +66,10 @@ public class GlobalNavModule {
             }
         };
     }
+
+    @Provides
+    @GlobalNavScope
+    com.tokopedia.user.session.UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new com.tokopedia.user.session.UserSession(context);
+    }
 }
