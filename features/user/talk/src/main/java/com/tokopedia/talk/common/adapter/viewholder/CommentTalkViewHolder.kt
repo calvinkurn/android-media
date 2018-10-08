@@ -2,13 +2,13 @@ package com.tokopedia.talk.common.adapter.viewholder
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.ticker.SelectableSpannedMovementMethod
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
@@ -84,7 +84,8 @@ class CommentTalkViewHolder(val v: View,
         reportedLayout.visibility = View.GONE
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.comment)
-        talkContent.movementMethod = LinkMovementMethod.getInstance()
+        talkContent.movementMethod = SelectableSpannedMovementMethod()
+
     }
 
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {

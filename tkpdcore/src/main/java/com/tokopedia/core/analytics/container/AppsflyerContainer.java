@@ -28,9 +28,9 @@ import rx.schedulers.Schedulers;
 
 /**
  * @author by Nanda J.A on 6/25/2015.
- *         Modified by Alvarisi
- *         Modified by Alvarisi 29/11/2016
- *         appsflyer get commented.
+ * Modified by Alvarisi
+ * Modified by Alvarisi 29/11/2016
+ * appsflyer get commented.
  */
 public class AppsflyerContainer implements IAppsflyerContainer {
 
@@ -38,6 +38,8 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     private Context context;
     public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
     private static final String KEY_INSTALL_SOURCE = "install_source";
+
+    private static String deferredDeeplinkPath = "";
 
     public interface AFAdsIDCallback {
         void onGetAFAdsID(String string);
@@ -93,11 +95,11 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         }
     }
 
-    private HashMap<String, Object> initAdditionalData(){
+    private HashMap<String, Object> initAdditionalData() {
         return new HashMap<>();
     }
 
-    private String getInstallSource(){
+    private String getInstallSource() {
         String installer = context.getPackageManager().getInstallerPackageName(
                 context.getPackageName());
         return installer;
@@ -165,7 +167,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
             e.printStackTrace();
             return "";
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
@@ -180,5 +182,13 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     @Override
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
+    }
+
+    public static String getDefferedDeeplinkPathIfExists() {
+        return deferredDeeplinkPath;
+    }
+
+    public static void setDefferedDeeplinkPathIfExists(String deeplinkPath) {
+        deferredDeeplinkPath = deeplinkPath;
     }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 
@@ -41,6 +42,8 @@ public interface FlightComponent {
     CacheManager cacheManager();
 
     AnalyticTracker analyticTracker();
+
+    FlightDateUtil flightdateutlil();
 
     FlightModuleRouter flightModuleRouter();
 
