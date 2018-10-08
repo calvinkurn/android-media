@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.view.Gravity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,25 +37,18 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.design.component.badge.BadgeView;
-import com.tokopedia.tkpdpdp.customview.CountDrawable;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -73,13 +64,13 @@ import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
-import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -92,8 +83,24 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
+import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
+import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity;
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
+import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
+import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -112,6 +119,7 @@ import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.constant.ConstantKey;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
+import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
 import com.tokopedia.tkpdpdp.customview.FlingBehavior;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
@@ -122,19 +130,19 @@ import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
-import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
-import com.tokopedia.tkpdpdp.estimasiongkir.presentation.activity.RatesEstimationDetailActivity;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.activity.RatesEstimationDetailActivity;
 import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.Xparams;
@@ -145,13 +153,14 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsProductDetailPage;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -199,7 +208,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener, MerchantVoucherListView {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -211,6 +220,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
     public static final int REQUEST_CODE_LOGIN = 561;
+    public static final int REQUEST_CODE_LOGIN_USE_VOUCHER = 562;
+    public static final int REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 563;
+    public static final int REQUEST_CODE_MERCHANT_VOUCHER = 564;
+
     public static final int STATUS_IN_WISHLIST = 1;
     public static final int STATUS_NOT_WISHLIST = 0;
     public static final int REQUEST_VARIANT = 99;
@@ -229,14 +242,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
-    public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
     private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
     public static final int TYPE_BUTTON_BUY_CART = 10;
     public static final int TYPE_BUTTON_BUY_BELI = 20;
     public static final int TYPE_BUTTON_OPEN_VARIANT = 30;
-    private static final int TOASTER_DURATION = 2000;
+    public static final int NUM_VOUCHER_TO_SHOW = 3;
 
     private CoordinatorLayout coordinatorLayout;
     private HeaderInfoView headerInfoView;
@@ -244,7 +256,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
-    private PromoWidgetView promoWidgetView;
+
+    MerchantVoucherListPresenter voucherListpresenter;
+    private MerchantVoucherListWidget merchantVoucherListWidget;
+
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
     private VideoDescriptionLayout videoDescriptionLayout;
@@ -282,14 +297,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
-    private PromoAttributes promoAttributes;
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
-    private UserSession userSession;
     private int selectedQuantity;
     private String selectedRemarkNotes;
     private CacheInteractor cacheInteractor;
+
+    private boolean needLoadVoucher;
 
     private RemoteConfig remoteConfig;
     private ShowCaseDialog showCaseDialog;
@@ -326,6 +341,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
+                .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
+                .shopCommonModule(new ShopCommonModule())
+                .build();
+        voucherListpresenter = merchantVoucherComponent.merchantVoucherListPresenter();
+        voucherListpresenter.attachView(this);
+
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
             useVariant = false;
@@ -369,7 +391,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
-        promoWidgetView = (PromoWidgetView) view.findViewById(R.id.view_promo_widget);
+        merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
@@ -409,6 +431,47 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         expandedAppBar();
                         break;
                 }
+            }
+        });
+        merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(new MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener() {
+            @Override
+            public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+                if (getContext() == null) {
+                    return;
+                }
+                if (!voucherListpresenter.isLogin()) {
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+                } else if (!isOwner()) {
+                    voucherListpresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                            merchantVoucherViewModel.getVoucherId());
+                }
+            }
+
+            @Override
+            public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+                if (getContext()!= null && productData!= null) {
+                    Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
+                            merchantVoucherViewModel, productData.getShopInfo().getShopId());
+                    startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
+                }
+            }
+
+            @Override
+            public void onSeeAllClicked() {
+                if (getContext()!= null &&  productData!= null) {
+                    Intent intent = MerchantVoucherListActivity.createIntent(getContext(), productData.getShopInfo().getShopId(),
+                            productData.getShopInfo().getShopName());
+                    startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
+                }
+            }
+
+            @Override
+            public boolean isOwner() {
+                if (productData != null) {
+                    return voucherListpresenter.isMyShop(productData.getShopInfo().getShopId());
+                }
+                return false;
             }
         });
         setHasOptionsMenu(true);
@@ -479,7 +542,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         newShopView.setListener(this);
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
-        promoWidgetView.setListener(this);
         mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
@@ -497,7 +559,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialVar() {
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -1173,6 +1234,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView(getActivity());
+        voucherListpresenter.detachView();
         destroyVideoLayout();
     }
 
@@ -1218,7 +1280,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
-        presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
         presenter.saveStateAppBarCollapsed(outState, STATE_APP_BAR_COLLAPSED, isAppBarCollapsed);
     }
 
@@ -1389,6 +1450,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         }
                     }
                 }
+            case REQUEST_CODE_LOGIN_USE_VOUCHER:
+            case REQUEST_CODE_MERCHANT_VOUCHER:
+            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL:{
+                if (resultCode == Activity.RESULT_OK) {
+                    needLoadVoucher = true;
+                }
+            }
+            break;
             default:
                 break;
         }
@@ -1410,6 +1479,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             this.newShopView.renderData(productData);
             refreshMenu();
             updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+        }
+        if (needLoadVoucher) {
+            voucherListpresenter.clearCache();
+            loadPromo();
+            needLoadVoucher = false;
         }
     }
 
@@ -1543,12 +1617,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 String.valueOf(productData.getInfo().getProductId()), productData.getShopInfo().getShopId(),
                 GlobalConfig.isSellerApp() ? TopAdsSourceOption.SA_PDP :
                         TopAdsSourceOption.MA_PDP);
-    }
-
-    @Override
-    public void showPromoWidget(PromoAttributes promoAttributes) {
-        this.promoAttributes = promoAttributes;
-        this.promoWidgetView.renderData(promoAttributes);
     }
 
     @Override
@@ -1776,6 +1844,57 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         cacheInteractor.deleteProductDetail(Integer.parseInt(productId));
     }
 
+    @Override
+    public void onSuccessGetShopInfo(@NotNull ShopInfo shopInfo) {
+        //no op
+    }
+
+    @Override
+    public void onErrorGetShopInfo(@NotNull Throwable e) {
+        //no op
+    }
+
+    @Override
+    public void onSuccessUseVoucher() {
+        if (getActivity() != null) {
+            ToasterNormal.make(getActivity().findViewById(android.R.id.content),
+                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
+                    .setAction(getString(R.string.title_ok), v -> {
+                        //no op
+                    }).show();
+            voucherListpresenter.clearCache();
+            loadPromo();
+        }
+    }
+
+    @Override
+    public void onErrorUseVoucher(@NotNull Throwable e) {
+        if (getActivity() != null) {
+            if (e instanceof MessageTitleErrorException) {
+
+                com.tokopedia.design.component.Dialog dialog = new com.tokopedia.design.component.Dialog(getActivity(),
+                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
+                dialog.setTitle(((MessageTitleErrorException) e).getErrorMessageTitle());
+                dialog.setDesc(e.getMessage());
+                dialog.setBtnOk(getString(R.string.label_close));
+                dialog.setOnOkClickListener(v -> dialog.dismiss());
+                dialog.show();
+            } else {
+                ToasterError.showClose(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        merchantVoucherListWidget.setData(merchantVoucherViewModelList);
+    }
+
+    @Override
+    public void onErrorGetMerchantVoucherList(@NotNull Throwable e) {
+        merchantVoucherListWidget.setData(null);
+    }
+
     private class EditClick implements View.OnClickListener {
         private final ProductDetailData data;
 
@@ -1808,6 +1927,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
+    @Override
+    public void loadPromo() {
+        if (productData!= null) {
+            voucherListpresenter.getVoucherList(productData.getShopInfo().getShopId(),
+                    NUM_VOUCHER_TO_SHOW);
+        }
+    }
 
     @Override
     public boolean isSellerApp() {
@@ -1911,7 +2037,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void showSnackbarSuccessAtc(String message) {
-        ToasterNormal.make(getView(), message, TOASTER_DURATION).show();
+        ToasterNormal.make(getView(), message, ToasterNormal.LENGTH_LONG).show();
     }
 
     private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {

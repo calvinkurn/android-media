@@ -311,7 +311,6 @@ dependencies {
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
-    implementation project(rootProject.ext.features.merchantVoucher)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
@@ -334,6 +333,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
 

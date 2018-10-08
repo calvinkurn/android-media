@@ -14,6 +14,4 @@ import java.util.Map;
 public interface MerchantVoucherModuleRouter {
 
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
-
-    Intent getLoginIntent(Context context);
 }

@@ -6,15 +6,11 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
-import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 
 /**
