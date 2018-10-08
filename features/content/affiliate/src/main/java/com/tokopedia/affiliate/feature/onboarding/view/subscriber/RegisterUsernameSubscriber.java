@@ -40,7 +40,9 @@ public class RegisterUsernameSubscriber extends Subscriber<GraphqlResponse> {
         view.hideLoading();
         RegisterUsernameData data = graphqlResponse.getData(RegisterUsernameData.class);
 
-        if (!TextUtils.isEmpty(data.getBymeRegisterAffiliateName().getError().getMessage())) {
+        if (data.getBymeRegisterAffiliateName().getError() != null
+                && !TextUtils.isEmpty(
+                        data.getBymeRegisterAffiliateName().getError().getMessage())) {
             if (ERROR_VALIDATION.equalsIgnoreCase(
                     data.getBymeRegisterAffiliateName().getError().getType())) {
                 view.onErrorInputRegisterUsername(

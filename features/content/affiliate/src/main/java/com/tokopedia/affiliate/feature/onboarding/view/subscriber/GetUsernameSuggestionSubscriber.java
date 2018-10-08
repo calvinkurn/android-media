@@ -22,11 +22,11 @@ public class GetUsernameSuggestionSubscriber extends Subscriber<GraphqlResponse>
 
     @Override
     public void onCompleted() {
-        view.hideLoading();
     }
 
     @Override
     public void onError(Throwable e) {
+        view.hideLoading();
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
@@ -34,6 +34,7 @@ public class GetUsernameSuggestionSubscriber extends Subscriber<GraphqlResponse>
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
+        view.hideLoading();
         GetUsernameSuggestionData data = graphqlResponse.getData(GetUsernameSuggestionData.class);
         if (data != null && data.getSuggestion() != null
                 && data.getSuggestion().getSuggestions() != null) {

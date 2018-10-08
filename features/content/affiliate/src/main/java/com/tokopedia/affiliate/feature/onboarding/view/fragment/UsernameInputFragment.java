@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
@@ -28,9 +29,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputCon
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
@@ -170,9 +169,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorRegisterUsername(String message) {
-        ToasterError.make(mainView, message, BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_try_again, v -> registerUsername())
-                .show();
+        NetworkErrorHelper.showRedSnackbar(mainView, message);
     }
 
     @Override
