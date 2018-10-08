@@ -2,5 +2,11 @@
           package="com.tokopedia.onboarding">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <application>
 
+        <activity
+            android:name=".NewOnboardingActivity"
+            android:screenOrientation="portrait"/>
+
+    </application>
 </manifest>

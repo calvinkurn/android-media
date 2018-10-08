@@ -449,7 +449,6 @@
         </provider>
 
         <activity android:name=".referral.ReferralActivity" />
-        <activity android:name=".onboarding.NewOnboardingActivity"></activity>
         <activity android:name=".referral.FriendsWelcomeActivity" />
     </application>
 
