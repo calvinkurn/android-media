@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
@@ -219,6 +220,20 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (root != null) {
+            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
+            viewTreeObserver.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+                @Override
+                public void onDraw() {
+                    Log.d("MEY", "FINISH RENDERING");
+                }
+            });
+        }
     }
 
     @Override
