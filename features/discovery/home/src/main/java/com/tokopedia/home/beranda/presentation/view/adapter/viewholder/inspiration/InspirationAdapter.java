@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;

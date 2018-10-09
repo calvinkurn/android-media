@@ -27,7 +27,7 @@ import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.countdown.CountDownView;

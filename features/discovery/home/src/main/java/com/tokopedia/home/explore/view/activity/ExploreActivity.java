@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;

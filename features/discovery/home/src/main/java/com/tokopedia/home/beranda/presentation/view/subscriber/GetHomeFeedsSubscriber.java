@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;

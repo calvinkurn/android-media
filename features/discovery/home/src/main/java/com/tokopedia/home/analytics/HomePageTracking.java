@@ -1,5 +1,11 @@
-package com.tokopedia.core.analytics;
+package com.tokopedia.home.analytics;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 
@@ -21,6 +27,14 @@ public class HomePageTracking extends TrackingUtils {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
+    public static AnalyticTracker getTracker(Context context){
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return null;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        return tracker;
+    }
+
     public static void eventPromoImpression(Promotion promotion) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getImpressionDataLayer());
@@ -31,13 +45,16 @@ public class HomePageTracking extends TrackingUtils {
         getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
     }
 
-    public static void eventClickViewAllPromo() {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "slider banner click view all",
-                ""
-        ).getEvent());
+    public static void eventClickViewAllPromo(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "slider banner click view all",
+                    ""
+            );
+        }
     }
 
     private static void flushEventTracker() {
@@ -46,22 +63,38 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickJumpRecomendation() {
-        sendGTMEvent(new EventTracking(
-                CLICK_HOME_PAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "cek rekomendasi jumper click",
-                ""
-        ).getEvent());
+    public static void sendScreen(Activity activity, String screenName) {
+        if(activity != null){
+            AnalyticTracker tracker = getTracker(activity.getBaseContext());
+            if(tracker != null){
+                tracker.sendScreen(activity, screenName);
+            }
+        }
     }
 
-    public static void eventImpressionJumpRecomendation() {
-        sendGTMEvent(new EventTracking(
-                EVENT_IMPRESSION_HOME_PAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "cek rekomendasi jumper impression",
-                ""
-        ).getEvent());
+    public static void eventClickJumpRecomendation(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    CLICK_HOME_PAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "cek rekomendasi jumper click",
+                    ""
+            );
+        }
+    }
+
+    //TODO homeFragment done
+    public static void eventImpressionJumpRecomendation(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_IMPRESSION_HOME_PAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "cek rekomendasi jumper impression",
+                    ""
+            );
+        }
     }
 
     public static void eventClickHomeUseCase(String title) {

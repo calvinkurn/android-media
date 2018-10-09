@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;

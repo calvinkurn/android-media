@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
@@ -95,7 +95,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo();
+        HomePageTracking.eventClickViewAllPromo(context);
         HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
 
         boolean remoteConfigEnable;
