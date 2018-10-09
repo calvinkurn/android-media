@@ -1,5 +1,7 @@
 package com.tokopedia.flight.searchV2.presentation.model;
 
+import java.util.List;
+
 /**
  * Created by Rizky on 26/09/18.
  */
@@ -13,8 +15,9 @@ public class FlightSearchMetaViewModel {
     private int maxRetry;
     private int retryNo;
     private long last_pulled;
+    private List<String> airlines;
 
-    public FlightSearchMetaViewModel(String departureAirport, String arrivalAirport, String date, boolean needRefresh, int refreshTime, int maxRetry, int retryNo, long last_pulled) {
+    public FlightSearchMetaViewModel(String departureAirport, String arrivalAirport, String date, boolean needRefresh, int refreshTime, int maxRetry, int retryNo, long last_pulled, List<String> airlines) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;
         this.date = date;
@@ -23,6 +26,7 @@ public class FlightSearchMetaViewModel {
         this.maxRetry = maxRetry;
         this.retryNo = retryNo;
         this.last_pulled = last_pulled;
+        this.airlines = airlines;
     }
 
     public String getDepartureAirport() {
@@ -57,4 +61,7 @@ public class FlightSearchMetaViewModel {
         return last_pulled;
     }
 
+    public List<String> getAirlines() {
+        return airlines;
+    }
 }
