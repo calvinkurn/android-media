@@ -4,7 +4,10 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 
 import java.util.List;
 
@@ -78,6 +81,7 @@ public interface FlightSearchContract {
 
         void navigateToNextPage(String selectedId);
 
+        void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
     }
 
     interface Presenter {
@@ -93,6 +97,10 @@ public interface FlightSearchContract {
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
         void setDelayHorizontalProgress();
+
+        void fetchSearchData(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModelList flightAirportCombineModelList);
+
+        void fetchSearchDataFromCloud(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModel flightAirportCombineModelList);
     }
 
 }

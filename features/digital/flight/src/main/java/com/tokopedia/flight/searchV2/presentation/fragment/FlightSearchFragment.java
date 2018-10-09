@@ -42,6 +42,7 @@ import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTyp
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
 
@@ -134,7 +135,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         setUpProgress();
         setUpBottomAction(view);
         setUpSwipeRefresh(view);
-        showFilterAndSortView();
         return view;
     }
 
@@ -153,6 +153,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     public void onResume() {
         super.onResume();
         flightSearchPresenter.attachView(this);
+
+        loadInitialData();
     }
 
     @Override
@@ -244,7 +246,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     public void fetchFlightSearchData() {
+        setUpProgress();
+        if (getAdapter().getItemCount() == 0) {
+            showLoading();
+        }
 
+        flightSearchPresenter.fetchSearchData(passDataViewModel, flightAirportCombineModelList);
     }
 
     @Override
@@ -385,6 +392,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(selectedId);
         }
+    }
+
+    @Override
+    public void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel) {
+
     }
 
     @Override
