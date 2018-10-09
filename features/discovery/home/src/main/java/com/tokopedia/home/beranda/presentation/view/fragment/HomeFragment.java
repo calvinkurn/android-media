@@ -40,9 +40,6 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -70,7 +67,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsView
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
-import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -816,27 +812,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void updateCursorNoNextPageFeed() {
         presenter.setCursorNoNextPageFeed();
     }
-
-    private void openWebViewBrandsURL(String url) {
-        if (!url.trim().equals("")) {
-            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
-        }
-    }
-
-    public void openWebViewTopPicksURL(String url) {
-        if (!url.isEmpty()) {
-            startActivity(TopPicksWebView.newInstance(getActivity(), url));
-        }
-    }
-
-    private void openWebViewGimicURL(String url, String label, String title) {
-        if (!url.equals("")) {
-            Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getActivity(), url, title);
-            startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
-        }
-    }
-
 
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
