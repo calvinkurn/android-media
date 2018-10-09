@@ -35,14 +35,19 @@ public class HomePageTracking extends TrackingUtils {
         return tracker;
     }
 
-    public static void eventPromoImpression(Promotion promotion) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getImpressionDataLayer());
+    public static void eventPromoImpression(Context context,
+                                            Promotion promotion) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(promotion.getImpressionDataLayer());
+        }
     }
 
-    public static void eventPromoClick(Promotion promotion) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
+    public static void eventPromoClick(Context context, Promotion promotion) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(promotion.getClickDataLayer());
+        }
     }
 
     public static void eventClickViewAllPromo(Context context) {
@@ -146,13 +151,16 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickSeeAllProductSprintBackground() {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "sprint sale with backgroud click view all",
-                ""
-        ).getEvent());
+    public static void eventClickSeeAllProductSprintBackground(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "sprint sale with backgroud click view all",
+                    ""
+            );
+        }
     }
 
     public static void eventEnhancedImpressionSprintSaleHomePage(Context context,

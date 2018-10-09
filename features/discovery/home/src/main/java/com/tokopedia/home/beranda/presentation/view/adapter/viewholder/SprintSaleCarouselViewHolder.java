@@ -99,7 +99,9 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     public void onGridItemClick(int pos, DynamicHomeChannel.Grid grid) {
         Map<String, Object> evenMap = channels.getEnhanceClickSprintSaleCarouselHomePage(pos,
                 countDownView.getCurrentCountDown(), grid.getLabel());
-        HomePageTracking.eventEnhancedClickSprintSaleProduct(evenMap);
+        HomePageTracking.eventEnhancedClickSprintSaleProduct(
+                context,
+                evenMap);
 
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
                 String.valueOf(evenMap.get(ATTRIBUTION)));
@@ -143,7 +145,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
 
     private void onClickSeeAll() {
         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
-        HomePageTracking.eventClickSeeAllProductSprintBackground();
+        HomePageTracking.eventClickSeeAllProductSprintBackground(context);
         HomeTrackingUtils.homeSprintSaleViewAll(DynamicLinkHelper.getActionLink(channels.getHeader()));
     }
 
