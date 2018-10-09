@@ -14,7 +14,8 @@ import javax.inject.Inject
  */
 class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
-        private val flightRouteDao: FlightRouteDao) {
+        private val flightRouteDao: FlightRouteDao,
+        private val flightJourneyComboJoinDao: FlightJourneyComboJoinDao) {
 
     fun insert(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
@@ -130,6 +131,12 @@ class FlightSearchSingleDataDbSource @Inject constructor(
         }
         stringBuilder.append("AND ")
         return stringBuilder.toString()
+    }
+
+    fun insert(journey: JourneyAndRoutes?, combo: FlightComboTable?) {
+        val flightJourneyComboJoinTable = FlightJourneyComboJoinTable(journey?.flightJourneyTable?.id,
+                combo?.returnJourneyId)
+        flightJourneyComboJoinDao.insert(flightJourneyComboJoinTable)
     }
 
 }

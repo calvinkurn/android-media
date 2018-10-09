@@ -19,35 +19,36 @@ class FlightSearchV2UseCase @Inject constructor(
     private val PARAM_SEARCH_COMBINED = "search_combined"
     private val PARAM_IS_RETURNING = "is_return"
     private val PARAM_IS_ROUND_TRIP = "is_round_trip"
+    private val PARAM_ONWARD_JOURNEY_ID = "onward_journey_id"
 
     override fun createObservable(requestParams: RequestParams): Observable<FlightSearchMetaViewModel> {
         val isRoundTrip = requestParams.getBoolean(PARAM_IS_ROUND_TRIP, false)
         val isReturning = requestParams.getBoolean(PARAM_IS_RETURNING, false)
+        val onwardJourneyId = requestParams.getString(PARAM_ONWARD_JOURNEY_ID, "")
 
         val flightSearchApiRequestModel =
                 requestParams.getObject(PARAM_INITIAL_SEARCH) as FlightSearchApiRequestModel
 
-        if (isRoundTrip && !isReturning) {
+        if (isRoundTrip) {
             val flightSearchCombinedApiRequestModel =
                     requestParams.getObject(PARAM_SEARCH_COMBINED) as FlightSearchCombinedApiRequestModel
-
             return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel)
                     .flatMap {
-                        flightSearchRepository.getSearchSingleCombined(requestParams.parameters)
-                                .map { meta ->
-                                    with(meta) {
-                                        return@map FlightSearchMetaViewModel(
-                                                flightSearchApiRequestModel.depAirport,
-                                                flightSearchApiRequestModel.arrAirport,
-                                                flightSearchApiRequestModel.date,
-                                                isNeedRefresh,
-                                                refreshTime,
-                                                maxRetry,
-                                                0,
-                                                0
-                                        )
-                                    }
+                        flightSearchRepository.getSearchSingleCombined(requestParams.parameters, isReturning)
+                            .map { meta ->
+                                with(meta) {
+                                    return@map FlightSearchMetaViewModel(
+                                            flightSearchApiRequestModel.depAirport,
+                                            flightSearchApiRequestModel.arrAirport,
+                                            flightSearchApiRequestModel.date,
+                                            isNeedRefresh,
+                                            refreshTime,
+                                            maxRetry,
+                                            0,
+                                            0
+                                    )
                                 }
+                            }
                     }
         } else {
             return flightSearchRepository.getSearchSingle(requestParams.parameters)
@@ -71,7 +72,8 @@ class FlightSearchV2UseCase @Inject constructor(
     fun createRequestParams(flightSearchSingleApiRequestModel: FlightSearchApiRequestModel,
                             flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel?,
                             isReturning: Boolean,
-                            isRoundTrip: Boolean) : RequestParams {
+                            isRoundTrip: Boolean,
+                            onwardJourneyId: String?) : RequestParams {
         val requestParams = RequestParams.create()
         if (flightSearchCombinedApiRequestModel != null) {
             requestParams.putObject(PARAM_SEARCH_COMBINED, flightSearchCombinedApiRequestModel)
@@ -81,6 +83,7 @@ class FlightSearchV2UseCase @Inject constructor(
         }
         requestParams.putBoolean(PARAM_IS_RETURNING, isReturning)
         requestParams.putBoolean(PARAM_IS_ROUND_TRIP, isRoundTrip)
+        requestParams.putString(PARAM_ONWARD_JOURNEY_ID, onwardJourneyId)
         return requestParams
     }
 

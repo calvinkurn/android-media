@@ -17,7 +17,6 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiR
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import rx.Observable
 import rx.functions.Func2
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -77,7 +76,7 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     // call search single api and then combine the result with combo, airport and airline db
-    fun getSearchSingleCombined(params: HashMap<String, Any>): Observable<Meta> {
+    fun getSearchSingleCombined(params: HashMap<String, Any>, isReturn: Boolean): Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
                 Observable.from(journeyResponse.attributes.routes)
@@ -86,7 +85,8 @@ open class FlightSearchRepository @Inject constructor(
                         .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport)) {
                             airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
                             val isRefundable = isRefundable(journeyResponse.attributes.routes)
-                            val flightJourneyTable = createJourney(journeyResponse.id, journeyResponse.attributes, isRefundable)
+                            val flightJourneyTable = createJourney(journeyResponse.id, journeyResponse.attributes,
+                                    isRefundable, isReturn)
                             val completeJourney = createJourneyWithAirportAndAirline(
                                     flightJourneyTable, pairOfAirport, airlines)
                             val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id)
@@ -112,7 +112,6 @@ open class FlightSearchRepository @Inject constructor(
                 flightSearchSingleDataDbSource.insert(journeyAndRoutes)
                 response.meta
             }
-
         }
     }
 
@@ -138,7 +137,8 @@ open class FlightSearchRepository @Inject constructor(
                     with(journey.attributes) {
                         val routes = createRoutes(routes, journey.id)
                         val isRefundable = isRefundable(journey.attributes.routes)
-                        val flightJourneyTable = createJourney(journey.id, this, isRefundable)
+                        val flightJourneyTable = createJourney(journey.id, this, isRefundable,
+                                false)
                         val journeyAndRoutesJava = JourneyAndRoutes(flightJourneyTable, routes)
                         journeyAndRoutesJavaList.add(journeyAndRoutesJava)
                     }
@@ -169,12 +169,20 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
     }
 
-    fun getSearchReturnBestPairsByOnwardJourneyId(onwardJourneyId: String) : Observable<List<JourneyAndRoutes>> {
-        return flightSearchCombinedDataDbSource.getSearchCombined(onwardJourneyId)
-                .flatMapIterable { it }
-                .filter { it.isBestPairing }
-                .flatMap { flightSearchSingleDataDbSource.getJourneyById(it.returnJourneyId) }
-                .toList()
+    fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
+        return flightSearchCombinedDataDbSource.getSearchCombined(filterModel.journeyId)
+                .flatMap {
+                    Observable.from(it)
+                            .filter { combo -> combo.isBestPairing }
+                            .flatMap { combo ->
+                                flightSearchSingleDataDbSource.getJourneyById(combo.returnJourneyId)
+                                        .map { journey ->
+//                                            flightSearchSingleDataDbSource.insert(journey, combo)
+                                            journey
+                                        }
+                            }
+                            .toList()
+                }
     }
 
     private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
@@ -200,7 +208,8 @@ open class FlightSearchRepository @Inject constructor(
         )
     }
 
-    private fun createJourney(journeyId: String, attributes: Attributes, isRefundable: RefundableEnum)
+    private fun createJourney(journeyId: String, attributes: Attributes, isRefundable: RefundableEnum,
+                              isReturn: Boolean)
             : FlightJourneyTable {
         with(attributes) {
             return FlightJourneyTable(
@@ -241,7 +250,7 @@ open class FlightSearchRepository @Inject constructor(
                     false,
                     beforeTotal,
                     0,
-                    false,
+                    isReturn,
                     isRefundable,
                     !TextUtils.isEmpty(beforeTotal)
             )

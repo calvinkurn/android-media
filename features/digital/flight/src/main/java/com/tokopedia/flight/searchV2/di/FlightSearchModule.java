@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
+import com.tokopedia.flight.searchV2.data.db.FlightJourneyComboJoinDao;
 import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
 import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
 import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
@@ -44,6 +45,12 @@ public class FlightSearchModule {
     @FlightSearchScope
     FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightRouteDao();
+    }
+
+    @Provides
+    @FlightSearchScope
+    FlightJourneyComboJoinDao provideFlightJourneyComboJoinDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightJourneyComboJoinDao();
     }
 
 }
