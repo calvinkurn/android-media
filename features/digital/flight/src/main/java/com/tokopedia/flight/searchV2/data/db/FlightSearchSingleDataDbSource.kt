@@ -2,6 +2,7 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
+import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
@@ -55,6 +56,9 @@ class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
             sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
             sqlStringBuilder.append("isReturn = $isReturnInt")
+
+
+            sqlStringBuilder.append("ORDER BY ")
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 
@@ -131,5 +135,18 @@ class FlightSearchSingleDataDbSource @Inject constructor(
         stringBuilder.append("AND ")
         return stringBuilder.toString()
     }
+
+//    private fun getOrderBy(flightSortOption: FlightSortOption): String {
+//        when (flightSortOption) {
+//            FlightSortOption.CHEAPEST -> "ORDER BY sortPrice"
+//            FlightSortOption.EARLIEST_ARRIVAL -> "ORDER BY sortPrice"
+//        }
+//    }
+
+//    fun insert(journey: JourneyAndRoutes?, combo: FlightComboTable?) {
+//        val flightJourneyComboJoinTable = FlightJourneyComboJoinTable(journey?.flightJourneyTable?.id,
+//                combo?.returnJourneyId)
+//        flightJourneyComboJoinDao.insert(flightJourneyComboJoinTable)
+//    }
 
 }

@@ -26,7 +26,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return if (!TextUtils.isEmpty(filterModel.journeyId)) {
-            flightSearchRepository.getSearchReturnBestPairsByOnwardJourneyId(filterModel.journeyId)
+            flightSearchRepository.getSearchReturnBestPairsByOnwardJourneyId(filterModel)
                     .map { it ->
                         it.map { journeyAndRoutes ->
                             val routes = journeyAndRoutes.routes.map {
