@@ -98,7 +98,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
                                               cursor: String) {
-        addFooter(profileFirstPageViewModel.profileHeaderViewModel)
+        if (!TextUtils.isEmpty(profileFirstPageViewModel.profileHeaderViewModel.affiliateName)) {
+            addFooter(profileFirstPageViewModel.profileHeaderViewModel)
+        }
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(profileFirstPageViewModel.profileHeaderViewModel)
@@ -141,8 +143,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun addFooter(headerViewModel: ProfileHeaderViewModel) {
-
-
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE

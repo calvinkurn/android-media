@@ -105,6 +105,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                     profile.totalFollower.formatted,
                     profile.totalFollowing.formatted,
                     quota.formatted,
+                    profile.affiliateName,
                     profile.link,
                     userId,
                     profile.isKol,

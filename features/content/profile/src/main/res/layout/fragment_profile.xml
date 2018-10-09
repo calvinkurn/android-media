@@ -65,8 +65,9 @@
                 android:id="@+id/shareOwn"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="0dp"
-                android:padding="@dimen/dp_8"
+                android:padding="@dimen/dp_4"
                 android:src="@drawable/ic_af_share_grey"
+                android:background="@drawable/af_rounded_corner"
                 app:layout_constraintBottom_toBottomOf="@id/addRecommendation"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/addRecommendation"
@@ -85,6 +86,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/profile_share_profile"
+                android:textAllCaps="false"
+                android:layout_margin="@dimen/dp_1"
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="secondary" />
         </FrameLayout>
