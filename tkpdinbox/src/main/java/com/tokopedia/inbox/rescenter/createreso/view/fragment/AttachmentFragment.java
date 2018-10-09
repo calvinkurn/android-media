@@ -297,7 +297,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
                 builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        AttachmentFragmentPermissionsDispatcher.actionVideoPickerWithCheck(AttachmentFragment.this);
+                        actionVideoPicker();
                     }
                 }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
                     @Override
