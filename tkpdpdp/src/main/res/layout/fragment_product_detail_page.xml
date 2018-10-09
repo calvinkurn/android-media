@@ -126,19 +126,24 @@
                 android:layout_height="@dimen/dp_8"
                 android:background="@drawable/bg_shadow_top" />
 
-            <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-                android:id="@+id/merchantVoucherListWidget"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_2"
-                android:layout_marginRight="@dimen/dp_2"
-                app:mvlwTitleString="@string/merchant_voucher"
-                app:mvlwTitleTextSize="@dimen/sp_14"
-                android:textColor="@color/black_70"
-                android:textStyle="bold"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_2"
                 android:clipToPadding="false"
-                android:clipChildren="false" />
+                android:clipChildren="false">
+                <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+                    android:id="@+id/merchantVoucherListWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    app:mvlwTitleString="@string/promo"
+                    app:mvlwTitleTextSize="@dimen/sp_14"
+                    android:textColor="@color/black_70"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <com.tokopedia.tkpdpdp.customview.TransactionDetailView
                 android:id="@+id/view_transaction_detail"
