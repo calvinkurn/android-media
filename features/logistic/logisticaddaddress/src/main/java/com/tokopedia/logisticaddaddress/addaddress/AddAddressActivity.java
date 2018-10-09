@@ -30,6 +30,23 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return SCREEN_ADD_ADDRESS_FORM;
     }
 
+    /**
+     * Always pass a bundle because the activity always get intent extra
+     */
+    @Override
+    protected Fragment getNewFragment() {
+        Fragment fragment = null;
+        if (getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            fragment = AddAddressFragment.createInstance(bundle);
+        }
+        return fragment;
+    }
+
+    /**
+     * @return intent for activity creation
+     * Used for add new address
+     */
     public static Intent createInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
@@ -40,6 +57,10 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return intent;
     }
 
+    /**
+     * @return intent for activity creation
+     * Used for edit address
+     */
     public static Intent createInstance(Activity activity, AddressModel data, Token token) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
@@ -51,6 +72,9 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return intent;
     }
 
+    /**
+     * Used from cart checkout for add or edit address
+     */
     public static Intent createInstanceFromCartCheckout(
             Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst
     ) {
@@ -64,19 +88,5 @@ public class AddAddressActivity extends BaseSimpleActivity {
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
         return intent;
-    }
-
-
-    /**
-     * Always pass a bundle because the activity always get intent extra
-     */
-    @Override
-    protected Fragment getNewFragment() {
-        Fragment fragment = null;
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-            fragment = new AddAddressFragment();
-        }
-        return fragment;
     }
 }
