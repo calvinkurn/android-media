@@ -342,6 +342,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
         title.setText(R.string.has_voted);
         channelInfoDialog.setContentView(view);
         channelInfoDialog.show();
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
@@ -354,6 +355,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 channelInfoDialog.show();
             }
         }, 500);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @Override
