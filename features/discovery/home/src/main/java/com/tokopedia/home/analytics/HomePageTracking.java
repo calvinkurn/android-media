@@ -185,12 +185,20 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventEnhancedImpressionFavoriteCategory(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedImpressionFavoriteCategory(Context context,
+                                                               Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
-    public static void eventEnhancedClickFavoriteCategory(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedClickFavoriteCategory(Context context,
+                                                          Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
     public static void eventEnhancedImpressionProductHomePage(Map<String, Object> data) {
