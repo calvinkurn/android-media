@@ -28,6 +28,10 @@ def isProduction() {
     return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
 }
 
+def isAlpha() {
+    return project.hasProperty('tkpdBuildType') && tkpdBuildType == "alpha";
+}
+
 def allowSplit() {
     return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
             (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit");
@@ -153,7 +157,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !allowDistribution()) {
+            if (!isProduction() && !isAlpha()) {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel=true
