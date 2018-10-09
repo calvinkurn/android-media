@@ -47,6 +47,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRoute
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.remote_config.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
@@ -211,7 +212,7 @@ public class SearchActivity extends DiscoveryActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
 
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
+        if (remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH, false) &&
                 intent != null) {
 
             if (intent.getClipData() != null &&

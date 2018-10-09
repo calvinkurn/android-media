@@ -48,6 +48,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.remote_config.RemoteConfigKey;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
@@ -2127,7 +2128,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void renderTopAds(int itemSize) {
-        if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
+        if (!firebaseRemoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
             return;
         try {
             Xparams xparams = new Xparams();

@@ -26,6 +26,7 @@ import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.BannerAdapter;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +180,7 @@ public class DigitalPromoFragment extends Fragment implements BannerAdapter.Acti
         } else if (linkSegment.size() == 1) {
             FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
             boolean remoteConfigEnable = remoteConfig.getBoolean(
-                    TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+                    RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
             );
             if (remoteConfigEnable) {
                 Intent intent = router.getPromoListIntent(getActivity());

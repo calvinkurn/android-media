@@ -19,6 +19,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +102,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         boolean remoteConfigEnable;
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
         remoteConfigEnable = remoteConfig.getBoolean(
-                TkpdCache.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+                RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         );
         if (remoteConfigEnable) {
             context.startActivity(PromoListActivity.newInstance(

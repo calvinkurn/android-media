@@ -10,6 +10,7 @@ import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -100,7 +101,7 @@ public class AnalyticsLog {
 
     public static void logNotification(String notificationId, String notificationCode) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
             AnalyticsLog.log("Notification Received. User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
                     + " Notification Id: " + notificationId
                     + " Notification Code: " + notificationCode

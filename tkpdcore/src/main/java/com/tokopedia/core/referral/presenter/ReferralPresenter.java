@@ -32,6 +32,7 @@ import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.TokoCashTypeDef;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -191,7 +192,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public String getReferralSubHeader() {
         if (isAppShowReferralButtonActivated()) {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
+            return remoteConfig.getString(RemoteConfigKey.REFERRAL_SUBHEADER, getView().getActivity().getString(R.string.app_share_referral_label_desc));
         } else {
             return getView().getActivity().getString(R.string.app_share_label_desc);
         }
@@ -199,7 +200,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public String getHowItWorks() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_HOWITWORKS, getView().getActivity().getString(R.string.title_app_referral_howitworks));
+        return remoteConfig.getString(RemoteConfigKey.APP_REFERRAL_HOWITWORKS, getView().getActivity().getString(R.string.title_app_referral_howitworks));
     }
 
     @Override
@@ -210,15 +211,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public Boolean isAppShowReferralButtonActivated() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
     private String getAppShareDescription() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION, getView().getActivity().getString(R.string.app_share_label_desc));
+        return remoteConfig.getString(RemoteConfigKey.APP_SHARE_DESCRIPTION, getView().getActivity().getString(R.string.app_share_label_desc));
     }
 
     private String getAppShareDefaultMessage() {
-        String message = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DEFAULT_MESSAGE, getView().getActivity().getString(R.string.app_share_default_msg));
+        String message = remoteConfig.getString(RemoteConfigKey.APP_SHARE_DEFAULT_MESSAGE, getView().getActivity().getString(R.string.app_share_default_msg));
         if (TextUtils.isEmpty(message)) {
             message = getView().getActivity().getString(R.string.app_share_default_msg);
         }
@@ -228,7 +229,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public String getReferralTitleDesc() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
     }
 
     public ShareApps[] checkInstalledApps() {

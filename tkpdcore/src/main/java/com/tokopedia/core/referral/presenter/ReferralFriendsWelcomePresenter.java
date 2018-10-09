@@ -9,6 +9,7 @@ import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.net.URLDecoder;
 
@@ -52,6 +53,6 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     @Override
     public String getSubHeaderFromFirebase() {
 
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
     }
 }

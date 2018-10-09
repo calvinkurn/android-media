@@ -16,6 +16,7 @@ import com.tokopedia.core.referral.fragment.FragmentReferralFriendsWelcome;
 import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
@@ -113,7 +114,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
     private   Boolean isappShowReferralButtonActivated(Context context){
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
 

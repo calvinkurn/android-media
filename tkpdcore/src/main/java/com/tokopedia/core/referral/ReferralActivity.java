@@ -20,6 +20,7 @@ import com.tokopedia.core.referral.fragment.FragmentReferral;
 import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
@@ -151,8 +152,8 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
 
     private String getToolbarTitle() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(ReferralActivity.this);
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_referral_appshare));
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
+            return remoteConfig.getString(RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_referral_appshare));
         } else {
             return getString(R.string.drawer_title_appshare);
         }

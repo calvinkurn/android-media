@@ -28,6 +28,7 @@ import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -254,7 +255,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
     private void setTokoCard(ViewHolder holder){
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
-        boolean showTokoCard = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_TOKOCARD, true);
+        boolean showTokoCard = remoteConfig.getBoolean(RemoteConfigKey.SHOW_TOKOCARD, true);
 
         if(!showTokoCard){
             holder.tokocardLayout.setVisibility(View.GONE);

@@ -83,6 +83,7 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remote_config.RemoteConfigKey;
 import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -188,8 +189,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void fetchRemoteConfig() {
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        showRecomendation = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
-        mShowTokopointNative = firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
+        showRecomendation = firebaseRemoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
+        mShowTokopointNative = firebaseRemoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
     }
 
     @Override

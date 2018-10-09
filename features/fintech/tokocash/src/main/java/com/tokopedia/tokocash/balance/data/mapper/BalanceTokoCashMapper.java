@@ -8,6 +8,7 @@ import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 import com.tokopedia.tokocash.balance.view.ActionBalance;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
@@ -37,7 +38,7 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
 
             //create an object if tokocash is not activated
             if (!wallet.getLinked()) {
-                String applinkActivation = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
+                String applinkActivation = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
                 if (applinkActivation.isEmpty()) {
                     applinkActivation = wallet.getAction().getApplinks();
                 }
@@ -45,13 +46,13 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 action.setApplinks(applinkActivation);
                 action.setVisibility(wallet.getAction().getVisibility());
 
-                String labelActionName = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_LABEL_REGISTER);
+                String labelActionName = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_LABEL_REGISTER);
                 if (labelActionName.isEmpty()) {
                     labelActionName = wallet.getAction().getText();
                 }
                 action.setLabelAction(labelActionName);
 
-                String labelName = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
+                String labelName = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
                 if (labelName.isEmpty()) {
                     labelName = wallet.getText();
                 }
@@ -72,7 +73,7 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 balanceTokoCash.setActionBalance(actionBalance);
             }
 
-            String applinkBalance = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK);
+            String applinkBalance = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_APPLINK);
             if (applinkBalance.isEmpty()) {
                 applinkBalance = wallet.getApplinks();
             }
@@ -86,7 +87,7 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
             balanceTokoCash.setRedirectUrl(wallet.getRedirectUrl());
             balanceTokoCash.setTotalBalance(wallet.getTotalBalance());
 
-            String labelName = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
+            String labelName = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
             if (labelName.isEmpty()) {
                 labelName = wallet.getText();
             }

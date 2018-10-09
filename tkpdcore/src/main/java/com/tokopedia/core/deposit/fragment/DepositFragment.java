@@ -36,6 +36,7 @@ import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remote_config.RemoteConfigKey;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import butterknife.BindView;
@@ -266,7 +267,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         super.onStart();
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        if (remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true)) {
             presenter.getMerchantSaldoDetails();
         } else {

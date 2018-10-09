@@ -16,6 +16,7 @@ import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 /**
  * Created by ashwanityagi on 02/05/18.
@@ -79,7 +80,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     }
 
     public String getReferralTerms() {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+            return remoteConfig.getString(RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
     }
 
     private void showOnBoardingTooltip(String title, String content) {

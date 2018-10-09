@@ -18,6 +18,7 @@ import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import org.json.JSONObject;
 
@@ -142,7 +143,7 @@ public class BranchSdkUtils {
             return true;
         } else {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
+            return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
         }
     }
 
@@ -306,7 +307,7 @@ public class BranchSdkUtils {
 
     public static Boolean isAppShowReferralButtonActivated(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+        return remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
     private static String normalizePhoneNumber(String phoneNum) {

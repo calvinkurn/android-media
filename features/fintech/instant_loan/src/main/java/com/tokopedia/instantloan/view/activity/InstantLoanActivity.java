@@ -43,6 +43,7 @@ import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment;
 import com.tokopedia.instantloan.view.presenter.BannerListPresenter;
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager;
 import com.tokopedia.instantloan.view.ui.InstantLoanItem;
+import com.tokopedia.remote_config.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +161,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         super.onCreate(savedInstanceState);
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+        instantLoanEnabled = remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true);
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
