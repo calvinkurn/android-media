@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
+import android.view.ViewTreeObserver;
 
 /**
  * @author by errysuprayogi on 3/27/17.
@@ -25,33 +26,39 @@ public class ImpressedImageView extends AppCompatImageView {
 
     public ImpressedImageView(Context context) {
         super(context);
+        registerObserver(this);
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        registerObserver(this);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+        registerObserver(this);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if(isVisible(this) && image!=null && !image.isImpressed()){
-            new ImpresionTask(new ImpressionListener() {
-                @Override
-                public void onSuccess() {
-                    image.setImpressed(true);
-                }
+    private void registerObserver(View view){
+        getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                iif(isVisible(view) && image!=null && !image.isImpressed()){
+                    new ImpresionTask(new ImpressionListener() {
+                        @Override
+                        public void onSuccess() {
+                            image.setImpressed(true);
+                        }
 
-                @Override
-                public void onFailed() {
-                    image.setImpressed(false);
+                        @Override
+                        public void onFailed() {
+                            image.setImpressed(false);
+                        }
+                    }).execute(image.getM_url());
                 }
-            }).execute(image.getM_url());
-        }
+            }
+        });
     }
 
     public static boolean isVisible(final View view) {
