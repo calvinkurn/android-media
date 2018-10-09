@@ -97,13 +97,16 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickHomeUseCase(String title) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "click 5 use cases",
-                title
-        ).getEvent());
+    public static void eventClickHomeUseCase(Context context, String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click 5 use cases",
+                    title
+            );
+        }
     }
 
     public static void eventClickTabExplorer(String title) {
@@ -115,13 +118,16 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickDynamicIcons(String title) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "click 5 dynamic icons",
-                title
-        ).getEvent());
+    public static void eventClickDynamicIcons(Context context, String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click 5 dynamic icons",
+                    title
+            );
+        }
     }
 
     public static void eventClickSeeAllProductSprint() {

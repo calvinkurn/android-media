@@ -41,7 +41,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.listener = listener;
-        adapter = new SectionItemAdapter(listener);
+        adapter = new SectionItemAdapter(itemView.getContext(), listener);
         recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -57,10 +57,12 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public static class SectionItemAdapter extends RecyclerView.Adapter<SectionItemViewHolder> {
 
+        private final Context context;
         private CategorySectionViewModel sectionViewModel;
         private HomeCategoryListener listener;
 
-        public SectionItemAdapter(HomeCategoryListener listener) {
+        public SectionItemAdapter(Context context, HomeCategoryListener listener) {
+            this.context = context;
             this.listener = listener;
         }
 
@@ -91,9 +93,9 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
         private void eventClickUseCase(LayoutSections layoutSections, int position) {
             if (layoutSections.getTypeCase() == LayoutSections.ICON_USE_CASE) {
-                HomePageTracking.eventClickHomeUseCase(layoutSections.getTitle());
+                HomePageTracking.eventClickHomeUseCase(context, layoutSections.getTitle());
             } else {
-                HomePageTracking.eventClickDynamicIcons(layoutSections.getTitle());
+                HomePageTracking.eventClickDynamicIcons(context, layoutSections.getTitle());
 
             }
             HomeTrackingUtils.homeUsedCaseClick(layoutSections.getTitle(), position + 1, layoutSections.getApplink());
