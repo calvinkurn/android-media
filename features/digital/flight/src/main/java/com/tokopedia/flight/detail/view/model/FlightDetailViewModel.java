@@ -102,27 +102,27 @@ public class FlightDetailViewModel implements Parcelable {
         }
     }
 
-    public FlightDetailViewModel build(FlightJourneyViewModel flightSearchViewModel) {
-        if (flightSearchViewModel != null) {
-            setId(flightSearchViewModel.getId());
-            setDepartureAirport(flightSearchViewModel.getDepartureAirport());
-            setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
-            setArrivalAirport(flightSearchViewModel.getArrivalAirport());
-            setArrivalAirportCity(flightSearchViewModel.getArrivalAirportCity());
-            setTotalTransit(flightSearchViewModel.getTotalTransit());
-            setTotal(flightSearchViewModel.getTotal());
-            setTotalNumeric(flightSearchViewModel.getTotalNumeric());
-            setBeforeTotal(flightSearchViewModel.getBeforeTotal());
-            setIsRefundable(flightSearchViewModel.isRefundable());
-            setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
-            setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
-            setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
+    public FlightDetailViewModel build(FlightJourneyViewModel flightJourneyViewModel) {
+        if (flightJourneyViewModel != null) {
+            setId(flightJourneyViewModel.getId());
+            setDepartureAirport(flightJourneyViewModel.getDepartureAirport());
+            setDepartureAirportCity(flightJourneyViewModel.getDepartureAirportCity());
+            setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
+            setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
+            setTotalTransit(flightJourneyViewModel.getTotalTransit());
+            setTotal(flightJourneyViewModel.getTotal());
+            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
+            setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
+            setIsRefundable(flightJourneyViewModel.isRefundable());
+            setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
-            setRouteList(mapper.transform(flightSearchViewModel.getRouteList(), flightSearchViewModel.getAirlineDataList()));
-            setDepartureTime(flightSearchViewModel.getDepartureTime());
-            setArrivalTime(flightSearchViewModel.getArrivalTime());
-            setAirlineDataList(flightSearchViewModel.getAirlineDataList());
+            setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getAirlineDataList()));
+            setDepartureTime(flightJourneyViewModel.getDepartureTime());
+            setArrivalTime(flightJourneyViewModel.getArrivalTime());
+            setAirlineDataList(flightJourneyViewModel.getAirlineDataList());
             return this;
         } else {
             return null;

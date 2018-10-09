@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Rizky on 01/10/18.
  */
-public class JourneyAndRoutesJava {
+public class JourneyAndRoutes {
 
     @Embedded
     private FlightJourneyTable flightJourneyTable;
@@ -17,10 +17,10 @@ public class JourneyAndRoutesJava {
             entityColumn = "journeyId")
     private List<FlightRouteTable> routes;
 
-    public JourneyAndRoutesJava() {
+    public JourneyAndRoutes() {
     }
 
-    public JourneyAndRoutesJava(FlightJourneyTable flightJourneyTable, List<FlightRouteTable> routes) {
+    public JourneyAndRoutes(FlightJourneyTable flightJourneyTable, List<FlightRouteTable> routes) {
         this.flightJourneyTable = flightJourneyTable;
         this.routes = routes;
     }

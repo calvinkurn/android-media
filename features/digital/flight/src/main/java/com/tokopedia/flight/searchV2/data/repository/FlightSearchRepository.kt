@@ -78,68 +78,42 @@ open class FlightSearchRepository @Inject constructor(
 
     // call search single api and then combine the result with combo, airport and airline db
     fun getSearchSingleCombined(params: HashMap<String, Any>): Observable<Meta> {
-        return flightSearchDataCloudSource.getData(params).flatMap { it ->
-            Observable.just(it).flatMap { response ->
-                Observable.from(response.data).flatMap { journey ->
-                    Observable.from(journey.attributes.routes)
-                            .flatMap { route -> getAirlineById(route.airline) }
-                            .toList()
-                            .zipWith(getAirports(journey.attributes.departureAirport, journey.attributes.arrivalAirport)) {
-                                airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
-                                val routes = createRoutes(journey.attributes.routes, journey.id)
-                                val isRefundable = isRefundable(journey.attributes.routes)
-                                val flightJourneyTable = createJourney(journey.id, journey.attributes,
-                                        routes, isRefundable)
-                                return@zipWith createJourneyWithAirportAndAirline(flightJourneyTable, pairOfAirport, airlines)
-                            }.zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journey.id)) {
-                                journeyTable: FlightJourneyTable, combos: List<FlightComboTable> ->
-                                val flightJourneyTable: FlightJourneyTable = if (!combos.isEmpty()) {
-                                    val comboBestPairing = combos.find {
-                                        it.isBestPairing
-                                    }
-                                    if (comboBestPairing != null) {
-                                        createJourneyWithCombo(journeyTable, comboBestPairing)
-                                    } else {
-                                        createJourneyWithCombo(journeyTable, combos[0])
-                                    }
+        return flightSearchDataCloudSource.getData(params).flatMap { response ->
+            Observable.from(response.data).flatMap { journeyResponse ->
+                Observable.from(journeyResponse.attributes.routes)
+                        .flatMap { route -> getAirlineById(route.airline) }
+                        .toList()
+                        .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport)) {
+                            airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                            val isRefundable = isRefundable(journeyResponse.attributes.routes)
+                            val flightJourneyTable = createJourney(journeyResponse.id, journeyResponse.attributes, isRefundable)
+                            val completeJourney = createJourneyWithAirportAndAirline(
+                                    flightJourneyTable, pairOfAirport, airlines)
+                            val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id)
+                            return@zipWith JourneyAndRoutes(completeJourney, routes)
+                        }.zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)) {
+                            journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
+                            if (!combos.isEmpty()) {
+                                val comboBestPairing = combos.find { it.isBestPairing }
+                                val journeyTable = journeyAndRoutes.flightJourneyTable
+                                if (comboBestPairing != null) {
+                                    journeyAndRoutes.flightJourneyTable =
+                                            createJourneyWithCombo(journeyTable, comboBestPairing)
                                 } else {
-                                    journeyTable
+                                    journeyAndRoutes.flightJourneyTable =
+                                            createJourneyWithCombo(journeyTable, combos[0])
                                 }
-                                flightJourneyTable
+                                journeyAndRoutes
+                            } else {
+                                journeyAndRoutes
                             }
-                }.toList().map {
-                    flightSearchSingleDataDbSource.insert(it)
-                    response.meta
-                }
+                        }
+            }.toList().map { journeyAndRoutes ->
+                flightSearchSingleDataDbSource.insert(journeyAndRoutes)
+                response.meta
             }
-        }
-    }
 
-    private fun isRefundable(routes: List<Route>): RefundableEnum {
-        var refundableCount = 0
-        for (route in routes) {
-            if (route.refundable) {
-                refundableCount++
-            }
         }
-
-        return when (refundableCount) {
-            routes.size -> RefundableEnum.REFUNDABLE
-            0 -> RefundableEnum.NOT_REFUNDABLE
-            else -> RefundableEnum.PARTIAL_REFUNDABLE
-        }
-    }
-
-    private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
-        journey.adultCombo = flightComboTable.adultPrice
-        journey.childCombo = flightComboTable.childPrice
-        journey.infantCombo = flightComboTable.infantPrice
-        journey.adultNumericCombo = flightComboTable.adultPriceNumeric
-        journey.childNumericCombo = flightComboTable.childPriceNumeric
-        journey.infantNumericCombo = flightComboTable.infantPriceNumeric
-        journey.isBestPairing = flightComboTable.isBestPairing
-        journey.sortPrice = flightComboTable.adultPriceNumeric
-        return journey
     }
 
     // call get search single api and save the result to db
@@ -159,13 +133,13 @@ open class FlightSearchRepository @Inject constructor(
                     flightSearchDataCloudSource.getData(params)
 
             override fun mapResponse(response: FlightDataResponse<List<FlightSearchData>>): ResponseJourneysAndMetaWrapper {
-                val journeyAndRoutesJavaList = arrayListOf<JourneyAndRoutesJava>()
+                val journeyAndRoutesJavaList = arrayListOf<JourneyAndRoutes>()
                 for (journey in response.data) {
                     with(journey.attributes) {
                         val routes = createRoutes(routes, journey.id)
                         val isRefundable = isRefundable(journey.attributes.routes)
-                        val flightJourneyTable = createJourney(journey.id, this, routes, isRefundable)
-                        val journeyAndRoutesJava = JourneyAndRoutesJava(flightJourneyTable, routes)
+                        val flightJourneyTable = createJourney(journey.id, this, isRefundable)
+                        val journeyAndRoutesJava = JourneyAndRoutes(flightJourneyTable, routes)
                         journeyAndRoutesJavaList.add(journeyAndRoutesJava)
                     }
                 }
@@ -177,15 +151,10 @@ open class FlightSearchRepository @Inject constructor(
                     Observable.from(journey.routes)
                             .flatMap { getAirlineById(it.airline) }
                             .toList()
-                            .flatMap { airlines ->
+                            .flatMap { _ ->
                                 getAirports(journey.flightJourneyTable.departureAirport, journey.flightJourneyTable.arrivalAirport)
-                                        .map { pairOfAirport ->
-                                            val flightJourneyTable =
-                                                    createJourneyWithAirportAndAirline(
-                                                            journey.flightJourneyTable,
-                                                            pairOfAirport,
-                                                            airlines)
-                                            flightSearchSingleDataDbSource.insert(flightJourneyTable)
+                                        .map {
+                                            flightSearchSingleDataDbSource.insert(journey)
                                         }
                             }
                 }
@@ -193,6 +162,19 @@ open class FlightSearchRepository @Inject constructor(
         }.asObservable().map {
             it.meta
         }
+    }
+
+    fun getSearchFilter(sortOption: FlightSortOption, filterModel: FlightFilterModel):
+            Observable<List<JourneyAndRoutes>> {
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
+    }
+
+    fun getSearchReturnBestPairsByOnwardJourneyId(onwardJourneyId: String) : Observable<List<JourneyAndRoutes>> {
+        return flightSearchCombinedDataDbSource.getSearchCombined(onwardJourneyId)
+                .flatMapIterable { it }
+                .filter { it.isBestPairing }
+                .flatMap { flightSearchSingleDataDbSource.getJourneyById(it.returnJourneyId) }
+                .toList()
     }
 
     private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
@@ -206,7 +188,7 @@ open class FlightSearchRepository @Inject constructor(
         return journey
     }
 
-    fun getAirports(departureAirport: String, arrivalAirport: String) :
+    private fun getAirports(departureAirport: String, arrivalAirport: String) :
             Observable<Pair<FlightAirportDB, FlightAirportDB>> {
         return Observable.zip(
                 flightAirportDataListDBSource.getAirport(departureAirport),
@@ -218,8 +200,7 @@ open class FlightSearchRepository @Inject constructor(
         )
     }
 
-    private fun createJourney(journeyId: String, attributes: Attributes, routes: List<FlightRouteTable>,
-                              isRefundable: RefundableEnum)
+    private fun createJourney(journeyId: String, attributes: Attributes, isRefundable: RefundableEnum)
             : FlightJourneyTable {
         with(attributes) {
             return FlightJourneyTable(
@@ -262,13 +243,12 @@ open class FlightSearchRepository @Inject constructor(
                     0,
                     false,
                     isRefundable,
-                    !TextUtils.isEmpty(beforeTotal),
-                    routes
+                    !TextUtils.isEmpty(beforeTotal)
             )
         }
     }
 
-    fun createRoutes(routes: List<Route>, journeyId: String) : List<FlightRouteTable> {
+    private fun createRoutes(routes: List<Route>, journeyId: String) : List<FlightRouteTable> {
         return routes.map {
             with(it) {
                 FlightRouteTable(
@@ -288,16 +268,35 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
-        return flightAirlineDataListDBSource.getAirline(airlineId)
+    private fun isRefundable(routes: List<Route>): RefundableEnum {
+        var refundableCount = 0
+        for (route in routes) {
+            if (route.refundable) {
+                refundableCount++
+            }
+        }
+
+        return when (refundableCount) {
+            routes.size -> RefundableEnum.REFUNDABLE
+            0 -> RefundableEnum.NOT_REFUNDABLE
+            else -> RefundableEnum.PARTIAL_REFUNDABLE
+        }
     }
 
-    fun getSearchFilter(isReturning: Boolean, sortOption: FlightSortOption, filterModel: FlightFilterModel):
-            Observable<List<FlightJourneyTable>> {
-        return flightSearchSingleDataDbSource.getFilteredJourneys(isReturning, sortOption, filterModel)
-                .map { it ->
-                    it.map { it.flightJourneyTable }
-                }
+    private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
+        journey.adultCombo = flightComboTable.adultPrice
+        journey.childCombo = flightComboTable.childPrice
+        journey.infantCombo = flightComboTable.infantPrice
+        journey.adultNumericCombo = flightComboTable.adultPriceNumeric
+        journey.childNumericCombo = flightComboTable.childPriceNumeric
+        journey.infantNumericCombo = flightComboTable.infantPriceNumeric
+        journey.isBestPairing = flightComboTable.isBestPairing
+        journey.sortPrice = flightComboTable.adultPriceNumeric
+        return journey
+    }
+
+    private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
+        return flightAirlineDataListDBSource.getAirline(airlineId)
     }
 
 }

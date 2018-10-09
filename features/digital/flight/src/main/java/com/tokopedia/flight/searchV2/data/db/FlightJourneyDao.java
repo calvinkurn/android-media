@@ -8,11 +8,6 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 import android.arch.persistence.room.Transaction;
 
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 /**
@@ -23,7 +18,7 @@ public interface FlightJourneyDao {
 
     @Transaction
     @Query("SELECT * FROM FlightJourneyTable")
-    List<JourneyAndRoutesJava> findAllJourneys();
+    List<JourneyAndRoutes> findAllJourneys();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FlightJourneyTable item);
@@ -37,10 +32,13 @@ public interface FlightJourneyDao {
             "FlightJourneyTable.isReturn = :isReturn & " +
             "FlightJourneyTable.id = :journeyId & " +
             "FlightJourneyTable.isBestPairing = :isBestPairing")
-    List<JourneyAndRoutesJava> findFilteredJourneys(boolean isReturn, String journeyId, boolean isBestPairing);
+    List<JourneyAndRoutes> findFilteredJourneys(boolean isReturn, String journeyId, boolean isBestPairing);
 
     @Transaction
     @RawQuery
-    List<JourneyAndRoutesJava> findFilteredJourneys(SupportSQLiteQuery supportSQLiteQuery);
+    List<JourneyAndRoutes> findFilteredJourneys(SupportSQLiteQuery supportSQLiteQuery);
 
+    @Transaction
+    @Query("SELECT * FROM FlightJourneyTable WHERE FlightJourneyTable.id = :onwardJourneyId")
+    JourneyAndRoutes findJourneyById(String onwardJourneyId);
 }
