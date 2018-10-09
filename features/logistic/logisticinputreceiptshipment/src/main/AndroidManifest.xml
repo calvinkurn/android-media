@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.logisticinputreceiptshipment" />
+    package="com.tokopedia.logisticinputreceiptshipment">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <activity
+            android:name=".barcodescanner.ReceiptShipmentBarcodeScannerActivity"
+            android:label="@string/title_receipt_shipement_barcode_scanner" />
+    </application>
+</manifest>

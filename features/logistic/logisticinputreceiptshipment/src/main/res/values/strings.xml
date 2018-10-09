@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">logisticinputreceiptshipment</string>
+    <string name="title_receipt_shipement_barcode_scanner">Scan Barcode</string>
 </resources>
