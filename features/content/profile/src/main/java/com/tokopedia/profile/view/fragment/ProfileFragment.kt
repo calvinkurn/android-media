@@ -143,6 +143,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun addFooter(headerViewModel: ProfileHeaderViewModel) {
+        footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE

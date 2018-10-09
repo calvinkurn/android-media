@@ -26,7 +26,9 @@
         android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
         android:paddingRight="@dimen/dp_8"
-        android:paddingTop="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/footerOwn"
@@ -65,9 +67,12 @@
                 android:id="@+id/shareOwn"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="0dp"
-                android:padding="@dimen/dp_4"
-                android:src="@drawable/ic_af_share_grey"
                 android:background="@drawable/af_rounded_corner"
+                android:padding="@dimen/dp_8"
+                android:src="@drawable/ic_af_share_grey"
+                android:focusable="true"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintBottom_toBottomOf="@id/addRecommendation"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/addRecommendation"
@@ -85,9 +90,9 @@
                 android:id="@+id/shareOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_1"
                 android:text="@string/profile_share_profile"
                 android:textAllCaps="false"
-                android:layout_margin="@dimen/dp_1"
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="secondary" />
         </FrameLayout>
