@@ -26,7 +26,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import java.io.UnsupportedEncodingException;
@@ -226,13 +225,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         if (isFinishing()) return;
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        if (fragment instanceof BrowseParentFragment) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
-                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            CommonUtils.hideKeyboard(this, getCurrentFocus());
-        } else {
-            params.setScrollFlags(0);
-        }
+        params.setScrollFlags(0);
         toolbar.setLayoutParams(params);
         toolbar.requestLayout();
 

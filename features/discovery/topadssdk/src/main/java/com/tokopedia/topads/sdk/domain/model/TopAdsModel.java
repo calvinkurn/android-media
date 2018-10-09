@@ -1,6 +1,11 @@
 package com.tokopedia.topads.sdk.domain.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,16 +17,20 @@ import java.util.List;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class TopAdsModel {
+public class TopAdsModel implements Parcelable {
 
     private static final String KEY_HEADER = "header";
     private static final String KEY_STATUS = "status";
     private static final String KEY_DATA = "data";
     private static final String KEY_ERROR = "errors";
 
+    @SerializedName(KEY_ERROR)
     private Error error;
+    @SerializedName(KEY_STATUS)
     private Status status;
+    @SerializedName(KEY_HEADER)
     private Header header;
+    @SerializedName(KEY_DATA)
     private List<Data> data = new ArrayList<>();
     private int adsPosition = 0;
 
@@ -46,6 +55,34 @@ public class TopAdsModel {
             }
         }
     }
+
+    protected TopAdsModel(Parcel in) {
+        data = in.createTypedArrayList(Data.CREATOR);
+        adsPosition = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(data);
+        dest.writeInt(adsPosition);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TopAdsModel> CREATOR = new Creator<TopAdsModel>() {
+        @Override
+        public TopAdsModel createFromParcel(Parcel in) {
+            return new TopAdsModel(in);
+        }
+
+        @Override
+        public TopAdsModel[] newArray(int size) {
+            return new TopAdsModel[size];
+        }
+    };
 
     public Error getError() {
         return error;
