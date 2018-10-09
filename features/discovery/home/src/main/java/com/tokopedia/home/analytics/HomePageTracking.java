@@ -155,8 +155,12 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventEnhancedImpressionSprintSaleHomePage(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedImpressionSprintSaleHomePage(Context context,
+                                                                 Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
     public static void eventEnhancedClickSprintSaleProduct(Context context,
@@ -167,8 +171,12 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventEnhancedImpressionDynamicChannelHomePage(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
+                                                                     Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
     public static void eventEnhancedClickDynamicChannelHomePage(
