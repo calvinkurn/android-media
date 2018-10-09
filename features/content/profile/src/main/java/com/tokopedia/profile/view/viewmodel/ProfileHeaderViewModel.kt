@@ -11,7 +11,6 @@ data class ProfileHeaderViewModel(
         val avatar: String = "",
         val followers: String = "0",
         val following: String = "0",
-        val recommendationQuota: String = "",
         val affiliateName: String = "",
         val link: String = "",
         val userId: Int = 0,

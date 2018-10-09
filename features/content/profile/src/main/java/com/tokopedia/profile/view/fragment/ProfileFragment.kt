@@ -96,15 +96,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
+    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel,
                                               cursor: String) {
-        if (!TextUtils.isEmpty(profileFirstPageViewModel.profileHeaderViewModel.affiliateName)) {
-            addFooter(profileFirstPageViewModel.profileHeaderViewModel)
+        if (!TextUtils.isEmpty(firstPageViewModel.profileHeaderViewModel.affiliateName)) {
+            addFooter(
+                    firstPageViewModel.profileHeaderViewModel,
+                    firstPageViewModel.affiliatePostQuota.formatted
+            )
         }
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
-        visitables.add(profileFirstPageViewModel.profileHeaderViewModel)
-        visitables.addAll(profileFirstPageViewModel.profilePostViewModel)
+        visitables.add(firstPageViewModel.profileHeaderViewModel)
+        visitables.addAll(firstPageViewModel.profilePostViewModel)
         renderList(visitables, !TextUtils.isEmpty(cursor))
     }
 
@@ -142,15 +145,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    private fun addFooter(headerViewModel: ProfileHeaderViewModel) {
+    private fun addFooter(headerViewModel: ProfileHeaderViewModel, quota: String) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(headerViewModel.recommendationQuota)) {
+            if (!TextUtils.isEmpty(quota)) {
                 recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = headerViewModel.recommendationQuota
+                recommendationQuota.text = quota
             } else {
                 recommendationQuota.visibility = View.GONE
             }
