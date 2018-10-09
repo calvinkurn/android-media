@@ -7,6 +7,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 
 import java.util.List;
 
@@ -80,6 +81,7 @@ public interface FlightSearchContract {
 
         void navigateToNextPage(String selectedId);
 
+        void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
     }
 
     interface Presenter {

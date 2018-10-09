@@ -42,6 +42,7 @@ import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTyp
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
 
@@ -391,6 +392,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(selectedId);
         }
+    }
+
+    @Override
+    public void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel) {
+
     }
 
     @Override

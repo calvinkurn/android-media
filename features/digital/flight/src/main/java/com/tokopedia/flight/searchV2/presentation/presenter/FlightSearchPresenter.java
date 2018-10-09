@@ -177,6 +177,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onNext(FlightSearchMetaViewModel flightSearchMetaViewModel) {
                         Log.d("DATA", flightSearchMetaViewModel.isNeedRefresh() + " + " + flightSearchMetaViewModel.getMaxRetry());
+                        getView().onGetSearchMeta(flightSearchMetaViewModel);
                     }
                 });
     }
