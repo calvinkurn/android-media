@@ -165,7 +165,7 @@ public class OrderDetailActivity extends TActivity
 
     private void setBookingCode(OrderDetailData data) {
         ViewGroup layout = findViewById(R.id.booking_code_layout);
-        if (data.getBookingCode() != null) {
+        if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
             TextView text = findViewById(R.id.booking_code);
             text.setText(data.getBookingCode());
             OnlineBooking codeData = new OnlineBooking(
