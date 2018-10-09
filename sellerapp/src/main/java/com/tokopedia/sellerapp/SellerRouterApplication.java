@@ -160,7 +160,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
@@ -1703,5 +1702,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getKolCommentArgsTotalComment() {
         return null;
+    }
+
+    @Override
+    public void onAppsFlyerInit() {
+
     }
 }
