@@ -14,9 +14,13 @@
         <activity android:name=".view.activity.EventBookTicketActivity" />
         <activity android:name=".view.activity.ReviewTicketActivity" />
         <activity android:name=".view.activity.EventSearchActivity" />
-        <activity android:name=".view.activity.SeatSelectionActivity"></activity>
+        <activity android:name=".view.activity.SeatSelectionActivity" />
         <activity android:name=".view.activity.EventFavouriteActivity" />
         <activity android:name=".view.activity.EventFilterActivity" />
+<<<<<<< HEAD
+=======
+        <activity android:name=".view.activity.ScanQRCodeActivity"></activity>
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
     </application>
 
 </manifest>

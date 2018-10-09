@@ -459,6 +459,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
+        ((TkpdCoreRouter)(getContext().getApplicationContext())).onAppsFlyerInit();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 

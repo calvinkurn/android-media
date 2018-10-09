@@ -105,6 +105,8 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -153,6 +155,10 @@ import io.branch.referral.BranchError;
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         SettingBankApplinkModule.class,
+<<<<<<< HEAD
+=======
+        ChallengesDeepLinkModule.class,
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
         InboxTalkApplinkModule.class,
         ProductManageApplinkModule.class
 })
@@ -204,9 +210,15 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
+<<<<<<< HEAD
                 new InboxTalkApplinkModuleLoader(),
                 new ProductManageApplinkModuleLoader()
 
+=======
+                new ChallengesDeepLinkModuleLoader(),
+                new InboxTalkApplinkModuleLoader(),
+                new ProductManageApplinkModuleLoader()
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
             );
         }
 

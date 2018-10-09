@@ -9,6 +9,10 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+<<<<<<< HEAD
+=======
+import com.tokopedia.topads.sdk.base.adapter.Item;
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
@@ -69,12 +73,26 @@ public interface EmptyCartContract {
 
         List<RecentViewViewModel> getRecentViewListModels();
 
+<<<<<<< HEAD
+=======
+        void setRecommendationList(List<Item> list);
+
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
         Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(Wishlist wishlist, int index);
 
         Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(RecentView recentView, int index);
 
         Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(Product product, int index);
 
+<<<<<<< HEAD
+=======
+        Map<String, Object> generateEmptyCartAnalyticViewProductWishlistDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecentViewDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecommendationDataLayer();
+
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
     }
 
 }

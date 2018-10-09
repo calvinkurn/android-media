@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -68,6 +69,9 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -117,10 +121,10 @@ import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
-import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
-import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
+import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
@@ -1530,15 +1534,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return InboxTalkActivity.Companion.createIntent(context);
-        else {
-            return InboxRouter.getInboxTalkActivityIntent(context);
-        }
-    }
-
-    @Override
     public Intent getProductTalk(Context context, String productId) {
         if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", false))
             return TalkProductActivity.Companion.createIntent(context, productId);
@@ -1612,26 +1607,22 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public @NonNull
-    Intent getManageShopEtalaseIntent(@NonNull Context context) {
+    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
-    public @NonNull
-    Intent getManageShopNotesIntent(@NonNull Context context) {
+    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
-    public @NonNull
-    Intent getManageShopBasicDataIntent(@NonNull Context context) {
+    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
-    public @NonNull
-    Intent getManageShopLocationIntent(@NonNull Context context) {
+    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
@@ -1692,6 +1683,30 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProductPageIntent(Context context, String productId) {
         return ProductInfoActivity.createInstance(context, productId);
+    }
+
+    @Override
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+        InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(@NonNull Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
+        }
+    }
+
+    @Override
+    public String getKolCommentArgsPosition() {
+        return null;
+    }
+
+    @Override
+    public String getKolCommentArgsTotalComment() {
+        return null;
     }
 
     @Override

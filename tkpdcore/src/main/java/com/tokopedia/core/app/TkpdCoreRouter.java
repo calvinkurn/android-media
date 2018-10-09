@@ -82,6 +82,8 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
+    void onAppsFlyerInit();
+
     void goToCreateMerchantRedirect(Context context);
 
     Intent getLoginIntent(Context context);
@@ -201,6 +203,9 @@ public interface TkpdCoreRouter {
     Intent getChangePasswordIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+<<<<<<< HEAD
 
     Intent getAutomaticResetPasswordIntent(Context context, String email);
+=======
+>>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
 }

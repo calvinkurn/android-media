@@ -215,6 +215,17 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
         resConfigs "en", "id"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
     }
 
 
@@ -233,8 +244,8 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
 
     productFlavors {
         live {
@@ -243,6 +254,19 @@ android {
         staging {
             dimension "tier"
         }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -296,6 +320,7 @@ dependencies {
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
+    implementation project(rootProject.ext.features.logisticaddaddress)
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
@@ -459,6 +484,7 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.challenges)
 }
 
 
