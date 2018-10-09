@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
@@ -22,6 +23,7 @@ import android.view.ViewTreeObserver;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
+    public static final int BOTTOM_MARGIN = 50;
     private ProductImage image;
     private boolean execute;
 
@@ -53,7 +55,7 @@ public class ImpressedImageView extends AppCompatImageView {
         });
     }
 
-    public static boolean isVisible(final View view) {
+    private boolean isVisible(final View view) {
         if (view == null) {
             return false;
         }
@@ -66,16 +68,23 @@ public class ImpressedImageView extends AppCompatImageView {
         return actualPosition.intersect(screen);
     }
 
-    public static int getScreenWidth() {
+    private int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    private int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels - offsetBottomMargin(BOTTOM_MARGIN);
     }
 
     public void setImage(ProductImage image) {
         this.image = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
+    }
+
+    private int offsetBottomMargin(float dp){
+        Resources resources = getContext().getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return (int) px;
     }
 }
