@@ -96,4 +96,5 @@ public interface IDigitalCartView extends IBaseView {
 
     void showProgressLoading(String title,String message);
 
+    void navigateToLoggedInPage();
 }

@@ -53,6 +53,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -62,6 +63,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.user.session.UserSession;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -78,6 +80,7 @@ import rx.subscriptions.CompositeSubscription;
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener {
+    private static final int REQUEST_CODE_LOGIN = 1000;
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -131,7 +134,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processAddToCart();
+        presenter.onFirstTimeLaunched();
     }
 
     @Override
@@ -187,6 +190,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         presenter = new CartDigitalPresenter(
                 this,
+                new UserSession(getActivity()),
                 new CartDigitalInteractor(
                         compositeSubscription,
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
@@ -260,6 +264,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void showProgressLoading(String title, String message) {
         progressDialogNormal.showDialog(title, message);
+    }
+
+    @Override
+    public void navigateToLoggedInPage() {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getLoginIntent(getActivity());
+            if (intent != null) {
+                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+            }
+        }
     }
 
     @Override
@@ -838,6 +853,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     }
                 }
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onLoginResultReceived();
         }
     }
 

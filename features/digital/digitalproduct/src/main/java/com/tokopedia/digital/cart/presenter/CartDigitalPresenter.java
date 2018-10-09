@@ -41,6 +41,7 @@ import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -60,11 +61,14 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
     private final IDigitalCartView view;
+    private UserSession userSession;
     private final ICartDigitalInteractor cartDigitalInteractor;
 
     public CartDigitalPresenter(IDigitalCartView view,
+                                UserSession userSession,
                                 ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
+        this.userSession = userSession;
         this.cartDigitalInteractor = iCartDigitalInteractor;
         initRemoteConfig();
     }
@@ -229,6 +233,25 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         }
     }
 
+    @Override
+    public void onFirstTimeLaunched() {
+        //TODO : check login and atc
+        if (userSession.isLoggedIn()) {
+            processAddToCart();
+        } else {
+            view.navigateToLoggedInPage();
+        }
+    }
+
+    @Override
+    public void onLoginResultReceived() {
+        if (userSession.isLoggedIn()) {
+            processAddToCart();
+        } else {
+            view.closeView();
+        }
+    }
+
     @NonNull
     private Subscriber<CheckoutDigitalData> getSubscriberCheckout() {
         return new Subscriber<CheckoutDigitalData>() {
@@ -252,7 +275,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -299,7 +322,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorInstantCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -346,7 +369,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 //                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
 //                    );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
                     removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
@@ -392,7 +415,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorAddToCart(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -501,7 +524,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -546,7 +569,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                     /* Ini kalau error dari API kasih message error */
+                    /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
