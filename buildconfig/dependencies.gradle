@@ -107,6 +107,7 @@ ext {
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
+    artifactIdLogisticGeoLocation = 'logisticgeolocation'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -322,7 +323,6 @@ ext {
             youtubeutil            : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             vote                   : "com.tokopedia.user:user:${tkpdVoteVersion}",
             districtRecommendation : "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
-            productDraftDatabase   : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             productDraftDatabase   : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             digitalDeals           : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                 : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
