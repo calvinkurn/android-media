@@ -103,6 +103,8 @@ public class EventSearchMapper {
                 itemDomain.setThumbsUp(eventItem.getThumbsUp());
                 itemDomain.setSoldQuantity(eventItem.getSoldQuantity());
                 itemDomain.setTitle(eventItem.getTitle());
+                itemDomain.setLikes(eventItem.getLikes());
+                itemDomain.setLiked(eventItem.isLiked());
                 itemDomain.setShortDesc(eventItem.getShortDesc());
 
                 eventsItemDomains.add(itemDomain);
