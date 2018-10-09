@@ -94,7 +94,7 @@ public class EventBookTicketPresenter
         generateLocationDateModels();
         getView().renderFromDetails(dataModel);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
@@ -326,7 +326,7 @@ public class EventBookTicketPresenter
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
         getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
     }
 
@@ -336,7 +336,7 @@ public class EventBookTicketPresenter
             LocationDateModel model = new LocationDateModel();
             model.setmLocation(viewModel.getCityName());
             if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+                model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
             else
                 model.setDate("");
             locationDateModels.add(model);

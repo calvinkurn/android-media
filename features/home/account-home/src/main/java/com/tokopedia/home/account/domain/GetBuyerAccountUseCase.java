@@ -66,7 +66,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     String query = request.getString(AccountConstants.QUERY, "");
                     Map<String, Object> variables = (Map<String, Object>) request.getObject(VARIABLES);
 
-                    if(!TextUtils.isEmpty(query) && variables != null) {
+                    if (!TextUtils.isEmpty(query) && variables != null) {
                         GraphqlRequest requestGraphql = new GraphqlRequest(query,
                                 AccountModel.class, variables);
                         graphqlUseCase.clearRequest();
@@ -80,5 +80,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private void saveLocallyWallet(AccountModel accountModel) {
         walletPref.saveWallet(accountModel.getWallet());
+        if (accountModel.getVccUserStatus() != null) {
+            walletPref.setTokoSwipeUrl(accountModel.getVccUserStatus().getRedirectionUrl());
+        }
     }
 }

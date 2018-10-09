@@ -127,11 +127,13 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindAddressHolder(MPAddressViewHolder viewHolder, int position) {
-        setVisibility(viewHolder, position);
-        setTitle(viewHolder.addressName, position);
-        setAddress(viewHolder.addressDetail, position);
-        setGoogleMap(viewHolder.googleMap, position);
-        setListener(viewHolder, position);
+        if (position < list.size()) {
+            setVisibility(viewHolder, position);
+            setTitle(viewHolder.addressName, position);
+            setAddress(viewHolder.addressDetail, position);
+            setGoogleMap(viewHolder.googleMap, position);
+            setListener(viewHolder, position);
+        }
     }
 
     private void setVisibility(MPAddressViewHolder viewHolder, int position) {

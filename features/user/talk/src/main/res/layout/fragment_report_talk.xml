@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/mainView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="visible">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <TextView
+                android:id="@+id/titleQuestion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_25"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="@dimen/sp_8"
+                android:text="@string/report_talk_question"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/optionRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                app:layout_constraintTop_toBottomOf="@+id/titleQuestion"/>
+
+            <android.support.v4.widget.Space
+                android:id="@+id/marginSpacer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                app:layout_constraintBottom_toBottomOf="@+id/optionRv"
+                app:layout_constraintLeft_toLeftOf="@id/optionRv"
+                app:layout_constraintRight_toRightOf="@id/optionRv"/>
+
+            <com.tokopedia.design.component.EditTextCompat
+                android:id="@+id/reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_50"
+                android:layout_marginTop="-10dp"
+                android:hint="@string/talk_hint_input_reason"
+                android:inputType="text"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:textColor="@color/font_black_primary_70"
+                android:textColorHighlight="@color/tkpd_main_green"
+                app:layout_constraintTop_toBottomOf="@id/marginSpacer"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_button_disabled"
+        android:enabled="false"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/sp_5"
+        android:text="@string/button_send"
+        android:textAllCaps="false"
+        android:textColor="@color/black_12"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        tools:visibility="visible"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</RelativeLayout>

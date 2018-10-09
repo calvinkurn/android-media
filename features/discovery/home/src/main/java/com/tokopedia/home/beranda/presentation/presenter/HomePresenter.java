@@ -29,6 +29,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -147,10 +148,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
+                .doOnNext(visitables ->
+                        compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber())))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(visitables -> {
-                    compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
-                })
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
@@ -494,7 +494,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (!slidesModel.isImpressed()
                 && slidesModel.getTopadsViewUrl()!=null
                 && !slidesModel.getTopadsViewUrl().isEmpty()) {
-            new ImpresionTask(new ImpressionListener() {
+            compositeSubscription.add(Observable.just(new ImpresionTask(new ImpressionListener() {
                 @Override
                 public void onSuccess() {
                     slidesModel.setImpressed(true);
@@ -504,7 +504,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 public void onFailed() {
                     slidesModel.setImpressed(false);
                 }
-            }).execute(slidesModel.getTopadsViewUrl());
+            }).execute(slidesModel.getTopadsViewUrl()))
+                    .debounce(200, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe());
         }
     }
 

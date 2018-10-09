@@ -140,8 +140,13 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             CommentsItem item = commentList.get(position);
-            imageHandler.loadImage(ivProfile, item.getCreatedBy().getPicture());
-            tvName.setText(item.getCreatedBy().getName());
+            if (item == null) {
+                return;
+            }
+            if (item.getCreatedBy() != null) {
+                imageHandler.loadImage(ivProfile, item.getCreatedBy().getPicture());
+                tvName.setText(item.getCreatedBy().getName());
+            }
             if (position == indexExpanded || position == commentList.size() - 1 || searchMode) {
                 tvDateRecent.setText(item.getCreateTime());
                 tvCollapsedTime.setText("");
