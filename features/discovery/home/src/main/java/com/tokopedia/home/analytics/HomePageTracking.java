@@ -203,13 +203,16 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickExplorerItem(String action, String label) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                action,
-                label
-        ).getEvent());
+    public static void eventClickExplorerItem(Context context, String action, String label) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    action,
+                    label
+            );
+        }
     }
 
     public static void eventEnhancedImpressionFavoriteCategory(Context context,
@@ -236,22 +239,27 @@ public class HomePageTracking extends TrackingUtils {
         eventTrackingEnhancedEcommerce(data);
     }
 
-    public static void eventClickOpenShop() {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "jual ini itu buka toko",
-                ""
-        ).getEvent());
+    public static void eventClickOpenShop(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "jual ini itu buka toko",
+                    ""
+            );
+        }
     }
 
-    public static void eventClickEditShop() {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "jual ini itu click ubah",
-                ""
-        ).getEvent());
+    public static void eventClickEditShop(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "jual ini itu click ubah",
+                    ""
+            );
+        }
     }
-
 }
