@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.R;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
@@ -49,7 +49,7 @@ public class AddAddressActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
+        return R.layout.logistic_activity_simple_fragment;
     }
 
     @Override
