@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
@@ -22,7 +23,7 @@ public class GeneralNotificationFactory extends BaseNotificationFactory {
     @Override
     public Notification createNotification(ApplinkNotificationModel applinkNotificationModel, int notifcationType, int notificationId) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.NotificationChannel.GENERAL);
-        builder.setContentTitle(context.getResources().getString(R.string.title_general_push_notification));
+        builder.setContentTitle(TextUtils.isEmpty(applinkNotificationModel.getTitle()) ? context.getResources().getString(R.string.title_general_push_notification) : applinkNotificationModel.getTitle());
         builder.setContentText(applinkNotificationModel.getDesc());
         builder.setSmallIcon(getDrawableIcon());
         builder.setLargeIcon(getBitmapLargeIcon());

@@ -111,6 +111,9 @@ public class Product {
     @SerializedName("product_tracker_data")
     @Expose
     private ProductTrackerData productTrackerData;
+    @SerializedName("product_preorder")
+    @Expose
+    private ProductPreorder productPreorder;
 
     public String getProductCategory() {
         return productCategory;
@@ -242,5 +245,9 @@ public class Product {
 
     public long getCartId() {
         return cartId;
+    }
+
+    public ProductPreorder getProductPreorder() {
+        return productPreorder;
     }
 }
