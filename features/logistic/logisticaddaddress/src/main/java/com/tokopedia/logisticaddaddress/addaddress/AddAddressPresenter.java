@@ -9,7 +9,7 @@ import com.tokopedia.logisticaddaddress.model.db.Province;
  */
 public interface AddAddressPresenter {
 
-    void attachView();
+    void attachView(AddAddressFragmentView view);
 
     void detachView();
 

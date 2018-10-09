@@ -32,64 +32,64 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private static final String PARAM_LONGITUDE = "longitude";
     private static final String PARAM_PASSWORD = "user_password";
 
-    private final AddAddressFragmentView viewListener;
+    private AddAddressFragmentView mView;
     private final AddressRepository networkInteractor;
 
-    public AddAddressPresenterImpl(AddAddressFragmentView viewListener) {
-        this.viewListener = viewListener;
+    public AddAddressPresenterImpl() {
         this.networkInteractor = new AddAddressRetrofitInteractorImpl();
     }
 
     @Override
-    public void attachView() {
-
+    public void attachView(AddAddressFragmentView view) {
+        mView = view;
     }
 
     @Override
     public void detachView() {
         networkInteractor.unsubscribe();
+        mView = null;
     }
 
     @Override
     public void saveAddress() {
-        viewListener.showLoading();
-        if (viewListener.isEdit()) {
-            networkInteractor.editAddress(viewListener.context(), getParam(), getListener());
+        mView.showLoading();
+        if (mView.isEdit()) {
+            networkInteractor.editAddress(mView.context(), getParam(), getListener());
         } else {
-            networkInteractor.addAddress(viewListener.context(), getParam(), getListener());
+            networkInteractor.addAddress(mView.context(), getParam(), getListener());
         }
     }
 
     @Override
     public void getListProvince() {
-        viewListener.setActionsEnabled(false);
-        viewListener.showLoading();
-        networkInteractor.getListProvince(viewListener.context(),
+        mView.setActionsEnabled(false);
+        mView.showLoading();
+        networkInteractor.getListProvince(mView.context(),
                 new HashMap<String, String>(),
                 new AddressRepository.GetListProvinceListener() {
                     @Override
                     public void onSuccess(ArrayList<Province> provinces) {
-                        viewListener.setActionsEnabled(true);
-                        viewListener.setProvince(provinces);
+                        mView.setActionsEnabled(true);
+                        mView.setProvince(provinces);
                     }
 
                     @Override
                     public void onTimeout() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.finishLoading();
-                        viewListener.setActionsEnabled(true);
-                        viewListener.showErrorSnackbar(error);
+                        mView.finishLoading();
+                        mView.setActionsEnabled(true);
+                        mView.showErrorSnackbar(error);
                     }
 
                     @Override
                     public void onNullData() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
 
                 });
@@ -97,63 +97,63 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
 
     @Override
     public void onProvinceSelected(int pos) {
-        viewListener.resetRegency();
-        viewListener.hideSubDistrict();
-        viewListener.resetSubDistrict();
+        mView.resetRegency();
+        mView.hideSubDistrict();
+        mView.resetSubDistrict();
         if (pos != 0) {
-            getListCity(viewListener.getProvinceAdapter().getList().get(pos - 1));
+            getListCity(mView.getProvinceAdapter().getList().get(pos - 1));
         }
     }
 
     @Override
     public void onEditProvinceSelected(int pos) {
-        viewListener.resetRegency();
-        viewListener.hideSubDistrict();
-        viewListener.resetSubDistrict();
+        mView.resetRegency();
+        mView.hideSubDistrict();
+        mView.resetSubDistrict();
         if (pos != 0) {
-            provinceChanged(viewListener.getProvinceAdapter().getList().get(pos - 1));
+            provinceChanged(mView.getProvinceAdapter().getList().get(pos - 1));
         }
     }
 
     @Override
     public void onRegencySelected(int pos) {
-        viewListener.resetSubDistrict();
+        mView.resetSubDistrict();
         if (pos != 0) {
-            getListDistrict(viewListener.getRegencyAdapter().getList().get(pos - 1));
+            getListDistrict(mView.getRegencyAdapter().getList().get(pos - 1));
         }
     }
 
     @Override
     public void getListCity(Province province) {
-        viewListener.showLoadingRegency();
-        viewListener.setActionsEnabled(false);
-        networkInteractor.getListCity(viewListener.context(),
+        mView.showLoadingRegency();
+        mView.setActionsEnabled(false);
+        networkInteractor.getListCity(mView.context(),
                 province.getProvinceId(),
                 new AddressRepository.GetListCityListener() {
 
                     @Override
                     public void onSuccess(FormAddressDomainModel model) {
-                        viewListener.setActionsEnabled(true);
-                        viewListener.setCity(model.getCities());
+                        mView.setActionsEnabled(true);
+                        mView.setCity(model.getCities());
                     }
 
                     @Override
                     public void onTimeout() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.finishLoading();
-                        viewListener.setActionsEnabled(true);
-                        viewListener.showErrorSnackbar(error);
+                        mView.finishLoading();
+                        mView.setActionsEnabled(true);
+                        mView.showErrorSnackbar(error);
                     }
 
                     @Override
                     public void onNullData() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
 
                 });
@@ -161,67 +161,67 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
 
     @Override
     public void provinceChanged(Province province) {
-        viewListener.showLoadingRegency();
-        viewListener.setActionsEnabled(false);
+        mView.showLoadingRegency();
+        mView.setActionsEnabled(false);
         networkInteractor.getListCity(
-                viewListener.context(),
+                mView.context(),
                 province.getProvinceId(),
                 new AddressRepository.GetListCityListener() {
                     @Override
                     public void onSuccess(FormAddressDomainModel model) {
-                        viewListener.setActionsEnabled(true);
-                        viewListener.changeProvince(model.getCities());
+                        mView.setActionsEnabled(true);
+                        mView.changeProvince(model.getCities());
                     }
 
                     @Override
                     public void onTimeout() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.finishLoading();
-                        viewListener.setActionsEnabled(true);
-                        viewListener.showErrorSnackbar(error);
+                        mView.finishLoading();
+                        mView.setActionsEnabled(true);
+                        mView.showErrorSnackbar(error);
                     }
 
                     @Override
                     public void onNullData() {
-                        viewListener.finishLoading();
-                        viewListener.showErrorSnackbar("");
+                        mView.finishLoading();
+                        mView.showErrorSnackbar("");
                     }
                 });
     }
 
     @Override
     public void getListDistrict(City city) {
-        viewListener.showLoadingDistrict();
-        viewListener.setActionsEnabled(false);
-        networkInteractor.getListDistrict(viewListener.context(), city.getCityId(), new AddressRepository.GetListDistrictListener() {
+        mView.showLoadingDistrict();
+        mView.setActionsEnabled(false);
+        networkInteractor.getListDistrict(mView.context(), city.getCityId(), new AddressRepository.GetListDistrictListener() {
             @Override
             public void onSuccess(FormAddressDomainModel model) {
-                viewListener.setActionsEnabled(true);
-                viewListener.setDistrict(model.getDistricts());
+                mView.setActionsEnabled(true);
+                mView.setDistrict(model.getDistricts());
             }
 
             @Override
             public void onTimeout() {
-                viewListener.finishLoading();
-                viewListener.showErrorSnackbar("");
+                mView.finishLoading();
+                mView.showErrorSnackbar("");
             }
 
             @Override
             public void onError(String error) {
-                viewListener.finishLoading();
-                viewListener.setActionsEnabled(true);
-                viewListener.showErrorSnackbar(error);
+                mView.finishLoading();
+                mView.setActionsEnabled(true);
+                mView.showErrorSnackbar(error);
             }
 
             @Override
             public void onNullData() {
-                viewListener.finishLoading();
-                viewListener.showErrorSnackbar("");
+                mView.finishLoading();
+                mView.showErrorSnackbar("");
             }
         });
     }
@@ -230,52 +230,52 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         return new AddressRepository.AddAddressListener() {
             @Override
             public void onSuccess(String address_id) {
-                viewListener.finishLoading();
+                mView.finishLoading();
                 if (!TextUtils.isEmpty(address_id)) {
-                    Destination address = viewListener.getAddress();
+                    Destination address = mView.getAddress();
                     address.setAddressId(address_id);
-                    viewListener.setAddress(address);
+                    mView.setAddress(address);
                 }
-                viewListener.successSaveAddress();
-                viewListener.finishActivity();
+                mView.successSaveAddress();
+                mView.finishActivity();
             }
 
             @Override
             public void onTimeout() {
-                viewListener.finishLoading();
-                viewListener.errorSaveAddress();
-                viewListener.showErrorSnackbar("");
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorSnackbar("");
             }
 
             @Override
             public void onError(String error) {
-                viewListener.finishLoading();
-                viewListener.errorSaveAddress();
-                viewListener.showErrorSnackbar(error);
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorSnackbar(error);
             }
 
             @Override
             public void onNullData() {
-                viewListener.finishLoading();
-                viewListener.errorSaveAddress();
-                viewListener.showErrorSnackbar("");
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorSnackbar("");
             }
 
             @Override
             public void onNoNetworkConnection() {
-                viewListener.finishLoading();
-                viewListener.errorSaveAddress();
-                viewListener.showErrorSnackbar("");
+                mView.finishLoading();
+                mView.errorSaveAddress();
+                mView.showErrorSnackbar("");
             }
         };
     }
 
     private Map<String, String> getParam() {
         Map<String, String> params;
-        Destination address = viewListener.getAddress();
+        Destination address = mView.getAddress();
 
-        if (viewListener.isEdit()) {
-            String password = viewListener.getPassword();
+        if (mView.isEdit()) {
+            String password = mView.getPassword();
             params = getParamEditAddress(address, password);
         } else {
             params = getParamAddAddress(address);

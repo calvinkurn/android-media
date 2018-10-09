@@ -7,11 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.*;
+import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_ADD_ADDRESS_FORM;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_EDIT;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.KERO_TOKEN;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
 
 /**
  * Created by nisie on 9/6/16.
@@ -21,7 +27,7 @@ public class AddAddressActivity extends BaseSimpleActivity {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_ADD_ADDRESS_FORM;
+        return SCREEN_ADD_ADDRESS_FORM;
     }
 
     public static Intent createInstance(Activity activity, Token token) {
@@ -62,15 +68,14 @@ public class AddAddressActivity extends BaseSimpleActivity {
 
 
     /**
-     * @return
      * Always pass a bundle because the activity always get intent extra
      */
     @Override
     protected Fragment getNewFragment() {
-        AddAddressFragment fragment = null;
+        Fragment fragment = null;
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
-            fragment = AddAddressFragment.createInstance(bundle);
+            fragment = new AddAddressFragment();
         }
         return fragment;
     }
