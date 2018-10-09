@@ -48,7 +48,6 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -521,7 +520,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (mShowTokopointNative) {
-            RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
+            openApplink(ApplinkConstant.HOMEPAGE);
         } else {
             if (TextUtils.isEmpty(pageTitle))
                 startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
@@ -710,7 +709,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void openApplink(String applink) {
-        openApplink(applink, "");
+        if (!TextUtils.isEmpty(applink)) {
+            ((IHomeRouter) getActivity().getApplicationContext())
+                    .goToApplinkActivity(getActivity(), applink);
+        }
     }
 
     private void openApplink(String applink, String trackingAttribution) {
