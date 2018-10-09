@@ -46,7 +46,7 @@ class FlightSearchV2UseCase @Inject constructor(
                                                 maxRetry,
                                                 0,
                                                 0,
-                                                arrayListOf()
+                                                airlines
                                         )
                                     }
                                 }
@@ -64,7 +64,7 @@ class FlightSearchV2UseCase @Inject constructor(
                                     maxRetry,
                                     0,
                                     0,
-                                    arrayListOf()
+                                    airlines
                             )
                         }
                     }
@@ -81,7 +81,7 @@ class FlightSearchV2UseCase @Inject constructor(
                                     maxRetry,
                                     0,
                                     0,
-                                    arrayListOf()
+                                    airlines
                             )
                         }
                     }

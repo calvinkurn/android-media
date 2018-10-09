@@ -111,9 +111,19 @@ open class FlightSearchRepository @Inject constructor(
                                 journeyAndRoutes
                             }
                         }
-            }.toList().map { journeyAndRoutes ->
-                flightSearchSingleDataDbSource.insert(journeyAndRoutes)
-                response.meta
+            }.toList().map { journeyAndRoutesList ->
+                flightSearchSingleDataDbSource.insert(journeyAndRoutesList)
+                val airlines = arrayListOf<String>()
+                for (journeyAndRoutes in journeyAndRoutesList) {
+                    for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
+                        if (!airlines.contains(flightAirlineDb.id)) {
+                            airlines.add(flightAirlineDb.id)
+                        }
+                    }
+                }
+                val meta = response.meta
+                meta.airlines = airlines
+                meta
             }
         }
     }
@@ -151,9 +161,19 @@ open class FlightSearchRepository @Inject constructor(
                                 journeyAndRoutes
                             }
                         }
-            }.toList().map { journeyAndRoutes ->
-                flightSearchSingleDataDbSource.insert(journeyAndRoutes)
-                response.meta
+            }.toList().map { journeyAndRoutesList ->
+                flightSearchSingleDataDbSource.insert(journeyAndRoutesList)
+                val airlines = arrayListOf<String>()
+                for (journeyAndRoutes in journeyAndRoutesList) {
+                    for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
+                        if (!airlines.contains(flightAirlineDb.id)) {
+                            airlines.add(flightAirlineDb.id)
+                        }
+                    }
+                }
+                val meta = response.meta
+                meta.airlines = airlines
+                meta
             }
         }
     }
@@ -203,7 +223,18 @@ open class FlightSearchRepository @Inject constructor(
                 }
             }
         }.asObservable().map {
-            it.meta
+            val journeyAndRoutesList = it.flightJourneys
+            val airlines = arrayListOf<String>()
+            for (journeyAndRoutes in journeyAndRoutesList) {
+                for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
+                    if (!airlines.contains(flightAirlineDb.id)) {
+                        airlines.add(flightAirlineDb.id)
+                    }
+                }
+            }
+            val meta = it.meta
+            meta.airlines = airlines
+            meta
         }
     }
 

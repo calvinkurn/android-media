@@ -3,6 +3,10 @@ package com.tokopedia.flight.search.data.cloud.model.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
 /**
  * Created by User on 11/14/2017.
  */
@@ -30,6 +34,8 @@ public class Meta {
     private String departureAirport; // merge result
     private String arrivalAirport; // merge result
     private String time; // merge result
+    @NotNull
+    public ArrayList<String> airlines;
 
     public boolean isNeedRefresh() {
         return needRefresh;
