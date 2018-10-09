@@ -2,8 +2,6 @@ package com.tokopedia.digital.product.view.fragment;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -19,6 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -40,14 +42,10 @@ import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
-import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.product.view.presenter.IUssdProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.UssdProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,9 +3,9 @@ package com.tokopedia.digital.common.data.source;
 import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
@@ -67,12 +67,7 @@ public class StatusDataSource {
 
     @NonNull
     private Func1<Response<TkpdDigitalResponse>, StatusEntity> getFuncTransformStatusEntity() {
-        return new Func1<Response<TkpdDigitalResponse>, StatusEntity>() {
-            @Override
-            public StatusEntity call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                return tkpdDigitalResponseResponse.body().convertDataObj(StatusEntity.class);
-            }
-        };
+        return tkpdDigitalResponseResponse -> tkpdDigitalResponseResponse.body().convertDataObj(StatusEntity.class);
     }
 
 }

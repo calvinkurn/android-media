@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 27
+    compileSdkVersion = 28
     minSdkVersion = 16
-    targetSdkVersion = 27
-    buildToolsVersion = "27.0.3"
+    targetSdkVersion = 28
+    buildToolsVersion = "28.0.2"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -397,7 +397,8 @@ ext {
             updateinactivephone   : ":features:user:updateinactivephone",
             paymentSetting        : ":features:payment:payment_setting",
             browse                : ":features:digital:digital_browse",
-            saldodetails            : ":features:fintech:saldo_details"
+            saldodetails            : ":features:fintech:saldo_details",
+            commonDigital         : ":features:digital:common_digital"
     ]
 
     libraries = [

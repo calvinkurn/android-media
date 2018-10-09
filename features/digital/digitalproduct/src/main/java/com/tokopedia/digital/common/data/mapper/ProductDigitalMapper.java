@@ -1,5 +1,10 @@
 package com.tokopedia.digital.common.data.mapper;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Promo;
+import com.tokopedia.common_digital.product.presentation.model.Rule;
 import com.tokopedia.digital.common.data.entity.response.Field;
 import com.tokopedia.digital.common.data.entity.response.GuideEntity;
 import com.tokopedia.digital.common.data.entity.response.OperatorBannerEntity;
@@ -12,15 +17,10 @@ import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.view.model.AdditionalFeature;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.product.view.model.Promo;
-import com.tokopedia.digital.product.view.model.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,12 +92,12 @@ public class ProductDigitalMapper {
             clientNumberCategory.setType(entity.getClientNumber().getType());
             clientNumberCategory.setPlaceholder(entity.getClientNumber().getPlaceholder());
             clientNumberCategory.setText(entity.getClientNumber().getText());
-            List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
+            List<com.tokopedia.common_digital.product.presentation.model.Validation> validationCategoryList
                     = new ArrayList<>();
             for (Validation validation
                     : entity.getClientNumber().getValidation()) {
-                com.tokopedia.digital.product.view.model.Validation validationCategory =
-                        new com.tokopedia.digital.product.view.model.Validation();
+                com.tokopedia.common_digital.product.presentation.model.Validation validationCategory =
+                        new com.tokopedia.common_digital.product.presentation.model.Validation();
                 validationCategory.setError(validation.getError());
                 validationCategory.setRegex(validation.getRegex());
                 validationCategoryList.add(validationCategory);
@@ -175,12 +175,12 @@ public class ProductDigitalMapper {
                 clientNumberOperator.setType(field.getType());
                 clientNumberOperator.setPlaceholder(field.getPlaceholder());
                 clientNumberOperator.setText(field.getText());
-                List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
+                List<com.tokopedia.common_digital.product.presentation.model.Validation> validationCategoryList
                         = new ArrayList<>();
                 for (com.tokopedia.digital.common.data.entity.response.Validation validation
                         : field.getValidation()) {
-                    com.tokopedia.digital.product.view.model.Validation validationCategory =
-                            new com.tokopedia.digital.product.view.model.Validation();
+                    com.tokopedia.common_digital.product.presentation.model.Validation validationCategory =
+                            new com.tokopedia.common_digital.product.presentation.model.Validation();
                     validationCategory.setError(validation.getError());
                     validationCategory.setRegex(validation.getRegex());
                     validationCategoryList.add(validationCategory);
@@ -246,7 +246,6 @@ public class ProductDigitalMapper {
 
         return bannerDataList;
     }
-
 
     private OrderClientNumber getLastOrder(RechargeFavoritNumberResponseEntity entity) {
         if (entity == null) {

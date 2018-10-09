@@ -46,6 +46,7 @@ import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -471,7 +472,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter {
+        TalkRouter,
+        DigitalRouter {
 
     private static final String EXTRA = "extra";
 
