@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
 /**
@@ -26,7 +27,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         }
     };
     private HomeHeaderWalletAction homeHeaderWalletActionData;
-    private TokoPointDrawerData tokoPointDrawerData;
+    private TokopointHomeDrawerData tokoPointDrawerData;
     private CashBackData cashBackData;
     private boolean pendingTokocashChecked;
     private boolean isWalletError;
@@ -52,11 +53,11 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
         this.homeHeaderWalletActionData = homeHeaderWalletActionData;
     }
 
-    public TokoPointDrawerData getTokoPointDrawerData() {
+    public TokopointHomeDrawerData getTokoPointDrawerData() {
         return tokoPointDrawerData;
     }
 
-    public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+    public void setTokoPointDrawerData(TokopointHomeDrawerData tokoPointDrawerData) {
         this.tokoPointDrawerData = tokoPointDrawerData;
     }
 

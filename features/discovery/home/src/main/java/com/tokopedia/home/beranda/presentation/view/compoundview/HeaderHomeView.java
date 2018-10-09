@@ -137,7 +137,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokoPoint.setVisibility(VISIBLE);
             //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
             tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
-            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getRewardPointsStr());
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {

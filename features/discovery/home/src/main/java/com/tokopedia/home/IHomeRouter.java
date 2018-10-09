@@ -9,6 +9,9 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+
+import rx.Observable;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -51,4 +54,7 @@ public interface IHomeRouter {
     Intent getIntentCreateShop(Context context);
 
     void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
+
+    Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
+
 }
