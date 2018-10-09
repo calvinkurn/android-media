@@ -130,13 +130,16 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickSeeAllProductSprint() {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "sprint sale click view all",
-                ""
-        ).getEvent());
+    public static void eventClickSeeAllProductSprint(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "sprint sale click view all",
+                    ""
+            );
+        }
     }
 
     public static void eventClickSeeAllProductSprintBackground() {
@@ -152,8 +155,12 @@ public class HomePageTracking extends TrackingUtils {
         eventTrackingEnhancedEcommerce(data);
     }
 
-    public static void eventEnhancedClickSprintSaleProduct(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedClickSprintSaleProduct(Context context,
+                                                           Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
     public static void eventEnhancedImpressionDynamicChannelHomePage(Map<String, Object> data) {
@@ -171,13 +178,16 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickSeeAllDynamicChannel(String applink) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "curated list click view all",
-                applink
-        ).getEvent());
+    public static void eventClickSeeAllDynamicChannel(Context context, String applink) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "curated list click view all",
+                    applink
+            );
+        }
     }
 
     public static void eventClickSeeAllLegoBannerChannel(String applink) {
