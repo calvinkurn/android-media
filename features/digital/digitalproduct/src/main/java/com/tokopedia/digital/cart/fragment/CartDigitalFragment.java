@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -53,6 +54,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -81,6 +83,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
+    private static final String ARG_CART_DIGITAL_FROM = "ARG_CART_DIGITAL_FROM";
 
     private static final String EXTRA_STATE_CART_DIGITAL_INFO_DATA =
             "EXTRA_STATE_CART_DIGITAL_INFO_DATA";
@@ -90,6 +93,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER";
     private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
             "EXTRA_STATE_CHECKOUT_PASS_DATA";
+    private static final String EXTRA_STATE_DIGITAL_FROM =
+            "EXTRA_STATE_DIGITAL_FROM";
 
     private final int COUPON_ACTIVE = 1;
 
@@ -111,15 +116,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private TkpdProgressDialog progressDialogNormal;
     private CheckoutDataParameter.Builder checkoutDataBuilder;
 
+    private int extraComeFrom;
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
     private CompositeSubscription compositeSubscription;
 
-    public static Fragment newInstance(Parcelable passData) {
+    public static Fragment newInstance(DigitalCheckoutPassData passData, int from) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_CART_DIGITAL_DATA_PASS, passData);
+        bundle.putInt(ARG_CART_DIGITAL_FROM, from);
         cartDigitalFragment.setArguments(bundle);
         return cartDigitalFragment;
     }
@@ -139,6 +146,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         state.putParcelable(EXTRA_STATE_CART_DIGITAL_INFO_DATA, cartDigitalInfoDataState);
         state.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER, checkoutDataBuilder.build());
         state.putParcelable(EXTRA_STATE_VOUCHER_DIGITAL, voucherDigitalState);
+        state.putInt(EXTRA_STATE_DIGITAL_FROM, extraComeFrom);
     }
 
     @Override
@@ -157,6 +165,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (cartDigitalInfoData != null) renderCartDigitalInfoData(cartDigitalInfoData);
         VoucherDigital voucherDigital = (VoucherDigital) savedState.get(EXTRA_STATE_VOUCHER_DIGITAL);
         if (voucherDigital != null) renderVoucherInfoData(voucherDigital);
+        extraComeFrom = savedState.getInt(EXTRA_STATE_DIGITAL_FROM);
     }
 
     @Override
@@ -187,6 +196,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         presenter = new CartDigitalPresenter(
                 this,
+                new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker()),
                 new CartDigitalInteractor(
                         compositeSubscription,
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
@@ -203,6 +213,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected void setupArguments(Bundle arguments) {
         passData = arguments.getParcelable(ARG_CART_DIGITAL_DATA_PASS);
+        extraComeFrom = arguments.getInt(ARG_CART_DIGITAL_FROM, 0);
     }
 
     @Override
@@ -260,6 +271,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void showProgressLoading(String title, String message) {
         progressDialogNormal.showDialog(title, message);
+    }
+
+    @Override
+    public CartDigitalInfoData getCartDataInfo() {
+        return cartDigitalInfoDataState;
     }
 
     @Override
@@ -375,7 +391,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData);
+        presenter.sendAnalyticsATCSuccess(cartDigitalInfoData, extraComeFrom);
 
         sendGTMAnalytics(
                 cartDigitalInfoData.getAttributes().getCategoryName(),

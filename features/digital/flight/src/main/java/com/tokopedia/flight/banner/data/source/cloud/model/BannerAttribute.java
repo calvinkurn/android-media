@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class BannerAttribute {
-    @SerializedName("desription")
+    @SerializedName("description")
     @Expose
     private String description;
     @SerializedName("link_url")

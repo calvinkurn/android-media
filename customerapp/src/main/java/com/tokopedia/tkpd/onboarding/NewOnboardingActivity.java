@@ -1,14 +1,18 @@
 package com.tokopedia.tkpd.onboarding;
 
 import android.content.Context;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -16,8 +20,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.tkpd.R;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -26,6 +33,8 @@ import com.tokopedia.tkpd.ConsumerRouterApplication;
 import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
 import com.tokopedia.tkpd.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.Map;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -45,6 +54,7 @@ public class NewOnboardingActivity extends AppIntro {
     protected View decorView;
     private UserSession userSession;
     private ConsumerOnboardingAnalytics analytics;
+    private boolean isAppsflyerCallbackHandled;
 
     @Override
     protected void onStart() {
@@ -140,9 +150,14 @@ public class NewOnboardingActivity extends AppIntro {
     private void finishOnboard() {
         analytics.eventOnboardingSkip(getApplicationContext(), pager.getCurrentItem() + 1);
         userSession.setFirstTimeUserOnboarding(false);
+
         Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
+        if (!TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
+            intent.putExtra("EXTRA_APPLINK", AppsflyerContainer.getDefferedDeeplinkPathIfExists());
+        }
         startActivity(intent);
         finish();
+
     }
 
     @Override

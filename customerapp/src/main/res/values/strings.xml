@@ -132,4 +132,6 @@
     <string name="title_activity_login">Masuk</string>
 
     <!-- END NEW ON BOARDING RELATED STRING RESOURCE -->
+    <string name="drawer_title_challenges">Challenges</string>
+    <string name="share_link">Share Link!!!</string>
 </resources>

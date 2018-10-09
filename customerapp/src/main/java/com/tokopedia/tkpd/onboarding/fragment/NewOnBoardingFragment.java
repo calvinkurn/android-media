@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.tkpd.ConsumerRouterApplication;
@@ -37,9 +39,9 @@ import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideRevers
 import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToX;
 import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToXFromCurrentHeight;
 
-///**
-// * Created by hafizh HERDI on 3/21/2016.
-// */
+/**
+ * Created by hafizh HERDI on 3/21/2016.
+ */
 public class NewOnBoardingFragment extends Fragment implements CustomAnimationPageTransformerDelegate {
 
     private static final String ARG_LOTTIE = "lottie";
@@ -214,6 +216,9 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
                 Intent intent = ((ConsumerRouterApplication) getActivity().getApplicationContext())
                         .getHomeIntent
                         (getActivity());
+                if (!TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
+                    intent.putExtra("EXTRA_APPLINK", AppsflyerContainer.getDefferedDeeplinkPathIfExists());
+                }
                 startActivity(intent);
                 getActivity().finish();
             }

@@ -424,6 +424,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    // Empty cart
     public void eventClickLihatLainnya() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -437,9 +438,51 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
                 EventCategory.CART,
-                EventAction.CLICK_LIHAT_LAINNYA,
+                EventAction.CLICK_LIHAT_SEMUA_WISHLIST,
                 ""
         );
+    }
+
+    public void eventClickLihatSemuaLastSeen() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_SEMUA_LAST_SEEN,
+                ""
+        );
+    }
+
+    public void enhancedEcommerceProductViewWishListOnEmptyCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.VIEW_PRODUCT,
+                Key.EVENT_LABEL, EventLabel.PRODUCT_WISHLIST,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedEcommerceProductViewLastSeenOnEmptyCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.VIEW_PRODUCT,
+                Key.EVENT_LABEL, EventLabel.PRODUCT_LAST_SEEN,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedEcommerceProductViewRecommendationOnEmptyCart(Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_VIEW,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.VIEW_PRODUCT,
+                Key.EVENT_LABEL, EventLabel.PRODUCT_RECOMMENDATION,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
     }
 
     public void enhancedEcommerceClickProductWishListOnEmptyCart(String position, Map<String, Object> cartMap) {
