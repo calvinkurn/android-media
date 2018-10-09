@@ -388,11 +388,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
     }
 
-    public void setTextStatus(int textColor, Drawable bgColor, TextView statusText) {
-        statusText.setTextColor(textColor);
-        statusText.setBackground(bgColor);
-    }
-
     @Override
     public void renderWinnerItems(SubmissionResponse submissionResponse) {
 
