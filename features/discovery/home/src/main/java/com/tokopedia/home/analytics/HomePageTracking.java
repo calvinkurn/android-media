@@ -160,8 +160,15 @@ public class HomePageTracking extends TrackingUtils {
         eventTrackingEnhancedEcommerce(data);
     }
 
-    public static void eventEnhancedClickDynamicChannelHomePage(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedClickDynamicChannelHomePage(
+            Context context,
+            Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(
+                    data
+            );
+        }
     }
 
     public static void eventClickSeeAllDynamicChannel(String applink) {

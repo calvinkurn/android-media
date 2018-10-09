@@ -31,6 +31,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     @LayoutRes
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
     private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
+    private final Context context;
     private TextView channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
@@ -43,6 +44,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     public DynamicChannelHeroViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
+        this.context = itemView.getContext();
         findViews(itemView);
         itemAdapter = new ItemAdapter(listener);
         recyclerView.setAdapter(itemAdapter);
@@ -84,6 +86,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                     @Override
                     public void onClick(View view) {
                         HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                context,
                                 element.getChannel().getEnhanceClickDynamicChannelHomePage(element.getChannel().getHero()[0], 1)
                         );
                         listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(element.getChannel().getHero()[0]),
@@ -137,6 +140,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                    holder.getContext(),
                                     channel.getEnhanceClickDynamicChannelHomePage(grid, position + 2)
                             );
                             listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
