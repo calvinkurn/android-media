@@ -77,15 +77,19 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         loadVoucherDetail()
         tvSeeCart.setOnClickListener { it ->
-            val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
-            intent?.run {
-                startActivity(intent)
+            if (RouteManager.isSupportApplink(context!!, ApplinkConst.CART)) {
+                val intent = RouteManager.getIntent(context!!, ApplinkConst.CART)
+                intent?.run {
+                    startActivity(intent)
+                }
             }
         }
         btnUseVoucher.setOnClickListener { _ ->
             if (presenter.isLogin() == false) {
-                val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_LOGIN)
+                if (RouteManager.isSupportApplink(context!!, ApplinkConst.LOGIN)) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                    startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_LOGIN)
+                }
             } else if (!presenter.isMyShop(voucherShopId)){
                 merchantVoucherViewModel?.let {
                     presenter.useMerchantVoucher(it.voucherCode, voucherId)

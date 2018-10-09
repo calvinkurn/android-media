@@ -1,14 +1,14 @@
 package com.tokopedia.merchantvoucher.common.gql.domain.usecase
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLMerchantListMapper
-import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLResultMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -35,8 +35,10 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<MerchantVo
             }
 
             override fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
-                //TODO use cache?
-                return null
+                return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setSessionIncluded(true)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                        .build();
             }
         }
     }

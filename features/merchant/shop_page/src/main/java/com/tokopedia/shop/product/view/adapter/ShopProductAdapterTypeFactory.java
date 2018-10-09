@@ -126,7 +126,11 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
-        return ShopMerchantVoucherViewHolder.LAYOUT;
+        if (shopMerchantVoucherViewModel.getShopMerchantVoucherViewModelArrayList().size() ==0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopMerchantVoucherViewHolder.LAYOUT;
+        }
     }
 
     public int type(ShopProductViewModel shopProductViewModel) {

@@ -14,7 +14,15 @@ public class ShopMerchantVoucherViewModel implements BaseShopProductViewModel {
     private ArrayList<MerchantVoucherViewModel> merchantVoucherViewModels;
 
     public ShopMerchantVoucherViewModel(ArrayList<MerchantVoucherViewModel> merchantVoucherViewModels) {
-        this.merchantVoucherViewModels = merchantVoucherViewModels;
+        setMerchantVoucherViewModels(merchantVoucherViewModels);
+    }
+
+    public void setMerchantVoucherViewModels(ArrayList<MerchantVoucherViewModel> merchantVoucherViewModels) {
+        if (merchantVoucherViewModels == null) {
+            this.merchantVoucherViewModels = new ArrayList<>();
+        } else {
+            this.merchantVoucherViewModels = merchantVoucherViewModels;
+        }
     }
 
     public ArrayList<MerchantVoucherViewModel> getShopMerchantVoucherViewModelArrayList() {

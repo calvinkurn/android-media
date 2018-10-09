@@ -293,7 +293,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
             shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo));
 
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
 
             shopProductLimitedListPresenter.getProductFeatureListWithAttributes(
                     shopInfo.getInfo().getShopId(),
@@ -821,7 +821,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 break;
             case REQUEST_CODE_LOGIN_USE_VOUCHER:
             case REQUEST_CODE_MERCHANT_VOUCHER:
-            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL:{
+            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL: {
                 if (resultCode == Activity.RESULT_OK) {
                     needLoadVoucher = true;
                 }
@@ -839,8 +839,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             return;
         }
         if (!merchantVoucherListPresenter.isLogin()) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+            }
         } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
             merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                     merchantVoucherViewModel.getVoucherId());
@@ -849,7 +851,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
-        Intent intent =  MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
+        Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
                 merchantVoucherViewModel, shopInfo.getInfo().getShopId());
         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
     }
@@ -890,7 +892,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         }
                     }).show();
             merchantVoucherListPresenter.clearCache();
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
         }
     }
 
@@ -935,8 +937,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         if (needLoadVoucher) {
             merchantVoucherListPresenter.clearCache();
-            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
+            loadVoucherList();
             needLoadVoucher = false;
+        }
+    }
+
+    private void loadVoucherList() {
+        if (shopInfo != null) {
+            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
         }
     }
 
