@@ -80,7 +80,7 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
                 case TYPE_IMAGE:
                     visitable = convertToKolPostViewModel(post);
                     view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
-                            "",
+                            KolEventTracking.Event.EVENT_SHOP_PAGE,
                             KolEventTracking.Category.SHOP_PAGE_FEED,
                             KolEventTracking.Action.SHOP_ITEM_CLICK,
                             String.valueOf(post.getId())

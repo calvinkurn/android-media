@@ -326,7 +326,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         } else if (type == Type.SHOP_PAGE) {
             analyticTracker.sendEventTracking(
-                    "",
+                    KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
                     KolEventTracking.Action.SHOP_ITEM_CLICK,
                     String.valueOf(element.getKolId())

@@ -8,12 +8,14 @@ public interface KolEventTracking {
     interface Screen {
         String SCREEN_KOL_COMMENTS = "Kol Comments Page";
         String SCREEN_KOL_POST_DETAIL = "content detail page";
+        String SCREEN_SHOP_PAGE_FEED = "ShopPageActivity";
     }
 
     interface Event {
         String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
         String EVENT_CLICK_TOP_PROFILE = "clickTopProfile";
         String EVENT_CLICK_FEED = "clickFeed";
+        String EVENT_SHOP_PAGE = "clickShopPage";
     }
 
     interface Category {

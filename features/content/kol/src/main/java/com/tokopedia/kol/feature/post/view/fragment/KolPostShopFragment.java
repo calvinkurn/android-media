@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
@@ -29,7 +30,6 @@ import javax.inject.Inject;
 public class KolPostShopFragment extends KolPostFragment implements KolPostShopContract.View,
         KolPostShopContract.View.Like {
 
-    private static final String SCREEN_NAME = "ShopPageActivity";
     private static final int CREATE_POST = 888;
     private static final String PARAM_SHOP_ID = "shop_id";
     private static final String PARAM_CREATE_POST_URL = "create_post_url";
@@ -70,7 +70,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return KolEventTracking.Screen.SCREEN_SHOP_PAGE_FEED;
     }
 
     @Override
