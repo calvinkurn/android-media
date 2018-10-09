@@ -41,7 +41,7 @@ public interface IHomeRouter {
 
     Intent getHomeIntent(Context context);
 
-    void goToWallet(Context context, String url);
+    void goToWalletFromHome(Context context, String url);
 
     void goToProductDetail(Context context,
                            String productId,
@@ -57,4 +57,5 @@ public interface IHomeRouter {
 
     Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 
+    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 }

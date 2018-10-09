@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +29,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
@@ -39,8 +37,6 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.helper.KeyboardHelper;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -479,13 +475,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void clickOnButton(String url, String appLink) {
                 if (TextUtils.isEmpty(appLink)) {
-                    String seamlessUrl;
-                    seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
-                            getContext());
                     if (getActivity() != null) {
                         if ((getActivity()).getApplication() instanceof IHomeRouter) {
                             ((IHomeRouter) (getActivity()).getApplication())
-                                    .goToWallet(getActivity(), seamlessUrl);
+                                    .goToWalletFromHome(getActivity(), url);
                         }
                     }
                 } else {
@@ -815,9 +808,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
+            ((IHomeRouter) getActivity().getApplication())
+                    .actionOpenGeneralWebView(
+                            getActivity(),
+                            url);
         }
     }
 
