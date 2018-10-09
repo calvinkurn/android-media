@@ -210,7 +210,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             labelTxt.setText(title);
-            view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
+            view.setOnClickListener(new OnTabExplorerClickListener(this, title, tabLayout, i));
             tab.setCustomView(view);
             Uri uri = Uri.parse(model.getApplinks());
             sectionList.add(uri.getLastPathSegment().toLowerCase());
@@ -242,18 +242,20 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         private final String title;
         private final TabLayout tab;
         private final int positionTab;
+        private final Context context;
 
-        OnTabExplorerClickListener(String title, TabLayout tab, int positionTab) {
+        OnTabExplorerClickListener(Context context, String title, TabLayout tab, int positionTab) {
             this.title = title;
             this.tab = tab;
             this.positionTab = positionTab;
+            this.context = context;
         }
 
         @Override
         public void onClick(View v) {
             TabLayout.Tab currentTab = tab.getTabAt(positionTab);
             if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
-                HomePageTracking.eventClickTabExplorer(title);
+                HomePageTracking.eventClickTabExplorer(context, title);
                 currentTab.select();
             }
         }

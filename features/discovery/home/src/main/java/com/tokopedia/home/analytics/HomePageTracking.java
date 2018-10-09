@@ -109,13 +109,17 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickTabExplorer(String title) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "click explorer tab",
-                title
-        ).getEvent());
+    public static void eventClickTabExplorer(Context context,
+                                             String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click explorer tab",
+                    title
+            );
+        }
     }
 
     public static void eventClickDynamicIcons(Context context, String title) {
