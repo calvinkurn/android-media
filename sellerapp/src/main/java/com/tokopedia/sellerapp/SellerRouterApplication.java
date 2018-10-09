@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -68,6 +69,9 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -1530,15 +1534,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return InboxTalkActivity.Companion.createIntent(context);
-        else {
-            return InboxRouter.getInboxTalkActivityIntent(context);
-        }
-    }
-
-    @Override
     public Intent getProductTalk(Context context, String productId) {
         if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", false))
             return TalkProductActivity.Companion.createIntent(context, productId);
@@ -1692,6 +1687,30 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProductPageIntent(Context context, String productId) {
         return ProductInfoActivity.createInstance(context, productId);
+    }
+
+    @Override
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+        InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(@NonNull Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
+        }
+    }
+
+    @Override
+    public String getKolCommentArgsPosition() {
+        return null;
+    }
+
+    @Override
+    public String getKolCommentArgsTotalComment() {
+        return null;
     }
 
     @Override

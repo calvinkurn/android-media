@@ -82,6 +82,8 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
+    void onAppsFlyerInit();
+
     void goToCreateMerchantRedirect(Context context);
 
     Intent getLoginIntent(Context context);

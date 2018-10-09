@@ -80,14 +80,14 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         airlineName.setText(route.getAirlineName());
         airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
         setRefundableInfo(route);
-        departureTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getDepartureTimestamp()));
-        departureDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getDepartureTimestamp()));
+        departureTime.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_TIME_DETAIL, route.getDepartureTimestamp()));
+        departureDate.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getDepartureTimestamp()));
         setColorCircle();
         setDepartureInfo(route);
 
         flightTime.setText(route.getDuration());
-        arrivalTime.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
-        arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getArrivalTimestamp()));
+        arrivalTime.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_TIME_DETAIL, route.getArrivalTimestamp()));
+        arrivalDate.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL, route.getArrivalTimestamp()));
         setArrivalInfo(route);
         setPNR(route.getPnr());
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),

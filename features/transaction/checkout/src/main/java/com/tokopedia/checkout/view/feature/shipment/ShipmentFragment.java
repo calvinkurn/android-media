@@ -652,6 +652,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
+        shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
+        onNeedUpdateViewItem(itemPosition);
+    }
+
+    @Override
+    public void renderCourierStateFailed(int itemPosition) {
+        shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        onNeedUpdateViewItem(itemPosition);
+    }
+
+    @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
         sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
@@ -803,8 +816,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
-            getActivity().setResult(resultCode);
-            getActivity().finish();
+            if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
+                shipmentPresenter.processInitialLoadCheckoutPage(true);
+            } else {
+                getActivity().setResult(resultCode);
+                getActivity().finish();
+            }
         }
     }
 
@@ -1234,6 +1251,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                               int errorPosition) {
         if (shipmentData == null && result) {
             shipmentPresenter.processCheckShipmentPrepareCheckout();
+            shipmentPresenter.processSaveShipmentState();
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
@@ -1280,7 +1298,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
             setPinpoint(cartItemPosition);
         } else {
-            shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
         }
     }
 
@@ -1354,6 +1373,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
+        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+    }
+
+    @Override
     protected String getScreenName() {
         return ConstantTransactionAnalytics.ScreenName.CHECKOUT;
     }
@@ -1388,7 +1412,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 setPinpoint(cartItemPosition);
             } else {
                 sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
-                shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
+                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
+                shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
             }
         }
@@ -1413,7 +1438,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
             setPinpoint(cartItemPosition);
         } else {
-            shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
         }
     }
 
@@ -1466,12 +1492,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-
     @Override
     public void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
                                         RecipientAddressModel recipientAddressModel,
                                         int cartPosition) {
         sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+        if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
+                shipmentPresenter.getShippingCourierViewModelsState() != null) {
+            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState();
+        }
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                 shippingCourierViewModels, recipientAddressModel, cartPosition);
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
@@ -1485,6 +1514,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void hideSoftKeyboard() {
         if (getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
+        }
+    }
+
+    @Override
+    public void onLoadShippingState(int shipperId, int spId, int itemPosition,
+                                    ShipmentDetailData shipmentDetailData,
+                                    List<ShopShipment> shopShipmentList,
+                                    boolean useCourierRecommendation) {
+        if (useCourierRecommendation) {
+            shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+        } else {
+            shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
         }
     }
 }
