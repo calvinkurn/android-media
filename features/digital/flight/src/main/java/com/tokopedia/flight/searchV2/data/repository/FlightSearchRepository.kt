@@ -275,7 +275,6 @@ open class FlightSearchRepository @Inject constructor(
                 refundableCount++
             }
         }
-
         return when (refundableCount) {
             routes.size -> RefundableEnum.REFUNDABLE
             0 -> RefundableEnum.NOT_REFUNDABLE
