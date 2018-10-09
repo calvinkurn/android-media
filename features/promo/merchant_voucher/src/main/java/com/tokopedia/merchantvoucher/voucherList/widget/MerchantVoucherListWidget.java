@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -37,6 +38,7 @@ public class MerchantVoucherListWidget extends FrameLayout
         BaseListAdapter.OnAdapterInteractionListener<MerchantVoucherViewModel> {
 
     private String titleString;
+    private int titleTextSize;
 
     private TextView tvTitle;
     private TextView tvSeeAll;
@@ -96,6 +98,8 @@ public class MerchantVoucherListWidget extends FrameLayout
         if (attributeSet != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.MerchantVoucherListWidget);
             titleString = typedArray.getString(R.styleable.MerchantVoucherListWidget_mvlwTitleString);
+            titleTextSize = typedArray.getDimensionPixelOffset(R.styleable.MerchantVoucherListWidget_mvlwTitleTextSize,
+                    getResources().getDimensionPixelSize(R.dimen.sp_16));
             typedArray.recycle();
         }
     }
@@ -105,6 +109,7 @@ public class MerchantVoucherListWidget extends FrameLayout
                 this, true);
         recyclerView = rootView.findViewById(R.id.recycler_view);
         tvTitle = rootView.findViewById(R.id.tvTitle);
+        tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         tvSeeAll = rootView.findViewById(R.id.tvSeeAll);
         tvSeeAll.setOnClickListener(new OnClickListener() {
             @Override
@@ -114,6 +119,7 @@ public class MerchantVoucherListWidget extends FrameLayout
                 }
             }
         });
+        tvSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         tvTitle.setText(titleString);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -146,7 +152,6 @@ public class MerchantVoucherListWidget extends FrameLayout
         } else {
             rootView.setVisibility(View.GONE);
         }
-
     }
 
     @Override

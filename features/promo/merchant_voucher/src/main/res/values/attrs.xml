@@ -13,5 +13,6 @@
 
     <declare-styleable name="MerchantVoucherListWidget">
         <attr name="mvlwTitleString" format="string" />
+        <attr name="mvlwTitleTextSize" format="dimension" />
     </declare-styleable>
 </resources>
