@@ -55,4 +55,12 @@ public class SessionHandler {
     public boolean isV4Login(){
         return false;
     }
+
+    public String getPhoneNumber() {
+        return "";
+    }
+
+    public String getEmail() {
+        return "";
+    }
 }

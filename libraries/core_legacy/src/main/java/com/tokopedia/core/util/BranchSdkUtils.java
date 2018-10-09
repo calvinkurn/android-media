@@ -9,6 +9,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.BaseAbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
@@ -16,6 +17,8 @@ import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.Constants;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.deprecated.ShareData;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 
 import org.json.JSONObject;
 
@@ -64,97 +67,102 @@ public class BranchSdkUtils {
         return branchUniversalObject;
     }
 
-//    public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
-//
-//        if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
-//            if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
-//                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
-//            } else {
-//                BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-//                LinkProperties linkProperties = createLinkProperties(data, data.getSource(), activity);
-//                branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
-//                    @Override
-//                    public void onLinkCreate(String url, BranchError error) {
-//                        if (error == null) {
-//                            ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
-//                        } else {
-//                            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
-//                        }
-//                    }
-//                });
-//            }
-//        } else {
-//            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
-//
-//        }
-//    }
+    public static void generateBranchLink(final ShareData data, final Activity activity, final GenerateShareContents ShareContentsCreateListener) {
 
-//    private static LinkProperties createLinkProperties(ShareData data, String channel, Activity activity) {
-//        LinkProperties linkProperties = new LinkProperties();
-//        String deeplinkPath;
-//        String desktopUrl = null;
-//        if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
-//        } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
-//            deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
-//        } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
-//        } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
-//        } else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
-//        } else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.GROUPCHAT, data.getId());
-//            if (activity.getApplication() instanceof TkpdCoreRouter) {
-//                desktopUrl = ((TkpdCoreRouter) activity.getApplication())
-//                        .getDesktopLinkGroupChat();
-//                linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
-//            }
-//        } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
-//            deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
-//        } else {
-//            deeplinkPath = getApplinkPath(data.renderShareUri(), "");
-//        }
-//
-//        if (desktopUrl == null) {
-//            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
-//            linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
-//            linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
-//
-//        }
-//
-//        linkProperties.setCampaign(CAMPAIGN_NAME);
-//        linkProperties.setChannel(channel);
-//        linkProperties.setFeature(data.getType());
-//        linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
-//        linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
-//        return linkProperties;
-//    }
-//
-//    private static boolean isBranchUrlActivated(Activity activity, String type) {
-//        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)
-//                || ShareData.REFERRAL_TYPE.equalsIgnoreCase(type)
-//                || ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(type)) {
-//            return true;
-//        } else {
-//            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
-//            return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true);
-//        }
-//    }
-//
-//    private static String getApplinkPath(String url, String id) {
-//        if (url.contains(Constants.Schemes.APPLINKS + "://")) {
-//            url = url.replace(Constants.Schemes.APPLINKS + "://", "");
-//            url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
-//        } else if (url.contains(TkpdBaseURL.WEB_DOMAIN)) {
-//            url = url.replace(TkpdBaseURL.WEB_DOMAIN, "");
-//        } else if (url.contains(TkpdBaseURL.MOBILE_DOMAIN)) {
-//            url = url.replace(TkpdBaseURL.MOBILE_DOMAIN, "");
-//        }
-//        return url;
-//    }
-//
+        if (isBranchUrlActivated(activity, data.getType()) && !ShareData.RIDE_TYPE.equalsIgnoreCase(data.getType())) {
+            if (ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getshareUrl())) {
+                ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
+            } else {
+                BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
+                LinkProperties linkProperties = createLinkProperties(new SessionHandler(activity).getLoginName(), data, data.getSource(), activity);
+                branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
+                    @Override
+                    public void onLinkCreate(String url, BranchError error) {
+                        if (error == null) {
+                            ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(url), url, url);
+                        } else {
+                            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), url);
+                        }
+                    }
+                });
+            }
+        } else {
+            ShareContentsCreateListener.onCreateShareContents(data.getTextContent(activity), data.renderShareUri(), data.renderShareUri());
+
+        }
+    }
+
+    private static LinkProperties createLinkProperties(String loginName, ShareData data, String channel, Activity activity) {
+        LinkProperties linkProperties = new LinkProperties();
+        String deeplinkPath;
+        String desktopUrl = null;
+        if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
+        } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
+            deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", loginName == null ? "" : loginName);
+        } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
+        } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_HOTLIST_DETAIL, data.getId());//"hot/" + data.getId();
+        } else if (ShareData.CATALOG_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.DISCOVERY_CATALOG, data.getId());
+        } else if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.GROUPCHAT, data.getId());
+            if (activity.getApplication() instanceof TkpdCoreRouter) {
+                desktopUrl = ((TkpdCoreRouter) activity.getApplication())
+                        .getDesktopLinkGroupChat();
+                linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+            }
+        } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else {
+            deeplinkPath = getApplinkPath(data.renderShareUri(), "");
+        }
+
+        if (desktopUrl == null) {
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
+
+        }
+
+        linkProperties.setCampaign(CAMPAIGN_NAME);
+        linkProperties.setChannel(channel);
+        linkProperties.setFeature(data.getType());
+        linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        return linkProperties;
+    }
+
+    public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
+
+    private static boolean isBranchUrlActivated(Activity activity, String type) {
+        if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(type)
+                || ShareData.REFERRAL_TYPE.equalsIgnoreCase(type)
+                || ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(type)) {
+            return true;
+        } else {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(activity);
+            return remoteConfig.getBoolean(MAINAPP_ACTIVATE_BRANCH_LINKS, true);
+        }
+    }
+
+    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
+    public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+
+    private static String getApplinkPath(String url, String id) {
+        if (url.contains(Constants.Schemes.APPLINKS + "://")) {
+            url = url.replace(Constants.Schemes.APPLINKS + "://", "");
+            url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
+        } else if (url.contains(WEB_DOMAIN)) {
+            url = url.replace(WEB_DOMAIN, "");
+        } else if (url.contains(MOBILE_DOMAIN)) {
+            url = url.replace(MOBILE_DOMAIN, "");
+        }
+        return url;
+    }
+
     public static void sendCommerceEvent(Context context, Purchase purchase, String productType) {
 
         if(context instanceof Application && context instanceof BaseAbstractionRouter){
@@ -207,50 +215,50 @@ public class BranchSdkUtils {
         }
     }
 
-//    public static void sendCommerceEvent(BranchIOPayment branchIOPayment) {
-//        try {
-//            List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
-//            SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-//
-//            for (HashMap<String, String> product : branchIOPayment.getProducts()) {
-//                BranchUniversalObject buo = new BranchUniversalObject()
-//                        .setTitle(product.get(BranchIOPayment.KEY_NAME))
-//                        .setContentMetadata(
-//                                new ContentMetadata()
-//                                        .setPrice(convertIDRtoDouble(product.get(BranchIOPayment.KEY_PRICE)), CurrencyType.IDR)
-//                                        .setProductName(product.get(BranchIOPayment.KEY_NAME))
-//                                        .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
-//                                        .setSku(product.get(BranchIOPayment.KEY_ID))
-//                                        .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
-//                branchUniversalObjects.add(buo);
-//            }
-//
-//            double revenuePrice;
-//            double shippingPrice;
-//            if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
-//                revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
-//                shippingPrice = Double.parseDouble(branchIOPayment.getShipping());
-//            } else {
-//                revenuePrice = convertIDRtoDouble(branchIOPayment.getRevenue());
-//                shippingPrice = convertIDRtoDouble(branchIOPayment.getShipping());
-//            }
-//
-//            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
-//                    .setTransactionID(branchIOPayment.getOrderId())
-//                    .setCurrency(CurrencyType.IDR)
-//                    .setShipping(shippingPrice)
-//                    .setRevenue(revenuePrice)
-//                    .addCustomDataProperty(PAYMENT_KEY, branchIOPayment.getPaymentId())
-//                    .addCustomDataProperty(PRODUCTTYPE_KEY, branchIOPayment.getProductType())
-//                    .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
-//                    .addContentItems(branchUniversalObjects)
-//                    .logEvent(MainApplication.getAppContext());
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//
-//    }
+    public static void sendCommerceEvent(Context context, BranchIOPayment branchIOPayment) {
+        try {
+            List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
+            SessionHandler sessionHandler = new SessionHandler(context);
+
+            for (HashMap<String, String> product : branchIOPayment.getProducts()) {
+                BranchUniversalObject buo = new BranchUniversalObject()
+                        .setTitle(product.get(BranchIOPayment.KEY_NAME))
+                        .setContentMetadata(
+                                new ContentMetadata()
+                                        .setPrice(convertIDRtoDouble(product.get(BranchIOPayment.KEY_PRICE)), CurrencyType.IDR)
+                                        .setProductName(product.get(BranchIOPayment.KEY_NAME))
+                                        .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
+                                        .setSku(product.get(BranchIOPayment.KEY_ID))
+                                        .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
+                branchUniversalObjects.add(buo);
+            }
+
+            double revenuePrice;
+            double shippingPrice;
+            if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(branchIOPayment.getProductType())) {
+                revenuePrice = Double.parseDouble(branchIOPayment.getItemPrice());
+                shippingPrice = Double.parseDouble(branchIOPayment.getShipping());
+            } else {
+                revenuePrice = convertIDRtoDouble(branchIOPayment.getRevenue());
+                shippingPrice = convertIDRtoDouble(branchIOPayment.getShipping());
+            }
+
+            new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                    .setTransactionID(branchIOPayment.getOrderId())
+                    .setCurrency(CurrencyType.IDR)
+                    .setShipping(shippingPrice)
+                    .setRevenue(revenuePrice)
+                    .addCustomDataProperty(PAYMENT_KEY, branchIOPayment.getPaymentId())
+                    .addCustomDataProperty(PRODUCTTYPE_KEY, branchIOPayment.getProductType())
+                    .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
+                    .addContentItems(branchUniversalObjects)
+                    .logEvent(context);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
 
     //Set userId to Branch.io sdk, userId, 127 chars or less
     public static void sendIdentityEvent(String userId) {
@@ -265,24 +273,24 @@ public class BranchSdkUtils {
         }
     }
 
-//    public static void sendLoginEvent(Context context) {
-//
-//        SessionHandler sessionHandler = new SessionHandler(context);
-//        new BranchEvent(AppEventTracking.EventBranch.EVENT_LOGIN)
-//                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail())
-//                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()))
-//                .logEvent(MainApplication.getAppContext());
-//
-//    }
-//
-//    public static void sendRegisterEvent(String email, String phone) {
-//
-//        new BranchEvent(AppEventTracking.EventBranch.EVENT_REGISTER)
-//                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, email)
-//                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone))
-//                .logEvent(MainApplication.getAppContext());
-//
-//    }
+    public static void sendLoginEvent(Context context) {
+
+        SessionHandler sessionHandler = new SessionHandler(context);
+        new BranchEvent(AppEventTracking.EventBranch.EVENT_LOGIN)
+                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail())
+                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()))
+                .logEvent(context);
+
+    }
+
+    public static void sendRegisterEvent(Context context, String email, String phone) {
+
+        new BranchEvent(AppEventTracking.EventBranch.EVENT_REGISTER)
+                .addCustomDataProperty(AppEventTracking.Branch.EMAIL, email)
+                .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(phone))
+                .logEvent(context);
+
+    }
 
     private static double convertIDRtoDouble(String value) {
         double result = 0;
@@ -311,18 +319,20 @@ public class BranchSdkUtils {
         return result;
     }
 
-//    public static Boolean isAppShowReferralButtonActivated(Context context) {
-//        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-//        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
-//    }
-//
-//    private static String normalizePhoneNumber(String phoneNum) {
-//        if (!TextUtils.isEmpty(phoneNum))
-//            return phoneNum.replaceFirst("^0(?!$)", "62");
-//        else
-//            return "";
-//    }
-//
+    public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
+
+    public static Boolean isAppShowReferralButtonActivated(Context context) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(APP_SHOW_REFERRAL_BUTTON);
+    }
+
+    private static String normalizePhoneNumber(String phoneNum) {
+        if (!TextUtils.isEmpty(phoneNum))
+            return phoneNum.replaceFirst("^0(?!$)", "62");
+        else
+            return "";
+    }
+
 //    public static String getAutoApplyCouponIfAvailable(Context context) {
 //        if (TextUtils.isEmpty(REFERRAL_ADVOCATE_PROMO_CODE)) {
 //            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);

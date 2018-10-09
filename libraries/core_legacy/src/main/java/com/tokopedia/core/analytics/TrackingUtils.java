@@ -72,7 +72,7 @@ public class TrackingUtils extends TrackingConfig {
 //        if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(context.getApplicationContext())))
 //                PushManager.getInstance().refreshToken(context.getApplicationContext(), FCMCacheManager.getRegistrationId(context.getApplicationContext()));
 //    }
-//
+
 //    public static void setMoEUserAttributes(UserData profileData) {
 //        if (profileData != null) {
 //            try {
