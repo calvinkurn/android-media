@@ -483,11 +483,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return new Intent(context, OnboardingSellerActivity.class);
-    }
-
-    @Override
     public Intent getPhoneVerificationActivityIntent(Context context) {
         return PhoneVerificationActivationActivity.getIntent(context, true, false);
     }
