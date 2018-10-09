@@ -7,5 +7,8 @@ data class AffiliatePostQuota(
         val number: Int = 0,
 
         @SerializedName("formatted")
-        val formatted: String = ""
+        val formatted: String = "",
+
+        @SerializedName("format")
+        val format: String = ""
 )

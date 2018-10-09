@@ -5,6 +5,7 @@ query ProfileHeader ($userIDTarget: Int!) {
           name
           isKol
           avatar
+          affiliateName
           link
           isFollowed
           totalFollowing{
@@ -20,5 +21,6 @@ query ProfileHeader ($userIDTarget: Int!) {
     affiliatePostQuota() {
         formatted
         number
+        format
     }
 }

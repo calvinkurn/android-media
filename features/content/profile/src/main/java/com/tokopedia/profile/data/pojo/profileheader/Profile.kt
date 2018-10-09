@@ -18,6 +18,9 @@ data class Profile(
         @SerializedName("link")
         val link: String = "",
 
+        @SerializedName("affiliateName")
+        val affiliateName: String = "",
+
         @SerializedName("id")
         val id: String = "",
 
