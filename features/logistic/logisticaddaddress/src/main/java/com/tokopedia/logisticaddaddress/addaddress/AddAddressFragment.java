@@ -55,15 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_ADDRESS;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_EDIT;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.REQUEST_CODE;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.*;
 
 /**
  * Created by nisie on 9/6/16.

@@ -50,7 +50,7 @@ import rx.subscriptions.CompositeSubscription;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
-public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInteractor {
+public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
     private static final String TAG = AddAddressRetrofitInteractorImpl.class.getSimpleName();
 

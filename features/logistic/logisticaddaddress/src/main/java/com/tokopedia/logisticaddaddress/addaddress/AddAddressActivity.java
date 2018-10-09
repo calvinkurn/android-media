@@ -1,89 +1,27 @@
 package com.tokopedia.logisticaddaddress.addaddress;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_EDIT;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
+import static com.tokopedia.logisticaddaddress.ManageAddressConstant.*;
 
 /**
  * Created by nisie on 9/6/16.
+ * Refactored by fajar.nuha
  */
-public class AddAddressActivity extends BasePresenterActivity {
+public class AddAddressActivity extends BaseSimpleActivity {
 
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_ADD_ADDRESS_FORM;
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.logistic_activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-        if (getIntent().getExtras() != null) {
-            Bundle bundle = getIntent().getExtras();
-
-            if (getSupportActionBar() != null && getIntent().getExtras().getBoolean(IS_EDIT)) {
-                getSupportActionBar().setTitle(getString(R.string.title_update_address));
-            }
-
-            if (getFragmentManager().findFragmentById(R.id.container) == null) {
-                AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-                fragmentTransaction.commit();
-            }
-        }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public static Intent createInstance(Activity activity, Token token) {
@@ -123,8 +61,17 @@ public class AddAddressActivity extends BasePresenterActivity {
     }
 
 
+    /**
+     * @return
+     * Always pass a bundle because the activity always get intent extra
+     */
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        AddAddressFragment fragment = null;
+        if (getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            fragment = AddAddressFragment.createInstance(bundle);
+        }
+        return fragment;
     }
 }

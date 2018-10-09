@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by nisie on 9/6/16.
  */
-public interface AddAddressRetrofitInteractor {
+public interface AddressRepository {
 
     void addAddress(@NonNull Context context, @NonNull Map<String, String> params,
                     @NonNull AddAddressListener listener);

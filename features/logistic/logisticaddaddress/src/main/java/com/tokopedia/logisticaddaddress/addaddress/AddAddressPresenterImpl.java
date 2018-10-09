@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.logisticaddaddress.model.db.City;
 import com.tokopedia.logisticaddaddress.model.db.Province;
-import com.tokopedia.logisticaddaddress.AddAddressRetrofitInteractor;
+import com.tokopedia.logisticaddaddress.AddressRepository;
 import com.tokopedia.logisticaddaddress.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.model.FormAddressDomainModel;
 
@@ -33,7 +33,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private static final String PARAM_PASSWORD = "user_password";
 
     private final AddAddressFragmentView viewListener;
-    private final AddAddressRetrofitInteractor networkInteractor;
+    private final AddressRepository networkInteractor;
 
     public AddAddressPresenterImpl(AddAddressFragmentView viewListener) {
         this.viewListener = viewListener;
@@ -66,7 +66,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         viewListener.showLoading();
         networkInteractor.getListProvince(viewListener.context(),
                 new HashMap<String, String>(),
-                new AddAddressRetrofitInteractor.GetListProvinceListener() {
+                new AddressRepository.GetListProvinceListener() {
                     @Override
                     public void onSuccess(ArrayList<Province> provinces) {
                         viewListener.setActionsEnabled(true);
@@ -129,7 +129,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         viewListener.setActionsEnabled(false);
         networkInteractor.getListCity(viewListener.context(),
                 province.getProvinceId(),
-                new AddAddressRetrofitInteractor.GetListCityListener() {
+                new AddressRepository.GetListCityListener() {
 
                     @Override
                     public void onSuccess(FormAddressDomainModel model) {
@@ -166,7 +166,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         networkInteractor.getListCity(
                 viewListener.context(),
                 province.getProvinceId(),
-                new AddAddressRetrofitInteractor.GetListCityListener() {
+                new AddressRepository.GetListCityListener() {
                     @Override
                     public void onSuccess(FormAddressDomainModel model) {
                         viewListener.setActionsEnabled(true);
@@ -198,7 +198,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     public void getListDistrict(City city) {
         viewListener.showLoadingDistrict();
         viewListener.setActionsEnabled(false);
-        networkInteractor.getListDistrict(viewListener.context(), city.getCityId(), new AddAddressRetrofitInteractor.GetListDistrictListener() {
+        networkInteractor.getListDistrict(viewListener.context(), city.getCityId(), new AddressRepository.GetListDistrictListener() {
             @Override
             public void onSuccess(FormAddressDomainModel model) {
                 viewListener.setActionsEnabled(true);
@@ -226,8 +226,8 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         });
     }
 
-    private AddAddressRetrofitInteractor.AddAddressListener getListener() {
-        return new AddAddressRetrofitInteractor.AddAddressListener() {
+    private AddressRepository.AddAddressListener getListener() {
+        return new AddressRepository.AddAddressListener() {
             @Override
             public void onSuccess(String address_id) {
                 viewListener.finishLoading();
