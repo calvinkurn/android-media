@@ -47,7 +47,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -992,7 +991,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if (getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+        if(getActivity() != null){
+            if ((getActivity()).getApplication() instanceof IHomeRouter) {
+                ((IHomeRouter) (getActivity()).getApplication())
+                        .goToProductDetail(
+                                getActivity(),
+                                url);
+            }
+        }
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {

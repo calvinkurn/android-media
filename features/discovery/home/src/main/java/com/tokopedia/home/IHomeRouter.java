@@ -46,6 +46,8 @@ public interface IHomeRouter {
                            String name,
                            String price);
 
+    void goToProductDetail(Context context, String productUrl);
+
     Intent getIntentCreateShop(Context context);
 
     void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
