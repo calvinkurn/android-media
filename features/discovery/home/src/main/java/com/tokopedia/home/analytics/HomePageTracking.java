@@ -231,9 +231,12 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventEnhancedImpressionProductHomePage(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
-    }
+    public static void eventEnhancedImpressionProductHomePage(Context context,
+                                                              Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }    }
 
     public static void eventEnhancedClickProductHomePage(Map<String, Object> data) {
         eventTrackingEnhancedEcommerce(data);
