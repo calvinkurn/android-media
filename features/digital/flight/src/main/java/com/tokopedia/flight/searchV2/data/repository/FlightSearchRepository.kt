@@ -75,8 +75,8 @@ open class FlightSearchRepository @Inject constructor(
         }.asObservable()
     }
 
-    // call search single api and then combine the result with combo, airport and airline db
-    fun getSearchSingleCombined(params: HashMap<String, Any>, isReturn: Boolean): Observable<Meta> {
+    fun getSearchCombinedReturn(params: java.util.HashMap<String, Any>?, onwardJourneyId: String?):
+            Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
                 Observable.from(journeyResponse.attributes.routes)
@@ -86,7 +86,50 @@ open class FlightSearchRepository @Inject constructor(
                             airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
                             val isRefundable = isRefundable(journeyResponse.attributes.routes)
                             val flightJourneyTable = createJourney(journeyResponse.id, journeyResponse.attributes,
-                                    isRefundable, isReturn)
+                                    isRefundable, true)
+                            val completeJourney = createJourneyWithAirportAndAirline(
+                                    flightJourneyTable, pairOfAirport, airlines)
+                            val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id)
+                            return@zipWith JourneyAndRoutes(completeJourney, routes)
+                        }.zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)
+                                .flatMapIterable { it }
+                                .filter { it.onwardJourneyId == onwardJourneyId }
+                                .toList()) {
+                            journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
+                            if (!combos.isEmpty()) {
+                                val comboBestPairing = combos.find { it.isBestPairing }
+                                val journeyTable = journeyAndRoutes.flightJourneyTable
+                                if (comboBestPairing != null) {
+                                    journeyAndRoutes.flightJourneyTable =
+                                            createJourneyWithCombo(journeyTable, comboBestPairing)
+                                } else {
+                                    journeyAndRoutes.flightJourneyTable =
+                                            createJourneyWithCombo(journeyTable, combos[0])
+                                }
+                                journeyAndRoutes
+                            } else {
+                                journeyAndRoutes
+                            }
+                        }
+            }.toList().map { journeyAndRoutes ->
+                flightSearchSingleDataDbSource.insert(journeyAndRoutes)
+                response.meta
+            }
+        }
+    }
+
+    // call search single api and then combine the result with combo, airport and airline db
+    fun getSearchSingleCombined(params: HashMap<String, Any>): Observable<Meta> {
+        return flightSearchDataCloudSource.getData(params).flatMap { response ->
+            Observable.from(response.data).flatMap { journeyResponse ->
+                Observable.from(journeyResponse.attributes.routes)
+                        .flatMap { route -> getAirlineById(route.airline) }
+                        .toList()
+                        .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport)) {
+                            airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                            val isRefundable = isRefundable(journeyResponse.attributes.routes)
+                            val flightJourneyTable = createJourney(journeyResponse.id, journeyResponse.attributes,
+                                    isRefundable, false)
                             val completeJourney = createJourneyWithAirportAndAirline(
                                     flightJourneyTable, pairOfAirport, airlines)
                             val routes = createRoutes(journeyResponse.attributes.routes, journeyResponse.id)
@@ -174,12 +217,8 @@ open class FlightSearchRepository @Inject constructor(
                 .flatMap {
                     Observable.from(it)
                             .filter { combo -> combo.isBestPairing }
-                            .flatMap { combo ->
-                                flightSearchSingleDataDbSource.getJourneyById(combo.returnJourneyId)
-                                        .map { journey ->
-//                                            flightSearchSingleDataDbSource.insert(journey, combo)
-                                            journey
-                                        }
+                            .flatMap { bestPairingCombo ->
+                                flightSearchSingleDataDbSource.getJourneyById(bestPairingCombo.returnJourneyId)
                             }
                             .toList()
                 }

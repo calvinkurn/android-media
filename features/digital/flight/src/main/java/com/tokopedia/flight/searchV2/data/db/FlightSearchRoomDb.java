@@ -17,8 +17,8 @@ import android.support.annotation.NonNull;
         entities = {
                 FlightComboTable.class,
                 FlightJourneyTable.class,
-                FlightRouteTable.class,
-                FlightJourneyComboJoinTable.class
+                FlightRouteTable.class
+//                FlightJourneyComboJoinTable.class
         },
         version = 3)
 @TypeConverters({FlightTypeConverters.class})
@@ -27,7 +27,7 @@ public abstract class FlightSearchRoomDb extends RoomDatabase {
     public abstract FlightComboDao flightComboDao();
     public abstract FlightJourneyDao flightJourneyDao();
     public abstract FlightRouteDao flightRouteDao();
-    public abstract FlightJourneyComboJoinDao flightJourneyComboJoinDao();
+//    public abstract FlightJourneyComboJoinDao flightJourneyComboJoinDao();
 
     @NonNull
     @Override

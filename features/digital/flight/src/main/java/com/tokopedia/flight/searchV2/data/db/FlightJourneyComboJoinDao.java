@@ -11,14 +11,14 @@ import java.util.List;
 /**
  * Created by Rizky on 02/10/18.
  */
-@Dao
+//@Dao
 public interface FlightJourneyComboJoinDao {
 
-    @Query("SELECT * FROM FlightJourneyTable " +
-            "INNER JOIN FlightComboTable " +
-            "ON FlightJourneyTable.id = :onwardJourneyId")
-    List<FlightJourneyTable> getJournyesForCombo(String onwardJourneyId);
-
-    @Insert
-    void insert(FlightJourneyComboJoinTable flightJourneyComboJoinTable);
+//    @Query("SELECT * FROM FlightJourneyTable " +
+//            "INNER JOIN FlightComboTable " +
+//            "ON FlightJourneyTable.id = :onwardJourneyId")
+//    List<FlightJourneyTable> getJournyesForCombo(String onwardJourneyId);
+//
+//    @Insert
+//    void insert(FlightJourneyComboJoinTable flightJourneyComboJoinTable);
 }

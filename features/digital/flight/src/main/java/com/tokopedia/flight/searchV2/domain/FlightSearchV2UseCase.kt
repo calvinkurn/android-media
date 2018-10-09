@@ -29,31 +29,32 @@ class FlightSearchV2UseCase @Inject constructor(
         val flightSearchApiRequestModel =
                 requestParams.getObject(PARAM_INITIAL_SEARCH) as FlightSearchApiRequestModel
 
-        if (isRoundTrip) {
+        if (isRoundTrip && !isReturning) {
             val flightSearchCombinedApiRequestModel =
                     requestParams.getObject(PARAM_SEARCH_COMBINED) as FlightSearchCombinedApiRequestModel
             return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel)
                     .flatMap {
-                        flightSearchRepository.getSearchSingleCombined(requestParams.parameters, isReturning)
-                            .map { meta ->
-                                with(meta) {
-                                    return@map FlightSearchMetaViewModel(
-                                            flightSearchApiRequestModel.depAirport,
-                                            flightSearchApiRequestModel.arrAirport,
-                                            flightSearchApiRequestModel.date,
-                                            isNeedRefresh,
-                                            refreshTime,
-                                            maxRetry,
-                                            0,
-                                            0
-                                    )
+                        flightSearchRepository.getSearchSingleCombined(requestParams.parameters)
+                                .map { meta ->
+                                    with(meta) {
+                                        return@map FlightSearchMetaViewModel(
+                                                flightSearchApiRequestModel.depAirport,
+                                                flightSearchApiRequestModel.arrAirport,
+                                                flightSearchApiRequestModel.date,
+                                                isNeedRefresh,
+                                                refreshTime,
+                                                maxRetry,
+                                                0,
+                                                0,
+                                                arrayListOf()
+                                        )
+                                    }
                                 }
-                            }
                     }
-        } else {
-            return flightSearchRepository.getSearchSingle(requestParams.parameters)
-                    .map {
-                        with(it) {
+        } else if (isRoundTrip && isReturning) {
+            return flightSearchRepository.getSearchCombinedReturn(requestParams.parameters, onwardJourneyId)
+                    .map { meta ->
+                        with(meta) {
                             return@map FlightSearchMetaViewModel(
                                     flightSearchApiRequestModel.depAirport,
                                     flightSearchApiRequestModel.arrAirport,
@@ -62,7 +63,25 @@ class FlightSearchV2UseCase @Inject constructor(
                                     refreshTime,
                                     maxRetry,
                                     0,
-                                    0
+                                    0,
+                                    arrayListOf()
+                            )
+                        }
+                    }
+        } else {
+            return flightSearchRepository.getSearchSingle(requestParams.parameters)
+                    .map { meta ->
+                        with(meta) {
+                            return@map FlightSearchMetaViewModel(
+                                    flightSearchApiRequestModel.depAirport,
+                                    flightSearchApiRequestModel.arrAirport,
+                                    flightSearchApiRequestModel.date,
+                                    isNeedRefresh,
+                                    refreshTime,
+                                    maxRetry,
+                                    0,
+                                    0,
+                                    arrayListOf()
                             )
                         }
                     }

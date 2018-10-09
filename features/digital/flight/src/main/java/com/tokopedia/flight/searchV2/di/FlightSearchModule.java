@@ -47,10 +47,10 @@ public class FlightSearchModule {
         return flightSearchRoomDb.flightRouteDao();
     }
 
-    @Provides
-    @FlightSearchScope
-    FlightJourneyComboJoinDao provideFlightJourneyComboJoinDao(FlightSearchRoomDb flightSearchRoomDb) {
-        return flightSearchRoomDb.flightJourneyComboJoinDao();
-    }
+//    @Provides
+//    @FlightSearchScope
+//    FlightJourneyComboJoinDao provideFlightJourneyComboJoinDao(FlightSearchRoomDb flightSearchRoomDb) {
+//        return flightSearchRoomDb.flightJourneyComboJoinDao();
+//    }
 
 }
