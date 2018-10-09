@@ -12,13 +12,13 @@ public class ResponseRenderOperator {
 
     @SerializedName("input_fields")
     @Expose
-    private List<ResponseOperatorInputField> inputFields;
+    private List<ResponseInputField> inputFields;
 
     @SerializedName("render_product")
     @Expose
     private List<ResponseRenderProduct> renderProduct;
 
-    public List<ResponseOperatorInputField> getInputFields() {
+    public List<ResponseInputField> getInputFields() {
         return inputFields;
     }
 

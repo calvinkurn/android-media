@@ -3,10 +3,12 @@ package com.tokopedia.mitra.digitalcategory.data.api.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseProductInputField {
+public class ResponseProductInputField {
 
     @SerializedName("name")
     @Expose
@@ -28,7 +30,13 @@ class ResponseProductInputField {
     @Expose
     private String placeholder;
 
-//    private String default;
+    @SerializedName("default")
+    @Expose
+    private String _default;
+
+    @SerializedName("validation")
+    @Expose
+    private List<ResponseValidation> validation;
 
     public String getName() {
         return name;
@@ -50,4 +58,11 @@ class ResponseProductInputField {
         return placeholder;
     }
 
+    public String getDefault() {
+        return _default;
+    }
+
+    public List<ResponseValidation> getValidation() {
+        return validation;
+    }
 }

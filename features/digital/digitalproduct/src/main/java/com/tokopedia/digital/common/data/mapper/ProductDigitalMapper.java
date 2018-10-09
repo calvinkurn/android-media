@@ -2,6 +2,7 @@ package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Promo;
 import com.tokopedia.common_digital.product.presentation.model.Rule;
@@ -121,20 +122,28 @@ public class ProductDigitalMapper {
         if (entity == null) return operatorCategoryList;
 
         for (OperatorBannerEntity categoryDetailIncluded : entity.getOperators()) {
-            Operator operatorCategory = new Operator();
-            operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
-            operatorCategory.setDefaultProductId(
-                    categoryDetailIncluded.getAttributes().getDefaultProductId()
-            );
-            operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
-            operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssd());
-            operatorCategory.setLastorderUrl(
-                    categoryDetailIncluded.getAttributes().getLastorderUrl()
-            );
-            operatorCategory.setOperatorId(categoryDetailIncluded.getId());
-            operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
-            operatorCategory.setOperatorType(categoryDetailIncluded.getType());
-            List<Product> productOperatorList = new ArrayList<>();
+//            Operator operatorCategory = new Operator();
+//            operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
+            String name = categoryDetailIncluded.getAttributes().getName();
+//            operatorCategory.setDefaultProductId(
+//                    categoryDetailIncluded.getAttributes().getDefaultProductId()
+//            );
+            int defaultProductId = categoryDetailIncluded.getAttributes().getDefaultProductId();
+//            operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+            String image = categoryDetailIncluded.getAttributes().getImage();
+//            operatorCategory.setUssdCode(categoryDetailIncluded.getAttributes().getUssd());
+            String ussdCode = categoryDetailIncluded.getAttributes().getUssd();
+//            operatorCategory.setLastorderUrl(
+//                    categoryDetailIncluded.getAttributes().getLastorderUrl()
+//            );
+            String lastOrderUrl = categoryDetailIncluded.getAttributes().getLastorderUrl();
+//            operatorCategory.setOperatorId(categoryDetailIncluded.getId());
+            String operatorId = categoryDetailIncluded.getId();
+//            operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
+            List<String> prefixList = categoryDetailIncluded.getAttributes().getPrefix();
+//            operatorCategory.setOperatorType(categoryDetailIncluded.getType());
+            String operatorType = categoryDetailIncluded.getType();
+            List<Product> products = new ArrayList<>();
             for (com.tokopedia.digital.common.data.entity.response.Product product
                     : categoryDetailIncluded.getAttributes().getProduct()) {
                 if (product.getAttributes().getStatus() != Product.STATUS_INACTIVE) {
@@ -163,10 +172,10 @@ public class ProductDigitalMapper {
                         productPromo.setValueText(product.getAttributes().getPromo().getValueText());
                         productOperator.setPromo(productPromo);
                     }
-                    productOperatorList.add(productOperator);
+                    products.add(productOperator);
                 }
             }
-            List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
+            List<ClientNumber> clientNumberList = new ArrayList<>();
             for (Field field
                     : categoryDetailIncluded.getAttributes().getFields()) {
                 ClientNumber clientNumberOperator = new ClientNumber();
@@ -186,31 +195,45 @@ public class ProductDigitalMapper {
                     validationCategoryList.add(validationCategory);
                 }
                 clientNumberOperator.setValidation(validationCategoryList);
-                clientNumberOperatorList.add(clientNumberOperator);
+                clientNumberList.add(clientNumberOperator);
             }
-            operatorCategory.setProductList(productOperatorList);
-            operatorCategory.setClientNumberList(clientNumberOperatorList);
+//            operatorCategory.setProductList(products);
+//            operatorCategory.setClientNumberList(clientNumberList);
 
-            Rule operatorRule = new Rule();
-            operatorRule.setMaximumLength(
+            Rule rule = new Rule();
+            rule.setMaximumLength(
                     categoryDetailIncluded.getAttributes().getRule().getMaximumLength()
             );
-            operatorRule.setEnableVoucher(
+            rule.setEnableVoucher(
                     categoryDetailIncluded.getAttributes().getRule().getEnableVoucher()
             );
-            operatorRule.setShowPrice(
+            rule.setShowPrice(
                     categoryDetailIncluded.getAttributes().getRule().getShowPrice()
             );
-            operatorRule.setProductText(
+            rule.setProductText(
                     categoryDetailIncluded.getAttributes().getRule().getProductText()
             );
-            operatorRule.setProductViewStyle(
+            rule.setProductViewStyle(
                     categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
             );
-            operatorRule.setButtonText(
+            rule.setButtonText(
                     categoryDetailIncluded.getAttributes().getRule().getButtonText()
             );
-            operatorCategory.setRule(operatorRule);
+//            operatorCategory.setRule(rule);
+
+            Operator operatorCategory = new OperatorBuilder()
+                    .name(name)
+                    .defaultProductId(defaultProductId)
+                    .image(image)
+                    .ussdCode(ussdCode)
+                    .lastOrderUrl(lastOrderUrl)
+                    .operatorId(operatorId)
+                    .prefixList(prefixList)
+                    .operatorType(operatorType)
+                    .products(products)
+                    .clientNumberList(clientNumberList)
+                    .rule(rule)
+                    .createOperator();
 
             operatorCategoryList.add(operatorCategory);
         }

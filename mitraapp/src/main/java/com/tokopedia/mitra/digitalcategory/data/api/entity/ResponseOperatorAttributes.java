@@ -2,13 +2,14 @@ package com.tokopedia.mitra.digitalcategory.data.api.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.common_digital.product.presentation.model.Rule;
 
 import java.util.List;
 
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseOperatorAttributes {
+public class ResponseOperatorAttributes {
 
     @SerializedName("default_product_id")
     @Expose
@@ -29,6 +30,10 @@ class ResponseOperatorAttributes {
     @SerializedName("secondColor")
     @Expose
     private String secondColor;
+
+    @SerializedName("rule")
+    @Expose
+    private Rule rule;
 
     @SerializedName("prefix")
     @Expose
@@ -60,6 +65,10 @@ class ResponseOperatorAttributes {
 
     public String getSecondColor() {
         return secondColor;
+    }
+
+    public Rule getRule() {
+        return rule;
     }
 
     public List<String> getPrefix() {

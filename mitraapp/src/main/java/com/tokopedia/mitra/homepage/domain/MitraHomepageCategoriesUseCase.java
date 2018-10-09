@@ -70,7 +70,10 @@ public class MitraHomepageCategoriesUseCase extends UseCase<List<CategoryRow>> {
                         rows.add(buildRow("Listrik PLN", "tokopedia://digital/form?category_id=3", "https://ecs7.tokopedia.net/img/category/new/v1/icon_listrik.png"));
                         rows.add(buildRow("Pulsa", "tokopedia://digital/form?category_id=1", "https://ecs7.tokopedia.net/img/category/new/v1/icon_paket.png"));
                         rows.add(buildRow("Air PDAM", "tokopedia://digital/form?category_id=5", "https://ecs7.tokopedia.net/img/category/new/v1/icon_pdam.png"));
+                        rows.add(buildRow("Voucher Game", "tokopedia://digital/form?category_id=6", "https://ecs7.tokopedia.net/img/recharge/category/game.png"));
                         rows.add(buildRow("Telkom", "tokopedia://digital/form?category_id=10", "https://ecs7.tokopedia.net/img/category/new/v1/icon_telepon.png"));
+                        rows.add(buildRow("e-money", "tokopedia://digital/form?category_id=34", "https://ecs7.tokopedia.net/img/recharge/category/smartcard.png"));
+                        rows.add(buildRow("M-Tix XXI", "tokopedia://digital/form?category_id=31", "https://ecs7.tokopedia.net/img/recharge/category/m-tix.png"));
                         return rows;
                     }
                 });

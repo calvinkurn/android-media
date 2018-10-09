@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseProductAttributes {
+public class ResponseProductAttributes {
 
     @SerializedName("info")
     @Expose
@@ -14,7 +14,7 @@ class ResponseProductAttributes {
 
     @SerializedName("status")
     @Expose
-    private String status;
+    private int status;
 
     @SerializedName("detail")
     @Expose
@@ -44,7 +44,7 @@ class ResponseProductAttributes {
         return info;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 

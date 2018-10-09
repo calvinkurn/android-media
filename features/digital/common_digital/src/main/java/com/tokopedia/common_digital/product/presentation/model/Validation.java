@@ -11,6 +11,11 @@ public class Validation implements Parcelable {
     private String regex;
     private String error;
 
+    public Validation(String regex, String error) {
+        this.regex = regex;
+        this.error = error;
+    }
+
     public String getRegex() {
         return regex;
     }

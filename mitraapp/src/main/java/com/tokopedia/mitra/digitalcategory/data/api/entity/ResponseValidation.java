@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseValidation {
+public class ResponseValidation {
 
     @SerializedName("regex")
     @Expose

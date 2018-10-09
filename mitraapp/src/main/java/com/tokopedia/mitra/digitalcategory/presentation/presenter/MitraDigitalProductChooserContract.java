@@ -1,24 +1,25 @@
 package com.tokopedia.mitra.digitalcategory.presentation.presenter;
 
-import android.content.res.Resources;
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+
+import java.util.List;
 
 /**
- * Created by Rizky on 30/08/18.
+ * Created by Rizky on 10/09/18.
  */
-public class AgentDigitalCategoryContract {
+public class MitraDigitalProductChooserContract {
 
     public interface View extends CustomerView {
 
-        Resources getResources();
+        void renderProducts(List<Product> productList);
 
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getCategory(int categoryId);
+        void getProducts(int categoryId, String operatorId);
 
     }
 

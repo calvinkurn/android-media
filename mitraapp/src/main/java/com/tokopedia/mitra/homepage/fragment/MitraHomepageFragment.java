@@ -45,14 +45,14 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
     AppCompatButton loginBtn;
     RecyclerView categoriesRecyclerView;
 
+    private HomepageCategoriesAdapter adapter;
+
     @Inject
     MitraHomepagePresenter presenter;
-    private HomepageCategoriesAdapter adapter;
 
     public MitraHomepageFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,4 +182,5 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
                 break;
         }
     }
+
 }
