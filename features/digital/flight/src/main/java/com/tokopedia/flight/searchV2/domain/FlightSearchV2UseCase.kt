@@ -69,7 +69,7 @@ class FlightSearchV2UseCase @Inject constructor(
     }
 
     fun createRequestParams(flightSearchSingleApiRequestModel: FlightSearchApiRequestModel,
-                            flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel,
+                            flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel?,
                             isReturning: Boolean,
                             isRoundTrip: Boolean) : RequestParams {
         val requestParams = RequestParams.create()
