@@ -36,7 +36,7 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.helper.KeyboardHelper;
+import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
