@@ -34,13 +34,15 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
                 format = BarcodeFormat.CODE_93;
                 break;
         }
-        try {
-            BitMatrix bitMatrix = multiFormatWriter
-                    .encode(code, format, BARCODE_WIDTH, BARCODE_HEIGHT);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            bitmap = barcodeEncoder.createBitmap(bitMatrix);
-        } catch (WriterException e) {
-            e.printStackTrace();
+        if (format != null) {
+            try {
+                BitMatrix bitMatrix = multiFormatWriter
+                        .encode(code, format, BARCODE_WIDTH, BARCODE_HEIGHT);
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            } catch (WriterException e) {
+                e.printStackTrace();
+            }
         }
         return bitmap;
     }
