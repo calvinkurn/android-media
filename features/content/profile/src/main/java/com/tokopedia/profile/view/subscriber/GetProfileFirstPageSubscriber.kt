@@ -21,6 +21,6 @@ class GetProfileFirstPageSubscriber(val view: ProfileContract.View)
         if (GlobalConfig.isAllowDebuggingTools()) {
             e?.printStackTrace()
         }
-//        view.onErro
+        view.showGetListError(e)
     }
 }

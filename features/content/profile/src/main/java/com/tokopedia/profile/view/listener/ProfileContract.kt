@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.listener
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.user.session.UserSession
@@ -9,7 +10,7 @@ import com.tokopedia.user.session.UserSession
  * @author by milhamj on 9/17/18.
  */
 interface ProfileContract {
-    interface View : CustomerView {
+    interface View : BaseListViewListener<Visitable<*>> {
         val userSession: UserSession
 
         fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
