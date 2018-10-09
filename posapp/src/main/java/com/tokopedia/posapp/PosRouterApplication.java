@@ -112,6 +112,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goToEtalaseList(Context context) {
+
+    }
+
+    @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
         return null;
     }
@@ -438,7 +443,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getTalkIntent(Context context) {
+    public Intent getInboxTalkCallingIntent(Context context) {
         return null;
     }
 
