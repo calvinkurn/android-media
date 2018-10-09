@@ -44,7 +44,7 @@ public class ImpressedImageView extends AppCompatImageView {
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                iif(isVisible(view) && image!=null && !image.isImpressed()){
+                if(isVisible(view) && image!=null && !image.isImpressed()){
                     new ImpresionTask(new ImpressionListener() {
                         @Override
                         public void onSuccess() {
