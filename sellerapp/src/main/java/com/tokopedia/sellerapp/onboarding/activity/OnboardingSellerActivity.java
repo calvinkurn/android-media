@@ -7,22 +7,20 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.onboarding.OnboardingActivity;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.util.SessionHandler;
+import com.github.paolorotolo.appintro.AppIntro;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
+import com.tokopedia.user.session.UserSession;
 
-public class OnboardingSellerActivity extends OnboardingActivity {
+public class OnboardingSellerActivity extends AppIntro {
     private static final int REQUEST_ACTIVATE_PHONE_SELLER = 900;
-    private SessionHandler sessionHandler;
+    private UserSession userSession;
 
     @Override
     public void init(Bundle savedInstanceState) {
-        sessionHandler = new SessionHandler(this);
+        userSession = new UserSession(this);
         addSlide(OnBoardingSellerFragment.newInstance(getString(R.string.seller_onb_1_title), getString(R.string.seller_onb_1_sub_title),
                 getString(R.string.onb_1_desc), R.drawable.cover_onboard_1,
                 ContextCompat.getColor(getApplicationContext(), R.color.tkpd_bg_color_grery),
@@ -72,17 +70,18 @@ public class OnboardingSellerActivity extends OnboardingActivity {
 
     @Override
     public void onDonePressed() {
-        if (isUserHasShop() && SessionHandler.isMsisdnVerified()) {
+        if (isUserHasShop() && userSession.isMsisdnVerified()) {
             startActivity(DashboardActivity.createInstance(this)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
-            SessionHandler.setFirstTimeUser(this, false);
-        } else if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getActivityShopCreateEdit(this);
+            userSession.setFirstTimeUser(false);
+        } else if (userSession.isMsisdnVerified() && getApplicationContext() instanceof SellerModuleRouter) {
+            Intent intent =  ((SellerModuleRouter)getApplicationContext()).getIntentCreateShop
+                    (this);
             startActivity(intent);
             finish();
-        } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
-            Intent intent =  ((SellerModuleRouter) MainApplication.getAppContext())
+        } else if (getApplicationContext() instanceof SellerModuleRouter){
+            Intent intent =  ((SellerModuleRouter) getApplicationContext())
                     .getPhoneVerificationActivityIntent(this);
             startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
@@ -99,8 +98,8 @@ public class OnboardingSellerActivity extends OnboardingActivity {
     }
 
     private boolean isUserHasShop() {
-        return !TextUtils.isEmpty(sessionHandler.getShopID())
-                && !sessionHandler.getShopID().equals("0");
+        return !TextUtils.isEmpty(userSession.getShopId())
+                && !userSession.getShopId().equals("0");
     }
 
     @Override
@@ -109,8 +108,9 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             startActivity(DashboardActivity.createInstance(this)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
-        } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
-            Intent intent = SellerRouter.getActivityShopCreateEdit(this);
+        } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER && getApplicationContext() instanceof SellerModuleRouter ) {
+            Intent intent =  ((SellerModuleRouter)getApplicationContext()).getIntentCreateShop
+                    (this);
             startActivity(intent);
             finish();
         } else {
