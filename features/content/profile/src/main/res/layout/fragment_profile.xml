@@ -58,11 +58,11 @@
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="primary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/share"
+                app:layout_constraintStart_toEndOf="@+id/shareOwn"
                 app:layout_constraintTop_toBottomOf="@id/recommendationQuota" />
 
             <ImageView
-                android:id="@+id/share"
+                android:id="@+id/shareOwn"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="0dp"
                 android:padding="@dimen/dp_4"
@@ -81,6 +81,7 @@
             tools:visibility="visible">
 
             <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/shareOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/profile_share_profile"

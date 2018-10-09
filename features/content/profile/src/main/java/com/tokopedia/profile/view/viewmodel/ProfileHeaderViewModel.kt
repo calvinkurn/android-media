@@ -12,6 +12,7 @@ data class ProfileHeaderViewModel(
         val followers: String = "0",
         val following: String = "0",
         val recommendationQuota: String = "",
+        val link: String = "",
         val userId: Int = 0,
         val isKol: Boolean = false,
         val isFollowed: Boolean = false,
