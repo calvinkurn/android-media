@@ -15,7 +15,7 @@ interface ProfileContract {
         fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
                                          cursor: String)
 
-        fun goToFollowing(userId: Int)
+        fun goToFollowing()
 
         fun followUnfollowUser(userId: Int, follow: Boolean)
 

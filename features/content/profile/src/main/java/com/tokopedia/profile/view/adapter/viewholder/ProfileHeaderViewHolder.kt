@@ -80,7 +80,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
         }
         val goToFollowing = object : ClickableSpan() {
             override fun onClick(p0: View?) {
-                viewListener.goToFollowing(element.userId)
+                viewListener.goToFollowing()
             }
 
             override fun updateDrawState(ds: TextPaint?) {

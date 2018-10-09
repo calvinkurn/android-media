@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -100,9 +101,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         renderList(visitables, !TextUtils.isEmpty(cursor))
     }
 
-    override fun goToFollowing(userId: Int) {
-        //TODO milhamj
-        Toast.makeText(context, "Going to following~", Toast.LENGTH_SHORT).show()
+    override fun goToFollowing() {
+        startActivity(KolFollowingListActivity.getCallingIntent(context, userId))
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
