@@ -141,7 +141,7 @@ public class EventBookTicketActivity
         }
         tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
         if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
-            tvDate.setText(Utils.convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+            tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
         else
             tvDate.setVisibility(View.GONE);
         setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));

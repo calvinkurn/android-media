@@ -16,6 +16,11 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -107,6 +112,20 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        JSONArray afProdIds = new JSONArray();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
+                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
+                } else {
+                    break;
+                }
+            }
+        }
+        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
@@ -114,6 +133,20 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
         TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        JSONArray afProdIds = new JSONArray();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (productViewModel.getProductList().size() > 0) {
+            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
+                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
+                } else {
+                    break;
+                }
+            }
+        }
+        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }
