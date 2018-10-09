@@ -23,6 +23,7 @@ public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
     private ProductImage image;
+    private boolean execute;
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -45,17 +46,8 @@ public class ImpressedImageView extends AppCompatImageView {
             @Override
             public void onScrollChanged() {
                 if(isVisible(view) && image!=null && !image.isImpressed()){
-                    new ImpresionTask(new ImpressionListener() {
-                        @Override
-                        public void onSuccess() {
-                            image.setImpressed(true);
-                        }
-
-                        @Override
-                        public void onFailed() {
-                            image.setImpressed(false);
-                        }
-                    }).execute(image.getM_url());
+                    new ImpresionTask().execute(image.getM_url());
+                    image.setImpressed(true);
                 }
             }
         });
