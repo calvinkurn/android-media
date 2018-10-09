@@ -49,7 +49,6 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.RouterUtils;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -85,6 +84,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -105,8 +105,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+
     @Inject
     HomePresenter presenter;
+
+    @Inject
+    UserSession userSession;
+
     private RecyclerView recyclerView;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
@@ -189,7 +194,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showRecomendationButton() {
-        if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
+        if (showRecomendation && isUserLoggedIn()) {
             floatingTextButton.setVisibility(View.VISIBLE);
             HomePageTracking.eventImpressionJumpRecomendation();
         } else {
@@ -208,7 +213,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        if(SessionHandler.isV4Login(getActivity())) {
+        if(isUserLoggedIn()) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
         presenter.attachView(this);
@@ -237,7 +242,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (SessionHandler.isV4Login(getActivity()) && showRecomendation) {
+                if (isUserLoggedIn() && showRecomendation) {
                     int firstVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel
@@ -341,7 +346,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         };
 
-        if (SessionHandler.isV4Login(getContext())) {
+        if (isUserLoggedIn()) {
             recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
     }
@@ -360,7 +365,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         };
-        if (SessionHandler.isV4Login(getContext())) {
+        if (isUserLoggedIn()) {
             recyclerView.removeOnScrollListener(onEggScrollListener);
             recyclerView.addOnScrollListener(onEggScrollListener);
         }
@@ -401,8 +406,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToSell() {
-        if (SessionHandler.isV2Login(getContext())) {
-            String shopId = SessionHandler.getShopID(getContext());
+        if (isUserLoggedIn()) {
+            String shopId = getUserShopId();
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
@@ -577,7 +582,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void resetFeedState() {
         presenter.resetPageFeed();
-        if (getContext() != null && SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+        if (getContext() != null && isUserLoggedIn() && feedLoadMoreTriggerListener != null) {
             feedLoadMoreTriggerListener.resetState();
         }
     }
@@ -999,5 +1004,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getString(R.string.sc_wishlist_title),
                 getString(R.string.sc_wishlist_desc)));
         return list;
+    }
+
+    private boolean isUserLoggedIn(){
+        return userSession.isLoggedIn();
+    }
+
+    private String getUserShopId(){
+        return userSession.getShopId();
     }
 }
