@@ -5,11 +5,8 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.raizlabs.android.dbflow.annotation.Column;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -59,10 +56,8 @@ public class FlightJourneyTable {
     private String beforeTotal;
     private int sortPrice;
     private boolean isReturn;
-    @Ignore
+    private boolean isSpecialPrice;
     private RefundableEnum isRefundable;
-    @Ignore
-    private List<FlightRouteTable> routes;
 
     public FlightJourneyTable() {
     }
@@ -78,7 +73,7 @@ public class FlightJourneyTable {
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
                               boolean isBestPairing, String beforeTotal, int sortPrice, boolean isReturn,
-                              RefundableEnum isRefundable, List<FlightRouteTable> routes) {
+                              RefundableEnum isRefundable, boolean isSpecialPrice) {
         this.id = id;
         this.term = term;
         this.departureAirport = departureAirport;
@@ -118,7 +113,7 @@ public class FlightJourneyTable {
         this.sortPrice = sortPrice;
         this.isReturn = isReturn;
         this.isRefundable = isRefundable;
-        this.routes = routes;
+        this.isSpecialPrice = isSpecialPrice;
     }
 
     @NonNull
@@ -434,11 +429,12 @@ public class FlightJourneyTable {
         this.isRefundable = isRefundable;
     }
 
-    public List<FlightRouteTable> getRoutes() {
-        return routes;
+    public boolean isSpecialPrice() {
+        return isSpecialPrice;
     }
 
-    public void setRoutes(List<FlightRouteTable> routes) {
-        this.routes = routes;
+    public void setSpecialPrice(boolean specialPrice) {
+        isSpecialPrice = specialPrice;
     }
+
 }

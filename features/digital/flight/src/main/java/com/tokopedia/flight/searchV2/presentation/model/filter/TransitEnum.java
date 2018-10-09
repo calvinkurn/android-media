@@ -14,6 +14,7 @@ public enum TransitEnum {
 
     private int id;
     private int valueRes;
+
     private TransitEnum(int id, int valueRes) {
         this.id = id;
         this.valueRes = valueRes;

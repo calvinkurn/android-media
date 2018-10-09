@@ -14,7 +14,8 @@ public enum RefundableEnum {
 
     private int id;
     private int valueRes;
-    private RefundableEnum(int id, int valueRes) {
+
+    RefundableEnum(int id, int valueRes) {
         this.id = id;
         this.valueRes = valueRes;
     }

@@ -24,4 +24,8 @@ class FlightSearchCombinedDataDbSource @Inject constructor(private val flightCom
         flightComboDao.insert(item)
     }
 
+    fun insert(item: FlightComboTable) {
+        flightComboDao.insert(item)
+    }
+
 }
