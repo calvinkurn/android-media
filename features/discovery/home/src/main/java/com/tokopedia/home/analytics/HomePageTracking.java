@@ -202,13 +202,17 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventClickSeeAllLegoBannerChannel(String applink) {
-        sendGTMEvent(new EventTracking(
-                STATIC_VALUE_CLICK_HOMEPAGE,
-                STATIC_VALUE_HOMEPAGE,
-                "lego banner click view all",
-                applink
-        ).getEvent());
+    public static void eventClickSeeAllLegoBannerChannel(Context context,
+                                                         String applink) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "lego banner click view all",
+                    applink
+            );
+        }
     }
 
     public static void eventClickExplorerItem(Context context, String action, String label) {
@@ -247,8 +251,12 @@ public class HomePageTracking extends TrackingUtils {
         }
     }
 
-    public static void eventEnhancedClickProductHomePage(Map<String, Object> data) {
-        eventTrackingEnhancedEcommerce(data);
+    public static void eventEnhancedClickProductHomePage(Context context,
+                                                         Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
     }
 
     public static void eventClickOpenShop(Context context) {

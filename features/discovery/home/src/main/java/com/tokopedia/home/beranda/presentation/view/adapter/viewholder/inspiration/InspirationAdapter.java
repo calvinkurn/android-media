@@ -27,9 +27,11 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
 
     private final HomeFeedListener viewListener;
     private InspirationViewModel inspirationViewModel;
+    private Context context;
 
     public InspirationAdapter(Context context, HomeFeedListener viewListener) {
         this.viewListener = viewListener;
+        this.context = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,6 +50,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            context,
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(
@@ -64,6 +67,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            context,
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(

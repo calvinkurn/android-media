@@ -31,6 +31,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     @LayoutRes
     public static final int LAYOUT = R.layout.home_six_grid_channel;
     private static final String TAG = SixGridChannelViewHolder.class.getSimpleName();
+    private final Context context;
     private View channelTitleContainer;
     private TextView channelTitle;
     private TextView seeAllButton;
@@ -42,6 +43,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     public SixGridChannelViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
+        this.context = itemView.getContext();
         findViews(itemView);
         itemAdapter = new ItemAdapter(listener, getAdapterPosition());
         recyclerView.setAdapter(itemAdapter);
@@ -79,7 +81,9 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                 public void onClick(View view) {
                     listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
                     HomeTrackingUtils.homeDiscoveryWidgetViewAll(DynamicLinkHelper.getActionLink(channel.getHeader()));
-                    HomePageTracking.eventClickSeeAllLegoBannerChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                    HomePageTracking.eventClickSeeAllLegoBannerChannel(
+                            context,
+                            DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
             });
             itemAdapter.setChannel(channel, getAdapterPosition());
@@ -132,6 +136,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
                         @Override
                         public void onClick(View view) {
                             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
+                                    holder.getContext(),
                                     channel.getEnhanceClickLegoBannerHomePage(grid, position + 1)
                             );
                             listener.onSixGridItemClicked(getAvailableLink(grid.getApplink(), grid.getUrl()),
