@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
 import android.support.annotation.DrawableRes;
+import android.view.View;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
@@ -19,6 +20,8 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     private String titleTrack;
     private String sectionTrack;
+
+    private int newTxtVisiblle = View.GONE;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -81,6 +84,14 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.sectionTrack = sectionTrack;
     }
 
+    public int isNewTxtVisiblle() {
+        return newTxtVisiblle;
+    }
+
+    public void setNewTxtVisiblle(int newTxtVisiblle) {
+        this.newTxtVisiblle = newTxtVisiblle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -95,6 +106,7 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         dest.writeString(this.applink);
         dest.writeString(this.titleTrack);
         dest.writeString(this.sectionTrack);
+        dest.writeInt(this.newTxtVisiblle);
     }
 
     public InfoCardViewModel() {
@@ -108,6 +120,7 @@ public class InfoCardViewModel implements ParcelableViewModel<AccountTypeFactory
         this.applink = in.readString();
         this.titleTrack = in.readString();
         this.sectionTrack = in.readString();
+        this.newTxtVisiblle = in.readInt();
     }
 
     public static final Creator<InfoCardViewModel> CREATOR = new Creator<InfoCardViewModel>() {

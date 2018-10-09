@@ -19,6 +19,12 @@ public class GroupShop implements Parcelable {
     private List<ShopShipment> shopShipments = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
 
+    private int shippingId;
+    private int spId;
+    private String dropshipperName;
+    private String dropshipperPhone;
+    private boolean useInsurance;
+
     public Shop getShop() {
         return shop;
     }
@@ -75,6 +81,46 @@ public class GroupShop implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
+    public int getShippingId() {
+        return shippingId;
+    }
+
+    public void setShippingId(int shippingId) {
+        this.shippingId = shippingId;
+    }
+
+    public int getSpId() {
+        return spId;
+    }
+
+    public void setSpId(int spId) {
+        this.spId = spId;
+    }
+
+    public String getDropshipperName() {
+        return dropshipperName;
+    }
+
+    public void setDropshipperName(String dropshipperName) {
+        this.dropshipperName = dropshipperName;
+    }
+
+    public String getDropshipperPhone() {
+        return dropshipperPhone;
+    }
+
+    public void setDropshipperPhone(String dropshipperPhone) {
+        this.dropshipperPhone = dropshipperPhone;
+    }
+
+    public boolean isUseInsurance() {
+        return useInsurance;
+    }
+
+    public void setUseInsurance(boolean useInsurance) {
+        this.useInsurance = useInsurance;
+    }
+
     public GroupShop() {
     }
 
@@ -92,6 +138,11 @@ public class GroupShop implements Parcelable {
         dest.writeParcelable(this.shop, flags);
         dest.writeTypedList(this.shopShipments);
         dest.writeTypedList(this.products);
+        dest.writeInt(shippingId);
+        dest.writeInt(spId);
+        dest.writeString(dropshipperName);
+        dest.writeString(dropshipperPhone);
+        dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
     }
 
     protected GroupShop(Parcel in) {
@@ -102,6 +153,11 @@ public class GroupShop implements Parcelable {
         this.shop = in.readParcelable(Shop.class.getClassLoader());
         this.shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
         this.products = in.createTypedArrayList(Product.CREATOR);
+        this.shippingId = in.readInt();
+        this.spId = in.readInt();
+        this.dropshipperName = in.readString();
+        this.dropshipperPhone = in.readString();
+        this.useInsurance = in.readByte() != 0;
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {
