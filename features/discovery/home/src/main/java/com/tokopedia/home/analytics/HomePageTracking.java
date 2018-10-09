@@ -236,7 +236,8 @@ public class HomePageTracking extends TrackingUtils {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEnhancedEcommerce(data);
-        }    }
+        }
+    }
 
     public static void eventEnhancedClickProductHomePage(Map<String, Object> data) {
         eventTrackingEnhancedEcommerce(data);
