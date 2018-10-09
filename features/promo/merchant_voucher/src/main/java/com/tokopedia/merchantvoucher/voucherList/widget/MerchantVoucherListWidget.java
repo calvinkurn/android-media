@@ -39,6 +39,8 @@ public class MerchantVoucherListWidget extends FrameLayout
 
     private String titleString;
     private int titleTextSize;
+    private int textStyle;
+    private int titleTextColor;
 
     private TextView tvTitle;
     private TextView tvSeeAll;
@@ -100,6 +102,12 @@ public class MerchantVoucherListWidget extends FrameLayout
             titleString = typedArray.getString(R.styleable.MerchantVoucherListWidget_mvlwTitleString);
             titleTextSize = typedArray.getDimensionPixelOffset(R.styleable.MerchantVoucherListWidget_mvlwTitleTextSize,
                     getResources().getDimensionPixelSize(R.dimen.sp_16));
+            if (typedArray.hasValue(R.styleable.MerchantVoucherListWidget_android_textStyle)) {
+                textStyle = typedArray.getInt(R.styleable.MerchantVoucherListWidget_android_textStyle, 0);
+            }
+            if (typedArray.hasValue(R.styleable.MerchantVoucherListWidget_android_textColor)) {
+                titleTextColor = typedArray.getColor(R.styleable.MerchantVoucherListWidget_android_textColor, 0);
+            }
             typedArray.recycle();
         }
     }
@@ -121,6 +129,12 @@ public class MerchantVoucherListWidget extends FrameLayout
         });
         tvSeeAll.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         tvTitle.setText(titleString);
+        if (textStyle!= 0) {
+            tvTitle.setTypeface(null, textStyle);
+        }
+        if (titleTextColor!= 0) {
+            tvTitle.setTextColor(titleTextColor);
+        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         adapter = new BaseListAdapter<>(

@@ -14,5 +14,7 @@
     <declare-styleable name="MerchantVoucherListWidget">
         <attr name="mvlwTitleString" format="string" />
         <attr name="mvlwTitleTextSize" format="dimension" />
+        <attr name="android:textStyle"/>
+        <attr name="android:textColor"/>
     </declare-styleable>
 </resources>
