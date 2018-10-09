@@ -176,7 +176,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
         }
     }
 
-    fun createRequestParams(flightSortOption: FlightSortOption,
+    fun createRequestParams(@FlightSortOption flightSortOption: Int,
                             flightFilterModel: FlightFilterModel): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_SORT, flightSortOption)

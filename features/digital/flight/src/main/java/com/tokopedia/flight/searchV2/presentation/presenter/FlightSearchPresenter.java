@@ -3,7 +3,12 @@ package com.tokopedia.flight.searchV2.presentation.presenter;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.common.constant.FlightErrorConstant;
+import com.tokopedia.flight.common.data.model.FlightError;
+import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
+import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -16,14 +21,21 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiRequestModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author by furqan on 01/10/18.
@@ -35,6 +47,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSearchV2UseCase flightSearchV2UseCase;
     private FlightSortAndFilterUseCase flightSortAndFilterUseCase;
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
@@ -101,6 +114,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Override
     public void fetchSearchData(FlightSearchPassDataViewModel passDataViewModel,
                                 FlightAirportCombineModelList flightAirportCombineModelList) {
+        if (isViewAttached()) {
+            getView().removeToolbarElevation();
+        }
+
         boolean anyLoadToCloud = false;
 
         for (int i = 0, sizei = flightAirportCombineModelList.getData().size(); i < sizei; i++) {
@@ -124,6 +141,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Override
     public void fetchSearchDataFromCloud(FlightSearchPassDataViewModel passDataViewModel,
                                          FlightAirportCombineModel flightAirportCombineModel) {
+
         String date = passDataViewModel.getDate(getView().isReturning());
         FlightPassengerViewModel flightPassengerViewModel = passDataViewModel.getFlightPassengerViewModel();
         int adult = flightPassengerViewModel.getAdult();
@@ -171,14 +189,82 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onError(Throwable e) {
+
                         e.printStackTrace();
+                        if (isViewAttached()) {
+                            if (e instanceof FlightException) {
+                                List<FlightError> errors = ((FlightException) e).getErrorList();
+                                if (errors.contains(new FlightError(FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND))) {
+                                    getView().showNoRouteFlightEmptyState(e.getMessage());
+                                    return;
+                                }
+                            }
+                            getView().showGetListError(e);
+                        }
                     }
 
                     @Override
                     public void onNext(FlightSearchMetaViewModel flightSearchMetaViewModel) {
-                        Log.d("DATA", flightSearchMetaViewModel.isNeedRefresh() + " + " + flightSearchMetaViewModel.getMaxRetry());
                         getView().onGetSearchMeta(flightSearchMetaViewModel);
                     }
                 });
+    }
+
+    @Override
+    public void fetchSearchDataFromCloudWithDelay(FlightSearchPassDataViewModel passDataViewModel,
+                                                  FlightAirportCombineModel flightAirportCombineModelList,
+                                                  int delayInSecond) {
+
+        getView().removeToolbarElevation();
+        Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new OnNextSubscriber<Long>() {
+                    @Override
+                    public void onNext(Long aLong) {
+                        fetchSearchDataFromCloud(passDataViewModel, flightAirportCombineModelList);
+                    }
+                });
+        addSubscription(subscription);
+    }
+
+    @Override
+    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel) {
+        flightSortAndFilterUseCase.execute(
+                flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
+                new Subscriber<List<? extends FlightJourneyViewModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<? extends FlightJourneyViewModel> flightJourneyViewModels) {
+                        Log.d("DATA", flightJourneyViewModels.get(0).getDepartureAirportName());
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void detachView() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        super.detachView();
+    }
+
+    private void addSubscription(Subscription subscription) {
+        if (compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
+        }
+        compositeSubscription.add(subscription);
     }
 }

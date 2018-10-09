@@ -44,7 +44,8 @@ class FlightSearchV2UseCase @Inject constructor(
                                                 refreshTime,
                                                 maxRetry,
                                                 0,
-                                                0
+                                                0,
+                                                arrayListOf()
                                         )
                                     }
                                 }
@@ -61,7 +62,8 @@ class FlightSearchV2UseCase @Inject constructor(
                                     refreshTime,
                                     maxRetry,
                                     0,
-                                    0
+                                    0,
+                                    arrayListOf()
                             )
                         }
                     }
