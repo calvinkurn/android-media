@@ -5,8 +5,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.home.beranda.data.model.Promotion;
 
 import java.util.Map;
@@ -15,7 +13,7 @@ import java.util.Map;
  * Created by nakama on 2/6/18.
  */
 
-public class HomePageTracking extends TrackingUtils {
+public class HomePageTracking {
 
     public static final String CLICK_HOME_PAGE = "clickHomePage";
     public static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
@@ -60,12 +58,6 @@ public class HomePageTracking extends TrackingUtils {
                     ""
             );
         }
-    }
-
-    private static void flushEventTracker() {
-        sendGTMEvent(new EventTracking(
-                null, null, null, null
-        ).getEvent());
     }
 
     public static void sendScreen(Activity activity, String screenName) {
