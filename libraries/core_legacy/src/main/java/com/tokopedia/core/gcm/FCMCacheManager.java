@@ -14,14 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.fragment.SettingsFragment;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.prototype.ManageProductCache;
-import com.tokopedia.core.prototype.ShopSettingCache;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 

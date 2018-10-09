@@ -12,6 +12,6 @@ public class DbFlowDatabase {
 
     public static final String NAME = "core";
 
-    public static final int VERSION = 15;
+    public static final int VERSION = 1;
 
 }
