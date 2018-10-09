@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
@@ -39,5 +40,13 @@ public interface IHomeRouter {
 
     void goToWallet(Context context, String url);
 
-    void goToProductDetail(Context context, ProductPass productPass);
+    void goToProductDetail(Context context,
+                           String productId,
+                           String imageSourceSingle,
+                           String name,
+                           String price);
+
+    Intent getIntentCreateShop(Context context);
+
+    void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
 }

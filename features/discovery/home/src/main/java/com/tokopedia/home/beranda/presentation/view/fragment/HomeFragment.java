@@ -47,11 +47,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -427,7 +422,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
+        Intent intent = ((IHomeRouter) getActivity().getApplication()).getIntentCreateShop(getContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -458,14 +453,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance) {
-        WalletRouterUtil.navigateWallet(
-                getActivity().getApplication(),
-                this,
-                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkBalance,
-                redirectUrlBalance,
-                new Bundle()
-        );
+        if ((getActivity()).getApplication() instanceof IHomeRouter) {
+            ((IHomeRouter) (getActivity()).getApplication())
+                    .goToTokoCash(appLinkBalance,
+                            redirectUrlBalance,
+                            getActivity());
+        }
     }
 
     @Override
@@ -497,12 +490,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         }
                     }
                 } else {
-                    WalletRouterUtil.navigateWallet(
-                            getActivity().getApplication(),
-                            HomeFragment.this,
-                            IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                            appLink, url, new Bundle()
-                    );
+                    if ((getActivity()).getApplication() instanceof IHomeRouter) {
+                        ((IHomeRouter) (getActivity()).getApplication())
+                                .goToTokoCash(appLink,
+                                        url,
+                                        getActivity());
+                    }
                 }
 
             }
@@ -768,12 +761,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity().getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) getActivity().getApplication()).goToProductDetail(
                     getActivity(),
-                    ProductPass.Builder.aProductPass()
-                            .setProductId(productId)
-                            .setProductImage(imageSourceSingle)
-                            .setProductName(name)
-                            .setProductPrice(price)
-                            .build()
+                    productId,
+                    imageSourceSingle,
+                    name,
+                    price
             );
         }
     }
