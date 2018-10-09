@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
+import com.tokopedia.home.beranda.data.model.Promotion;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.core.analytics.nishikino.model;
+package com.tokopedia.home.beranda.data.model;
 
 import android.text.TextUtils;
 

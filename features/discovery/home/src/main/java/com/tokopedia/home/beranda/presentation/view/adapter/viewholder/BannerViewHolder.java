@@ -6,7 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
+import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
