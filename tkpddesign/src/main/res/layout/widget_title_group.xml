@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingLeft="@dimen/margin_sm"
-    android:paddingRight="@dimen/margin_sm"
-    android:paddingTop="@dimen/margin_sm">
+    android:paddingBottom="@dimen/dp_10"
+    android:paddingLeft="@dimen/dp_15"
+    android:paddingRight="@dimen/dp_15"
+    android:paddingTop="@dimen/dp_15">
 
     <ImageView
         android:id="@+id/image_view_icon"
-        android:layout_width="@dimen/image_width_xs"
-        android:layout_height="@dimen/image_width_xs"
-        android:layout_marginEnd="@dimen/margin_sm"
-        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
         tools:src="@drawable/ic_search_grey" />
 
     <TextView

@@ -87,6 +87,7 @@ public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailVie
             bundle.putString("prod_name", data.getInfo().getProductName());
             bundle.putString("is_owner", String.valueOf(data.getShopInfo().getShopIsOwner()));
             bundle.putString("product_image", data.getProductImages().get(0).getImageSrc300());
+            bundle.putString("product_price", data.getInfo().getProductPrice());
             listener.onProductTalkClicked(bundle);
         }
     }
@@ -100,12 +101,11 @@ public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailVie
 
         @Override
         public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
-            bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
-            bundle.putString("prod_name", data.getInfo().getProductName());
-            //bundle.putString("rating_listed", ratingToPass);
-            listener.onProductReviewClicked(bundle);
+
+            String productId = String.valueOf(data.getInfo().getProductId());
+            String shopId = String.valueOf(data.getShopInfo().getShopId());
+            String productName = data.getInfo().getProductName();
+            listener.onProductReviewClicked(productId, shopId, productName);
         }
     }
 }

@@ -16,19 +16,20 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 public class KeroppiParam {
     public static final String TAG = KeroppiParam.class.getSimpleName();
 
-    private static final String NAMES = "names";
-    private static final String ORIGIN = "origin";
-    private static final String DESTINATION = "destination";
-    private static final String WEIGHT = "weight";
-    private static final String TYPE = "type";
-    private static final String FROM = "from";
-    private static final String CAT_ID = "cat_id";
-    private static final String ORDER_VALUE = "order_value";
-    private static final String TOKEN = "token";
-    private static final String UT = "ut";
-    private static final String PRODUCT_INSURANCE = "product_insurance";
-    private static final String INSURANCE = "insurance";
-    private static final String APP_VERSION = "app_version";
+    public static final String NAMES = "names";
+    public static final String ORIGIN = "origin";
+    public static final String DESTINATION = "destination";
+    public static final String WEIGHT = "weight";
+    public static final String TYPE = "type";
+    public static final String FROM = "from";
+    public static final String CAT_ID = "cat_id";
+    public static final String ORDER_VALUE = "order_value";
+    public static final String TOKEN = "token";
+    public static final String UT = "ut";
+    public static final String PRODUCT_INSURANCE = "product_insurance";
+    public static final String INSURANCE = "insurance";
+    public static final String APP_VERSION = "app_version";
+    public static final String PARAM_OS_TYPE = "os_type";
 
     private static final String SEPARATOR = "|";
     private static final String CO_SEPARATOR = ",";
@@ -51,14 +52,18 @@ public class KeroppiParam {
         params.put(UT, shop.getUt() + "");
         params.put(PRODUCT_INSURANCE, productDetail.getProductMustInsurance() == 1 ? "1" : "0");
         params.put(INSURANCE, "1");
-        params.put(ORDER_VALUE, getRawPrice(productDetail.getProductPrice()));
+        params.put(ORDER_VALUE, getRawStringPrice(productDetail.getProductPrice()));
         params.put(CAT_ID, productDetail.getProductCatId());
 
         return params;
     }
 
-    private static String getRawPrice(String formattedPrice) {
+    private static String getRawStringPrice(String formattedPrice) {
         return formattedPrice.replace("Rp ", "").replace(".", "");
+    }
+
+    private static int getRawIntPrice(String rawStringPrice) {
+        return Integer.parseInt(rawStringPrice);
     }
 
     public static TKPDMapParam<String, String> paramsKeroOrderData(OrderData orderData) {
@@ -82,7 +87,8 @@ public class KeroppiParam {
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
         params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
-        String rawPrice = getRawPrice(orderData.getPriceTotal());
+        String rawPrice = String.valueOf(getRawIntPrice(getRawStringPrice(orderData.getPriceItem())) *
+                orderData.getQuantity());
         params.put(ORDER_VALUE, rawPrice);
 
         return params;

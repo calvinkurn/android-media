@@ -725,6 +725,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         RideUtils.addUberShortcutOnLauncher(getActivity(), getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
+                        RideGATracking.eventUberCreateShortcut(getScreenName());
                         presenter.setShortcutDialogIsShowninCache();
                         dialog.cancel();
                     }

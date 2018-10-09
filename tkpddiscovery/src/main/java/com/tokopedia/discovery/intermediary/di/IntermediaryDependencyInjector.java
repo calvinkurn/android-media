@@ -17,6 +17,8 @@ import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetCategoryHeaderUseCase;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.view.IntermediaryPresenter;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 /**
  * Created by alifa on 3/27/17.
@@ -35,8 +37,8 @@ public class IntermediaryDependencyInjector {
         MojitoService mojitoService = new MojitoService();
         MojitoApi mojitoApi = mojitoService.getApi();
         IntermediaryCategoryMapper mapper = new IntermediaryCategoryMapper();
-        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,hadesApi,
-                searchApi,mojitoApi,mapper);
+        IntermediaryDataSource dataSource = new IntermediaryDataSource(context, hadesApi,
+                searchApi, mojitoApi, mapper);
 
         IntermediaryRepository repository = new IntermediaryRepositoryImpl(dataSource);
 
@@ -44,7 +46,9 @@ public class IntermediaryDependencyInjector {
                 threadExecutor, postExecutionThread, repository);
         GetCategoryHeaderUseCase getCategoryHeaderUseCase = new GetCategoryHeaderUseCase(threadExecutor, postExecutionThread, repository);
 
-        return  new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase);
+        return new IntermediaryPresenter(getIntermediaryCategoryUseCase, getCategoryHeaderUseCase,
+                new AddWishListUseCase(context),
+                new RemoveWishListUseCase(context));
 
     }
 }

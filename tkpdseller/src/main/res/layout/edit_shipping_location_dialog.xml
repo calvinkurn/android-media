@@ -9,16 +9,16 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontm"
         android:textStyle="bold"
-        android:paddingTop="@dimen/margin_small"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:text="@string/title_edit_shop_location"/>
 
     <TextView
         android:id="@+id/edit_shipping_select_province_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_small"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:textSize="@dimen/fontm"
         android:text="@string/title_select_province"/>
 
@@ -31,8 +31,8 @@
         android:id="@+id/edit_shipping_select_city_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_small"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:textSize="@dimen/fontm"
         android:text="@string/title_select_city"/>
 
@@ -45,8 +45,8 @@
         android:id="@+id/edit_shipping_select_district_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_small"
-        android:paddingLeft="@dimen/margin_small"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingLeft="@dimen/dp_10"
         android:textSize="@dimen/fontm"
         android:text="@string/title_select_district"/>
 
@@ -58,7 +58,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_small"
+        android:paddingTop="@dimen/dp_10"
         android:orientation="horizontal">
 
         <TextView

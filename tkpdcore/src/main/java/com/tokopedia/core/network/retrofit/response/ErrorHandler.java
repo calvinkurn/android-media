@@ -24,7 +24,9 @@ import retrofit2.Response;
 
 /**
  * Created by Angga.Prasetiyo on 01/12/2015.
+ * Use ErrorHandler from abstraction
  */
+@Deprecated
 public class ErrorHandler {
     private static final String TAG = ErrorHandler.class.getSimpleName();
     private static final String SERVER_INFO = "Network Server Error";
@@ -81,7 +83,14 @@ public class ErrorHandler {
         return "Error " + String.valueOf(code) + " : " + msg;
     }
 
+    public static String getErrorMessage(Throwable e) {
+        return getErrorMessage(e, MainApplication.getAppContext());
+    }
+
     public static String getErrorMessage(Throwable e, final Context context) {
+        if (context == null) {
+            return "";
+        }
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
@@ -106,8 +115,7 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_internal_server);
                 case ResponseStatus.SC_FORBIDDEN:
                     Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
-                    return
-                            context.getString(R.string.default_request_error_forbidden_auth);
+                    return context.getString(R.string.default_request_error_forbidden_auth);
                 case ResponseStatus.SC_BAD_GATEWAY:
                     Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
                     return
@@ -133,11 +141,6 @@ public class ErrorHandler {
         }
     }
 
-    public static String getErrorMessage(Throwable e) {
-        Context context = MainApplication.getAppContext();
-        return getErrorMessage(e, context);
-    }
-
     public static String getErrorMessage(Response response) {
         try {
             JSONObject jsonObject = new JSONObject(response.errorBody().string());
@@ -156,6 +159,7 @@ public class ErrorHandler {
         }
         return "";
     }
+
 
     private static boolean hasErrorMessage(JSONObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE);

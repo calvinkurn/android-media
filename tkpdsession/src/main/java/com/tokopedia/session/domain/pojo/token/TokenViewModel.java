@@ -34,6 +34,10 @@ public class TokenViewModel {
     @Expose
     private String refreshToken;
 
+    @SerializedName("scope")
+    @Expose
+    private String scope;
+
 
     public String getAccessToken() {
         return accessToken;
@@ -51,7 +55,7 @@ public class TokenViewModel {
         this.tokenType = tokenType;
     }
 
-    public int getExpires_in() {
+    public int getExpiresIn() {
         return expiresIn;
     }
 
@@ -67,4 +71,11 @@ public class TokenViewModel {
         this.refreshToken = refreshToken;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 }

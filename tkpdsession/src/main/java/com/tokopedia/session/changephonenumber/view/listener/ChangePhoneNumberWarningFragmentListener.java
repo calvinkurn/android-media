@@ -1,7 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 /**
@@ -17,11 +17,19 @@ public interface ChangePhoneNumberWarningFragmentListener {
         void onGetWarningSuccess(WarningViewModel warningViewModel);
 
         void onGetWarningError(String message);
+
+        void onGetValidateOtpStatusSuccess(Boolean isValid);
+
+        void onGetValidateOtpStatusError();
+
+        Integer getUserId();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void initView();
 
         void getWarning();
+
+        void validateOtpStatus(int userId);
     }
 }

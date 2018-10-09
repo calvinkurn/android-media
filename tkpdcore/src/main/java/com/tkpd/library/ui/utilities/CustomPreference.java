@@ -1,7 +1,9 @@
 package com.tkpd.library.ui.utilities;
 
 import android.content.Context;
+import android.os.Build;
 import android.preference.Preference;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -12,6 +14,8 @@ import com.tokopedia.core.R;
  * Created by raditya.gumay on 07/03/2016.
  */
 public class CustomPreference extends Preference {
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public CustomPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }

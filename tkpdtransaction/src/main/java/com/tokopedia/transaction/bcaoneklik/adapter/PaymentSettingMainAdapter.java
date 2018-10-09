@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,9 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.activity.CreditCardDetailActivity;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
@@ -269,11 +271,15 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         private String getBackgroundAssets(CreditCardModelItem item) {
-            final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+                    TkpdBaseURL.Payment.DEFAULT_HOST);
+
+            final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
             String assetName = getBackgroundResource(item);
             String density = DisplayMetricUtils.getScreenDensity(context);
 
-            return String.format(resourceUrl, assetName, density, assetName);
+            return String.format(resourceUrl + "%s/%s/%s.png", assetName, density, assetName);
         }
 
         private String getBackgroundResource(CreditCardModelItem item) {

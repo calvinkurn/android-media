@@ -16,7 +16,6 @@ public interface CatalogTypeFactory extends SearchSectionTypeFactory {
 
     int type(CatalogViewModel viewModel);
 
-    int type(EmptyModel emptyModel);
     int type(CatalogHeaderViewModel headerViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);

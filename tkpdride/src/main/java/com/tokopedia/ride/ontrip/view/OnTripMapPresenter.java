@@ -1,8 +1,6 @@
 package com.tokopedia.ride.ontrip.view;
 
 import android.Manifest;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,7 +21,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -60,7 +57,6 @@ import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.domain.UpdateRideRequestUseCase;
-import com.tokopedia.ride.ontrip.view.service.ActivityRecognizedService;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -116,9 +112,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Location currentLocation;
     private CompositeSubscription subscription;
     private boolean isZoomFitByDriverAndCustomer;
-    private boolean isUserInRide;
-    private double userLocationLatitude, userLocationLongitude;
-    private float userBearing;
+    private boolean isDriverAndPickupPathAlreadyDrawed = false;
 
     @Inject
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
@@ -377,7 +371,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
                 getView().showCurrentLocationIndicator();
-                updatePolylineIfResetedByUiLifecycle(result);
+                updatePolylineBetweenDriverAndPickup(result);
                 RideConfiguration configurationAcc = new RideConfiguration(getView().getActivity());
                 if (!TextUtils.isEmpty(configurationAcc.getActiveProductName())) {
                     getView().setTitle(String.format("%s %s", configurationAcc.getActiveProductName(),
@@ -405,7 +399,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
                 getView().showCurrentLocationIndicator();
-                updatePolylineIfResetedByUiLifecycle(result);
+                //updatePolylineIfResetedByUiLifecycle(result);
+                updatePolylineBetweenDriverAndPickup(result);
 
                 if (getView().isAlreadyRouteDrawed() && result.getPickup() != null && result.getLocation() != null && !isZoomFitByDriverAndCustomer) {
                     List<LatLng> latLngs = new ArrayList<>();
@@ -468,6 +463,32 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         }
     }
 
+    private void updatePolylineBetweenDriverAndPickup(RideRequest result) {
+        if (result == null || result.getLocation() == null) {
+            return;
+        }
+
+
+        getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
+        getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
+        boolean animation = true;
+        if (getView().isAlreadyRouteDrawed() && isDriverAndPickupPathAlreadyDrawed) {
+            animation = false;
+        }
+
+        com.tokopedia.ride.common.ride.domain.model.Location destinationLocation = new com.tokopedia.ride.common.ride.domain.model.Location();
+        destinationLocation.setLatitude(result.getPickup().getLatitude());
+        destinationLocation.setLongitude(result.getPickup().getLongitude());
+
+        getOverViewPolyLine(animation, result.getLocation(), destinationLocation, result.getLocation());
+        isDriverAndPickupPathAlreadyDrawed = true;
+    }
+
+    /**
+     * This function renders the polyline between user and destination
+     *
+     * @param result
+     */
     private void updatePolylineBetweenUserAndDestination(RideRequest result) {
         getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
         getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
@@ -475,41 +496,38 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (getView().isAlreadyRouteDrawed()) {
             animation = false;
         }
-        getOverViewPolyLineBetweenUserAndDestination(animation, result);
-    }
 
-    private void getOverViewPolyLineBetweenUserAndDestination(final boolean animation, final RideRequest result) {
-        if (result.getLocation() != null && result.getLocation().getLatitude() != 0 && result.getLocation().getLongitude() != 0) {
-            userLocationLatitude = result.getLocation().getLatitude();
-            userLocationLongitude = result.getLocation().getLongitude();
-            userBearing = result.getLocation().getBearing();
+        com.tokopedia.ride.common.ride.domain.model.Location originLocation = new com.tokopedia.ride.common.ride.domain.model.Location();
+        com.tokopedia.ride.common.ride.domain.model.Location destinationLocation = new com.tokopedia.ride.common.ride.domain.model.Location();
+
+
+        //if we get the driver location from uber api response, then use that location as driver location else use current location as driver location
+        if (result.getLocation() != null) {
+            originLocation = result.getLocation();
+        } else if (currentLocation != null) {
+            originLocation.setLatitude(currentLocation.getLatitude());
+            originLocation.setLongitude(currentLocation.getLongitude());
+            originLocation.setBearing((int) currentLocation.getBearing());
         } else {
-            //check if current location is null then return
-            if (currentLocation == null) {
-                if (getView().isAlreadyRouteDrawed()) {
-                    return;
-                }
-
-                userLocationLatitude = result.getPickup().getLatitude();
-                userLocationLongitude = result.getPickup().getLongitude();
-            } else {
-                //if device is not running then return
-                RideConfiguration configuration = new RideConfiguration(getView().getActivity());
-                if (!configuration.isDeviceInVehicle()) {
-                    CommonUtils.dumper("Device is not running");
-                    return;
-                } else {
-                    CommonUtils.dumper("Device is running");
-                }
-
-                userLocationLatitude = currentLocation.getLatitude();
-                userLocationLongitude = currentLocation.getLongitude();
-                userBearing = currentLocation.getBearing();
+            if (getView().isAlreadyRouteDrawed()) {
+                return;
             }
+
+            originLocation.setLatitude(result.getPickup().getLatitude());
+            originLocation.setLongitude(result.getPickup().getLongitude());
         }
 
+        //populate destination object
+        destinationLocation.setLatitude(result.getDestination().getLatitude());
+        destinationLocation.setLongitude(result.getDestination().getLongitude());
 
-        RequestParams polylineRequestParams = getView().getPolyLineParamDriverBetweenDestination(userLocationLatitude, userLocationLongitude);
+        getOverViewPolyLine(animation, originLocation, destinationLocation, originLocation);
+    }
+
+    private void getOverViewPolyLine(final boolean animation, final com.tokopedia.ride.common.ride.domain.model.Location origin
+            , final com.tokopedia.ride.common.ride.domain.model.Location destination
+            , final com.tokopedia.ride.common.ride.domain.model.Location driverLocation) {
+        RequestParams polylineRequestParams = getView().getPolyLineParamBetweenTwoLocations(origin, destination);
 
         if (polylineRequestParams != null) {
             getOverviewPolylineUseCase.execute(polylineRequestParams, new Subscriber<List<OverviewPolyline>>() {
@@ -537,45 +555,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                             getView().renderTripRouteWithoutAnimation(routes);
                         }
 
-
                         if (activeRideRequest != null) {
                             List<LatLng> latLngs = new ArrayList<LatLng>();
-                            latLngs.add(new LatLng(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude()));
 
-                            //draw vehicle location based on last update
-                            if (currentLocation != null || result.getLocation() != null) {
-                                getView().reDrawDriverMarker(userLocationLatitude, userLocationLongitude, userBearing);
-                            }
-
+                            //draw vehicle, source and destination marker
+                            getView().reDrawDriverMarker(driverLocation.getLatitude(), driverLocation.getLongitude(), driverLocation.getBearing());
                             getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(), activeRideRequest.getPickup().getLongitude());
                             getView().renderDestinationMarker(activeRideRequest.getDestination().getLatitude(), activeRideRequest.getDestination().getLongitude());
-                            if (overviewPolylines.size() > 0) {
-                                latLngs.add(new LatLng(
-                                        overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
-                                        overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
-                                ));
 
-                                latLngs.add(new LatLng(
-                                        overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
-                                        overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
-                                ));
-                            }
+
                             if (animation) {
-                                getView().zoomMapFitByPolyline(latLngs);
-                            }
-                        } else {
-                            if (routes.size() > 0) {
-                                List<LatLng> latLngs = new ArrayList<LatLng>();
-                                List<LatLng> route = routes.get(0);
-                                double startLat = route.get(0).latitude;
-                                double startLng = route.get(0).longitude;
-                                latLngs.add(new LatLng(startLat, startLng));
-                                if (route.size() > 0) {
-                                    double endLat = route.get(route.size() - 1).latitude;
-                                    double endLng = route.get(route.size() - 1).longitude;
-                                    getView().renderSourceMarker(startLat, startLng);
-                                    getView().renderDestinationMarker(endLat, endLng);
-                                    latLngs.add(new LatLng(endLat, endLng));
+                                if (overviewPolylines.size() > 0) {
                                     latLngs.add(new LatLng(
                                             overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
                                             overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
@@ -585,7 +575,35 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                             overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
                                             overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
                                     ));
+                                }
+                                getView().zoomMapFitByPolyline(latLngs);
+                            }
+                        } else {
+                            if (routes.size() > 0) {
+                                List<LatLng> route = routes.get(0);
+                                double startLat = route.get(0).latitude;
+                                double startLng = route.get(0).longitude;
+
+                                if (route.size() > 0) {
+                                    double endLat = route.get(route.size() - 1).latitude;
+                                    double endLng = route.get(route.size() - 1).longitude;
+                                    getView().renderSourceMarker(startLat, startLng);
+                                    getView().renderDestinationMarker(endLat, endLng);
+
+                                    //zoom fit with animation
                                     if (animation) {
+                                        List<LatLng> latLngs = new ArrayList<LatLng>();
+                                        latLngs.add(new LatLng(startLat, startLng));
+                                        latLngs.add(new LatLng(endLat, endLng));
+                                        latLngs.add(new LatLng(
+                                                overviewPolylines.get(0).getBounds().getNortheast().getLatitude(),
+                                                overviewPolylines.get(0).getBounds().getNortheast().getLongitude()
+                                        ));
+
+                                        latLngs.add(new LatLng(
+                                                overviewPolylines.get(0).getBounds().getSouthwest().getLatitude(),
+                                                overviewPolylines.get(0).getBounds().getSouthwest().getLongitude()
+                                        ));
                                         getView().zoomMapFitByPolyline(latLngs);
                                     }
                                 }
@@ -820,7 +838,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             //update poll wait
             if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
-                CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
                 CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
             }
         }
@@ -942,8 +959,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     private void createLocationRequest() {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -960,11 +977,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 } else {
                                     checkLocationSettings();
                                 }
-
-                                //request updates for user activities in very 10 secs
-                                Intent intent = new Intent(getView().getActivity(), ActivityRecognizedService.class);
-                                PendingIntent pendingIntent = PendingIntent.getService(getView().getActivity(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(googleApiClient, TEN_SECS, pendingIntent);
                             }
                         }
 
@@ -982,7 +994,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     })
                     .addApi(LocationServices.API)
                     .addApi(Places.GEO_DATA_API)
-                    .addApi(ActivityRecognition.API)
                     .build();
         }
 
@@ -1006,7 +1017,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 final Status status = locationSettingsResult.getStatus();
                 //final LocationSettingsStates s= result.getLocationSettingsStates();
 
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
 
@@ -1115,7 +1126,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void actionCancelButtonClicked() {
         if (activeRideRequest != null) {
-            if (activeRideRequest.getCancelChargeTimestamp() == null || activeRideRequest.getStatus().equalsIgnoreCase(RideStatus.PROCESSING)) return;
+            if (activeRideRequest.getCancelChargeTimestamp() == null || activeRideRequest.getStatus().equalsIgnoreCase(RideStatus.PROCESSING))
+                return;
             SimpleDateFormat serverDateFormatter = new SimpleDateFormat(DATE_SERVER_FORMAT, Locale.US);
             Date date = null;
             try {

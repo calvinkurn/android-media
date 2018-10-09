@@ -78,7 +78,7 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                     getView().hideLoading();
                     getView().showHistoryDetailLayout();
                     RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
-                    RideHistoryViewModel viewModel = mapper.transform(getView().getMapSize(), rideHistory);
+                    RideHistoryViewModel viewModel = mapper.transform(getView().getActivity(), getView().getMapSize(), rideHistory);
                     getView().setHistoryViewModelData(viewModel);
                     getView().renderHistory(viewModel);
                     if (!getView().isRatingAvailable()) {

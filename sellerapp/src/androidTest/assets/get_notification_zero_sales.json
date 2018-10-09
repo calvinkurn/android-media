@@ -1,9 +1,0 @@
-{
-  "config":null,
-  "data":{"sales":{"sales_new_order":0,"sales_shipping_status":2,"sales_shipping_confirm":1},"inbox":{"inbox_talk":1,"inbox_ticket":0,"inbox_review":12,"inbox_friend":0,"inbox_wishlist":0,"inbox_message":0,"inbox_reputation":12},"purchase":{"purchase_reorder":0,"purchase_payment_conf":0,"purchase_payment_confirm":0,"purchase_order_status":2,"purchase_delivery_confirm":0},"total_notif":19,"total_cart":0,"incr_notif":"58","resolution":1},
-  "server_process_time":0.015863,
-  "status":"OK",
-  "error_message":[
-
-  ]
-}

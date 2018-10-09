@@ -53,13 +53,13 @@ public class TkpdProgressDialog {
         this.loadingViewId = loadingViewId;
     }
 
-    public void showDialog() {
+    public void showDialog(String title,String message) {
         try {
             if (state == NORMAL_PROGRESS) {
                 if (!isShow) {
                     progress = new ProgressDialog(context);
-                    progress.setMessage(msgLoading);
-                    progress.setTitle("");
+                    progress.setMessage(message);
+                    progress.setTitle(title);
                     progress.setCancelable(isCancelable);
                     isShow = true;
                     progress.show();
@@ -83,6 +83,11 @@ public class TkpdProgressDialog {
             }
         } catch (Exception e) {
         }
+    }
+
+
+    public void showDialog() {
+        showDialog("",msgLoading);
     }
 
     public Boolean getCancelable() {

@@ -4,6 +4,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.profilecompletion.domain.model.EditUserInfoDomainModel;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 
+import java.util.Map;
+
 import rx.Observable;
 
 /**
@@ -12,7 +14,7 @@ import rx.Observable;
 
 public interface ProfileRepository {
 
-    Observable<GetUserInfoDomainModel> getUserInfo(TKPDMapParam<String, Object> parameters);
+    Observable<GetUserInfoDomainModel> getUserInfo(Map<String, Object> parameters);
 
     Observable<EditUserInfoDomainModel> editUserInfo(TKPDMapParam<String, Object> parameters);
 }

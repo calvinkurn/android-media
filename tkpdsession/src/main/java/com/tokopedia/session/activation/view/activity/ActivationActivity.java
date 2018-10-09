@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,10 +11,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
+import android.support.v7.widget.Toolbar;
+
+import com.tokopedia.analytics.RegisterAnalytics;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment;
@@ -26,7 +26,9 @@ import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment
 
 public class ActivationActivity extends BasePresenterActivity {
 
-    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    public static final String INTENT_EXTRA_PARAM_EMAIL = "email";
+    public static final String INTENT_EXTRA_PARAM_PW = "pw";
+    private RegisterAnalytics analytics;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -54,7 +56,7 @@ public class ActivationActivity extends BasePresenterActivity {
         setToolbar();
 
         RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(
-                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL)
+                getIntent().getExtras()
         );
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -64,6 +66,12 @@ public class ActivationActivity extends BasePresenterActivity {
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
     }
 
     private void setToolbar() {
@@ -76,8 +84,8 @@ public class ActivationActivity extends BasePresenterActivity {
             toolbar.setElevation(10);
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -102,13 +110,25 @@ public class ActivationActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
-        return null;
+        return RegisterAnalytics.Screen.SCREEN_ACCOUNT_ACTIVATION;
     }
 
-    public static Intent getCallingIntent(Context context, String email) {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    public static Intent getCallingIntent(Context context, String email, String pw) {
         Intent callingIntent = new Intent(context, ActivationActivity.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_PW, pw);
         return callingIntent;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        analytics.eventClickBackEmailActivation();
+    }
 }

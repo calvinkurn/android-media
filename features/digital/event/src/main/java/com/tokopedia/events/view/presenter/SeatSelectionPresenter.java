@@ -1,0 +1,346 @@
+package com.tokopedia.events.view.presenter;
+
+import android.content.Intent;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
+import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.data.entity.response.Form;
+import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.domain.model.request.cart.CartItem;
+import com.tokopedia.events.domain.model.request.cart.CartItems;
+import com.tokopedia.events.domain.model.request.cart.Configuration;
+import com.tokopedia.events.domain.model.request.cart.EntityAddress;
+import com.tokopedia.events.domain.model.request.cart.EntityPackageItem;
+import com.tokopedia.events.domain.model.request.cart.EntityPassengerItem;
+import com.tokopedia.events.domain.model.request.cart.MetaData;
+import com.tokopedia.events.domain.model.request.cart.OtherChargesItem;
+import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.activity.ReviewTicketActivity;
+import com.tokopedia.events.view.contractor.SeatSelectionContract;
+import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
+import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
+/**
+ * Created by naveengoyal on 1/16/18.
+ */
+
+public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionContract.SeatSelectionView>
+        implements SeatSelectionContract.Presenter {
+
+
+    private static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+    public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
+
+    private EventsDetailsViewModel eventsDetailsViewModel;
+    private SeatLayoutViewModel seatLayoutViewModel;
+    private VerifyCartUseCase verifyCartUseCase;
+    private PostVerifyCartUseCase postVerifyCartUseCase;
+    private PackageViewModel selectedpkgViewModel;
+    private ProfileUseCase profileUseCase;
+    private ProfileModel profileModel;
+    private String email;
+    private String number;
+    private SelectedSeatViewModel mSelectedSeatViewModel;
+    private FirebaseRemoteConfigImpl remoteConfig;
+
+
+    @Inject
+    public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, ProfileUseCase profileCase, PostVerifyCartUseCase postVerifyCartUseCase) {
+        this.verifyCartUseCase = verifyCartUseCase;
+        this.profileUseCase = profileCase;
+        this.postVerifyCartUseCase = postVerifyCartUseCase;
+    }
+
+    public void getProfile() {
+        getView().showProgressBar();
+        if (!SessionHandler.isV4Login(getView().getActivity())) {
+            Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                    getLoginIntent(getView().getActivity());
+            getView().navigateToActivityRequest(intent, 1099);
+        } else {
+            profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    throwable.printStackTrace();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    getProfile();
+                                }
+                            });
+                }
+
+                @Override
+                public void onNext(ProfileModel model) {
+                    profileModel = model;
+                    email = profileModel.getProfileData().getUserInfo().getUserEmail();
+                    number = profileModel.getProfileData().getUserInfo().getUserPhone();
+                    getView().hideProgressBar();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void attachView(SeatSelectionContract.SeatSelectionView view) {
+        super.attachView(view);
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
+        eventsDetailsViewModel = getView().getActivity().getIntent().getParcelableExtra("event_detail");
+        selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
+        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
+        getView().setEventTitle(getView().getActivity().getIntent().getStringExtra("EventTitle"));
+    }
+
+
+    public void getSeatSelectionDetails() {
+        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(),
+                selectedpkgViewModel.getSelectedQuantity(), seatLayoutViewModel);
+        getView().setTicketPrice(selectedpkgViewModel.getSelectedQuantity());
+    }
+
+    @Override
+    public void validateSelection() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode) {
+        if (requestCode == 1099) {
+            if (SessionHandler.isV4Login(getView().getActivity())) {
+                getProfile();
+            } else {
+                getView().hideProgressBar();
+            }
+        }
+    }
+
+    @Override
+    public String getSCREEN_NAME() {
+        return EventsGAConst.EVENTS_SEAT_SELECTIONPAGE;
+    }
+
+    public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
+        getView().initializeSeatLayoutModel(selectedSeatList, rowIds, actualSeatNo);
+    }
+
+    public void setSeatData() {
+        getView().setSelectedSeatText();
+    }
+
+    public void verifySeatSelection(SelectedSeatViewModel selectedSeatViewModel) {
+        getView().showProgressBar();
+        this.mSelectedSeatViewModel = selectedSeatViewModel;
+        RequestParams params = RequestParams.create();
+        params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(selectedpkgViewModel));
+        params.putBoolean(Utils.Constants.ISSEATINGEVENT, true);
+        if (isEventOmsEnabled()) {
+            postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    throwable.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
+
+                @Override
+                public void onNext(VerifyMyCartResponse verifyCartResponse) {
+
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    reviewTicketIntent.putExtra("event_detail", eventsDetailsViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                    getView().hideProgressBar();
+
+
+                }
+            });
+        } else {
+            verifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
+                @Override
+                public void onCompleted() {
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
+
+                @Override
+                public void onNext(VerifyCartResponse verifyCartResponse) {
+                }
+            });
+        }
+    }
+
+
+    private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
+        Configuration config = new Configuration();
+        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
+        com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
+        sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        config.setSubConfig(sub);
+        MetaData meta = new MetaData();
+        meta.setEntityCategoryId(packageViewModel.getCategoryId());
+        meta.setEntityCategoryName("");
+        meta.setEntityGroupId(packageViewModel.getProductGroupId());
+        List<EntityPackageItem> entityPackages = new ArrayList<>();
+        EntityPackageItem packageItem = new EntityPackageItem();
+        packageItem.setPackageId(packageViewModel.getId());
+        packageItem.setAreaCode(mSelectedSeatViewModel.getAreaCodes());
+        packageItem.setAreaId(mSelectedSeatViewModel.getAreaId());
+        packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
+        packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
+        packageItem.setDescription("");
+        packageItem.setQuantity(mSelectedSeatViewModel.getQuantity());
+        packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
+        packageItem.setSeatId(mSelectedSeatViewModel.getSeatIds());
+        packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
+        packageItem.setActualSeatNos(mSelectedSeatViewModel.getActualSeatNos());
+        packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
+        packageItem.setSessionId("");
+        packageItem.setProductId(packageViewModel.getProductId());
+        packageItem.setGroupId(packageViewModel.getProductGroupId());
+        packageItem.setScheduleId(packageViewModel.getProductScheduleId());
+        entityPackages.add(packageItem);
+        meta.setEntityPackages(entityPackages);
+        meta.setTotalTicketCount(packageViewModel.getSelectedQuantity());
+        meta.setEntityProductId(packageViewModel.getProductId());
+        meta.setEntityScheduleId(packageViewModel.getProductScheduleId());
+        if (packageViewModel.getForms() != null) {
+            List<EntityPassengerItem> passengerItems = new ArrayList<>();
+
+            for (Form form : packageViewModel.getForms()) {
+                EntityPassengerItem passenger = new EntityPassengerItem();
+                passenger.setId(form.getId());
+                passenger.setProductId(form.getProductId());
+                passenger.setName(form.getName());
+                passenger.setTitle(form.getTitle());
+                passenger.setValue(form.getValue());
+                passenger.setElementType(form.getElementType());
+                passenger.setRequired(String.valueOf(form.getRequired()));
+                passenger.setValidatorRegex(form.getValidatorRegex());
+                passenger.setErrorMessage(form.getErrorMessage());
+                passengerItems.add(passenger);
+            }
+
+            meta.setEntityPassengers(passengerItems);
+        }
+        EntityAddress address = new EntityAddress();
+        address.setAddress("");
+        address.setName("");
+        address.setCity("");
+        address.setEmail(this.email);
+        address.setMobile(this.number);
+        address.setLatitude("");
+        address.setLongitude("");
+        meta.setEntityAddress(address);
+        meta.setCitySearched("");
+        meta.setEntityEndTime("");
+        meta.setEntityStartTime("");
+        meta.setTotalTaxAmount(0);
+        meta.setTotalOtherCharges(0);
+        meta.setTotalTicketPrice(packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice());
+        meta.setEntityImage("");
+        List<OtherChargesItem> otherChargesItems = new ArrayList<>();
+        OtherChargesItem otherCharges = new OtherChargesItem();
+        otherCharges.setConvFee(packageViewModel.getConvenienceFee());
+        otherChargesItems.add(otherCharges);
+        meta.setOtherCharges(otherChargesItems);
+        List<TaxPerQuantityItem> taxPerQuantityItems = new ArrayList<>();
+        meta.setTaxPerQuantity(taxPerQuantityItems);
+        List<CartItem> cartItems = new ArrayList<>();
+        CartItem cartItem = new CartItem();
+        cartItem.setMetaData(meta);
+        cartItem.setConfiguration(config);
+
+        if (isEventOmsEnabled()) {
+            cartItem.setQuantity(1);
+            cartItem.setProductId(packageViewModel.getDigitalProductID());
+        } else {
+            cartItem.setProductId(packageViewModel.getProductId());
+            cartItem.setQuantity(packageViewModel.getSelectedQuantity());
+        }
+
+
+        cartItems.add(cartItem);
+        CartItems cart = new CartItems();
+        cart.setCartItems(cartItems);
+        cart.setPromocode("");
+
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
+        return jsonElement.getAsJsonObject();
+    }
+
+    public String getTicketCategory() {
+        return selectedpkgViewModel.getTitle();
+    }
+
+    private boolean isEventOmsEnabled() {
+        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
+    }
+
+}

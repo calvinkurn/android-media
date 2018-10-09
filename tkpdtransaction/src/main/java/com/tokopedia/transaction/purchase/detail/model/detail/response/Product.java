@@ -9,6 +9,9 @@ public class Product {
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("order_detail_id")
+    @Expose
+    private String orderDetailId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -18,12 +21,27 @@ public class Product {
     @SerializedName("price")
     @Expose
     private String price;
+    @SerializedName("weight")
+    @Expose
+    private String weight;
     @SerializedName("quantity")
     @Expose
     private int quantity;
     @SerializedName("note")
     @Expose
     private String note;
+    @SerializedName("currency_type")
+    @Expose
+    private int currencyType;
+    @SerializedName("currency_rate")
+    @Expose
+    private int currencyRate;
+    @SerializedName("price_unfmt")
+    @Expose
+    private String priceUnformatted;
+    @SerializedName("weight_unfmt")
+    @Expose
+    private String weightUnformatted;
 
     public int getId() {
         return id;
@@ -31,6 +49,14 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
     public String getName() {
@@ -53,6 +79,14 @@ public class Product {
         return price;
     }
 
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
     public void setPrice(String price) {
         this.price = price;
     }
@@ -73,4 +107,35 @@ public class Product {
         this.note = note;
     }
 
+    public int getCurrencyType() {
+        return currencyType;
+    }
+
+    public void setCurrencyType(int currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public int getCurrencyRate() {
+        return currencyRate;
+    }
+
+    public void setCurrencyRate(int currencyRate) {
+        this.currencyRate = currencyRate;
+    }
+
+    public String getPriceUnformatted() {
+        return priceUnformatted;
+    }
+
+    public void setPriceUnformatted(String priceUnformatted) {
+        this.priceUnformatted = priceUnformatted;
+    }
+
+    public String getWeightUnformatted() {
+        return weightUnformatted;
+    }
+
+    public void setWeightUnformatted(String weightUnformatted) {
+        this.weightUnformatted = weightUnformatted;
+    }
 }

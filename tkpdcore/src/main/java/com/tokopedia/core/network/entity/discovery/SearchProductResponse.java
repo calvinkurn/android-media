@@ -2,6 +2,7 @@ package com.tokopedia.core.network.entity.discovery;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -282,6 +283,8 @@ public class SearchProductResponse {
             private String imageUrl700;
             @SerializedName("price")
             private String price;
+            @SerializedName("price_range")
+            private String priceRange;
             @SerializedName("shop")
             private Shop shop;
             @SerializedName("condition")
@@ -289,9 +292,11 @@ public class SearchProductResponse {
             @SerializedName("department_id")
             private String departmentId;
             @SerializedName("rating")
-            private String rating;
+            private int rating;
             @SerializedName("count_review")
-            private String countReview;
+            private int countReview;
+            @SerializedName("courier_count")
+            private int countCourier;
             @SerializedName("original_price")
             private String originalPrice;
             @SerializedName("discount_percentage")
@@ -304,6 +309,10 @@ public class SearchProductResponse {
             private List<Badges> badges;
             @SerializedName("is_featured")
             private int isFeatured;
+            @SerializedName("top_label")
+            private List<String> topLabel;
+            @SerializedName("bottom_label")
+            private List<String> bottomLabel;
 
             public String getId() {
                 return id;
@@ -353,6 +362,14 @@ public class SearchProductResponse {
                 this.price = price;
             }
 
+            public String getPriceRange() {
+                return priceRange;
+            }
+
+            public void setPriceRange(String priceRange) {
+                this.priceRange = priceRange;
+            }
+
             public Shop getShop() {
                 return shop;
             }
@@ -377,20 +394,29 @@ public class SearchProductResponse {
                 this.departmentId = departmentId;
             }
 
-            public String getRating() {
+
+            public int getRating() {
                 return rating;
             }
 
-            public void setRating(String rating) {
+            public void setRating(int rating) {
                 this.rating = rating;
             }
 
-            public String getCountReview() {
+            public int getCountReview() {
                 return countReview;
             }
 
-            public void setCountReview(String countReview) {
+            public void setCountReview(int countReview) {
                 this.countReview = countReview;
+            }
+
+            public int getCountCourier() {
+                return countCourier;
+            }
+
+            public void setCountCourier(int countCourier) {
+                this.countCourier = countCourier;
             }
 
             public String getOriginalPrice() {
@@ -441,6 +467,22 @@ public class SearchProductResponse {
                 this.isFeatured = isFeatured;
             }
 
+            public List<String> getTopLabel() {
+                return topLabel;
+            }
+
+            public void setTopLabel(List<String> topLabel) {
+                this.topLabel = topLabel;
+            }
+
+            public List<String> getBottomLabel() {
+                return bottomLabel;
+            }
+
+            public void setBottomLabel(List<String> bottomLabel) {
+                this.bottomLabel = bottomLabel;
+            }
+
             public static class Shop {
                 @SerializedName("id")
                 private String id;
@@ -450,6 +492,8 @@ public class SearchProductResponse {
                 private String url;
                 @SerializedName("is_gold")
                 private boolean isGold;
+                @SerializedName("is_official")
+                private boolean isOfficial;
                 @SerializedName("location")
                 private String location;
                 @SerializedName("city")
@@ -522,6 +566,14 @@ public class SearchProductResponse {
                 public void setClover(String clover) {
                     this.clover = clover;
                 }
+
+                public boolean isOfficial() {
+                    return isOfficial;
+                }
+
+                public void setOfficial(boolean official) {
+                    isOfficial = official;
+                }
             }
 
             public static class WholesalePrice {
@@ -586,6 +638,8 @@ public class SearchProductResponse {
                 private String title;
                 @SerializedName("image_url")
                 private String imageUrl;
+                @SerializedName("show")
+                private boolean isShown;
 
                 public String getTitle() {
                     return title;
@@ -601,6 +655,14 @@ public class SearchProductResponse {
 
                 public void setImageUrl(String imageUrl) {
                     this.imageUrl = imageUrl;
+                }
+
+                public boolean isShown() {
+                    return isShown;
+                }
+
+                public void setShown(boolean shown) {
+                    isShown = shown;
                 }
             }
         }

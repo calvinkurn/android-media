@@ -2,7 +2,7 @@ package com.tokopedia.session.changephonenumber.view.listener;
 
 import android.app.Fragment;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by milhamj on 18/12/17.

@@ -1,18 +1,19 @@
 package com.tokopedia.transaction.cart.interactor;
 
 
+import android.content.Context;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.cart.model.ResponseTransform;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
-import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import rx.Subscriber;
 
 /**
  * @author anggaprasetiyo on 11/2/16.
- *         collabs with alvarisi
+ * collabs with alvarisi
  */
 
 public interface ICartDataInteractor {
@@ -50,7 +51,7 @@ public interface ICartDataInteractor {
                              TKPDMapParam<String, String> paramCart,
                              Subscriber<ResponseTransform<CartData>> subscriber);
 
-    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
+    void getParameterTopPay(TKPDMapParam<String, Object> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
     void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
@@ -59,11 +60,13 @@ public interface ICartDataInteractor {
     void checkVoucherCode(TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
+    void cancelVoucherCache(Context context, Subscriber<Boolean> subscriber);
+
     void unSubscribeObservable();
 
     void calculateKeroRates(String token, String ut,
                             List<CartItem> cartItemList,
-                            KeroRatesListener listener);
+                            KeroRatesListener listener, Context context);
 
     interface KeroRatesListener {
         void onSuccess(CartRatesData cartRatesData);

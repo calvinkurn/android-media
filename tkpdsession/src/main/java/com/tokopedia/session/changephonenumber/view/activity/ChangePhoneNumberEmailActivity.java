@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailActivityListener;

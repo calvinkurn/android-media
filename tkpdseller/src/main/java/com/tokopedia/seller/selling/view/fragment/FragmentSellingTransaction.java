@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -30,11 +31,15 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -74,11 +79,11 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     private Dialog editRefDialog;
     private TkpdProgressDialog progressDialog;
     private DatePickerV2 datePicker;
-    private EditText startDate;
-    private EditText endDate;
-    private SearchView searchTxt;
-    private Spinner spinnerFilter;
-    private TextView searchbtn;
+    protected EditText startDate;
+    protected EditText endDate;
+    protected SearchView searchTxt;
+    protected Spinner spinnerFilter;
+    protected TextView searchbtn;
     private View filterView;
     private BottomSheetDialog bottomSheetDialog;
     protected boolean inhibit_spinner = true;
@@ -240,9 +245,10 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
                         }
-                        Intent intent = new Intent(getActivity(), SellingDetailActivity.class);
-                        intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(model));
-                        intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.TRANSACTION);
+                        Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                .goToOrderDetail(
+                                        getActivity(),
+                                        model.OrderId);
                         startActivity(intent);
                     }
 
@@ -552,9 +558,19 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onTrack(SellingStatusTxModel model) {
-                Bundle bundle = new Bundle();
-                bundle.putString(ORDER_ID, model.OrderId);
-                getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
+                String routingAppLink;
+                routingAppLink = ApplinkConst.ORDER_TRACKING;
+                Uri.Builder uriBuilder = new Uri.Builder();
+                uriBuilder.appendQueryParameter(
+                        ApplinkConst.Query.ORDER_TRACKING_ORDER_ID,
+                        model.OrderId);
+                if (!TextUtils.isEmpty(model.liveTracking)) {
+                    uriBuilder.appendQueryParameter(
+                            ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
+                            model.liveTracking);
+                }
+                routingAppLink += uriBuilder.toString();
+                RouteManager.route(getActivity(), routingAppLink);
             }
 
             @Override

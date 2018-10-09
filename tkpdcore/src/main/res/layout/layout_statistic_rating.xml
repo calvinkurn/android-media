@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/statistic_rating"
@@ -82,7 +82,7 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/chevron_down" />
+                        app:srcCompat="@drawable/chevron_down" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -143,7 +143,7 @@
                         android:layout_width="10dp"
                         android:layout_height="10dp"
                         android:layout_alignParentRight="true"
-                        android:src="@drawable/chevron_down" />
+                        app:srcCompat="@drawable/chevron_down" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>

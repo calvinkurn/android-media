@@ -3,12 +3,14 @@ package com.tokopedia.seller.base.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.R;
 
 /**
  * Created by zulfikarrahman on 5/30/17.
  */
 
+@Deprecated
 public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
@@ -18,6 +20,11 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_base_simple_seller;
+    }
+
+    @Override
+    protected boolean isToolbarWhite() {
+        return GlobalConfig.isCustomerApp() || super.isToolbarWhite();
     }
 
     protected void setupFragment(Bundle savedInstance) {

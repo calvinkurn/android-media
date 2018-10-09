@@ -30,7 +30,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_small"
                 android:gravity="center"
-                android:src="@drawable/remove" />
+                app:srcCompat="@drawable/remove" />
 
             <TextView
                 android:id="@+id/title_cat"

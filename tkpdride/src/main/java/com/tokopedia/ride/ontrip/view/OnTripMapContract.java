@@ -10,6 +10,8 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.GetPending;
+import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
@@ -86,7 +88,7 @@ public interface OnTripMapContract {
 
         void setTitle(String title);
 
-        void onSuccessCancelRideRequest();
+        void setResultWithSourceAndDestination();
 
         void renderTripRoute(List<List<LatLng>> routes);
 
@@ -182,7 +184,7 @@ public interface OnTripMapContract {
 
         void hideCurrentLocationIndicator();
 
-        RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude);
+        RequestParams getPolyLineParamBetweenTwoLocations(Location origin, Location destination);
 
         void zoomMapFitByPolyline(List<LatLng> latLngs);
 

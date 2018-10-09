@@ -15,8 +15,8 @@ import rx.Observable;
  */
 
 public class ValidateNumberUseCase extends UseCase<Boolean> {
-    private static final String PARAM_OS_TYPE = "os_type";
-    private static final String OS_TYPE_ANDROID = "1";
+    private static final String PARAM_OS_TYPE = "theme";
+    private static final String OS_TYPE_ANDROID = "mobile";
     private static final String PARAM_ACTION = "action";
     private static final String PARAM_NEW_MSISDN = "new_msisdn";
     private static final String ACTION_VALIDATE = "validate";

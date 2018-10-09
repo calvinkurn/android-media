@@ -5,14 +5,12 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.session.presenter.Login;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 
@@ -25,6 +23,13 @@ import retrofit2.Retrofit;
 
 public class SessionRefresh {
 
+    private static final String USER_ID = "user_id";
+    private static final String UUID_KEY = "uuid";
+
+    private static final String DEVICE_ID_NEW = "device_id_new";
+    private static final String OS_TYPE = "os_type";
+    private static final String DEFAULT_ANDROID_OS_TYPE = "1";
+
     private final String accessToken;
 
     public SessionRefresh(String accessToken) {
@@ -36,16 +41,16 @@ public class SessionRefresh {
         SessionHandler sessionHandler = new SessionHandler(context);
 
         String authKey;
-        if(TextUtils.isEmpty(accessToken)) {
+        if (TextUtils.isEmpty(accessToken)) {
             authKey = sessionHandler.getTokenType(context)
                     + " " + sessionHandler.getAccessToken(context);
-        }else{
+        } else {
             authKey = accessToken;
         }
 
         RequestParams params = RequestParams.create();
-        params.putString(Login.UUID_KEY, sessionHandler.getUUID());
-        params.putString(Login.USER_ID, sessionHandler.getLoginID());
+        params.putString(UUID_KEY, sessionHandler.getUUID());
+        params.putString(USER_ID, sessionHandler.getLoginID());
         Call<String> responseCall = getRetrofit(authKey)
                 .create(AccountsApi.class).makeLoginsynchronous(
                         AuthUtil.generateParamsNetwork2(
@@ -53,12 +58,34 @@ public class SessionRefresh {
         return responseCall.execute().body();
     }
 
+    public String gcmUpdate() throws IOException {
+        Context context = MainApplication.getAppContext();
+        SessionHandler sessionHandler = new SessionHandler(context);
+
+        String authKey;
+        if (TextUtils.isEmpty(accessToken)) {
+            authKey = sessionHandler.getTokenType(context)
+                    + " " + sessionHandler.getAccessToken(context);
+        } else {
+            authKey = accessToken;
+        }
+
+        RequestParams params = RequestParams.create();
+        params.putString(DEVICE_ID_NEW, FCMCacheManager.getRegistrationId(context));
+        params.putString(OS_TYPE, DEFAULT_ANDROID_OS_TYPE);
+        params.putString(USER_ID, sessionHandler.getLoginID());
+        Call<String> responseCall = getRetrofit(authKey)
+                .create(AccountsApi.class).gcmUpdate(
+                        AuthUtil.generateParamsNetwork2(
+                                MainApplication.getAppContext(), params.getParameters()));
+        return responseCall.execute().body();
+    }
+
     private Retrofit getRetrofit(String authKey) {
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildClientAccountsAuth(authKey, false, false,
-                        false))
+                .client(OkHttpFactory.create().buildClientAccountsAuth(authKey, false, false))
                 .build();
     }
 

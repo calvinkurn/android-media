@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/map_center_marker_ic"
+                    app:srcCompat="@drawable/map_center_marker_ic"
                     android:tint="@color/black_full"
                     android:visibility="visible" />
 
@@ -53,7 +53,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/shape_bg_circle_black"
+                        app:srcCompat="@drawable/shape_bg_circle_black"
                         android:tint="@color/black_full" />
 
                     <ImageView
@@ -110,7 +110,7 @@
                 android:layout_marginEnd="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/my_location_arrow"
+                app:srcCompat="@drawable/my_location_arrow"
                 android:tint="@color/grey_700"
                 android:visibility="visible"
                 app:backgroundTint="@android:color/white"

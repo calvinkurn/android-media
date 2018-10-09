@@ -16,7 +16,6 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
@@ -25,9 +24,6 @@ import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
 import com.tokopedia.core.network.apiservices.search.HotListService;
-import com.tokopedia.core.network.apiservices.user.InterruptActService;
-import com.tokopedia.core.network.apiservices.user.InterruptService;
-import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -36,17 +32,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.LoginBypassModel;
-import com.tokopedia.core.session.model.LoginBypassSuccessModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
-import com.tokopedia.core.session.model.LoginInterruptErrorModel;
-import com.tokopedia.core.session.model.LoginInterruptModel;
-import com.tokopedia.core.session.model.LoginSecurityModel;
-import com.tokopedia.core.session.model.OTPModel;
-import com.tokopedia.core.session.model.QuestionFormModel;
-import com.tokopedia.core.session.model.SecurityQuestionViewModel;
-import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -74,7 +61,9 @@ import rx.subscriptions.CompositeSubscription;
  * <p>
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
+ * Please do not use this class. Use UseCase instead
  */
+@Deprecated
 public class DownloadService extends IntentService implements DownloadServiceConstant, DataReceiver {
     public static final String TAG = "DownloadService";
     private static final String IS_LOGIN = "is_login";
@@ -124,36 +113,11 @@ public class DownloadService extends IntentService implements DownloadServiceCon
 
         /* Send optional extras to Download IntentService */
         switch (type) {
-            case ANSWER_SECURITY_QUESTION:
-                SecurityQuestionViewModel answer = Parcels.unwrap(bundle.getParcelable(ANSWER_QUESTION_MODEL));
-                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to answer security question : " + answer);
-                intent.putExtra(ANSWER_QUESTION_MODEL, Parcels.wrap(answer));
-                break;
-            case REQUEST_OTP:
-                SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp " + securityQuestionViewModel);
-                intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
-                break;
-            case REQUEST_OTP_PHONE:
-                SecurityQuestionViewModel securityQuestionViewModelOTP = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
-                intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModelOTP));
-                break;
-            case SECURITY_QUESTION_GET:
-                securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(SECURITY_QUESTION_GET_MODEL));
-                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
-                intent.putExtra(SECURITY_QUESTION_GET_MODEL, Parcels.wrap(securityQuestionViewModel));
-                break;
             case HOTLIST:
                 int page = bundle.getInt(PAGE_KEY);
                 int perpage = bundle.getInt(PER_PAGE_KEY);
                 intent.putExtra(PAGE_KEY, page);
                 intent.putExtra(PER_PAGE_KEY, perpage);
-                break;
-            case LOGIN_BYPASS:
-                LoginBypassModel loginBypassModel = Parcels.unwrap(bundle.getParcelable(LOGIN_BYPASS_MODEL_KEY));
-                Log.d(TAG, "LoginImpl try to bypass : " + loginBypassModel);
-                intent.putExtra(LOGIN_BYPASS_MODEL_KEY, Parcels.wrap(loginBypassModel));
                 break;
             default:
                 throw new RuntimeException("unknown type for starting download !!!");
@@ -190,95 +154,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
                 break;
-            case SECURITY_QUESTION_GET:
-                running = new Bundle();
-                running.putInt(TYPE, type);
-                running.putBoolean(SECURITY_QUESTION_LOADING, true);
-                receiver.send(STATUS_RUNNING, running);
-                SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(SECURITY_QUESTION_GET_MODEL));
-                params = new HashMap<>();
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
-                params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
-                service = new InterruptService();
-                ((InterruptService) service).getApi().getQuestionForm(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type));
-                break;
-            case ANSWER_SECURITY_QUESTION:
-                /* Update UI: Download Service is Running */
-                running = new Bundle();
-                running.putInt(TYPE, type);
-                running.putBoolean(SECURITY_QUESTION_LOADING, true);
-                receiver.send(STATUS_RUNNING, running);
-                securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(ANSWER_QUESTION_MODEL));
-                params = new HashMap<>();
-                params.put(SecurityQuestionPresenter.ANSWER, securityQuestionViewModel.getvAnswer());
-                params.put(SecurityQuestionPresenter.QUESTION, securityQuestionViewModel.getQuestion());
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
-                params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
-                service = new InterruptActService();
-                ((InterruptActService) service).getApi().answerQuestion(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type));
-                break;
-            case REQUEST_OTP_PHONE:
-                /* Update UI: Download Service is Running */
-                running = new Bundle();
-                running.putInt(TYPE, type);
-                running.putBoolean(SECURITY_QUESTION_LOADING, true);
-                receiver.send(STATUS_RUNNING, running);
-                securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
-                params = new HashMap<>();
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
-                params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
-                params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
-                service = new InterruptActService();
-                ((InterruptActService) service).getApi().requestOTPPhone(params)
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type));
-                break;
-            case REQUEST_OTP:
-                /* Update UI: Download Service is Running */
-                running = new Bundle();
-                running.putInt(TYPE, type);
-                running.putBoolean(SECURITY_QUESTION_LOADING, true);
-                receiver.send(STATUS_RUNNING, running);
-                securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
-                params = new HashMap<>();
-                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
-                params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
-                params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
-                service = new InterruptActService();
-                ((InterruptActService) service).getApi().requestOTP(params)
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type));
-                break;
-
-            case LOGIN_BYPASS:
-                service = new SessionService();
-                params = new HashMap<>();
-                LoginBypassModel loginBypassModel = Parcels.unwrap(intent.getParcelableExtra(LOGIN_BYPASS_MODEL_KEY));
-
-                params.put("user_id", loginBypassModel.getUserID());
-                params.put("device_id", loginBypassModel.getDeviceID());
-
-                ((SessionService) service).getApi().loginBypass(AuthUtil.generateParams(getApplicationContext(), params))
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber(type));
-                break;
-
 
             default:
                 break;
@@ -430,50 +305,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             result.putBoolean(RETRY_FLAG, false);
                             receiver.send(STATUS_FINISHED, result);
                             break;
-                        case SECURITY_QUESTION_GET:
-                            result = new Bundle();
-                            result.putInt(TYPE, SECURITY_QUESTION_GET);
-                            QuestionFormModel questionFormModel = (QuestionFormModel) parseJSON(SECURITY_QUESTION_GET, jsonObject);
-                            result.putParcelable(SECURITY_QUESTION_GET_MODEL, Parcels.wrap(questionFormModel));
-                            receiver.send(STATUS_FINISHED, result);
-                            break;
-                        case ANSWER_SECURITY_QUESTION:
-                            result = new Bundle();
-                            result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
-                            if (jsonObject.optBoolean(IS_LOGIN, false) == true) {
-                                UnifyTracking.eventOTPSuccess();
-                                final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
-                                sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
-                                        loginInterruptModel.getUserId(), loginInterruptModel.getFullName(), loginInterruptModel.getShopId() + "",
-                                        loginInterruptModel.getMsisdnIsVerified());
-                                sessionHandler.setGoldMerchant(getApplicationContext(), loginInterruptModel.getShopIsGold());
-                                storeUUID(getApplicationContext(), loginInterruptModel.getUuid());
-
-                                result.putParcelable(ANSWER_QUESTION_MODEL, Parcels.wrap(loginInterruptModel));
-                            } else {
-                                LoginInterruptErrorModel loginErrorModel = (LoginInterruptErrorModel) parseJSON(ANSWER_SECURITY_QUESTION_FALSE, jsonObject);
-                                result.putParcelable(ANSWER_SECURITY_QUESTION_FALSE_MODEL, Parcels.wrap(loginErrorModel));
-                            }
-                            receiver.send(STATUS_FINISHED, result);
-                            break;
-                        case REQUEST_OTP:
-                            result = new Bundle();
-                            result.putInt(TYPE, REQUEST_OTP);
-                            OTPModel otpModel = (OTPModel) parseJSON(REQUEST_OTP, jsonObject);
-                            result.putParcelable(REQUEST_OTP_MODEL, Parcels.wrap(otpModel));
-                            receiver.send(STATUS_FINISHED, result);
-                            break;
-                        case LOGIN_BYPASS:
-                            LoginBypassSuccessModel loginBypassSuccessModel = (LoginBypassSuccessModel) parseJSON(LOGIN_BYPASS, jsonObject);
-                            if (loginBypassSuccessModel.getIsRegisterDevice() == 1) {
-                                SessionHandler session = new SessionHandler(getApplicationContext());
-                                session.setLoginSession(true, session.getLoginID(), session.getLoginName(), session.getShopID(), SessionHandler.isMsisdnVerified());
-                            }
-                            result = new Bundle();
-                            result.putInt(TYPE, type);
-                            result.putParcelable(LOGIN_BYPASS_MODEL_KEY, Parcels.wrap(loginBypassSuccessModel));
-                            receiver.send(STATUS_FINISHED, result);
-                            break;
                     }
                 } else {
                     onMessageError(response.getErrorMessages());
@@ -529,30 +360,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         Log.e(TAG, HotListImpl.class.getSimpleName() + " is error : " + json.getLocalizedMessage());
                     }
                     return temps;
-                case SECURITY:
-                    LoginSecurityModel result = gson.fromJson(response.toString(), LoginSecurityModel.class);
-                    JSONObject Security = response.optJSONObject("security");
-                    if (Security != null) {
-                        LoginSecurityModel.SecurityQuestion temp = gson.fromJson(Security.toString(), LoginSecurityModel.SecurityQuestion.class);
-                        result.setSecurityQuestion(temp);
-                    }
-                    return result;
-                case SECURITY_QUESTION_GET:
-                    QuestionFormModel questionFormModel = gson.fromJson(response.toString(), QuestionFormModel.class);
-                    return questionFormModel;
-                case ANSWER_SECURITY_QUESTION:
-                    LoginInterruptModel loginInterruptModel = gson.fromJson(response.toString(), LoginInterruptModel.class);
-                    return loginInterruptModel;
-                case REQUEST_OTP:
-                    OTPModel otpModel = new OTPModel();
-                    otpModel.setSuccess(response.optInt("is_success", OTPModel.DEFAULT));
-                    return otpModel;
-                case ANSWER_SECURITY_QUESTION_FALSE:
-                    LoginInterruptErrorModel loginInterruptErrorModel = gson.fromJson(response.toString(), LoginInterruptErrorModel.class);
-                    return loginInterruptErrorModel;
-                case LOGIN_BYPASS:
-                    LoginBypassSuccessModel bypassmodel = gson.fromJson(response.toString(), LoginBypassSuccessModel.class);
-                    return bypassmodel;
             }
             return null;
         }

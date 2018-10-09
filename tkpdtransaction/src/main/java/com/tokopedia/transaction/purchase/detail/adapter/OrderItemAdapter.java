@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 
 import java.util.List;
@@ -34,14 +34,16 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
     public OrderItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.order_item_adapter, parent, false);
-        return new OrderItemViewHolder(view);
+        return new OrderItemViewHolder(parent.getContext(), view);
     }
 
     @Override
     public void onBindViewHolder(OrderItemViewHolder holder, int position) {
         holder.productName.setText(orderItemData.get(position).getItemName());
         holder.productPrice.setText(orderItemData.get(position).getPrice());
-        holder.productQuantity.setText(orderItemData.get(position).getItemQuantity());
+        holder.productQuantity.setText(holder.context.getString(
+                R.string.item_place_holder)
+                .replace("#", orderItemData.get(position).getItemQuantity()));
         holder.additionalNote.setText(orderItemData.get(position).getDescription());
         ImageHandler.LoadImage(holder.productImage, orderItemData.get(position).getImageUrl());
         holder.productLayout.setOnClickListener(
@@ -56,6 +58,8 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
     class OrderItemViewHolder extends RecyclerView.ViewHolder {
 
+        private Context context;
+
         private ViewGroup productLayout;
 
         private TextView productName;
@@ -68,14 +72,15 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         private ImageView productImage;
 
-        OrderItemViewHolder(View itemView) {
+        OrderItemViewHolder(Context context, View itemView) {
             super(itemView);
-            productLayout = (ViewGroup) itemView.findViewById(R.id.product_layout);
-            productName = (TextView) itemView.findViewById(R.id.order_detail_product_name);
-            productPrice = (TextView) itemView.findViewById(R.id.order_detail_product_price);
-            productQuantity = (TextView) itemView.findViewById(R.id.order_detail_item_quantity);
-            additionalNote = (TextView) itemView.findViewById(R.id.order_detail_notes);
-            productImage = (ImageView) itemView.findViewById(R.id.product_image);
+            this.context = context;
+            productLayout = itemView.findViewById(R.id.product_layout);
+            productName = itemView.findViewById(R.id.order_detail_product_name);
+            productPrice = itemView.findViewById(R.id.order_detail_product_price);
+            productQuantity = itemView.findViewById(R.id.order_detail_item_quantity);
+            additionalNote = itemView.findViewById(R.id.order_detail_notes);
+            productImage = itemView.findViewById(R.id.product_image);
         }
     }
 

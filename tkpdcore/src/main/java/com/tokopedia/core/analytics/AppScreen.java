@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 
 
@@ -11,11 +10,12 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
+    public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
+    public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
 
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
-    public static final String SCREEN_INDEX_HOME = "Index Main";
     public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";
@@ -126,6 +126,7 @@ public final class AppScreen {
     public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
+    public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SCREEN_SEARCH_PAGE_SHOP_TAB = "Search result - Store tab";
     public static final String SCREEN_NOTIFICATION = "Top notification center";
@@ -146,6 +147,7 @@ public final class AppScreen {
     public static final String SCREEN_TX_PEOPLE_CONFIRM_RECEIVED = "Confirm received";
     public static final String SCREEN_TX_PEOPLE_TRANSACTION_BUYING_LIST = "Transaction list - Buying";
     public static final String SCREEN_FINISH_TX = "Finish Transaction";
+    public static final String SCREEN_FINISH_TX_OLD = "Finish Transaction Old";
     public static final String SCREEN_TOPPOINTS_DETAIL = "Top points detail page";
     public static final String SCREEN_CONTACT_US = "Contact us page";
     public static final String SCREEN_INBOX_RESOLUTION_CENTER = "Inbox resolution center";
@@ -262,28 +264,18 @@ public final class AppScreen {
     public static final String SCREEN_OPPORTUNITY_DETAIL = "Replacement Detail Page";
     public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
     public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
-    public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
     public static final String SCREEN_TEMPLATE_CHAT_SETTING = "template setting";
     public static final String SCREEN_TEMPLATE_CHAT_SET = "template update";
 
-    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
-    public static final String SCREEN_COTP_DEFAULT = "Input OTP";
-    public static final String SCREEN_COTP_SMS = "Input OTP sms";
-    public static final String SCREEN_COTP_CALL = "Input OTP call";
-    public static final String SCREEN_COTP_EMAIL = "Input OTP email";
-
-    public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
-    public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
-    public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
-
-    public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
     public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
 
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
+    public static String GROUP_CHAT = "Group Chat Page";
+    public static final String SCREEN_REFERRAL = "Referral";
 
     public static class UnifyScreenTracker {
         public static final String SCREEN_UNIFY_HOME_BERANDA = "/";
@@ -305,7 +297,7 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

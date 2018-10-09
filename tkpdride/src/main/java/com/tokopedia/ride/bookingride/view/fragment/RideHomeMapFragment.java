@@ -12,6 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +22,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,18 +41,18 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.OldSessionRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.RideModuleRouter;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
 import com.tokopedia.ride.bookingride.view.RideHomeMapPresenter;
 import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
@@ -56,12 +60,16 @@ import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -69,6 +77,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
+import static java.lang.Math.PI;
 
 public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
     private static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
@@ -85,6 +94,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private static final String DEFAULT_EMPTY_VALUE = "";
     private static final String DEFAULT_EMPTY_MARKER = "--";
 
+    private final int ETA_RADIUS_RATIO_METERS = 150;
+    private final int DEFAULT_ETA_SECONDS = 150;
+    private final int MAX_CABS_COUNT = 2;
+    private final int MAX_MOTO_COUNT = 1;
+    private boolean showUberMoto = false;
+    private boolean showUberCab = true;
+    private final int FIXED_RADIUS_METERS = 100;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -125,6 +141,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private OnFragmentInteractionListener interactionListener;
     private int toolBarHeightinPx;
     private ArrayList<Marker> rideMarkerList = new ArrayList<>();
+    private ArrayList<Marker> nearbyCabsMarkerList = new ArrayList<>();
+    private ArrayList<Marker> nearbyMOTOMarkerList = new ArrayList<>();
+    private boolean isMarkerRotating;
+    private ArrayList<Location> locationArrayList = new ArrayList<>();
+
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -288,9 +309,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
-        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                TkpdState.DrawerPosition.LOGIN);
+        Intent intent = ((RideModuleRouter) MainApplication.getAppContext()).getLoginIntent
+                (getActivity());
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
@@ -349,6 +369,67 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
+    public void displayNearByCabs(List<ProductEstimate> productEstimates) {
+        if (!productEstimates.isEmpty()) {
+            int radius;
+            showUberCab = false;
+            showUberMoto = false;
+            int seconds = productEstimates.get(0).getTimesEstimate().getEstimate(), estimate;
+            for (ProductEstimate productEstimate : productEstimates) {
+                if (RideUtils.isUberMoto(productEstimate.getProduct().getDisplayName())) {
+                    showUberMoto = true;
+                } else {
+                    showUberCab = true;
+                    estimate = productEstimate.getTimesEstimate() != null ? productEstimate.getTimesEstimate().getEstimate() : DEFAULT_ETA_SECONDS;
+                    if (estimate < seconds) {
+                        seconds = estimate;
+                    }
+                }
+            }
+            radius = FIXED_RADIUS_METERS + (ETA_RADIUS_RATIO_METERS * seconds / 60);
+            if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
+                double latitude = googleMap.getCameraPosition().target.latitude;
+                double longitude = googleMap.getCameraPosition().target.longitude;
+                getRandomLocations(latitude, longitude, radius);
+                presenter.getNearbyRoadsData(locationArrayList);
+            }
+        }
+    }
+
+    private int getVisibleCabsMarkerCount() {
+        int count = 0;
+        if (!nearbyCabsMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyCabsMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                if (googleMap != null && googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
+                    count++;
+                } else {
+                    marker.remove();
+                    iterator.remove();
+                }
+            }
+        }
+        return count;
+    }
+
+    private int getVisibleMOTOMarkerCount() {
+        int count = 0;
+        if (!nearbyMOTOMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyMOTOMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                if (googleMap != null && googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
+                    count++;
+                } else {
+                    marker.remove();
+                    iterator.remove();
+                }
+            }
+        }
+        return count;
+    }
+
     @Override
     public void onMapDragStarted() {
         //set source as go to pin
@@ -379,11 +460,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         if (googleMap == null) return;
         //set address based on current address and refresh the product list
         //add validation if user already pick destination
+        double latitude = googleMap.getCameraPosition().target.latitude;
+        double longitude = googleMap.getCameraPosition().target.longitude;
+
         if (!isAlreadySelectDestination) {
-            double latitude = googleMap.getCameraPosition().target.latitude;
-            double longitude = googleMap.getCameraPosition().target.longitude;
             presenter.actionMapDragStopped(latitude, longitude);
         }
+
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -427,10 +510,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setInitialVariable() {
-
-
         toolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
-
         if (isLaunchedWithLocation()) {
             source = getArguments().getParcelable(EXTRA_SOURCE);
             destination = getArguments().getParcelable(EXTRA_DESTINATION);
@@ -448,6 +528,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     PlacePassViewModel sourceTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    if (sourceTemp == null) return;
+
                     if (sourceTemp.getLatitude() == 0.0 || sourceTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_pickup_zero_error));
                     } else {
@@ -464,10 +546,14 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
-                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
-                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                    if (destinationTemp == null || source == null) {
+                        return;
+                    }
+
+                    if (destinationTemp == null || destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
+                    } else if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
                     } else {
                         destination = destinationTemp;
                         interactionListener.collapseBottomPanel();
@@ -584,8 +670,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         setDestinationLocationText(DEFAULT_EMPTY_VALUE);
         proccessToRenderRideProduct();
-
-
     }
 
     private void startActivityForResultWithClipReveal(Intent intent, int requestCode, View view) {
@@ -617,7 +701,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private void startMarkerAnimation() {
         markerTimeTextView.setText(DEFAULT_EMPTY_MARKER);
-
         if (markerTimeBackgroundImageView.getDrawable() instanceof Animatable) {
             ((Animatable) markerTimeBackgroundImageView.getDrawable()).start();
         }
@@ -635,7 +718,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             routes.add(PolyUtil.decode(route.getOverviewPolyline()));
         }
 
-        googleMap.clear();
+//        googleMap.clear();
 
         for (List<LatLng> route : routes) {
             if (route.size() > 1) {
@@ -685,11 +768,185 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         );
     }
 
+    @Override
+    public void onErrorRenderNearbyCabs() {
+    }
+
+    @Override
+    public void renderNearbyCabs(NearbyRoads nearbyRoads) {
+
+        if (nearbyRoads != null && !nearbyRoads.getSnappedPointsArrayList().isEmpty()) {
+            int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
+            int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
+
+            int snappedPointsCount = nearbyRoads.getSnappedPointsArrayList().size() - 1;
+
+            int i = 0, j = snappedPointsCount;
+
+            Random random = new Random();
+
+            while (showUberCab &&
+                    cabsToShow > 0 &&
+                    i <= snappedPointsCount) {
+
+                if (!markerExistsForGivenLocation(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude())) {
+
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                                    nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
+                            .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
+
+                    LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
+                    LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+
+                    float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                    rotateMarker(marker, bearing);
+
+                    nearbyCabsMarkerList.add(marker);
+                    cabsToShow--;
+                }
+                i++;
+            }
+
+            while (showUberMoto &&
+                    motoToShow > 0 &&
+                    j >= 0) {
+
+                if (!markerExistsForGivenLocation(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude())) {
+
+                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                                    nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude()))
+                            .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
+
+                    LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLatitude(),
+                            nearbyRoads.getSnappedPointsArrayList().get(j).getLocation().getLongitude());
+                    LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+
+                    float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                    marker.setRotation(bearing);
+                    rotateMarker(marker, bearing);
+                    nearbyMOTOMarkerList.add(marker);
+                    motoToShow--;
+                }
+                j--;
+            }
+        }
+    }
+
+    private boolean markerExistsForGivenLocation(double latitude, double longitude) {
+
+        if (nearbyCabsMarkerList.size() > 0) {
+            for (Marker marker : nearbyCabsMarkerList) {
+                if (marker.getPosition().latitude == latitude &&
+                        marker.getPosition().longitude == longitude) {
+                    return true;
+                }
+            }
+        }
+
+        if (nearbyMOTOMarkerList.size() > 0) {
+            for (Marker marker : nearbyMOTOMarkerList) {
+                if (marker.getPosition().latitude == latitude &&
+                        marker.getPosition().longitude == longitude) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+    private double bearingBetweenLocations(LatLng latLng1, LatLng latLng2) {
+
+        double lat1 = latLng1.latitude * PI / 180;
+        double long1 = latLng1.longitude * PI / 180;
+        double lat2 = latLng2.latitude * PI / 180;
+        double long2 = latLng2.longitude * PI / 180;
+
+        double dLon = (long2 - long1);
+        double y = Math.sin(dLon) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+
+        double brng = Math.atan2(y, x);
+
+        brng = Math.toDegrees(brng);
+        brng = (brng + 360) % 360;
+
+        return brng;
+    }
+
+    private void rotateMarker(final Marker marker, final float toRotation) {
+        if (!isMarkerRotating) {
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            final float startRotation = marker.getRotation();
+            final Interpolator interpolator = new LinearInterpolator();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    isMarkerRotating = true;
+
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed);
+                    float rot = t * toRotation + (1 - t) * startRotation;
+
+                    Random random = new Random();
+
+                    float bearing = -rot > 180 ? ((rot / 2) + random.nextFloat()) : (rot - random.nextFloat());
+
+                    marker.setRotation(bearing);
+
+                    if (t < 1.0) {
+                        handler.postDelayed(this, 10);
+                    } else {
+                        isMarkerRotating = false;
+                    }
+                }
+            });
+        }
+    }
+
+    private BitmapDescriptor getMarkerIconForCab(int car_map_icon) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), car_map_icon);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height_for_car), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
+
+    }
+
     public BitmapDescriptor getMarkerIcon(int resourceId) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height), false);
         return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
+
+    private void getRandomLocations(double x0, double y0, int radius) {
+
+        locationArrayList.clear();
+
+
+        double radiusInDegrees = radius / 111000f;
+        for (int i = 0; i < 10; i++) {
+
+            double angle = Math.random() * PI * 2;
+            double x = Math.cos(angle) * radiusInDegrees;
+            double y = Math.sin(angle) * radiusInDegrees;
+
+            double foundLatitude = x + x0;
+            double foundLongitude = y + y0;
+
+            Location location = new Location();
+            location.setLatitude(foundLatitude);
+            location.setLongitude(foundLongitude);
+            locationArrayList.add(location);
+        }
+    }
+
 
     @OnClick(R2.id.iv_my_location_button)
     public void actionMyLocationButtonClicked() {
@@ -789,6 +1046,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     .icon(getCarMapIcon(R.drawable.car_map_icon)));
 
             rideMarkerList.add(marker);
+        }
+    }
+
+    public void hideNearbyCabs() {
+        if (nearbyCabsMarkerList != null && !nearbyCabsMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyCabsMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                marker.remove();
+                iterator.remove();
+            }
+        }
+        if (nearbyMOTOMarkerList != null && !nearbyMOTOMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyMOTOMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                marker.remove();
+                iterator.remove();
+            }
         }
     }
 

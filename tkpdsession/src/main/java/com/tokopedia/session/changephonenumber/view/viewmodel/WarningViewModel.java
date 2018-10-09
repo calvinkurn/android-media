@@ -3,7 +3,6 @@ package com.tokopedia.session.changephonenumber.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +22,7 @@ public class WarningViewModel implements Parcelable {
     private String action;
     private List<String> warningList;
     private boolean hasBankAccount;
+    private boolean isOtpValidate;
 
     public WarningViewModel() {
     }
@@ -81,6 +81,14 @@ public class WarningViewModel implements Parcelable {
 
     public void setTokocashNumber(long tokocashNumber) {
         this.tokocashNumber = tokocashNumber;
+    }
+
+    public boolean isOtpValidate() {
+        return isOtpValidate;
+    }
+
+    public void setOtpValidate(boolean otpValidate) {
+        isOtpValidate = otpValidate;
     }
 
     @Override

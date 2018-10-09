@@ -28,7 +28,7 @@ public class AcceptSolutionUseCase extends UseCase<ResolutionActionDomainData> {
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return repository.acceptSolution(requestParams.getParameters());
+        return repository.acceptSolution(requestParams);
     }
 
     public static RequestParams getParams(String resolutionId) {

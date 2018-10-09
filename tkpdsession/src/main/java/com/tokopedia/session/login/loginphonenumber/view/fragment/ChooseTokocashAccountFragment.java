@@ -18,37 +18,42 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.TextDrawable;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.R;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocashAccountPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
-import com.tokopedia.session.session.activity.Login;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.session.login.loginemail.view.fragment.LoginFragment.TYPE_SQ_PHONE;
 
 /**
  * @author by nisie on 12/4/17.
  */
 
 public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
-        ChooseTokocashAccount.View {
+        ChooseTokocashAccount.View, ChooseTokocashAccount.ViewAdapter {
     private int REQUEST_SECURITY_QUESTION = 101;
 
     TextView message;
@@ -62,6 +67,10 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     ChooseTokocashAccountPresenter presenter;
 
 
+    @Inject
+    GlobalCacheManager cacheManager;
+
+
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChooseTokocashAccountFragment();
         fragment.setArguments(bundle);
@@ -70,7 +79,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
     }
 
     @Override
@@ -147,7 +156,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     private void goToLoginPage() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intentLogin = Login.getCallingIntent(getActivity());
+            Intent intentLogin = LoginActivity.getCallingIntent(getActivity());
             Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
                     (getActivity());
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -177,7 +186,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessLogin() {
         UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
-
+        BranchSdkUtils.sendLoginEvent(getActivity());
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -203,14 +212,26 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void goToSecurityQuestion(AccountTokocash accountTokocash, MakeLoginDomain makeLoginDomain) {
-        Intent intent = SecurityQuestionActivity.getCallingIntent(getActivity(),
-                makeLoginDomain.getSecurityDomain(),
-                makeLoginDomain.getFullName(),
-                accountTokocash.getEmail(),
-                viewModel.getPhoneNumber());
+    public void goToSecurityQuestion(AccountTokocash accountTokocash,
+                                     LoginTokoCashViewModel loginTokoCashViewModel) {
+
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getEmail(),
+                loginTokoCashViewModel.getUserInfoDomain()
+                        .getGetUserInfoDomainData().getPhone());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+        getActivity().finish();
     }
+
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -229,7 +250,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         } else {
-            presenter.clearUserData();
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

@@ -1,24 +1,22 @@
 package com.tokopedia.tkpdpdp.customview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.router.TkpdInboxRouter;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
@@ -32,7 +30,15 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private TextView tvBuy;
     private TextView tvPromoTopAds;
-    private LinearLayout container;
+    private TextView tvpPromoHour;
+    private LinearLayout containerButtonBuy;
+    private ProgressBar variantProgressBar;
+    public View containerNewButtonBuy;
+    public View btnCart;
+    public View btnChat;
+    public View btnNewBuy;
+    private ProgressBar progressBarVariant;
+    private TextView tvNewBuy;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -65,20 +71,37 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        tvBuy = (TextView) findViewById(R.id.tv_buy);
-        tvPromoTopAds = (TextView) findViewById(R.id.tv_promote_topads);
-        container = (LinearLayout) findViewById(R.id.container);
+        tvBuy = findViewById(R.id.tv_buy);
+        tvPromoTopAds = findViewById(R.id.tv_promote_topads);
+        tvpPromoHour = findViewById(R.id.tv_promo_hour);
+        containerButtonBuy =  findViewById(R.id.container_btn_buy);
+        variantProgressBar = findViewById(R.id.variant_progress_bar);
+        containerNewButtonBuy = findViewById(R.id.container_new_checkout_flow);
+        btnCart = findViewById(R.id.action_button_cart);
+        btnChat = findViewById(R.id.action_button_chat);
+        btnNewBuy = findViewById(R.id.container_new_button_buy);
+        progressBarVariant = findViewById(R.id.new_variant_progress_bar);
+        tvNewBuy = findViewById(R.id.tv_new_buy);
     }
 
     @Override
-    public void renderData(@NonNull ProductDetailData data) {
-        if (data.getShopInfo().getShopIsOwner() == 1
+    public void renderData(@NonNull final ProductDetailData data) {
+        if (data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setText(getContext().getString(R.string.title_warehouse));
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
+            setVisibility(VISIBLE);
+            containerButtonBuy.setVisibility(VISIBLE);
+            containerNewButtonBuy.setVisibility(GONE);
+        } else if (data.getShopInfo().getShopIsOwner() == 1
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
-            tvBuy.setText(getContext().getString(R.string.title_promo_per_hour));
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
-            tvPromoTopAds.setVisibility(VISIBLE);
-            tvBuy.setBackgroundResource(R.drawable.btn_promo_ads);
-            tvBuy.setOnClickListener(new PromoteClick(data));
+            tvpPromoHour.setText(getContext().getString(R.string.title_promo_per_hour));
+            tvpPromoHour.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
+            tvpPromoHour.setBackgroundResource(R.drawable.btn_promo_ads);
+            tvpPromoHour.setOnClickListener(new PromoteClick(data));
             tvPromoTopAds.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -87,7 +110,168 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
+            tvpPromoHour.setVisibility(VISIBLE);
+            tvPromoTopAds.setVisibility(VISIBLE);
+            containerNewButtonBuy.setVisibility(GONE);
+            containerButtonBuy.setVisibility(GONE);
         } else {
+            containerNewButtonBuy.setVisibility(VISIBLE);
+            containerButtonBuy.setVisibility(GONE);
+            if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
+                    && !data.getPreOrder().getPreorderStatus().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+            } else {
+                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+            }
+            btnNewBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickBuyTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    } else {
+                        ProductPageTracking.eventClickBuyNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
+                }
+            });
+            btnCart.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickAtcTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    } else {
+                        ProductPageTracking.eventClickAtcNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
+                }
+            });
+            btnChat.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+                        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                                .getAskSellerIntent(v.getContext(),
+                                        String.valueOf(data.getShopInfo().getShopId()),
+                                        data.getShopInfo().getShopName(),
+                                        data.getInfo().getProductName(),
+                                        data.getInfo().getProductUrl(),
+                                        TkpdInboxRouter.PRODUCT,
+                                        data.getShopInfo().getShopAvatar());
+                        listener.onProductShopMessageClicked(intent);
+                    }
+                }
+            });
+        }
+
+        if (data.getShopInfo().getShopStatus() != 1) {
+            setVisibility(GONE);
+        } else {
+            setVisibility(VISIBLE);
+        }
+    }
+
+    public void changeToLoading() {
+        progressBarVariant.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        progressBarVariant.setVisibility(VISIBLE);
+        btnNewBuy.setEnabled(false);
+        btnCart.setEnabled(false);
+    }
+
+    public void removeLoading() {
+        progressBarVariant.setVisibility(GONE);
+        btnNewBuy.setEnabled(true);
+        btnCart.setEnabled(true);
+    }
+
+    public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
+        if (isBuyable && data.getShopInfo().getShopStatus() == 1) {
+            if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
+                    && !data.getPreOrder().getPreorderStatus().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+            } else {
+                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+            }
+            btnNewBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickBuyTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_BUY_PDP);
+                    } else {
+                        ProductPageTracking.eventClickBuyNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
+                }
+            });
+            btnCart.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (SessionHandler.isV4Login(getContext())) {
+                        if (data.getInfo().getHasVariant()) {
+                            ProductPageTracking.eventClickAtcTriggerVariant(
+                                    getContext(),
+                                    String.valueOf(data.getInfo().getProductId())
+                            );
+                        }
+                        listener.onBuyClick(ProductDetailView.SOURCE_BUTTON_CART_PDP);
+                    } else {
+                        ProductPageTracking.eventClickAtcNotLogin(
+                                getContext(),
+                                String.valueOf(data.getInfo().getProductId())
+                        );
+                        listener.openLoginPage();
+                    }
+                }
+            });
+            setVisibility(VISIBLE);
+        } else if (isBuyable == false) {
+            containerNewButtonBuy.setVisibility(GONE);
+            containerButtonBuy.setVisibility(VISIBLE);
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setText(getContext().getString(R.string.title_warehouse));
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
+            setVisibility(VISIBLE);
+        } else {
+            containerNewButtonBuy.setVisibility(GONE);
+            containerButtonBuy.setVisibility(VISIBLE);
+            tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -97,15 +281,8 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             } else {
                 tvBuy.setText(getContext().getString(R.string.title_buy));
             }
-            tvBuy.setBackgroundResource(R.drawable.btn_buy);
-            tvPromoTopAds.setVisibility(GONE);
-            tvBuy.setOnClickListener(new ClickBuy(data));
-        }
-
-        if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))
-                || data.getShopInfo().getShopStatus() != 1) {
-            setVisibility(GONE);
-        } else {
+            tvBuy.setEnabled(false);
+            containerButtonBuy.setEnabled(false);
             setVisibility(VISIBLE);
         }
     }
@@ -123,44 +300,4 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    private class ClickBuy implements OnClickListener {
-        private final ProductDetailData data;
-
-        ClickBuy(ProductDetailData data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (SessionHandler.isV4Login(getContext())) {
-                String weightProduct = "";
-                switch (data.getInfo().getProductWeightUnit()) {
-                    case "gr":
-                        weightProduct = String.valueOf((Float.parseFloat(data.getInfo()
-                                .getProductWeight())) / 1000);
-                        break;
-                    case "kg":
-                        weightProduct = data.getInfo().getProductWeight();
-                        break;
-                }
-                ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                        .setImageUri(data.getProductImages().get(0).getImageSrc300())
-                        .setMinOrder(Integer.parseInt(data.getInfo().getProductMinOrder()))
-                        .setProductId(String.valueOf(data.getInfo().getProductId()))
-                        .setProductName(data.getInfo().getProductName())
-                        .setWeight(weightProduct)
-                        .setShopId(data.getShopInfo().getShopId())
-                        .setPrice(data.getInfo().getProductPrice())
-                        .build();
-                if (!data.getBreadcrumb().isEmpty())
-                    pass.setProductCategory(data.getBreadcrumb().get(0).getDepartmentName());
-
-                listener.onProductBuySessionLogin(pass);
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("login", true);
-                listener.onProductBuySessionNotLogin(bundle);
-            }
-        }
-    }
 }

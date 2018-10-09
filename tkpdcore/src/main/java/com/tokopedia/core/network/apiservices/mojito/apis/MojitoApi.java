@@ -7,8 +7,8 @@ import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 
 import retrofit2.Response;
@@ -48,6 +48,8 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
     Observable<Response<Brands>> getBrands();
 
+    @GET(TkpdBaseURL.Mojito.API_V1_WISHLIST_COUNT)
+    Observable<Response<WishlistCountResponse>> getWishlistCount(@Query("product_id") String productId);
 
     @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
     Observable<Response<String>> getBrandsOfficialStore();
@@ -77,11 +79,6 @@ public interface MojitoApi {
     Observable<Response<WishlistCheckResult>> checkWishlist(
             @Path("userId") String userId,
             @Path("listId") String listId);
-
-    @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_DETAIL)
-    Observable<Response<ProductCampaignResponse>> getProductCampaign(
-            @Query(ID) String id
-    );
 
     @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_PRODUCT)
     Observable<Response<ShopProductCampaignResponse>> getProductCampaigns(

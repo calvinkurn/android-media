@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
+ * use {@link CurrencyFormatUtil} for flexibility of currency (can use other than IDR, USD, etc)
  * modified by m.normansyah & steven.f
  * changed "," to "." for rupiah
  */
@@ -243,4 +244,11 @@ public final class CurrencyFormatHelper {
         rupiah = rupiah.replace(" ", "");
         return Integer.parseInt(rupiah);
     }
+
+	public static long convertRupiahToLong(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		return Long.parseLong(rupiah);
+	}
 }

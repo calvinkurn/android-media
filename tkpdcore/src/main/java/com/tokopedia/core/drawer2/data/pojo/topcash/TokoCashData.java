@@ -34,10 +34,31 @@ public class TokoCashData implements Parcelable {
     private Long mWalletId;
     @SerializedName("link")
     @Expose
-    private int link;
+    private boolean link;
     @SerializedName("ab_tags")
     @Expose
     private List<String> abTags;
+    @SerializedName("raw_balance")
+    @Expose
+    private long raw_balance;
+    @SerializedName("total_balance")
+    @Expose
+    private String totalBalance;
+    @SerializedName("raw_total_balance")
+    @Expose
+    private long rawTotalBalance;
+    @SerializedName("hold_balance")
+    @Expose
+    private String holdBalance;
+    @SerializedName("raw_hold_balance")
+    @Expose
+    private long rawHoldBalance;
+    @SerializedName("raw_threshold")
+    @Expose
+    private long rawThreshold;
+    @SerializedName("threshold")
+    @Expose
+    private String threshold;
 
 
     protected TokoCashData(Parcel in) {
@@ -51,8 +72,15 @@ public class TokoCashData implements Parcelable {
         } else {
             mWalletId = in.readLong();
         }
-        link = in.readInt();
+        link = in.readByte() != 0;
         abTags = in.createStringArrayList();
+        raw_balance = in.readLong();
+        totalBalance = in.readString();
+        rawTotalBalance = in.readLong();
+        holdBalance = in.readString();
+        rawHoldBalance = in.readLong();
+        rawThreshold = in.readLong();
+        threshold = in.readString();
     }
 
     @Override
@@ -68,8 +96,15 @@ public class TokoCashData implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(mWalletId);
         }
-        dest.writeInt(link);
+        dest.writeByte((byte) (link ? 1 : 0));
         dest.writeStringList(abTags);
+        dest.writeLong(raw_balance);
+        dest.writeString(totalBalance);
+        dest.writeLong(rawTotalBalance);
+        dest.writeString(holdBalance);
+        dest.writeLong(rawHoldBalance);
+        dest.writeLong(rawThreshold);
+        dest.writeString(threshold);
     }
 
     @Override
@@ -129,16 +164,20 @@ public class TokoCashData implements Parcelable {
         mWalletId = wallet_id;
     }
 
-    public int getLink() {
+    public boolean getLink() {
         return link;
     }
 
-    public void setLink(int link) {
+    public void setLink(boolean link) {
         this.link = link;
     }
 
     public String getmAppLinks() {
         return mAppLinks;
+    }
+
+    public void setmAppLinks(String mAppLinks) {
+        this.mAppLinks = mAppLinks;
     }
 
     public List<String> getAbTags() {
@@ -149,7 +188,64 @@ public class TokoCashData implements Parcelable {
         this.abTags = abTags;
     }
 
+    public long getRaw_balance() {
+        return raw_balance;
+    }
+
+    public void setRaw_balance(long raw_balance) {
+        this.raw_balance = raw_balance;
+    }
+
+    public String getTotalBalance() {
+        return totalBalance;
+    }
+
+    public void setTotalBalance(String totalBalance) {
+        this.totalBalance = totalBalance;
+    }
+
+    public long getRawTotalBalance() {
+        return rawTotalBalance;
+    }
+
+    public void setRawTotalBalance(long rawTotalBalance) {
+        this.rawTotalBalance = rawTotalBalance;
+    }
+
+    public String getHoldBalance() {
+        return holdBalance;
+    }
+
+    public void setHoldBalance(String holdBalance) {
+        this.holdBalance = holdBalance;
+    }
+
+    public long getRawHoldBalance() {
+        return rawHoldBalance;
+    }
+
+    public void setRawHoldBalance(long rawHoldBalance) {
+        this.rawHoldBalance = rawHoldBalance;
+    }
+
+    public long getRawThreshold() {
+        return rawThreshold;
+    }
+
+    public void setRawThreshold(long rawThreshold) {
+        this.rawThreshold = rawThreshold;
+    }
+
+    public String getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(String threshold) {
+        this.threshold = threshold;
+    }
+
     public TokoCashData() {
+
     }
 
 }

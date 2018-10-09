@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDomain;
@@ -24,7 +25,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCe
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithoutAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderDetailViewModel;
@@ -38,9 +39,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Sh
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +62,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private ResultViewModel resultViewModel;
     private String orderId;
     private String resolutionId;
+
 
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
@@ -112,13 +113,10 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void chooseProductProblemClicked() {
-        ArrayList<ProblemResult> problemResults = new ArrayList<>();
-        for (ProblemResult problemResult : resultViewModel.problem) {
-            problemResults.add(problemResult);
-        }
+        ArrayList<ComplaintResult> complaintResults = new ArrayList<>(resultViewModel.complaints);
         mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(
                 productProblemResponseDomain),
-                problemResults);
+                complaintResults);
     }
 
     @Override
@@ -133,9 +131,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
-    public void addResultFromStep1(ArrayList<ProblemResult> problemResultList) {
+    public void addResultFromStep1(ArrayList<ComplaintResult> complaintResults) {
         resultViewModel = new ResultViewModel();
-        resultViewModel.problem = problemResultList;
+        resultViewModel.complaints = complaintResults;
         resultViewModel.orderId = orderId;
         if (resolutionId != null) {
             resultViewModel.resolutionId = resolutionId;
@@ -178,13 +176,13 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
-
-        Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
-        resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+        Intent resInboxIntent = ResoInboxActivity.newBuyerInstance(context);
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
-
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(resInboxIntent);
         taskStackBuilder.addNextIntent(detailResIntent);
         return taskStackBuilder;
@@ -210,9 +208,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
                 }
             }
         }
-        ProductProblemListViewModel productProblemListViewModel =
-                new ProductProblemListViewModel(modelList);
-        return productProblemListViewModel;
+        return new ProductProblemListViewModel(modelList);
     }
 
     private ProblemViewModel mappingProblemViewModel(ProblemDomain problemDomain) {
@@ -309,6 +305,6 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         super.detachView();
         getProductProblemUseCase.unsubscribe();
         createResoWithoutAttachmentUseCase.unsubscribe();
-        createResoWithAttachmentUseCase.unsubscribe();
+//        createResoWithAttachmentUseCase.unsubscribe();
     }
 }

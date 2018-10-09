@@ -43,7 +43,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/ic_badge_official" />
+                app:srcCompat="@drawable/ic_badge_official" />
 
             <TextView
                 android:id="@+id/title"
@@ -60,7 +60,7 @@
                 android:layout_margin="8dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                android:src="@drawable/ic_diagonal_arrow"/>
+                app:srcCompat="@drawable/ic_diagonal_arrow"/>
 
         </LinearLayout>
     </LinearLayout>

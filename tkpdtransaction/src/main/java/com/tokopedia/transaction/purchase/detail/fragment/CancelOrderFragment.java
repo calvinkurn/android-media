@@ -20,9 +20,9 @@ import com.tokopedia.transaction.R;
 
 public class CancelOrderFragment extends TkpdFragment {
 
-    private CancelOrderListener listener;
-
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
+
+    private CancelOrderListener listener;
 
     @Override
     protected String getScreenName() {

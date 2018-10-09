@@ -4,48 +4,84 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.SessionUrl;
+import com.tokopedia.network.service.AccountsBasicService;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.network.service.RegisterPhoneNumberApi;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
+import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
+import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
+import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
+import com.tokopedia.session.changename.data.source.ChangeNameSource;
+import com.tokopedia.session.changename.di.ChangeNameScope;
+import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateOtpStatus;
 import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateOtpStatusUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
+import com.tokopedia.session.data.source.CloudDiscoverDataSource;
+import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
+import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.RegisterValidationMapper;
+import com.tokopedia.session.register.data.source.RegisterValidationSource;
+import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
+import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
+import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
+import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
+import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
+import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+
+import static com.tokopedia.di.UserModule.BEARER_SERVICE;
 
 
 /**
@@ -53,14 +89,12 @@ import dagger.Provides;
  */
 
 @Module
-public class
-SessionModule {
+public class SessionModule {
 
-    public static final String LOGIN_CACHE = "LOGIN_CACHE";
-    private static final String HMAC_SERVICE = "HMAC_SERVICE";
-    private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String HMAC_SERVICE = "HMAC_SERVICE";
     public static final String BEARER_SERVICE = "BEARER_SERVICE";
-    private static final String BASIC_SERVICE = "BASIC_SERVICE";
+    private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
     @SessionScope
     @Provides
@@ -79,19 +113,6 @@ SessionModule {
         Bundle bundle = new Bundle();
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
-        return new AccountsService(bundle);
-    }
-
-    /**
-     * @return https://accounts.tokopedia.com
-     * with Authorization : Basic
-     */
-    @SessionScope
-    @Named(BASIC_SERVICE)
-    @Provides
-    AccountsService provideBasicAccountsService() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.IS_BASIC, true);
         return new AccountsService(bundle);
     }
 
@@ -116,6 +137,14 @@ SessionModule {
     }
 
 
+    @SessionScope
+    @Provides
+    AccountsService provideAccountsService() {
+        Bundle bundle = new Bundle();
+        return new AccountsService(bundle);
+    }
+
+
     /**
      * @param context
      * @param sessionHandler
@@ -135,10 +164,41 @@ SessionModule {
         return new AccountsService(bundle);
     }
 
+    @SessionScope
+    @Provides
+    AccountsAuthInterceptor provideAccountsAuthInterceptor() {
+        return new AccountsAuthInterceptor();
+    }
 
     @SessionScope
     @Provides
-    GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
+    TkpdAuthInterceptor provideTkpdAuthInterceptor() {
+        return new TkpdAuthInterceptor();
+    }
+
+
+    @SessionScope
+    @Provides
+    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckInterceptor chuckInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor)
+                .addInterceptor(accountsAuthInterceptor)
+                .addInterceptor(chuckInterceptor)
+                .build();
+    }
+
+    @SessionScope
+    @Provides
+    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
+                                                           @Named(HMAC_SERVICE) AccountsService
+                                                                   accountsService,
+                                                           DiscoverMapper discoverMapper) {
+        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
+    }
+
+    @SessionScope
+    @Provides
+    GetTokenDataSource provideGetTokenDataSource(AccountsBasicService
                                                          accountsService,
                                                  TokenMapper tokenMapper,
                                                  SessionHandler sessionHandler) {
@@ -165,8 +225,10 @@ SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
-        return new ChangePhoneNumberWarningPresenter(getWarningUseCase);
+    ChangePhoneNumberWarningFragmentListener.Presenter
+    provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase,
+                                             ValidateOtpStatusUseCase validateOtpStatusUseCase) {
+        return new ChangePhoneNumberWarningPresenter(getWarningUseCase, validateOtpStatusUseCase);
     }
 
     @SessionScope
@@ -174,11 +236,13 @@ SessionModule {
     ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
                                                                    CloudSendEmailSource cloudSendEmailSource,
                                                                    CloudValidateNumberSource cloudValidateNumberSource,
-                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource) {
+                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource,
+                                                                   CloudValidateOtpStatus cloudValidateOtpStatus) {
         return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
                 cloudSendEmailSource,
                 cloudValidateNumberSource,
-                cloudValidateEmailCodeSource);
+                cloudValidateEmailCodeSource,
+                cloudValidateOtpStatus);
     }
 
     @SessionScope
@@ -210,10 +274,8 @@ SessionModule {
 
     @SessionScope
     @Provides
-    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
-                                                 PostExecutionThread postExecutionThread,
-                                                 ProfileRepository profileRepository) {
-        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
+    GetUserInfoUseCase provideGetUserInfoUseCase(ProfileRepository profileRepository) {
+        return new GetUserInfoUseCase(profileRepository);
     }
 
     @SessionScope
@@ -235,9 +297,148 @@ SessionModule {
 
     @SessionScope
     @Provides
+    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                      ChangePhoneNumberMapper changePhoneNumberMapper) {
+        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper);
+    }
+
+    @SessionScope
+    @Provides
+    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
+        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper);
+    }
+
+    @SessionScope
+    @Provides
+    CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
+                                                                     accountsService,
+                                                             CreatePasswordMapper createPasswordMapper) {
+        return new CreatePasswordDataSource(accountsService, createPasswordMapper);
+    }
+
+    @SessionScope
+    @Provides
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
     }
 
+    @SessionScope
+    @Provides
+    public GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase(){
+        return provideOverridenGetFacebookCredentialUseCase();
+    }
+
+    public GetFacebookCredentialUseCase provideOverridenGetFacebookCredentialUseCase(){
+        return new GetFacebookCredentialUseCase();
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnMapper provideCheckMsisdnMapper() {
+        return new CheckMsisdnMapper();
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnSource provideCheckMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
+                                               CheckMsisdnMapper checkMsisdnMapper) {
+        return new CheckMsisdnSource(accountsService, checkMsisdnMapper);
+    }
+
+    @SessionScope
+    @Provides
+    CheckMsisdnPhoneNumberUseCase provideCheckMsisdnPhoneNumberUseCase(ThreadExecutor threadExecutor,
+                                                                       PostExecutionThread postExecutionThread,
+                                                                       @ApplicationContext Context context,
+                                                                       CheckMsisdnSource checkMsisdnSource) {
+        return new CheckMsisdnPhoneNumberUseCase(threadExecutor, postExecutionThread, context, checkMsisdnSource);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberMapper provideRegisterPhoneNumberMapper() {
+        return new RegisterPhoneNumberMapper();
+    }
+
+    @SessionScope
+    @Provides
+    @RegisterPhoneNumberQualifier
+    Retrofit providesRegisterPhoneNumberRetrofit(Retrofit.Builder retrofitBuilder,
+                                                 OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(SessionUrl.ACCOUNTS_DOMAIN).client(okHttpClient).build();
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberApi provideRegisterPhoneNumberApi(@RegisterPhoneNumberQualifier Retrofit retrofit) {
+        return retrofit.create(RegisterPhoneNumberApi.class);
+    }
+
+    @SessionScope
+    @Provides
+    CloudRegisterPhoneNumberSource provideCloudRegisterPhoneNumberSource(
+            @ApplicationContext Context context,
+            RegisterPhoneNumberApi registerPhoneNumberApi,
+            RegisterPhoneNumberMapper mapper,
+            SessionHandler sessionHandler) {
+        return new CloudRegisterPhoneNumberSource(context, registerPhoneNumberApi, mapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterPhoneNumberUseCase provideRegisterPhoneNumberUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            @ApplicationContext Context context,
+            CloudRegisterPhoneNumberSource source) {
+        return new RegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, context, source);
+    }
+
+    @SessionScope
+    @Provides
+    LoginRegisterPhoneNumberUseCase provideLoginRegisterPhoneNumberUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            RegisterPhoneNumberUseCase registerPhoneNumberUseCase,
+            GetUserInfoUseCase getUserInfoUseCase,
+            MakeLoginUseCase makeLoginUseCase) {
+        return new LoginRegisterPhoneNumberUseCase(threadExecutor, postExecutionThread, registerPhoneNumberUseCase, getUserInfoUseCase, makeLoginUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterValidationSource provideRegisterValidationSource(AccountsService accountsService,
+                                                             RegisterValidationMapper registerValidationMapper){
+        return new RegisterValidationSource(accountsService, registerValidationMapper);
+    }
+
+    @SessionScope
+    @Provides
+    RegisterValidationMapper provideRegisterValidationMapper(){
+        return new RegisterValidationMapper();
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameSource provideChangeNameSource(@Named(BEARER_SERVICE) AccountsService service,
+                                             ChangeNameMapper changeNameMapper,
+                                             GlobalCacheManager cacheManager) {
+        return new ChangeNameSource(service, changeNameMapper, cacheManager);
+    }
+
+    @SessionScope
+    @Provides
+    ChangeNameUseCase provideChangeNameUseCase(ChangeNameSource source) {
+        return new ChangeNameUseCase(source);
+    }
 }
+
+

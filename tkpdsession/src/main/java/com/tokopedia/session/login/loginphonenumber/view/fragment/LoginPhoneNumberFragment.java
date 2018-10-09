@@ -2,9 +2,15 @@ package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,21 +20,29 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.SessionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.inactivephonenumber.ChangeInactivePhoneNumberWebView;
+import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneActivity;
 
 import java.util.ArrayList;
 
@@ -50,8 +64,12 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     TextView nextButton;
     TextView message;
     TextView errorText;
+    TextView changeInactiveNumber;
+    String phoneNumberString;
 
     TkpdProgressDialog progressDialog;
+
+    SessionRouter sessionRouter;
 
     @Inject
     LoginPhoneNumberPresenter presenter;
@@ -64,7 +82,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_LOGIN_PHONE_NUMBER;
     }
 
     @Override
@@ -86,6 +104,18 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ScreenTracking.screen(getScreenName());
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getActivity().getApplication() instanceof SessionRouter) {
+            sessionRouter = (SessionRouter) getActivity().getApplication();
+        } else {
+            throw new IllegalStateException("Application must implement "
+                    + SessionRouter.class.getSimpleName());
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
@@ -95,8 +125,9 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
         errorText = view.findViewById(R.id.error);
-        prepareView();
+        changeInactiveNumber = view.findViewById(R.id.change_inactive);
         presenter.attachView(this);
+        prepareView();
         return view;
     }
 
@@ -114,14 +145,46 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorText.setText("");
                 UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
+
+        if (getArguments() != null) {
+            if (getArguments().get(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER) != null) {
+                phoneNumberString = getArguments().getString(LoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
+                phoneNumber.setText(phoneNumberString);
+                nextButton.performClick();
+            }
+        }
+
+        SpannableString changeInactiveString = new SpannableString(changeInactiveNumber.getText());
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Intent intent;
+                intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
+                startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                ds.setUnderlineText(false);
+            }
+        };
+
+        changeInactiveString.setSpan(clickableSpan, 37, 44, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        changeInactiveNumber.setText(changeInactiveString);
+        changeInactiveNumber.setMovementMethod(LinkMovementMethod.getInstance());
+        changeInactiveNumber.setHighlightColor(Color.TRANSPARENT);
+        changeInactiveNumber.setVisibility(sessionRouter.isLoginInactivePhoneLinkEnabled() ?
+                View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -136,7 +199,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToVerifyAccountPage(String phoneNumber) {
-        startActivityForResult(VerificationActivity.getSmsVerificationIntent(
+        startActivityForResult(VerificationActivity.getLoginTokoCashVerificationIntent(
                 getActivity(),
                 phoneNumber,
                 getListVerificationMethod()),
@@ -166,6 +229,11 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         progressDialog.showDialog();
     }
 
+    @Override
+    public void onForbidden() {
+        ForbiddenActivity.startActivity(getActivity());
+    }
+
     private ArrayList<MethodItem> getListVerificationMethod() {
         ArrayList<MethodItem> list = new ArrayList<>();
         list.add(new MethodItem(
@@ -190,8 +258,13 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_VERIFY_PHONE
                 && resultCode == Activity.RESULT_OK) {
+
             ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+            if (chooseTokoCashAccountViewModel != null
+                    && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            } else if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
                     .getListAccount().isEmpty()) {
                 goToChooseAccountPage(chooseTokoCashAccountViewModel);
             } else {

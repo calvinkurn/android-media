@@ -11,7 +11,7 @@ import android.view.WindowManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.var.TkpdState;

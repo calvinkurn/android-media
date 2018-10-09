@@ -1,11 +1,8 @@
 package com.tokopedia.ride.history.view;
 
-import android.support.annotation.NonNull;
-
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideHistoryWrapper;
 import com.tokopedia.ride.history.domain.GetHistoriesWithPaginationUseCase;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
@@ -71,10 +68,10 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                     ArrayList<Visitable> histories = new ArrayList<>();
                     String mapSize = getView().getMapImageSize();
 
-                    if(rideHistoryWrapper != null) {
+                    if (rideHistoryWrapper != null) {
                         RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
                         for (RideHistory rideHistory : rideHistoryWrapper.getHistories()) {
-                            RideHistoryViewModel viewModel = mapper.transform(mapSize, rideHistory);
+                            RideHistoryViewModel viewModel = mapper.transform(getView().getActivity(), mapSize, rideHistory);
                             histories.add(viewModel);
                         }
                         getView().enableRefreshLayout();
@@ -122,7 +119,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                     String mapSize = getView().getMapImageSize();
                     RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
                     for (RideHistory rideHistory : rideHistories) {
-                        RideHistoryViewModel viewModel = mapper.transform(mapSize, rideHistory);
+                        RideHistoryViewModel viewModel = mapper.transform(getView().getActivity(), mapSize, rideHistory);
 
                         histories.add(viewModel);
                     }
@@ -174,7 +171,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                     String mapSize = getView().getMapImageSize();
                     RideHistoryViewModelMapper mapper = new RideHistoryViewModelMapper(getView().getMapKey());
                     for (RideHistory rideHistory : rideHistoryWrapper.getHistories()) {
-                        RideHistoryViewModel viewModel = mapper.transform(mapSize, rideHistory);
+                        RideHistoryViewModel viewModel = mapper.transform(getView().getActivity(), mapSize, rideHistory);
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();

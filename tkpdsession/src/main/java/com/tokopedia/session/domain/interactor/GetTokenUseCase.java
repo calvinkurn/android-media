@@ -1,11 +1,9 @@
 package com.tokopedia.session.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -27,14 +25,8 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
-    public static final String EMAIL_ACCOUNTS = "email";
-    public static final String PICTURE_ACCOUNTS = "picture";
-    public static final String FULL_NAME = "full_name";
-    public static final String BIRTHDATE = "birthdate";
-    public static final String GENDER_ACCOUNTS = "gender";
     public static final String CODE = "code";
     public static final String REDIRECT_URI = "redirect_uri";
-    public static final String MSISDN = "msisdn";
 
     public static final String GRANT_PASSWORD = "password";
     public static final String GRANT_SDK = "extension";
@@ -43,10 +35,7 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
     private final GetTokenDataSource repository;
 
     @Inject
-    public GetTokenUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           GetTokenDataSource repository) {
-        super(threadExecutor, postExecutionThread);
+    public GetTokenUseCase(GetTokenDataSource repository) {
         this.repository = repository;
     }
 
@@ -67,6 +56,14 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
         params.putString(GRANT_TYPE, GRANT_WEBVIEW);
         params.putString(CODE, code);
         params.putString(REDIRECT_URI, redirectUri);
+        return params;
+    }
+
+    public static RequestParams getParamLogin(String email, String password) {
+        RequestParams params = RequestParams.create();
+        params.putString(GRANT_TYPE, GRANT_PASSWORD);
+        params.putString(PASSWORD, password);
+        params.putString(USER_NAME, email);
         return params;
     }
 }

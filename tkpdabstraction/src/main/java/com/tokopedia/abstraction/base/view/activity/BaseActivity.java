@@ -14,19 +14,21 @@ import android.view.View;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.utils.DialogForceLogout;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
+
 
 /**
  * Created by nisie on 2/7/17.
  */
 
-abstract class BaseActivity extends AppCompatActivity implements
+public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -43,6 +45,7 @@ abstract class BaseActivity extends AppCompatActivity implements
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
+        initShake();
     }
 
     @Override
@@ -50,6 +53,8 @@ abstract class BaseActivity extends AppCompatActivity implements
         super.onPause();
         unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
+        unregisterShake();
+
     }
 
     @Override
@@ -60,6 +65,29 @@ abstract class BaseActivity extends AppCompatActivity implements
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
+        registerShake();
+    }
+
+    protected void initShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).init();
+        }
+    }
+
+    protected void registerShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            String screenName = getScreenName();
+            if (screenName == null) {
+                screenName = this.getClass().getSimpleName();
+            }
+            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
+        }
+    }
+
+    protected void unregisterShake() {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplication()).unregisterShake();
+        }
     }
 
     private void sendScreenAnalytics() {

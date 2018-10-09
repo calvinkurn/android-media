@@ -364,7 +364,7 @@ public class RidePushNotificationBuildAndShow {
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setProgress(0, 0, true)
                 .setPriority(Notification.PRIORITY_HIGH)

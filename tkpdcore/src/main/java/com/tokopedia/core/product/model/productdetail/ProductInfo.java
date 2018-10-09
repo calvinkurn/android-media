@@ -114,6 +114,14 @@ public class ProductInfo implements Parcelable {
     @Expose
     private Integer productPriceUnformatted;
 
+    @SerializedName("has_variant")
+    @Expose
+    private Boolean hasVariant = false;
+
+    private String productStockWording;
+    private boolean alwaysAvailable;
+
+    private boolean limitedStock = false;
 
     public ProductInfo() {
     }
@@ -124,6 +132,14 @@ public class ProductInfo implements Parcelable {
 
     public void setProductInstallments(List<ProductInstallment> productInstallments) {
         this.productInstallments = productInstallments;
+    }
+
+    public boolean isAlwaysAvailable() {
+        return alwaysAvailable;
+    }
+
+    public void setAlwaysAvailable(boolean alwaysAvailable) {
+        this.alwaysAvailable = alwaysAvailable;
     }
 
     public String getProductWeightUnit() {
@@ -358,6 +374,14 @@ public class ProductInfo implements Parcelable {
         this.productPriceUnformatted = productPriceUnformatted;
     }
 
+    public Boolean getHasVariant() {
+        return hasVariant != null ? hasVariant : false;
+    }
+
+    public void setHasVariant(Boolean hasVariant) {
+        this.hasVariant = hasVariant;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -392,6 +416,10 @@ public class ProductInfo implements Parcelable {
         installmentMinPercentage = in.readString();
         installmentMinPrice = in.readString();
         productPriceUnformatted = in.readByte() == 0x00 ? null : in.readInt();
+        byte hasVariantVal = in.readByte();
+        hasVariant = hasVariantVal == 0x02 ? null : hasVariantVal != 0x00;
+        productStockWording = in.readString();
+        limitedStock = in.readByte() != 0x00;
     }
 
     @Override
@@ -454,6 +482,13 @@ public class ProductInfo implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(productPriceUnformatted);
         }
+        if (hasVariant == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (hasVariant ? 0x01 : 0x00));
+        }
+        dest.writeString(productStockWording);
+        dest.writeByte((byte) (limitedStock ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
@@ -468,6 +503,22 @@ public class ProductInfo implements Parcelable {
             return new ProductInfo[size];
         }
     };
+
+    public String getProductStockWording() {
+        return productStockWording;
+    }
+
+    public void setProductStockWording(String productStockWording) {
+        this.productStockWording = productStockWording;
+    }
+
+    public boolean getLimitedStock() {
+        return limitedStock;
+    }
+
+    public void setLimitedStock(boolean limitedStock) {
+        this.limitedStock = limitedStock;
+    }
 
 
     public static class Builder {
@@ -492,6 +543,8 @@ public class ProductInfo implements Parcelable {
         private String productCatalogId;
         private String productCatalogName;
         private String productCatalogUrl;
+        private String productStockWording;
+        private boolean limitedStock = false;
 
         private Builder() {
         }
@@ -605,6 +658,14 @@ public class ProductInfo implements Parcelable {
             return this;
         }
 
+        public void setProductStockWording(String productStockWording) {
+            this.productStockWording = productStockWording;
+        }
+
+        public void setLimitedStock(boolean limitedStock) {
+            this.limitedStock = limitedStock;
+        }
+
         public Builder but() {
             return aProductInfo().setProductWeightUnit(productWeightUnit).setProductEtalaseId(productEtalaseId).setProductAlreadyWishlist(productAlreadyWishlist).setProductInsurance(productInsurance).setProductCondition(productCondition).setProductKey(productKey).setProductEtalase(productEtalase).setProductStatus(productStatus).setProductId(productId).setProductPrice(productPrice).setProductDescription(productDescription).setProductReturnable(productReturnable).setProductMinOrder(productMinOrder).setProductLastUpdate(productLastUpdate).setProductWeight(productWeight).setProductPriceAlert(productPriceAlert).setProductName(productName).setProductUrl(productUrl).setProductCatalogId(productCatalogId).setProductCatalogName(productCatalogName).setProductCatalogUrl(productCatalogUrl);
         }
@@ -632,6 +693,8 @@ public class ProductInfo implements Parcelable {
             productInfo.setProductCatalogId(productCatalogId);
             productInfo.setProductCatalogName(productCatalogName);
             productInfo.setProductCatalogUrl(productCatalogUrl);
+            productInfo.setProductStockWording(productStockWording);
+            productInfo.setLimitedStock(limitedStock);
             return productInfo;
         }
     }

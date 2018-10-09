@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.HashMap;
@@ -15,6 +17,8 @@ public class Promotion {
     private String promotionName;
     private String promotionAlias;
     private String promotionPosition;
+    private String redirectUrl;
+    private String promoCode;
 
     public void setPromotionID(String promotionID) {
         this.promotionID = promotionID;
@@ -25,11 +29,15 @@ public class Promotion {
     }
 
     public void setPromotionAlias(String promotionAlias) {
-        this.promotionAlias = promotionAlias.trim().replaceAll(" ", "-");
+        this.promotionAlias = promotionAlias;
     }
 
     public void setPromotionPosition(int promotionPosition) {
-        this.promotionPosition = "slider_banner_" + promotionPosition;
+        this.promotionPosition = String.valueOf(promotionPosition);
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 
     public String getPromotionID() {
@@ -48,6 +56,10 @@ public class Promotion {
         return promotionPosition;
     }
 
+    public String getPromoCode() {
+        return promoCode;
+    }
+
     public Map<String, Object> getPromotionDataEvent() {
         return DataLayer.mapOf(
                 "id", getPromotionID(),
@@ -64,5 +76,58 @@ public class Promotion {
                 "creative", null,
                 "position", null
         );
+    }
+
+    public Map<String, Object> getImpressionDataLayer() {
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage",
+                "eventAction", "slider banner impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", getPromotionID(),
+                                                "name", getPromotionName(),
+                                                "creative", getPromotionAlias(),
+                                                "position", getPromotionPosition(),
+                                                "promo_code", !TextUtils.isEmpty(getPromoCode()) ? getPromoCode() : "NoPromoCode"
+                                        )
+                                )
+                        )
+                ),
+                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
+        );
+    }
+
+    public Map<String, Object> getClickDataLayer() {
+        return DataLayer.mapOf(
+                "event", "promoClick",
+                "eventCategory", "homepage",
+                "eventAction", "slider banner click",
+                "eventLabel", getRedirectUrl(),
+                "ecommerce", DataLayer.mapOf(
+                        "promoClick", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", getPromotionID(),
+                                                "name", getPromotionName(),
+                                                "creative", getPromotionAlias(),
+                                                "position", getPromotionPosition()
+                                        )
+                                )
+                        )
+                ),
+                "attribution", String.format("1 - sliderBanner - %s - %s", getPromotionPosition(), getPromotionAlias())
+        );
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 }

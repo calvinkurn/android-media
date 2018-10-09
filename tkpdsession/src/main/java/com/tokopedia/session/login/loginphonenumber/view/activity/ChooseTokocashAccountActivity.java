@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
@@ -48,7 +50,7 @@ public class ChooseTokocashAccountActivity extends TActivity implements HasCompo
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
     }
 
     @Override

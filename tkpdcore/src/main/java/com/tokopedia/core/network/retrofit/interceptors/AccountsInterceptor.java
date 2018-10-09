@@ -24,14 +24,12 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     private final String authKey;
     private final boolean isUsingHMAC;
     private final boolean isUsingBothAuthorization;
-    private final boolean isBasic;
 
     public AccountsInterceptor(String key, boolean isUsingHMAC,
-                               boolean isUsingBothAuthorization, boolean isBasic) {
+                               boolean isUsingBothAuthorization) {
         this.authKey = key;
         this.isUsingHMAC = isUsingHMAC;
         this.isUsingBothAuthorization = isUsingBothAuthorization;
-        this.isBasic = isBasic;
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
@@ -74,10 +72,9 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     }
 
 
-    private String getToken() {
+    protected String getToken() {
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        if (!isBasic
-                && !TextUtils.isEmpty(sessionHandler
+        if (!TextUtils.isEmpty(sessionHandler
                 .getAccessToken(MainApplication.getAppContext())))
             return sessionHandler.getTokenType(MainApplication.getAppContext()) + " " +
                     sessionHandler.getAccessToken(MainApplication.getAppContext());

@@ -5,20 +5,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.loyalty.R;
-import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.view.compoundview.PromoImageView;
 import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.text.MessageFormat;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nabillasabbaha on 1/8/18.
@@ -99,6 +96,12 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                     actionListener.onItemPromoClicked(promoData, position);
                 }
             });
+            itemViewHolder.llPromoInfoLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    actionListener.onItemPromoClicked(promoData, position);
+                }
+            });
         }
     }
 
@@ -141,28 +144,30 @@ public class PromoListAdapter extends RecyclerView.Adapter {
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.iv_banner)
         PromoImageView ivBanner;
-        @BindView(R2.id.tv_period_promo)
+        LinearLayout llPromoInfoLayout;
         TextView tvPeriodPromo;
-        @BindView(R2.id.layout_single_code_promo)
         RelativeLayout layoutSingleCodePromo;
-        @BindView(R2.id.layout_empty_code_promo)
         RelativeLayout layoutEmptyCodePromo;
-        @BindView(R2.id.tv_code_promo)
         TextView tvCodePromo;
-        @BindView(R2.id.btn_copy_code_promo)
         TextView btnCopyCodePromo;
-        @BindView(R2.id.tv_label_code_promo)
         TextView tvLabelCodePromo;
-        @BindView(R2.id.layout_multiple_code_promo)
         RelativeLayout layoutMultipleCodePromo;
-        @BindView(R2.id.tv_multiple_code_promo)
         TextView tvMultipleCodePromo;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            ivBanner = itemView.findViewById(R.id.iv_banner);
+            llPromoInfoLayout = itemView.findViewById(R.id.ll_promo_list_info_layout);
+            tvPeriodPromo = itemView.findViewById(R.id.tv_period_promo);
+            layoutSingleCodePromo = itemView.findViewById(R.id.layout_single_code_promo);
+            layoutEmptyCodePromo = itemView.findViewById(R.id.layout_empty_code_promo);
+            tvCodePromo = itemView.findViewById(R.id.tv_code_promo);
+            btnCopyCodePromo = itemView.findViewById(R.id.btn_copy_code_promo);
+            tvLabelCodePromo = itemView.findViewById(R.id.tv_label_code_promo);
+            layoutMultipleCodePromo = itemView.findViewById(R.id.layout_multiple_code_promo);
+            tvMultipleCodePromo = itemView.findViewById(R.id.tv_multiple_code_promo);
         }
     }
 

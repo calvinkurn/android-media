@@ -1,26 +1,39 @@
-include ':customerapp'
-include ':react-native-codepush'
-include ':tkpdloyalty'
-include ':tkpdreactnative'
-include ':tkpdride'
-include ':tkpdfeed'
-include ':tkpddigital'
-include ':tkpdcore'
-include ':tkpdinbox'
-include ':tkpddiscovery'
-include ':tkpdtransaction'
-include ':tkpdsession'
-include ':tkpdtopadssdk'
-include ':tkpdpayment'
-include ':tkpdpdp'
-include ':tkpddesign'
-include ':sellerapp'
-include ':tkpdseller'
-include ':tkpdtopads'
-include ':tkpdgm'
-include 'tkpdreputation'
-include ':tkpdtokocash'
-include ':tkpdusecase'
-include ':tkpdabstraction'
-include ':tkpdflight'
-include ':tkpdflight-no-op'
+ext.isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = "${ci_url}"
+        push = isCiServer
+//        allowUntrustedServer = true
+        credentials {
+            username = "${ci_username}"
+            password = "${ci_password}"
+        }
+    }
+}
+
+apply from: "features/settings-features.gradle"
+apply from: "libraries/settings-libraries.gradle"
+
+include 'customerapp'
+include 'tkpdloyalty'
+//include 'tkpdride'
+include 'tkpdfeed'
+include 'tkpdcore'
+include 'tkpdinbox'
+include 'tkpddiscovery'
+include 'tkpdtransaction'
+include 'tkpdsession'
+include 'tkpdpdp'
+include 'tkpddesign'
+include 'sellerapp'
+include 'tkpdseller'
+include 'tkpdtokocash'
+include 'tkpdabstraction'
+include 'tkpdcontent'
+include 'tkpdstream'
+include 'tkpdtransaction-common'
+include 'posapp'

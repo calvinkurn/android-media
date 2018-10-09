@@ -2,14 +2,14 @@ package com.tokopedia.session.changephonenumber.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.otp.securityquestion.domain.pojo.changephonenumberrequest.CheckStatusData;
+import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 
 
 /**
  * Created by nisie on 3/2/17.
  */
 public interface ChangePhoneNumberRequestView {
-    void onGoToWaitPage();
+    void onGoToNextPage();
 
     void showLoading();
 
@@ -22,6 +22,14 @@ public interface ChangePhoneNumberRequestView {
     String getString(int resId);
 
     void onErrorSubmitRequest(String errorMessage);
+
+    void onSuccessValidRequest();
+
+    void enableNextButton();
+
+    void disableNextButton();
+
+    void correctPhoneNumber(String newNumber, int selection);
 
     void onSuccessSubmitRequest();
 }

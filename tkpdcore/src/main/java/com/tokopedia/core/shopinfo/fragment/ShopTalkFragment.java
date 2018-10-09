@@ -1,11 +1,11 @@
 package com.tokopedia.core.shopinfo.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,10 +18,9 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.BasePresenterFragmentV4;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.listener.ShopTalkFragmentView;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
@@ -39,25 +38,29 @@ import static com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment.R
  * Created by nisie on 11/18/16.
  */
 
-public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
+public class ShopTalkFragment extends BasePresenterFragmentV4<ShopTalkPresenter>
         implements ShopTalkFragmentView {
 
     public final static int GO_TO_DETAIL = 2;
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
-    private boolean isViewShown;
+    protected boolean isViewShown;
 
     public static Fragment createInstance() {
         return new ShopTalkFragment();
     }
 
-    @BindView(R2.id.list)
-    RecyclerView list;
+    public static Fragment createInstance(boolean isLoadMoreEnabled) {
+        return new ShopTalkFragment();
+    }
 
-    ShopTalkAdapter adapter;
-    TkpdProgressDialog progressDialog;
-    LinearLayoutManager layoutManager;
+    @BindView(R2.id.list)
+    protected RecyclerView list;
+
+    protected ShopTalkAdapter adapter;
+    protected TkpdProgressDialog progressDialog;
+    protected LinearLayoutManager layoutManager;
 
     @Override
     protected boolean isRetainInstance() {
@@ -117,6 +120,10 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         }
     }
 
+    protected boolean isEnableScroll(){
+        return true;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -124,6 +131,9 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     @Override
     protected void setViewListener() {
+        if(!isEnableScroll()){
+            return;
+        }
         list.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -131,9 +141,13 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && !presenter.isRequesting() && !adapter.getList().isEmpty())
-                    presenter.loadMore();
+                    loadMore();
             }
         });
+    }
+
+    public void loadMore(){
+        presenter.loadMore();
     }
 
     @Override
@@ -184,16 +198,17 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
             @Override
             public void onGoToProfile(ShopTalk shopTalk) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(), shopTalk.getTalkUserId())
-                );
+                if (getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    shopTalk.getTalkUserId()));
+                }
             }
-
         };
     }
 
     private void createDeleteDialog(final ShopTalk shopTalk) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.title_delete_discussion))
                 .setMessage(getString(R.string.prompt_delete_talk))
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -262,12 +277,6 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         isViewShown = getView() != null;
-        if (isVisibleToUser) {
-            if (getActivity() != null &&
-                    getActivity() instanceof ShopInfoActivity) {
-                ((ShopInfoActivity) getActivity()).swipeAble(true);
-            }
-        }
     }
 
     @Override
@@ -414,7 +423,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
     }
 
-    private void fetchData() {
+    protected void fetchData() {
         if (presenter != null
                 && adapter != null
                 && !adapter.isEmpty()

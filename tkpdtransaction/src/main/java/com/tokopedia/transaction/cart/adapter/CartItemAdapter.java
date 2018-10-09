@@ -31,8 +31,10 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.cart.model.CartInsurance;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.CartPartialDeliver;
@@ -41,6 +43,7 @@ import com.tokopedia.transaction.cart.model.cartdata.CartCourierPrices;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
@@ -64,6 +67,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Object> dataList = new ArrayList<>();
     private SparseBooleanArray expandState = new SparseBooleanArray();
+    private boolean enableCancelPartial;
 
     public CartItemAdapter(Fragment hostFragment, CartItemActionListener cartItemActionListener) {
         this.hostFragment = hostFragment;
@@ -94,7 +98,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             renderDetailCartItem(holderItemCart, cartData, cartItemEditable);
             renderEditableMode(holderItemCart, cartItemEditable.isEditMode(), adapterProduct);
             renderPartialDeliverOption(holderItemCart, cartData);
-            if(unEditable(cartData)) {
+            if (unEditable(cartData)) {
                 holderItemCart.spShipmentOptionChoosen.setEnabled(false);
                 holderItemCart.spUseInsurance.setEnabled(false);
                 holderItemCart.cbDropshiper.setVisibility(View.GONE);
@@ -103,12 +107,44 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
-
+            renderAcceptPartial(holderItemCart);
+            /* renderPickupPoint(holderItemCart, cartData); */
         }
     }
 
+    private void renderPickupPoint(final ViewHolder holderItemCart, final CartItem cartData) {
+        holderItemCart.pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+            @Override
+            public void onChoosePickupPoint() {
+
+            }
+
+            @Override
+            public void onClearPickupPoint() {
+                cartItemActionListener.onClearPickupPoint(cartData);
+            }
+
+            @Override
+            public void onEditPickupPoint() {
+                cartItemActionListener.onEditPickupPoint(cartData);
+            }
+        });
+        holderItemCart.pickupPointLayout.disableChooserButton(holderItemCart.pickupPointLayout.getContext());
+        // Dummy store
+        Store store = new Store();
+        store.setId(2392);
+        store.setDistrictId(2287);
+        store.setAddress("Jl. Bentengan 2, Kel.Sunter Jaya,Kec. Tanjungpriok");
+        store.setGeolocation("-6.150220,106.867300");
+        store.setStoreName("Bentengan 2");
+        store.setStoreCode("Alfa - J492");
+
+        holderItemCart.pickupPointLayout.setData(holderItemCart.pickupPointLayout.getContext(),
+                store.getStoreName(), store.getAddress());
+    }
+
     private boolean unEditable(CartItem cartData) {
-        return cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() !=null
+        return cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() != null
                 && cartData.getCartProducts().get(FIRST_PRODUCT_INDEX).getProductHideEdit() == 1;
     }
 
@@ -118,6 +154,16 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         cartItemEditable.setCartCourierPrices(cartCourierPrices);
         removeCartErrors(cartItemEditable);
         cartItemEditable.setInsuranceUsedInfo(cartCourierPrices.getInsuranceUsedInfo());
+        cartItemEditable.setInsuranceType(cartCourierPrices.getInsuranceMode());
+        if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+            cartItemEditable.setUseInsurance(false);
+        } else if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+            cartItemEditable.setUseInsurance(true);
+        }
+    }
+
+    public void setEnableCancelPartial(boolean enableCancelPartial) {
+        this.enableCancelPartial = enableCancelPartial;
     }
 
     private void removeCartErrors(CartItemEditable cartItemEditable) {
@@ -148,7 +194,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CartItem data = dataList.get(i);
             CartItemEditable cartItemEditable = new CartItemEditable(data);
             cartItemEditable.setKeroToken(keroToken);
-            cartItemEditable.setUseInsurance(isInsuranced(data));
+            cartItemEditable.setUseInsurance(isProductUseInsurance(data.getCartProducts()));
             this.dataList.add(cartItemEditable);
             this.expandState.append(i, false);
         }
@@ -238,12 +284,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
 
 
-        holder.btnOverflow.setOnClickListener(new View.OnClickListener() {
+        holder.editCartLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(hostFragment.getActivity(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.cart_item_menu, popupMenu.getMenu());
-                if(unEditable(cartData)) {
+                if (unEditable(cartData)) {
                     popupMenu.getMenu().getItem(EDIT_MENU_INDEX).setVisible(false);
                 } else {
                     popupMenu.getMenu().getItem(EDIT_MENU_INDEX).setVisible(true);
@@ -584,13 +630,15 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-        if (cartData.getCartCannotInsurance() == 1 ||
-                (cartData.getCartForceInsurance() == 1 ||
-                        isProductMustInsurance(cartData.getCartProducts()))) {
+        if (isProductMustInsurance(cartData.getCartProducts())) {
             holder.spUseInsurance.setEnabled(false);
-        }
-        else if (unEditable(cartData)) {
+        } else if (unEditable(cartData)) {
             holder.spUseInsurance.setEnabled(false);
+        } else if (cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.MUST ||
+                cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.NO) {
+            holder.spUseInsurance.setEnabled(false);
+        } else if (cartItemEditable.getInsuranceType() == KeroppiConstants.InsuranceType.OPTIONAL) {
+            holder.spUseInsurance.setEnabled(true);
         } else {
             holder.spUseInsurance.setEnabled(true);
         }
@@ -598,7 +646,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
 
-        if(cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0){
+        if (cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0) {
             holder.imgInsuranceInfo.setVisibility(View.GONE);
         } else {
             holder.imgInsuranceInfo.setVisibility(View.VISIBLE);
@@ -659,10 +707,14 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private boolean isInsuranced(CartItem cartItem) {
-        return (cartItem.getCartForceInsurance() == 1
-                || cartItem.getCartInsuranceProd() == 1
-                || isProductUseInsurance(cartItem.getCartProducts()));
+    private void renderAcceptPartial(ViewHolder viewHolder) {
+        if (enableCancelPartial) {
+            viewHolder.labelPartialOrder.setVisibility(View.VISIBLE);
+            viewHolder.spShipmentOptionChoosen.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.labelPartialOrder.setVisibility(View.GONE);
+            viewHolder.spShipmentOptionChoosen.setVisibility(View.GONE);
+        }
     }
 
     @NonNull
@@ -734,7 +786,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                     CartProductItemAdapter adapterProduct) {
         if (isEditMode) {
             holder.holderActionEditor.setVisibility(View.VISIBLE);
-            holder.btnOverflow.setVisibility(View.GONE);
+            holder.editCartLabel.setVisibility(View.GONE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
@@ -744,12 +796,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_editable_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(false);
+            holder.editCartLabel.setEnabled(false);
             adapterProduct.enableEditMode();
             adapterProduct.notifyDataSetChanged();
         } else {
             holder.holderActionEditor.setVisibility(View.GONE);
-            holder.btnOverflow.setVisibility(View.VISIBLE);
+            holder.editCartLabel.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 holder.holderContainer.setBackground(
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
@@ -759,12 +811,12 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         hostFragment.getResources().getDrawable(R.drawable.bg_cart_item_normal_mode)
                 );
             }
-            holder.btnOverflow.setEnabled(true);
+            holder.editCartLabel.setEnabled(true);
             adapterProduct.disableEditMode();
             adapterProduct.notifyDataSetChanged();
         }
         holder.holderActionEditor.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
-        holder.btnOverflow.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
+        holder.editCartLabel.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -780,8 +832,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout holderError;
         @BindView(R2.id.tv_shop_name)
         TextView tvShopName;
-        @BindView(R2.id.btn_overflow)
-        ImageView btnOverflow;
+        @BindView(R2.id.edit_cart_label)
+        TextView editCartLabel;
         @BindView(R2.id.rv_cart_product)
         RecyclerView rvCartProduct;
         @BindView(R2.id.cb_dropshiper)
@@ -832,6 +884,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ProgressBar totalPriceProgressBar;
         @BindView(R2.id.img_insurance_info)
         ImageView imgInsuranceInfo;
+        @BindView(R2.id.label_partial_order)
+        TextView labelPartialOrder;
+        @BindView(R2.id.pickup_point_layout)
+        PickupPointLayout pickupPointLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -855,5 +911,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onShopDetailInfoClicked(CartShop cartShop);
 
         void onDropShipperOptionChecked();
+
+        void onClearPickupPoint(CartItem data);
+
+        void onEditPickupPoint(CartItem data);
     }
 }

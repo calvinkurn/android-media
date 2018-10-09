@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -40,7 +41,7 @@
             android:layout_marginLeft="@dimen/fifteen_dp"
             android:layout_marginRight="@dimen/fifteen_dp"
             android:layerType="software"
-            android:src="@drawable/shape_dash_line"
+            app:srcCompat="@drawable/shape_dash_line"
             android:visibility="gone" />
 
         <GridLayout

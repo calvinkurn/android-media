@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.view;
 
+import android.content.Context;
+
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
 /**
@@ -15,5 +17,9 @@ public interface IPromoCodeView extends IBaseView {
     void onGetGeneralError(String errorMessage);
 
     void onPromoCodeError(String errorMessage);
+
+    Context getContext();
+
+    void sendTrackingOnCheckTrainVoucherError(String errorMessage);
 
 }

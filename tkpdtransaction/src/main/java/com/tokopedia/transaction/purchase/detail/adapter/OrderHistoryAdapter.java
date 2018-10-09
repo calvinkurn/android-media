@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 public class OrderHistoryAdapter extends RecyclerView
-        .Adapter<OrderHistoryAdapter.OrderHistoryViewHolder>{
+        .Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
 
     private List<OrderHistoryListData> historyListDatas;
 
@@ -31,7 +32,7 @@ public class OrderHistoryAdapter extends RecyclerView
     public OrderHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.order_history_adapter, parent, false);
-        return new OrderHistoryViewHolder(view);
+        return new OrderHistoryViewHolder(parent.getContext(), view);
     }
 
     @Override
@@ -41,6 +42,8 @@ public class OrderHistoryAdapter extends RecyclerView
                         + " - "
                         + historyListDatas.get(position).getOrderHistoryDate()
         );
+        setTitleColor(holder, position);
+
         holder.orderHistoryComment.setText(historyListDatas.get(position).getOrderHistoryComment());
         holder.orderHistoryComment.setVisibility(historyListDatas.get(position)
                 .getOrderHistoryComment().equals("") ? View.GONE : View.VISIBLE);
@@ -48,8 +51,33 @@ public class OrderHistoryAdapter extends RecyclerView
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
         holder.dot.setColorFilter(Color.parseColor(historyListDatas.get(position).getColor()));
-        holder.dotTrail
-                .setBackgroundColor(Color.parseColor(historyListDatas.get(position).getColor()));
+        if (position == 0) {
+            holder.dotTraiTop.setVisibility(View.GONE);
+            holder.dotTrailBot.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position).getColor())
+            );
+        } else if (position == historyListDatas.size() - 1) {
+            holder.dotTrailBot.setVisibility(View.GONE);
+            holder.dotTraiTop.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position - 1).getColor())
+            );
+        } else {
+            holder.dotTrailBot.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position).getColor())
+            );
+            holder.dotTraiTop.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position - 1).getColor())
+            );
+        }
+    }
+
+    private void setTitleColor(OrderHistoryViewHolder holder, int position) {
+        if (position == 0) {
+            holder.orderHistoryTitle.setTextColor((Color.parseColor(
+                    historyListDatas.get(position).getColor()
+            )));
+        } else holder.orderHistoryTitle.setTextColor(
+                holder.context.getResources().getColor(R.color.black_70));
     }
 
     @Override
@@ -59,6 +87,8 @@ public class OrderHistoryAdapter extends RecyclerView
 
     class OrderHistoryViewHolder extends RecyclerView.ViewHolder {
 
+        private Context context;
+
         private TextView orderHistoryTitle;
 
         private TextView orderHistoryDescription;
@@ -67,22 +97,28 @@ public class OrderHistoryAdapter extends RecyclerView
 
         private ImageView dot;
 
-        private View dotTrail;
+        private View dotTrailBot;
+
+        private View dotTraiTop;
 
         private TextView orderHistoryComment;
 
-        OrderHistoryViewHolder(View itemView) {
+        OrderHistoryViewHolder(Context context, View itemView) {
             super(itemView);
 
-            orderHistoryTitle = (TextView) itemView.findViewById(R.id.history_title);
+            this.context = context;
 
-            orderHistoryDescription = (TextView) itemView.findViewById(R.id.history_description);
+            orderHistoryTitle = itemView.findViewById(R.id.history_title);
 
-            orderHistoryTime = (TextView) itemView.findViewById(R.id.history_date);
+            orderHistoryDescription = itemView.findViewById(R.id.history_description);
 
-            dot = (ImageView) itemView.findViewById(R.id.dot_image);
+            orderHistoryTime = itemView.findViewById(R.id.history_date);
 
-            dotTrail = itemView.findViewById(R.id.dot_trail);
+            dot = itemView.findViewById(R.id.dot_image);
+
+            dotTraiTop = itemView.findViewById(R.id.dot_trail_top);
+
+            dotTrailBot = itemView.findViewById(R.id.dot_trail_bottom);
 
             orderHistoryComment = itemView.findViewById(R.id.history_comment);
 

@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;

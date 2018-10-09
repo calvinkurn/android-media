@@ -14,7 +14,7 @@ import java.util.Map;
  * @author by alvarisi on 6/29/2016.
  */
 public class EventTracking {
-    private Map<String, Object> eventTracking = new HashMap<>();
+    protected Map<String, Object> eventTracking = new HashMap<>();
 
     public EventTracking() {
     }
@@ -22,6 +22,19 @@ public class EventTracking {
     public EventTracking(String event, String category, String action, String label) {
         Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label
                 + " " + SessionHandler.getLoginID(MainApplication.getAppContext()));
+        this.eventTracking.put("event", event);
+        this.eventTracking.put("eventCategory", category);
+        this.eventTracking.put("eventAction", action);
+        this.eventTracking.put("eventLabel", label);
+    }
+
+    public EventTracking(String screenName, String event, String category, String action,
+                         String label) {
+        Log.d("GAv4", String.format("EventTracking: screenName=%s | event=%s | category=%s " +
+                        "| action=%s | label=%s | userId=%s",
+                screenName, event, category, action, label,
+                SessionHandler.getLoginID(MainApplication.getAppContext())));
+        this.eventTracking.put("screenName", screenName);
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
         this.eventTracking.put("eventAction", action);
@@ -54,6 +67,19 @@ public class EventTracking {
                 (SessionHandler.getLoginID(MainApplication
                         .getAppContext())) ? "0" : SessionHandler.getLoginID(MainApplication
                 .getAppContext()));
+        return this;
+    }
+
+    public EventTracking setShopType(boolean isGoldMerchant, boolean isOfficialStore) {
+        this.eventTracking.put(AppEventTracking.CustomDimension.SHOP_TYPE,
+                isOfficialStore? AppEventTracking.ShopType.OFFICIAL_STORE :
+                        isGoldMerchant? AppEventTracking.ShopType.GOLD_MERCHANT :
+                                AppEventTracking.ShopType.REGULAR);
+        return this;
+    }
+
+    public EventTracking setShopId(String shopId) {
+        this.eventTracking.put(AppEventTracking.CustomDimension.SHOP_ID, shopId);
         return this;
     }
 

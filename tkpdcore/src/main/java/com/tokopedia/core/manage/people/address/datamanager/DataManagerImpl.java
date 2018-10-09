@@ -77,6 +77,17 @@ public class DataManagerImpl implements DataManager {
             }
 
             @Override
+            public void onEmptyList(Context context, Map<String, String> params, GetPeopleAddress data) {
+                if (isUseFilter(params)) {
+                    setCacheAddressList(generateCacheKey(context, params), data);
+                }
+
+                presenter.setOnEmptyAddressList(data);
+                presenter.setAllowConnection(true);
+                presenter.setOnRequestSuccess();
+            }
+
+            @Override
             public void onTimeOut(NetworkErrorHelper.RetryClickedListener clickedListener) {
                 presenter.setOnRequestTimeOut(clickedListener);
             }
@@ -110,7 +121,7 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // delete value
@@ -149,7 +160,7 @@ public class DataManagerImpl implements DataManager {
                 new Func2<String, GetPeopleAddress, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey, GetPeopleAddress cacheData) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
@@ -191,7 +202,7 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, GetPeopleAddress>() {
                     @Override
                     public GetPeopleAddress call(String cacheKey) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
@@ -248,6 +259,11 @@ public class DataManagerImpl implements DataManager {
                 presenter.setOnSuccessLoadMoreData(data);
                 presenter.setAllowConnection(true);
                 presenter.setOnRequestSuccess();
+            }
+
+            @Override
+            public void onEmptyList(Context context, Map<String, String> params, GetPeopleAddress data) {
+
             }
 
             @Override

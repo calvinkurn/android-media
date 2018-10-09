@@ -1,25 +1,27 @@
 package com.tokopedia.core.referral;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.fragment.FragmentReferral;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.referral.di.DaggerReferralComponent;
+
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -37,10 +39,27 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
                 .putExtras(extras);
     }
 
+    public static Intent getCallingIntent(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, ReferralActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        Intent intent = new Intent(context, ReferralActivity.class);
+        return intent;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventReferralLongClick();
+        }
 
     }
 
@@ -66,9 +85,9 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
 
     @Override
     protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof FragmentReferral))
-            getFragmentManager().beginTransaction().replace(R.id.container,
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     FragmentReferral.newInstance()).commit();
     }
 
@@ -132,9 +151,9 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
 
     private String getToolbarTitle() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(ReferralActivity.this);
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)){
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
             return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_referral_appshare));
-        }else{
+        } else {
             return getString(R.string.drawer_title_appshare);
         }
     }

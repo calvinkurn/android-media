@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -15,6 +16,7 @@ import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailCompo
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailImpl;
+import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 
 /**
  * Created by hangnadi on 3/28/17.
@@ -26,6 +28,7 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_TROUBLE_ID = "trouble_id";
     private static final String EXTRA_PARAM_PRODUCT_NAME = "product_name";
+    private static final String EXTRA_PARAM_IS_RESO_DETAIL = "is_reso_detail";
 
     private static final String TAG_DETAIL_PRODUCT_FRAGMENT =
             ProductDetailFragment.class.getSimpleName();
@@ -45,6 +48,16 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
         return intent;
     }
 
+    public static Intent newInstanceResolutionDetail(Context context, String resolutionID, String troubleID, String productName) {
+        Intent intent = new Intent(context, ProductDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putString(EXTRA_PARAM_TROUBLE_ID, troubleID);
+        bundle.putString(EXTRA_PARAM_PRODUCT_NAME, productName);
+        bundle.putBoolean(EXTRA_PARAM_IS_RESO_DETAIL, true);
+        intent.putExtras(bundle);
+        return intent;
+    }
     @Override
     public Fragment getFragment() {
         return fragment;
@@ -158,5 +171,16 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getExtras() != null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras.get(EXTRA_PARAM_IS_RESO_DETAIL) != null && extras.getBoolean(EXTRA_PARAM_IS_RESO_DETAIL)) {
+                UnifyTracking.eventTracking(InboxAnalytics.eventResoDetailClickChatBox(resolutionID));
+            }
+        }
+        super.onBackPressed();
     }
 }

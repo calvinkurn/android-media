@@ -3,7 +3,11 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import java.util.List;
@@ -23,23 +27,19 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void incrementStart();
 
+    boolean isEvenPage();
+
     void storeTotalData(int totalData);
 
     int getStartFrom();
-
-    void setTopAdsEndlessListener();
-
-    void unSetTopAdsEndlessListener();
 
     void setHeaderTopAds(boolean hasHeader);
 
     void setProductList(List<Visitable> list);
 
-    void disableWishlistButton(int adapterPosition);
+    void disableWishlistButton(String productId);
 
-    void enableWishlistButton(int adapterPosition);
-
-    void showBottomBarNavigation(boolean show);
+    void enableWishlistButton(String productId);
 
     void showNetworkError(int startRow);
     String getQueryKey();
@@ -51,4 +51,16 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void setSearchParameter(SearchParameter searchParameter);
 
     void backToTop();
+
+    List<Option> getQuickFilterOptions(DataValue dynamicFilterModel);
+
+    void addLoading();
+
+    void removeLoading();
+
+    void onSuccessAddWishlist(String productId);
+
+    void onErrorAddWishList(String errorMessage, String productId);
+
+    void notifyAdapter();
 }

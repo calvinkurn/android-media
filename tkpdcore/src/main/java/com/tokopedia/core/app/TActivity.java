@@ -13,12 +13,10 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -85,8 +83,8 @@ public abstract class TActivity extends BaseActivity {
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                    (context);
             context.startActivity(intent);
         } else {
             context.startActivity(TransactionCartRouter.createInstanceCartActivity(context));
@@ -97,8 +95,8 @@ public abstract class TActivity extends BaseActivity {
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = OldSessionRouter.getLoginActivityIntent(getBaseContext());
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                    (this);
             startActivity(intent);
         } else {
             startActivity(TransactionCartRouter.createInstanceCartActivity(this));
@@ -120,28 +118,28 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().hide();
     }
 
-    private void setLightToolbarStyle() {
+    protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+            toolbar.setBackgroundResource(R.color.white);
         } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
-        drawable.setBounds(5, 5, 5, 5);
+        if (drawable != null)
+            drawable.setBounds(5, 5, 5, 5);
+
         toolbar.setOverflowIcon(drawable);
 
         if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
-            );
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
-                .WebViewToolbarSubtitleText);
+        toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, R.style.WebViewToolbarSubtitleText);
     }
 
+    // for global nav purpose
     protected boolean isLightToolbarThemes() {
-        return false;
+        return GlobalConfig.isCustomerApp();
     }
 }

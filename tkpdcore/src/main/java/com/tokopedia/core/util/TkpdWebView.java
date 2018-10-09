@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -12,10 +13,14 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
+ * refer {@link com.tokopedia.abstraction.base.view.webview.TkpdWebView}
  */
+@Deprecated
 public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
@@ -37,16 +42,28 @@ public class TkpdWebView extends WebView {
         loadUrl(generateUri(url));
     }
 
-    public void loadAuthUrl(String url) {
-        loadUrl(url,
-                AuthUtil.generateHeaders(
-                        Uri.parse(url).getPath(),
-                        getQuery(Uri.parse(url).getQuery()),
-                        "GET",
-                        AuthUtil.KEY.KEY_WSV4));
+    @Override
+    public void loadUrl(String url) {
+        loadAuthUrl(url);
     }
 
-    private String getQuery(String query) {
+    public void loadAuthUrl(String url) {
+        loadUrl(url, getWebviewHeaders(url));
+    }
+
+    public void loadOtherUrl(String url) {
+        loadUrl(url, new HashMap<String, String>());
+    }
+
+    public static Map<String, String> getWebviewHeaders(String url) {
+        return AuthUtil.generateWebviewHeaders(
+                Uri.parse(url).getPath(),
+                getQuery(Uri.parse(url).getQuery()),
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
+    }
+
+    private static String getQuery(String query) {
         return query != null ? query : "";
     }
 

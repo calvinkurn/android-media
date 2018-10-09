@@ -11,32 +11,33 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
-import com.tokopedia.inbox.inboxtalk.listener.InboxTalkActivityView;
-import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.inbox.inboxtalk.listener.InboxTalkActivityView;
+import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,49 +45,32 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InboxTalkActivity extends DrawerPresenterActivity implements
+@Deprecated
+public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         InboxTalkActivityView,
-        NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
+        NotificationReceivedListener,
+        InboxTalkResultReceiver.Receiver {
 
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
-
     private static final String MY_PRODUCT = "inbox-talk-my-product";
     private static final String INBOX_ALL = "inbox-talk";
     private static final String FOLLOWING = "inbox-talk-following";
     PagerAdapter adapter;
 
-    @BindView(R2.id.pager)
-    ViewPager mViewPager;
-    @BindView(R2.id.indicator)
-    TabLayout indicator;
+    @BindView(R2.id.pager) ViewPager mViewPager;
+    @BindView(R2.id.indicator) TabLayout indicator;
 
+    private InboxTalkResultReceiver mReceiver;
 
     private Boolean ContextualStats = false;
     private ActionMode mode;
     private Boolean isLogin;
     private String[] contentArray;
-
     private Boolean fromNotif = false;
     private Boolean forceUnread;
-    InboxTalkResultReceiver mReceiver;
 
-    @DeepLink(Constants.Applinks.TALK)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
-
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination = new Intent(context, InboxTalkActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxTalkActivity.class);
     }
 
     @Override
@@ -100,7 +84,6 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
         super.onCreate(savedInstanceState);
         getExtras();
         initResultReceiver();
-
     }
 
     @Override
@@ -182,14 +165,27 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp())
+            return super.getContentId();
+        return R.layout.layout_tab_secondary;
+    }
+
+    @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_talk;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_talk;
+        return 0;
     }
 
     @Override
     protected void initView() {
         super.initView();
-//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
         ButterKnife.bind(this);
         setContent();
         adapter = new PagerAdapter(getFragmentManager(), getFragmentList());
@@ -230,14 +226,10 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
-
-    }
+    protected void setActionVar() { }
 
     @Override
     public void onGetNotif() {
@@ -312,11 +304,23 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
                 InboxTalkIntentService.ACTION_REPORT);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+    }
+
     public class PagerAdapter extends FragmentStatePagerAdapter {
 
-        private List<Fragment> fragmentList = new ArrayList<>();
+        private List<Fragment> fragmentList;
 
-        public PagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+        PagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
             this.fragmentList = fragmentList;
         }
@@ -331,17 +335,4 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
             return fragmentList.size();
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
-            startActivity(SellerAppRouter.getSellerHomeActivity(this));
-            finish();
-        } else if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivity(this));
-            finish();
-        }
-        super.onBackPressed();
-    }
-
 }

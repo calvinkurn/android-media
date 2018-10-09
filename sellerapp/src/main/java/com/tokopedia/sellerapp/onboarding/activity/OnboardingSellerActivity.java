@@ -7,12 +7,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
@@ -81,8 +81,9 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             Intent intent = SellerRouter.getActivityShopCreateEdit(this);
             startActivity(intent);
             finish();
-        } else {
-            Intent intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(this);
+        } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
+            Intent intent =  ((SellerModuleRouter) MainApplication.getAppContext())
+                    .getPhoneVerificationActivityIntent(this);
             startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
     }

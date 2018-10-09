@@ -20,6 +20,16 @@ import java.util.List;
 
 public class OptionHelper {
 
+    public static void saveOptionShownInMainState(Option option,
+                                                     HashMap<String, Boolean> shownInMainState) {
+
+        if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
+            shownInMainState.put(option.getUniqueId(), true);
+        } else {
+            shownInMainState.remove(option.getUniqueId());
+        }
+    }
+
     public static void saveOptionInputState(Option option,
                                             HashMap<String, Boolean> checkedState,
                                             HashMap<String, String> savedTextInput) {
@@ -34,10 +44,10 @@ public class OptionHelper {
     private static void saveCheckboxOptionInputState(Option option,
                                                      HashMap<String, Boolean> checkedState) {
 
-        if (!TextUtils.isEmpty(option.getInputState())) {
-            checkedState.put(option.getUniqueId(), Boolean.parseBoolean(option.getInputState()));
+        if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
+            checkedState.put(option.getUniqueId(), true);
         } else {
-            checkedState.put(option.getUniqueId(), false);
+            checkedState.remove(option.getUniqueId());
         }
     }
 
@@ -79,13 +89,19 @@ public class OptionHelper {
     }
 
     public static String parseKeyFromUniqueId(String uniqueId) {
-        int separatorPos = uniqueId.indexOf(Option.UID_SEPARATOR_SYMBOL);
-        return uniqueId.substring(0, separatorPos);
+        int firstSeparatorPos = uniqueId.indexOf(Option.UID_FIRST_SEPARATOR_SYMBOL);
+        return uniqueId.substring(0, firstSeparatorPos);
     }
 
     public static String parseValueFromUniqueId(String uniqueId) {
-        int separatorPos = uniqueId.indexOf(Option.UID_SEPARATOR_SYMBOL);
-        return uniqueId.substring(separatorPos + Option.UID_SEPARATOR_SYMBOL.length(), uniqueId.length());
+        int firstSeparatorPos = uniqueId.indexOf(Option.UID_FIRST_SEPARATOR_SYMBOL);
+        int secondSeparatorPos = uniqueId.indexOf(Option.UID_SECOND_SEPARATOR_SYMBOL);
+        return uniqueId.substring(firstSeparatorPos + Option.UID_FIRST_SEPARATOR_SYMBOL.length(), secondSeparatorPos);
+    }
+
+    public static String parseNameFromUniqueId(String uniqueId) {
+        int secondSeparatorPos = uniqueId.indexOf(Option.UID_SECOND_SEPARATOR_SYMBOL);
+        return uniqueId.substring(secondSeparatorPos + Option.UID_SECOND_SEPARATOR_SYMBOL.length(), uniqueId.length());
     }
 
     public static void bindOptionWithCheckbox(final Option option,

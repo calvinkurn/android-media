@@ -16,15 +16,15 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.util.TkpdAuthWebViewClient;
 import com.tokopedia.core.util.TkpdWebView;
 
 /**
@@ -54,7 +54,7 @@ public class TokoPointWebViewFragment extends Fragment {
         }
     }
 
-    private class MyWebClient extends WebViewClient {
+    private class MyWebClient extends TkpdAuthWebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -82,10 +82,10 @@ public class TokoPointWebViewFragment extends Fragment {
                             .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                     return true;
                 } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
-                    if (getActivity().getApplication() instanceof TkpdCoreRouter &&
-                            (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+                    if (getActivity().getApplication() instanceof ApplinkRouter &&
+                            (((ApplinkRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
 
-                        ((TkpdCoreRouter) getActivity().getApplication())
+                        ((ApplinkRouter) getActivity().getApplication())
                                 .getApplinkUnsupported(getActivity())
                                 .showAndCheckApplinkUnsupported();
                         return true;
@@ -93,7 +93,7 @@ public class TokoPointWebViewFragment extends Fragment {
                 }
             }
 
-            return false;
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {

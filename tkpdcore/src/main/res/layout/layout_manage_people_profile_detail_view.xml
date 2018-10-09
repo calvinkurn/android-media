@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_small"
-    android:background="@drawable/cards_ui_2"
-    android:padding="@dimen/se_img_pad"
-    android:orientation="vertical"
-    tools:showIn="@layout/content_manage_people_profile">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              android:background="@drawable/cards_ui_2"
+              android:orientation="vertical"
+              android:padding="@dimen/se_img_pad"
+              tools:showIn="@layout/content_manage_people_profile">
 
     <TextView
         android:layout_width="match_parent"
@@ -16,48 +16,76 @@
         android:text="@string/title_edit_personal"
         android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
-        android:background="@color/greyish_bg" />
+        android:background="@color/greyish_bg"/>
 
-    <android.support.design.widget.TextInputLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_sm">
 
-        <EditText
-            android:id="@+id/user_name"
+        <TextView
+            android:id="@+id/change_name_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/tab_selector"
+            android:text="@string/string_change"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/fonts"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
-            android:enabled="false"
-            android:hint="@string/title_name"
-            android:gravity="left"
-            android:inputType="text"
-            android:textSize="@dimen/font_small" />
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_med"
+            android:layout_toLeftOf="@id/change_email_button"
+            android:orientation="vertical">
 
-    </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_name"
+                android:textColor="@color/black_38"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="normal"
+                />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_l_medium"
+                tools:text="shinta.purnawan@tokopedia.com"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/title_dob"
         android:layout_marginBottom="@dimen/margin_small">
 
         <EditText
             android:id="@+id/birth_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_dob"
             android:layout_marginBottom="@dimen/margin_small"
-            android:gravity="left"
-            android:textSize="@dimen/font_small"
             android:focusable="false"
-            android:inputType="date" />
+            android:gravity="left"
+            android:inputType="date"
+            android:textSize="@dimen/fonts"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -66,34 +94,36 @@
         android:layout_height="wrap_content"
         android:gravity="left"
         android:text="@string/title_gender"
-        android:textColor="@color/label_color" />
+        android:textColor="@color/label_color"/>
 
     <RadioGroup
         android:id="@+id/gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/male"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_male"
-            android:textSize="@dimen/fonts" />
+            android:textSize="@dimen/fonts"/>
 
         <RadioButton
             android:id="@+id/female"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_female"
-            android:textSize="@dimen/fonts" />
+            android:textSize="@dimen/fonts"/>
     </RadioGroup>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/title_hobbies"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/hobbies"
@@ -101,8 +131,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:inputType="text"
-            android:hint="@string/title_hobbies"
-            android:textSize="@dimen/font_small" />
+            android:textSize="@dimen/fonts"/>
 
     </android.support.design.widget.TextInputLayout>
 

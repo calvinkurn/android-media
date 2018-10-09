@@ -31,6 +31,8 @@ public class ProductImage implements Parcelable {
     @Expose
     private String imageSrc;
 
+    private int variantChildId;
+
     public ProductImage() {
     }
 
@@ -82,6 +84,14 @@ public class ProductImage implements Parcelable {
         this.imageSrc = imageSrc;
     }
 
+    public int getVariantChildId() {
+        return variantChildId;
+    }
+
+    public void setVariantChildId(int variantChildId) {
+        this.variantChildId = variantChildId;
+    }
+
     protected ProductImage(Parcel in) {
         imageId = in.readByte() == 0x00 ? null : in.readInt();
         imageSrc300 = in.readString();
@@ -89,6 +99,7 @@ public class ProductImage implements Parcelable {
         imageDescription = in.readString();
         imagePrimary = in.readByte() == 0x00 ? null : in.readInt();
         imageSrc = in.readString();
+        variantChildId = in.readInt();
     }
 
     @Override
@@ -119,6 +130,7 @@ public class ProductImage implements Parcelable {
             dest.writeInt(imagePrimary);
         }
         dest.writeString(imageSrc);
+        dest.writeInt(variantChildId);
     }
 
     @SuppressWarnings("unused")

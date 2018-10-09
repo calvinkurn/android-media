@@ -71,11 +71,10 @@ public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
-                bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
-                bundle.putString("product_name", data.getInfo().getProductName());
-                listener.onProductRatingClicked(bundle);
+                String productId = String.valueOf(data.getInfo().getProductId());
+                String shopId = String.valueOf(data.getShopInfo().getShopId());
+                String productName =  String.valueOf(data.getShopInfo().getShopId());
+                listener.onProductRatingClicked(productId, shopId, productName);
             }
         });
 

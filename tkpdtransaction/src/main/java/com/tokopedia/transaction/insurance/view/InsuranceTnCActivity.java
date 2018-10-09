@@ -45,9 +45,4 @@ public class InsuranceTnCActivity extends TActivity implements FragmentGeneralWe
         return true;
     }
 
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        toolbar.setNavigationIcon(R.drawable.ic_clear_24dp);
-    }
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:id="@+id/main_view"
     android:background="@drawable/border_bottom_05dp"
     android:padding="16dp"
@@ -18,7 +20,7 @@
             android:id="@+id/user_avatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_icon_toped_announce"
+            app:srcCompat="@drawable/ic_icon_toped_announce"
             android:layout_gravity="center_vertical"
             />
 

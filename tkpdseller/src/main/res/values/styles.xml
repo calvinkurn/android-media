@@ -28,6 +28,18 @@
         <item name="layout_anchorGravity">bottom|right|end</item>
     </style>
 
+    <style name="LabelLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/dp_64</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:paddingTop">@dimen/margin_sm</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingBottom">@dimen/margin_sm</item>
+    </style>
+
     <style name="LabelLayout.Border">
         <item name="android:background">@drawable/border_background_view_topads</item>
     </style>
@@ -53,13 +65,6 @@
     <style name="CardViewLayoutMatchParent" parent="BaseCardViewLayoutMatchParent">
         <item name="android:layout_marginLeft">-2dp</item>
         <item name="android:layout_marginRight">-2dp</item>
-    </style>
-
-    <style name="LabelLayout.InnerExpandable">
-        <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
-        <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
-        <item name="android:paddingTop">@dimen/product_inner_expandable_padding</item>
-        <item name="android:paddingBottom">0dp</item>
     </style>
 
     <style name="LabelLayout.NoPadding">
@@ -112,8 +117,8 @@
     </style>
 
     <style name="ExpandableHeaderStylePadding" parent="eo_header_style">
-        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
         <item name="android:paddingTop">@dimen/margin_small_sm</item>
         <item name="android:paddingBottom">@dimen/margin_small_sm</item>
         <item name="android:gravity">center_vertical</item>
@@ -178,7 +183,7 @@
     </style>
 
     <style name="View.ShopSetting">
-        <item name="android:background">@drawable/rounded_corner_black_shop_open</item>
+        <item name="android:background">@drawable/rect_white_rounded_stroke_gray_padding</item>
     </style>
 
     <style name="View.ShopSetting.ImagePicker">
@@ -197,7 +202,7 @@
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">7dp</item>
         <item name="android:paddingBottom">7dp</item>
-        <item name="android:background">@drawable/ic_bubble_logo</item>
+        <item name="android:background">@drawable/ic_balloon_gray</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>
@@ -211,22 +216,12 @@
     </style>
 
     <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:lineSpacingExtra">@dimen/sp_5</item>
     </style>
 
     <style name="successTextAppearance" parent="TextAppearance.Design.Error">
         <item name="android:textColor">@color/tkpd_main_green</item>
-    </style>
-
-    <style name="HintTextInputLayout" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
-    </style>
-
-    <style name="HintTextInputLayoutColorLine" parent="TextInputLayoutColorLine">
-        <item name="android:textColorHint">@color/grey_300</item>
     </style>
 
 </resources>

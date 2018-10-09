@@ -1,9 +1,13 @@
 package com.tokopedia.session.login.loginphonenumber.view.viewlistener;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 12/4/17.
@@ -11,8 +15,6 @@ import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokoca
 
 public interface ChooseTokocashAccount {
     interface View extends CustomerView {
-
-        void onSelectedTokocashAccount(AccountTokocash accountTokocash);
 
         void onSuccessLogin();
 
@@ -22,13 +24,21 @@ public interface ChooseTokocashAccount {
 
         void onErrorLoginTokoCash(String errorMessage);
 
-        void goToSecurityQuestion(AccountTokocash email, MakeLoginDomain makeLoginDomain);
+        void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel);
+
+        void onForbidden();
+
+        Context getContext();
+    }
+
+    public interface ViewAdapter {
+        void onSelectedTokocashAccount(AccountTokocash accountTokocash);
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {
 
         void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
+        void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list);
 
-        void clearUserData();
     }
 }

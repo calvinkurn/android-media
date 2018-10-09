@@ -172,6 +172,9 @@ public class ProductDB extends BaseModel implements DatabaseConstant {
     List<PictureDB> pictureDBs;
     List<WholesalePriceDB> wholesalePriceDBs;
 
+    @Column
+    public String priceFormatted;
+
     public int getConditionProd() {
         return conditionProd;
     }
@@ -361,8 +364,20 @@ public class ProductDB extends BaseModel implements DatabaseConstant {
         this.stockStatusDB = stockStatusDB;
     }
 
+    public String getPriceFormatted() {
+        return priceFormatted;
+    }
+
+    public void setPriceFormatted(String priceFormatted) {
+        this.priceFormatted = priceFormatted;
+    }
+
     @Override
     public long getId() {
         return Id;
+    }
+
+    public void setId(long Id) {
+        this.Id = Id;
     }
 }

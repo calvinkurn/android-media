@@ -1,6 +1,6 @@
 package com.tokopedia.otp.tokocashotp.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.tokocashotp.view.viewlistener.Verification;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
 
@@ -25,7 +25,7 @@ public class VerifyOtpTokoCashSubscriber extends Subscriber<VerifyOtpTokoCashVie
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtp(ErrorHandler.getErrorMessage(e));
+        view.onErrorVerifyOtp(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
     }
 
     @Override

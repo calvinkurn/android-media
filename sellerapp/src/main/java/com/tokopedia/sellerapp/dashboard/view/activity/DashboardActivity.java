@@ -1,19 +1,24 @@
 package com.tokopedia.sellerapp.dashboard.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
+import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
 
 //import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 //import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -28,8 +33,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
     public static Intent createInstance(Context context) {
-        Intent intent = new Intent(context, DashboardActivity.class);
-        return intent;
+        return new Intent(context, DashboardActivity.class);
     }
 
     @Override
@@ -41,6 +45,43 @@ public class DashboardActivity extends DrawerPresenterActivity
                     .replace(R.id.container, DashboardFragment.newInstance(), TAG)
                     .commit();
         }
+        checkAppUpdate();
+    }
+
+    private void checkAppUpdate() {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(final DetailUpdate detail) {
+                if (!isFinishing()) {
+                    new AppUpdateDialogBuilder(
+                        DashboardActivity.this,
+                        detail,
+                        new AppUpdateDialogBuilder.Listener() {
+                            @Override
+                            public void onPositiveButtonClicked(DetailUpdate detail) {
+
+                            }
+
+                            @Override
+                            public void onNegativeButtonClicked(DetailUpdate detail) {
+
+                            }
+                        }
+                    ).getAlertDialog().show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+
+            }
+        });
     }
 
     @Override

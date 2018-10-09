@@ -39,4 +39,9 @@ public interface IPromoCouponView extends IBaseView {
     void disableSwipeRefresh();
 
     void enableSwipeRefresh();
+
+    String getCategoryId();
+
+    void couponDataNoResult(String title, String subTitle);
+
 }

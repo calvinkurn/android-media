@@ -3,6 +3,9 @@ package com.tokopedia.core.referral.listener;
 import android.app.Activity;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.referral.data.PromoContent;
+import com.tokopedia.core.referral.data.ReferralCodeEntity;
+import com.tokopedia.core.referral.model.ShareApps;
 
 /**
  * Created by ashwanityagi on 18/09/17.
@@ -10,7 +13,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 
 public interface ReferralView extends CustomerView {
 
-    void renderVoucherCode(String voucherCode);
+    void renderVoucherCodeData(ReferralCodeEntity referralData);
 
     Activity getActivity();
 
@@ -29,4 +32,6 @@ public interface ReferralView extends CustomerView {
     void hideProcessDialog();
 
     void renderErrorGetVoucherCode(String message);
+
+    void renderSharableApps(ShareApps shareApps , int index);
 }

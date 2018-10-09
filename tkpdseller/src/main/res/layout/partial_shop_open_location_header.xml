@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:showIn="@layout/fragment_shop_open_location"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:showIn="@layout/fragment_shop_open_location">
 
     <android.support.v7.widget.AppCompatImageView
         style="@style/ImageView.ShopSettingTitleImage"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_location_icon"
+        app:srcCompat="@drawable/ic_location_icon"
         android:layout_marginBottom="0dp" />
 
     <TextView
@@ -21,8 +21,8 @@
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
         android:text="@string/shop_open_shipping_location_text_desc"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:layout_marginTop="16dp" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         style="@style/View.ShopSetting.BrowseImage"
-        android:layout_height="@dimen/image_width_m"
+        android:layout_height="@dimen/dp_40"
         android:layout_marginTop="10dp"
         >
         <TextView

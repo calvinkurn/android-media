@@ -90,4 +90,10 @@ public class LoginPhoneNumberAnalytics {
                 getTypeLabel(type)
         );
     }
+
+    public static class Screen {
+        public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
+        public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
+        public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
+    }
 }

@@ -3,10 +3,13 @@ package com.tokopedia.discovery.newdiscovery.hotlist.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -17,10 +20,12 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     private String productID;
     private String productName;
+    private String productUrl;
     private String imageUrl;
     private String imageUrl700;
     private String rating;
     private String countReview;
+    private String countCourier;
     private String price;
     private String shopID;
     private String shopName;
@@ -31,6 +36,15 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     private boolean wishlist;
     private boolean isWishlistButtonEnabled;
     private boolean featured;
+    private String trackerName;
+    private String trackerPosition;
+    private String homeAttribution;
+    private String originalPrice;
+    private int discountPercentage;
+    private boolean isOfficial;
+    private String priceRange;
+    private String topLabel;
+    private String bottomLabel;
 
     public HotlistProductViewModel() {
         isWishlistButtonEnabled = true;
@@ -42,6 +56,14 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
 
     public void setWishlistButtonEnabled(boolean wishlistButtonEnabled) {
         isWishlistButtonEnabled = wishlistButtonEnabled;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
     }
 
     public void setProductID(String productID) {
@@ -164,10 +186,121 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         return featured;
     }
 
+    public String getCountCourier() {
+        return countCourier;
+    }
+
+    public void setCountCourier(String countCourier) {
+        this.countCourier = countCourier;
+    }
+
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
+    public String getPriceRange() {
+        return priceRange;
+    }
+
+    public void setPriceRange(String priceRange) {
+        this.priceRange = priceRange;
+    }
+
+    public String getTopLabel() {
+        return topLabel;
+    }
+
+    public void setTopLabel(String topLabel) {
+        this.topLabel = topLabel;
+    }
+
+    public String getBottomLabel() {
+        return bottomLabel;
+    }
+
+    public void setBottomLabel(String bottomLabel) {
+        this.bottomLabel = bottomLabel;
+    }
+
+    public Map<String, Object> generateImpressionDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                        getPrice()
+                )),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "list", getTrackerName(),
+                "position", getTrackerPosition(),
+                "dimension38", getHomeAttribution()
+        );
+    }
+
+    public String getTrackerName() {
+        return trackerName;
+    }
+
+    public void setTrackerName(String trackerName) {
+        this.trackerName = trackerName;
+    }
+
+    public String getTrackerPosition() {
+        return trackerPosition;
+    }
+
+    public void setTrackerPosition(String trackerPosition) {
+        this.trackerPosition = trackerPosition;
+    }
+
+    public void setHomeAttribution(String homeAttribution) {
+        this.homeAttribution = homeAttribution;
+    }
+
+    public String getHomeAttribution() {
+        if (homeAttribution == null || homeAttribution.isEmpty()) return "none / other";
+        else return homeAttribution;
+    }
+
+    public Map<String, Object> generateClickDataLayer() {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
+                "brand", "none / other",
+                "category", "none / other",
+                "variant", "none / other",
+                "position", getTrackerPosition(),
+                "dimension38", getHomeAttribution()
+        );
+    }
+
     @SuppressWarnings("WeakerAccess")
     public static class BadgeModel implements Parcelable {
         private String imageUrl;
         private String title;
+        private boolean isShown;
 
         public void setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
@@ -185,6 +318,14 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
             return title;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -194,6 +335,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.imageUrl);
             dest.writeString(this.title);
+            dest.writeByte(this.isShown ? (byte) 1 : (byte) 0);
         }
 
         public BadgeModel() {
@@ -202,6 +344,7 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         protected BadgeModel(Parcel in) {
             this.imageUrl = in.readString();
             this.title = in.readString();
+            this.isShown = in.readByte() != 0;
         }
 
         public static final Creator<BadgeModel> CREATOR = new Creator<BadgeModel>() {
@@ -285,10 +428,12 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productID);
         dest.writeString(this.productName);
+        dest.writeString(this.productUrl);
         dest.writeString(this.imageUrl);
         dest.writeString(this.imageUrl700);
         dest.writeString(this.rating);
         dest.writeString(this.countReview);
+        dest.writeString(this.countCourier);
         dest.writeString(this.price);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
@@ -299,15 +444,26 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         dest.writeByte(this.wishlist ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(this.featured ? (byte) 1 : (byte) 0);
+        dest.writeString(this.trackerName);
+        dest.writeString(this.trackerPosition);
+        dest.writeString(this.homeAttribution);
+        dest.writeString(this.originalPrice);
+        dest.writeInt(this.discountPercentage);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeString(this.priceRange);
+        dest.writeString(this.topLabel);
+        dest.writeString(this.bottomLabel);
     }
 
     protected HotlistProductViewModel(Parcel in) {
         this.productID = in.readString();
         this.productName = in.readString();
+        this.productUrl = in.readString();
         this.imageUrl = in.readString();
         this.imageUrl700 = in.readString();
         this.rating = in.readString();
         this.countReview = in.readString();
+        this.countCourier = in.readString();
         this.price = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
@@ -318,6 +474,15 @@ public class HotlistProductViewModel implements Visitable<HotlistAdapterTypeFact
         this.wishlist = in.readByte() != 0;
         this.isWishlistButtonEnabled = in.readByte() != 0;
         this.featured = in.readByte() != 0;
+        this.trackerName = in.readString();
+        this.trackerPosition = in.readString();
+        this.homeAttribution = in.readString();
+        this.originalPrice = in.readString();
+        this.discountPercentage = in.readInt();
+        this.isOfficial = in.readByte() != 0;
+        this.priceRange = in.readString();
+        this.topLabel = in.readString();
+        this.bottomLabel = in.readString();
     }
 
     public static final Creator<HotlistProductViewModel> CREATOR = new Creator<HotlistProductViewModel>() {

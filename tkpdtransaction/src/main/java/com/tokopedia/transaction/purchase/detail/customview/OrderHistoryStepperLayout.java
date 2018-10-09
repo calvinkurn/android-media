@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.customview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -51,29 +52,10 @@ public class OrderHistoryStepperLayout extends LinearLayout{
         TextView title = findViewById(R.id.stepper_title);
         ImageView stepperImage = findViewById(R.id.stepper_image);
         title.setText(model.getStepperStatusTitle());
+        title.setTextColor(Color.parseColor(model.getOrderListData().get(0).getColor()));
         if(model.getHistoryImage() == null
                 || model.getHistoryImage().isEmpty()) setVisibility(GONE);
         else ImageHandler.LoadImage(stepperImage, model.getHistoryImage());
-        stepperImage.setImageResource(generateStepperImage(model.getStepperMode()));
-    }
-
-    private int generateStepperImage(int orderMode) {
-        switch (orderMode) {
-            case ORDER_FINISHED:
-                return R.drawable.stepper_order_finished;
-            case ORDER_ARRIVED:
-                return R.drawable.stepper_order_arrived;
-            case ORDER_SENT:
-                return R.drawable.stepper_order_being_delivered;
-            case ORDER_PROCESSED:
-                return R.drawable.stepper_seller_accept_order;
-            case ORDER_VERIFIED:
-                return R.drawable.stepper_waiting_seller_response;
-            case ORDER_CHECKED_OUT:
-                return R.drawable.stepper_waiting_seller_response;
-            default:
-                return R.drawable.stepper_order_finished;
-        }
     }
 
 }
