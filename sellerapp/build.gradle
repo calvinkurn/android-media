@@ -329,8 +329,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
 
-    implementation rootProject.ext.viewDependencies.appIntro
-
     implementation project(rootProject.ext.libraries.fingerprint)
 
     implementation(rootProject.ext.miscDependencies.trueCaller) {
@@ -369,6 +367,4 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
-
-    implementation project(rootProject.ext.libraries.userSession)
 }
