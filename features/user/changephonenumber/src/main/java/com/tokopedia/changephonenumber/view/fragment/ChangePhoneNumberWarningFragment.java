@@ -23,6 +23,7 @@ import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningCompon
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningModule;
 import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarningComponent;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
+import com.tokopedia.changephonenumber.view.activity.OvoWebViewActivity;
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
@@ -35,7 +36,8 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel
+        .BALANCE_THRESHOLD_FOR_WARNING;
 
 
 /**
@@ -357,6 +359,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                     });
         }
     }
+
+    @Override
+    public void goToOvoWebView(String url) {
+        startActivity(OvoWebViewActivity.newInstance(getContext(), url));
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
+    }
+
 
     public Integer getUserId() {
         return Integer.parseInt(userSession.getUserId());

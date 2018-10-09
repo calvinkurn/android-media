@@ -27,6 +27,8 @@ public interface ChangePhoneNumberWarningFragmentListener {
         Integer getUserId();
 
         Context getContext();
+
+        void goToOvoWebView(String url);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

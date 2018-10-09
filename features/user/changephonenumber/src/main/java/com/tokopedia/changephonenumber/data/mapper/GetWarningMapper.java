@@ -1,5 +1,7 @@
 package com.tokopedia.changephonenumber.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.changephonenumber.data.model.GetWarningData;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
@@ -35,6 +37,10 @@ public class GetWarningMapper implements Func1<Response<TokopediaWsV4Response>, 
                 model.setTokopediaBalanceNumber(data.getSaldoNumber());
                 model.setWarningList(data.getWarning());
                 model.setHasBankAccount(data.getHasBankAccount());
+                model.setOvoEligible(data.isOvoEligible());
+                if (!TextUtils.isEmpty(data.getRedirectUrl())) {
+                    model.setUrlOvo(data.getRedirectUrl());
+                }
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
