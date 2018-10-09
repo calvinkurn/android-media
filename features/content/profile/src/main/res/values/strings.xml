@@ -10,6 +10,6 @@
     <string name="profile_rec_qutoa" formatted="false">Sisa jatah rekomendasi: %s</string>
     <string name="profile_add_rec">Tambah Rekomendasi</string>
     <string name="profile_share_profile">Bagikan Profile Ini</string>
-    <string name="profile_share_text">Lihat profil ini, deh! Ada produk rekomendasi buatmu, lho: %s</string>v
+    <string name="profile_share_text">Lihat profil ini, deh! Ada produk rekomendasi buatmu, lho: %s</string>
     <string name="profile_share_title">Bagikan Profil Ini</string>
 </resources>
