@@ -1,9 +1,12 @@
 package com.tokopedia.profile.view.viewmodel
 
+import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
+
 /**
  * @author by milhamj on 9/21/18.
  */
 data class ProfileFirstPageViewModel(
-        val profileHeaderViewModel: ProfileHeaderViewModel = ProfileHeaderViewModel(),
-        val profilePostViewModel: List<ProfilePostViewModel> = ArrayList()
+        val profileHeaderViewModel: ProfileHeaderViewModel,
+        val profilePostViewModel: List<ProfilePostViewModel>,
+        val affiliatePostQuota: AffiliatePostQuota
 )

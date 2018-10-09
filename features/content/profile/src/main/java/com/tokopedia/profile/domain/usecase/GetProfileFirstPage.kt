@@ -2,7 +2,7 @@ package com.tokopedia.profile.domain.usecase
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.profile.data.pojo.profileheader.AffiliatePostQuota
+import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
@@ -19,6 +19,7 @@ import javax.inject.Inject
  */
 class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetProfileHeaderUseCase,
                                               val getProfilePostUseCase: GetProfilePostUseCase,
+                                              val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
                                               val userSession: UserSession)
     : UseCase<ProfileFirstPageViewModel>() {
 
@@ -30,8 +31,11 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                 ?: 0
         return Observable.zip(
                 getHeader(userId),
-                getPost()) { header: ProfileHeaderViewModel, posts: List<ProfilePostViewModel> ->
-            ProfileFirstPageViewModel(header, posts)
+                getPost(),
+                getQuota()) { header: ProfileHeaderViewModel,
+                              posts: List<ProfilePostViewModel>,
+                              quota: AffiliatePostQuota ->
+            ProfileFirstPageViewModel(header, posts, quota)
         }
     }
 
@@ -94,17 +98,24 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
         return Observable.just(posts)
     }
 
+    private fun getQuota(): Observable<AffiliatePostQuota> {
+        return if (userId.toString() == userSession.userId) {
+            getAffiliateQuotaUseCase.createObservable(RequestParams.EMPTY).map(convertToPostQuota())
+        } else {
+            Observable.just(AffiliatePostQuota())
+        }
+    }
+
     private fun convertToHeader(): Func1<GraphqlResponse, ProfileHeaderViewModel> {
         return Func1 { graphqlResponse ->
             val data: ProfileHeaderData = graphqlResponse.getData(ProfileHeaderData::class.java)
             val profile: Profile = data.bymeProfileHeader.profile
-            val quota: AffiliatePostQuota = data.affiliatePostQuota
             ProfileHeaderViewModel(
                     profile.name,
                     profile.avatar,
                     profile.totalFollower.formatted,
                     profile.totalFollowing.formatted,
-                    quota.formatted,
+                    "",
                     profile.affiliateName,
                     profile.link,
                     userId,
@@ -112,6 +123,14 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                     profile.isFollowed,
                     userId.toString() == userSession.userId
             )
+        }
+    }
+
+    private fun convertToPostQuota(): Func1<GraphqlResponse, AffiliatePostQuota> {
+        return Func1 { graphqlResponse ->
+            val data: AffiliatePostQuota = graphqlResponse.getData(AffiliatePostQuota::class.java)
+                    ?: AffiliatePostQuota()
+            data
         }
     }
 

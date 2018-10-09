@@ -1,4 +1,4 @@
-package com.tokopedia.profile.data.pojo.profileheader
+package com.tokopedia.profile.data.pojo.affiliatequota
 
 import com.google.gson.annotations.SerializedName
 
