@@ -2,12 +2,12 @@ package com.tokopedia.logisticaddaddress.addaddress;
 
 import android.content.Context;
 
-import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
-import com.tokopedia.logisticaddaddress.model.db.City;
-import com.tokopedia.logisticaddaddress.model.db.District;
-import com.tokopedia.logisticaddaddress.model.db.Province;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.District;
+import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticdata.data.entity.address.Destination;
 
 import java.util.List;
 

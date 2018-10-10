@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
 /**
  * Created on 5/19/16.

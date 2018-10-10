@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
-import com.tokopedia.logisticaddaddress.model.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.io.IOException;
 import java.util.Map;

@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.model.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
 
 import java.util.ArrayList;
 import java.util.List;

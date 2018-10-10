@@ -1,9 +1,7 @@
-package com.tokopedia.logisticaddaddress.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ public class GetPeopleAddress {
     private Token token;
 
     /**
-     * 
+     *
      * @return
      *     The paging
      */
@@ -32,7 +30,7 @@ public class GetPeopleAddress {
     }
 
     /**
-     * 
+     *
      * @param paging
      *     The paging
      */
@@ -41,7 +39,7 @@ public class GetPeopleAddress {
     }
 
     /**
-     * 
+     *
      * @return
      *     The list
      */
@@ -50,7 +48,7 @@ public class GetPeopleAddress {
     }
 
     /**
-     * 
+     *
      * @param list
      *     The list
      */

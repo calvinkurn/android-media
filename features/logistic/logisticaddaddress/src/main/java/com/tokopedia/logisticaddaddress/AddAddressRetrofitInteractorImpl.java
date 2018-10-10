@@ -20,10 +20,10 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.logisticaddaddress.model.FormAddressDomainModel;
-import com.tokopedia.logisticaddaddress.model.db.City;
-import com.tokopedia.logisticaddaddress.model.db.District;
-import com.tokopedia.logisticaddaddress.model.db.Province;
+import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.District;
+import com.tokopedia.logisticdata.data.entity.address.db.Province;
 
 import org.json.JSONException;
 

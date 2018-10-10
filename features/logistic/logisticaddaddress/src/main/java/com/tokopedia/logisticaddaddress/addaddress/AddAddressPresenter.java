@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.addaddress;
 
 
-import com.tokopedia.logisticaddaddress.model.db.City;
-import com.tokopedia.logisticaddaddress.model.db.Province;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.Province;
 
 /**
  * Created by nisie on 9/6/16.

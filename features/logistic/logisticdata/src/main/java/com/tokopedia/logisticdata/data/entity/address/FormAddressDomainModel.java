@@ -1,8 +1,7 @@
-package com.tokopedia.logisticaddaddress.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
-
-import com.tokopedia.logisticaddaddress.model.db.City;
-import com.tokopedia.logisticaddaddress.model.db.District;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.District;
 
 import java.util.List;
 

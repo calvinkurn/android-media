@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress;
 import android.content.Context;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.logisticaddaddress.model.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.util.Map;
 

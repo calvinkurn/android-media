@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_ADD_ADDRESS_FORM;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;

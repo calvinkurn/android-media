@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.maps.model.LatLng;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -38,17 +37,17 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
-import com.tokopedia.core.manage.people.address.model.Destination;
-import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
-import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
-import com.tokopedia.logisticaddaddress.model.db.City;
-import com.tokopedia.logisticaddaddress.model.db.District;
-import com.tokopedia.logisticaddaddress.model.db.Province;
+import com.tokopedia.logisticdata.data.entity.address.Destination;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.address.db.City;
+import com.tokopedia.logisticdata.data.entity.address.db.District;
+import com.tokopedia.logisticdata.data.entity.address.db.Province;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
@@ -590,13 +589,13 @@ public class AddAddressFragment extends BaseDaggerFragment
                         String longitude = locationPass.getLongitude();
 
                         if (!latitude.isEmpty() && !longitude.isEmpty()) {
-                            address.setLatLng(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+                            address.setLatLng(latitude, longitude);
                         } else {
-                            address.setLatLng(new LatLng(MONAS_LATITUDE, MONAS_LONGITUDE));
+                            address.setLatLng(String.valueOf(MONAS_LATITUDE), String.valueOf(MONAS_LONGITUDE));
                         }
 
                         if (locationPass.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
-                            generatedAddress = address.getLatLng().latitude + ", " + address.getLatLng().longitude;
+                            generatedAddress = address.getLatitude() + ", " + address.getLongitude();
                         } else {
                             generatedAddress = locationPass.getGeneratedAddress();
                         }

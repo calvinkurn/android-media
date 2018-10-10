@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

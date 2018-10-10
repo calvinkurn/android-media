@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model.db;
+package com.tokopedia.logisticdata.data.entity.address.db;
 
 import android.os.Parcel;
 import android.os.Parcelable;

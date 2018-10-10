@@ -11,7 +11,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.logisticaddaddress.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.RetrofitInteractorImpl;
-import com.tokopedia.logisticaddaddress.model.GetPeopleAddress;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
 
 import java.lang.reflect.Type;

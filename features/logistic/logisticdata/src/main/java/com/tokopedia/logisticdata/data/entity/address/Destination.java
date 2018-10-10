@@ -1,11 +1,9 @@
-package com.tokopedia.core.manage.people.address.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
@@ -349,20 +347,10 @@ public class Destination implements Parcelable {
                 && !provinceId.equals("0"));
     }
 
-    public LatLng getLatLng() {
-        LatLng latLng = null;
-        if (!TextUtils.isEmpty(latitude) && !TextUtils.isEmpty(longitude)) {
-            latLng =  new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-        }
-
-        return latLng;
+    public void setLatLng(String latitude, String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
-
-    public void setLatLng(LatLng latLng) {
-        this.latitude = String.valueOf(latLng.latitude);
-        this.longitude = String.valueOf(latLng.longitude);
-    }
-
 
     public void setPassword(String password) {
         this.password = password;
