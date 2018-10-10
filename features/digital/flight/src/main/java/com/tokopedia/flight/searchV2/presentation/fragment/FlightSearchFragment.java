@@ -310,11 +310,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void renderFlightSearch(List<FlightJourneyViewModel> journeyViewModelList) {
-
-    }
-
-    @Override
     public void showDepartureDateMaxTwoYears(int resId) {
         showMessageErrorInSnackbar(resId);
     }

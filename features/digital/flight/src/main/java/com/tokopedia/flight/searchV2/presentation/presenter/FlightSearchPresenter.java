@@ -1,7 +1,5 @@
 package com.tokopedia.flight.searchV2.presentation.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -247,7 +245,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(List<? extends FlightJourneyViewModel> flightJourneyViewModels) {
-                        Log.d("DATA", flightJourneyViewModels.get(0).getDepartureAirportName());
+//                        getView().renderList((List<FlightJourneyViewModel>) flightJourneyViewModels);
                     }
                 }
         );

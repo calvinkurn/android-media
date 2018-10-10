@@ -39,6 +39,8 @@ public interface FlightSearchContract {
 
         void reloadDataFromCache();
 
+        void renderList(List<FlightJourneyViewModel> list);
+
         void addToolbarElevation();
 
         void addBottomPaddingForSortAndFilterActionButton();
@@ -52,8 +54,6 @@ public interface FlightSearchContract {
         void setSelectedSortItem(int itemId);
 
         void setNeedRefreshAirline(boolean needRefresh);
-
-        void renderFlightSearch(List<FlightJourneyViewModel> journeyViewModelList);
 
         void showDepartureDateMaxTwoYears(int resId);
 
