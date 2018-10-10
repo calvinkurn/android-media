@@ -67,6 +67,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
                     itemView.followers.text = getFollowersText(element)
                     updateButtonState(it.isFollowed)
                 }
+                else -> bind(element)
             }
         }
     }

@@ -131,7 +131,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 break;
             case PAYLOAD_FOLLOW:
                 baseKolView.bindFollow(element.isFollowed(), element.isTemporarilyFollowed());
+                break;
             default:
+                bind(element);
                 break;
         }
     }
