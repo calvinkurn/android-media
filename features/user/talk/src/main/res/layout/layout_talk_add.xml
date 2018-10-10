@@ -15,7 +15,6 @@
 
         <TextView
             android:id="@+id/send_new_talk"
-            style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
