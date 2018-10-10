@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.text.TextPaint;
@@ -26,6 +27,7 @@ import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * @author by nisie on 10/27/17.
  */
@@ -35,6 +37,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_post_layout;
+    public static final int PAYLOAD_LIKE = 13;
+    public static final int PAYLOAD_COMMENT = 14;
+    public static final int PAYLOAD_FOLLOW = 15;
 
     private static final String DASH = "-";
 
@@ -97,7 +102,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
-        if (TextUtils.isEmpty(element.getInfo())){
+        if (TextUtils.isEmpty(element.getInfo())) {
             info.setVisibility(View.GONE);
         } else {
             info.setVisibility(View.VISIBLE);
@@ -112,6 +117,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
+    }
+
+    @Override
+    public void bind(KolPostViewModel element, @NonNull List<Object> payloads) {
+        switch ((int) payloads.get(0)) {
+            case PAYLOAD_LIKE:
+                baseKolView.bindLike(element.isLiked(), element.getTotalLike());
+                break;
+            case PAYLOAD_COMMENT:
+                baseKolView.bindComment(element.getTotalComment());
+                break;
+            case PAYLOAD_FOLLOW:
+                baseKolView.bindFollow(element.isFollowed(), element.isTemporarilyFollowed());
+            default:
+                break;
+        }
     }
 
     public void onViewRecycled() {

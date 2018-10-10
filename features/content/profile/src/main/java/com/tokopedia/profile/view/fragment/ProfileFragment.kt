@@ -22,6 +22,7 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
@@ -180,7 +181,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             } else {
                 kolPostViewModel.totalLike = kolPostViewModel.totalLike - 1
             }
-            adapter.notifyItemChanged(rowNumber)
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
 
             //TODO milhamj
 //            if (activity != null &&
@@ -333,7 +334,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 adapter.data[rowNumber] is KolPostViewModel) {
             val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
             kolPostViewModel.totalComment = kolPostViewModel.totalComment + totalNewComment
-            adapter.notifyItemChanged(rowNumber)
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT)
 
             //TODO milhamj
 //            if (activity != null &&
