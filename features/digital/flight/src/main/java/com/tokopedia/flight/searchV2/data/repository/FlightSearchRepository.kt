@@ -9,6 +9,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.cloud.model.response.*
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.data.ComboAndMetaWrapper
 import com.tokopedia.flight.searchV2.data.ResponseJourneysAndMetaWrapper
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse
@@ -32,19 +33,19 @@ open class FlightSearchRepository @Inject constructor(
 
     // simply call search combined and then insert to db
     fun getSearchCombined(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel):
-            Observable<List<FlightComboTable>> {
+            Observable<Meta> {
         return object : NetworkBoundResourceObservable<FlightDataResponse<List<FlightSearchCombinedResponse>>,
-                List<FlightComboTable>>() {
-            override fun loadFromDb(): Observable<List<FlightComboTable>> {
-                return flightSearchCombinedDataDbSource.getAllCombos()
+                ComboAndMetaWrapper>() {
+            override fun loadFromDb(): Observable<ComboAndMetaWrapper> {
+                return Observable.just(ComboAndMetaWrapper(arrayListOf(), Meta()))
             }
 
-            override fun shouldFetch(data: List<FlightComboTable>?) = data == null || data.isEmpty()
+            override fun shouldFetch(data: ComboAndMetaWrapper?) = true
 
             override fun createCall(): Observable<FlightDataResponse<List<FlightSearchCombinedResponse>>> =
                     flightSearchCombinedDataApiSource.getData(flightSearchCombinedApiRequestModel)
 
-            override fun mapResponse(response: FlightDataResponse<List<FlightSearchCombinedResponse>>): List<FlightComboTable> {
+            override fun mapResponse(response: FlightDataResponse<List<FlightSearchCombinedResponse>>): ComboAndMetaWrapper {
                 val combosTable = arrayListOf<FlightComboTable>()
                 for (comboResponse in response.data) {
                     with(comboResponse) {
@@ -66,13 +67,14 @@ open class FlightSearchRepository @Inject constructor(
                         }
                     }
                 }
-                return combosTable
+                return ComboAndMetaWrapper(combosTable, response.meta)
             }
 
-            override fun saveCallResult(items: List<FlightComboTable>): Observable<Unit> {
-                return Observable.just(flightSearchCombinedDataDbSource.insert(items))
+            override fun saveCallResult(items: ComboAndMetaWrapper): Observable<Unit> {
+                return Observable.just(flightSearchCombinedDataDbSource.insert(items.flightComboTables))
             }
         }.asObservable()
+                .map { it.meta }
     }
 
     fun getSearchCombinedReturn(params: java.util.HashMap<String, Any>?, onwardJourneyId: String?):
@@ -226,9 +228,9 @@ open class FlightSearchRepository @Inject constructor(
             val journeyAndRoutesList = responseJourneysAndMetaWrapper.flightJourneys
             val airlines = arrayListOf<String>()
             for (journeyAndRoutes in journeyAndRoutesList) {
-                for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
-                    if (!airlines.contains(flightAirlineDb.id)) {
-                        airlines.add(flightAirlineDb.id)
+                for (route in journeyAndRoutes.routes) {
+                    if (!airlines.contains(route.airline)) {
+                        airlines.add(route.airline)
                     }
                 }
             }

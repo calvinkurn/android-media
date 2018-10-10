@@ -9,8 +9,9 @@ import android.support.annotation.NonNull;
  */
 @Entity
 public class FlightComboTable {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
+    private int id;
     private String onwardJourneyId;
     private String returnJourneyId;
     private String comboId;
@@ -36,6 +37,15 @@ public class FlightComboTable {
         this.childPriceNumeric = childPriceNumeric;
         this.infantPriceNumeric = infantPriceNumeric;
         this.isBestPairing = isBestPairing;
+    }
+
+    public void setId(@NonNull int id) {
+        this.id = id;
+    }
+
+    @NonNull
+    public int getId() {
+        return id;
     }
 
     public String getOnwardJourneyId() {
