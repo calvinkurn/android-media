@@ -2907,8 +2907,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendIndexScreen(Activity activity) {
-        IndexScreenTracking.sendScreen(activity, () -> "ParentIndexHome");
+    public void sendIndexScreen(Activity activity, String screenName) {
+        IndexScreenTracking.sendScreen(activity, () -> screenName);
     }
 
     public void doLogoutAccount(Activity activity) {

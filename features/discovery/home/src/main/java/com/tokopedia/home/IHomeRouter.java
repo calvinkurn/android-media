@@ -27,4 +27,6 @@ public interface IHomeRouter {
     Intent getInstantLoanIntent(Context context);
 
     void goToManageShop(Context context);
+
+    void sendIndexScreen(Activity activity, String screeName);
 }
