@@ -22,15 +22,10 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
@@ -41,9 +36,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -61,10 +53,10 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.Constant;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -142,7 +134,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
+        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -155,7 +147,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected String getScreenName() {
-        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
+        return Constant.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
@@ -199,7 +191,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showRecomendationButton() {
         if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
             floatingTextButton.setVisibility(View.VISIBLE);
-            HomePageTracking.eventImpressionJumpRecomendation();
+            HomePageTracking.eventImpressionJumpRecomendation(getActivity());
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
@@ -216,7 +208,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        if (SessionHandler.isV4Login(getActivity())) {
+        if(SessionHandler.isV4Login(getActivity())) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
         presenter.attachView(this);
@@ -239,7 +231,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onClick(View view) {
                 scrollToRecommendList();
-                HomePageTracking.eventClickJumpRecomendation();
+                HomePageTracking.eventClickJumpRecomendation(getActivity());
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -452,16 +444,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
             );
         }
-
-        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            analyticTracker.sendEventTracking(
-                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
-                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
-                    DigitalEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
-                    DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
-            );
-        }
     }
 
     @Override
@@ -635,7 +617,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
-        if (scrollToRecommendList) {
+        if(scrollToRecommendList) {
             presenter.fetchNextPageFeed();
         }
     }
@@ -802,7 +784,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        if (scrollToRecommendList) {
+        if(scrollToRecommendList) {
             scrollToRecommendList();
         }
 
@@ -832,27 +814,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void updateCursorNoNextPageFeed() {
         presenter.setCursorNoNextPageFeed();
     }
-
-    private void openWebViewBrandsURL(String url) {
-        if (!url.trim().equals("")) {
-            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
-        }
-    }
-
-    public void openWebViewTopPicksURL(String url) {
-        if (!url.isEmpty()) {
-            startActivity(TopPicksWebView.newInstance(getActivity(), url));
-        }
-    }
-
-    private void openWebViewGimicURL(String url, String label, String title) {
-        if (!url.equals("")) {
-            Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getActivity(), url, title);
-            startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
-        }
-    }
-
 
     public void openWebViewURL(String url, Context context) {
         if (!TextUtils.isEmpty(url) && context != null) {
@@ -908,7 +869,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        HomePageTracking.sendScreen(getActivity(), getScreenName());
     }
 
     private void restartBanner(boolean isVisibleToUser) {
@@ -919,7 +880,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            HomePageTracking.sendScreen(getActivity(),getScreenName());
         }
     }
 

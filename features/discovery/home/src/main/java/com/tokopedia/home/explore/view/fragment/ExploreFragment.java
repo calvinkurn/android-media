@@ -12,9 +12,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.core.analytics.HomePageTracking;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
@@ -162,30 +161,35 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         switch (TYPE_FRAGMENT) {
             case TYPE_BELI:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.BELI_INI_ITU_CLICK,
                         String.format("%s - %s", data.getCategoryId(), data.getName())
                 );
                 break;
             case TYPE_BAYAR:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.BAYAR_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_PESAN:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.PESAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_AJUKAN:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.AJUKAN_INI_ITU_CLICK,
                         data.getName()
                 );
                 break;
             case TYPE_JUAL:
                 HomePageTracking.eventClickExplorerItem(
+                        getActivity(),
                         HomePageTracking.JUAL_INI_ITU_CLICK,
                         data.getName()
                 );
@@ -204,10 +208,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void openShopSetting() {
         String shopId = SessionHandler.getShopID(getContext());
         if (!shopId.equals("0")) {
-            HomePageTracking.eventClickEditShop();
+            HomePageTracking.eventClickEditShop(getActivity());
             onGoToShopSetting();
         } else {
-            HomePageTracking.eventClickOpenShop();
+            HomePageTracking.eventClickOpenShop(getActivity());
             onGoToCreateShop();
         }
     }
@@ -235,7 +239,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
+            HomePageTracking.eventHomeGimmick(getActivity(), label);
         }
     }
 
@@ -246,11 +250,11 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             if (!shopId.equals("0")) {
                 onGoToShop(shopId);
             } else {
-                HomePageTracking.eventClickOpenShop();
+                HomePageTracking.eventClickOpenShop(getActivity());
                 onGoToCreateShop();
             }
         } else {
-            HomePageTracking.eventClickOpenShop();
+            HomePageTracking.eventClickOpenShop(getActivity());
             onGoToLogin();
         }
     }

@@ -31,8 +31,8 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected HomeMapper providehomeMapper(){
-        return new HomeMapper();
+    protected HomeMapper providehomeMapper(@ApplicationContext Context context){
+        return new HomeMapper(context);
     }
 
     @HomeScope

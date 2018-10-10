@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.nishikino.model.Promotion;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -78,7 +78,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoClick(int position) {
         Promotion promotion = getPromotion(position);
-        HomePageTracking.eventPromoClick(promotion);
+        HomePageTracking.eventPromoClick(context, promotion);
         listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
         HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
@@ -87,7 +87,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
-            HomePageTracking.eventPromoImpression(getPromotion(position));
+            HomePageTracking.eventPromoImpression(context, getPromotion(position));
             HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
             listener.onPromoScrolled(slidesList.get(position));
         }
@@ -95,7 +95,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoAllClick() {
-        HomePageTracking.eventClickViewAllPromo();
+        HomePageTracking.eventClickViewAllPromo(context);
         HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
 
         boolean remoteConfigEnable;

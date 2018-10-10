@@ -339,7 +339,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         pagingHandler.getPage(),
                         userSession.getUserId(),
                         currentCursor),
-                new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
+                new GetHomeFeedsSubscriber(getView().getContext(), feedListener, pagingHandler.getPage()));
     }
 
     public void setCursor(String currentCursor) {

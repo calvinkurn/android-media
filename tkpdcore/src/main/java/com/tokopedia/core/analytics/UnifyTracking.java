@@ -921,15 +921,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHomeGimmick(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.GIMMICK,
-                AppEventTracking.Category.GIMMICK,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
     public static void eventWishlistView(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.WISHLIST,
