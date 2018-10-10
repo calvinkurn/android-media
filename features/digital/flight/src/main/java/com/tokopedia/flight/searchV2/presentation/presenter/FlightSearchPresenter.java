@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
@@ -45,15 +46,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSearchV2UseCase flightSearchV2UseCase;
     private FlightSortAndFilterUseCase flightSortAndFilterUseCase;
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
+    private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase) {
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
+        this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -174,6 +177,29 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             combinedRequestModel = new FlightSearchCombinedApiRequestModel(routes, adult, child, infant, classID);
         }
+
+        flightSearchCombinedUseCase.execute(flightSearchCombinedUseCase.createRequestParam(combinedRequestModel),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        fetch(requestModel, passDataViewModel);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            fetch(requestModel, passDataViewModel);
+                        }
+                    }
+                });
+    }
+
+    private void fetch(FlightSearchApiRequestModel requestModel, FlightSearchPassDataViewModel passDataViewModel) {
 
         flightSearchV2UseCase.execute(flightSearchV2UseCase.createRequestParams(
                 requestModel,
