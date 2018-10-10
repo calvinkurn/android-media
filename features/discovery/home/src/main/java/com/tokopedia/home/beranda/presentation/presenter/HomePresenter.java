@@ -114,7 +114,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (isViewAttached() && !this.fetchFirstData && needRefresh) {
             updateHomeData();
         }
-        getHeaderData(false);
+        getTokocashBalance();
     }
 
     @Override
