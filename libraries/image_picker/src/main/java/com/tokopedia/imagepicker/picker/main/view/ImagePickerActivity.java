@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -172,6 +173,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
             imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
             imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
+            imagePickerPreviewWidget.setCanReorder(
+                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().isCanReorder());
         } else {
             imagePickerPreviewWidget.setVisibility(View.GONE);
         }
@@ -188,13 +191,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             @Override
             public void onPageSelected(int position) {
-                if(selectedTab!= position) {
+                if (selectedTab != position) {
                     Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
-                    if (previousFragment!= null && previousFragment instanceof ImagePickerCameraFragment) {
+                    if (previousFragment != null && previousFragment instanceof ImagePickerCameraFragment) {
                         ((ImagePickerCameraFragment) previousFragment).onInvisible();
                     }
                     Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
-                    if (fragment!= null && fragment instanceof ImagePickerCameraFragment) {
+                    if (fragment != null && fragment instanceof ImagePickerCameraFragment) {
                         ((ImagePickerCameraFragment) fragment).onVisible();
                     }
                 }
@@ -441,7 +444,29 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onThumbnailItemClicked(String imagePath, int position) {
-        //TODO when thumbnail clicked.
+        //no-op when thumbnail is clicked currently
+    }
+
+    @Override
+    public void onThumbnailItemLongClicked(String imagePath, int position) {
+        if (position == 0) {
+            return;
+        }
+        Menus menus = new Menus(this);
+        menus.setItemMenuList(new String[]{getString(R.string.change_to_primary)});
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                int toPosition = 0;
+                //move the image path to 0
+                imagePickerPreviewWidget.reorderPosition(position, toPosition);
+
+                String imageDescription = imageDescriptionList.remove(position);
+                imageDescriptionList.add(toPosition, imageDescription);
+                menus.dismiss();
+            }
+        });
+        menus.show();
     }
 
     @Override
@@ -490,7 +515,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 
-    protected Intent getEditorIntent(ArrayList<String> selectedImagePaths){
+    protected Intent getEditorIntent(ArrayList<String> selectedImagePaths) {
         return ImageEditorActivity.getIntent(this, selectedImagePaths, imageDescriptionList,
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),

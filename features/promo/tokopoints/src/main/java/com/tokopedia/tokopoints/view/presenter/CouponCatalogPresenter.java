@@ -14,6 +14,7 @@ import com.tokopedia.tokopoints.view.model.CatalogDetailOuter;
 import com.tokopedia.tokopoints.view.model.CatalogStatusOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponDetailOuter;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter;
 import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
@@ -412,6 +413,44 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                     }
 
                     getView().onPreValidateError(errorTitle, errorMessage);
+                }
+            }
+        });
+    }
+
+    public void swipeMyCoupon(String partnerCode, String pin) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(CommonConstant.GraphqlVariableKeys.CODE, partnerCode);
+        variables.put(CommonConstant.GraphqlVariableKeys.PIN, pin);
+
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tp_gql_swipe_coupon),
+                CouponSwipeUpdateOuter.class,
+                variables);
+        mStartSendGift.clearRequest();
+        mStartSendGift.addRequest(request);
+        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //NA
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                CouponSwipeUpdateOuter data = response.getData(CouponSwipeUpdateOuter.class);
+                if (data != null && data.getSwipeCoupon() != null) {
+                    if (data.getSwipeCoupon().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
+                        getView().onSwipeResponse(data.getSwipeCoupon(), null, null);
+                    } else {
+                        if (data.getSwipeCoupon().getResultStatus().getMessages().size() > 0) {
+                            getView().onSwipeError(data.getSwipeCoupon().getResultStatus().getMessages().get(0));
+                        }
+                    }
                 }
             }
         });

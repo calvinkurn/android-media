@@ -35,6 +35,7 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.
@@ -115,6 +116,8 @@ public class BranchSdkUtils {
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -131,6 +134,10 @@ public class BranchSdkUtils {
         linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", data.getOgTitle());
+        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+
         return linkProperties;
     }
 
@@ -174,6 +181,7 @@ public class BranchSdkUtils {
                                             .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
                                             .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
                                             .setSku(String.valueOf(product.get(Product.KEY_ID)))
+                                            .setProductCategory(ProductCategory.getValue(String.valueOf(product.get(Product.KEY_CAT))))
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
                 }

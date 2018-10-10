@@ -77,7 +77,7 @@ public class ModelConverter {
         return viewModel;
     }
 
-    public static void convertList(List<Item> list, DisplayMode displayMode){
+    public static void convertList(List<Item> list, DisplayMode displayMode) {
         for (int i = 0; i < list.size(); i++) {
             Item visitable = list.get(i);
             if (displayMode == DisplayMode.GRID && visitable instanceof ProductListViewModel) {
@@ -87,9 +87,10 @@ public class ModelConverter {
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ProductBigViewModel) {
                 list.set(i, ModelConverter.convertToProductListViewModel(((ProductBigViewModel) visitable).getData()));
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel) {
-                list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel)visitable).getData()));
-            } else if(displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel
-                    || displayMode == DisplayMode.FEED_EMPTY && visitable instanceof ShopGridViewModel) { list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
+                list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel) visitable).getData()));
+            } else if (displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel
+                    || displayMode == DisplayMode.FEED_EMPTY && visitable instanceof ShopGridViewModel) {
+                list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
                         visitable).getData(), displayMode));
             } else if (displayMode == DisplayMode.BIG && visitable instanceof ProductGridViewModel) {
                 list.set(i, ModelConverter.convertToProductBigViewModel(((ProductGridViewModel)
@@ -102,5 +103,35 @@ public class ModelConverter {
         ProductCarouselListViewModel viewModel = new ProductCarouselListViewModel();
         viewModel.setData(data);
         return viewModel;
+    }
+
+    public static Item convertProductData(Data d, DisplayMode mode) {
+        switch (mode) {
+            case GRID:
+                return convertToProductGridViewModel(d);
+            case LIST:
+                return convertToProductListViewModel(d);
+            case BIG:
+                return convertToProductBigViewModel(d);
+            case FEED:
+                return convertToProductFeedViewModel(d);
+            default:
+                return convertToProductGridViewModel(d);
+        }
+    }
+
+    public static Item convertShopData(Data d, DisplayMode mode) {
+        switch (mode) {
+            case GRID:
+                return convertToShopGridViewModel(d);
+            case LIST:
+                return convertToShopListViewModel(d);
+            case BIG:
+                return convertToProductBigViewModel(d);
+            case FEED:
+                return convertToShopFeedViewModel(d, DisplayMode.FEED);
+            default:
+                return convertToShopGridViewModel(d);
+        }
     }
 }

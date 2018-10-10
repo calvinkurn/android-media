@@ -124,10 +124,10 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
             tv4DateTime.setVisibility(View.INVISIBLE);
         } else {
             if (item.getMinStartDate() == item.getMaxEndDate())
-                tv4DateTime.setText(Utils.convertEpochToString(item.getMinStartDate()));
+                tv4DateTime.setText(Utils.getSingletonInstance().convertEpochToString(item.getMinStartDate()));
             else
-                tv4DateTime.setText(Utils.convertEpochToString(item.getMinStartDate())
-                        + " - " + Utils.convertEpochToString(item.getMaxEndDate()));
+                tv4DateTime.setText(Utils.getSingletonInstance().convertEpochToString(item.getMinStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(item.getMaxEndDate()));
             tv4DateTime.setVisibility(View.VISIBLE);
         }
         tv4DateTime.setOnClickListener(clickListener);

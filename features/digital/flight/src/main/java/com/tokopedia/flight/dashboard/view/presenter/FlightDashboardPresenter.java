@@ -245,7 +245,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
 
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
-        getView().showDepartureDatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
+        getView().showDepartureCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
     }
 
     @Override
@@ -313,7 +313,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY);
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY);
 
-        getView().showReturnDatePickerDialog(selectedDate, minDate, maxDateCalendar.getTime());
+        getView().showReturnCalendarDatePicker(selectedDate, minDate, maxDateCalendar.getTime());
     }
 
     @Override
@@ -675,7 +675,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onBannerItemClick(int position, BannerDetail bannerDetail) {
-        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getDescription(), bannerDetail.getAttributes().getLinkUrl());
+        flightAnalytics.eventPromotionClick(position + 1, bannerDetail);
     }
 
     private void getBannerData() {

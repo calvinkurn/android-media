@@ -136,10 +136,13 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
-        try {
-            data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+            try {
+                data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         ThanksTrackerService.start(this, data);
     }

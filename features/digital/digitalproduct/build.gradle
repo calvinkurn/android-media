@@ -73,6 +73,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.remoteConfig
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation rootProject.ext.viewDependencies.appIntro
 

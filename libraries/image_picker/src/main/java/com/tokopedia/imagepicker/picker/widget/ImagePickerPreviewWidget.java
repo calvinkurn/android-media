@@ -30,6 +30,8 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     private RecyclerView recyclerView;
 
     public interface OnImagePickerThumbnailListWidgetListener {
+        void onThumbnailItemLongClicked(String imagePath, int position);
+
         void onThumbnailItemClicked(String imagePath, int position);
 
         void afterThumbnailRemoved(int index);
@@ -72,6 +74,10 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         }
     }
 
+    public void setCanReorder(boolean canReorder) {
+        imagePickerThumbnailAdapter.setCanReorder(canReorder);
+    }
+
     public void setOnImagePickerThumbnailListWidgetListener(OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener) {
         this.onImagePickerThumbnailListWidgetListener = onImagePickerThumbnailListWidgetListener;
     }
@@ -93,6 +99,17 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
         }, 1);
     }
 
+    public void reorderPosition(int fromPosition, int toPosition) {
+        ArrayList<String> imagePathList = this.imagePickerThumbnailAdapter.getImagePathList();
+        if (fromPosition > -1) {
+            String imagePathFrom = imagePathList.get(fromPosition);
+            imagePathList.remove(fromPosition);
+
+            imagePathList.add(toPosition, imagePathFrom);
+            imagePickerThumbnailAdapter.notifyDataSetChanged();
+        }
+    }
+
     public int removeData(String imagePath) {
         final int position = imagePickerThumbnailAdapter.removeData(imagePath);
         recyclerView.postDelayed(new Runnable() {
@@ -108,6 +125,13 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     public void onPickerThumbnailItemClicked(String imagePath, int position) {
         if (onImagePickerThumbnailListWidgetListener != null) {
             onImagePickerThumbnailListWidgetListener.onThumbnailItemClicked(imagePath, position);
+        }
+    }
+
+    @Override
+    public void onPickerThumbnailItemLongClicked(String imagePath, int position) {
+        if (onImagePickerThumbnailListWidgetListener != null) {
+            onImagePickerThumbnailListWidgetListener.onThumbnailItemLongClicked(imagePath, position);
         }
     }
 
