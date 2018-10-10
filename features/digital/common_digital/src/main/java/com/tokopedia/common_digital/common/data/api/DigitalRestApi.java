@@ -1,6 +1,8 @@
 package com.tokopedia.common_digital.common.data.api;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.common.constant.DigitalUrl;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 
@@ -28,7 +30,7 @@ public interface DigitalRestApi {
 
     @POST(DigitalUrl.PATH_GET_CART)
     @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> addToCart(
+    Observable<Response<DataResponse<ResponseCartData>>> addToCart(
             @Body JsonObject requestBody,
             @Header("Idempotency-Key") String idemPotencyKeyHeader
     );

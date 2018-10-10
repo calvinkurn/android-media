@@ -2,6 +2,9 @@ package com.tokopedia.common_digital.common.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -21,6 +24,7 @@ import com.tokopedia.common_digital.common.data.api.DigitalInterceptor;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.user.session.UserSession;
 
@@ -31,12 +35,15 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Rizky on 13/08/18.
  */
 @Module
 public class DigitalModule {
+    private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     @DigitalScope
     @Provides
@@ -56,7 +63,7 @@ public class DigitalModule {
     @Provides
     @DigitalScope
     DigitalInterceptor provideDigitalInterceptor(@ApplicationContext Context context,
-                                                 NetworkRouter networkRouter, UserSession userSession) {
+                                                 AbstractionRouter networkRouter, com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
         return new DigitalInterceptor(context, networkRouter, userSession);
     }
 
@@ -94,96 +101,40 @@ public class DigitalModule {
         return builder.build();
     }
 
-//    @Provides
-//    @DigitalScope
-//    @DigitalGqlApiClient
-//    public OkHttpClient provideDigitalGqlApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-//                                                         @ApplicationContext Context context,
-//                                                         DigitalRouter digitalRouter,
-//                                                         NetworkRouter networkRouter,
-//                                                         UserSession userSession) {
-//        OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
-//        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-//                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
-//                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-//                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
-//
-//        builder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
-//        builder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
-//        builder.addInterceptor(new ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse.class));
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            builder.addInterceptor(httpLoggingInterceptor)
-//                    .addInterceptor(digitalRouter.getChuckInterceptor());
-//        }
-//
-//        return builder.build();
-//    }
+    @DigitalScope
+    @Provides
+    @DigitalRestApiRetrofit
+    public Retrofit.Builder provideRetrofitBuilder(@DigitalRestApiRetrofit Gson gson) {
+        return new Retrofit.Builder()
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
 
-//    @DigitalScope
-//    @DigitalGqlApiRetrofit
-//    @Provides
-//    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
-//        return new Retrofit.Builder()
-//                .addConverterFactory(new StringResponseConverter())
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-//    }
+    @DigitalScope
+    @DigitalRestApiRetrofit
+    @Provides
+    public Gson provideFlightGson() {
+        return new GsonBuilder()
+                .setDateFormat(GSON_DATE_FORMAT)
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+    }
 
     @Provides
     @DigitalScope
     @DigitalRestApiRetrofit
     public Retrofit provideDigitalRestApiRetrofit(@DigitalRestApiClient OkHttpClient okHttpClient,
-                                                  Retrofit.Builder retrofitBuilder) {
+                                                  @DigitalRestApiRetrofit Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(DigitalUrl.BASE_URL).client(okHttpClient).build();
     }
-
-//    @Provides
-//    @DigitalScope
-//    @DigitalGqlApiRetrofit
-//    public Retrofit provideDigitalGqlApiRetrofit(@DigitalGqlApiClient OkHttpClient okHttpClient,
-//                                                 @DigitalGqlApiRetrofit Retrofit.Builder retrofitBuilder) {
-//        return retrofitBuilder.baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL).client(okHttpClient).build();
-//    }
 
     @Provides
     @DigitalScope
     public DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
         return retrofit.create(DigitalRestApi.class);
     }
-
-//    @Provides
-//    @DigitalScope
-//    public DigitalGqlApi provideDigitalGqlApi(@DigitalGqlApiRetrofit Retrofit retrofit) {
-//        return retrofit.create(DigitalGqlApi.class);
-//    }
-
-//    @Provides
-//    @DigitalScope
-//    ProductDigitalMapper provideProductDigitalMapper() {
-//        return new ProductDigitalMapper();
-//    }
-
-//    @Provides
-//    @DigitalScope
-//    AgentDigitalCategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-//                                                                         CacheManager cacheManager,
-//                                                                         ProductDigitalMapper productDigitalMapper,
-//                                                                         @ApplicationContext Context context) {
-//        return new AgentDigitalCategoryDetailDataSource(digitalGqlApi, cacheManager, productDigitalMapper, context);
-//    }
-
-//    @Provides
-//    @DigitalScope
-//    IAgentDigitalCategoryRepository provideDigitalCategoryRepository(AgentDigitalCategoryDetailDataSource agentDigitalCategoryDetailDataSource) {
-//        return new AgentDigitalCategoryRepository(agentDigitalCategoryDetailDataSource);
-//    }
-
-//    @Provides
-//    @DigitalScope
-//    public GetAgentDigitalCategoryByIdUseCase provideGetAgentDigitalCategoryByIdUseCase(IAgentDigitalCategoryRepository digitalCategoryRepository,
-//                                                                                        UserSession userSession) {
-//        return new GetAgentDigitalCategoryByIdUseCase(digitalCategoryRepository, userSession);
-//    }
 
     @Provides
     @DigitalScope

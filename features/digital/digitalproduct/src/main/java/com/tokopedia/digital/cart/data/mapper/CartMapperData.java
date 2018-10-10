@@ -1,8 +1,8 @@
 package com.tokopedia.digital.cart.data.mapper;
 
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
-import com.tokopedia.digital.cart.data.entity.response.checkout.ResponseCheckoutData;
 import com.tokopedia.digital.cart.data.entity.response.voucher.ResponseVoucherData;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.OtpData;

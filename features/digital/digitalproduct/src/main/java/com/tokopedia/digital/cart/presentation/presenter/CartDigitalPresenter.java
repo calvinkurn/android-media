@@ -17,6 +17,7 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
@@ -27,8 +28,6 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -68,18 +67,20 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
+    private DigitalRouter digitalRouter;
 
     @Inject
     public CartDigitalPresenter(
             ICartDigitalInteractor iCartDigitalInteractor,
             DigitalAddToCartUseCase digitalAddToCartUseCase,
             DigitalCheckoutUseCase digitalCheckoutUseCase,
-            DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+            DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+            DigitalRouter digitalRouter) {
         this.cartDigitalInteractor = iCartDigitalInteractor;
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
-        initRemoteConfig();
+        this.digitalRouter = digitalRouter;
     }
 
     @Override
@@ -448,19 +449,13 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         }
     }
 
-    private RemoteConfig remoteConfig;
-
-    private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
-    }
-
 
     /*
     TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
      */
     private boolean isNOTPEnabled() {
         // add here different conditions
-        return remoteConfig.getBoolean(FIREBASE_NOTP_REMOTE_CONFIG_KEY, true);
+        return digitalRouter.getBooleanRemoteConfig(FIREBASE_NOTP_REMOTE_CONFIG_KEY, true);
 
     }
 

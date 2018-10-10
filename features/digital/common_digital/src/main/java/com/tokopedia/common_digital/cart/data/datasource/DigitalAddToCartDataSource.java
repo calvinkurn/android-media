@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
@@ -36,17 +37,15 @@ public class DigitalAddToCartDataSource {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyAtcDigital));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
-        return digitalRestApi.addToCart(requestBody, idemPotencyKeyHeader).map(getFuncResponseToCartDigitalInfoData());
+        return digitalRestApi
+                .addToCart(requestBody, idemPotencyKeyHeader)
+                .map(new Func1<Response<DataResponse<ResponseCartData>>, CartDigitalInfoData>() {
+                    @Override
+                    public CartDigitalInfoData call(Response<DataResponse<ResponseCartData>> dataResponseResponse) {
+                        return cartMapperData.transformCartInfoData(
+                                dataResponseResponse.body().getData()
+                        );
+                    }
+                });
     }
-
-    @NonNull
-    private Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>
-    getFuncResponseToCartDigitalInfoData() {
-        return tkpdDigitalResponseResponse -> cartMapperData.transformCartInfoData(
-                tkpdDigitalResponseResponse.body().convertDataObj(
-                        ResponseCartData.class
-                )
-        );
-    }
-
 }

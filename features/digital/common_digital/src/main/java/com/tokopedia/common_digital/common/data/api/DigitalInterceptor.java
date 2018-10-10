@@ -3,6 +3,7 @@ package com.tokopedia.common_digital.common.data.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
@@ -19,17 +20,12 @@ import okhttp3.Response;
 /**
  * Created by Rizky on 16/08/18.
  */
-public class DigitalInterceptor extends TkpdAuthInterceptor {
+public class DigitalInterceptor extends com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor {
 
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
 
-    public DigitalInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
-        super(context, networkRouter, userSession);
-    }
-
-    public DigitalInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession,
-                              String authKey) {
-        super(context, networkRouter, userSession, authKey);
+    public DigitalInterceptor(Context context, AbstractionRouter abstractionRouter, com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+        super(context, abstractionRouter, userSession);
     }
 
     @Override

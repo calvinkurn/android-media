@@ -11,6 +11,8 @@ import okhttp3.Interceptor;
  */
 public interface DigitalRouter {
 
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
+
     Interceptor getChuckInterceptor();
 
     boolean isSupportedDelegateDeepLink(String url);

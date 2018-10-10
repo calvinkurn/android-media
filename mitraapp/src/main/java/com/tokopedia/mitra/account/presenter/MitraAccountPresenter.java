@@ -28,7 +28,7 @@ public class MitraAccountPresenter extends BaseDaggerPresenter<MitraAccountContr
     @Override
     public void onViewCreated() {
         getView().renderName(abstractionUserSession.getName());
-        getView().renderPhoneNumber(abstractionUserSession.getPhoneNumber());
+//        getView().renderPhoneNumber(abstractionUserSession.getPhoneNumber());
     }
 
     @Override

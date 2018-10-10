@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.cart.data.entity.response.checkout.ResponseCheckoutData;
@@ -39,16 +40,12 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
         return digitalRestApi.checkout(requestBody)
-                .map(getFuncResponseToCheckoutDigitalData());
-    }
-
-    @NonNull
-    private Func1<Response<TkpdDigitalResponse>, CheckoutDigitalData>
-    getFuncResponseToCheckoutDigitalData() {
-        return tkpdDigitalResponseResponse -> cartMapperData.transformCheckoutData(
-                tkpdDigitalResponseResponse.body()
-                        .convertDataObj(ResponseCheckoutData.class)
-        );
+                .map(new Func1<Response<DataResponse<com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData>>, CheckoutDigitalData>() {
+                    @Override
+                    public CheckoutDigitalData call(Response<DataResponse<com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData>> dataResponseResponse) {
+                        return cartMapperData.transformCheckoutData(dataResponseResponse.body().getData());
+                    }
+                });
     }
 
 }

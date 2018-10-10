@@ -1,6 +1,8 @@
 package com.tokopedia.digital.common.data.apiservice;
 
 import com.google.gson.JsonObject;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
@@ -38,7 +40,7 @@ public interface DigitalRestApi {
 
     @POST(TkpdBaseURL.DigitalApi.PATH_CHECKOUT)
     @Headers({"Content-Type: application/json"})
-    Observable<Response<TkpdDigitalResponse>> checkout(@Body JsonObject requestBody);
+    Observable<Response<DataResponse<ResponseCheckoutData>>> checkout(@Body JsonObject requestBody);
 
     @POST(TkpdBaseURL.DigitalApi.PATH_USSD)
     @Headers({"Content-Type: application/json"})

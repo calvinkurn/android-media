@@ -1,8 +1,12 @@
 package com.tokopedia.digital.cart.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.digital.cart.data.repository.CartDigitalRepository;
 import com.tokopedia.digital.cart.data.repository.CheckoutRepository;
 import com.tokopedia.digital.cart.data.repository.VoucherDigitalRepository;
@@ -91,5 +95,4 @@ public class DigitalCartModule {
     DigitalCheckoutUseCase provideDigitalCheckoutUseCase(ICheckoutRepository checkoutRepository) {
         return new DigitalCheckoutUseCase(checkoutRepository);
     }
-
 }

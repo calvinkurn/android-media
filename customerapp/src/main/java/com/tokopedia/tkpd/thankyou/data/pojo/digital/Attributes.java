@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.thankyou.data.pojo.digital;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 
 /**
  * Created by okasurya on 12/5/17.
