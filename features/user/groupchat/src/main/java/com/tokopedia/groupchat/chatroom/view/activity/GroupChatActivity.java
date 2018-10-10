@@ -1544,6 +1544,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
     }
 
+
     @Override
     public void onMessageReceived(Visitable map) {
         if (map instanceof VoteAnnouncementViewModel) {
@@ -1896,6 +1897,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void testSendReply(PendingChatViewModel pendingChatViewModel) {
-        presenter.testSendReply(pendingChatViewModel, userSession);
+        presenter.testSendReply(pendingChatViewModel, getChannelInfoViewModel().getChannelUrl(), userSession);
     }
 }

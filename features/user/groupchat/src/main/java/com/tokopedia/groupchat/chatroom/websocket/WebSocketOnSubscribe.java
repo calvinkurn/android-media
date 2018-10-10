@@ -1,10 +1,8 @@
 package com.tokopedia.groupchat.chatroom.websocket;
 
-import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,13 +37,13 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
 
     @Override
     public void call(final Subscriber<? super WebSocketInfo> subscriber) {
-        if (webSocket != null) {
-            if (!"main".equals(Thread.currentThread().getName())) {
-                long ms = TimeUnit.SECONDS.toMillis(1);
-                SystemClock.sleep(ms);
-                subscriber.onNext(WebSocketInfo.createReconnect());
-            }
-        }
+//        if (webSocket != null) {
+//            if (!"main".equals(Thread.currentThread().getName())) {
+//                long ms = TimeUnit.SECONDS.toMillis(1);
+//                SystemClock.sleep(ms);
+//                subscriber.onNext(WebSocketInfo.createReconnect());
+//            }
+//        }
         initWebSocket(subscriber, accessToken);
     }
 
@@ -58,7 +56,14 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
     }
 
     private void initWebSocket(final Subscriber<? super WebSocketInfo> subscriber, String accessToken) {
-
+//        Boolean pong;
+//        connectionChecker = Observable.interval(5, TimeUnit.SECONDS).map(new Func1<Long, Boolean>() {
+//            @Override
+//            public Boolean call(Long aLong) {
+//                if(webSocket && pong)
+//            }
+//        });
+//
         webSocket = client.newWebSocket(getRequest(url, accessToken), new WebSocketListener() {
             @Override
             public void onOpen(final WebSocket webSocket, Response response) {
@@ -104,6 +109,7 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
             public void onClosed(WebSocket webSocket, int code, String reason) {
                 if (showLog) {
                     Log.d(logTag, url + " --> onClosed:code = " + code + ", reason = " + reason);
+                    subscriber.onNext(WebSocketInfo.createReconnect());
                 }
             }
         });

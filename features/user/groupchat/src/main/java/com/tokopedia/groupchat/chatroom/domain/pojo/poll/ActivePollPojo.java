@@ -1,11 +1,13 @@
 
 package com.tokopedia.groupchat.chatroom.domain.pojo.poll;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo;
 
-public class ActivePollPojo {
+import java.util.List;
+
+public class ActivePollPojo extends BaseGroupChatPojo{
 
     @SerializedName("poll_id")
     @Expose

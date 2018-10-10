@@ -3,8 +3,8 @@ package com.tokopedia.groupchat.chatroom.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.google.gson.JsonObject;
 import com.sendbird.android.OpenChannel;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
@@ -14,7 +14,7 @@ import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.WebSocketResponse;
+import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
@@ -61,7 +61,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                              LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken, String deviceId, String accessToken) {
         loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
                 userAvatar, loginGroupChatListener, sendBirdToken);
-        connect(userId, deviceId, accessToken);
+        connect(userId, deviceId, accessToken, channelUrl);
     }
 
     @Override
@@ -167,10 +167,10 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     }
                 }, sendBirdToken);
-        connect(userId, deviceId, accessToken);
+        connect(userId, deviceId, accessToken, channelUrl);
     }
 
-    private void connect(String userId, String deviceId, String accessToken) {
+    private void connect(String userId, String deviceId, String accessToken, String channelUrl) {
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
         }
@@ -180,6 +180,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + deviceId +
                 "&user_id=" + userId;
+
+//        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
 
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
@@ -193,8 +195,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             }
 
             @Override
-            protected void onMessage(@NonNull WebSocketResponse response) {
-                Log.d("MainActivityPojo", String.valueOf(response.getCode()));
+            protected void onMessage(@NonNull Visitable item) {
+                Log.d("MainActivity", "item");
+                getView().onMessageReceived(item);
             }
 
             @Override
@@ -227,7 +230,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         }
     }
 
-    public void testSendReply(PendingChatViewModel pendingChatViewModel, UserSession userSession) {
+    public void testSendReply(PendingChatViewModel pendingChatViewModel, String channelUrl, UserSession userSession) {
         String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         SimpleDateFormat date = new SimpleDateFormat(START_TIME_FORMAT, Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -238,18 +241,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + userSession.getDeviceId() +
                 "&user_id=" + userSession.getUserId();
+//        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
 
-        JsonObject json = new JsonObject();
-        json.addProperty("code", 103);
-        JsonObject data = new JsonObject();
-        data.addProperty("message_id", 7996643);
-        data.addProperty("message", pendingChatViewModel.getMessage());
-        data.addProperty("start_time", startTime);
-        json.add("data", data);
-
-
-
-        RxWebSocket.send(magicString, json.toString());
+        RxWebSocket.send(magicString, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
     }
 
     public void destroyWebSocket() {

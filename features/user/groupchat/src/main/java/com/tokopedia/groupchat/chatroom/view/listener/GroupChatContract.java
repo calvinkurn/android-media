@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.sendbird.android.OpenChannel;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
@@ -78,6 +79,8 @@ public interface GroupChatContract {
         void logoutChannel(OpenChannel openChannel);
 
         void onSuccessEnterRefreshChannel(OpenChannel openChannel);
+
+        void onMessageReceived(Visitable text);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
