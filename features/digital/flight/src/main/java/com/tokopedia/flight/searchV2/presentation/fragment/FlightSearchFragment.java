@@ -40,6 +40,7 @@ import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
@@ -396,7 +397,48 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     public void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel) {
+        addToolbarElevation();
 
+        String depAirport = flightSearchMetaViewModel.getDepartureAirport();
+        String arrivalAirport = flightSearchMetaViewModel.getArrivalAirport();
+        FlightAirportCombineModel flightAirportCombineModel = flightAirportCombineModelList.getData(depAirport, arrivalAirport);
+        List<String> localListAirlines = flightAirportCombineModel.getAirlines();
+        localListAirlines.addAll(flightSearchMetaViewModel.getAirlines());
+        flightAirportCombineModel.setAirlines(localListAirlines);
+        int size = flightAirportCombineModelList.getData().size();
+        int halfProgressAmount = divideTo(divideTo(MAX_PROGRESS, size), 2);
+        if (!flightAirportCombineModel.isHasLoad()) {
+            flightAirportCombineModel.setHasLoad(true);
+            progress += halfProgressAmount;
+        }
+
+        if (flightAirportCombineModel.isNeedRefresh()) {
+            if (flightSearchMetaViewModel.isNeedRefresh()) {
+                int noRetry = flightAirportCombineModel.getNoOfRetry();
+                noRetry++;
+                flightAirportCombineModel.setNoOfRetry(noRetry);
+                progress += divideTo(halfProgressAmount, flightSearchMetaViewModel.getMaxRetry());
+
+                // already reach max retry limit, end retrying.
+                if (noRetry >= flightSearchMetaViewModel.getMaxRetry()) {
+                    flightAirportCombineModel.setNeedRefresh(false);
+                } else {
+                    //no retry still below the max retry, do retry
+                    //retry load data
+                    flightSearchPresenter.fetchSearchDataFromCloudWithDelay(passDataViewModel,
+                            flightAirportCombineModel, flightSearchMetaViewModel.getRefreshTime());
+                }
+
+            } else {
+                flightAirportCombineModel.setNeedRefresh(false);
+                progress += (flightSearchMetaViewModel.getMaxRetry() - flightAirportCombineModel.getNoOfRetry()) *
+                        divideTo(halfProgressAmount, flightSearchMetaViewModel.getMaxRetry());
+            }
+        }
+
+        setUpProgress();
+
+        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel);
     }
 
     @Override
@@ -681,6 +723,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private void hideSwipeRefreshLoad() {
         swipeToRefresh.setEnabled(true);
         swipeToRefresh.setRefreshing(false);
+    }
+
+    private int divideTo(int number, int pieces) {
+        return (int) Math.ceil(((double) number / pieces));
     }
 
     public interface OnFlightSearchFragmentListener {

@@ -29,6 +29,17 @@ public class FlightAirportCombineModelList implements Parcelable {
         return data;
     }
 
+    public FlightAirportCombineModel getData(String depAirport, String arrAirport) {
+        for (int i = 0, sizei = data.size(); i < sizei; i++) {
+            FlightAirportCombineModel flightAirportCombineModel = data.get(i);
+            if (flightAirportCombineModel.getDepAirport().equals(depAirport) &&
+                    flightAirportCombineModel.getArrAirport().equals(arrAirport)) {
+                return flightAirportCombineModel;
+            }
+        }
+        return null;
+    }
+
     public FlightAirportCombineModel getSingleData(String departureAirport, String arrivalAirport) {
         for (FlightAirportCombineModel singleData : data) {
             if (singleData.getDepAirport().equals(departureAirport) &&
@@ -42,7 +53,7 @@ public class FlightAirportCombineModelList implements Parcelable {
 
     /**
      * check did all of the data received?
-     *
+     * <p>
      * not yet? then retrieve the rest
      * done? good job
      *

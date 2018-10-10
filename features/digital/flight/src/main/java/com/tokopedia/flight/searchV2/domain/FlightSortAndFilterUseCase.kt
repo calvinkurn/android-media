@@ -22,7 +22,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
 
     override fun createObservable(requestParams: RequestParams): Observable<List<FlightJourneyViewModel>> {
-        val sortOption = requestParams.getObject(PARAM_FILTER_MODEL) as FlightSortOption
+        val sortOption = requestParams.getInt(PARAM_SORT, FlightSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return if (!TextUtils.isEmpty(filterModel.journeyId)) {

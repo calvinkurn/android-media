@@ -3,11 +3,13 @@ package com.tokopedia.flight.searchV2.presentation.contract;
 import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.List;
 
@@ -101,6 +103,10 @@ public interface FlightSearchContract {
         void fetchSearchData(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModelList flightAirportCombineModelList);
 
         void fetchSearchDataFromCloud(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModel flightAirportCombineModelList);
+
+        void fetchSearchDataFromCloudWithDelay(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModel flightAirportCombineModelList, int delayInSecond);
+
+        void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel);
     }
 
 }
