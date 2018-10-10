@@ -693,6 +693,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (TextUtils.isEmpty(senderId)) {
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - shop icon",
+                                    ""
+                            ).getEvent()
+                    );
                     presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
                             getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
@@ -1569,6 +1577,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (TextUtils.isEmpty(senderId)) {
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - three bullet",
+                                    "lihat profile"
+                            ).getEvent()
+                    );
                     presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
                             getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
