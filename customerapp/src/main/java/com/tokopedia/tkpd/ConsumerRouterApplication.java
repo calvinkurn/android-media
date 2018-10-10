@@ -64,6 +64,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -104,8 +105,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.onboarding.NewOnboardingActivity;
-import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
@@ -340,6 +339,7 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
+import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -1256,11 +1256,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return new Intent(context, OnboardingActivity.class);
     }
 
     @Override
@@ -3154,5 +3149,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    public String getDefferedDeeplinkPathIfExists(){
+        return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 }

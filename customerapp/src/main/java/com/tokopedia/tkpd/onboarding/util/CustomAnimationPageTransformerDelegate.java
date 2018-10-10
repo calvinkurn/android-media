@@ -1,4 +1,4 @@
-package com.tokopedia.core.onboarding;
+package com.tokopedia.tkpd.onboarding.util;
 
 import android.view.View;
 

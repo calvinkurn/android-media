@@ -1,11 +1,15 @@
-package com.tokopedia.core.onboarding;
+package com.tokopedia.tkpd.onboarding;
 
+import android.content.Context;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,20 +20,18 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
-import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
-import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.R;
+
+import com.github.paolorotolo.appintro.AppIntro;
+import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformer;
+import com.tokopedia.tkpd.ConsumerRouterApplication;
+import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
+import com.tokopedia.tkpd.onboarding.fragment.NewOnBoardingFragment;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -39,8 +41,7 @@ import static android.view.View.VISIBLE;
 /**
  * Created by steven on 7/25/2017.
  */
-
-public class NewOnboardingActivity extends OnboardingActivity {
+public class NewOnboardingActivity extends AppIntro {
 
     private static final String SCREEN_NAME = "Screen OnBoarding - ";
     protected View indicator;
@@ -49,10 +50,22 @@ public class NewOnboardingActivity extends OnboardingActivity {
     private ImageButton nextView;
     private int[] fragmentColor;
     private boolean isNextPressed = false;
+    protected View decorView;
+    private UserSession userSession;
+    private ConsumerOnboardingAnalytics analytics;
     private boolean isAppsflyerCallbackHandled;
 
     @Override
-    public void init(Bundle savedInstanceState) {
+    protected void onStart() {
+        super.onStart();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        userSession = new UserSession(this);
+        analytics = new ConsumerOnboardingAnalytics();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
@@ -85,29 +98,30 @@ public class NewOnboardingActivity extends OnboardingActivity {
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_1_title),
                 getString(R.string.nonb_1_desc), "onboarding1.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[0]),
-                OnBoardingFragment.VIEW_DEFAULT, 0));
+                NewOnBoardingFragment.VIEW_DEFAULT, 0));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_2_title),
                 getString(R.string.nonb_2_desc), "onboarding2.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[1]),
-                OnBoardingFragment.VIEW_DEFAULT, 1));
+                NewOnBoardingFragment.VIEW_DEFAULT, 1));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_3_title),
                 getString(R.string.nonb_3_desc), "onboarding3.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[2]),
-                OnBoardingFragment.VIEW_DEFAULT, 2));
+                NewOnBoardingFragment.VIEW_DEFAULT, 2));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_4_title),
                 getString(R.string.nonb_4_desc), "onboarding4.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[3]),
-                OnBoardingFragment.VIEW_DEFAULT, 3));
+                NewOnBoardingFragment.VIEW_DEFAULT, 3));
         addSlide(NewOnBoardingFragment.newInstance(getString(R.string.nonb_5_title),
                 getString(R.string.nonb_5_desc), "onboarding5.json",
                 ContextCompat.getColor(getApplicationContext(), fragmentColor[4]),
-                OnBoardingFragment.VIEW_ENDING, 4));
+                NewOnBoardingFragment.VIEW_ENDING, 4));
     }
 
     private void setSkip() {
         showSkipButton(false);
         setSkipText("Lewati");
-        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_medium));
+        skipView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen
+                .sp_14));
         skipView.setTypeface(Typeface.DEFAULT_BOLD);
         skipView.setGravity(Gravity.LEFT | Gravity.CENTER);
         skipView.setAllCaps(false);
@@ -118,32 +132,38 @@ public class NewOnboardingActivity extends OnboardingActivity {
         setSeparatorColor(MethodChecker.getColor(this, R.color.transparent));
     }
 
+
     @Override
-    public void onSkipPressed() {
-        onDonePressed();
+    public void onSkipPressed(Fragment currentFragment) {
+        super.onSkipPressed(currentFragment);
+        finishOnboard();
+
     }
 
     @Override
-    public void onNextPressed() {
+    public void onDonePressed(Fragment currentFragment) {
+        super.onDonePressed(currentFragment);
+        finishOnboard();
     }
 
-    @Override
-    public void onDonePressed() {
-        UnifyTracking.eventOnboardingSkip(pager.getCurrentItem() + 1);
-        SessionHandler.setFirstTimeUserNewOnboard(this, false);
-        if (TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-            startActivity(intent);
-        } else {
-            Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-            homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, AppsflyerContainer.getDefferedDeeplinkPathIfExists());
-            startActivity(homeIntent);
+    private void finishOnboard() {
+        analytics.eventOnboardingSkip(getApplicationContext(), pager.getCurrentItem() + 1);
+        userSession.setFirstTimeUserOnboarding(false);
+
+        Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
+        if (!TextUtils.isEmpty(((ConsumerRouterApplication) getApplicationContext())
+                        .getDefferedDeeplinkPathIfExists())) {
+            intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getApplicationContext())
+                        .getDefferedDeeplinkPathIfExists());
         }
+        startActivity(intent);
         finish();
+
     }
 
     @Override
-    public void onSlideChanged() {
+    public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
+        super.onSlideChanged(oldFragment, newFragment);
         if (pager.getCurrentItem() == fragments.size() - 1) {
             setButtonVisibility(bottom, GONE);
             setButtonVisibility(skipButton, GONE);
@@ -154,7 +174,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(indicator, VISIBLE);
         }
         int pageNumber = pager.getCurrentItem() + 1;
-        ScreenTracking.screen(SCREEN_NAME + pageNumber);
+        analytics.sendScreen(getApplicationContext(), SCREEN_NAME + pageNumber);
     }
 
     private void setButtonVisibility(View view, int visible) {
@@ -164,9 +184,21 @@ public class NewOnboardingActivity extends OnboardingActivity {
     }
 
     @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
-        onDonePressed();
+        finish();
+        userSession.setFirstTimeUser(false);
+        finishOnboard();
     }
 
     private void setNext() {
@@ -178,59 +210,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
         nextViewLayoutParams.rightMargin = (int) (20 * density);
     }
 
-    public void setNextResource() {
-        if (nextView != null) {
-            nextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(@NonNull View v) {
-                    if (!isNextPressed) {
-                        isNextPressed = true;
-
-                        if (isVibrateOn) {
-                            mVibrator.vibrate(vibrateIntensity);
-                        }
-
-                        boolean requestPermission = false;
-                        int position = 0;
-
-                        for (int i = 0; i < permissionsArray.size(); i++) {
-                            requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
-                            position = i;
-                            break;
-                        }
-
-                        if (requestPermission) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(permissionsArray.get(position).getPermission(), 1);
-                                permissionsArray.remove(position);
-                                isNextPressed = false;
-                            } else {
-                                NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                                if (currentFragment != null) currentFragment.animateOut();
-                                pager.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                                        isNextPressed = false;
-                                    }
-                                }, 1250);
-                                onNextPressed();
-                            }
-                        } else {
-                            NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                            if (currentFragment != null) currentFragment.animateOut();
-                            pager.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                                    isNextPressed = false;
-                                }
-                            }, 1250);
-                            onNextPressed();
-                        }
-                    }
-                }
-            });
-        }
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_onboarding;
     }
 }

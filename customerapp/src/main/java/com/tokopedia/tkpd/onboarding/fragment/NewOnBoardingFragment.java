@@ -1,16 +1,17 @@
-package com.tokopedia.core.onboarding.fragment;
-
-/**
- * Created by hafizh HERDI on 3/21/2016.
- */
+package com.tokopedia.tkpd.onboarding.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -21,45 +22,64 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
-import com.tokopedia.core.onboarding.CustomAnimationPageTransformerDelegate;
-import com.tokopedia.core.onboarding.NewOnboardingActivity;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformerDelegate;
+import com.tokopedia.tkpd.ConsumerRouterApplication;
+import com.tokopedia.tkpd.onboarding.analytics.ConsumerOnboardingAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.appearText;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.expandTextView;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.fadeText;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.setVisibilityGone;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideReverseX;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToX;
-import static com.tokopedia.core.onboarding.animation.OnboardingAnimation.slideToXFromCurrentHeight;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.DEFAULT_ANIMATION_DURATION;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.appearText;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.expandTextView;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.fadeText;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.setVisibilityGone;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideReverseX;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToX;
+import static com.tokopedia.onboarding.animation.OnboardingAnimation.slideToXFromCurrentHeight;
 
-public class NewOnBoardingFragment extends OnBoardingFragment implements CustomAnimationPageTransformerDelegate {
+/**
+ * Created by hafizh HERDI on 3/21/2016.
+ */
+public class NewOnBoardingFragment extends Fragment implements CustomAnimationPageTransformerDelegate {
 
     private static final String ARG_LOTTIE = "lottie";
     private static final String SCREEN_NAME = "Screen OnBoarding - ";
     private int mScreenWidth;
     private TextView startNow;
-    private ValueAnimator expandAnimator;
-    private ObjectAnimator fadeAnimator;
     private AnimatorSet animatorSet;
-    private ValueAnimator slideAnimatorX;
-    private ObjectAnimator goneAnimation;
     private View next;
     private LottieAnimationView lottieAnimationView;
     private TextView descView;
     private ImageView imageView;
     private TextView titleView;
     private int position;
+
     private boolean isAnimationPlayed = false;
     private String lottieAsset;
+    private ConsumerOnboardingAnalytics analytics;
+    private UserSessionInterface userSession;
 
+    protected static final String ARG_TITLE = "title";
+    protected static final String ARG_DRAWABLE = "drawable";
+    protected static final String ARG_DESC = "desc";
+    protected static final String ARG_BG_COLOR = "bg_color";
+    protected static final String ARG_TITLE_COLOR = "title_color";
+    protected static final String ARG_DESC_COLOR = "desc_color";
+    protected static final String ARG_VIEW_TYPE = "view_type";
+    protected static final String ARG_POSITION = "position";
+
+    public static final int VIEW_DEFAULT = 100;
+    public static final int VIEW_ENDING = 101;
+    protected View main;
+    protected int drawable;
+    protected int bgColor;
+    protected int titleColor;
+    protected int viewType;
+    protected int descColor;
+    protected CharSequence title, description;
 
     public static NewOnBoardingFragment newInstance(CharSequence title, CharSequence description,
                                                     String assetName, int bgColor, int viewType, int position) {
@@ -89,8 +109,21 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((NewOnboardingActivity) (getActivity())).setNextResource();
+        if (getArguments() != null && getArguments().size() != 0) {
+            drawable = getArguments().getInt(ARG_DRAWABLE);
+            title = getArguments().getCharSequence(ARG_TITLE);
+            description = getArguments().getCharSequence(ARG_DESC);
+            bgColor = getArguments().getInt(ARG_BG_COLOR);
+            titleColor = getArguments().containsKey(ARG_TITLE_COLOR) ? getArguments().getInt(ARG_TITLE_COLOR) : 0;
+            descColor = getArguments().containsKey(ARG_DESC_COLOR) ? getArguments().getInt(ARG_DESC_COLOR) : 0;
+            viewType = descColor = getArguments().containsKey(ARG_VIEW_TYPE) ? getArguments().getInt(ARG_VIEW_TYPE) : VIEW_DEFAULT;
+        }
+
+        analytics = new ConsumerOnboardingAnalytics();
         animatorSet = new AnimatorSet();
+        if (getActivity() != null) {
+            userSession = new UserSession(getActivity().getApplicationContext());
+        }
 
         if (getArguments() != null && getArguments().size() != 0) {
             position = getArguments().getInt(ARG_POSITION);
@@ -100,22 +133,17 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         switch (viewType) {
             case VIEW_ENDING:
-                return inflateEndingView(inflater, container, savedInstanceState);
+                return inflateEndingView(inflater, container);
             default:
-                return inflateDefaultView(inflater, container, savedInstanceState);
+                return inflateDefaultView(inflater, container);
         }
     }
 
     @Override
-    public boolean getUserVisibleHint() {
-        return super.getUserVisibleHint();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         view.setTag(this);
@@ -125,22 +153,23 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     @Override
     public void onResume() {
         super.onResume();
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        mScreenWidth = displaymetrics.widthPixels;
+        if (getActivity() != null) {
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+            mScreenWidth = displaymetrics.widthPixels;
+        }
     }
 
-    @Override
-    protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateDefaultView(LayoutInflater inflater, ViewGroup container) {
         View defaultView = getDefaultView(inflater, container);
         main = defaultView.findViewById(R.id.main);
-        lottieAnimationView = (LottieAnimationView) defaultView.findViewById(R.id.animation_view);
+        lottieAnimationView = defaultView.findViewById(R.id.animation_view);
         lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong);
 
 
-        titleView = (TextView) defaultView.findViewById(R.id.title);
-        descView = (TextView) defaultView.findViewById(R.id.description);
-        imageView = (ImageView) defaultView.findViewById(R.id.image);
+        titleView = defaultView.findViewById(R.id.title);
+        descView = defaultView.findViewById(R.id.description);
+        imageView = defaultView.findViewById(R.id.image);
         main = defaultView.findViewById(R.id.main);
 
 
@@ -160,14 +189,13 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         return defaultView;
     }
 
-    @Override
-    protected View inflateEndingView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected View inflateEndingView(LayoutInflater inflater, ViewGroup container) {
         View endingView = getEndingView(inflater, container);
-        titleView = (TextView) endingView.findViewById(R.id.title);
-        imageView = (ImageView) endingView.findViewById(R.id.image);
-        descView = (TextView) endingView.findViewById(R.id.description);
+        titleView = endingView.findViewById(R.id.title);
+        imageView = endingView.findViewById(R.id.image);
+        descView = endingView.findViewById(R.id.description);
         main = endingView.findViewById(R.id.main);
-        lottieAnimationView = (LottieAnimationView) endingView.findViewById(R.id.animation_view);
+        lottieAnimationView = endingView.findViewById(R.id.animation_view);
         lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong);
         lottieAnimationView.playAnimation();
 
@@ -180,20 +208,20 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
 
         main.setBackgroundColor(bgColor);
 
-        startNow = (TextView) endingView.findViewById(R.id.button_start_now);
-        startNow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
-                UnifyTracking.eventOnboardingStartNow();
-                if (TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
-                    Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
-                    startActivity(intent);
-                } else {
-                    Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(getActivity());
-                    homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, AppsflyerContainer.getDefferedDeeplinkPathIfExists());
-                    startActivity(homeIntent);
+        startNow = endingView.findViewById(R.id.button_start_now);
+        startNow.setOnClickListener(v -> {
+            userSession.setFirstTimeUserOnboarding(false);
+            if (getActivity() != null) {
+                analytics.eventOnboardingStartNow(getActivity().getApplicationContext());
+                Intent intent = ((ConsumerRouterApplication) getActivity().getApplicationContext())
+                        .getHomeIntent
+                        (getActivity());
+                if (!TextUtils.isEmpty(((ConsumerRouterApplication) getActivity()
+                	.getApplicationContext()).getDefferedDeeplinkPathIfExists())) {
+                    intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getActivity().getApplicationContext())
+                        .getDefferedDeeplinkPathIfExists());
                 }
+                startActivity(intent);
                 getActivity().finish();
             }
         });
@@ -202,12 +230,10 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         return endingView;
     }
 
-    @Override
     protected View getEndingView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(R.layout.fragment_onboarding_intro_ending_new, container, false);
     }
 
-    @Override
     protected View getDefaultView(LayoutInflater inflater, ViewGroup container) {
         return inflater.inflate(R.layout.fragment_onboarding_intro_new, container, false);
     }
@@ -255,6 +281,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         titleView.setVisibility(View.INVISIBLE);
         descView.setVisibility(View.INVISIBLE);
         if (viewType == VIEW_ENDING) {
+
             startNow.setVisibility(View.GONE);
             startNow.setWidth(0);
         }
@@ -267,7 +294,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     public void playAnimation() {
-        if (viewType == VIEW_ENDING) {
+        if (viewType == VIEW_ENDING && getView() != null) {
             next = getView().findViewById(R.id.dummy_next);
             resetAnimation();
         }
@@ -287,10 +314,10 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         set.start();
 
         if (viewType == VIEW_ENDING) {
-            slideAnimatorX = slideToXFromCurrentHeight(next, -1, mScreenWidth / 2);
-            goneAnimation = setVisibilityGone(next);
-            expandAnimator = expandTextView(startNow, mScreenWidth);
-            fadeAnimator = fadeText(startNow, getActivity(), R.color.transparent, R.color.blue_nob);
+            ValueAnimator slideAnimatorX = slideToXFromCurrentHeight(next, -1, mScreenWidth / 2);
+            ObjectAnimator goneAnimation = setVisibilityGone(next);
+            ValueAnimator expandAnimator = expandTextView(startNow, mScreenWidth);
+            ObjectAnimator fadeAnimator = fadeText(startNow, getActivity(), R.color.transparent, R.color.blue_nob);
 
             goneAnimation.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.25));
             expandAnimator.setStartDelay((long) (DEFAULT_ANIMATION_DURATION * 0.5));
@@ -339,7 +366,6 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
         }
     }
 
-    @Override
     protected String getScreenName() {
         int pageNumber = position + 1;
         return SCREEN_NAME + pageNumber;
