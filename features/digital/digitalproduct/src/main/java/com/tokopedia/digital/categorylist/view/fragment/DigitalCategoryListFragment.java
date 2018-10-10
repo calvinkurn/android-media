@@ -427,7 +427,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
+        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName().toLowerCase());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
