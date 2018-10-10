@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,9 +74,21 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return typeFactory.createViewHolder(view, viewType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     @Override
