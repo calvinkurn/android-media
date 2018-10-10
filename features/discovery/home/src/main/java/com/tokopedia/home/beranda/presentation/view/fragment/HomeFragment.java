@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -45,6 +44,7 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
@@ -186,7 +186,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showRecomendationButton() {
         if (showRecomendation && isUserLoggedIn()) {
             floatingTextButton.setVisibility(View.VISIBLE);
-            HomePageTracking.eventImpressionJumpRecomendation();
+            HomePageTracking.eventImpressionJumpRecomendation(getActivity());
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
@@ -226,7 +226,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onClick(View view) {
                 scrollToRecommendList();
-                HomePageTracking.eventClickJumpRecomendation();
+                HomePageTracking.eventClickJumpRecomendation(getActivity());
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

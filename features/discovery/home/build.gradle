@@ -102,6 +102,8 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation project(rootProject.ext.libraries.analytics)
 
+    implementation project(rootProject.ext.libraries.userSession)
+
 }
 
 apply from: '../../../publish_local.gradle'
