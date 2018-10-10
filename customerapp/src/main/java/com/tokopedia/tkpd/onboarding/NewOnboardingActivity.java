@@ -147,7 +147,7 @@ public class NewOnboardingActivity extends AppIntro {
     }
 
     private void finishOnboard() {
-        analytics.eventOnboardingSkip(getAplicationContext(), pager.getCurrentItem() + 1);
+        analytics.eventOnboardingSkip(getApplicationContext(), pager.getCurrentItem() + 1);
         userSession.setFirstTimeUserOnboarding(false);
 
         Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
