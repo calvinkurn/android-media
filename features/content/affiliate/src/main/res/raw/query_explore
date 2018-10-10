@@ -1,4 +1,4 @@
-query GetDashboard($keyword: String!, $cursor: String!, $filterKey: String!, $filterValue: String!, $sortKey: String!, $sortAsc: Boolean! ) {
+query getExploreAffiliate($keyword: String!, $cursor: String!, $filterKey: String!, $filterValue: String!, $sortKey: String!, $sortAsc: Boolean! ) {
   topadsExploreAffiliateProduct(keyword:$keyword,filter:[{key:$filterKey,value:$filterValue}],nextCursor:$cursor,sort:{key:$sortKey,asc:$sortAsc}) {
     products {
       id

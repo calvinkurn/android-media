@@ -33,7 +33,7 @@ public class ExploreUseCase extends GraphqlUseCase {
     public GraphqlRequest getRequest(ExploreParams exploreParams) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.query_dashboard_loadmore),
+                R.raw.query_explore),
                 ExploreQuery.class, getParam(exploreParams).getParameters());
     }
 

@@ -9,7 +9,9 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
 public class EmptyExploreViewModel implements Visitable<ExploreTypeFactory> {
 
     public EmptyExploreViewModel() {
+
     }
+
 
     @Override
     public int type(ExploreTypeFactory typeFactory) {

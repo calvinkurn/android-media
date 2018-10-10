@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -26,7 +27,6 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.design.text.SearchInputView;
@@ -53,7 +53,7 @@ public class ExploreFragment
     private SwipeToRefresh swipeRefreshLayout;
     private SearchInputView searchView;
     private ExploreAdapter adapter;
-    private ImageView ivBack;
+    private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
 
     @Inject
@@ -74,6 +74,8 @@ public class ExploreFragment
         swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) view.findViewById(R.id.search_input_view);
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
+        ivBantuan = (ImageView) view.findViewById(R.id.action_bantuan);
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         presenter.attachView(this);
         return view;
     }
@@ -93,14 +95,17 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-        testData();
-//        presenter.getFirstData(searchKey);
+//        testData();
+        presenter.getFirstData(exploreParams, false);
     }
 
 
     private void initListener() {
         ivBack.setOnClickListener(view -> {
             getActivity().onBackPressed();
+        });
+        ivBantuan.setOnClickListener(view -> {
+
         });
     }
 
@@ -193,7 +198,7 @@ public class ExploreFragment
         if (itemList.size() == 0) {
             layoutManager = new GridLayoutManager(getActivity(), 1);
             itemList = new ArrayList<>();
-            itemList.add(new EmptyExploreViewModel());
+            itemList.add(new EmptyModel());
             exploreParams.disableLoadMore();
         } else {
             layoutManager = new GridLayoutManager(getActivity(), 2);
@@ -207,13 +212,20 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
-        layoutManager = new GridLayoutManager(getActivity(), 1);
-        rvExplore.setLayoutManager(layoutManager);
-        List<Visitable> itemList = new ArrayList<>();
-        itemList.add(new EmptyExploreViewModel());
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
-        rvExplore.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        layoutManager = new GridLayoutManager(getActivity(), 1);
+//        rvExplore.setLayoutManager(layoutManager);
+//        List<Visitable> itemList = new ArrayList<>();
+//        itemList.add(new EmptyModel());
+//        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
+//        rvExplore.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getView().getRootView(),
+                error,
+                () -> {
+                    presenter.getFirstData(exploreParams, false);
+                }
+        );
     }
 
     @Override

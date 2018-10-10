@@ -34,10 +34,19 @@
 
                 <com.tokopedia.design.text.SearchInputView
                     android:id="@+id/search_input_view"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fitsSystemWindows="true"
                     app:siv_search_hint="@string/text_search_hint" />
+
+                <ImageView
+                    android:id="@+id/action_bantuan"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:src="@drawable/ic_bantuan"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_16"/>
             </LinearLayout>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
