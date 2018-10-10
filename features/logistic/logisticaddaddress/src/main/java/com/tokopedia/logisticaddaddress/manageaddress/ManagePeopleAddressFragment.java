@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.manage.people.address.model.AddressModel;
@@ -31,8 +30,6 @@ import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -41,7 +38,6 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     private static final String EXTRA_PARAM_ARRAY_LIST = "EXTRA_PARAM_ARRAY_LIST";
 
-    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
 
     private String querySearch;
@@ -133,6 +129,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     protected void initView(View view) {
         this.setRootView(view);
+        this.recyclerView = view.findViewById(R.id.recycler_view);
         this.prepareRecyclerView();
     }
 
