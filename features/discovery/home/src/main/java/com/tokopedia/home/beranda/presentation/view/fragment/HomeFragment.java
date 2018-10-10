@@ -23,19 +23,19 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.model.LoadingModel;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -111,7 +111,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Trace trace;
     private SnackbarRetry messageSnackbar;
     private String[] tabSectionTitle;
-    private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
@@ -325,9 +325,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void initFeedLoadMoreTriggerListener() {
-        feedLoadMoreTriggerListener = new EndlessRecyclerviewListener(layoutManager) {
+        feedLoadMoreTriggerListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
                     adapter.showLoading();
                     presenter.fetchNextPageFeed();
