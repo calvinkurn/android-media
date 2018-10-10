@@ -65,6 +65,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
+        tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.TOKOCASH_IMG);
         if (!accountModel.getWallet().isLinked()) {
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
@@ -80,6 +81,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 || accountModel.getVccUserStatus().getStatus() == null
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
+            tokopediaPayViewModel.setIconUrlRight(AccountConstants.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);

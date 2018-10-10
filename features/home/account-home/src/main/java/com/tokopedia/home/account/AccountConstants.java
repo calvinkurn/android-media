@@ -79,6 +79,12 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
     }
 
+    public class ImageUrl {
+        public static final String TOKOCASH_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokocash_circle.png";
+        public static final String SALDO_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_saldo_circle.png";
+        public static final String TOKOSWIPE_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokoswipe_circle.png";
+    }
+
     public interface VccStatus {
         String ELIGIBLE = "eligible";
         String NOT_ELIGIBLE = "not_eligible";
