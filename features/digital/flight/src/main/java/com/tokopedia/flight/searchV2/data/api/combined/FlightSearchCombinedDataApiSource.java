@@ -39,7 +39,11 @@ public class FlightSearchCombinedDataApiSource {
                     flightRouteModel.getDate()));
         }
 
-        AttributesRequestData attributesRequestData = new AttributesRequestData(routeRequestData);
+        AttributesRequestData attributesRequestData = new AttributesRequestData(
+                routeRequestData, flightSearchCombinedApiRequestModel.get_class(),
+                flightSearchCombinedApiRequestModel.getAdult(),
+                flightSearchCombinedApiRequestModel.getInfant(),
+                flightSearchCombinedApiRequestModel.getChild());
         FlightSearchCombinedRequestData flightSearchCombinedRequestData =
                 new FlightSearchCombinedRequestData(attributesRequestData);
         DataRequest<FlightSearchCombinedRequestData> dataRequest = new DataRequest<>(flightSearchCombinedRequestData);

@@ -12,7 +12,8 @@ public class FlightSearchCombinedApiRequestModel {
     private int infant;
     private int _class;
 
-    public FlightSearchCombinedApiRequestModel(List<FlightRouteModel> routes, int adult, int child, int infant, int _class) {
+    public FlightSearchCombinedApiRequestModel(List<FlightRouteModel> routes, int adult, int child,
+                                               int infant, int _class) {
         this.routes = routes;
         this.adult = adult;
         this.child = child;
