@@ -208,7 +208,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
             }
         } catch (NumberFormatException e) { /*ignore*/ }
 
-        if (!mitraTopperMaxLoan.isEmpty()) {
+        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0")) {
             InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
             infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
             infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
