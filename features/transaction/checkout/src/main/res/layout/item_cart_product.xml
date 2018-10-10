@@ -22,31 +22,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
-        android:gravity="left"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        tools:ignore="UseCompoundDrawables"
-        tools:visibility="visible">
-
-        <ImageView
-            android:id="@+id/img_shipping_warning"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:visibility="gone"
-            tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_warning_red" />
+        android:background="@drawable/bg_error"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16"
+        android:visibility="visible"
+        tools:ignore="UselessParent"
+        tools:visbility="visible">
 
         <TextView
-            android:id="@+id/tv_shipping_warning"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_error_shipment_item_title"
+            style="@style/TextSmallMediumBlack54"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/checkout_module_message_cart_error"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_error_shipment_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
             android:fontFamily="sans-serif"
-            android:textColor="#d30b16"
-            android:textSize="@dimen/sp_11"
-            android:textStyle="normal"
-            tools:text="Produk ini tidak dapat dikirimkan dengan kurir yang dipilih" />
+            android:text="@string/checkout_module_message_cart_error"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/sp_10"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </LinearLayout>
 
