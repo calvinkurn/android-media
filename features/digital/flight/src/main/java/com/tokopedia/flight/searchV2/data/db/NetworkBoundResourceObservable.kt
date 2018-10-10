@@ -17,8 +17,10 @@ abstract class NetworkBoundResourceObservable<ApiResponseType, DbType> {
                     if (shouldFetch(it)) {
                         createCall()
                                 .map { mapResponse(it) }
-                                .map { saveCallResult(it) }
-                                .flatMap { loadFromDb() }
+                                .flatMap { it ->
+                                    saveCallResult(it).flatMap {
+                                        loadFromDb()
+                                    } }
                                 .doOnError {
                                     onFetchFailed(it.message)
                                 }
@@ -38,7 +40,7 @@ abstract class NetworkBoundResourceObservable<ApiResponseType, DbType> {
 
     abstract fun mapResponse(response: ApiResponseType): DbType
 
-    protected abstract fun saveCallResult(items: DbType)
+    protected abstract fun saveCallResult(items: DbType) : Observable<Unit>
 
     protected open fun onFetchFailed(message: String?) {}
 

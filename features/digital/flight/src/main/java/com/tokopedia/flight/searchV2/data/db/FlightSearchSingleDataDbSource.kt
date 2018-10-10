@@ -13,30 +13,32 @@ import javax.inject.Inject
 /**
  * Created by Rizky on 24/09/18.
  */
-class FlightSearchSingleDataDbSource @Inject constructor(
+open class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
         private val flightRouteDao: FlightRouteDao) {
 
-    fun insert(journeyAndRoutesList: List<JourneyAndRoutes>) {
+    fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
             flightJourneyDao.insert(journey.flightJourneyTable)
             flightRouteDao.insert(journey.routes)
         }
     }
 
-    fun insert(journeyAndRoutes: JourneyAndRoutes) {
+    open fun insert(journeyAndRoutes: JourneyAndRoutes) {
         flightJourneyDao.insert(journeyAndRoutes.flightJourneyTable)
         flightRouteDao.insert(journeyAndRoutes.routes)
+//        return Observable.create<Boolean> {
+//            it.onNext(true)
+//        }
     }
 
-    fun findAllJourneys(): Observable<List<JourneyAndRoutes>> {
+    open fun findAllJourneys(): Observable<List<JourneyAndRoutes>> {
         return Observable.create {
             it.onNext(flightJourneyDao.findAllJourneys())
         }
     }
 
-    fun getFilteredJourneys(filterModel: FlightFilterModel):
-            Observable<List<JourneyAndRoutes>> {
+    fun getFilteredJourneys(filterModel: FlightFilterModel): Observable<List<JourneyAndRoutes>> {
         return Observable.create {
             val sqlQuery = "SELECT * FROM FlightJourneyTable WHERE "
             val sqlStringBuilder = StringBuilder()
@@ -57,8 +59,7 @@ class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
             sqlStringBuilder.append("isReturn = $isReturnInt")
 
-
-            sqlStringBuilder.append("ORDER BY ")
+//            sqlStringBuilder.append("ORDER BY ")
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 

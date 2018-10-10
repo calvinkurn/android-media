@@ -6,7 +6,7 @@ import javax.inject.Inject
 /**
  * Created by Rizky on 21/09/18.
  */
-class FlightSearchCombinedDataDbSource @Inject constructor(private val flightComboDao: FlightComboDao) {
+open class FlightSearchCombinedDataDbSource @Inject constructor(private val flightComboDao: FlightComboDao) {
 
     fun getSearchCombined(journeyId: String): Observable<List<FlightComboTable>> {
         return Observable.create {
