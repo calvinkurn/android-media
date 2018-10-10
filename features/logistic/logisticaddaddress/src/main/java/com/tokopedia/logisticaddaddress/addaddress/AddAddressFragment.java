@@ -33,7 +33,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
@@ -42,6 +41,7 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
+import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -469,7 +469,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = ((TkpdCoreRouter) getActivity().getApplication())
+            Intent intent = ((IAddressRouter) getActivity().getApplication())
                     .getDistrictRecommendationIntent(
                             getActivity(), token,
                             getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
