@@ -1,6 +1,9 @@
 package com.tokopedia.logisticaddaddress.addaddress;
 
 
+import android.content.Context;
+
+import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
 
@@ -28,5 +31,7 @@ public interface AddAddressPresenter {
     void provinceChanged(Province province);
 
     void getListDistrict(City city);
+
+    void requestReverseGeoCode(Context context, Destination destination);
 
 }

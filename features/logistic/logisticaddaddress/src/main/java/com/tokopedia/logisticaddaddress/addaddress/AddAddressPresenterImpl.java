@@ -1,7 +1,9 @@
 package com.tokopedia.logisticaddaddress.addaddress;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.logisticaddaddress.GeoLocationUtils;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
@@ -223,6 +225,15 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
                 mView.showErrorSnackbar("");
             }
         });
+    }
+
+    @Override
+    public void requestReverseGeoCode(Context context, Destination destination) {
+        GeoLocationUtils.getReverseGeoCodeParallel(context,
+                Double.parseDouble(destination.getLatitude()),
+                Double.parseDouble(destination.getLongitude()), resultAddress -> {
+                     mView.setPinpointAddress(resultAddress);
+                });
     }
 
     private AddressRepository.AddAddressListener getListener() {

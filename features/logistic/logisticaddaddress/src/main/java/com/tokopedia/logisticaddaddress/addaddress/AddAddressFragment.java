@@ -35,7 +35,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
@@ -73,7 +72,7 @@ import static com.tokopedia.logisticaddaddress.ManageAddressConstant.REQUEST_COD
  * Created by nisie on 9/6/16.
  */
 public class AddAddressFragment extends BaseDaggerFragment
-        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress, GeoLocationUtils.GeoLocationListener {
+        implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
 
     AddAddressPresenter mPresenter;
 
@@ -500,17 +499,18 @@ public class AddAddressFragment extends BaseDaggerFragment
         };
     }
 
-    private void setPinpointAddress(Destination address) {
+    @Override
+    public void setPinpointAddress(String address) {
+        locationEditText.setText(address);
+    }
+
+    private void requestPinpointAddress(Destination address) {
         if (address.getLatitude() != null &&
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
                 !address.getLongitude().equals("")
                 ) {
-            GeoLocationUtils.reverseGeoCodeParallel(
-                    getActivity(),
-                    address.getLatitude(),
-                    address.getLongitude(), this
-            );
+            mPresenter.requestReverseGeoCode(getContext(), address);
         }
     }
 
@@ -651,7 +651,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             zipCodeTextView.setText(address.getPostalCode());
             postCodeEditText.setText(address.getPostalCode());
             receiverPhoneEditText.setText(address.getReceiverPhone());
-            setPinpointAddress(address);
+            requestPinpointAddress(address);
         } else if (address == null) {
             address = new Destination();
         }
@@ -1006,11 +1006,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void successSaveAddress() {
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
-    }
-
-    @Override
-    public void getGeoCode(String resultAddress) {
-        locationEditText.setText(resultAddress);
     }
 
     @Override

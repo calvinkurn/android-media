@@ -66,4 +66,6 @@ public interface AddAddressFragmentView {
 
     void successSaveAddress();
 
+    void setPinpointAddress(String address);
+
 }
