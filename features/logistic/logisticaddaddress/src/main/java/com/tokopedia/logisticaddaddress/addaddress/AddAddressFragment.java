@@ -36,7 +36,8 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
@@ -149,7 +150,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             setupArguments(getArguments());
         }
     }
@@ -692,10 +693,14 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void showErrorSnackbar(String message) {
-        if (TextUtils.isEmpty(message)) {
-            NetworkErrorHelper.showSnackbar(getActivity());
+        if (getActivity() == null) return;
+        if (message == null || TextUtils.isEmpty(message)) {
+            ToasterError.make(BaseToaster.getContentView(getActivity()),
+                    getActivity().getResources().getString(R.string.msg_network_error),
+                    BaseToaster.LENGTH_SHORT).show();
         } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), message);
+            ToasterError.make(BaseToaster.getContentView(getActivity()),
+                    message, BaseToaster.LENGTH_SHORT).show();
         }
     }
 
