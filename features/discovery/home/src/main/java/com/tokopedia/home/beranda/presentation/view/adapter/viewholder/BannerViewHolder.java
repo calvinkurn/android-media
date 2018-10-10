@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.Promotion;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;

@@ -2251,6 +2251,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getTopAdsProductDetailIntentForHome(Context context, Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageActivity.createIntent(context, shopId);
     }

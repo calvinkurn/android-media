@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 
 import rx.Observable;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -30,6 +28,8 @@ public interface IHomeRouter {
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Intent getInstantLoanIntent(Context context);
+
+    Intent getTopAdsProductDetailIntentForHome(Context context, Product product);
 
     void goToManageShop(Context context);
 

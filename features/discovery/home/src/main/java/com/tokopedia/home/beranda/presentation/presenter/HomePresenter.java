@@ -2,9 +2,9 @@ package com.tokopedia.home.beranda.presentation.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.PagingHandler;

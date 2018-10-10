@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
