@@ -219,6 +219,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (watcher.getVisibility() != View.VISIBLE) watcher.setVisibility(View.VISIBLE);
                 int textLength = charSequence.length();
                 int charLeft;
                 if (textLength < ADDRESS_MIN_CHARACTER) {
@@ -821,6 +822,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             }
 
             addressLayout.setError(errorMessage);
+            addressLabel.setVisibility(View.GONE);
             addressLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
             sendAnalyticsOnErrorInputAddress();
