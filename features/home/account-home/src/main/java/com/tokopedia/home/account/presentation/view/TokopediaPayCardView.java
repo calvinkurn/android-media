@@ -28,7 +28,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
  * @author okasurya on 7/18/18.
  */
 public class TokopediaPayCardView extends BaseCustomView {
-    private static final String KEY_IMAGE_HOST = "image_host";
     private static final String TOKOPEDIA_PAY_BG_NAME = "bg_tokopedia_pay.png";
 
     private LinearLayout layoutAction;
@@ -86,7 +85,7 @@ public class TokopediaPayCardView extends BaseCustomView {
         String imageUrl = AccountHomeUrl.IMAGE_URL;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
-                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
             imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
         }
 
