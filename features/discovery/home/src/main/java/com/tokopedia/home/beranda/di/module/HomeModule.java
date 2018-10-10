@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
@@ -79,6 +78,12 @@ public class HomeModule {
     @Provides
     protected GetHomeDataUseCase provideGetHomeDataUseCase(HomeRepository homeRepository){
         return new GetHomeDataUseCase(homeRepository);
+    }
+
+    @Provides
+    protected com.tokopedia.user.session.UserSession provideUserSession(
+            @ApplicationContext Context context){
+        return new com.tokopedia.user.session.UserSession(context);
     }
 
     @HomeScope

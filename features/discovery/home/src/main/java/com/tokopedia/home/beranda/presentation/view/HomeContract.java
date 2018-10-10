@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -61,7 +61,7 @@ public interface HomeContract {
 
         Observable<PendingCashback> getTokocashPendingCashback();
 
-        Observable<TokoPointDrawerData> getTokopoint();
+        Observable<TokopointHomeDrawerData> getTokopoint();
 
         void startShopInfo(String shopId);
 
@@ -79,7 +79,7 @@ public interface HomeContract {
 
         void updateHeaderTokoCashPendingData(CashBackData cashBackData);
 
-        void updateHeaderTokoPointData(TokoPointDrawerData tokoPointDrawerData);
+        void updateHeaderTokoPointData(TokopointHomeDrawerData tokoPointDrawerData);
 
         void getShopInfo(String url, String shopDomain);
 

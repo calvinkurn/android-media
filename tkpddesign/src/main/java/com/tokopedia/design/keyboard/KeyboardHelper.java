@@ -1,4 +1,4 @@
-package com.tokopedia.core.helper;
+package com.tokopedia.design.keyboard;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

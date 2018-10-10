@@ -19,7 +19,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Search;
-import com.tokopedia.core.helper.KeyboardHelper;
+import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.AbstractDynamicFilterDetailActivity;
