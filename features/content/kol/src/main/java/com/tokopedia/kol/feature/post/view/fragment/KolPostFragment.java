@@ -26,6 +26,7 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -340,7 +341,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
 
             if (getActivity() != null &&
                     getArguments() != null &&
@@ -380,7 +381,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
                     ((KolPostViewModel) adapter.getList().get(rowNumber));
             kolPostViewModel.setTotalComment(
                     kolPostViewModel.getTotalComment() + totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
 
             if (getActivity() != null &&
                     getArguments() != null &&

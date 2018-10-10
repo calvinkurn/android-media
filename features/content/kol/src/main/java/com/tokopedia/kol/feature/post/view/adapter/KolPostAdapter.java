@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.post.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +44,9 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.exploreViewModel = new ExploreViewModel();
     }
 
+    @NonNull
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Context context = viewGroup.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, viewGroup, false);
         return typeFactory.createViewHolder(view, viewType);
@@ -52,8 +54,19 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(AbstractViewHolder abstractViewHolder, int i) {
+    public void onBindViewHolder(@NonNull AbstractViewHolder abstractViewHolder, int i) {
         abstractViewHolder.bind(list.get(i));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     @Override
@@ -68,7 +81,7 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     @Override
-    public void onViewRecycled(AbstractViewHolder holder) {
+    public void onViewRecycled(@NonNull AbstractViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof KolPostViewHolder) {
             ((KolPostViewHolder) holder).onViewRecycled();
