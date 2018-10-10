@@ -9,27 +9,27 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="360dp"
-        android:visibility="gone"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="gone">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/white"
             android:minHeight="?attr/actionBarSize"
+            app:contentScrim="@color/white"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <com.tokopedia.tkpdpdp.customview.PictureView
                 android:id="@+id/view_picture"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:scrimAnimationDuration="50"
                 android:fitsSystemWindows="true"
+                android:orientation="vertical"
                 app:layout_collapseMode="none"
-                android:orientation="vertical" />
+                app:scrimAnimationDuration="50" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -43,28 +43,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nested_scroll_pdp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:layout_gravity="fill_vertical"
-        android:descendantFocusability="blocksDescendants"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/nested_scroll_pdp"
         android:background="@color/white"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:descendantFocusability="blocksDescendants"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/root_view"
-            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clickable="true"
-            android:paddingBottom="?attr/actionBarSize"
-            android:layout_height="match_parent">
+            android:orientation="vertical"
+            android:paddingBottom="?attr/actionBarSize">
 
             <TextView
                 android:id="@+id/tv_ticker_gtm"
@@ -131,20 +130,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:layout_marginBottom="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_2"
                 android:clipToPadding="false"
                 android:clipChildren="false">
-
                 <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
                     android:id="@+id/merchantVoucherListWidget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_10"
                     app:mvlwTitleString="@string/promo"
-                    android:clipToPadding="false"
-                    android:clipChildren="false"/>
-
+                    app:mvlwTitleTextSize="@dimen/sp_14"
+                    android:textColor="@color/black_70"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <com.tokopedia.tkpdpdp.customview.TransactionDetailView
@@ -162,7 +160,7 @@
                 android:id="@+id/video_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"/>
+                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
                 android:id="@+id/view_shop_info"
@@ -174,42 +172,42 @@
                 android:id="@+id/view_most_helpful"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_marginBottom="@dimen/dp_10"
+                android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.LatestTalkView
                 android:id="@+id/view_latest_discussion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:layout_marginBottom="@dimen/dp_10"
+                android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.OtherProductsView
                 android:id="@+id/view_other_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
                 android:id="@+id/topads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
                 android:descendantFocusability="blocksDescendants"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_10" />
+                android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.NewShopView
                 android:id="@+id/view_new_shop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <com.tokopedia.tkpdpdp.customview.LastUpdateView
                 android:id="@+id/view_last_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_20"/>
+                android:layout_marginBottom="@dimen/dp_20"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -230,11 +228,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        app:backgroundTint="@color/white"
-        app:srcCompat="@drawable/ic_wishlist"
-        app:layout_anchor="@id/appbar"
-        app:borderWidth="0dp"
         android:visibility="gone"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:backgroundTint="@color/white"
+        app:borderWidth="0dp"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        app:srcCompat="@drawable/ic_wishlist" />
 
 </android.support.design.widget.CoordinatorLayout>
