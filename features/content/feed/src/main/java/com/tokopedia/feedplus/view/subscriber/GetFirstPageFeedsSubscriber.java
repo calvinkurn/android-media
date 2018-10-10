@@ -141,9 +141,13 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewListener.setFirstCursor(feedDomain.getListFeed().get(0).getCursor());
         }
 
-        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
+        if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.finishLoading();
+        }
 
+        if (feedDomain.getInterestWhitelist()) {
+            viewListener.showInterestPick();
+        }
     }
 
     private void addMainData(ArrayList<Visitable> listFeedView,

@@ -36,4 +36,7 @@ query {
       arriveAtDestination
     }
   }
+  notifcenter_unread {
+    notif_unread
+  }
 }

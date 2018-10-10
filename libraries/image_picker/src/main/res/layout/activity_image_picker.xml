@@ -43,13 +43,14 @@
         android:layout_height="@dimen/dp_1"
         android:background="@drawable/bg_line_separator"/>
 
-    <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipChildren="false"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        app:can_swipe="false"/>
 
     <com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget
         android:id="@+id/image_picker_preview_widget"
