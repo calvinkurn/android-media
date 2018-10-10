@@ -24,6 +24,8 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val userSession: UserSession)
     : BaseDaggerPresenter<MerchantVoucherListView>(){
 
+    var voucherCodeInProgress:String = ""
+
     fun isLogin() = (userSession.isLoggedIn)
     fun isMyShop(shopId: String) = (userSession.shopId == shopId)
 
@@ -62,9 +64,15 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     }
 
     fun useMerchantVoucher(voucherCode: String, voucherId:Int) {
+        if (voucherCodeInProgress.equals(voucherCode)) {
+            return;
+        }
+        voucherCodeInProgress = voucherCode;
         useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),
                 object : Subscriber<Boolean>() {
-                    override fun onCompleted() {}
+                    override fun onCompleted() {
+                        voucherCodeInProgress = ""
+                    }
 
                     override fun onError(e: Throwable) {
                         view?.onErrorUseVoucher(e)

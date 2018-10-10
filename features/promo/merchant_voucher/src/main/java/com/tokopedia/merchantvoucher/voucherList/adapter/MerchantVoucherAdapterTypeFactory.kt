@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringListViewHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherShimmerViewHolder
 import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherViewHolder
 
 /**
@@ -34,12 +35,12 @@ class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantV
     }
 
     override fun type(viewModel: LoadingModel): Int {
-        return LoadingShimmeringListViewHolder.LAYOUT
+        return MerchantVoucherShimmerViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        return if (type == LoadingShimmeringListViewHolder.LAYOUT) {
-            LoadingShimmeringGridViewHolder(parent)
+        return if (type == MerchantVoucherShimmerViewHolder.LAYOUT) {
+            MerchantVoucherShimmerViewHolder(parent)
         } else if (type == MerchantVoucherViewHolder.LAYOUT ||
                 type == MerchantVoucherViewHolder.HORIZONTAL_LAYOUT) {
             MerchantVoucherViewHolder(parent, onMerchantVoucherViewListener)
