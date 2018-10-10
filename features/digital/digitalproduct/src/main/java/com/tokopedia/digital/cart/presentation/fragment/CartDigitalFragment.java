@@ -73,6 +73,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         CheckoutHolderView.IAction, InputPriceHolderView.ActionListener,
         VoucherCartHachikoView.ActionListener, CartDigitalContract.View {
 
+
+    private static final int REQUEST_CODE_OTP = 1001;
+
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
 
@@ -655,7 +658,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
                 SessionHandler.getPhoneNumber(), RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
                 true, RequestOtpUseCase.MODE_SMS);
-        startActivityForResult(intent, OtpVerificationActivity.REQUEST_CODE);
+        startActivityForResult(intent, REQUEST_CODE_OTP);
     }
 
     @Override
@@ -738,7 +741,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_OTP) {
             if (resultCode == Activity.RESULT_OK) {
                 presenter.processPatchOtpCart(passData.getCategoryId());
             } else {
