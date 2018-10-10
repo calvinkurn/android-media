@@ -1,5 +1,4 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
@@ -12,10 +11,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.source.CategoryListDataSource;
@@ -26,8 +23,10 @@ import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenterImpl;
@@ -70,7 +69,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         pulsaPlaceHolder = itemView.findViewById(R.id.pulsa_place_holders);
         container = itemView.findViewById(R.id.container);
         itemView.findViewById(R.id.see_more).setOnClickListener(this);
-        cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
+        cacheHandler = new LocalCacheHandler(context, ConstantKey.TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
@@ -165,7 +164,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 viewPager.setCurrentItem(tab.getPosition(), false);
                 rechargeViewPagerAdapter.notifyDataSetChanged();
                 if (tab.getText() != null) {
-                    UnifyTracking.eventClickWidgetBar(tab.getText().toString());
+                    HomePageTracking.eventClickWidgetBar(context,
+                            tab.getText().toString());
                 }
             }
 
@@ -188,7 +188,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     }
 
     private void setTabSelected(int categorySize) {
-        final int positionTab = cacheHandler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
+        final int positionTab = cacheHandler.getInt(ConstantKey.TkpdCache.WIDGET_RECHARGE_TAB_LAST_SELECTED);
         if (positionTab != -1 && positionTab < categorySize) {
             viewPager.postDelayed(new Runnable() {
                 @Override
@@ -229,7 +229,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.see_more) {
-            UnifyTracking.eventClickLihatSemua();
+            HomePageTracking.eventClickLihatSemua(context);
             listener.onDigitalMoreClicked(getAdapterPosition());
 
         }

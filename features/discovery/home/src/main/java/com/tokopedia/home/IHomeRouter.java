@@ -58,4 +58,8 @@ public interface IHomeRouter {
     Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
+
+    Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
+                                                         String url,
+                                                         String title);
 }

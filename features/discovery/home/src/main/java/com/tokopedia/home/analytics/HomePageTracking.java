@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class HomePageTracking {
 
-    public static final String CLICK_HOME_PAGE = "clickHomePage";
-    public static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
+    private static final String CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
     private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomePage";
     private static String STATIC_VALUE_HOMEPAGE = "homepage";
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
@@ -25,9 +25,26 @@ public class HomePageTracking {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
-    public static final String EVENT_GIMMICK = "clickGimmick";
-    public static final String CATEGORY_GIMMICK = "Gimmick";
-    public static final String ACTION_GIMMICK_CLICK = "Click";
+    private static final String EVENT_GIMMICK = "clickGimmick";
+    private static final String CATEGORY_GIMMICK = "Gimmick";
+    private static final String ACTION_GIMMICK_CLICK = "Click";
+
+    private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+    private static final String CATEGORY_HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+    private static final String ACTION_CLICK_WIDGET_BAR = "click widget";
+
+    private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
+    private static final String ACTION_CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
+
+    private static final String EVENT_TOKO_POINT = "eventTokopoint";
+    private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
+    private static final String ACTION_CLICK_TOKO_POINTS = "click tokopoints";
+    private static final String TOKOPOINTS_LABEL = "tokopoints";
+
+    private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+    private static final String ACTION_CLICK_ACTIVATE = "click activate";
+
+    private static final String ACTION_CLICK_SALDO = "click saldo";
 
 
     public static AnalyticTracker getTracker(Context context){
@@ -293,6 +310,66 @@ public class HomePageTracking {
                     CATEGORY_GIMMICK,
                     ACTION_GIMMICK_CLICK,
                     label
+            );
+        }
+    }
+
+    public static void eventClickWidgetBar(Context context, String categoryItem) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_DIGITAL_WIDGET,
+                    ACTION_CLICK_WIDGET_BAR,
+                    categoryItem
+            );
+        }
+    }
+
+    public static void eventClickLihatSemua(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_DIGITAL,
+                    ACTION_CLICK_LIHAT_SEMUA_PRODUK,
+                    ""
+            );
+        }
+    }
+
+    public static void eventUserProfileTokopoints(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_TOKO_POINT,
+                    CATEGORY_TOKOPOINTS_USER_PAGE,
+                    ACTION_CLICK_TOKO_POINTS,
+                    TOKOPOINTS_LABEL
+            );
+        }
+    }
+
+    public static void eventTokoCashActivateClick(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
+                    ACTION_CLICK_ACTIVATE,
+                    ""
+            );
+        }
+    }
+
+    public static void eventTokoCashCheckSaldoClick(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
+                    ACTION_CLICK_SALDO,
+                    ""
             );
         }
     }

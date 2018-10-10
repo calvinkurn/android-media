@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
@@ -38,7 +37,7 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
 
     protected HeaderViewModel(Parcel in) {
         homeHeaderWalletActionData = in.readParcelable(HomeHeaderWalletAction.class.getClassLoader());
-        tokoPointDrawerData = in.readParcelable(TokoPointDrawerData.class.getClassLoader());
+        tokoPointDrawerData = in.readParcelable(TokopointHomeDrawerData.class.getClassLoader());
         cashBackData = in.readParcelable(CashBackData.class.getClassLoader());
         pendingTokocashChecked = in.readByte() != 0;
         isWalletError = in.readByte() != 0;

@@ -1757,6 +1757,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
+                                                                String url,
+                                                                String title) {
+        return BannerWebView.getCallingIntentWithTitle(activity, url, title);
+    }
+
+    @Override
     public boolean isTrainNativeEnable() {
         return remoteConfig.getBoolean(TrainRouter.TRAIN_ENABLE_REMOTE_CONFIG);
     }

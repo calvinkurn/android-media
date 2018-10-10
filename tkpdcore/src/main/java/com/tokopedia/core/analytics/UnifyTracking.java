@@ -2614,15 +2614,6 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital widget
 
-    public static void eventClickWidgetBar(String categoryItem) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
-                AppEventTracking.Action.CLICK_WIDGET_BAR,
-                categoryItem
-        ).getEvent());
-    }
-
     public static void eventSelectOperatorOnWidget(String categoryItem, String operator) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
@@ -2719,39 +2710,12 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital homepage
 
-    public static void eventClickLihatSemua() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_DIGITAL,
-                AppEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
-                ""
-        ).getEvent());
-    }
-
     public static void eventClickProductOnDigitalHomepage(String category) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL,
                 AppEventTracking.Action.SELECT_CATEGORY,
                 category
-        ).getEvent());
-    }
-
-    public static void eventTokoCashActivateClick() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
-                AppEventTracking.Action.CLICK_ACTIVATE,
-                ""
-        ).getEvent());
-    }
-
-    public static void eventTokoCashCheckSaldoClick() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
-                AppEventTracking.Action.CLICK_SALDO,
-                ""
         ).getEvent());
     }
 
@@ -2787,15 +2751,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.HOMEPAGE,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_HOMEPAGE,
                 AppEventTracking.Action.CLICK_TOKO_POINTS_STATUS,
-                AppEventTracking.EventLabel.TOKOPOINTS_LABEL
-        ).getEvent());
-    }
-
-    public static void eventUserProfileTokopoints() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.EVENT_TOKO_POINT,
-                AppEventTracking.Category.TOKOPOINTS_USER_PAGE,
-                AppEventTracking.Action.CLICK_TOKO_POINTS,
                 AppEventTracking.EventLabel.TOKOPOINTS_LABEL
         ).getEvent());
     }

@@ -59,9 +59,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -532,6 +534,35 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
         presenter.onBannerClicked(slidesModel);
+    }
+
+    @Override
+    public void onPromoAllClick() {
+        HomePageTracking.eventClickViewAllPromo(getActivity());
+        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
+
+        boolean remoteConfigEnable;
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        remoteConfigEnable = remoteConfig.getBoolean(
+                ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
+        );
+        if (remoteConfigEnable) {
+            getActivity().startActivity(PromoListActivity.newInstance(
+                    getActivity(),
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
+                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
+            ));
+        } else {
+            if (getActivity() != null
+                    && getActivity().getApplicationContext() instanceof IHomeRouter) {
+                Intent intent = ((IHomeRouter) (getActivity()).getApplication())
+                        .getBannerWebViewOnAllPromoClickFromHomeIntent(
+                                getActivity(),
+                                ConstantKey.TkpdBaseUrl.URL_PROMO + ConstantKey.TkpdBaseUrl.FLAG_APP,
+                                getString(R.string.title_activity_promo));
+                getActivity().startActivity(intent);
+            }
+        }
     }
 
     @Override

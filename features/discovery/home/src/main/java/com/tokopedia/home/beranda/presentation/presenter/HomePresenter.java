@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
@@ -397,7 +397,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onError(Throwable e) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
-                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(e));
+                homePresenter.getView().showNetworkError(ErrorHandler.getErrorMessage(
+                        homePresenter.getView().getContext(),e));
                 onCompleted();
             }
         }
