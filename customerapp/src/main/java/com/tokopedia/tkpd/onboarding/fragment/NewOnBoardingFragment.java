@@ -216,8 +216,8 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
                 Intent intent = ((ConsumerRouterApplication) getActivity().getApplicationContext())
                         .getHomeIntent
                         (getActivity());
-                if (!TextUtils.isEmpty(((ConsumerRouterApplication) getActivity().getApplicationContext())
-                        .getDefferedDeeplinkPathIfExists()) {
+                if (!TextUtils.isEmpty(((ConsumerRouterApplication) getActivity()
+                	.getApplicationContext()).getDefferedDeeplinkPathIfExists())) {
                     intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getActivity().getApplicationContext())
                         .getDefferedDeeplinkPathIfExists());
                 }
