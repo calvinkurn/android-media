@@ -210,8 +210,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             }
 
             if (submissionResult.getCollection() != null && submissionResult.getMe() != null) {
-                String action = submissionResult.getMe().isLiked() ? ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE :
-                        ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
+                String action = submissionResult.getMe().isLiked() ? ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
                         action, submissionResult.getCollection().getTitle());

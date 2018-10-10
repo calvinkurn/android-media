@@ -274,8 +274,8 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 if (categoryItems.get(getIndex()).getMe() != null) {
                     setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
                     String action = categoryItems.get(getIndex()).getMe().isLiked() ?
-                            ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE :
-                            ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
 
                     if (categoryItems.get(getIndex()).getCollection() != null) {
                         analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,

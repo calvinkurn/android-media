@@ -88,9 +88,11 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
+                submissionsResult.getMe().setLiked(false);
             } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
+                submissionsResult.getMe().setLiked(true);
             }
             if (challengesResult.getCollection() != null) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
