@@ -210,6 +210,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
         tabLayout.setupWithViewPager(imageViewPager);
+        tabLayout.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.GONE);
     }
 
     private void setListener(final KolPostViewModel element) {

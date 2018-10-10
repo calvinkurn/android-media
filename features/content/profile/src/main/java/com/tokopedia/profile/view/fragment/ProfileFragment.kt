@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
+import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -31,16 +33,15 @@ import javax.inject.Inject
  * @author by milhamj on 9/17/18.
  */
 class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        ProfileContract.View {
+        ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like {
 
-    override lateinit var userSession: UserSession
     private var userId: Int = 0
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
 
     companion object {
-        const val TEXT_PLAIN = "text/plain";
+        const val TEXT_PLAIN = "text/plain"
 
         fun createInstance() = ProfileFragment()
     }
@@ -81,7 +82,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(this)
+        return ProfileTypeFactoryImpl(this, this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -92,6 +93,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             presenter.getProfileFirstPage(userId)
         } else {
             presenter.getProfilePost(userId)
+        }
+    }
+
+    override fun getUserSession(): UserSession {
+        return UserSession(context)
+    }
+
+    override fun getAbstractionRouter(): AbstractionRouter {
+        if (context?.applicationContext is AbstractionRouter) {
+            return context?.applicationContext as AbstractionRouter
+        } else {
+            throw IllegalStateException("Application must implement "
+                    .plus(AbstractionRouter::class.java.simpleName))
         }
     }
 
@@ -133,11 +147,50 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = cursor
     }
 
+    override fun onLikeKolSuccess(rowNumber: Int) {
+
+    }
+
+    override fun onLikeKolError(message: String?) {
+
+    }
+
+    override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
+
+    }
+
+    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String?) {
+
+    }
+
+    override fun onOpenKolTooltip(rowNumber: Int, url: String?) {
+
+    }
+
+    override fun onFollowKolClicked(rowNumber: Int, id: Int) {
+
+    }
+
+    override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
+
+    }
+
+    override fun onLikeKolClicked(rowNumber: Int, id: Int) {
+
+    }
+
+    override fun onUnlikeKolClicked(adapterPosition: Int, id: Int) {
+
+    }
+
+    override fun onGoToKolComment(rowNumber: Int, id: Int) {
+
+    }
+
     private fun initVar() {
         arguments?.let {
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
         }
-        userSession = UserSession(context)
     }
 
     private fun initView() {

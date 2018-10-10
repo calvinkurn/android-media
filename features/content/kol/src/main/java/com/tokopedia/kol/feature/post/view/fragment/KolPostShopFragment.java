@@ -109,7 +109,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
         presenter.updateCursor(lastCursor);
 
         if (adapter.getList().isEmpty() && visitables.isEmpty()) {
-            if (TextUtils.equals(userSession.getShopId(), shopId)) {
+            if (TextUtils.equals(getUserSession().getShopId(), shopId)) {
                 adapter.showEmptyOwnShop(getEmptyResultViewModel());
             } else {
                 adapter.showEmpty();

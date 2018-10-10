@@ -11,10 +11,6 @@ import okhttp3.Interceptor;
  */
 
 public interface KolRouter {
-    String getKolCommentArgsPosition();
-
-    String getKolCommentArgsTotalComment();
-
     void actionApplinkFromActivity(Activity activity, String linkUrl);
 
     void openRedirectUrl(Activity activity, String url);

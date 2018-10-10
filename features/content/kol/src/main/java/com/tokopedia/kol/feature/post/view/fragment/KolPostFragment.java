@@ -22,6 +22,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
@@ -59,16 +60,15 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Inject
     KolPostListener.Presenter presenter;
 
-    protected KolPostAdapter adapter;
-    protected KolPostTypeFactory typeFactory;
-
     @Inject
     UserSessionInterface userSession;
 
+    protected KolPostAdapter adapter;
+    protected KolPostTypeFactory typeFactory;
+    protected boolean canLoadMore = true;
+
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
-
-    protected boolean canLoadMore = true;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
@@ -319,8 +319,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
             case KOL_COMMENT_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(kolRouter.getKolCommentArgsPosition(), -1),
-                            data.getIntExtra(kolRouter.getKolCommentArgsTotalComment(), 0));
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
                 }
                 break;
             default:
