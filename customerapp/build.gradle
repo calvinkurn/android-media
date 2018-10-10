@@ -123,6 +123,7 @@ android {
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+            jniLibs.srcDirs = ["jniLibs"]
         }
 
         String sharedTestDir = 'src/sharedTest/java'
@@ -219,17 +220,7 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
         resConfigs "en", "id"
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
-        }
-    }
 
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
     }
 
 
