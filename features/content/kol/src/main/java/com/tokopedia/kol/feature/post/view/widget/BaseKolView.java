@@ -119,7 +119,12 @@ public class BaseKolView extends BaseCustomView {
             followText.setText(R.string.action_follow_english);
         }
 
-        setKolText(element);
+        if (!TextUtils.isEmpty(element.getReview())) {
+            kolText.setVisibility(View.VISIBLE);
+            setKolText(element);
+        } else {
+            kolText.setVisibility(View.GONE);
+        }
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);

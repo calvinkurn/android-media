@@ -1,23 +1,20 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -46,10 +43,10 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private final Context context;
     private BaseKolView baseKolView;
     private FrameLayout containerView;
-    private ImageView reviewImage;
+    private ViewPager imageViewPager;
+    private TabLayout tabLayout;
+    private TextView info;
     private TextView tooltip;
-    private View tooltipClickArea;
-    private View topShadow;
     private Type type;
 
     public enum Type {
@@ -64,23 +61,20 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         context = itemView.getContext();
-        topShadow = itemView.findViewById(R.id.top_shadow);
         containerView = itemView.findViewById(R.id.container_view);
 
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
-        reviewImage = view.findViewById(R.id.image);
+        imageViewPager = view.findViewById(R.id.imageViewPager);
+        tabLayout = view.findViewById(R.id.tabLayout);
+        info = view.findViewById(R.id.info);
         tooltip = view.findViewById(R.id.tooltip);
-        tooltipClickArea = view.findViewById(R.id.tooltip_area);
     }
 
     @Override
     public void bind(KolPostViewModel element) {
-        if (element.isShowTopShadow() && getAdapterPosition() == 0) {
-            topShadow.setVisibility(View.VISIBLE);
-        } else {
-            topShadow.setVisibility(View.GONE);
-        }
+        setUpViewPager(element.getImageList());
+        setListener(element);
 
         if (type == Type.EXPLORE) {
             containerView.setBackground(null);
@@ -93,52 +87,27 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        ViewTreeObserver viewTreeObserver = reviewImage.getViewTreeObserver();
-                        viewTreeObserver.removeOnGlobalLayoutListener(this);
-
-                        reviewImage.setMaxHeight(reviewImage.getWidth());
-                        reviewImage.requestLayout();
-                    }
-                }
-        );
-
-        ImageHandler.loadImageWithTarget(
-                context,
-                element.getKolImage(),
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        reviewImage.setImageBitmap(resource);
-                    }
-                }
-        );
-
         if (TextUtils.isEmpty(element.getTagsCaption())) {
-            tooltipClickArea.setVisibility(View.GONE);
+            tooltip.setVisibility(View.GONE);
         } else {
-            tooltipClickArea.setVisibility(View.VISIBLE);
+            tooltip.setVisibility(View.VISIBLE);
             tooltip.setText(element.getTagsCaption());
             element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
-        setListener(element);
+        if (TextUtils.isEmpty(element.getInfo())){
+            info.setVisibility(View.GONE);
+        } else {
+            info.setVisibility(View.VISIBLE);
+            info.setText(element.getInfo());
+        }
 
         baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
     }
 
     public void onViewRecycled() {
-        ImageHandler.clearImage(reviewImage);
         baseKolView.onViewRecycled();
-
-        reviewImage.setImageDrawable(
-                MethodChecker.getDrawable(context, R.drawable.ic_loading_image)
-        );
     }
 
     @Override
@@ -235,20 +204,20 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
     }
 
-    private void setListener(final KolPostViewModel element) {
-        tooltipClickArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tooltipAreaClicked(element);
-            }
-        });
+    private void setUpViewPager(List<String> images) {
+        PostImageAdapter adapter = new PostImageAdapter();
+        adapter.setList(new ArrayList<>(images));
+        imageViewPager.setAdapter(adapter);
+        imageViewPager.setOffscreenPageLimit(adapter.getCount());
+        tabLayout.setupWithViewPager(imageViewPager);
+    }
 
-        reviewImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tooltipClickArea.getVisibility() == View.VISIBLE)
-                    tooltipAreaClicked(element);
-            }
+    private void setListener(final KolPostViewModel element) {
+        tooltip.setOnClickListener(v -> tooltipAreaClicked(element));
+
+        imageViewPager.setOnClickListener(v -> {
+            if (tooltip.getVisibility() == View.VISIBLE)
+                tooltipAreaClicked(element);
         });
     }
 

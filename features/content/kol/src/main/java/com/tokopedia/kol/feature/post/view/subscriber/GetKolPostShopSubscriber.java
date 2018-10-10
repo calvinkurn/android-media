@@ -75,7 +75,7 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
         for (Post post : postList) {
             Visitable visitable;
             Content content = getContent(post);
-            String type =  content != null && content.getType() != null ? content.getType() : "";
+            String type = content != null && content.getType() != null ? content.getType() : "";
             view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
@@ -97,14 +97,20 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
     private KolPostViewModel convertToKolPostViewModel(Post post) {
         Content content = getContent(post);
         Tag tag = getTag(content);
+        List<String> imageList = new ArrayList<>();
+        imageList.add(content.getUrl());
+
         return new KolPostViewModel(
                 post.getAuthor() != null ? post.getAuthor().getId() : 0,
                 "",
                 "",
-                post.getAuthor() != null && post.getAuthor().getName() != null ? post.getAuthor().getName() : "",
-                post.getAuthor() != null && post.getAuthor().getThumbnail() != null ? post.getAuthor().getThumbnail() : "",
+                post.getAuthor() != null && post.getAuthor().getName() != null ? post.getAuthor()
+                        .getName() : "",
+                post.getAuthor() != null && post.getAuthor().getThumbnail() != null ? post
+                        .getAuthor().getThumbnail() : "",
                 "",
-                post.getAuthor() != null && post.getAuthor().getUrl() != null ? post.getAuthor().getUrl() : "",
+                post.getAuthor() != null && post.getAuthor().getUrl() != null ? post.getAuthor()
+                        .getUrl() : "",
                 true,
                 post.getDescription() != null ? post.getDescription() : "",
                 post.getInteraction() != null && post.getInteraction().isLiked(),
@@ -113,10 +119,10 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
                 0,
                 post.getId(),
                 post.getCreateTime() != null ?
-                        TimeConverter.generateTime(view.getContext(), post.getCreateTime()): "",
+                        TimeConverter.generateTime(view.getContext(), post.getCreateTime()) : "",
                 post.getInteraction() != null && post.getInteraction().isShowComment(),
                 post.getInteraction() != null && post.getInteraction().isShowLike(),
-                content != null && content.getUrl() != null ? content.getUrl() : "",
+                imageList,
                 tag != null ? tag.getId() : 0,
                 "",
                 tag != null && tag.getType() != null ? tag.getType() : "",

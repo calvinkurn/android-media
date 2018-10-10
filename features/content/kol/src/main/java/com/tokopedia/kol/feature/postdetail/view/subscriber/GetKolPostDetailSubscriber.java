@@ -80,6 +80,9 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
     private KolPostViewModel convertToKolPostViewModel(PostKol postKol) {
         Content content = getContent(postKol);
         Tag tag = getKolTag(content);
+        List<String> imageList = new ArrayList<>();
+        imageList.add(getImageUrl(content));
+
         return new KolPostViewModel(
                 postKol.getUserId(),
                 "",
@@ -98,7 +101,7 @@ public class GetKolPostDetailSubscriber extends Subscriber<GraphqlResponse> {
                 postKol.getCreateTime() == null ? "" : generateTime(postKol.getCreateTime()),
                 true,
                 true,
-                getImageUrl(content),
+                imageList,
                 getTagId(tag),
                 "",
                 getTagType(tag),

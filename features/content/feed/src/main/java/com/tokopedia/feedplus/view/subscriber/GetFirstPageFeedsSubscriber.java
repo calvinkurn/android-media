@@ -545,6 +545,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private KolPostViewModel convertToKolViewModel(DataFeedDomain domain) {
         KolPostDomain kolPostDomain = domain.getContent().getKolPostDomain();
+        List<String> imageList = new ArrayList<>();
+        imageList.add(kolPostDomain.getImageUrl());
+
         return new KolPostViewModel(
                 kolPostDomain.getUserId(),
                 kolPostDomain.getCardType(),
@@ -564,7 +567,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         ()),
                 kolPostDomain.isShowComment(),
                 kolPostDomain.isShowLike(),
-                kolPostDomain.getImageUrl(),
+                imageList,
                 kolPostDomain.getItemId(),
                 "",
                 kolPostDomain.getTagsType(),
