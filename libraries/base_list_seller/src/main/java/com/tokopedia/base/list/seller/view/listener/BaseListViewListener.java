@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.listener;
+package com.tokopedia.base.list.seller.view.listener;
 
 import android.support.annotation.NonNull;
 

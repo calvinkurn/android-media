@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.base.list.seller.R;
 
 /**
  * Created by Nisie on 2/26/16.

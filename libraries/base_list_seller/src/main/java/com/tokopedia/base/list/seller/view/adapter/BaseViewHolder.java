@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;

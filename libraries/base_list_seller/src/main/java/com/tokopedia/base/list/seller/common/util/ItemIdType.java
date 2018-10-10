@@ -1,6 +1,4 @@
-package com.tokopedia.product.manage.item.common.util;
-
-import com.tokopedia.product.manage.item.common.util.ItemType;
+package com.tokopedia.base.list.seller.common.util;
 
 /**
  * Created by normansyahputa on 2/13/17.

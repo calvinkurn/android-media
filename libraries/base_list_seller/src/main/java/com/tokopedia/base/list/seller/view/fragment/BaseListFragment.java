@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.base.list.seller.view.fragment;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,18 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
-import com.tokopedia.product.manage.item.common.util.ItemType;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.common.widget.DividerItemDecoration;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 
 import java.util.List;
 
