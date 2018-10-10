@@ -157,7 +157,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !isAlpha()) {
+            if (!isProduction() && !isAlpha() && !allowDistribution()) {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel=true
