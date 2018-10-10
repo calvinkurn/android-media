@@ -54,7 +54,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = (clickPosition < 0 ? getAdapterPosition() : clickPosition);
+        this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
@@ -86,10 +86,10 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     public void onClick(View v) {
         if (itemClickListener != null) {
             if(v.getId() == R.id.container) {
-                itemClickListener.onProductItemClicked(clickPosition, data);
+                itemClickListener.onProductItemClicked((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
             }
             if(v.getId() == R.id.wishlist_button_container){
-                itemClickListener.onAddWishLish(clickPosition, data);
+                itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
                 data.getProduct().setWishlist(!data.getProduct().isWishlist());
             }
         }
