@@ -80,11 +80,10 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
                     KolEventTracking.Action.SHOP_ITEM_CLICK,
-                    String.valueOf(post.getId())
+                    String.valueOf(post.getId()));
             switch (type) {
                 case TYPE_IMAGE:
                     visitable = convertToKolPostViewModel(post);
-                    );
                     visitableList.add(visitable);
                     break;
                 case TYPE_YOUTUBE:
