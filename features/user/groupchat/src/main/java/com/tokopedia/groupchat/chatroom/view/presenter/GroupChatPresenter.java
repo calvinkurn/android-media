@@ -182,43 +182,46 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 "&user_id=" + userId;
 
 //        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
+        magicString = "wss://echo.websocket.org";
 
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
-                Log.d("MainActivity", " on WebSocket open");
+                Log.d("RxWebSocket Presenter", " on WebSocket open");
             }
 
             @Override
             protected void onMessage(@NonNull String text) {
-                Log.d("MainActivity", text);
+                Log.d("RxWebSocket Presenter", text);
             }
 
             @Override
             protected void onMessage(@NonNull Visitable item) {
-                Log.d("MainActivity", "item");
+                Log.d("RxWebSocket Presenter", "item");
                 getView().onMessageReceived(item);
             }
 
             @Override
             protected void onMessage(@NonNull ByteString byteString) {
-                Log.d("MainActivity", byteString.toString());
+                Log.d("RxWebSocket Presenter", byteString.toString());
             }
 
             @Override
             protected void onReconnect() {
-                Log.d("MainActivity", "onReconnect");
+                Log.d("RxWebSocket Presenter", "onReconnect");
             }
 
             @Override
             protected void onClose() {
-                Log.d("MainActivity", "onClose");
+                Log.d("RxWebSocket Presenter", "onClose");
+                destroyWebSocket();
+                connect(userId, deviceId, accessToken, channelUrl);
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                Log.d("MainActivity", "onError "+e.toString());
+                Log.d("RxWebSocket Presenter", "onError " + e.toString());
             }
         };
         Subscription subscription = RxWebSocket.get(magicString, accessToken)
@@ -234,7 +237,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         SimpleDateFormat date = new SimpleDateFormat(START_TIME_FORMAT, Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String startTime =  date.format(Calendar.getInstance().getTime());
+        String startTime = date.format(Calendar.getInstance().getTime());
 
         String magicString = "wss://chat.tokopedia.com" +
                 "/connect" +
