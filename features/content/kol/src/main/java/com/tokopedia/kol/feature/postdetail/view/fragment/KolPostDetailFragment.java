@@ -217,7 +217,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -321,7 +321,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
 
             if (kolPostViewModel.isFollowed()) {
                 ToasterNormal
