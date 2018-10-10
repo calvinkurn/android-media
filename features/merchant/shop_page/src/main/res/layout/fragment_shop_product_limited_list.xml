@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:clipToPadding="false">
 
     <com.tokopedia.shop.product.view.widget.StickySingleHeaderView
         android:id="@+id/stickySingleHeaderView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8">
+        android:clipToPadding="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -21,6 +20,8 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
             android:clipToPadding="false"/>
     </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>
 
