@@ -57,6 +57,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -997,7 +998,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
         }
     }
 
@@ -1019,7 +1020,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 kolViewModel.setTotalLike(((BaseKolViewModel)
                         adapter.getlist().get(rowNumber)).getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -1051,7 +1052,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     (BaseKolViewModel)
                             adapter.getlist().get(rowNumber)).getTotalComment() +
                     totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
         }
     }
 
@@ -1067,7 +1068,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 kolViewModel.setTemporarilyFollowed(isFollowing
                         == ProfileActivity.IS_FOLLOWING_TRUE);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
         }
     }
 
