@@ -56,6 +56,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -178,7 +179,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
         flightSearchV2UseCase.execute(flightSearchV2UseCase.createRequestParams(
                 requestModel,
-                combinedRequestModel,
                 getView().isReturning(),
                 !passDataViewModel.isOneWay(),
                 ""),

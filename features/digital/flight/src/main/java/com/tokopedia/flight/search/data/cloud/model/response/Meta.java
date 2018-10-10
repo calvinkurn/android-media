@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by User on 11/14/2017.
@@ -35,7 +35,7 @@ public class Meta {
     private String arrivalAirport; // merge result
     private String time; // merge result
     @NotNull
-    public ArrayList<String> airlines;
+    public List<String> airlines;
 
     public boolean isNeedRefresh() {
         return needRefresh;
