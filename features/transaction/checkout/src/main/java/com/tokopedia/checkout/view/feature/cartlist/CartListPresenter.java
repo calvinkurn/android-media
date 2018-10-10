@@ -984,11 +984,6 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
         enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
-        enhancedECommerceProductCartMapData.setDimension40(
-                TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
-                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                        : cartItemData.getOriginData().getTrackerListName()
-        );
         return enhancedECommerceProductCartMapData;
     }
 
