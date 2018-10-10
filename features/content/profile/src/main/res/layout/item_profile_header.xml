@@ -73,17 +73,19 @@
         android:id="@+id/followBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/profile_follow"
         android:textAllCaps="false"
+        android:visibility="gone"
         app:buttonCompatSize="small"
         app:buttonCompatType="primary"
         app:layout_constraintBottom_toTopOf="@id/bottomSpace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/avatarSeparator"
         app:layout_constraintTop_toBottomOf="@+id/followers"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/bottomSpace"
