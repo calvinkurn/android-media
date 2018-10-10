@@ -15,6 +15,7 @@ public class CheckPhoneOvoModel implements Parcelable {
     private String changeMsisdnApplink;
     private boolean isAllow;
     private PhoneActionModel phoneActionModel;
+    private ErrorModel errorModel;
 
     public CheckPhoneOvoModel() {
     }
@@ -26,21 +27,8 @@ public class CheckPhoneOvoModel implements Parcelable {
         notRegisteredApplink = in.readString();
         changeMsisdnApplink = in.readString();
         isAllow = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(phoneNumber);
-        dest.writeByte((byte) (isRegistered ? 1 : 0));
-        dest.writeString(registeredApplink);
-        dest.writeString(notRegisteredApplink);
-        dest.writeString(changeMsisdnApplink);
-        dest.writeByte((byte) (isAllow ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        phoneActionModel = in.readParcelable(PhoneActionModel.class.getClassLoader());
+        errorModel = in.readParcelable(ErrorModel.class.getClassLoader());
     }
 
     public static final Creator<CheckPhoneOvoModel> CREATOR = new Creator<CheckPhoneOvoModel>() {
@@ -54,6 +42,23 @@ public class CheckPhoneOvoModel implements Parcelable {
             return new CheckPhoneOvoModel[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(phoneNumber);
+        parcel.writeByte((byte) (isRegistered ? 1 : 0));
+        parcel.writeString(registeredApplink);
+        parcel.writeString(notRegisteredApplink);
+        parcel.writeString(changeMsisdnApplink);
+        parcel.writeByte((byte) (isAllow ? 1 : 0));
+        parcel.writeParcelable(phoneActionModel, i);
+        parcel.writeParcelable(errorModel, i);
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -109,5 +114,13 @@ public class CheckPhoneOvoModel implements Parcelable {
 
     public void setPhoneActionModel(PhoneActionModel phoneActionModel) {
         this.phoneActionModel = phoneActionModel;
+    }
+
+    public ErrorModel getErrorModel() {
+        return errorModel;
+    }
+
+    public void setErrorModel(ErrorModel errorModel) {
+        this.errorModel = errorModel;
     }
 }

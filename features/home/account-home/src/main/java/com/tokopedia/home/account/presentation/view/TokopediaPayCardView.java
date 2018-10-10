@@ -127,8 +127,12 @@ public class TokopediaPayCardView extends BaseCustomView {
         textDesctRight.setText(text);
     }
 
-    public void setIconLeft(int imageLeft) {
-        ImageHandler.loadImageWithId(iconLeft, imageLeft);
+    public void setIconLeft(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconLeft.getContext(), iconLeft, url);
     }
 
     public void setIconRight(String url) {

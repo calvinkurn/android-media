@@ -1,5 +1,7 @@
 package com.tokopedia.tokocash.ovoactivation.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
@@ -66,7 +68,11 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
                                 cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
 
                                 if (!checkPhoneOvoModel.isAllow()) {
-                                    getView().showDialogErrorPhoneNumber(checkPhoneOvoModel.getPhoneActionModel());
+                                    if (!TextUtils.isEmpty(checkPhoneOvoModel.getErrorModel().getMessage())) {
+                                        getView().showSnackbarErrorMessage(checkPhoneOvoModel.getErrorModel().getMessage());
+                                    } else {
+                                        getView().showDialogErrorPhoneNumber(checkPhoneOvoModel.getPhoneActionModel());
+                                    }
                                 } else {
                                     if (checkPhoneOvoModel.isRegistered()) {
                                         getView().directPageWithApplink(checkPhoneOvoModel.getRegisteredApplink());

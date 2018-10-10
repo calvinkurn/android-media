@@ -29,6 +29,9 @@ public class CheckPhoneOvoEntity {
     @SerializedName("action")
     @Expose
     private PhoneActionEntity phoneActionEntity;
+    @SerializedName("errors")
+    @Expose
+    private ErrorModelEntity errors;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -56,5 +59,9 @@ public class CheckPhoneOvoEntity {
 
     public PhoneActionEntity getPhoneActionEntity() {
         return phoneActionEntity;
+    }
+
+    public ErrorModelEntity getErrors() {
+        return errors;
     }
 }

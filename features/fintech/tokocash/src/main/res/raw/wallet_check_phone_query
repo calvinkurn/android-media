@@ -1,5 +1,8 @@
 {
     check_phone {
+        errors {
+            message
+        }
         phone_number
         is_registered
         registered_applink
@@ -15,5 +18,5 @@
             text
             applink
         }
-  }
+    }
 }

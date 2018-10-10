@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.ovoactivation.domain;
 
 import com.tokopedia.tokocash.ovoactivation.view.CheckPhoneOvoModel;
+import com.tokopedia.tokocash.ovoactivation.view.ErrorModel;
 import com.tokopedia.tokocash.ovoactivation.view.PhoneActionModel;
 
 import javax.inject.Inject;
@@ -25,6 +26,10 @@ public class CheckPhoneOvoMapper implements Func1<CheckPhoneOvoEntity, CheckPhon
         checkPhoneOvoModel.setNotRegisteredApplink(checkPhoneOvoEntity.getNotRegisteredApplink());
         checkPhoneOvoModel.setChangeMsisdnApplink(checkPhoneOvoEntity.getChangeMsisdnApplink());
         checkPhoneOvoModel.setAllow(checkPhoneOvoEntity.isAllow());
+
+        ErrorModel errorModel = new ErrorModel();
+        errorModel.setMessage(checkPhoneOvoEntity.getErrors().getMessage());
+        checkPhoneOvoModel.setErrorModel(errorModel);
 
         PhoneActionModel phoneActionModel = new PhoneActionModel();
         phoneActionModel.setTitlePhoneAction(checkPhoneOvoEntity.getPhoneActionEntity().getTitle());

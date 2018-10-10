@@ -67,7 +67,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
         if (accountModel.getWallet().getWalletType().equals(OVO)) {
-            tokopediaPayViewModel.setIconUrlLeft(R.drawable.wallet_ic_ovo);
+            tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.OVO_IMG);
             if (!accountModel.getWallet().isLinked()) {
                 if (accountModel.getWallet().getAmountPendingCashback() > 0) {
                     tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
@@ -82,7 +82,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
             }
         } else {
-            tokopediaPayViewModel.setIconUrlLeft(R.drawable.ic_tokocash_circle);
+            tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.TOKOCASH_IMG);
             if (!accountModel.getWallet().isLinked()) {
                 tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
                 tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
