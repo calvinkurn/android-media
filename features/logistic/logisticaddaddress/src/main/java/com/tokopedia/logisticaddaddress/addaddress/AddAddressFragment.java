@@ -223,7 +223,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 int charLeft;
                 if (textLength < ADDRESS_MIN_CHARACTER) {
                     charLeft = ADDRESS_MIN_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi deperlukan", charLeft));
+                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi diperlukan", charLeft));
                 } else {
                     charLeft = ADDRESS_MAX_CHARACTER - textLength;
                     watcher.setText(String.format(Locale.US, "%1$d karakter tersisa", charLeft));
@@ -318,7 +318,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
-        if (!isEdit()) {
+        if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
             UserSession sess = new UserSession(getActivity());
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
             receiverNameEditText.setText(sess.getName());
