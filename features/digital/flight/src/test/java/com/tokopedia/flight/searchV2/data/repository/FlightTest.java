@@ -18,7 +18,6 @@ import java.util.List;
 
 import rx.Observable;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**

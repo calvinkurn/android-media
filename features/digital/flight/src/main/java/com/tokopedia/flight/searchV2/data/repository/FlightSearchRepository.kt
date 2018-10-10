@@ -69,8 +69,8 @@ open class FlightSearchRepository @Inject constructor(
                 return combosTable
             }
 
-            override fun saveCallResult(items: List<FlightComboTable>) {
-                flightSearchCombinedDataDbSource.insert(items)
+            override fun saveCallResult(items: List<FlightComboTable>): Observable<Unit> {
+                return Observable.just(flightSearchCombinedDataDbSource.insert(items))
             }
         }.asObservable()
     }
@@ -112,7 +112,7 @@ open class FlightSearchRepository @Inject constructor(
                             }
                         }
             }.toList().map { journeyAndRoutesList ->
-                flightSearchSingleDataDbSource.insert(journeyAndRoutesList)
+                flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
                 val airlines = arrayListOf<String>()
                 for (journeyAndRoutes in journeyAndRoutesList) {
                     for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
@@ -162,7 +162,7 @@ open class FlightSearchRepository @Inject constructor(
                             }
                         }
             }.toList().map { journeyAndRoutesList ->
-                flightSearchSingleDataDbSource.insert(journeyAndRoutesList)
+                flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
                 val airlines = arrayListOf<String>()
                 for (journeyAndRoutes in journeyAndRoutesList) {
                     for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
@@ -209,8 +209,8 @@ open class FlightSearchRepository @Inject constructor(
                 return ResponseJourneysAndMetaWrapper(journeyAndRoutesJavaList, response.meta)
             }
 
-            override fun saveCallResult(items: ResponseJourneysAndMetaWrapper) {
-                for (journey in items.flightJourneys) {
+            override fun saveCallResult(items: ResponseJourneysAndMetaWrapper): Observable<Unit> {
+                return Observable.from(items.flightJourneys).flatMap { journey ->
                     Observable.from(journey.routes)
                             .flatMap { getAirlineById(it.airline) }
                             .toList()
@@ -222,8 +222,8 @@ open class FlightSearchRepository @Inject constructor(
                             }
                 }
             }
-        }.asObservable().map {
-            val journeyAndRoutesList = it.flightJourneys
+        }.asObservable().map { responseJourneysAndMetaWrapper ->
+            val journeyAndRoutesList = responseJourneysAndMetaWrapper.flightJourneys
             val airlines = arrayListOf<String>()
             for (journeyAndRoutes in journeyAndRoutesList) {
                 for (flightAirlineDb in journeyAndRoutes.flightJourneyTable.flightAirlineDBS) {
@@ -232,7 +232,7 @@ open class FlightSearchRepository @Inject constructor(
                     }
                 }
             }
-            val meta = it.meta
+            val meta = responseJourneysAndMetaWrapper.meta
             meta.airlines = airlines
             meta
         }

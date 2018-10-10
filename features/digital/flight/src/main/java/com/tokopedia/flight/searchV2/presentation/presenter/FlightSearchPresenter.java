@@ -162,7 +162,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 requestModel,
                 combinedRequestModel,
                 getView().isReturning(),
-                !passDataViewModel.isOneWay()),
+                !passDataViewModel.isOneWay(),
+                ""),
                 new Subscriber<FlightSearchMetaViewModel>() {
                     @Override
                     public void onCompleted() {
