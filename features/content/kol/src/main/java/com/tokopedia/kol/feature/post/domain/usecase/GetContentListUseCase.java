@@ -5,11 +5,13 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.post.data.mapper.GetContentListMapper;
 import com.tokopedia.kol.feature.post.data.pojo.shop.ContentListData;
+import com.tokopedia.kol.feature.post.domain.model.ContentListDomain;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import rx.Observable;
  * @author by milhamj on 23/08/18.
  */
 
-public class GetContentListUseCase extends GraphqlUseCase {
+public class GetContentListUseCase extends UseCase<ContentListDomain> {
 
     private static final String PARAM_LIMIT = "limit";
     private static final String PARAM_SHOP_ID = "shopID";
@@ -34,14 +36,19 @@ public class GetContentListUseCase extends GraphqlUseCase {
     private static final String SOURCE_PROFILE = "profile";
 
     private final Context context;
+    private final GraphqlUseCase graphqlUseCase;
+    private final GetContentListMapper getContentListMapper;
 
     @Inject
-    GetContentListUseCase(@ApplicationContext Context context) {
+    GetContentListUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase,
+                          GetContentListMapper getContentListMapper) {
         this.context = context;
+        this.graphqlUseCase = graphqlUseCase;
+        this.getContentListMapper = getContentListMapper;
     }
 
     @Override
-    public Observable<GraphqlResponse> createObservable(RequestParams params) {
+    public Observable<ContentListDomain> createObservable(RequestParams params) {
         String query = GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_content_list
@@ -49,9 +56,9 @@ public class GetContentListUseCase extends GraphqlUseCase {
         Map<String, Object> variables = params.getParameters();
         GraphqlRequest request = new GraphqlRequest(query, ContentListData.class, variables);
 
-        this.clearRequest();
-        this.addRequest(request);
-        return super.createObservable(params);
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(request);
+        return graphqlUseCase.createObservable(params).flatMap(getContentListMapper);
     }
 
     public static RequestParams getShopParams(String shopId, String cursor) {

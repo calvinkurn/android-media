@@ -2,9 +2,9 @@ package com.tokopedia.profile.domain.usecase
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.data.pojo.shop.ContentListData
+import com.tokopedia.kol.feature.post.data.mapper.GetContentListMapper
+import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
 import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
-import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
 import com.tokopedia.profile.data.pojo.profileheader.Profile
@@ -23,6 +23,7 @@ import javax.inject.Inject
 class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetProfileHeaderUseCase,
                                               val getContentListUseCase: GetContentListUseCase,
                                               val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
+                                              val getContentListMapper: GetContentListMapper,
                                               val userSession: UserSession)
     : UseCase<ProfileFirstPageViewModel>() {
 
@@ -30,15 +31,14 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
 
     override fun createObservable(requestParams: RequestParams?)
             : Observable<ProfileFirstPageViewModel>? {
-        userId = requestParams?.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
-                ?: 0
+        userId = requestParams!!.getInt(GetProfileHeaderUseCase.PARAM_USER_ID, 0)
         return Observable.zip(
                 getHeader(userId),
                 getPost(),
                 getQuota()) { header: ProfileHeaderViewModel,
-                              posts: List<KolPostViewModel>,
+                              content: ContentListDomain,
                               quota: AffiliatePostQuota ->
-            ProfileFirstPageViewModel(header, posts, quota)
+            ProfileFirstPageViewModel(header, content.visitableList, quota, content.lastCursor)
         }
     }
 
@@ -48,10 +48,9 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                 .map(convertToHeader())
     }
 
-    private fun getPost(): Observable<List<KolPostViewModel>> {
+    private fun getPost(): Observable<ContentListDomain> {
         return getContentListUseCase
                 .createObservable(GetContentListUseCase.getProfileParams(userId, ""))
-                .map(convertToPosts())
     }
 
     private fun getQuota(): Observable<AffiliatePostQuota> {
@@ -78,14 +77,6 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                     profile.isFollowed,
                     userId.toString() == userSession.userId
             )
-        }
-    }
-
-    private fun convertToPosts(): Func1<GraphqlResponse, List<KolPostViewModel>> {
-        return Func1 { graphqlResponse ->
-            val data: ContentListData = graphqlResponse.getData(ContentListData::class.java)
-                    ?: ContentListData()
-            ArrayList()
         }
     }
 

@@ -24,6 +24,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
+import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
@@ -132,8 +133,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel,
-                                              cursor: String) {
+    override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
         if (!TextUtils.isEmpty(firstPageViewModel.profileHeaderViewModel.affiliateName)) {
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
@@ -143,8 +143,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(firstPageViewModel.profileHeaderViewModel)
-        visitables.addAll(firstPageViewModel.profilePostViewModel)
-        renderList(visitables, !TextUtils.isEmpty(cursor))
+        visitables.addAll(firstPageViewModel.visitableList)
+        renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
     }
 
     override fun goToFollowing() {

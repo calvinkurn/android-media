@@ -10,8 +10,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
  */
 interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
-                                         cursor: String)
+        fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel)
 
         fun goToFollowing()
 

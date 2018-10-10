@@ -9,8 +9,7 @@ import java.util.List;
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel
-        implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
     private List<String> imageList;
