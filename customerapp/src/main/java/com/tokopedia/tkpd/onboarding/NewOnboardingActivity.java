@@ -24,7 +24,6 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.tkpd.R;
 
 import com.github.paolorotolo.appintro.AppIntro;
@@ -148,12 +147,14 @@ public class NewOnboardingActivity extends AppIntro {
     }
 
     private void finishOnboard() {
-        analytics.eventOnboardingSkip(getApplicationContext(), pager.getCurrentItem() + 1);
+        analytics.eventOnboardingSkip(getAplicationContext(), pager.getCurrentItem() + 1);
         userSession.setFirstTimeUserOnboarding(false);
 
         Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
-        if (!TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
-            intent.putExtra("EXTRA_APPLINK", AppsflyerContainer.getDefferedDeeplinkPathIfExists());
+        if (!TextUtils.isEmpty(((ConsumerRouterApplication) getActivity().getApplicationContext())
+                        .getDefferedDeeplinkPathIfExists())) {
+            intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getActivity().getApplicationContext())
+                        .getDefferedDeeplinkPathIfExists());
         }
         startActivity(intent);
         finish();

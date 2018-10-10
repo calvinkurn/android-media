@@ -64,6 +64,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -3144,5 +3145,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    public String getDefferedDeeplinkPathIfExists(){
+        return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 }
