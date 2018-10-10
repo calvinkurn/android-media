@@ -29,7 +29,7 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private List<Item> list;
     private AdsAdapterTypeFactory typeFactory;
     private int clickPosition = -1;
-    private int adapterPosition;
+    private int adapterPosition = -1;
 
     public AdsItemAdapter(Context context) {
         this.list = new ArrayList<>();
