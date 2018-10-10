@@ -129,7 +129,6 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     public void setIconLeft(String url) {
         if (!URLUtil.isValidUrl(url)) {
-            iconLeft.setImageResource(R.drawable.ic_tokocash_circle);
             return;
         }
 
@@ -138,7 +137,6 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     public void setIconRight(String url) {
         if (!URLUtil.isValidUrl(url)) {
-            iconRight.setImageResource(R.drawable.ic_saldo_circle);
             return;
         }
 
