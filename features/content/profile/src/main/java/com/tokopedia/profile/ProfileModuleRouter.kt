@@ -1,5 +1,6 @@
 package com.tokopedia.profile
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 
@@ -8,4 +9,6 @@ import android.content.Intent
  */
 interface ProfileModuleRouter {
     fun getLoginIntent(context: Context): Intent
+
+    fun openRedirectUrl(activity: Activity, url: String)
 }

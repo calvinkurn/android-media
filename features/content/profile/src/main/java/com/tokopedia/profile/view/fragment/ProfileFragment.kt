@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
@@ -13,10 +14,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
+import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -39,9 +45,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
+    lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
         const val TEXT_PLAIN = "text/plain"
+        const val KOL_COMMENT_CODE = 13
 
         fun createInstance() = ProfileFragment()
     }
@@ -62,6 +70,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK && data == null) {
+            return
+        }
+
+        when(requestCode) {
+            KOL_COMMENT_CODE ->
+                onSuccessAddDeleteKolComment(
+                        data!!.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                        data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+        }
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -101,8 +124,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun getAbstractionRouter(): AbstractionRouter {
-        if (context?.applicationContext is AbstractionRouter) {
-            return context?.applicationContext as AbstractionRouter
+        if (context!!.applicationContext is AbstractionRouter) {
+            return context!!.applicationContext as AbstractionRouter
         } else {
             throw IllegalStateException("Application must implement "
                     .plus(AbstractionRouter::class.java.simpleName))
@@ -148,12 +171,35 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolSuccess(rowNumber: Int) {
+        if (adapter.data[rowNumber] != null && adapter.data[rowNumber] is KolPostViewModel) {
+            val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
+            kolPostViewModel.isLiked = !kolPostViewModel.isLiked
+            if (kolPostViewModel.isLiked) {
+                kolPostViewModel.totalLike = kolPostViewModel.totalLike + 1
+            } else {
+                kolPostViewModel.totalLike = kolPostViewModel.totalLike - 1
+            }
+            adapter.notifyItemChanged(rowNumber)
 
+            //TODO milhamj
+//            if (activity != null &&
+//                    arguments != null &&
+//                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.kolId) {
+//
+//                if (resultIntent == null) {
+//                    resultIntent = Intent()
+//                    resultIntent.putExtras(arguments!!)
+//                }
+//                resultIntent.putExtra(
+//                        PARAM_IS_LIKED,
+//                        if (kolPostViewModel.isLiked) IS_LIKE_TRUE else IS_LIKE_FALSE)
+//                resultIntent.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.totalLike)
+//                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+//            }
+        }
     }
 
-    override fun onLikeKolError(message: String?) {
-
-    }
+    override fun onLikeKolError(message: String?) = showError(message)
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
 
@@ -163,8 +209,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onOpenKolTooltip(rowNumber: Int, url: String?) {
-
+    override fun onOpenKolTooltip(rowNumber: Int, url: String) {
+        profileRouter.openRedirectUrl(activity as Activity, url)
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
@@ -184,12 +230,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onGoToKolComment(rowNumber: Int, id: Int) {
-
+        val intent = KolCommentActivity.getCallingIntent(
+                context, id, rowNumber
+        )
+        startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
     private fun initVar() {
         arguments?.let {
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
+        }
+        if (context!!.applicationContext is ProfileModuleRouter) {
+            profileRouter = context!!.applicationContext as ProfileModuleRouter
+        } else {
+            throw IllegalStateException("Application must implement "
+                    .plus(ProfileModuleRouter::class.java.simpleName))
         }
     }
 
@@ -230,6 +285,37 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             startActivity(
                     Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
             )
+        }
+    }
+
+    private fun showError(message: String?) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(activity)
+        } else {
+            NetworkErrorHelper.showSnackbar(activity, message)
+        }
+    }
+
+    private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
+        if (rowNumber != -1 &&
+                adapter.data[rowNumber] != null &&
+                adapter.data[rowNumber] is KolPostViewModel) {
+            val kolPostViewModel = adapter.data[rowNumber] as KolPostViewModel
+            kolPostViewModel.totalComment = kolPostViewModel.totalComment + totalNewComment
+            adapter.notifyItemChanged(rowNumber)
+
+            //TODO milhamj
+//            if (activity != null &&
+//                    arguments != null &&
+//                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.kolId) {
+//
+//                if (resultIntent == null) {
+//                    resultIntent = Intent()
+//                    resultIntent.putExtras(arguments!!)
+//                }
+//                resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
+//                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+//            }
         }
     }
 }
