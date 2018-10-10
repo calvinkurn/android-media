@@ -47,6 +47,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private TabLayout tabLayout;
     private TextView info;
     private TextView tooltip;
+    private View bottomSpace;
     private Type type;
 
     public enum Type {
@@ -69,6 +70,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         tabLayout = view.findViewById(R.id.tabLayout);
         info = view.findViewById(R.id.info);
         tooltip = view.findViewById(R.id.tooltip);
+        bottomSpace = view.findViewById(R.id.bottom_space);
     }
 
     @Override
@@ -100,6 +102,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         } else {
             info.setVisibility(View.VISIBLE);
             info.setText(element.getInfo());
+        }
+
+        if (TextUtils.isEmpty(element.getReview())) {
+            bottomSpace.setVisibility(View.VISIBLE);
+        } else {
+            bottomSpace.setVisibility(View.GONE);
         }
 
         baseKolView.bind(element);

@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dp_5"
+    android:paddingRight="@dimen/dp_5">
 
     <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
         android:id="@+id/imageViewPager"
@@ -45,27 +47,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imageViewPager"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/dp_8">
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_10">
 
         <TextView
             android:id="@+id/tooltip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_8"
             android:fontFamily="sans-serif-medium"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            tools:text="Kunjungi Toko"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            tools:text="Kunjungi Toko" />
 
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/kol_post_footer_size"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
         <TextView
@@ -91,4 +91,12 @@
             tools:visibility="visible" />
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_10"
+        android:layout_below="@id/tooltip_area"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </RelativeLayout>

@@ -71,12 +71,12 @@ public class GetContentListMapper implements Func1<GraphqlResponse, Observable<C
         for (Post post : postList) {
             Visitable visitable;
             switch (getType(post)) {
+                case TYPE_YOUTUBE:
+                    break;
                 case TYPE_IMAGE:
+                default:
                     visitable = convertToKolPostViewModel(post);
                     visitableList.add(visitable);
-                    break;
-                case TYPE_YOUTUBE:
-                default:
                     break;
             }
         }
