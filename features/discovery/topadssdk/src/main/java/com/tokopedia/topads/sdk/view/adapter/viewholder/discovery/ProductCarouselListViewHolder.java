@@ -48,13 +48,13 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
 
 
     public ProductCarouselListViewHolder(View itemView, ImageLoader imageLoader,
-                                         LocalAdsClickListener itemClickListener, int clickPositio,
+                                         LocalAdsClickListener itemClickListener, int clickPosition,
                                          TopAdsItemImpressionListener impressionListener) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
+        this.clickPosition = (clickPosition < 0 ? getAdapterPosition() : clickPosition);
         this.impressionListener = impressionListener;
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);

@@ -65,7 +65,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         wishlistBtnContainer.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
+        this.clickPosition = (clickPosition < 0 ? getAdapterPosition() : clickPosition);
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);

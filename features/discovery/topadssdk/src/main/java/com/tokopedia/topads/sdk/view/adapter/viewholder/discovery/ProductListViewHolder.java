@@ -57,7 +57,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
-        this.clickPosition = clickPosition;
+        this.clickPosition = (clickPosition < 0 ? getAdapterPosition() : clickPosition);
         context = itemView.getContext();
         badgeContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
         labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
