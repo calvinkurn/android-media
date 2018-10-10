@@ -151,9 +151,9 @@ public class NewOnboardingActivity extends AppIntro {
         userSession.setFirstTimeUserOnboarding(false);
 
         Intent intent = ((ConsumerRouterApplication) getApplicationContext()).getHomeIntent(this);
-        if (!TextUtils.isEmpty(((ConsumerRouterApplication) getActivity().getApplicationContext())
+        if (!TextUtils.isEmpty(((ConsumerRouterApplication) getApplicationContext())
                         .getDefferedDeeplinkPathIfExists())) {
-            intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getActivity().getApplicationContext())
+            intent.putExtra("EXTRA_APPLINK", ((ConsumerRouterApplication) getApplicationContext())
                         .getDefferedDeeplinkPathIfExists());
         }
         startActivity(intent);
