@@ -209,51 +209,6 @@ public class NewOnboardingActivity extends AppIntro {
         nextViewLayoutParams.rightMargin = (int) (20 * density);
     }
 
-    public void setNextResource() {
-        if (nextView != null) {
-            nextButton.setOnClickListener(v -> {
-                if (!isNextPressed) {
-                    isNextPressed = true;
-
-                    if (isVibrateOn) {
-                        mVibrator.vibrate(vibrateIntensity);
-                    }
-
-                    boolean requestPermission = false;
-                    int position = 0;
-
-                    for (int i = 0; i < permissionsArray.size(); i++) {
-                        requestPermission = pager.getCurrentItem() + 1 == permissionsArray.get(i).getPosition();
-                        position = i;
-                        break;
-                    }
-
-                    if (requestPermission) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissions(permissionsArray.get(position).getPermission(), 1);
-                            permissionsArray.remove(position);
-                            isNextPressed = false;
-                        } else {
-                            NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                            if (currentFragment != null) currentFragment.animateOut();
-                            pager.postDelayed(() -> {
-                                pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                                isNextPressed = false;
-                            }, 1250);
-                        }
-                    } else {
-                        NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                        if (currentFragment != null) currentFragment.animateOut();
-                        pager.postDelayed(() -> {
-                            pager.setCurrentItem(pager.getCurrentItem() + 1, true);
-                            isNextPressed = false;
-                        }, 1250);
-                    }
-                }
-            });
-        }
-    }
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_onboarding;

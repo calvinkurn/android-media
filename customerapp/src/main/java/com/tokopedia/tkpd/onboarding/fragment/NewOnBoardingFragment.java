@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.onboarding.util.CustomAnimationPageTransformerDelegate;
@@ -118,7 +119,6 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
             viewType = descColor = getArguments().containsKey(ARG_VIEW_TYPE) ? getArguments().getInt(ARG_VIEW_TYPE) : VIEW_DEFAULT;
         }
 
-//        ((NewOnboardingActivity) (getActivity())).setNextResource();
         analytics = new ConsumerOnboardingAnalytics();
         animatorSet = new AnimatorSet();
         if (getActivity() != null) {
@@ -334,23 +334,9 @@ public class NewOnBoardingFragment extends Fragment implements CustomAnimationPa
         ViewGroup.LayoutParams layoutParams = startNow.getLayoutParams();
         layoutParams.width = 0;
         startNow.setLayoutParams(layoutParams);
-        startNow.setTextColor(getColor(getActivity(), R.color.transparent));
+        startNow.setTextColor(MethodChecker.getColor(getActivity(), R.color.transparent));
         startNow.setVisibility(View.VISIBLE);
         next.setVisibility(View.VISIBLE);
-    }
-
-    @SuppressWarnings("deprecation")
-    public static int getColor(Context context, int id) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return ContextCompat.getColor(context, id);
-            } else {
-                return context.getResources().getColor(id);
-            }
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
 
     public void clearAnimation() {

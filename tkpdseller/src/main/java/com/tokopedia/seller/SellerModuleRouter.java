@@ -49,8 +49,5 @@ public interface SellerModuleRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     void gotoTopAdsDashboard(Context context);
-
-    Intent getIntentCreateShop(Context context);
-
 }
 
