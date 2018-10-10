@@ -7,12 +7,13 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -104,7 +105,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             router?.run {
                 sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, null)
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_TOGGLE_ATTACH_PRODUCT, "")
             }
             isShowDialogWhenBack = true
             list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
@@ -137,6 +138,15 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             }
         }
 
+        val spannableBuilder = SpannableStringBuilder()
+        spannableBuilder.append(getString(R.string.attach_my_product))
+        spannableBuilder.append(" ")
+        spannableBuilder.append(SpannableString(getString(R.string.optional)).apply {
+            setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.black_38)), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        })
+
+        title_switch_product.setText(spannableBuilder, TextView.BufferType.SPANNABLE)
+
         presenter.getShopInfo()
         needEnabledSubmitButton()
     }
@@ -158,7 +168,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         router?.run {
             sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, null)
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CLICK_IMG_UPLOAD, "")
         }
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.bm_choose_picture),
@@ -181,7 +191,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 router?.run {
                     sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                             BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                            BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, null)
+                            BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_PICK_IMG, "")
                 }
 
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)

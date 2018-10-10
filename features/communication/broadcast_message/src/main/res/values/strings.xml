@@ -13,7 +13,7 @@
     <string name="message_label">Isi Pesan</string>
     <string name="message_content_desc">Sampaikan informasi promo toko Anda  secara jelas dan singkat</string>
     <string name="bm_continue">Lanjutkan</string>
-    <string name="preview_desc">Ini adalah preview yang akan diterima followers Anda</string>
+    <string name="preview_desc">Ini adalah tampilan yang akan diterima followers Anda</string>
     <string name="see_now">Cek Sekarang</string>
     <string name="temp_message">Cek www.tokopedia/modostore.com. Ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan menarik di tanggal 17 Agustus ini. Nantikan ya!</string>
     <string name="time_template">%1$s  •</string>
@@ -34,6 +34,7 @@
     <string name="dialog_ok_cancel_create_bm">Ya, Batalkan</string>
     <string name="dialog_no_cancel_create_bm">Tidak</string>
     <string name="empty_attached_product">Harap lampirkan produk atau nonaktifkan \'Lampirkan produk saya\'</string>
+    <string name="optional">(opsional)</string>
     <plurals name="template_follower">
         <item quantity="zero">%d follower</item>
         <item quantity="one">%d follower</item>

@@ -1610,7 +1610,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getBroadcastMessageListIntent(@NonNull Context context) {
         sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                 BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK,null);
+                BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_BM_CLICK,"");
         return BroadcastMessageInternalRouter.INSTANCE.getBroadcastMessageListIntent(context);
     }
 

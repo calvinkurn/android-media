@@ -49,5 +49,6 @@ class BroadcastMessageListPresenter @Inject
     override fun detachView() {
         super.detachView()
         getMetaDataUseCase.unsubscribe()
+        getChatBlastSellerUseCase.unsubscribe()
     }
 }

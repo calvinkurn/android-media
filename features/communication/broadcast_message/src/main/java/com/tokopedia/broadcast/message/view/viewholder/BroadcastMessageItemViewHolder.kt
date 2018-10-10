@@ -32,12 +32,15 @@ class BroadcastMessageItemViewHolder(val view: View): AbstractViewHolder<TopChat
             if (element.state?.status == STATUS_SENT){
                 loading.visibility = View.GONE
                 spannableBuilder.append(boldSpannableString(getString(R.string.sent)))
-                spannableBuilder.append(" ${getString(R.string.sent_on_template, element.executionTime.toISO8601Date().toStringDayMonth())}")
+                spannableBuilder.append(" ")
+                spannableBuilder.append(getString(R.string.sent_on_template, element.executionTime.toISO8601Date().toStringDayMonth()))
                 progress_container.setBackgroundColor(ContextCompat.getColor(context, R.color.light_green))
             } else {
                 loading.visibility = View.VISIBLE
                 spannableBuilder.append(boldSpannableString("${context.getString(R.string.sending)}..."))
-                spannableBuilder.append(" ${context.getString(R.string.send_progress_template, element.state?.totalSent, element.state?.totalTarget)}")
+                /** temp hide this text
+                spannableBuilder.append(" ")
+                spannableBuilder.append(context.getString(R.string.send_progress_template, element.state?.totalSent, element.state?.totalTarget))*/
                 progress_container.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow_sending))
             }
             message_progress.setText(spannableBuilder, TextView.BufferType.SPANNABLE)

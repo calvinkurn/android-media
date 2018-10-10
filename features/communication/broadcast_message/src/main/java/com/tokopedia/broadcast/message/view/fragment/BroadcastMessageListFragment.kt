@@ -15,10 +15,10 @@ import android.text.style.StyleSpan
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSeller
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageTypeFactory
 import com.tokopedia.broadcast.message.R
@@ -31,14 +31,13 @@ import com.tokopedia.broadcast.message.common.extensions.dateToShow
 import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActivity
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_broadcast_message_list.*
 import javax.inject.Inject
 
 class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, BroadcastMessageTypeFactory>(),
         BroadcastMessageListView, BaseEmptyViewHolder.Callback {
+
     private var validToCreate = false
     private var hasMessage = false
 
@@ -60,6 +59,8 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
             list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
                 .apply { setDrawable(ContextCompat.getDrawable(it, R.drawable.broadcast_message_card_divider)!!)})
         }
+        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = R.drawable.ic_error_network }
+
         presenter.getMetaData()
     }
 
@@ -124,7 +125,7 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
             if (it is BroadcastMessageRouter){
                 it.sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                         BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,null)
+                        BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_CREATE_CLICK,"")
             }
         }
         context?.let {
@@ -190,11 +191,6 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     override fun onErrorGetBlastMessage(throwable: Throwable?) {
-        if (view != null && activity != null){
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable), BaseToaster.LENGTH_LONG)
-                    .setAction(R.string.retry){
-                        loadData(currentPage)
-                    }.show()
-        }
+        super.showGetListError(throwable)
     }
 }

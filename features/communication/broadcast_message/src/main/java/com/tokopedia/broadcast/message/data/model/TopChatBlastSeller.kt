@@ -28,7 +28,7 @@ data class TopChatBlastSeller(
 
         @SerializedName("state")
         @Expose
-        val state: State? = null
+        var state: State? = null
 ): Visitable<BroadcastMessageTypeFactory> {
     override fun type(typeFactory: BroadcastMessageTypeFactory) = typeFactory.type(this)
 

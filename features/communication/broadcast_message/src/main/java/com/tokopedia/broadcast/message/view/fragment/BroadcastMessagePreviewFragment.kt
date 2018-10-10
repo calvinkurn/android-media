@@ -27,6 +27,8 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePreviewView {
@@ -92,13 +94,16 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
             }
         }
         message.text = model.message
+        time_message.text = getString(R.string.time_template, getTimeNow())
     }
+
+    private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
     private fun submitMessage() {
         router?.run {
             sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
-                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, null)
+                    BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
         }
         mutationModel?.let {presenter.sendBlastMessage(it)}
     }
