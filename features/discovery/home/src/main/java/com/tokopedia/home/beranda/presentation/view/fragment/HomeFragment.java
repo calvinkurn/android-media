@@ -26,8 +26,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
@@ -44,6 +42,7 @@ import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.Constant;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
@@ -142,7 +141,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected String getScreenName() {
-        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
+        return Constant.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
@@ -861,7 +860,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        HomePageTracking.sendScreen(getActivity(), getScreenName());
     }
 
     private void restartBanner(boolean isVisibleToUser) {
@@ -872,7 +871,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            HomePageTracking.sendScreen(getActivity(), getScreenName());
         }
     }
 
