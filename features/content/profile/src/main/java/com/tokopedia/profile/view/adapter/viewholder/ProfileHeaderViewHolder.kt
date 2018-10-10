@@ -37,7 +37,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             itemView.followers.text = getFollowersText(element)
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (element.isOwner) {
+            if (!element.isOwner) {
                 itemView.followBtn.visibility = View.VISIBLE
                 itemView.followBtn.setOnClickListener {
                     viewListener.followUnfollowUser(element.userId, !element.isFollowed)
