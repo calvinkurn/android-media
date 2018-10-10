@@ -15,14 +15,17 @@
 
         <TextView
             android:id="@+id/send_new_talk"
+            style="@style/Button.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
+            android:background="@drawable/green_button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:minHeight="@dimen/dp_40"
+            android:text="@string/send"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_13"
             android:textStyle="bold" />

@@ -1,6 +1,6 @@
 package com.tokopedia.talk.common.data
 
-/*
+/**
  * @author by nisie on 9/3/18.
  */
 class TalkUrl {
