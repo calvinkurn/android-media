@@ -1,7 +1,6 @@
 package com.tokopedia.events.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
@@ -13,7 +12,19 @@ import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.EventsDetailsContract;
+import com.tokopedia.events.view.contractor.EventsLocationContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
+import com.tokopedia.events.view.presenter.EventFavouritePresenter;
+import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
+import com.tokopedia.events.view.presenter.EventHomePresenter;
+import com.tokopedia.events.view.presenter.EventLocationsPresenter;
+import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
+import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 import com.tokopedia.oms.di.OmsModule;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
@@ -28,17 +39,27 @@ import dagger.Component;
 @Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
 
-    VerifyCartUseCase getVerifyCartUseCase();
-
     VerifyCartWrapper getVerifyCartWrapper();
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
-    EventBaseContract.EventBasePresenter getEventFilterPresenter();
+    EventFilterPresenterImpl getEventFilterPresenter();
 
-    EventBaseContract.EventBasePresenter getEventBookTicketPresenter();
+    EventBookTicketPresenter getEventBookTicketPresenter();
 
-    EventBaseContract.EventBasePresenter getEventDetailsPresenter();
+    EventsDetailsPresenter getEventDetailsPresenter();
+
+    EventFavouritePresenter getEventFavoritePresenter();
+
+    EventLocationsPresenter getEventLocationPresenter();
+
+    EventSearchPresenter getEventSearchPresenter();
+
+    EventHomePresenter getEventHomePresenter();
+
+    EventReviewTicketPresenter getReviewTicketPresenter();
+
+    SeatSelectionPresenter getSeatSelectionPresenter();
 
     void inject(EventsHomeActivity activity);
 

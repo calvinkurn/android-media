@@ -6,6 +6,8 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -16,6 +18,7 @@ public class GetEventsListByLocationRequestUseCase extends UseCase<List<EventsCa
     public final String LOCATION = "location";
     private final EventRepository eventRepository;
 
+    @Inject
     public GetEventsListByLocationRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }

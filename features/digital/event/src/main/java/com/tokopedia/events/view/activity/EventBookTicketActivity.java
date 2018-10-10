@@ -1,20 +1,17 @@
 package com.tokopedia.events.view.activity;
 
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
@@ -24,6 +21,7 @@ import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
@@ -31,10 +29,7 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EventBookTicketActivity
@@ -73,6 +68,7 @@ public class EventBookTicketActivity
     private EventComponent eventComponent;
     EventBookTicketPresenter bookTicketPresenter;
     private String title;
+    EventsAnalytics eventsAnalytics;
 
     private LocationDateBottomSheetFragment locationFragment;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
@@ -104,6 +100,7 @@ public class EventBookTicketActivity
         super.onCreate(savedInstanceState);
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 
@@ -248,7 +245,7 @@ public class EventBookTicketActivity
             super.onBackPressed();
         else
             finish();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

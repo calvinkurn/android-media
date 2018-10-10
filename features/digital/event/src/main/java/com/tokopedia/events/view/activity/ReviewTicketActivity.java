@@ -1,11 +1,10 @@
 package com.tokopedia.events.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,24 +16,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
@@ -43,14 +36,12 @@ import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 
-public class ReviewTicketActivity extends TActivity implements HasComponent<EventComponent>,
+public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView {
 
     @BindView(R2.id.event_image_small)
@@ -91,8 +82,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     View updateEmail;
     @BindView(R2.id.update_number)
     View updateNumber;
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.scroll_view)
     ScrollView scrollView;
     @BindView(R2.id.form_layout)
@@ -142,32 +131,42 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     private int convFees;
 
     private EventComponent eventComponent;
-    @Inject
-    EventReviewTicketPresenter mPresenter;
+    EventReviewTicketPresenter eventReviewTicketPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
+    public static final int PAYMENT_SUCCESS = 5;
     private ImageTextViewHolder timeHolder;
     private ImageTextViewHolder addressHolder;
+    private EventsAnalytics eventsAnalytics;
+
+    @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getReviewTicketPresenter();
+        eventReviewTicketPresenter = (EventReviewTicketPresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.review_booking_layout;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.review_booking_layout);
-        ButterKnife.bind(this);
-        executeInjector();
         timeHolder = new ImageTextViewHolder();
         addressHolder = new ImageTextViewHolder();
+
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
 
         ButterKnife.bind(timeHolder, eventTimeTv);
         ButterKnife.bind(addressHolder, eventAddressTv);
 
-        mPresenter.attachView(this);
-
-        appBar.setTitle(R.string.review_title);
-        setSupportActionBar(appBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
 
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
@@ -176,30 +175,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvTelephone.setEnabled(false);
         tvTelephone.setTextIsSelectable(false);
         tvTelephone.setFocusable(false);
-
-        mPresenter.getProfile();
     }
-
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
-        appBar.setTitle(packageViewModel.getTitle());
-        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        toolbar.setTitle(packageViewModel.getTitle());
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
@@ -250,13 +231,13 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void showProgressBar() {
-        progBar.setVisibility(View.VISIBLE);
+        super.showProgressBar();
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        progBar.setVisibility(View.GONE);
+        super.hideProgressBar();
         progressBarLayout.setVisibility(View.GONE);
     }
 
@@ -288,18 +269,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     private void executeInjector() {
         if (eventComponent == null) initInjector();
         eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
-    @Override
-    public View getRootView() {
-        return mainContent;
     }
 
     @Override
@@ -342,21 +311,21 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     public boolean validateAllFields() {
         boolean result = true;
         if (edForm1.getVisibility() == View.VISIBLE)
-            result = result && mPresenter.validateEditText(edForm1);
+            result = result && eventReviewTicketPresenter.validateEditText(edForm1);
         if (edForm2.getVisibility() == View.VISIBLE)
-            result = result && mPresenter.validateEditText(edForm2);
+            result = result && eventReviewTicketPresenter.validateEditText(edForm2);
         if (edForm3.getVisibility() == View.VISIBLE)
-            result = result && mPresenter.validateEditText(edForm3);
+            result = result && eventReviewTicketPresenter.validateEditText(edForm3);
         if (edForm4.getVisibility() == View.VISIBLE)
-            result = result && mPresenter.validateEditText(edForm4);
+            result = result && eventReviewTicketPresenter.validateEditText(edForm4);
         return result;
     }
 
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
-        mPresenter.updateEmail(tvEmailID.getText().toString());
-        mPresenter.updateNumber(tvTelephone.getText().toString());
-        mPresenter.proceedToPayment();
+        eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
+        eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
+        eventReviewTicketPresenter.proceedToPayment();
     }
 
     @OnClick(R2.id.update_email)
@@ -386,8 +355,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
-        mPresenter.updateEmail(tvEmailID.getText().toString());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
+        eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
     @OnClick(R2.id.update_number)
@@ -417,13 +386,13 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
-        mPresenter.updateNumber(tvTelephone.getText().toString());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
+        eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
     @OnClick(R2.id.batal)
     void dismissPromoCode() {
-        mPresenter.updatePromoCode("");
+        eventReviewTicketPresenter.updatePromoCode("");
         showDiscountSection(0, false);
         updateTotalPrice(baseFare, convFees, 0);
     }
@@ -434,20 +403,14 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             R2.id.goto_promo})
     void onClickInfoIcon(View view) {
         if (view.getId() == R.id.info_email) {
-            mPresenter.clickEmailIcon();
+            eventReviewTicketPresenter.clickEmailIcon();
         } else if (view.getId() == R.id.info_moreinfo) {
-            mPresenter.clickMoreinfoIcon();
+            eventReviewTicketPresenter.clickMoreinfoIcon();
         } else if (view.getId() == R.id.button_dismisstooltip) {
-            mPresenter.clickDismissTooltip();
+            eventReviewTicketPresenter.clickDismissTooltip();
         } else if (view.getId() == R.id.goto_promo) {
-            mPresenter.clickGoToPromo();
+            eventReviewTicketPresenter.clickGoToPromo();
         }
-    }
-
-    @Override
-    public EventComponent getComponent() {
-        if (eventComponent == null) initInjector();
-        return eventComponent;
     }
 
     @Override
@@ -456,19 +419,19 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         if (requestCode == PAYMENT_REQUEST_CODE) {
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
-                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                    getActivity().setResult(PAYMENT_SUCCESS);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -478,7 +441,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             long discount = 0;
             switch (resultCode) {
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(
+                    eventReviewTicketPresenter.updatePromoCode(data.getExtras().getString(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_CODE
                     ));
                     showPromoSuccessMessage(data.getExtras().getString(
@@ -487,7 +450,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                     discount = data.getExtras().getLong(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_DISCOUNT_AMOUNT);
                     break;
                 case IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE:
-                    mPresenter.updatePromoCode(data.getExtras().getString(
+                    eventReviewTicketPresenter.updatePromoCode(data.getExtras().getString(
                             IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.VOUCHER_CODE
                     ));
                     showPromoSuccessMessage(data.getExtras().getString(
@@ -527,7 +490,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             R2.id.ed_form_2,
             R2.id.ed_form_4})
     void validateEditText(EditText view) {
-        mPresenter.validateEditText(view);
+        eventReviewTicketPresenter.validateEditText(view);
     }
 
     @Override
@@ -562,11 +525,16 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     public String getScreenName() {
-        return mPresenter.getSCREEN_NAME();
+        return eventReviewTicketPresenter.getSCREEN_NAME();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }

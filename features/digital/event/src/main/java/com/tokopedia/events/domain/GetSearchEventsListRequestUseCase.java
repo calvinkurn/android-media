@@ -1,9 +1,12 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+
+import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -18,13 +21,14 @@ public class GetSearchEventsListRequestUseCase extends UseCase<SearchDomainModel
     public final String CATEGORY_ID = "child_category_ids";
     public final String START_DATE = "start_date";
 
+    @Inject
     public GetSearchEventsListRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
-        return eventRepository.getSearchEvents((TKPDMapParam<String, Object>) requestParams.getParameters());
+        return eventRepository.getSearchEvents((HashMap<String, Object>) requestParams.getParameters());
 
     }
 }

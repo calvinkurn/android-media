@@ -14,6 +14,7 @@ public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
     private final EventRepository eventRepository;
 
+    @Inject
     public GetSearchNextUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }

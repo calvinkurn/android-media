@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import okhttp3.Interceptor;
@@ -15,7 +15,7 @@ public interface EventModuleRouter {
 
     public Interceptor getChuckInterceptor();
 
-    public OkHttpClient getOkHttpClient(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor);
+    public OkHttpClient getOkHttpClient(TkpdAuthInterceptor eventInerceptors, HttpLoggingInterceptor loggingInterceptor);
 
     public UserSession getSession();
 

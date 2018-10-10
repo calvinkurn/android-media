@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
@@ -226,7 +225,7 @@ public class Utils {
             rating.setIsLiked("true");
             model.setLiked(true);
         }
-        rating.setUserId(Integer.parseInt(SessionHandler.getLoginID(context)));
+        rating.setUserId(Integer.parseInt(Utils.getUserSession(context).getUserId()));
         rating.setProductId(model.getId());
         rating.setFeedback("");
         requestModel.setRating(rating);

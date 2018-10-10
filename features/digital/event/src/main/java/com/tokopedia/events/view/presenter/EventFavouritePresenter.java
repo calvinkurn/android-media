@@ -8,7 +8,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventFavouriteContract;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
@@ -22,32 +24,36 @@ import rx.Subscriber;
  * Created by pranaymohapatra on 16/05/18.
  */
 
-public class EventFavouritePresenter extends BaseDaggerPresenter<EventFavouriteContract.EventFavouriteView>
-        implements EventFavouriteContract.Presenter {
+public class EventFavouritePresenter extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
+        implements EventFavouriteContract.EventFavoritePresenter {
 
     private GetUserLikesUseCase mGetUserLikesCase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private List<CategoryItemsViewModel> favouriteItemList;
+    private EventFavouriteContract.EventFavouriteView mView;
+    private EventsAnalytics eventsAnalytics;
 
     @Inject
     public EventFavouritePresenter(GetUserLikesUseCase getUserLikesUseCase,
-                                   PostUpdateEventLikesUseCase eventLikesUseCase) {
+                                   PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         this.mGetUserLikesCase = getUserLikesUseCase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
+        this.eventsAnalytics = eventsAnalytics;
     }
 
     private void getFavourites() {
-        Intent inIntent = getView().getActivity().getIntent();
+        Intent inIntent = mView.getActivity().getIntent();
         favouriteItemList = inIntent.getParcelableArrayListExtra(Utils.Constants.FAVOURITEDATA);
         if (favouriteItemList != null && favouriteItemList.size() > 0)
-            getView().renderFavourites(favouriteItemList);
+            mView.renderFavourites(favouriteItemList);
         else
-            getView().toggleEmptyLayout(View.VISIBLE);
+            mView.toggleEmptyLayout(View.VISIBLE);
     }
 
     @Override
-    public void attachView(EventFavouriteContract.EventFavouriteView view) {
+    public void attachView(EventBaseContract.EventBaseView view) {
         super.attachView(view);
+        mView = (EventFavouriteContract.EventFavouriteView) view;
         getFavourites();
     }
 
@@ -71,14 +77,14 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventFavouriteC
                 Log.d("UPDATEEVENTLIKE", "onNext");
             }
         };
-        if (Utils.getUserSession(getView().getActivity()).isLoggedIn()) {
-            Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
+        if (Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
+            Utils.getSingletonInstance().setEventLike(mView.getActivity(), model, postUpdateEventLikesUseCase, subscriber);
         }
     }
 
     @Override
     public void shareEvent(CategoryItemsViewModel model) {
-        Utils.getSingletonInstance().shareEvent(getView().getActivity(), model.getTitle(), model.getSeoUrl());
+        Utils.getSingletonInstance().shareEvent(mView.getActivity(), model.getTitle(), model.getSeoUrl());
     }
 
     @Override
@@ -87,4 +93,23 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventFavouriteC
     }
 
 
+    @Override
+    public boolean onClickOptionMenu(int id) {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

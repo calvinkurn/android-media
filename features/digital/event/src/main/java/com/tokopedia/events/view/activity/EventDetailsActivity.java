@@ -25,17 +25,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
@@ -111,15 +110,16 @@ public class EventDetailsActivity extends EventBaseActivity implements
 
     public static final int FROM_DEEPLINK = 2;
 
+    private EventsAnalytics eventsAnalytics;
 
-    @DeepLink({Constants.Applinks.EVENTS_DETAILS})
+    @DeepLink({EventsUrl.AppLink.EVENTS_DETAILS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
         Intent destination = new Intent(context, EventDetailsActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
-        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        destination.putExtra(EventsUrl.AppLink.EXTRA_FROM_PUSH, true);
         destination.putExtra(FROM, FROM_DEEPLINK);
         return destination;
     }
@@ -154,6 +154,8 @@ public class EventDetailsActivity extends EventBaseActivity implements
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
+
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
 
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -270,7 +272,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -301,12 +303,12 @@ public class EventDetailsActivity extends EventBaseActivity implements
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
@@ -317,13 +319,13 @@ public class EventDetailsActivity extends EventBaseActivity implements
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
@@ -337,7 +339,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

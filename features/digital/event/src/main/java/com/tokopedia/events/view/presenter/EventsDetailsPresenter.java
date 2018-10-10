@@ -2,10 +2,9 @@ package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
@@ -13,6 +12,7 @@ import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.mapper.EventDetailsViewModelMapper;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -38,11 +38,14 @@ public class EventsDetailsPresenter
     String url = "";
     public static String EXTRA_SEATING_PARAMETER = "hasSeatLayout";
     private EventsDetailsContract.EventDetailsView mView;
+    private EventsAnalytics eventsAnalytics;
 
     private int hasSeatLayout;
 
-    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase) {
+    @Inject
+    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase, EventsAnalytics eventsAnalytics) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
+        this.eventsAnalytics = eventsAnalytics;
     }
 
     @Override
@@ -90,12 +93,7 @@ public class EventsDetailsPresenter
         mView.showProgressBar();
         RequestParams params = RequestParams.create();
         params.putString("detailsurl", url);
-        getEventDetailsRequestUseCase.getExecuteObservable(params).map(new Func1<EventDetailsDomain, EventsDetailsViewModel>() {
-            @Override
-            public EventsDetailsViewModel call(EventDetailsDomain eventDetailsDomain) {
-                return convertIntoEventDetailsViewModel(eventDetailsDomain);
-            }
-        }).subscribe(new Subscriber<EventsDetailsViewModel>() {
+        getEventDetailsRequestUseCase.getExecuteObservable(params).map(eventDetailsDomain -> convertIntoEventDetailsViewModel(eventDetailsDomain)).subscribe(new Subscriber<EventsDetailsViewModel>() {
             @Override
             public void onCompleted() {
 
@@ -107,12 +105,7 @@ public class EventsDetailsPresenter
                 throwable.printStackTrace();
                 mView.hideProgressBar();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getEventDetails();
-                            }
-                        });
+                        mView.getRootView(), () -> getEventDetails());
             }
 
             @Override
@@ -145,6 +138,6 @@ public class EventsDetailsPresenter
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         mView.navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
     }
 }

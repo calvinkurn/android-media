@@ -6,6 +6,8 @@ package com.tokopedia.events.data.source;
 
 public interface EventsUrl {
 
+    public static String EVENTS_DOMAIN = "https://booking.tokopedia.com/";
+
     String EVENTS_LIST = "v1/api/h/event";
     String EVENTS_LIST_SEARCH = "v1/api/s/event";
     String EVENTS_LOCATION_LIST = "v1/api/location";
@@ -21,4 +23,11 @@ public interface EventsUrl {
     String EVENT_SEAT_LAYOUT = "/v1/api/seat-layout/category/{category_id}/product/{product_id}/schedule/{schedule_id}/group/{group_id}/package/{package_id}";
 
 
+    public interface AppLink {
+
+        String EVENTS_DETAILS = "tokopedia://events/{event}";
+        String EVENTS = "tokopedia://events";
+        String EVENTS_HIBURAN = "tokopedia://hiburan";
+        String EXTRA_FROM_PUSH = "from_notif";
+    }
 }

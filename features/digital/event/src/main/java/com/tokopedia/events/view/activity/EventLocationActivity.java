@@ -3,19 +3,16 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.EventLocationAdapter;
 import com.tokopedia.events.view.contractor.EventsLocationContract;
 import com.tokopedia.events.view.presenter.EventLocationsPresenter;
@@ -24,12 +21,9 @@ import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class EventLocationActivity extends TActivity implements HasComponent<EventComponent>, SearchInputView.Listener, EventsLocationContract.View, EventLocationAdapter.ActionListener {
+public class EventLocationActivity extends EventBaseActivity implements SearchInputView.Listener, EventsLocationContract.EventLocationsView, EventLocationAdapter.ActionListener {
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public static final String EXTRA_CALLBACK_LOCATION = "EXTRA_CALLBACK_LOCATION";
 
@@ -39,8 +33,7 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     RecyclerView recyclerview;
 
     EventComponent eventComponent;
-    @Inject
-    public EventLocationsPresenter mPresenter;
+    public EventLocationsPresenter eventLocationsPresenter;
 
     private EventLocationAdapter eventLocationAdapter;
     private List<EventLocationViewModel> eventLocationViewModels;
@@ -50,18 +43,27 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getEventLocationPresenter();
+        eventLocationsPresenter = (EventLocationsPresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_location);
-        initInjector();
-        executeInjector();
-        mPresenter.attachView(this);
-        ButterKnife.bind(this);
-        mPresenter.getLocationsListList();
         searchInputView.setListener(this);
         searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+    }
 
-
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_event_location;
     }
 
     @Override
@@ -84,41 +86,7 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
         recyclerview.setAdapter(eventLocationAdapter);
     }
 
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public RequestParams getParams() {
-        return RequestParams.EMPTY;
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
-    }
-
-    @Override
-    public EventComponent getComponent() {
-        if (eventComponent == null) initInjector();
-        return eventComponent;
-    }
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
     void filter(String text) {
-        //update recyclerview
         eventLocationAdapter.updateList(eventLocationViewModels, text);
     }
 
@@ -126,5 +94,10 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
     public void onLocationItemSelected(EventLocationViewModel locationViewModel) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_LOCATION, locationViewModel));
         finish();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }

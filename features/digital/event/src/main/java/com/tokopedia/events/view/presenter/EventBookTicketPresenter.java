@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
@@ -26,6 +25,7 @@ import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -64,10 +64,13 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     private EventsDetailsViewModel dataModel;
     private List<LocationDateModel> locationDateModels;
     private EventBookTicketContract.EventBookTicketView mView;
+    private EventsAnalytics eventsAnalytics;
 
-    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase) {
+    @Inject
+    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, EventsAnalytics eventsAnalytics) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
         this.postValidateShowUseCase = useCase;
+        this.eventsAnalytics = eventsAnalytics;
     }
 
     @Override
@@ -184,7 +187,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
         getProfile();
@@ -229,7 +232,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         } else {
             mView.showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
     }
@@ -256,7 +259,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             mChildFragment.setDecorationHeight(0);
             mView.hidePayButton();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
     }

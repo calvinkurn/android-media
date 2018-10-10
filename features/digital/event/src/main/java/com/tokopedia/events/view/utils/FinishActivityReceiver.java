@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.view.activity.EventBaseActivity;
 

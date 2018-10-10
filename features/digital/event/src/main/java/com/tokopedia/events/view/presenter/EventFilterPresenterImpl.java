@@ -13,6 +13,8 @@ import com.tokopedia.events.view.fragment.CategoryFilterFragment;
 import com.tokopedia.events.view.fragment.TimeFilterFragment;
 import com.tokopedia.events.view.utils.Utils;
 
+import javax.inject.Inject;
+
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ARRAY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ID;
@@ -25,6 +27,11 @@ public class EventFilterPresenterImpl
         extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
         implements EventFilterContract.EventFilterPresenter {
     private EventFilterContract.EventFilterView mView;
+
+    @Inject
+    public EventFilterPresenterImpl() {
+
+    }
 
     private String filterCategoryId;
     private String filterTimeRange;

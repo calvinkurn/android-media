@@ -5,6 +5,8 @@ import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,6 +16,7 @@ import rx.Observable;
 public class GetEventDetailsRequestUseCase extends UseCase<EventDetailsDomain> {
     private final EventRepository eventRepository;
 
+    @Inject
     public GetEventDetailsRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }

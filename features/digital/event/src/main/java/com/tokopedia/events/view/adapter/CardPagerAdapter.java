@@ -1,5 +1,6 @@
 package com.tokopedia.events.view.adapter;
 
+import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -9,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CardAdapter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -33,6 +34,8 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     private int currentDataIndex;
     private ViewGroup parent;
     private int MAX_TOP = 5;
+    private EventsAnalytics eventsAnalytics;
+    private Context context;
 
     public CardPagerAdapter(EventHomePresenter presenter) {
         mData = new ArrayList<>();
@@ -72,6 +75,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         parent = container;
+        this.context = parent.getContext();
         Log.d("CardPagerAdapter", "View Created");
         View view = LayoutInflater.from(container.getContext())
                 .inflate(R.layout.event_top_item_revamp, container, false);
@@ -80,6 +84,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         bind(mData.get(position), view);
         CardView cardView = view.findViewById(R.id.event_category_cardview);
 
+        eventsAnalytics = new EventsAnalytics(context.getApplicationContext());
         if (mBaseElevation == 0) {
             mBaseElevation = cardView.getCardElevation();
         }
@@ -102,7 +107,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         super.setPrimaryItem(container, position, object);
         currentDataIndex = position;
         if (!mData.get(currentDataIndex).isTrack()) {
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
                     + " - " + currentDataIndex);
             mData.get(currentDataIndex).setTrack(true);
         }
