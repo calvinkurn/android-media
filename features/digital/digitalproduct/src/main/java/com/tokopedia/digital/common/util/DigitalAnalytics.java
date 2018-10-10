@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.util;
 
 import android.app.Activity;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -42,12 +43,9 @@ public class DigitalAnalytics {
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override

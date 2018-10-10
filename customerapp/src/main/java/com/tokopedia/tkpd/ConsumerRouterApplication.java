@@ -1617,7 +1617,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, () -> screenName);
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
