@@ -1,0 +1,85 @@
+query recharge_category_detail($category_id: Int) {
+  rechargeCategoryDetail(category_id: $category_id) {
+    id
+    name
+    title
+    operator_label
+    operator_style
+    default_operator_id
+    icon
+    render_operator {
+      input_fields {
+        name
+        type
+        text
+        placeholder
+        default
+        validation {
+          regex
+          error
+        }
+      }
+      render_product {
+        operator {
+          id
+          attributes {
+            default_product_id
+            image
+            name
+            first_color
+            second_color
+            rule {
+                maximum_length
+                product_text
+                product_view_style
+                show_price
+                enable_voucher
+                button_text
+            }
+            prefix
+            description
+            product(include_status: { status: [1, 3, 5] }) {
+              id
+              attributes {
+                info
+                status
+                detail
+                detail_url
+                detail_url_text
+                desc
+                price
+                promo {
+                  new_price
+                }
+              }
+            }
+          }
+        }
+        input_fields {
+          name
+          type
+          text
+          help
+          placeholder
+          default
+          validation {
+            regex
+            error
+          }
+        }
+      }
+    }
+    banners {
+      type
+      id
+      attributes {
+        title
+        subtitle
+        promocode
+        image
+        data_title
+        link
+      }
+    }
+  }
+}

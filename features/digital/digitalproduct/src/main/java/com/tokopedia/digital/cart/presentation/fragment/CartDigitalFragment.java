@@ -38,7 +38,6 @@ import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.di.DigitalCartComponentInstance;
-import com.tokopedia.digital.cart.presentation.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.presentation.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.presentation.compoundview.ItemCartHolderView;

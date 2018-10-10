@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="@color/grey_100">
+
+    <TextView
+        android:id="@+id/tv_label_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/digital_voucher_notes"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        tools:text="@string/prompt_phone"
+        tools:visibility="visible"/>
+
+    <RelativeLayout
+        android:id="@+id/dropdown_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/iv_arrow"
+            android:layout_toStartOf="@+id/iv_arrow"
+            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/padding_vs"
+            android:textColor="@color/digital_voucher"
+            android:textSize="@dimen/font_medium"
+            tools:text="Extra Combo 6GB"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/tv_item_name"
+            android:background="@color/grey"/>
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_down"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:tint="@color/digital_voucher"
+            tools:ignore="ContentDescription"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_error_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@null"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingRight="@null"
+        android:paddingStart="@dimen/padding_vvs"
+        android:text="@string/title_empty_stock"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/fontvs"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>
