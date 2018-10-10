@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.list.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +25,14 @@ import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragme
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
+
+    @DeepLink(ApplinkConst.PRODUCT_MANAGE)
+    public static Intent getApplinkIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ProductManageActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
