@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
@@ -240,7 +239,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
+            HomePageTracking.eventHomeGimmick(getActivity(), label);
         }
     }
 

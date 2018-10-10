@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

@@ -25,12 +25,16 @@ public class HomePageTracking {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
+    public static final String EVENT_GIMMICK = "clickGimmick";
+    public static final String CATEGORY_GIMMICK = "Gimmick";
+    public static final String ACTION_GIMMICK_CLICK = "Click";
+
+
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return null;
         }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        return tracker;
+        return ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
     }
 
     public static void eventPromoImpression(Context context,
@@ -81,7 +85,6 @@ public class HomePageTracking {
         }
     }
 
-    //TODO homeFragment done
     public static void eventImpressionJumpRecomendation(Context context) {
         AnalyticTracker tracker = getTracker(context);
         if(tracker != null){
@@ -179,9 +182,8 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventEnhancedClickDynamicChannelHomePage(
-            Context context,
-            Map<String, Object> data) {
+    public static void eventEnhancedClickDynamicChannelHomePage(Context context,
+                                                                Map<String, Object> data) {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEnhancedEcommerce(
@@ -279,6 +281,18 @@ public class HomePageTracking {
                     STATIC_VALUE_HOMEPAGE,
                     "jual ini itu click ubah",
                     ""
+            );
+        }
+    }
+
+    public static void eventHomeGimmick(Context context, String label) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_GIMMICK,
+                    CATEGORY_GIMMICK,
+                    ACTION_GIMMICK_CLICK,
+                    label
             );
         }
     }
