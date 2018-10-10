@@ -64,7 +64,7 @@ public interface KolPostListener {
 
             void onLikeKolClicked(int rowNumber, int id);
 
-            void onUnlikeKolClicked(int adapterPosition, int id);
+            void onUnlikeKolClicked(int rowNumber, int id);
 
             void onGoToKolComment(int rowNumber, int id);
         }

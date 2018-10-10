@@ -10,13 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
@@ -25,6 +27,10 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.R.id.*
+import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
+import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
+import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
+import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
@@ -76,11 +82,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode != Activity.RESULT_OK && data == null) {
+        if (resultCode != Activity.RESULT_OK || data == null) {
             return
         }
 
-        when(requestCode) {
+        when (requestCode) {
             KOL_COMMENT_CODE ->
                 onSuccessAddDeleteKolComment(
                         data!!.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
@@ -95,14 +101,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        activity?.let {
-            (it.applicationContext as BaseMainApplication).baseAppComponent
-        }.let {
-            DaggerProfileComponent.builder()
-                    .baseAppComponent(it)
-                    .build()
-                    .inject(this)
-        }
+        DaggerProfileComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
+                .build()
+                .inject(this)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -152,8 +154,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
-        //TODO milhamj
-        Toast.makeText(context, "Follow? ".plus(follow).plus("~"), Toast.LENGTH_SHORT).show()
+
     }
 
     override fun goToProduct(productId: Int) {
@@ -222,11 +223,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeKolClicked(rowNumber: Int, id: Int) {
-
+        if (userSession.isLoggedIn) {
+            presenter.likeKol(id, rowNumber, this)
+        } else {
+            startActivity(profileRouter.getLoginIntent(context!!))
+        }
     }
 
-    override fun onUnlikeKolClicked(adapterPosition: Int, id: Int) {
-
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Int) {
+        if (userSession.isLoggedIn) {
+            presenter.likeKol(id, rowNumber, this)
+        } else {
+            startActivity(profileRouter.getLoginIntent(context!!))
+        }
     }
 
     override fun onGoToKolComment(rowNumber: Int, id: Int) {
@@ -234,6 +243,28 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 context, id, rowNumber
         )
         startActivityForResult(intent, KOL_COMMENT_CODE)
+    }
+
+    override fun onSuccessFollowKol() {
+        if (adapter.isContainData && adapter.data.first() is ProfileHeaderViewModel) {
+            val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
+            profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
+
+            if (profileHeaderViewModel.isFollowed) {
+                ToasterNormal
+                        .make(view,
+                                getString(R.string.follow_success_toast),
+                                BaseToaster.LENGTH_LONG)
+                        .setAction(getString(R.string.follow_success_check_now),
+                                followSuccessOnClickListener(profileHeaderViewModel))
+                        .show()
+            }
+            adapter.notifyItemChanged(0)
+        }
+    }
+
+    override fun onErrorFollowKol(errorMessage: String) {
+        showError(errorMessage)
     }
 
     private fun initVar() {
@@ -316,6 +347,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 //                resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
 //                activity!!.setResult(Activity.RESULT_OK, resultIntent)
 //            }
+        }
+    }
+
+    private fun followSuccessOnClickListener(profileHeaderViewModel: ProfileHeaderViewModel)
+            : View.OnClickListener {
+        return View.OnClickListener {
+            RouteManager.route(getContext(), ApplinkConst.FEED)
+            abstractionRouter.analyticTracker.sendEventTracking(
+                    EVENT_CLICK_TOP_PROFILE,
+                    KOL_TOP_PROFILE,
+                    CLICK_PROMPT,
+                    String.format(GO_TO_FEED_FORMAT, profileHeaderViewModel.name)
+            )
         }
     }
 }

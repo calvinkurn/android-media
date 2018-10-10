@@ -1,0 +1,40 @@
+package com.tokopedia.profile.view.subscriber
+
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
+import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.profile.view.listener.ProfileContract
+import rx.Subscriber
+
+
+/**
+ * @author by milhamj on 10/10/18.
+ */
+class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<GraphqlResponse>() {
+
+    companion object {
+        const val FOLLOW_SUCCESS = 1
+    }
+
+    override fun onCompleted() {
+
+    }
+
+    override fun onError(throwable: Throwable) {
+        view.onErrorFollowKol(
+                ErrorHandler.getErrorMessage(view.context, throwable)
+        )
+
+    }
+
+    override fun onNext(response: GraphqlResponse) {
+        val query: FollowKolQuery = response.getData(FollowKolQuery::class.java)
+        val isSuccess = query.data.data.status == FOLLOW_SUCCESS
+        if (isSuccess) {
+            view.onSuccessFollowKol()
+        } else {
+            view.onErrorFollowKol(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        }
+    }
+}
