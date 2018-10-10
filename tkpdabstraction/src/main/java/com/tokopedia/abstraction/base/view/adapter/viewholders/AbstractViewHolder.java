@@ -26,6 +26,8 @@ public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerVi
     This way, the view holder won't be fully bind, you can control which part of it to re-bind.
     You can refer to https://medium.com/livefront/recyclerview-trick-selectively-bind-viewholders-with-payloads-4b28e3d2cce8
     on how to use it.
+
+    Override this method to do the partial bind
      */
     public void bind(T element, @NonNull List<Object> payloads) {
     }

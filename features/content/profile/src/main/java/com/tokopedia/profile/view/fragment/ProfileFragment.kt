@@ -35,6 +35,7 @@ import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
+import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
@@ -255,6 +256,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
             profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
 
+            try {
+                var followers = profileHeaderViewModel.followers.toInt()
+                followers += if (profileHeaderViewModel.isFollowed) 1 else -1
+                profileHeaderViewModel.followers = followers.toString()
+            } catch (e: NumberFormatException) {
+            }
+
             if (profileHeaderViewModel.isFollowed) {
                 ToasterNormal
                         .make(view,
@@ -264,7 +272,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                 followSuccessOnClickListener(profileHeaderViewModel))
                         .show()
             }
-            adapter.notifyItemChanged(0)
+            adapter.notifyItemChanged(0, ProfileHeaderViewHolder.PAYLOAD_FOLLOW)
         }
     }
 

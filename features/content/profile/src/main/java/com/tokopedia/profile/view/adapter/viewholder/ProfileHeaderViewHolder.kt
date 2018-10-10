@@ -25,6 +25,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_header
+        val PAYLOAD_FOLLOW = 13
     }
 
     override fun bind(element: ProfileHeaderViewModel) {
@@ -54,6 +55,18 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
                 itemView.followers.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 itemView.followers.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun bind(element: ProfileHeaderViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        element?.let {
+            when(payloads[0]) {
+                PAYLOAD_FOLLOW -> {
+                    itemView.followers.text = getFollowersText(element)
+                    updateButtonState(it.isFollowed)
+                }
             }
         }
     }

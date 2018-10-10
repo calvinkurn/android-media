@@ -121,6 +121,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @Override
     public void bind(KolPostViewModel element, @NonNull List<Object> payloads) {
+        super.bind(element, payloads);
         switch ((int) payloads.get(0)) {
             case PAYLOAD_LIKE:
                 baseKolView.bindLike(element.isLiked(), element.getTotalLike());
