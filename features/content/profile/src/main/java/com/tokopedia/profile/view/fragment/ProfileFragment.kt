@@ -155,7 +155,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
-
+        if (follow) {
+            presenter.followKol(userId)
+        } else {
+            presenter.unfollowKol(userId)
+        }
     }
 
     override fun goToProduct(productId: Int) {

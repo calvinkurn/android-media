@@ -48,7 +48,7 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
     override fun unfollowKol(id: Int) {
         followKolPostGqlUseCase.clearRequest()
         followKolPostGqlUseCase.addRequest(
-                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
+                followKolPostGqlUseCase.getRequest(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
         )
         followKolPostGqlUseCase.execute(FollowSubscriber(view))
     }
