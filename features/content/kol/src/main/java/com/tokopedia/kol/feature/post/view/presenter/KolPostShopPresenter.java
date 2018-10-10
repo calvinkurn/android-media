@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostShopUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostShopSubscriber;
 
@@ -14,12 +14,12 @@ import javax.inject.Inject;
 public class KolPostShopPresenter extends BaseDaggerPresenter<KolPostShopContract.View>
         implements KolPostShopContract.Presenter {
 
-    private final GetKolPostShopUseCase getKolPostShopUseCase;
+    private final GetContentListUseCase getContentListUseCase;
     private String lastCursor;
 
     @Inject
-    public KolPostShopPresenter(GetKolPostShopUseCase getKolPostShopUseCase) {
-        this.getKolPostShopUseCase = getKolPostShopUseCase;
+    public KolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
+        this.getContentListUseCase = getContentListUseCase;
     }
 
     @Override
@@ -31,8 +31,8 @@ public class KolPostShopPresenter extends BaseDaggerPresenter<KolPostShopContrac
     @Override
     public void getKolPostShop(String shopId) {
         getView().showLoading();
-        getKolPostShopUseCase.execute(
-                GetKolPostShopUseCase.getParams(shopId, lastCursor),
+        getContentListUseCase.execute(
+                GetContentListUseCase.getShopParams(shopId, lastCursor),
                 new GetKolPostShopSubscriber(getView())
         );
     }
@@ -45,6 +45,6 @@ public class KolPostShopPresenter extends BaseDaggerPresenter<KolPostShopContrac
     @Override
     public void detachView() {
         super.detachView();
-        getKolPostShopUseCase.unsubscribe();
+        getContentListUseCase.unsubscribe();
     }
 }

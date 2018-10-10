@@ -1,5 +1,5 @@
-query ContentList ($limit: Int!, $shopID: Int!, $cursor: String!, $source: String!){
-  feed_content_post(limit:$limit, shopID:$shopID, cursor:$cursor, source:$source){
+query ContentList($limit: Int, $cursor: String, $shopID: Int, $userID: Int, $source: String){
+  feed_content_post(limit:$limit, cursor:$cursor, shopID:$shopID, userID:$userID, source:$source){
     posts{
       id
       createTime

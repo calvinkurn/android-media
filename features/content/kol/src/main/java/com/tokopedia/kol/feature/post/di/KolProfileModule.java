@@ -7,7 +7,7 @@ import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostShopUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -53,7 +53,7 @@ public class KolProfileModule {
     @KolProfileScope
     @Provides
     KolPostShopContract.Presenter
-    provideKolPostShopPresenter(GetKolPostShopUseCase getKolPostShopUseCase) {
-        return new KolPostShopPresenter(getKolPostShopUseCase);
+    provideKolPostShopPresenter(GetContentListUseCase getContentListUseCase) {
+        return new KolPostShopPresenter(getContentListUseCase);
     }
 }
