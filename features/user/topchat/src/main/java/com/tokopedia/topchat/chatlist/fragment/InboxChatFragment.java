@@ -39,6 +39,10 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.showcase.ShowCaseBuilder;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
@@ -98,6 +102,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     private InboxChatTypeFactory typeFactory;
     private View notifier;
     private TextView sendBroadcast;
+    private ShowCaseDialog showCaseDialog;
 
     public static InboxChatFragment createInstance(String navigation) {
         InboxChatFragment fragment = new InboxChatFragment();
@@ -687,5 +692,33 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData) {
         boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
         sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
+
+        checkNeedToShowCasing();
+    }
+
+    private void checkNeedToShowCasing() {
+        final String showcaseTag = getClass().getName()+".BroadcastMessage";
+        if (ShowCasePreference.hasShown(getActivity(), showcaseTag) || showCaseDialog != null){
+            return;
+        }
+
+        showCaseDialog = generateShowcaseDialog();
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+        showCaseList.add(new ShowCaseObject(sendBroadcast, getString(R.string.bm_title),
+                getString(R.string.bm_showcase_desc)));
+        showCaseDialog.show(getActivity(), showcaseTag, showCaseList);
+    }
+
+    private ShowCaseDialog generateShowcaseDialog() {
+        return new ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .finishStringRes(R.string.title_understand)
+                .clickable(true)
+                .useArrow(true)
+                .build();
     }
 }
