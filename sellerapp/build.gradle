@@ -197,25 +197,35 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
 
     productFlavors {
         staging {
-
+            dimension "tier"
         }
-
         live {
-
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
         }
     }
-
-
 }
 
 repositories {
     flatDir {
         dirs 'libs'
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 

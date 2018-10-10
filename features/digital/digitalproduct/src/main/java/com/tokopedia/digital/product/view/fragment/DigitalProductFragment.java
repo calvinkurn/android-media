@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -262,8 +263,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        digitalAnalytics = new DigitalAnalytics();
-
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker());
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -1311,6 +1313,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             @Override
             public void onPageSelected(int position) {
                 if (position == PANDUAN_TAB_POSITION) {
+                    if(digitalAnalytics != null)
                     digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
                 }
             }

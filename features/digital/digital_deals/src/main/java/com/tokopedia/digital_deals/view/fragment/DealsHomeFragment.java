@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,6 +84,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private ConstraintLayout clBrands;
     private ConstraintLayout clBanners;
     private TextView searchInputView;
+    private AppBarLayout appBarLayout;
     private final boolean IS_SHORT_LAYOUT = false;
 
     private ConstraintLayout clSearch;
@@ -161,6 +164,16 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setDrawableTint(img);
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
+
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        appBarLayout.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+            if (verticalOffset == 0) {
+                hideSearchButton();
+            } else {
+                showSearchButton();
+            }
+            Log.d("Offest Changed", "Offset : " + verticalOffset);
+        });
         img = getResources().getDrawable(R.drawable.ic_location_2);
         tvLocationName.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
@@ -170,6 +183,22 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Drawable wrappedDrawable = DrawableCompat.wrap(img);
         Drawable mutableDrawable = wrappedDrawable.mutate();
         DrawableCompat.setTint(mutableDrawable, ContextCompat.getColor(getContext(), R.color.color_search_icon));
+    }
+
+    public void hideSearchButton() {
+        if (mMenu != null) {
+            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            item.setVisible(false);
+            item.setEnabled(false);
+        }
+    }
+
+    public void showSearchButton() {
+        if (mMenu != null) {
+            MenuItem item = mMenu.findItem(R.id.action_menu_search);
+            item.setVisible(true);
+            item.setEnabled(true);
+        }
     }
 
     @Override
@@ -426,7 +455,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.menu_deals_home, menu);
         mMenu = menu;
         for (int i = 0; i < mMenu.size(); i++) {
@@ -436,7 +464,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             item.setTitle(s);
         }
-
     }
 
 

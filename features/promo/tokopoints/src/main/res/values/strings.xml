@@ -56,5 +56,9 @@
 
     <string name="tp_default_empty_coupons_title">Anda tidak memiliki Kupon untuk kategori ini.</string>
     <string name="tp_default_empty_coupons_subtitle">Tukar Points Anda dengan Kupon di halaman TokoPoints.</string>
+    <string name="tp_mes_copy_code">Copied to clipboard.</string>
+    <string name="tp_label_copy_code">Salin</string>
+    <string name="tp_label_barcode">Barcode</string>
+    <string name="tp_label_qrcode">QR Code</string>
 
 </resources>

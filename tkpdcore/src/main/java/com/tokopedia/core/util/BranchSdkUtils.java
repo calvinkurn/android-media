@@ -117,6 +117,8 @@ public class BranchSdkUtils {
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -133,6 +135,10 @@ public class BranchSdkUtils {
         linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", data.getOgTitle());
+        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+
         return linkProperties;
     }
 
