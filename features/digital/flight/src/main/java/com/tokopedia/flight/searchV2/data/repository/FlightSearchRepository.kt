@@ -238,7 +238,7 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun getSearchFilter(sortOption: FlightSortOption, filterModel: FlightFilterModel):
+    fun getSearchFilter(@FlightSortOption sortOption: Int, filterModel: FlightFilterModel):
             Observable<List<JourneyAndRoutes>> {
         return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
     }

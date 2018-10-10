@@ -2,7 +2,6 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
-import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
@@ -116,7 +115,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     private fun getDepartureTimeCondition(departureTimeEnumList: List<DepartureTimeEnum>?): String? {
         if (departureTimeEnumList == null || departureTimeEnumList.isEmpty()) {
-            return null
+            return ""
         }
         val stringBuilder = StringBuilder()
         for (i in 0 until departureTimeEnumList.size) {
