@@ -29,8 +29,8 @@ def isProduction() {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit");
+    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
 }
 
 def allowDistribution() {
