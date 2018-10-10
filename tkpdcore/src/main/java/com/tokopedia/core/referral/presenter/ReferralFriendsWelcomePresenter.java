@@ -47,7 +47,7 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     }
 
     public String getHowItWorks() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_TEXT_WELCOME, view.getActivity().getString(R.string.cashback_enter_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_TEXT_WELCOME, view.getActivity().getString(R.string.cashback_enter_tokocash));
     }
 
     @Override
@@ -57,14 +57,14 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     }
 
     public String getHelpButtonContentTitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, view.getActivity().getString(R.string.acquisition_referral));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, view.getActivity().getString(R.string.acquisition_referral));
     }
 
     public String getHelpButtonContentSubtitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, view.getActivity().getString(R.string.what_is_referral_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, view.getActivity().getString(R.string.what_is_referral_tokocash));
     }
 
     public boolean isShowReferralHelpLink() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
     }
 }

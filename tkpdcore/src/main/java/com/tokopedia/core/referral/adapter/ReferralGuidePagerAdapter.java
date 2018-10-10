@@ -83,15 +83,15 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     }
 
     private String getHelpButtonText() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_TEXT, context.getString(R.string.apa_itu_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_TEXT, context.getString(R.string.apa_itu_tokocash));
     }
 
     private String getHelpButtonContentTitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, context.getString(R.string.acquisition_referral));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, context.getString(R.string.acquisition_referral));
     }
 
     private String getHelpButtonContentSubtitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, context.getString(R.string.what_is_referral_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, context.getString(R.string.what_is_referral_tokocash));
     }
 
     public String getReferralTerms() {
@@ -99,7 +99,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
     }
 
     public boolean isShowReferralHelpLink() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
     }
 
     private void showOnBoardingTooltip(String title, String content) {

@@ -231,12 +231,4 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
     }
 
-    public class RemoteConfigKey {
-        public static final String SHOW_REFERRAL_HELP_LINK = "app_show_apa_itu_tokocash_referral";
-        public static final String REFERRAL_HELP_LINK_TEXT= "app_apa_itu_tokocash_referral_text";
-        public static final String REFERRAL_HELP_LINK_TEXT_WELCOME= "app_apa_itu_tokocash_referral_text_welcome";
-        public static final String REFERRAL_HELP_LINK_CONTENT_TITLE= "app_apa_itu_tokocash_referral_content_title";
-        public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
-    }
-
 }
