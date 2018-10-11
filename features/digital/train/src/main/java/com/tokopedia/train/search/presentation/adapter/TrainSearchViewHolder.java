@@ -9,7 +9,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -114,10 +113,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 trainScheduleViewModel.isFastestFlag(),
                 trainScheduleViewModel.isCheapestFlag());
         trainNameTv.setText(String.format("%s %s", trainScheduleViewModel.getTrainName(), trainScheduleViewModel.getTrainNumber()));
-        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getClassTrain()));
-        originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getSubclass()));
+        originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()), trainScheduleViewModel.getOrigin()));
-        destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()), trainScheduleViewModel.getDestination()));
         durationTv.setText(trainScheduleViewModel.getDisplayDuration());
 

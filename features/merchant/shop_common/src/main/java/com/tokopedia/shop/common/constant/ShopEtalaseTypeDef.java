@@ -7,9 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 
 import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CUSTOM;
 import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT;
-import static com.tokopedia.shop.common.constant.ShopStatusLevelDef.LEVEL_GOLD;
-import static com.tokopedia.shop.common.constant.ShopStatusLevelDef.LEVEL_OFFICIAL_STORE;
-import static com.tokopedia.shop.common.constant.ShopStatusLevelDef.LEVEL_REGULAR;
 
 /**
  * @author normansyahputa on 4/25/17.

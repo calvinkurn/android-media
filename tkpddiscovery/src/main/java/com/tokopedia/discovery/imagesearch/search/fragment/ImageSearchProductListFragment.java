@@ -48,6 +48,7 @@ import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -512,7 +513,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
 
     }
 

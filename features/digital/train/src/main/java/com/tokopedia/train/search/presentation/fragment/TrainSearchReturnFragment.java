@@ -11,7 +11,6 @@ import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowExtraConstant;
-import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.presentation.model.TrainSearchPassDataViewModel;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
@@ -119,9 +118,9 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainSearchPassDataViewModel.getDepartureDate());
         titleDepartureInfoTv.setText(String.format("%s - %s", getString(R.string.train_search_departure_title), dateDepartureString));
         trainNameTv.setText(viewModel.getTrainName());
-        String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());
-        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getArrivalTimestamp());
         detailDepartureInfoTv.setText(String.format(" | %s - %s", timeDepartureString, timeArrivalString));
     }

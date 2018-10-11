@@ -82,8 +82,6 @@
             android:name="com.truecaller.android.sdk.PartnerKey"
             android:value="@string/key_truecaller_seller_app" />
 
-        <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
-
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"

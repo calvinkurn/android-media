@@ -31,15 +31,16 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
     private ActionListener actionListener;
     private int dateCalMonth;
     private List<HolidayResult> holidayResultList;
-    private Date currentCalendar;
     private Date maxDateCal;
+    private Date minDateCal;
 
     public GridCalendarAdapter(List<CellDate> monthlyDates, Calendar currentDate,
-                               Calendar maxDate, List<HolidayResult> holidayResultList) {
+                               Calendar maxDate, Calendar minDate, List<HolidayResult> holidayResultList) {
         this.monthlyDates = monthlyDates;
         this.currentDate = currentDate;
         this.holidayResultList = holidayResultList;
         this.maxDateCal = maxDate.getTime();
+        this.minDateCal = minDate.getTime();
     }
 
     public void setActionListener(ActionListener actionListener) {
@@ -89,9 +90,6 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
             int dayValue = dateCal.get(Calendar.DAY_OF_MONTH);
             dateCalMonth = dateCal.get(Calendar.MONTH);
 
-            //current date
-            Calendar calendarCurrent = Calendar.getInstance();
-            currentCalendar = calendarCurrent.getTime();
             if (dateCalMonth == getDisplayMonthInt()) {
                 cellNumber.setVisibility(View.VISIBLE);
                 cellNumber.setText(String.valueOf(dayValue));
@@ -103,10 +101,10 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
                 cellNumber.setBackground(itemView.getResources().getDrawable(R.drawable.bg_calendar_picker_today_selected));
                 cellNumber.setTextColor(itemView.getResources().getColor(R.color.white));
             } else {
-                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(currentCalendar)) < 0 ||
+                if (DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(minDateCal)) < 0 ||
                         DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) > 0) {
                     cellNumber.setTextColor(itemView.getResources().getColor(R.color.grey_300));
-                } else {
+                }else {
                     cellNumber.setBackground(itemView.getResources().getDrawable(R.drawable.bg_calendar_picker_default));
                     cellNumber.setTextColor(itemView.getResources().getColor(R.color.font_black_primary_70));
 
@@ -123,21 +121,17 @@ public class GridCalendarAdapter extends RecyclerView.Adapter<GridCalendarAdapte
                 }
             }
 
-            calendarCurrent.add(Calendar.DATE, -1);
-
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Date dateSelected = cellDate.getDate();
                     if (dateSelected.getMonth() == getDisplayMonthInt() &&
-                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(calendarCurrent.getTime())) > 0
-                            && DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) <= 0)
+                            DateCalendarUtil.getZeroTimeDate(dateCal.getTime()).compareTo(DateCalendarUtil.getZeroTimeDate(minDateCal)) >= 0 &&
+                            DateCalendarUtil.getZeroTimeDate(dateSelected).compareTo(DateCalendarUtil.getZeroTimeDate(maxDateCal)) <= 0)
                         actionListener.onClickDate(cellDate);
                 }
             });
         }
-
-
     }
 
     public interface ActionListener {

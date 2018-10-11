@@ -89,6 +89,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             holder.label.setText(item.getUsage().getText());
             if (item.getUsage().getBtnUsage() != null) {
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
+
+                if(item.getUsage().getBtnUsage().getType().equalsIgnoreCase("invisible")) {
+                    holder.btnContinue.setVisibility(View.GONE);
+                } else {
+                    holder.btnContinue.setVisibility(View.VISIBLE);
+                }
             }
         }
 

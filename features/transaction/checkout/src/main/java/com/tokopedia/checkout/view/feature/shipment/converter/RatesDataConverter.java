@@ -121,7 +121,7 @@ public class RatesDataConverter {
         return false;
     }
 
-    private String getShippingNames(List<ShopShipment> shopShipments) {
+    public String getShippingNames(List<ShopShipment> shopShipments) {
         List<String> shippingNames = new ArrayList<>();
         for (int i = 0; i < shopShipments.size(); i++) {
             String shippingName = shopShipments.get(i).getShipCode();
@@ -132,7 +132,7 @@ public class RatesDataConverter {
         return TextUtils.join(",", shippingNames);
     }
 
-    private String getShippingServices(List<ShopShipment> shopShipments) {
+    public String getShippingServices(List<ShopShipment> shopShipments) {
         List<String> shippingServices = new ArrayList<>();
         for (int i = 0; i < shopShipments.size(); i++) {
             for (int j = 0; j < shopShipments.get(i).getShipProds().size(); j++) {

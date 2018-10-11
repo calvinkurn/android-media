@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.data.mapper;
 
 import android.content.Context;
+import android.view.View;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_CHALLENGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
 /**
@@ -297,13 +299,26 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
            String title=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_title", context.getString(R.string.title_menu_wallet_referral));
+            String subTitle=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_subtitle", context.getString(R.string.label_menu_wallet_referral));
             InfoCardViewModel infoCard = new InfoCardViewModel();
             infoCard.setIconRes(R.drawable.ic_tokocash_big);
             infoCard.setMainText(title);
-            infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
+            infoCard.setSecondaryText(subTitle);
             infoCard.setApplink(ApplinkConst.REFERRAL);
             infoCard.setTitleTrack(PEMBELI);
             infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            items.add(infoCard);
+        }
+
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_enable_challenges", true)) {
+            InfoCardViewModel infoCard = new InfoCardViewModel();
+            infoCard.setIconRes(R.drawable.ic_challenge_trophy);
+            infoCard.setMainText(context.getString(R.string.title_menu_challenge));
+            infoCard.setSecondaryText(context.getString(R.string.label_menu_challenge));
+            infoCard.setApplink(ApplinkConst.CHALLENGE);
+            infoCard.setTitleTrack(CLICK_CHALLENGE);
+            infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
         }
 
