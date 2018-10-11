@@ -1,15 +1,9 @@
 package com.tokopedia.merchantvoucher.common.gql.domain.usecase
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
-import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQuery
-import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLMerchantListMapper
-import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLResultMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLUseMerchantVoucherMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
@@ -25,7 +19,7 @@ constructor(@ApplicationContext context: Context) : UseCase<Boolean>() {
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<UseMerchantVoucherQuery>(context, UseMerchantVoucherQuery::class.java) {
             override val graphQLRawResId: Int
-                get() = R.raw.gql_query_use_merchant_voucher
+                get() = R.raw.gql_mutation_use_merchant_voucher
 
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()
