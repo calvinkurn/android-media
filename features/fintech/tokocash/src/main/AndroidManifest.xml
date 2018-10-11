@@ -74,7 +74,7 @@
         <activity
             android:name=".ovoactivation.view.ActivationOvoActivity"
             android:screenOrientation="portrait"
-            android:label="@string/title_header_ovo"
+            android:label="@string/title_header_activation_ovo"
             android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 
