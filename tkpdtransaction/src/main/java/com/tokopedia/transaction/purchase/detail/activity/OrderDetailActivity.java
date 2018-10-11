@@ -42,6 +42,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
@@ -513,7 +514,8 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
-        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);;
+        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
+        ;
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
