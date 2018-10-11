@@ -25,8 +25,10 @@ import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListAc
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
+import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
+import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -205,7 +207,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onLikeKolError(message: String?) = showError(message)
+    override fun onLikeKolError(message: String) = showError(message)
 
     override fun onGoToKolProfile(rowNumber: Int, userId: String?, postId: Int) {
 
@@ -335,12 +337,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun showError(message: String?) {
-        if (message == null) {
-            NetworkErrorHelper.showSnackbar(activity)
-        } else {
-            NetworkErrorHelper.showSnackbar(activity, message)
-        }
+    private fun showError(message: String) {
+        NetworkErrorHelper.showRedSnackbar(activity, message)
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
