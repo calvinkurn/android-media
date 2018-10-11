@@ -14,6 +14,7 @@ public class GmProductViewModel {
     private String lastPrice;
     private String name;
     private String notes;
+    private String timeRange;
 
     public GmProductViewModel(GmProductDomainModel domainModel) {
         setProductId(String.valueOf(domainModel.getProductId()));
@@ -24,6 +25,7 @@ public class GmProductViewModel {
         setFreeDays(domainModel.getFreeDays());
         setNextInv(domainModel.getNextInv());
         setLastPrice(domainModel.getLastPrice());
+        setTimeRange(domainModel.getTimeRange());
     }
 
     public String getProductId() {
@@ -88,5 +90,13 @@ public class GmProductViewModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(String timeRange) {
+        this.timeRange = timeRange;
     }
 }
