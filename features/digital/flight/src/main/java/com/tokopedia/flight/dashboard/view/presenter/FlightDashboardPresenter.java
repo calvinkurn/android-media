@@ -675,7 +675,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onBannerItemClick(int position, BannerDetail bannerDetail) {
-        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getDescription(), bannerDetail.getAttributes().getLinkUrl());
+        flightAnalytics.eventPromotionClick(position + 1, bannerDetail);
     }
 
     private void getBannerData() {

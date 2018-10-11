@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * @author by alvarisi on 9/27/16.
- *         Modified by Hafizh Herdi
+ * Modified by Hafizh Herdi
  */
 
 public class TrackingUtils extends TrackingConfig {
@@ -77,11 +77,11 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void setMoEUserAttributes(Context context, @Nullable CustomerWrapper customerWrapper) {
-        if(customerWrapper != null) {
+        if (customerWrapper != null) {
             getMoEngine().setUserData(customerWrapper, "GRAPHQL");
         }
         if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(context.getApplicationContext())))
-                PushManager.getInstance().refreshToken(context.getApplicationContext(), FCMCacheManager.getRegistrationId(context.getApplicationContext()));
+            PushManager.getInstance().refreshToken(context.getApplicationContext(), FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     public static void setMoEUserAttributes(UserData profileData) {
@@ -229,11 +229,11 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.LOGIN);
     }
 
-    public static void sendMoEngageCreateShopEvent(String screenName){
+    public static void sendMoEngageCreateShopEvent(String screenName) {
         PayloadBuilder builder = new PayloadBuilder();
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
         builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, sessionHandler.getLoginID() );
+        builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, sessionHandler.getLoginID());
         builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, sessionHandler.getEmail());
         builder.putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, SessionHandler.getPhoneNumber());
         builder.putAttrString(AppEventTracking.MOENGAGE.APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
@@ -760,6 +760,14 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEngagePushPreference(Boolean status) {
         getMoEngine().setPushPreference(status);
+    }
+
+    public static void sendMoEngageEvents(String eventName, Map<String, Object> values) {
+        PayloadBuilder builder = new PayloadBuilder();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            builder.putAttrObject(entry.getKey(), entry.getValue());
+        }
+        getMoEngine().sendEvent(builder.build(), eventName);
     }
 }
 

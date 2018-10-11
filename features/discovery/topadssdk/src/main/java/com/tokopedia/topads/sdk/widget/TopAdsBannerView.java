@@ -101,6 +101,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
             if (cpm.getCpmShop().getProducts().size() > 1) {
+                indicatorContainer.removeAllViews();
                 items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
                 for (int i = 0; i < 2; i++) {
                     ImageView pointView = new ImageView(getContext());
@@ -208,7 +209,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             }
         }
         if (adsListener != null) {
-            adsListener.onTopAdsLoaded();
+            adsListener.onTopAdsLoaded(null);
         }
     }
 
@@ -245,9 +246,4 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         presenter.attachView(this);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        presenter.detachView();
-    }
 }

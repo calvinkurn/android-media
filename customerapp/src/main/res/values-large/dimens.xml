@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--OnBoarding dimens-->
+    <dimen name="onboarding_title">22sp</dimen>
+    <dimen name="onboarding_description">18sp</dimen>
+    <dimen name="onboarding_title_spacing">6sp</dimen>
+    <dimen name="onboarding_description_spacing">4sp</dimen>
+</resources>

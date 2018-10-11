@@ -20,6 +20,7 @@ import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.data.interceptor.model.TrainErrorResponse;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.homepage.data.TrainPromoCloudDataStore;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
@@ -101,6 +102,12 @@ public class TrainModule {
             return ((AbstractionRouter) context).getAnalyticTracker();
         }
         throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
+    }
+
+    @TrainScope
+    @Provides
+    public TrainDateUtil provideTrainDateUtil() {
+        return new TrainDateUtil();
     }
 
     @TrainScope
