@@ -29,6 +29,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
+import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -40,6 +41,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
@@ -331,12 +333,43 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
             }
             shareOwn.setOnClickListener(shareLink(headerViewModel.link))
+
+            showShowCaseDialog(shareOwn)
         } else {
             footerOwn.visibility = View.GONE
             footerOther.visibility = View.VISIBLE
 
             shareOther.setOnClickListener(shareLink(headerViewModel.link))
         }
+    }
+
+    private fun showShowCaseDialog(view: View?) {
+        val showCaseTag = this::class.java.simpleName
+        if (ShowCasePreference.hasShown(this.context, showCaseTag)) {
+            return
+        }
+
+        val showCaseDialog = createShowCaseDialog()
+        val showcases = ArrayList<ShowCaseObject>()
+        showcases.add(ShowCaseObject(
+                view,
+                getString(R.string.profile_showcase_title),
+                getString(R.string.profile_showcase_description),
+                ShowCaseContentPosition.UNDEFINED))
+        showCaseDialog.show(this.activity, showCaseTag, showcases)
+    }
+
+    private fun createShowCaseDialog(): ShowCaseDialog {
+        return ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .titleTextColorRes(R.color.white)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .textColorRes(R.color.white)
+                .textSizeRes(R.dimen.sp_14)
+                .nextStringRes(R.string.af_title_ok)
+                .clickable(true)
+                .build()
     }
 
     private fun shareLink(link: String): View.OnClickListener {
