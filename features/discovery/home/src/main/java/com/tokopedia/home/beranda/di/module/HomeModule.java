@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
@@ -32,12 +32,6 @@ public class HomeModule {
     @Provides
     protected HomeMapper providehomeMapper(@ApplicationContext Context context){
         return new HomeMapper(context);
-    }
-
-    @HomeScope
-    @Provides
-    protected GlobalCacheManager globalCacheManager() {
-        return new GlobalCacheManager();
     }
 
     @HomeScope
@@ -70,7 +64,7 @@ public class HomeModule {
     protected HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
                                          HomeMapper homeMapper,
                                          @ApplicationContext Context context,
-                                         GlobalCacheManager cacheManager,
+                                         CacheManager cacheManager,
                                          Gson gson){
         return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
     }

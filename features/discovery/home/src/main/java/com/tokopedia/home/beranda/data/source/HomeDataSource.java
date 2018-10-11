@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.common.HomeDataApi;
@@ -32,13 +32,13 @@ public class HomeDataSource {
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
-    private GlobalCacheManager cacheManager;
+    private CacheManager cacheManager;
     private Gson gson;
 
     public HomeDataSource(HomeDataApi homeDataApi,
                           HomeMapper homeMapper,
                           Context context,
-                          GlobalCacheManager cacheManager,
+                          CacheManager cacheManager,
                           Gson gson) {
         this.homeDataApi = homeDataApi;
         this.homeMapper = homeMapper;
@@ -51,7 +51,7 @@ public class HomeDataSource {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
             public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
-                String cache = cacheManager.getValueString(ConstantKey.TkpdCache.HOME_DATA_CACHE);
+                String cache = cacheManager.get(ConstantKey.TkpdCache.HOME_DATA_CACHE);
                 if (cache != null) {
                     HomeData homeData = gson.fromJson(cache, HomeData.class);
                     homeData.setCache(true);
@@ -77,9 +77,10 @@ public class HomeDataSource {
             public Response<GraphqlResponse<HomeData>> call(Response<GraphqlResponse<HomeData>> response) {
                 if (response.isSuccessful()) {
                     HomeData homeData = response.body().getData();
-                    cacheManager.setKey(ConstantKey.TkpdCache.HOME_DATA_CACHE);
-                    cacheManager.setValue(gson.toJson(homeData));
-                    cacheManager.store();
+                    cacheManager.save(
+                            ConstantKey.TkpdCache.HOME_DATA_CACHE,
+                            gson.toJson(homeData),
+                            0);
                 }
                 return response;
             }
