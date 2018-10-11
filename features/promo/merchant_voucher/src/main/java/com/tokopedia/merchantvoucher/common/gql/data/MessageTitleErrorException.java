@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 public class MessageTitleErrorException extends MessageErrorException {
     private String errorMessageTitle;
 
-    public MessageTitleErrorException(String messageTitle, String message, String errorCode) {
-        super(message, errorCode);
+    public MessageTitleErrorException(String messageTitle, String message) {
+        super(message);
         this.errorMessageTitle = messageTitle;
     }
 
