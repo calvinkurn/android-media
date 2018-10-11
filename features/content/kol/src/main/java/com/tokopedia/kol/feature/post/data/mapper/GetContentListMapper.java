@@ -118,7 +118,7 @@ public class GetContentListMapper implements Func1<GraphqlResponse, Observable<C
                 post.getInteraction() != null && post.getInteraction().isShowComment(),
                 post.getInteraction() != null && post.getInteraction().isShowLike(),
                 post.getInteraction() != null && post.getInteraction().isEditable(),
-                post.getInteraction() != null && post.getInteraction().isDeleteable(),
+                post.getInteraction() != null && post.getInteraction().isDeletable(),
                 imageList,
                 tag != null ? tag.getId() : 0,
                 "",

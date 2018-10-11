@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 public class Interaction {
     @SerializedName("deleteable")
     @Expose
-    private boolean deleteable;
+    private boolean deletable;
     @SerializedName("editable")
     @Expose
     private boolean editable;
@@ -27,12 +27,12 @@ public class Interaction {
     @Expose
     private boolean showLike;
 
-    public boolean isDeleteable() {
-        return deleteable;
+    public boolean isDeletable() {
+        return deletable;
     }
 
-    public void setDeleteable(boolean deleteable) {
-        this.deleteable = deleteable;
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
     }
 
     public boolean isEditable() {
