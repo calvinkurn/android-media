@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.subscriber
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
@@ -25,12 +26,16 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
         view.onErrorFollowKol(
                 ErrorHandler.getErrorMessage(view.context, throwable)
         )
-
     }
 
     override fun onNext(response: GraphqlResponse) {
         val query: FollowKolQuery = response.getData(FollowKolQuery::class.java)
         val isSuccess = query.data.data.status == FOLLOW_SUCCESS
+        if (!TextUtils.isEmpty(query.data.error)) {
+            view.onErrorFollowKol(query.data.error)
+            return
+        }
+
         if (isSuccess) {
             view.onSuccessFollowKol()
         } else {
