@@ -1,12 +1,10 @@
-query getExploreAffiliate($keyword: String!, $cursor: String!, $filterKey: String!, $filterValue: String!, $sortKey: String!, $sortAsc: Boolean! ) {
-  topadsExploreAffiliateProduct(keyword:$keyword,filter:[{key:$filterKey,value:$filterValue}],nextCursor:$cursor,sort:{key:$sortKey,asc:$sortAsc}) {
+query getExploreAffiliate($keyword: String, $nextCursor: String) {
+  topadsExploreAffiliateProduct(keyword:$keyword, nextCursor:$nextCursor){
     products {
-      id
+      adId
+      productId
       image
       name
-      isActive
-      totalSold
-      totalClick
       commission
     }
     pagination{

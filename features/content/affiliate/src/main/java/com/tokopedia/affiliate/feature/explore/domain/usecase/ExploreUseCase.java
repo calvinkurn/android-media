@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.explore.domain.usecase;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -20,10 +21,8 @@ public class ExploreUseCase extends GraphqlUseCase {
     private final Context context;
     private final static String PARAM_CURSOR = "cursor";
     private final static String PARAM_KEYWORD = "keyword";
-    private final static String PARAM_FILTER_KEY = "filterKey";
-    private final static String PARAM_FILTER_VALUE = "filterValue";
-    private final static String PARAM_SORT_KEY = "sortKey";
-    private final static String PARAM_SORT_ASC = "SortAsc";
+    private final static String PARAM_FILTER= "filter";
+    private final static String PARAM_SORT = "sort";
 
     @Inject
     public ExploreUseCase(@ApplicationContext Context context) {
@@ -39,12 +38,18 @@ public class ExploreUseCase extends GraphqlUseCase {
 
     public static RequestParams getParam(ExploreParams exploreParams) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_KEYWORD, exploreParams.getKeyword());
-        params.putString(PARAM_CURSOR, exploreParams.getCursor());
-        params.putString(PARAM_FILTER_KEY, exploreParams.getFilterKey());
-        params.putString(PARAM_FILTER_VALUE, exploreParams.getFilterValue());
-        params.putString(PARAM_SORT_KEY, exploreParams.getSortKey());
-        params.putBoolean(PARAM_SORT_ASC, exploreParams.isSortAsc());
+        if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
+            params.putString(PARAM_KEYWORD, exploreParams.getKeyword());
+        }
+        if (!TextUtils.isEmpty(exploreParams.getCursor())) {
+            params.putString(PARAM_CURSOR, exploreParams.getCursor());
+        }
+        if (exploreParams.getFilter().size() != 0) {
+            params.putObject(PARAM_FILTER, exploreParams.getFilter());
+        }
+        if (!TextUtils.isEmpty(exploreParams.getSort().getKey())) {
+            params.putObject(PARAM_SORT, exploreParams.getSort());
+        }
         return params;
     }
 }

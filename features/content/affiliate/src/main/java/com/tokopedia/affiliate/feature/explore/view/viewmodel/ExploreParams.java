@@ -1,14 +1,14 @@
 package com.tokopedia.affiliate.feature.explore.view.viewmodel;
 
+import java.util.ArrayList;
+
 /**
  * @author by yfsx on 08/10/18.
  */
 public class ExploreParams {
     private String keyword;
-    private String filterKey;
-    private String filterValue;
-    private String sortKey;
-    private boolean sortAsc;
+    private ArrayList<ExploreFilter> filter;
+    private ExploreSort sort;
     private boolean isCanLoadMore;
     private String cursor;
 
@@ -18,10 +18,8 @@ public class ExploreParams {
 
     public void resetParams() {
         keyword = "";
-        filterKey = "";
-        filterValue = "";
-        sortKey = "";
-        sortAsc = false;
+        filter = new ArrayList<>();
+        sort = new ExploreSort("", false);
         isCanLoadMore = true;
         cursor = "";
     }
@@ -54,36 +52,20 @@ public class ExploreParams {
         this.keyword = keyword;
     }
 
-    public String getFilterKey() {
-        return filterKey;
+    public ArrayList<ExploreFilter> getFilter() {
+        return filter;
     }
 
-    public void setFilterKey(String filterKey) {
-        this.filterKey = filterKey;
+    public void setFilter(ArrayList<ExploreFilter> filter) {
+        this.filter = filter;
     }
 
-    public String getFilterValue() {
-        return filterValue;
+    public ExploreSort getSort() {
+        return sort;
     }
 
-    public void setFilterValue(String filterValue) {
-        this.filterValue = filterValue;
-    }
-
-    public String getSortKey() {
-        return sortKey;
-    }
-
-    public void setSortKey(String sortKey) {
-        this.sortKey = sortKey;
-    }
-
-    public boolean isSortAsc() {
-        return sortAsc;
-    }
-
-    public void setSortAsc(boolean sortAsc) {
-        this.sortAsc = sortAsc;
+    public void setSort(ExploreSort sort) {
+        this.sort = sort;
     }
 
     public boolean isCanLoadMore() {

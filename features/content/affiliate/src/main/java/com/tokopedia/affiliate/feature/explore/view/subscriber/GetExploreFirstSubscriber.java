@@ -40,10 +40,12 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
         mainView.hideLoading();
         ExploreQuery query = response.getData(ExploreQuery.class);
         mainView.onSuccessGetFirstData(
-                query.getProducts().size() != 0 ?
+                query.getProducts() != null ?
                         mappingProducts(query.getProducts()) :
                         new ArrayList<Visitable>(),
-                query.getPagination().getNextCursor()
+                query.getPagination() != null ?
+                        query.getPagination().getNextCursor() :
+                        ""
         );    }
 
     public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList) {
