@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;

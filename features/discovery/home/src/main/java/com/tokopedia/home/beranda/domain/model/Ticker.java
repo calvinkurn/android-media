@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.entity.home;
+package com.tokopedia.home.beranda.domain.model;
 
 import android.text.Html;
 import android.text.Spanned;
