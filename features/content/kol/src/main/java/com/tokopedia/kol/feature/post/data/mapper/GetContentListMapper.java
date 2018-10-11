@@ -126,9 +126,8 @@ public class GetContentListMapper implements Func1<GraphqlResponse, Observable<C
                 tag != null && tag.getCaptionInd() != null ? tag.getCaptionInd() : "",
                 tag != null && tag.getLink() != null ? tag.getLink() : "",
                 tag != null && tag.getAffiliateTrackId() != null ? tag.getAffiliateTrackId() : "",
-                "Yuk main yuk"
+                post.getStatus() != null ? post.getStatus() : ""
         );
-        //TODO milhamj change yuk main yuk^^
     }
 
     private List<Content> getContentList(Post post) {
