@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -25,10 +26,8 @@ import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListAc
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -148,7 +147,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(firstPageViewModel.profileHeaderViewModel)
-        visitables.addAll(firstPageViewModel.visitableList)
+        if (!firstPageViewModel.visitableList.isEmpty()) {
+            visitables.addAll(firstPageViewModel.visitableList)
+        } else {
+            if (firstPageViewModel.profileHeaderViewModel.isOwner
+                    && firstPageViewModel.profileHeaderViewModel.isAffiliate) {
+                visitables.add(getEmptyModel(firstPageViewModel.profileHeaderViewModel.isOwner))
+            }
+        }
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
     }
 
@@ -335,6 +341,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
             )
         }
+    }
+
+    private fun getEmptyModel(isOwner: Boolean): Visitable<*> {
+        val emptyResultViewModel = EmptyResultViewModel()
+        emptyResultViewModel.iconRes = R.drawable.ic_af_empty
+        emptyResultViewModel.title = getString(R.string.profile_add_recommendation)
+        return emptyResultViewModel
     }
 
     private fun showError(message: String) {
