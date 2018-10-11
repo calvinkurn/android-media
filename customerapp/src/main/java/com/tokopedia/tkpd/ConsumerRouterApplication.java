@@ -2553,6 +2553,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.address.LocationPass locationPass, boolean isFromMarketplaceCart) {
+        Intent intent = new Intent(context, GeolocationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putBoolean(GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketplaceCart);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @Override
     public void goToShopReview(Context context, String shopId, String shopDomain) {
         ReputationTracking tracking = new ReputationTracking(this);
         tracking.eventClickSeeMoreReview(getString(R.string.review), shopId, userSession.getShopId().equals(shopId));

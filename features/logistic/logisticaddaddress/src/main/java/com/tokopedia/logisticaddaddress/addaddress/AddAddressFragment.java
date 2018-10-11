@@ -33,8 +33,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
@@ -44,6 +42,7 @@ import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticdata.data.entity.address.LocationPass;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.District;
@@ -75,6 +74,8 @@ public class AddAddressFragment extends BaseDaggerFragment
         implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
 
     AddAddressPresenter mPresenter;
+
+    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
     private static final String ADDRESS = "district_recommendation_address";
@@ -560,13 +561,13 @@ public class AddAddressFragment extends BaseDaggerFragment
             }
             if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
                     .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
-                startActivityForResult(GeolocationActivity.createInstanceFromMarketplaceCart(
-                        getActivity(), locationPass), REQUEST_CODE
-                );
+                Intent intent = ((IAddressRouter) getActivity().getApplication())
+                        .getGeoLocationActivityIntent(getActivity(), locationPass, true);
+                startActivityForResult(intent, REQUEST_CODE);
             } else {
-                startActivityForResult(GeolocationActivity.createInstanceIntent(
-                        getActivity(), locationPass), REQUEST_CODE
-                );
+                Intent intent = ((IAddressRouter) getActivity().getApplication())
+                        .getGeoLocationActivityIntent(getActivity(), locationPass, false);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         } else {
             CommonUtils.dumper("Google play services unavailable");
@@ -584,7 +585,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = bundle.getParcelable(EXTRA_EXISTING_LOCATION);
                     if (locationPass != null) {
                         String latitude = locationPass.getLatitude();
                         String longitude = locationPass.getLongitude();
