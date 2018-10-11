@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Interaction {
-    @SerializedName("deleteable")
+    @SerializedName("deletable")
     @Expose
     private boolean deletable;
     @SerializedName("editable")

@@ -24,7 +24,6 @@ query ContentList($limit: Int, $cursor: String, $shopID: Int, $userID: Int, $sou
         url
       }
       interaction {
-        deleteable
         editable
         isLiked
         commentCount
