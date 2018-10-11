@@ -63,7 +63,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     private SeatSelectionContract.SeatSelectionView mView;
 
 
-    @Inject
     public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, PostVerifyCartUseCase postVerifyCartUseCase) {
         this.verifyCartUseCase = verifyCartUseCase;
         this.postVerifyCartUseCase = postVerifyCartUseCase;

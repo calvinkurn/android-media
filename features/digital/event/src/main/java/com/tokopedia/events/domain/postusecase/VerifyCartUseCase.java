@@ -19,7 +19,6 @@ public class VerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     private final EventRepository eventRepository;
 
-    @Inject
     public VerifyCartUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }

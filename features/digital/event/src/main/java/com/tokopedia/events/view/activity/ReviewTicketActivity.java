@@ -130,8 +130,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     private int baseFare;
     private int convFees;
 
-    private EventComponent eventComponent;
-    EventReviewTicketPresenter eventReviewTicketPresenter;
+    EventReviewTicketsContractor.EventReviewTicketPresenter eventReviewTicketPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
@@ -264,11 +263,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-    }
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
     }
 
     @Override

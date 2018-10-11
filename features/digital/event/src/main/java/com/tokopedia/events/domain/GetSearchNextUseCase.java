@@ -4,6 +4,8 @@ import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -14,7 +16,6 @@ public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
     private final EventRepository eventRepository;
 
-    @Inject
     public GetSearchNextUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
