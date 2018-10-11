@@ -1,15 +1,14 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.network;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.network.CommonNetwork;
+import com.tokopedia.network.utils.MapNulRemover;
 
 import java.io.IOException;
 import java.util.Map;
@@ -29,11 +28,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private static final String TAG = RetrofitInteractorImpl.class.getSimpleName();
 
     private final CompositeSubscription compsoiteSubscription;
-    private final PeopleService peopleService;
+    private final PeopleActApi peopleService;
 
-    public RetrofitInteractorImpl() {
+    public RetrofitInteractorImpl(PeopleActApi peopleActApi) {
         this.compsoiteSubscription = new CompositeSubscription();
-        this.peopleService = new PeopleService();
+        this.peopleService = peopleActApi;
+
     }
 
     @Override
@@ -47,9 +47,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                  final GetPeopleAddressListener listener) {
         listener.onPreExecute(context, params);
 
-        Observable<Response<TkpdResponse>> observable = peopleService.getApi().getAddress(MapNulRemover.removeNull(params));
+        Observable<Response<TokopediaWsV4Response>> observable = peopleService.getAddress(MapNulRemover.removeNull(params));
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
                 listener.onComplete();
@@ -76,7 +76,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         GetPeopleAddress data =
@@ -101,57 +101,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         }
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
+                    listener.onError(response.message(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
-                        public void onUnknown() {
-                            listener.onError(null, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getPeopleAddress(context, params, listener);
-                                }
-                            });
+                        public void onRetryClicked() {
+                            getPeopleAddress(context, params, listener);
                         }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onTimeOut(new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getPeopleAddress(context, params, listener);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError(null, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getPeopleAddress(context, params, listener);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError(null, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getPeopleAddress(context, params, listener);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError(null, new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    getPeopleAddress(context, params, listener);
-                                }
-                            });
-                        }
-                    }, response.code());
+                    });
                 }
             }
         };

@@ -138,6 +138,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
+    private UserSession userSession;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -153,6 +154,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
+        userSession = new UserSession(getContext());
     }
 
     @Nullable
@@ -164,7 +166,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (!isDistrictRecommendation()) mPresenter.getListProvince();
-        mPresenter = new AddAddressPresenterImpl();
+        mPresenter = new AddAddressPresenterImpl(userSession);
         mPresenter.attachView(this);
         initView(view);
         initialVar();
@@ -214,10 +216,9 @@ public class AddAddressFragment extends BaseDaggerFragment
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
         if (!isEdit()) {
-            UserSession sess = new UserSession(getActivity());
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
-            receiverNameEditText.setText(sess.getName());
-            receiverPhoneEditText.setText(sess.getPhoneNumber());
+            receiverNameEditText.setText(userSession.getName());
+            receiverPhoneEditText.setText(userSession.getPhoneNumber());
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);

@@ -6,21 +6,32 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManagerImpl;
 import com.tokopedia.logisticaddaddress.model.datamanager.NetworkParam;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetAddressDataPass;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.Paging;
+import com.tokopedia.network.CommonNetwork;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 
 import java.util.Map;
+
+import okhttp3.OkHttpClient;
 
 /**
  * Created on 5/18/16.
@@ -40,8 +51,20 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
         this.activityListener = listener;
         this.fragmentListener = mFragment;
         this.pagingHandler = new PagingHandler();
-        this.dataManager = new DataManagerImpl(this);
+        NetworkRouter router = (NetworkRouter) mFragment.getActivity().getApplication();
+
+        this.dataManager = new DataManagerImpl(this, providePeopleApi(mFragment.getContext(), router));
         this.setAllowConnection(true);
+    }
+
+    private PeopleActApi providePeopleApi(Context context, NetworkRouter router) {
+        UserSession userSession = new UserSession(context);
+        return CommonNetwork.createRetrofit(LogisticDataConstantUrl.PeopleAction.BASE_URL,
+                new TkpdOkHttpBuilder(context, new OkHttpClient.Builder()),
+                new TkpdAuthInterceptor(context, router, userSession),
+                new FingerprintInterceptor(router, userSession),
+                new StringResponseConverter(), new GsonBuilder())
+                .create(PeopleActApi.class);
     }
 
     @Override

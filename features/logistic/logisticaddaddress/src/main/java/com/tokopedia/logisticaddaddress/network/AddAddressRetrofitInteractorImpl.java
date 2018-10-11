@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.network;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,19 +11,18 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tkpd.library.utils.data.model.ListCity;
 import com.tkpd.library.utils.data.model.ListDistricts;
 import com.tkpd.library.utils.data.model.ListProvince;
-import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.database.model.City_Table;
 import com.tokopedia.core.database.model.Province_Table;
-import com.tokopedia.core.network.apiservices.etc.AddressService;
-import com.tokopedia.core.network.apiservices.user.PeopleActService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.logisticdata.data.apiservice.AddressApi;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.District;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONException;
 
@@ -31,7 +30,6 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,24 +51,24 @@ import rx.subscriptions.CompositeSubscription;
 public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
     private static final String TAG = AddAddressRetrofitInteractorImpl.class.getSimpleName();
-
+    private static final String DB_NAME = "tokopedia";
 
     private final CompositeSubscription compositeSubscription;
-    private final PeopleActService peopleActService;
-    private final AddressService addressService;
+    private final PeopleActApi peopleActService;
+    private final AddressApi addressService;
 
-    public AddAddressRetrofitInteractorImpl() {
+    public AddAddressRetrofitInteractorImpl(PeopleActApi peopleActApi, AddressApi addressApi) {
         this.compositeSubscription = new CompositeSubscription();
-        this.peopleActService = new PeopleActService();
-        this.addressService = new AddressService();
+        this.peopleActService = peopleActApi;
+        this.addressService = addressApi;
     }
 
     @Override
     public void addAddress(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
-        Observable<Response<TkpdResponse>> observable = peopleActService.getApi()
-                .addAddress(AuthUtil.generateParams(context, params));
+        Observable<Response<TokopediaWsV4Response>> observable = peopleActService
+                .addAddress(params);
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 
@@ -89,7 +87,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         try {
@@ -102,32 +100,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("");
-                        }
-                    }, response.code());
+                    listener.onError(response.message());
                 }
             }
         };
@@ -139,10 +112,10 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
     @Override
     public void editAddress(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
-        Observable<Response<TkpdResponse>> observable = peopleActService.getApi()
-                .editAddress(AuthUtil.generateParams(context, params));
+        Observable<Response<TokopediaWsV4Response>> observable = peopleActService
+                .editAddAddress(params);
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 
@@ -161,7 +134,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         try {
@@ -174,32 +147,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         else listener.onError(response.body().getErrorMessages().get(0));
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("");
-                        }
-                    }, response.code());
+                    listener.onError(response.message());
                 }
             }
         };
@@ -218,13 +166,13 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     public void getListProvince(@NonNull Context context,
                                 @NonNull Map<String, String> params,
                                 @NonNull final GetListProvinceListener listener) {
-        Observable<Response<TkpdResponse>> observable = addressService.getApi()
-                .getProvince(AuthUtil.generateParams(context, params))
-                .doOnNext(new Action1<Response<TkpdResponse>>() {
+        Observable<Response<TokopediaWsV4Response>> observable = addressService
+                .getProvince(params)
+                .doOnNext(new Action1<Response<TokopediaWsV4Response>>() {
                     @Override
-                    public void call(Response<TkpdResponse> response) {
+                    public void call(Response<TokopediaWsV4Response> response) {
                         ListProvince.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListProvince.Data.class);
-                        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
+                        DatabaseWrapper database = FlowManager.getDatabase(DB_NAME).getWritableDatabase();
                         database.beginTransaction();
                         try {
                             for (Province a : Province.toDbs(datas.getProvinces())) {
@@ -237,7 +185,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                     }
                 });
 
-        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+        Subscriber<Response<TokopediaWsV4Response>> subscriber = new Subscriber<Response<TokopediaWsV4Response>>() {
             @Override
             public void onCompleted() {
 
@@ -254,7 +202,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(Response<TokopediaWsV4Response> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         ListProvince.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListProvince.Data.class);
@@ -272,32 +220,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         }
                     }
                 } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            listener.onTimeout();
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            listener.onError("");
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            listener.onError("");
-                        }
-                    }, response.code());
+                    listener.onError(response.message());
                 }
             }
         };
@@ -343,36 +266,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         if (model.isValid()) {
                             listener.onSuccess(model);
                         } else {
-                            if (model.getErrorMessage() != null) {
-                                listener.onError(model.getErrorMessage());
-                            } else {
-                                new ErrorHandler(new ErrorListener() {
-                                    @Override
-                                    public void onUnknown() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onTimeout() {
-                                        listener.onTimeout();
-                                    }
-
-                                    @Override
-                                    public void onServerError() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onBadRequest() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onForbidden() {
-                                        listener.onError("");
-                                    }
-                                }, model.getErrorCode());
-                            }
+                            listener.onError(model.getErrorMessage());
                         }
                     }
                 })
@@ -380,16 +274,17 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     }
 
     private Observable<FormAddressDomainModel> getDistrictFromNetwork(Context context, String cityId) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("city_id", cityId);
+        TKPDMapParam<String, String> cityParam = new TKPDMapParam<>();
+        cityParam.put("city_id", cityId);
+        TKPDMapParam<String, String> params = generateTKPDParam(context, cityParam);
         return Observable.zip(
                 Observable.just(cityId),
-                addressService.getApi().getDistrict(AuthUtil.generateParams(context, params)),
-                new Func2<String, Response<TkpdResponse>, Response<TkpdResponse>>() {
+                addressService.getDistrict(params),
+                new Func2<String, Response<TokopediaWsV4Response>, Response<TokopediaWsV4Response>>() {
                     @Override
-                    public Response<TkpdResponse> call(String cityId, Response<TkpdResponse> response) {
+                    public Response<TokopediaWsV4Response> call(String cityId, Response<TokopediaWsV4Response> response) {
                         ListDistricts.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListDistricts.Data.class);
-                        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
+                        DatabaseWrapper database = FlowManager.getDatabase(DB_NAME).getWritableDatabase();
                         database.beginTransaction();
                         try {
                             for (District district : District.toDbs(datas.getDistricts())) {
@@ -405,9 +300,9 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         return response;
                     }
                 })
-                .map(new Func1<Response<TkpdResponse>, FormAddressDomainModel>() {
+                .map(new Func1<Response<TokopediaWsV4Response>, FormAddressDomainModel>() {
                     @Override
-                    public FormAddressDomainModel call(Response<TkpdResponse> response) {
+                    public FormAddressDomainModel call(Response<TokopediaWsV4Response> response) {
                         FormAddressDomainModel model = new FormAddressDomainModel();
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
@@ -488,36 +383,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         if (model.isValid()) {
                             listener.onSuccess(model);
                         } else {
-                            if (model.getErrorMessage() != null) {
-                                listener.onError(model.getErrorMessage());
-                            } else {
-                                new ErrorHandler(new ErrorListener() {
-                                    @Override
-                                    public void onUnknown() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onTimeout() {
-                                        listener.onTimeout();
-                                    }
-
-                                    @Override
-                                    public void onServerError() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onBadRequest() {
-                                        listener.onError("");
-                                    }
-
-                                    @Override
-                                    public void onForbidden() {
-                                        listener.onError("");
-                                    }
-                                }, model.getErrorCode());
-                            }
+                            listener.onError(model.getErrorMessage());
                         }
                     }
                 })
@@ -525,16 +391,17 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     }
 
     private Observable<FormAddressDomainModel> getCityFromNetwork(Context context, String provinceId) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("province_id", provinceId);
+        TKPDMapParam<String, String> provParam = new TKPDMapParam<>();
+        provParam.put("province_id", provinceId);
+        TKPDMapParam<String, String> params = generateTKPDParam(context, provParam);
         return Observable.zip(
                 Observable.just(provinceId),
-                addressService.getApi().getCity(AuthUtil.generateParams(context, params)),
-                new Func2<String, Response<TkpdResponse>, Response<TkpdResponse>>() {
+                addressService.getCity(params),
+                new Func2<String, Response<TokopediaWsV4Response>, Response<TokopediaWsV4Response>>() {
                     @Override
-                    public Response<TkpdResponse> call(String provinceId, Response<TkpdResponse> response) {
+                    public Response<TokopediaWsV4Response> call(String provinceId, Response<TokopediaWsV4Response> response) {
                         ListCity.Data datas = new GsonBuilder().create().fromJson(response.body().getStringData(), ListCity.Data.class);
-                        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
+                        DatabaseWrapper database = FlowManager.getDatabase(DB_NAME).getWritableDatabase();
                         database.beginTransaction();
                         try {
                             for (City city : City.toDbs(datas.getCities())) {
@@ -551,9 +418,9 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         return response;
                     }
                 })
-                .map(new Func1<Response<TkpdResponse>, FormAddressDomainModel>() {
+                .map(new Func1<Response<TokopediaWsV4Response>, FormAddressDomainModel>() {
                     @Override
-                    public FormAddressDomainModel call(Response<TkpdResponse> response) {
+                    public FormAddressDomainModel call(Response<TokopediaWsV4Response> response) {
                         FormAddressDomainModel model = new FormAddressDomainModel();
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
@@ -597,6 +464,12 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
                         return model;
                     }
                 });
+    }
+
+    //todo : refactor this to network repository class
+    private TKPDMapParam<String, String> generateTKPDParam(Context context, TKPDMapParam<String, String> param) {
+        UserSession session = new UserSession(context);
+        return AuthUtil.generateParamsNetwork(session.getUserId(), session.getDeviceId(), param);
     }
 
 }

@@ -5,14 +5,15 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.logisticaddaddress.RetrofitInteractor;
-import com.tokopedia.logisticaddaddress.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
+import com.tokopedia.logisticaddaddress.network.RetrofitInteractor;
+import com.tokopedia.logisticaddaddress.network.RetrofitInteractorImpl;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
+import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -34,9 +35,9 @@ public class DataManagerImpl implements DataManager {
     private final ManagePeopleAddressFragmentPresenter presenter;
     private final RetrofitInteractorImpl retrofit;
 
-    public DataManagerImpl(ManagePeopleAddressFragmentPresenter presenter) {
+    public DataManagerImpl(ManagePeopleAddressFragmentPresenter presenter, PeopleActApi peopleActApi) {
         this.presenter = presenter;
-        this.retrofit = new RetrofitInteractorImpl();
+        this.retrofit = new RetrofitInteractorImpl(peopleActApi);
     }
 
     private void requestData(@NonNull Context context,
@@ -164,7 +165,8 @@ public class DataManagerImpl implements DataManager {
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
-                        Type type = new TypeToken<GetPeopleAddress>() {}.getType();
+                        Type type = new TypeToken<GetPeopleAddress>() {
+                        }.getType();
 
                         // set value
                         cacheManager.setKey(cacheKey);
@@ -206,7 +208,8 @@ public class DataManagerImpl implements DataManager {
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
-                        Type type = new TypeToken<GetPeopleAddress>() {}.getType();
+                        Type type = new TypeToken<GetPeopleAddress>() {
+                        }.getType();
 
                         // get json string which already cached
                         String jsonCachedString = cacheManager.getValueString(cacheKey);
@@ -236,8 +239,9 @@ public class DataManagerImpl implements DataManager {
     }
 
     private String generateCacheKey(Context context, Map<String, String> params) {
+        UserSession session = new UserSession(context);
         String key = GetPeopleAddress.class.getSimpleName()
-                + ":user_id=" + SessionHandler.getLoginID(context)
+                + ":user_id=" + session.getUserId()
                 + "&page=" + params.get(NetworkParam.PARAM_PAGE)
                 + "&query=" + params.get(NetworkParam.PARAM_QUERY)
                 + "&order_by" + params.get(NetworkParam.PARAM_ORDER_BY);

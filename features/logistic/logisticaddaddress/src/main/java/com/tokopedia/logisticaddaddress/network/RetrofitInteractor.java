@@ -1,8 +1,8 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.network;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.util.Map;
