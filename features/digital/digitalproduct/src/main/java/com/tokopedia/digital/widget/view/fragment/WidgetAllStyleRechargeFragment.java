@@ -29,6 +29,7 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
@@ -217,14 +218,10 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 SessionHandler.getLoginID(getActivity()));
 
         if (SessionHandler.isV4Login(getActivity())) {
-            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) getActivity().getApplication();
-                navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-                );
-            }
+            navigateToActivityRequest(
+                    CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassData, CartDigitalActivity.PARAM_WIDGET),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
         } else {
             interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
         }
@@ -371,14 +368,11 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
                 if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
-                    if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                        IDigitalModuleRouter digitalModuleRouter =
-                                (IDigitalModuleRouter) getActivity().getApplication();
-                        navigateToActivityRequest(
-                                digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-                        );
-                    }
+                    navigateToActivityRequest(
+                            CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassDataState),
+                            IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                    );
+
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class EventsDetailsViewModel implements Parcelable {
 
+    private int Id;
     private String title;
     private String duration;
     private String url;
@@ -37,6 +38,14 @@ public class EventsDetailsViewModel implements Parcelable {
     private Boolean dateRange;
     private String cityName;
     private List<SchedulesViewModel> schedulesViewModels;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public List<Form> getForms() {
         return forms;
@@ -282,6 +291,7 @@ public class EventsDetailsViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.Id);
         dest.writeString(this.title);
         dest.writeString(this.duration);
         dest.writeString(this.url);
@@ -313,6 +323,7 @@ public class EventsDetailsViewModel implements Parcelable {
     }
 
     protected EventsDetailsViewModel(Parcel in) {
+        this.Id = in.readInt();
         this.title = in.readString();
         this.duration = in.readString();
         this.url = in.readString();
