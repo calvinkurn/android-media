@@ -4,13 +4,13 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.ShippingRecommendationData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierPresenter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
             getCourierRecommendationUseCase.execute(query, shipmentDetailData, selectedServiceId, shopShipmentList,
-                    new Subscriber<List<ShippingDurationViewModel>>() {
+                    new Subscriber<ShippingRecommendationData>() {
                         @Override
                         public void onCompleted() {
 
@@ -87,11 +87,16 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                         }
 
                         @Override
-                        public void onNext(List<ShippingDurationViewModel> shippingDurationViewModels) {
+                        public void onNext(ShippingRecommendationData shippingRecommendationData) {
                             if (getView() != null) {
                                 getView().hideLoading();
-                                shippingDurationViewModelList.addAll(shippingDurationViewModels);
-                                getView().showData(shippingDurationViewModelList);
+                                if (shippingRecommendationData.getShippingDurationViewModels() != null &&
+                                        shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+                                    shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
+                                    getView().showData(shippingDurationViewModelList);
+                                } else {
+                                    getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                }
                             }
                         }
                     });

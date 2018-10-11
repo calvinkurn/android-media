@@ -65,6 +65,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
@@ -1398,8 +1399,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickChecklistShipmentRecommendationDuration(selectedServiceName);
         if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
-            shipmentAdapter.setLastServiceId(selectedServiceId);
-            setPinpoint(cartItemPosition);
+            if (getActivity() != null) {
+                Tooltip tooltip = new Tooltip(getActivity());
+                tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
+                tooltip.setDesc(getActivity().getString(R.string.label_hardcoded_shipping_duration_info));
+                tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
+                tooltip.setIcon(R.drawable.ic_dropshipper);
+                tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tooltip.dismiss();
+                        shipmentAdapter.setLastServiceId(selectedServiceId);
+                        setPinpoint(cartItemPosition);
+                    }
+                });
+                tooltip.show();
+            }
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
             onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, cartItemPosition);
@@ -1416,6 +1431,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
             }
+        }
+    }
+
+    @Override
+    public void onNoCourierAvailable(String message) {
+        if (getActivity() != null) {
+            Tooltip tooltip = new Tooltip(getActivity());
+            tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
+            tooltip.setDesc(message);
+            tooltip.setTextButton(getActivity().getString(R.string.label_no_courier_bottomsheet_button));
+            tooltip.setIcon(R.drawable.ic_dropshipper);
+            tooltip.getBtnAction().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tooltip.dismiss();
+                }
+            });
+            tooltip.show();
         }
     }
 

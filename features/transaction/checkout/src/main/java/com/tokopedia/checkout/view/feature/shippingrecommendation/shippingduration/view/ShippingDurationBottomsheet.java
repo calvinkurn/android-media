@@ -20,8 +20,7 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.constant.CourierConstant;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,23 +183,25 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
+    public void showNoCourierAvailable(String message) {
+        shippingDurationBottomsheetListener.onNoCourierAvailable(message);
+    }
+
+    @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                           int cartPosition, String serviceName) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
             shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-            if (shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
-                    shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
-                if (shippingCourierViewModel.getProductData().getError() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                    flagNeedToSetPinpoint = true;
-                    selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
-                    shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
-                            shippingCourierViewModel.getProductData().getError().getErrorMessage());
-                }
+            if (shippingCourierViewModel.getProductData().getError() != null &&
+                    shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
+                    shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
+                    shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                flagNeedToSetPinpoint = true;
+                selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
+                shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
+                        shippingCourierViewModel.getProductData().getError().getErrorMessage());
             }
         }
         if (shippingDurationBottomsheetListener != null) {

@@ -2,15 +2,12 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.ShippingRecommendationData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -18,7 +15,7 @@ import rx.Subscriber;
  * Created by Irfan Khoirul on 02/10/18.
  */
 
-public class GetCourierRecommendationSubscriber extends Subscriber<List<ShippingDurationViewModel>> {
+public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecommendationData> {
 
     private final ShipmentContract.View view;
     private final ShipmentContract.Presenter presenter;
@@ -50,9 +47,11 @@ public class GetCourierRecommendationSubscriber extends Subscriber<List<Shipping
     }
 
     @Override
-    public void onNext(List<ShippingDurationViewModel> shippingDurationViewModels) {
-        if (shippingDurationViewModels != null && shippingDurationViewModels.size() > 0) {
-            for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModels) {
+    public void onNext(ShippingRecommendationData shippingRecommendationData) {
+        if (shippingRecommendationData != null &&
+                shippingRecommendationData.getShippingDurationViewModels() != null &&
+                shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
+            for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
                 if (shippingDurationViewModel.getShippingCourierViewModelList() != null &&
                         shippingDurationViewModel.getShippingCourierViewModelList().size() > 0) {
                     for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {

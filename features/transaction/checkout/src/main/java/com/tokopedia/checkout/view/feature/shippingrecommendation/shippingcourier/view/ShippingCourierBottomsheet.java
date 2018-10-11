@@ -16,7 +16,7 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierModule;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +129,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Override
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
         if (shippingCourierViewModel.getProductData().getError() != null) {
-            if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+            if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 presenter.updateSelectedCourier(shippingCourierViewModel);
             }
         } else {
