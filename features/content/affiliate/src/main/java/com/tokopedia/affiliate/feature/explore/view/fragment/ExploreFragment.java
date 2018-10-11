@@ -89,6 +89,7 @@ public class ExploreFragment
 
     private void initView() {
         exploreParams = new ExploreParams();
+        swipeRefreshLayout.setOnRefreshListener(this);
         rvExplore.addOnScrollListener(getScrollListener());
         searchView.setListener(this);
         searchView.setResetListener(this);
@@ -212,6 +213,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
 //        layoutManager = new GridLayoutManager(getActivity(), 1);
 //        rvExplore.setLayoutManager(layoutManager);
 //        List<Visitable> itemList = new ArrayList<>();
