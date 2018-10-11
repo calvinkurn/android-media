@@ -37,10 +37,6 @@ public class ThanksTrackerService extends IntentService {
             if(isDataValid(data)) {
                 initInjection();
                 presenter.doAnalytics(data);
-                presenter.doAppsFlyerAnalytics(
-                        new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA),
-                        data
-                );
             }
         }
     }
@@ -50,9 +46,9 @@ public class ThanksTrackerService extends IntentService {
                 && data.getId() != null
                 && !data.getId().isEmpty()
                 && data.getPlatform() != null
-                && !data.getPlatform().isEmpty()
+                && !data.getPlatform().isEmpty()/*
                 && data.getShopTypes() != null
-                && !data.getShopTypes().isEmpty();
+                && !data.getShopTypes().isEmpty()*/;
     }
 
     private void initInjection() {
