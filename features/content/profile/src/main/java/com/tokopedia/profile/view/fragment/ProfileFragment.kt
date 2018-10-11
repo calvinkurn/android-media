@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -139,6 +140,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
+            setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
                     firstPageViewModel.affiliatePostQuota.formatted
@@ -305,6 +307,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun initView() {
 
+    }
+
+    private fun setToolbarTitle(title: String) {
+        if (activity != null && activity is AppCompatActivity && !TextUtils.isEmpty(title)) {
+            (activity as AppCompatActivity).supportActionBar?.title = title
+        }
     }
 
     private fun addFooter(headerViewModel: ProfileHeaderViewModel, quota: String) {

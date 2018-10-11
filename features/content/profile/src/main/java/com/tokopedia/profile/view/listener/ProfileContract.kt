@@ -11,7 +11,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
  */
 interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>> {
-        fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel)
+        fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel)
 
         fun goToFollowing()
 
