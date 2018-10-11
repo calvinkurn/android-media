@@ -113,18 +113,20 @@ fun MerchantVoucherViewModel.getTypeString(context: Context): String {
     }
 }
 
-fun MerchantVoucherViewModel.getAmountString(context: Context): String {
+fun MerchantVoucherViewModel.getAmountString(): String {
+    if (merchantVoucherAmount == null) return ""
     return when (this.merchantVoucherAmountType) {
         MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatRupiahString(this.merchantVoucherAmount!!.toLong())
-        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> this.merchantVoucherAmount.toString() + "%"
+        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(),false) + "%"
         else -> ""
     }
 }
 
-fun MerchantVoucherViewModel.getAmountShortString(context: Context): String {
+fun MerchantVoucherViewModel.getAmountShortString(): String {
+    if (merchantVoucherAmount == null) return ""
     return when (this.merchantVoucherAmountType) {
         MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatSuffixNumbers(this.merchantVoucherAmount!!.toLong())
-        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> this.merchantVoucherAmount.toString() + "%"
+        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(),false) + "%"
         else -> ""
     }
 }

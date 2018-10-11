@@ -15,7 +15,7 @@ import static com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatu
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({TYPE_AVAILABLE, TYPE_IN_USE, TYPE_OUT_OF_STOCK})
 public @interface MerchantVoucherStatusTypeDef {
-    int TYPE_AVAILABLE = 1;
-    int TYPE_IN_USE = 2;
+    int TYPE_IN_USE = 1;
+    int TYPE_AVAILABLE = 2;
     int TYPE_OUT_OF_STOCK = 3;
 }

@@ -33,6 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
+                    android:minHeight="@dimen/dp_85"
                     tools:src="@drawable/bg_rect_rounded_white_shadow" />
 
                 <TextView
@@ -43,7 +44,6 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_24"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:textSize="@dimen/sp_18"
                     tools:text="Lebaran Extra Cashback 20.000" />
 
                 <LinearLayout
@@ -141,13 +141,12 @@
 
                 <TextView
                     android:id="@+id/tvTncLabel"
-                    style="@style/TextView.Title"
+                    style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_36"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:textSize="@dimen/sp_18"
                     android:text="@string/terms_and_conditions" />
 
                 <WebView

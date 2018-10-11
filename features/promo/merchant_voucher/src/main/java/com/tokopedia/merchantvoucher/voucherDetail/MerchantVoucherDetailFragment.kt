@@ -146,7 +146,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         }
         val voucherString = merchantVoucherViewModel.voucherName + " " +
                 merchantVoucherViewModel.getTypeString(context!!) + " " +
-                merchantVoucherViewModel.getAmountString(context!!)
+                merchantVoucherViewModel.getAmountString()
         tvVoucherTitle.text = voucherString
         if (merchantVoucherViewModel.minimumSpend <= 0) {
             tvMinTransaction.visibility = View.GONE
@@ -178,16 +178,14 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         } else {
             tvTncLabel.visibility = View.VISIBLE
             webViewTnc.visibility = View.VISIBLE
-            webViewTnc.loadData(merchantVoucherViewModel.tnc!!, "text/html; charset=utf-8", "UTF-8")
+            webViewTnc.loadData(processWebViewHtmlStyle(merchantVoucherViewModel.tnc!!), "text/html; charset=utf-8", "UTF-8")
         }
     }
-
-
 
     fun processWebViewHtmlStyle(html_string: String): String {
         var returnString = ""
         returnString = ("<html><head>"
-                + "<style type=\"text/css\">body{font-size:14px; padding:0; margin:0} img{display: inline;max-width: 100% !important ;height:auto !important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}"
+                + "<style type=\"text/css\">body{font-size:14px; padding:0; margin:0;} img{display: inline;max-width: 100% !important ;height:auto !important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}"
                 + "</style></head>"
                 + "<body>"
                 + html_string

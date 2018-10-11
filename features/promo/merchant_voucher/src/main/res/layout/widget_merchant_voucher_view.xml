@@ -57,10 +57,11 @@
         <TextView
             android:id="@+id/tvCode"
             style="@style/TextView.Title.OrangeRed.Bold"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_12"
-            tools:text="CASHBACKLEB123"/>
+            tools:text="CASHBACKLEB123123123"
+            android:gravity="center_horizontal"/>
 
         <Button
             android:id="@+id/btnUseVoucher"
