@@ -15,13 +15,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAttributeUseCase<PagingList<ShopProductViewModel>> {
 
     private final static String SHOP_REQUEST = "SHOP_REQUEST";
 
     private final GetShopProductListUseCase getShopProductListUseCase;
+    private Subscription listSubscription;
 
     @Inject
     public GetShopProductListWithAttributeUseCase(GetShopProductListUseCase getShopProductListUseCase,
@@ -44,11 +49,11 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
         final ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
                 .flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
-            @Override
-            public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
-                return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
-            }
-        });
+                    @Override
+                    public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
+                        return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
+                    }
+                });
     }
 
     private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(
@@ -69,9 +74,36 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                 });
     }
 
+    private Observable<List<List<ShopProductViewModel>>> createObservable(List<RequestParams> requestParams) {
+        return Observable.from(requestParams)
+                .concatMap(new Func1<RequestParams, Observable<? extends List<ShopProductViewModel>>>() {
+                    @Override
+                    public Observable<? extends List<ShopProductViewModel>> call(RequestParams requestParams) {
+                        return createObservable(requestParams).map(new Func1<PagingList<ShopProductViewModel>, List<ShopProductViewModel>>() {
+                            @Override
+                            public List<ShopProductViewModel> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                                return shopProductViewModelPagingList.getList();
+                            }
+                        });
+                    }
+                })
+                .toList();
+    }
+
+    public void executeList(List<RequestParams> requestParamsList, Subscriber<List<List<ShopProductViewModel>>> subscriber) {
+        this.listSubscription = createObservable(requestParamsList)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
     @Override
     public void unsubscribe() {
         super.unsubscribe();
         getShopProductListUseCase.unsubscribe();
+        if (listSubscription != null && !listSubscription.isUnsubscribed()) {
+            listSubscription.unsubscribe();
+        }
     }
 }

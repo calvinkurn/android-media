@@ -820,7 +820,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 super.onLoadFailed(e, errorDrawable);
                 hideLoadingProgress();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
-                e.printStackTrace();
             }
         });
     }
