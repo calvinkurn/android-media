@@ -11,8 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressPresenter;
+import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivityPresenter;
 
 /**
  * Created on 5/25/16.
@@ -52,7 +51,7 @@ public class BottomSheetFilterDialog {
         spinnerSort.setAdapter(adapterSort);
     }
 
-    public BottomSheetFilterDialog setListener(final ManagePeopleAddressPresenter presenter) {
+    public BottomSheetFilterDialog setListener(final ManagePeopleAddressActivityPresenter presenter) {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

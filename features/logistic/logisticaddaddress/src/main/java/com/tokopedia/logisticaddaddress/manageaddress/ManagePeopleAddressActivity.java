@@ -1,97 +1,57 @@
 package com.tokopedia.logisticaddaddress.manageaddress;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.logisticaddaddress.BottomSheetFilterDialog;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
-public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeopleAddressPresenter>
-        implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver {
+import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_MANAGE_ADDRESS;
+
+public class ManagePeopleAddressActivity extends BaseSimpleActivity
+        implements MPAddressActivityListener, ManagePeopleAddressReceiver.Receiver, ManagePeopleAddressActivityPresenter {
 
     FloatingActionButton fab;
-
-    private Uri uriData;
-    private Bundle bundleData;
     private ManagePeopleAddressReceiver mReceiver;
+    private BottomSheetFilterDialog dialog;
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_CONFIG_P_ADDRESS;
+        return SCREEN_MANAGE_ADDRESS;
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-        this.uriData = data;
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        this.bundleData = extras;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new ManagePeopleAddressImpl(this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.logistic_activity_manage_people_address;
-    }
-
-    @Override
-    protected void initView() {
         fab = findViewById(R.id.fab);
-        presenter.initFragment(uriData, bundleData);
-    }
+        fab.setOnClickListener(this::onFabClicked);
 
-    @Override
-    protected void setViewListener() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.filterAddress(getBaseContext());
-            }
-        });
-    }
-
-    @Override
-    protected void initVar() {
         mReceiver = new ManagePeopleAddressReceiver(new Handler());
         mReceiver.setReceiver(this);
     }
 
     @Override
-    protected void setActionVar() {
-
+    protected Fragment getNewFragment() {
+        return ManagePeopleAddressFragment.newInstance();
     }
 
     @Override
-    public void inflateFragment(Fragment fragment, String tag) {
-        if (getFragmentManager().findFragmentByTag(tag) == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment, tag)
-                    .commit();
-        }
+    protected int getLayoutRes() {
+        return R.layout.logistic_activity_manage_people_address;
     }
 
-    @Override
-    public Fragment getInflatedFragment(String tag) {
-        FragmentManager fragmentManager = getFragmentManager();
-        if (fragmentManager != null) {
-            return getFragmentManager().findFragmentByTag(tag);
-        } else {
-            throw new RuntimeException("fragment not inflated yet !!!");
-        }
+    private void onFabClicked(View view) {
+        dialog = BottomSheetFilterDialog.Builder(this).setView()
+                .setListener(this);
     }
 
     @Override
@@ -106,7 +66,7 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        presenter.setOnReceiveResult(resultCode, resultData);
+        setOnReceiveResult(resultCode, resultData);
     }
 
     @Override
@@ -119,7 +79,17 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    public void filterAddress(@NonNull Context context) {
+        dialog.show();
+    }
+
+    @Override
+    public void setOnSubmitFilterDialog(int spinnerPosition, String query) {
+        ((MPAddressView) getFragment()).setOnGetFilterActivated(spinnerPosition, query);
+    }
+
+    @Override
+    public void setOnReceiveResult(int resultCode, Bundle resultData) {
+        ((MPAddressView) getFragment()).setOnActionReceiveResult(resultCode, resultData);
     }
 }

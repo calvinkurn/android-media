@@ -3,29 +3,34 @@ package com.tokopedia.logisticaddaddress.manageaddress;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.customView.EndLessScrollBehavior;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManagePeopleAddressAdapter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
+import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +38,8 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeopleAddressFragmentPresenter>
-        implements MPAddressFragmentListener {
+public class ManagePeopleAddressFragment extends BaseDaggerFragment
+        implements MPAddressView {
 
     private static final String EXTRA_PARAM_ARRAY_LIST = "EXTRA_PARAM_ARRAY_LIST";
 
@@ -52,6 +57,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     private RefreshHandler refreshHandler;
 
     private Token token;
+    private ManagePeopleAddressFragmentPresenter presenter;
 
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();
@@ -67,7 +73,26 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.list = new ArrayList<>();
+        this.listener = (ManagePeopleAddressActivity) getActivity();
+        presenter = new ManagePeopleAddressPresenter(this, listener);
         this.adapter = new ManagePeopleAddressAdapter(this.list, this.presenter);
+    }
+
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        presenter.setActionOnLaunchFirstTime(getActivity());
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.logistic_fragment_manage_people_address, container, false);
     }
 
     @Override
@@ -77,24 +102,15 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return true;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList(EXTRA_PARAM_ARRAY_LIST, list);
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        presenter.setActionOnLaunchFirstTime(getActivity());
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putParcelableArrayList(EXTRA_PARAM_ARRAY_LIST, list);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        if (list != null) {
-            final ArrayList<AddressModel> arrayListTemp = savedState.getParcelableArrayList(EXTRA_PARAM_ARRAY_LIST);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (list != null && savedInstanceState != null) {
+            final ArrayList<AddressModel> arrayListTemp = savedInstanceState.getParcelableArrayList(EXTRA_PARAM_ARRAY_LIST);
             if (list.isEmpty() && arrayListTemp != null) {
                 addAddressItemList(arrayListTemp);
             }
@@ -102,56 +118,25 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = new ManagePeopleAddressFragmentImpl(this, listener);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        setHasOptionsMenu(true);
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        this.listener = (MPAddressActivityListener) activity;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        initView(view);
     }
 
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.logistic_fragment_manage_people_address;
-    }
-
-    @Override
-    protected void initView(View view) {
+    private void initView(View view) {
         this.setRootView(view);
         this.recyclerView = view.findViewById(R.id.recycler_view);
         this.prepareRecyclerView();
-    }
-
-    @Override
-    public void prepareRecyclerView() {
-        this.layoutManager = new LinearLayoutManager(getActivity());
-        this.recyclerView.setLayoutManager(layoutManager);
-        this.recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    protected void setViewListener() {
-        this.recyclerView.addOnScrollListener(new EndLessScrollBehavior(layoutManager) {
-            @Override
-            protected void setOnLoadMore() {
-                presenter.setActionOnLazyLoad(getActivity());
-            }
-        });
-    }
-
-    @Override
-    protected void initialVar() {
         this.refreshHandler =
                 new RefreshHandler(getActivity(), getRootView(), new RefreshHandler.OnRefreshHandlerListener() {
                     @Override
@@ -162,8 +147,16 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
-    protected void setActionVar() {
-
+    public void prepareRecyclerView() {
+        this.layoutManager = new LinearLayoutManager(getActivity());
+        this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setAdapter(adapter);
+        this.recyclerView.addOnScrollListener(new EndLessScrollBehavior(layoutManager) {
+            @Override
+            protected void setOnLoadMore() {
+                presenter.setActionOnLazyLoad(getActivity());
+            }
+        });
     }
 
     public void setRootView(View rootView) {

@@ -4,9 +4,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created on 5/18/16.
  */
-public interface MPAddressFragmentListener {
+public interface MPAddressView {
 
     void prepareRecyclerView();
 

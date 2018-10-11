@@ -12,6 +12,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.logisticaddaddress.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.lang.reflect.Type;
 import java.util.Map;
