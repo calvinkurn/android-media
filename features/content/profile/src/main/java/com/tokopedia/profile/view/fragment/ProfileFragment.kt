@@ -361,14 +361,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun createShowCaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
+                .backgroundContentColorRes(R.color.profile_showcase_black)
                 .shadowColorRes(R.color.shadow)
                 .titleTextColorRes(R.color.white)
                 .titleTextSizeRes(R.dimen.sp_16)
                 .textColorRes(R.color.white)
                 .textSizeRes(R.dimen.sp_14)
                 .nextStringRes(R.string.af_title_ok)
+                .finishStringRes(R.string.af_title_ok)
                 .clickable(true)
+                .useArrow(true)
                 .build()
     }
 
