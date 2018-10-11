@@ -139,7 +139,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
-        if (!TextUtils.isEmpty(firstPageViewModel.profileHeaderViewModel.affiliateName)) {
+        if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
                     firstPageViewModel.affiliatePostQuota.formatted

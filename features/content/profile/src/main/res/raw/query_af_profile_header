@@ -4,6 +4,7 @@ query ProfileHeader ($userIDTarget: Int!) {
           id
           name
           isKol
+          isAffiliate
           avatar
           affiliateName
           link

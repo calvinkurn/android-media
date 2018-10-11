@@ -15,6 +15,7 @@ data class ProfileHeaderViewModel(
         val link: String = "",
         val userId: Int = 0,
         val isKol: Boolean = false,
+        val isAffiliate: Boolean = false,
         var isFollowed: Boolean = false,
         val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
 

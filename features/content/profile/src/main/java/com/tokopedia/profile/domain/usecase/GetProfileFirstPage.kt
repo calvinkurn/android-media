@@ -74,6 +74,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                     profile.link,
                     userId,
                     profile.isKol,
+                    profile.isAffiliate,
                     profile.isFollowed,
                     userId.toString() == userSession.userId
             )

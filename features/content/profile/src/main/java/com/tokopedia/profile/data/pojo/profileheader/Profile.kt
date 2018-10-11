@@ -9,6 +9,9 @@ data class Profile(
         @SerializedName("isKol")
         val isKol: Boolean = false,
 
+        @SerializedName("isAffiliate")
+        val isAffiliate: Boolean = false,
+
         @SerializedName("totalFollowing")
         val totalFollowing: TotalFollowing = TotalFollowing(),
 
