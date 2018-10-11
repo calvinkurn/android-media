@@ -42,7 +42,6 @@ public class EventsDetailsPresenter
 
     private int hasSeatLayout;
 
-    @Inject
     public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase, EventsAnalytics eventsAnalytics) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
         this.eventsAnalytics = eventsAnalytics;

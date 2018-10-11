@@ -25,7 +25,8 @@ public class EventsDetailsContract {
 
     public interface EventDetailPresenter extends EventBaseContract.EventBasePresenter {
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
+        void bookBtnClick();
     }
 
 }

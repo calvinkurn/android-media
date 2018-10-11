@@ -10,7 +10,6 @@
             android:name=".view.activity.EventsHomeActivity"
             android:theme="@style/EventAppTheme"
             android:label="Events"/>
-        <activity android:name=".view.activity.EventLocationActivity" />
         <activity android:name=".view.activity.EventDetailsActivity"
             android:label="Events"/>
         <activity

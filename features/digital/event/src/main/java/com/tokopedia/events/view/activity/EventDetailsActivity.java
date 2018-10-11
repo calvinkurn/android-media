@@ -99,7 +99,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
 
     private EventComponent eventComponent;
 
-    EventsDetailsPresenter eventsDetailsPresenter;
+    EventsDetailsContract.EventDetailPresenter eventsDetailsPresenter;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     public static String FROM = "from";
@@ -128,7 +128,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     void initPresenter() {
         initInjector();
         mPresenter = eventComponent.getEventDetailsPresenter();
-        eventsDetailsPresenter = (EventsDetailsPresenter) mPresenter;
+        eventsDetailsPresenter = (EventsDetailsContract.EventDetailPresenter) mPresenter;
     }
 
     @Override

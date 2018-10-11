@@ -18,6 +18,7 @@ import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutRespons
 import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.CouponModel;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -52,8 +53,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
 import static com.tokopedia.events.view.activity.ReviewTicketActivity.PAYMENT_REQUEST_CODE;
@@ -87,7 +86,6 @@ public class EventReviewTicketPresenter
     private EventReviewTicketsContractor.EventReviewTicketsView mView;
     private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
                                PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
         this.verifyCartUseCase = usecase;
@@ -194,7 +192,11 @@ public class EventReviewTicketPresenter
 
     private void goToLoyaltyActivity() {
         JsonObject requestBody = convertPackageToCartItem(checkoutData);
-        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive((Context) mView.getActivity(), Utils.Constants.EVENTS, Utils.Constants.EVENTS, "");
+        Intent loyaltyIntent = ((EventModuleRouter) getView().getActivity().getApplication()).
+                tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
+                        EventsUrl.AppLink.EVENTS,
+                        EventsUrl.AppLink.EVENTS,
+                        "");
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
                 checkoutData.getDigitalProductID());

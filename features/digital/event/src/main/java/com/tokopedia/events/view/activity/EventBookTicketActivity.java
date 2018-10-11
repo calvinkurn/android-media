@@ -65,8 +65,7 @@ public class EventBookTicketActivity
     @BindView(R2.id.button_count_layout)
     View buttonCountLayout;
 
-    private EventComponent eventComponent;
-    EventBookTicketPresenter bookTicketPresenter;
+    EventBookTicketContract.BookTicketPresenter bookTicketPresenter;
     private String title;
     EventsAnalytics eventsAnalytics;
 
@@ -82,7 +81,7 @@ public class EventBookTicketActivity
     void initPresenter() {
         initInjector();
         mPresenter = eventComponent.getEventBookTicketPresenter();
-        bookTicketPresenter = (EventBookTicketPresenter) mPresenter;
+        bookTicketPresenter = (EventBookTicketContract.BookTicketPresenter) mPresenter;
     }
 
     @Override
@@ -216,11 +215,6 @@ public class EventBookTicketActivity
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
     }
 
     @OnClick(R2.id.pay_tickets)

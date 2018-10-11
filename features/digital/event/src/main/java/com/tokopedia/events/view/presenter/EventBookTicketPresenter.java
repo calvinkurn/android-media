@@ -38,8 +38,6 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
 /**
@@ -66,7 +64,6 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     private EventBookTicketContract.EventBookTicketView mView;
     private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase, EventsAnalytics eventsAnalytics) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
         this.postValidateShowUseCase = useCase;
@@ -130,12 +127,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
                 throwable.printStackTrace();
                 mView.hideProgressBar();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                validateSelection();
-                            }
-                        });
+                        mView.getRootView(), () -> validateSelection());
             }
 
             @Override
@@ -295,8 +287,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
         String data = responseEntity.getLayout();
         Gson gson = new Gson();
-        EventSeatLayoutResonse seatLayoutResponse = gson.fromJson(data, EventSeatLayoutResonse.class);
-        return seatLayoutResponse;
+        return gson.fromJson(data, EventSeatLayoutResonse.class);
     }
 
 

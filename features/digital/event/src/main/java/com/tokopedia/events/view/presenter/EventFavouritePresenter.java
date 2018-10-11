@@ -33,7 +33,6 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventBaseContra
     private EventFavouriteContract.EventFavouriteView mView;
     private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventFavouritePresenter(GetUserLikesUseCase getUserLikesUseCase,
                                    PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         this.mGetUserLikesCase = getUserLikesUseCase;

@@ -74,7 +74,6 @@ public class EventSearchPresenter
     private EventSearchContract.EventSearchView mView;
     private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
                                 GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;

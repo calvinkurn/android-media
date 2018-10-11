@@ -11,7 +11,6 @@ import javax.inject.Inject;
 public class EventsDataStoreFactory {
     private final EventsApi eventsApi;
 
-    @Inject
     public EventsDataStoreFactory(EventsApi eventsApi) {
         this.eventsApi = eventsApi;
     }

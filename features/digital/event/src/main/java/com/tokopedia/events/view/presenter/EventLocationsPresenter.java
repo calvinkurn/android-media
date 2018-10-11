@@ -25,7 +25,6 @@ public class EventLocationsPresenter extends BaseDaggerPresenter<EventBaseContra
     private GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase;
     private EventsLocationContract.EventLocationsView mView;
 
-    @Inject
     public EventLocationsPresenter(GetEventsLocationListRequestUseCase getEventsLocationListRequestUseCase) {
         this.getEventsLocationListRequestUseCase = getEventsLocationListRequestUseCase;
     }

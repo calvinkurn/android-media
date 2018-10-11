@@ -28,7 +28,6 @@ public class EventFilterPresenterImpl
         implements EventFilterContract.EventFilterPresenter {
     private EventFilterContract.EventFilterView mView;
 
-    @Inject
     public EventFilterPresenterImpl() {
 
     }

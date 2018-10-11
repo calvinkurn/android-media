@@ -2,23 +2,17 @@ package com.tokopedia.events.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.events.di.scope.EventScope;
-import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
-import com.tokopedia.events.view.activity.EventBookTicketActivity;
-import com.tokopedia.events.view.activity.EventDetailsActivity;
-import com.tokopedia.events.view.activity.EventFavouriteActivity;
-import com.tokopedia.events.view.activity.EventLocationActivity;
-import com.tokopedia.events.view.activity.EventSearchActivity;
-import com.tokopedia.events.view.activity.EventsHomeActivity;
-import com.tokopedia.events.view.activity.ReviewTicketActivity;
-import com.tokopedia.events.view.activity.SeatSelectionActivity;
-import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.contractor.EventFavouriteContract;
 import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.contractor.EventsLocationContract;
-import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
-import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.presenter.EventLocationsPresenter;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
@@ -43,39 +37,19 @@ public interface EventComponent {
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
-    EventFilterPresenterImpl getEventFilterPresenter();
+    EventFilterContract.EventFilterPresenter getEventFilterPresenter();
 
-    EventBookTicketPresenter getEventBookTicketPresenter();
+    EventBookTicketContract.BookTicketPresenter getEventBookTicketPresenter();
 
-    EventsDetailsPresenter getEventDetailsPresenter();
+    EventsDetailsContract.EventDetailPresenter getEventDetailsPresenter();
 
-    EventFavouritePresenter getEventFavoritePresenter();
+    EventFavouriteContract.EventFavoritePresenter getEventFavoritePresenter();
 
-    EventLocationsPresenter getEventLocationPresenter();
+    EventSearchContract.EventSearchPresenter getEventSearchPresenter();
 
-    EventSearchPresenter getEventSearchPresenter();
+    EventsContract.EventHomePresenter getEventHomePresenter();
 
-    EventHomePresenter getEventHomePresenter();
+    EventReviewTicketsContractor.EventReviewTicketPresenter getReviewTicketPresenter();
 
-    EventReviewTicketPresenter getReviewTicketPresenter();
-
-    SeatSelectionPresenter getSeatSelectionPresenter();
-
-    void inject(EventsHomeActivity activity);
-
-    void inject(EventLocationActivity activity);
-
-    void inject(EventDetailsActivity activity);
-
-    void inject(EventBookTicketActivity activity);
-
-    void inject(ReviewTicketActivity activity);
-
-    void inject(FragmentAddTickets fragment);
-
-    void inject(EventSearchActivity activity);
-
-    void inject(SeatSelectionActivity activity);
-
-    void inject(EventFavouriteActivity activity);
+    SeatSelectionContract.SeatSelectionPresenter getSeatSelectionPresenter();
 }

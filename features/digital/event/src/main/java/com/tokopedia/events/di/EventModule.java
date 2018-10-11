@@ -27,7 +27,14 @@ import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.contractor.EventFavouriteContract;
 import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.contractor.EventSearchContract;
+import com.tokopedia.events.view.contractor.EventsContract;
+import com.tokopedia.events.view.contractor.EventsDetailsContract;
+import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
@@ -36,6 +43,7 @@ import com.tokopedia.events.view.presenter.EventLocationsPresenter;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 import com.tokopedia.network.NetworkRouter;
@@ -93,17 +101,17 @@ public class EventModule {
     }
 
     @Provides
+    @EventScope
     @EventQualifier
     Retrofit provideEventRetrofit(OkHttpClient okHttpClient,
                                   Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(EventsUrl.EVENTS_DOMAIN).client(okHttpClient).build();
     }
 
-    @EventQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
-        UserSession userSession=new UserSession(context);
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, Context context) {
+        UserSession userSession = new UserSession(context);
         return new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(errorResponseInterceptor)
@@ -183,21 +191,21 @@ public class EventModule {
 
     @Provides
     @EventScope
-    EventBookTicketPresenter providesEventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase,
-                                                                          PostValidateShowUseCase postValidateShowUseCase, EventsAnalytics eventsAnalytics) {
+    EventBookTicketContract.BookTicketPresenter providesEventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase,
+                                                                                 PostValidateShowUseCase postValidateShowUseCase, EventsAnalytics eventsAnalytics) {
         return new EventBookTicketPresenter(seatLayoutUseCase, postValidateShowUseCase, eventsAnalytics);
     }
 
     @Provides
     @EventScope
-    EventsDetailsPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics) {
+    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics) {
         return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics);
     }
 
     @Provides
     @EventScope
-    EventFavouritePresenter providesEventFavouritePresenter(GetUserLikesUseCase getUserLikesUseCase,
-                                                                         PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
+    EventFavouriteContract.EventFavoritePresenter providesEventFavouritePresenter(GetUserLikesUseCase getUserLikesUseCase,
+                                                                                  PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         return new EventFavouritePresenter(getUserLikesUseCase, eventLikesUseCase, eventsAnalytics);
     }
 
@@ -210,18 +218,18 @@ public class EventModule {
 
     @Provides
     @EventScope
-    EventSearchPresenter providesEventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                                                      GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
+    EventSearchContract.EventSearchPresenter providesEventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
+                                                                          GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         return new EventSearchPresenter(getSearchEventsListRequestUseCase,
                 searchNextUseCase, eventLikesUseCase, eventsAnalytics);
     }
 
     @Provides
     @EventScope
-    EventHomePresenter providesEventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
-                                                                    PostUpdateEventLikesUseCase eventLikesUseCase,
-                                                                    GetUserLikesUseCase likesUseCase,
-                                                                    GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
+    EventsContract.EventHomePresenter providesEventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
+                                                                 PostUpdateEventLikesUseCase eventLikesUseCase,
+                                                                 GetUserLikesUseCase likesUseCase,
+                                                                 GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
         return new EventHomePresenter(getEventsListRequestUsecase,
                 eventLikesUseCase, likesUseCase, ratingUseCase, eventsAnalytics);
     }
@@ -229,10 +237,17 @@ public class EventModule {
 
     @Provides
     @EventScope
-    EventReviewTicketPresenter providesReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
-                                                                       PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
+    EventReviewTicketsContractor.EventReviewTicketPresenter providesReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
+                                                                                          PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
         return new EventReviewTicketPresenter(usecase,
                 payment, couponUseCase, postVerifyCartUseCase, postPaymentUseCase, eventsAnalytics);
+    }
+
+    @Provides
+    @EventScope
+    SeatSelectionContract.SeatSelectionPresenter providesSeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase,
+                                                                                PostVerifyCartUseCase postVerifyCartUseCase) {
+        return new SeatSelectionPresenter(verifyCartUseCase, postVerifyCartUseCase);
     }
 
 }

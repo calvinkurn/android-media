@@ -70,7 +70,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     private EventsAnalytics eventsAnalytics;
 
 
-    @Inject
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                        PostUpdateEventLikesUseCase eventLikesUseCase,
                        GetUserLikesUseCase likesUseCase,
