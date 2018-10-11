@@ -14,6 +14,9 @@ public class Tag {
     @SerializedName("link")
     @Expose
     private String link;
+    @SerializedName("affiliateTrackID")
+    @Expose
+    private String affiliateTrackId;
     @SerializedName("captionEng")
     @Expose
     private String captionEng;
@@ -43,6 +46,14 @@ public class Tag {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getAffiliateTrackId() {
+        return affiliateTrackId;
+    }
+
+    public void setAffiliateTrackId(String affiliateTrackId) {
+        this.affiliateTrackId = affiliateTrackId;
     }
 
     public String getCaptionEng() {
