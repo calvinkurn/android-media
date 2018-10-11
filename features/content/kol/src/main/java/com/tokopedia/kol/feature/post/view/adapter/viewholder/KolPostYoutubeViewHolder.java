@@ -163,15 +163,15 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     @Override
     public void onLikeButtonClickListener(BaseKolViewModel element) {
         if (element.isLiked()) {
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
         } else {
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
         }
     }
 
     @Override
     public void onCommentClickListener(BaseKolViewModel element) {
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
+        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
     }
 
     private void tooltipAreaClicked(KolPostYoutubeViewModel element) {
@@ -185,7 +185,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             );
 
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameFeed(
                             element.getTagsType(),
                             element.getCardType()),
@@ -207,7 +207,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
 
         } else if (type == Type.PROFILE) {
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameKolPost(
                             element.getTagsType()),
                     TextUtils.isEmpty(element.getName()) ? DASH :
@@ -245,7 +245,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         if (element.getUserId() > 0) {
             viewListener.onGoToKolProfile(getAdapterPosition(),
                     String.valueOf(element.getUserId()),
-                    element.getKolId()
+                    element.getContentId()
             );
         } else {
             viewListener.onGoToKolProfileUsingApplink(
@@ -273,13 +273,13 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                 KolEventTracking.Event.EVENT_CLICK_FEED,
                 KolEventTracking.Category.CONTENT_FEED,
                 KolEventTracking.Action.CLICK_YOUTUBE_VIDEO,
-                String.valueOf(element.getKolId())
+                String.valueOf(element.getContentId())
         );
 
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
 
         promotionList.add(new KolEnhancedTracking.Promotion(
-                element.getKolId(),
+                element.getContentId(),
                 KolEnhancedTracking.Promotion.createContentNameAnnouncement(
                         element.getTagsType(),
                         element.getCardType()),

@@ -330,7 +330,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                                 List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                                 list.add(new FeedEnhancedTracking.Promotion(
-                                        kolPostYoutubeViewModel.getKolId(),
+                                        kolPostYoutubeViewModel.getContentId(),
                                         FeedEnhancedTracking.Promotion.createContentNameAnnouncement(
                                                 kolPostYoutubeViewModel.getTagsType(),
                                                 kolPostYoutubeViewModel.getCardType()),
@@ -355,7 +355,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
                                 List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
                                 list.add(new FeedEnhancedTracking.Promotion(
-                                        kolViewModel.getKolId(),
+                                        kolViewModel.getContentId(),
                                         FeedEnhancedTracking.Promotion.createContentName(
                                                 kolViewModel.getTagsType(),
                                                 kolViewModel.getCardType())

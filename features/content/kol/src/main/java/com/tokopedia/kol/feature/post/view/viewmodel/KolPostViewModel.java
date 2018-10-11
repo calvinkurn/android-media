@@ -18,23 +18,44 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     private String tagsType;
     private String tagsCaption;
     private String tagsLink;
+    private String trackingId;
     private String info;
     private boolean showTopShadow;
 
-    public KolPostViewModel(int userId, String cardType, String title, String name,
-                            String avatar, String label, String kolProfileUrl, boolean followed,
-                            String review, boolean liked, int totalLike, int totalComment, int page,
-                            int kolId, String time, boolean isShowComment, boolean isShowLike,
+    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+                            String label, String kolProfileUrl, boolean followed, String review,
+                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            String time, boolean isShowComment, boolean isShowLike,
                             List<String> imageList, int tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink) {
         super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
-                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike);
+                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike, false, false);
         this.imageList = imageList;
         this.tagsId = tagsId;
         this.contentName = contentName;
         this.tagsType = tagsType;
         this.tagsCaption = tagsCaption;
         this.tagsLink = tagsLink;
+    }
+
+    public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
+                            String label, String kolProfileUrl, boolean followed, String review,
+                            boolean liked, int totalLike, int totalComment, int page, int kolId,
+                            String time, boolean isShowComment, boolean isShowLike,
+                            boolean editable, boolean deletable, List<String> imageList,
+                            int tagsId, String contentName, String tagsType,
+                            String tagsCaption, String tagsLink, String trackingId, String info) {
+        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
+                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike,
+                editable, deletable);
+        this.imageList = imageList;
+        this.tagsId = tagsId;
+        this.contentName = contentName;
+        this.tagsType = tagsType;
+        this.tagsCaption = tagsCaption;
+        this.tagsLink = tagsLink;
+        this.trackingId = trackingId;
+        this.info = info;
     }
 
     public List<String> getImageList() {
@@ -91,6 +112,14 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public String getTrackingId() {
+        return trackingId;
+    }
+
+    public void setTrackingId(String trackingId) {
+        this.trackingId = trackingId;
     }
 
     public boolean isShowTopShadow() {

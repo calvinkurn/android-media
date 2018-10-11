@@ -117,8 +117,8 @@ public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolde
 
             if (oldItem instanceof KolPostViewModel) {
                 return newItem instanceof KolPostViewModel
-                        && ((KolPostViewModel) oldItem).getKolId()
-                        == ((KolPostViewModel) oldItem).getKolId();
+                        && ((KolPostViewModel) oldItem).getContentId()
+                        == ((KolPostViewModel) oldItem).getContentId();
             } else if (oldItem instanceof KolCommentViewModel) {
                 return newItem instanceof KolCommentViewModel
                         && ((KolCommentViewModel) oldItem).getId()

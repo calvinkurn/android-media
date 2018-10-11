@@ -117,13 +117,18 @@ public class GetContentListMapper implements Func1<GraphqlResponse, Observable<C
                         TimeConverter.generateTime(context, post.getCreateTime()) : "",
                 post.getInteraction() != null && post.getInteraction().isShowComment(),
                 post.getInteraction() != null && post.getInteraction().isShowLike(),
+                post.getInteraction() != null && post.getInteraction().isEditable(),
+                post.getInteraction() != null && post.getInteraction().isDeleteable(),
                 imageList,
                 tag != null ? tag.getId() : 0,
                 "",
                 tag != null && tag.getType() != null ? tag.getType() : "",
                 tag != null && tag.getCaptionInd() != null ? tag.getCaptionInd() : "",
-                tag != null && tag.getLink() != null ? tag.getLink() : ""
+                tag != null && tag.getLink() != null ? tag.getLink() : "",
+                tag != null && tag.getAffiliateTrackId() != null ? tag.getAffiliateTrackId() : "",
+                "Yuk main yuk"
         );
+        //TODO milhamj change yuk main yuk^^
     }
 
     private List<Content> getContentList(Post post) {

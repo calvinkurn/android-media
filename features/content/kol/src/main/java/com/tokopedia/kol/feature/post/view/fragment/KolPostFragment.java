@@ -345,7 +345,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();
@@ -385,7 +385,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();

@@ -207,7 +207,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
         } else {
             if (type == Type.FEED) {
                 analyticTracker.sendEventTracking(
@@ -218,7 +218,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
         }
     }
 
@@ -233,7 +233,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
+        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
     }
 
     private void setUpViewPager(List<String> images) {
@@ -265,7 +265,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         if (element.getUserId() > 0) {
             viewListener.onGoToKolProfile(getAdapterPosition(),
                     String.valueOf(element.getUserId()),
-                    element.getKolId()
+                    element.getContentId()
             );
         } else {
             viewListener.onGoToKolProfileUsingApplink(
@@ -286,7 +286,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
 
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameFeed(
                             element.getTagsType(),
                             element.getCardType()),
@@ -308,7 +308,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         } else if (type == Type.PROFILE) {
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameKolPost(
                             element.getTagsType()),
                     TextUtils.isEmpty(element.getName()) ? DASH :
