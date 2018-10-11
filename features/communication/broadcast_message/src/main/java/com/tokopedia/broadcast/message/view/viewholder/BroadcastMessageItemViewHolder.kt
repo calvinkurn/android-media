@@ -65,7 +65,7 @@ class BroadcastMessageItemViewHolder(val view: View): AbstractViewHolder<TopChat
 
     private fun getFormatedMessage(message: String): Spanned {
         if (message.length > MAX_CHAR) {
-            val subDescription = message.substring(0, (MAX_CHAR - 4+ MORE_DESCRIPTION.length))
+            val subDescription = message.substring(0, (MAX_CHAR - (4+ MORE_DESCRIPTION.length)))
             return MethodChecker
                     .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
                             + HTML_MORE_DESCRIPTION)
