@@ -208,7 +208,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             }
         }
         if (topAdsListener != null) {
-            topAdsListener.onTopAdsLoaded();
+            topAdsListener.onTopAdsLoaded(list);
         }
     }
 

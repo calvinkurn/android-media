@@ -161,6 +161,8 @@ public interface ApplinkConst {
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
+    String CHALLENGE = "tokopedia://challenges";
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";

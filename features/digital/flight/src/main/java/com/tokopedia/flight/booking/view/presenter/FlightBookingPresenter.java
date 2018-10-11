@@ -199,6 +199,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
         renderInsurance(flightBookingCartData, isFromSavedInstance);
 
+        if (!isFromSavedInstance){
+            flightAnalytics.eventAddToCart(getView().getCurrentBookingParamViewModel().getSearchParam().getFlightClass(), flightBookingCartData,resultTotalPrice,  flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
+        }
+
 //        if (validatePassengerData()) {
 //            toggleSameAsContactCheckbox();
 //            onPassengerResultReceived(getPassengerViewModelFromContact());
@@ -432,7 +436,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             @Override
                             public void onNext(FlightBookingCartData flightBookingCartData) {
                                 if (isViewAttached()) {
-                                    flightAnalytics.eventAddToCart(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
                                     getView().hideFullPageLoading();
                                     renderUi(flightBookingCartData, false);
                                 }

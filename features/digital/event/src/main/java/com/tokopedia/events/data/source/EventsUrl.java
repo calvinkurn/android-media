@@ -22,6 +22,7 @@ public class EventsUrl {
     public static final String EVENT_GET_USER_LIKES = "/v1/api/rating/user";
     public static final String EVENT_SEAT_LAYOUT = "/v1/api/seat-layout/category/{category_id}/product/{product_id}/schedule/{schedule_id}/group/{group_id}/package/{package_id}";
 
+    public static final String EVENT_SCAN_TICKET_URL="v1/api/redeem/role/validate";
 
     public interface AppLink {
 

@@ -24,6 +24,7 @@
         <activity android:name=".view.activity.EventFavouriteActivity"
             android:label="Favorit Saya"/>
         <activity android:name=".view.activity.EventFilterActivity" />
+        <activity android:name=".view.activity.ScanQRCodeActivity"></activity>
     </application>
 
 </manifest>

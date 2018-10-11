@@ -21,6 +21,8 @@ public class EventsDetailsContract {
         void renderFromCloud(EventsDetailsViewModel data);
 
         void setHolder(int resID, String label, ImageTextViewHolder holder);
+
+        void setMenuItemVisibility(boolean canScanCode);
     }
 
     public interface EventDetailPresenter extends EventBaseContract.EventBasePresenter {
