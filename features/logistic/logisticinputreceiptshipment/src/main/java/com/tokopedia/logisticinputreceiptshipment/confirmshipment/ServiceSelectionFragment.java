@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.logisticinputreceiptshipment.R;
 import com.tokopedia.transaction.common.data.order.CourierServiceModel;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;

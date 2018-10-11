@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.content.Context;
 
@@ -45,7 +45,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         view.showLoading();
         interactor.onGetCourierList(
                 data.getShipmentId(),
-                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
+                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<>()),
                 new Subscriber<ListCourierViewModel>() {
                     @Override
                     public void onCompleted() {

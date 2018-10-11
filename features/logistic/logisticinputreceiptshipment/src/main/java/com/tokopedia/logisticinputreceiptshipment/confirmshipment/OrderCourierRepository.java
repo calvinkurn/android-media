@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;

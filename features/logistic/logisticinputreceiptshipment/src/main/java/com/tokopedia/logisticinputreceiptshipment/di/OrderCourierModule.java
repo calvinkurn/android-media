@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.di;
 
 import android.content.Context;
 
@@ -7,6 +7,9 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
+import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierInteractorImpl;
+import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierPresenterImpl;
+import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierRepository;
 import com.tokopedia.logisticinputreceiptshipment.network.MyShopOrderActService;
 import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
 

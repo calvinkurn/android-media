@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

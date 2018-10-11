@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,7 +19,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
+import com.tokopedia.logisticinputreceiptshipment.R;
 import com.tokopedia.logisticinputreceiptshipment.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
+import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
+import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
@@ -215,29 +218,21 @@ public class ConfirmShippingActivity extends TActivity
     }
 
     private View.OnClickListener onGetCourierButtonClickedListener(final OrderDetailData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onGetCourierList(ConfirmShippingActivity.this, data);
-            }
-        };
+        return view -> presenter.onGetCourierList(ConfirmShippingActivity.this, data);
     }
 
     private View.OnClickListener onConfirmButtonClickedListener(final EditText barcodeEditText) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
-                    NetworkErrorHelper.showSnackbar(
-                            ConfirmShippingActivity.this,
-                            getString(R.string.error_no_courier_chosen_logistic_module)
-                    );
-                } else {
-                    editableModel.setShippingRef(barcodeEditText.getText().toString());
-                    presenter.onProcessCourier(
-                            ConfirmShippingActivity.this, editableModel,
-                            isChangeCourierMode(editableModel.getOrderStatusCode()));
-                }
+        return view -> {
+            if (editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
+                NetworkErrorHelper.showSnackbar(
+                        ConfirmShippingActivity.this,
+                        getString(R.string.error_no_courier_chosen_logistic_module)
+                );
+            } else {
+                editableModel.setShippingRef(barcodeEditText.getText().toString());
+                presenter.onProcessCourier(
+                        ConfirmShippingActivity.this, editableModel,
+                        isChangeCourierMode(editableModel.getOrderStatusCode()));
             }
         };
     }

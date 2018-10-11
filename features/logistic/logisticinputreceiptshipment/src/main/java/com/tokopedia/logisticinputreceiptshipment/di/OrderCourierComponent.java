@@ -1,6 +1,7 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity;
 
 import dagger.Component;
 

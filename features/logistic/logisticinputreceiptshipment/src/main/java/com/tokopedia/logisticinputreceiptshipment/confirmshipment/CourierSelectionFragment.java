@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.logisticinputreceiptshipment.R;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
-import static com.tokopedia.logisticinputreceiptshipment.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
+import static com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
 
 /**
  * Created by kris on 1/3/18. Tokopedia
