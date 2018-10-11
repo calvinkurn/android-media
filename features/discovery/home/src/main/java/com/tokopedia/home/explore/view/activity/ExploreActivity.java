@@ -21,8 +21,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.constant.TkpdAppLink;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -57,7 +57,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private int position = 0;
     private List<String> sectionList = new ArrayList<>();
 
-    @DeepLink(Constants.Applinks.EXPLORE)
+    @DeepLink(TkpdAppLink.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ExploreActivity.class)
@@ -153,6 +153,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             position = sectionToPosition(section != null ? section : DEFAULT_SECTION);
         }
         viewPager.setCurrentItem(position);
+    }
+
+    @Override
+    public Context getContext() {
+        return getContext();
     }
 
     @Override

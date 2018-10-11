@@ -2,7 +2,7 @@ package com.tokopedia.home.explore.domain;
 
 import android.content.Context;
 
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -28,6 +28,8 @@ public class GetExploreDataUseCase extends UseCase<List<ExploreSectionViewModel>
 
     @Override
     public Observable<List<ExploreSectionViewModel>> createObservable(RequestParams requestParams) {
-        return repository.getExploreData(SessionHandler.getLoginID(context));
+        String userId = requestParams.getString(ConstantKey.RequestKey.USER_ID,
+                ConstantKey.RequestKey.DEFAULT_USER_ID);
+        return repository.getExploreData(userId);
     }
 }

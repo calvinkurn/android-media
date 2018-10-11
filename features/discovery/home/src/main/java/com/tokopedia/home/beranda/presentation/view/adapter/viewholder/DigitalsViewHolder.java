@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;

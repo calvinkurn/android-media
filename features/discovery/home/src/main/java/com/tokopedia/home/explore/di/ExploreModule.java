@@ -15,6 +15,7 @@ import com.tokopedia.home.explore.data.source.ExploreDataSource;
 import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
 import com.tokopedia.home.explore.domain.GetExploreLocalDataUseCase;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,6 +37,12 @@ public class ExploreModule {
     @Provides
     GlobalCacheManager cacheManager() {
         return new GlobalCacheManager();
+    }
+
+    @ExploreScope
+    @Provides
+    UserSession getUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @ExploreScope
