@@ -1,0 +1,34 @@
+package com.tokopedia.affiliate.feature.createpost.view.preference;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+
+import javax.inject.Inject;
+
+/**
+ * @author by milhamj on 27/03/18.
+ */
+
+public class CreatePostPreference {
+    private static final String CREATE_POST_SHOW_EXAMPLE = "create_post_show_example";
+
+    private final SharedPreferences sharedPrefs;
+
+    @Inject
+    public CreatePostPreference(@ApplicationContext Context context) {
+        this.sharedPrefs = context.getSharedPreferences(
+                CREATE_POST_SHOW_EXAMPLE,
+                Context.MODE_PRIVATE
+        );
+    }
+
+    public boolean isFirstTimeUser(String userId) {
+        return sharedPrefs.getBoolean(userId, true);
+    }
+
+    public void setFirstTime(String userId) {
+        sharedPrefs.edit().putBoolean(userId, false).apply();
+    }
+}

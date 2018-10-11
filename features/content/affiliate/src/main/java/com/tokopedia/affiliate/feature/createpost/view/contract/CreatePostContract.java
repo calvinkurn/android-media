@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public interface CreatePostContract {
     interface View extends CustomerView {
         Context getContext();
+
+        UserSession getUserSession();
 
         void showLoading();
 

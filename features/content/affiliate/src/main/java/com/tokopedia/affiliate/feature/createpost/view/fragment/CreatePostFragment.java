@@ -27,10 +27,12 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivi
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
+import com.tokopedia.affiliate.feature.createpost.view.preference.CreatePostPreference;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,16 +41,16 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+        .RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
     private static final String VIEW_MODEL = "view_model";
     private static final int REQUEST_IMAGE_PICKER = 1234;
+    private static final int REQUEST_EXAMPLE = 13;
 
     private View mainView;
-    private View scrollView;
-    private View footerView;
     private TextView title;
     private TextView seeExample;
     private WrapContentViewPager imageViewPager;
@@ -61,9 +63,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private CreatePostViewModel viewModel;
     private PostImageAdapter adapter;
+    private Guide guide;
 
     @Inject
     CreatePostContract.Presenter presenter;
+    @Inject
+    CreatePostPreference createPostPreference;
 
     public static CreatePostFragment createInstance(@NonNull Bundle bundle) {
         CreatePostFragment fragment = new CreatePostFragment();
@@ -99,8 +104,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_create_post, container, false);
         mainView = view.findViewById(R.id.mainView);
-        scrollView = view.findViewById(R.id.scrollView);
-        footerView = view.findViewById(R.id.footerView);
         title = view.findViewById(R.id.title);
         seeExample = view.findViewById(R.id.seeExample);
         imageViewPager = view.findViewById(R.id.imageViewPager);
@@ -136,20 +139,33 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_PICKER) {
-                ArrayList<String> imageListResult
-                        = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                ArrayList<String> imageListOriginal
-                        = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
-                ArrayList<String> imageListDescription
-                        = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
+        switch (requestCode) {
+            case REQUEST_IMAGE_PICKER:
+                if (resultCode == Activity.RESULT_OK) {
+                    ArrayList<String> imageListResult
+                            = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                    ArrayList<String> imageListOriginal
+                            = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                    ArrayList<String> imageListDescription
+                            = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
 
-                viewModel.getImageList().clear();
-                viewModel.getImageList().addAll(imageListResult);
-                setupViewPager();
-            }
+                    viewModel.getImageList().clear();
+                    viewModel.getImageList().addAll(imageListResult);
+                    setupViewPager();
+
+                }
+                break;
+            case REQUEST_EXAMPLE:
+                goToImagePicker();
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return new UserSession(getContext());
     }
 
     @Override
@@ -226,11 +242,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private void initView() {
         doneBtn.setOnClickListener(view -> submitPost());
         addImageBtn.setOnClickListener(view -> {
-            startActivityForResult(
-                    CreatePostImagePickerActivity.getInstance(
-                            Objects.requireNonNull(getActivity()),
-                            viewModel.getImageList()),
-                    REQUEST_IMAGE_PICKER);
+            if (shouldShowExample()) {
+                goToImageExample();
+                createPostPreference.setFirstTime(getUserSession().getUserId());
+            } else {
+                goToImagePicker();
+            }
         });
         deleteImageLayout.setOnClickListener(v -> {
             viewModel.getImageList().remove(tabLayout.getSelectedTabPosition());
@@ -243,14 +260,15 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         });
     }
 
+    private boolean shouldShowExample() {
+        return createPostPreference.isFirstTimeUser(getUserSession().getUserId());
+    }
+
     private void setupHeader(Guide guide) {
+        this.guide = guide;
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
-        seeExample.setOnClickListener(v -> startActivity(CreatePostExampleActivity.createIntent(
-                getContext(),
-                guide.getImageUrl(),
-                guide.getImageDescription()
-        )));
+        seeExample.setOnClickListener(v -> goToImageExample());
     }
 
     private void setupViewPager() {
@@ -298,6 +316,25 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             setMain.setTextColor(MethodChecker.getColor(getContext(), R.color.medium_green));
             setMain.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
+    }
+
+    private void goToImageExample() {
+        startActivityForResult(
+                CreatePostExampleActivity.createIntent(
+                        getContext(),
+                        guide != null ? guide.getImageUrl() : "",
+                        guide != null ? guide.getImageDescription() : ""
+                ),
+                REQUEST_EXAMPLE
+        );
+    }
+
+    private void goToImagePicker() {
+        startActivityForResult(
+                CreatePostImagePickerActivity.getInstance(
+                        Objects.requireNonNull(getActivity()),
+                        viewModel.getImageList()),
+                REQUEST_IMAGE_PICKER);
     }
 
     private void submitPost() {
