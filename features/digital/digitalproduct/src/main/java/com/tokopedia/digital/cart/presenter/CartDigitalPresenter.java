@@ -4,11 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -40,6 +36,7 @@ import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.common.constant.DigitalCache;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.user.session.UserSession;
 
@@ -61,13 +58,16 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
     private final IDigitalCartView view;
+    private DigitalAnalytics digitalAnalytics;
     private UserSession userSession;
     private final ICartDigitalInteractor cartDigitalInteractor;
 
     public CartDigitalPresenter(IDigitalCartView view,
                                 UserSession userSession,
+                                DigitalAnalytics digitalAnalytics,
                                 ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
+        this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;
         this.cartDigitalInteractor = iCartDigitalInteractor;
         initRemoteConfig();
@@ -175,29 +175,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData) {
-        Product product = new Product();
-        String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
-                cartDigitalInfoData.getAttributes().getPrice();
-        product.setProductName(productName);
-        product.setProductID(cartDigitalInfoData.getRelationships().getRelationProduct().getData().getId()); // product digital id
-        product.setPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain())); // price
-        product.setBrand(cartDigitalInfoData.getAttributes().getOperatorName()); // brand
-        product.setCategory(cartDigitalInfoData.getAttributes().getCategoryName()); // category
-        product.setVariant("none"); // variant
-        product.setQty("1"); // quantity
-        product.setShopId(cartDigitalInfoData.getRelationships().getRelationOperator().getData().getId()); // shop_id
-        // shop_type
-        // shop_name
-        product.setCategoryId(cartDigitalInfoData.getRelationships().getRelationCategory().getData().getId()); // category_id
-        product.setCartId(cartDigitalInfoData.getId()); // cart_id
-
-        GTMCart gtmCart = new GTMCart();
-        gtmCart.addProduct(product.getProduct());
-        gtmCart.setCurrencyCode("IDR");
-        gtmCart.setAddAction(GTMCart.ADD_ACTION);
-
-        UnifyTracking.eventATCSuccess(gtmCart);
+    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
+        digitalAnalytics.eventAddToCart(cartDigitalInfoData, extraComeFrom);
+        digitalAnalytics.eventCheckout(cartDigitalInfoData);
     }
 
     @Override
@@ -235,7 +215,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void onFirstTimeLaunched() {
-        //TODO : check login and atc
         if (userSession.isLoggedIn()) {
             processAddToCart();
         } else {
@@ -275,7 +254,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
                     view.renderErrorCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -296,6 +275,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
                 view.renderToTopPay(checkoutDigitalData);
+                digitalAnalytics.eventProceedToPayment(view.getCartDataInfo(), view.getCheckoutData().getVoucherCode());
             }
         };
     }
@@ -322,7 +302,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
                     view.renderErrorInstantCheckout(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -369,7 +349,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 //                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
 //                    );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
 //                    view.renderErrorCheckVoucher(e.getMessage());
                     removeBranchPromoIfNeeded();
                 } else if (e instanceof ResponseDataNullException) {
@@ -415,7 +395,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
                     view.renderErrorAddToCart(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -524,7 +504,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
@@ -569,7 +549,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
-                    /* Ini kalau error dari API kasih message error */
+                     /* Ini kalau error dari API kasih message error */
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */

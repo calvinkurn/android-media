@@ -78,7 +78,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().isIsFreeze(),
                 mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
                 pojo.getChannel().getExitMessage(),
-                convertChannelQuickReply(pojo.getChannel())
+                convertChannelQuickReply(pojo.getChannel()),
+                pojo.getChannel().getVideoId()
         );
     }
 

@@ -28,7 +28,7 @@ public interface ICartDigitalPresenter {
 
     void callPermissionCheckFail();
 
-    void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData);
+    void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom);
 
     void onClearVoucher();
 
