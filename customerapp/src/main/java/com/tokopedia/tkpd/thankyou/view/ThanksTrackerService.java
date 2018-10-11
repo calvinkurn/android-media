@@ -46,13 +46,23 @@ public class ThanksTrackerService extends IntentService {
     }
 
     private boolean isDataValid(ThanksTrackerData data) {
-        return data != null
-                && data.getId() != null
-                && !data.getId().isEmpty()
-                && data.getPlatform() != null
-                && !data.getPlatform().isEmpty()
-                && data.getShopTypes() != null
-                && !data.getShopTypes().isEmpty();
+        if (data.getPlatform() != null && data.getPlatform().equals("marketplace")){
+            return data != null
+                    && data.getId() != null
+                    && !data.getId().isEmpty()
+                    && data.getPlatform() != null
+                    && !data.getPlatform().isEmpty()
+                    && data.getShopTypes() != null
+                    && !data.getShopTypes().isEmpty();
+        } else if (data.getPlatform() != null && data.getPlatform().equals("digital")){
+            return data != null
+                    && data.getId() != null
+                    && !data.getId().isEmpty()
+                    && data.getPlatform() != null
+                    && !data.getPlatform().isEmpty();
+        }
+
+        return false;
     }
 
     private void initInjection() {
