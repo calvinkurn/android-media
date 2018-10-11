@@ -934,6 +934,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEditClicked(int rowNumber, int id) {
+
+    }
+
+    @Override
     public void onGoToLink(String link) {
         if (!TextUtils.isEmpty(link)) {
             feedModuleRouter.openRedirectUrl(getActivity(), link);

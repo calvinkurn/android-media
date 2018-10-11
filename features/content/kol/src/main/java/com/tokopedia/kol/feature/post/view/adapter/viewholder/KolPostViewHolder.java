@@ -236,6 +236,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
     }
 
+    @Override
+    public void onEditClickListener(BaseKolViewModel element) {
+        viewListener.onEditClicked(getAdapterPosition(), element.getContentId());
+    }
+
     private void setUpViewPager(List<String> images) {
         PostImageAdapter adapter = new PostImageAdapter();
         adapter.setList(new ArrayList<>(images));

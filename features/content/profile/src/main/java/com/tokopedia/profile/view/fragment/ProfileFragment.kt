@@ -27,7 +27,6 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -249,6 +248,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 context, id, rowNumber
         )
         startActivityForResult(intent, KOL_COMMENT_CODE)
+    }
+
+    override fun onEditClicked(rowNumber: Int, id: Int) {
+
     }
 
     override fun onSuccessFollowKol() {

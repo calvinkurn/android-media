@@ -314,6 +314,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onEditClicked(int rowNumber, int id) {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {

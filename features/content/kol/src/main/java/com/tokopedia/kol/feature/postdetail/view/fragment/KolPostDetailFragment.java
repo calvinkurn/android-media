@@ -295,6 +295,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEditClicked(int rowNumber, int id) {
+
+    }
+
+    @Override
     public void onGoToProfile(String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }

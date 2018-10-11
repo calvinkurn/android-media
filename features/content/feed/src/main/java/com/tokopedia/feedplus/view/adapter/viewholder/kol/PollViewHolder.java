@@ -104,6 +104,11 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
         viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
     }
 
+    @Override
+    public void onEditClickListener(BaseKolViewModel element) {
+
+    }
+
     private void goToProfile(final BaseKolViewModel element) {
         viewListener.onGoToLink(element.getKolProfileUrl());
     }

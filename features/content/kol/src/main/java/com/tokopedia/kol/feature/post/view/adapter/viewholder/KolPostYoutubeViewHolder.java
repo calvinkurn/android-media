@@ -174,6 +174,11 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
     }
 
+    @Override
+    public void onEditClickListener(BaseKolViewModel element) {
+
+    }
+
     private void tooltipAreaClicked(KolPostYoutubeViewModel element) {
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         if (type == Type.FEED) {
