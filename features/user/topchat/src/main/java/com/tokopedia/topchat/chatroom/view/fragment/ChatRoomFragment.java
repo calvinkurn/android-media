@@ -334,7 +334,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                             .PARAM_MESSAGE_ID));
                     if (needCreateWebSocket()) {
-                        maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
+                        maximize.setVisibility(View.VISIBLE);
                     }
                     pickerButton.setVisibility(View.GONE);
                     attachButton.setVisibility(View.GONE);
