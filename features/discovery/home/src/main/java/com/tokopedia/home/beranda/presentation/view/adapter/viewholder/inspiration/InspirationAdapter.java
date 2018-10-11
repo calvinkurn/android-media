@@ -75,7 +75,8 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getImageSource(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getName(),
                             inspirationViewModel.getListProduct().get(getAdapterPosition()).getPrice());
-                    HomeTrackingUtils.homepageRecommedationClicked(inspirationViewModel.getListProduct().get(getAdapterPosition()));
+                    HomeTrackingUtils.homepageRecommedationClicked(context,
+                            inspirationViewModel.getListProduct().get(getAdapterPosition()));
 
                 }
             });

@@ -75,14 +75,14 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         HomePageTracking.eventPromoClick(context, promotion);
         listener.onPromoClick(position, slidesList.get(position),
                 String.valueOf(promotion.getImpressionDataLayer().get(ATTRIBUTION)));
-        HomeTrackingUtils.homeSlidingBannerClick(slidesList.get(position), position);
+        HomeTrackingUtils.homeSlidingBannerClick(context, slidesList.get(position), position);
     }
 
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
             HomePageTracking.eventPromoImpression(context, getPromotion(position));
-            HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
+            HomeTrackingUtils.homeSlidingBannerImpression(context, slidesList.get(position), position);
             listener.onPromoScrolled(slidesList.get(position));
         }
     }

@@ -69,7 +69,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         public void setSectionViewModel(CategorySectionViewModel sectionViewModel) {
             this.sectionViewModel = sectionViewModel;
             notifyDataSetChanged();
-            HomeTrackingUtils.homeUsedCaseImpression(sectionViewModel.getSectionList());
+            HomeTrackingUtils.homeUsedCaseImpression(context, sectionViewModel.getSectionList());
         }
 
         @Override
@@ -98,7 +98,8 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
                 HomePageTracking.eventClickDynamicIcons(context, layoutSections.getTitle());
 
             }
-            HomeTrackingUtils.homeUsedCaseClick(layoutSections.getTitle(), position + 1, layoutSections.getApplink());
+            HomeTrackingUtils.homeUsedCaseClick(context,
+                    layoutSections.getTitle(), position + 1, layoutSections.getApplink());
 
         }
 

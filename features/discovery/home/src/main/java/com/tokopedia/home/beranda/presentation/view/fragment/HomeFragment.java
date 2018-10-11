@@ -539,7 +539,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPromoAllClick() {
         HomePageTracking.eventClickViewAllPromo(getActivity());
-        HomeTrackingUtils.homeViewAllPromotions("PromoListActivity");
+        HomeTrackingUtils.homeViewAllPromotions(getActivity(), "PromoListActivity");
 
         boolean remoteConfigEnable;
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
