@@ -59,3 +59,4 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
 }
+apply from: "$rootProject.projectDir/publish_local.gradle"

@@ -43,8 +43,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.applink.TransactionAppLink;
-import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -59,7 +58,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;

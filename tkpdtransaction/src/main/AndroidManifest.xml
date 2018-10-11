@@ -97,7 +97,7 @@
             android:label="@string/title_payment_procedure"/>
 
         <activity
-            android:name=".purchase.detail.activity.ConfirmShippingActivity"
+            android:name="com.tokopedia.logisticinputreceiptshipment.ConfirmShippingActivity"
             android:label="@string/title_confirm_shipment"/>
 
         <activity
