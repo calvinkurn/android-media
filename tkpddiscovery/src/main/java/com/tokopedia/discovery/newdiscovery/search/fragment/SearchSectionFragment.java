@@ -25,12 +25,10 @@ import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
@@ -39,7 +37,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;

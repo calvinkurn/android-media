@@ -12,11 +12,10 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 /**
  * Created by ashwanityagi on 02/05/18.

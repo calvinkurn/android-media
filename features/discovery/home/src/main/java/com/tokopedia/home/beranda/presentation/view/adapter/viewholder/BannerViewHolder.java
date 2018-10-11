@@ -10,8 +10,7 @@ import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -19,7 +18,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.List;

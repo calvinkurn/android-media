@@ -17,10 +17,9 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.fragment.FragmentReferral;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 

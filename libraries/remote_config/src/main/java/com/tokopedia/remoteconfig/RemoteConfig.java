@@ -1,4 +1,4 @@
-package com.tokopedia.remote_config;
+package com.tokopedia.remoteconfig;
 
 /**
  * Created by okasurya on 11/6/17.

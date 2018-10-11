@@ -5,10 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tokocash.balance.view.ActionBalance;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 

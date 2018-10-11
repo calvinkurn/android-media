@@ -16,9 +16,8 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**

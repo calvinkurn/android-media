@@ -1,4 +1,4 @@
-package com.tokopedia.remote_config;
+package com.tokopedia.remoteconfig;
 
 /**
  * Created by meta on 09/10/18.

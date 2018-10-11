@@ -1,4 +1,4 @@
-package com.tokopedia.remote_config;
+package com.tokopedia.remoteconfig;
 
 import org.junit.Test;
 

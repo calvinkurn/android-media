@@ -24,10 +24,9 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -47,8 +46,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRoute
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.remote_config.RemoteConfigKey;
-import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;

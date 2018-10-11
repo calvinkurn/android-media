@@ -12,7 +12,7 @@ import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
 import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
 

@@ -9,7 +9,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.nps.R;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
 

@@ -24,15 +24,14 @@ import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.domain.GetReferralDataUseCase;
 import com.tokopedia.core.referral.listener.ReferralView;
 import com.tokopedia.core.referral.model.ShareApps;
-import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
-import com.tokopedia.remote_config.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.var.TokoCashTypeDef;
-import com.tokopedia.remote_config.RemoteConfigKey;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
