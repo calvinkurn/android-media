@@ -15,7 +15,7 @@
     app:vchDashWidth="@dimen/dp_2"
     app:vchElevation="@dimen/dp_2"
     app:vchScallopRadius="@dimen/dp_8"
-    app:vchScallopRelativePosition="0.6">
+    app:vchScallopRelativePosition="0.59">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="merchant_voucher_width">320</dimen>
+    <dimen name="merchant_voucher_width">320dp</dimen>
 </resources>

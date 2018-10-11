@@ -185,7 +185,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     fun processWebViewHtmlStyle(html_string: String): String {
         var returnString = ""
         returnString = ("<html><head>"
-                + "<style type=\"text/css\">body{font-size:14px; padding:0; margin:0;} img{display: inline;max-width: 100% !important ;height:auto !important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}"
+                + "<style type=\"text/css\">body{font-size:14px; padding:0; margin:0;color:#808080;} img{display: inline;max-width: 100% !important ;height:auto !important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}"
                 + "</style></head>"
                 + "<body>"
                 + html_string

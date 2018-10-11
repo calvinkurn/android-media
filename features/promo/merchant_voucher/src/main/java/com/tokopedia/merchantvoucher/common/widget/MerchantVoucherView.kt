@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 class MerchantVoucherView : CustomVoucherView {
 
     var onMerchantVoucherViewListener: OnMerchantVoucherViewListener? = null
+
     interface OnMerchantVoucherViewListener {
         fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
         fun isOwner(): Boolean
@@ -46,12 +47,13 @@ class MerchantVoucherView : CustomVoucherView {
 
     private fun init() {
         clipToPadding = false
-        cornerRadius = dpToPx(4f)
-        mScallopRadius = dpToPx(8f)
-        mScallopRelativePosition = 0.65f
-        mShadowRadius = dpToPx(2f)
-        mDashWidth = dpToPx(2f)
-        mDashGap = dpToPx(4f)
+        val dp2 = dpToPx(2f);
+        cornerRadius = 2 * dp2
+        mScallopRadius = 4 * dp2
+        mScallopRelativePosition = 0.59f
+        mShadowRadius = dp2
+        mDashWidth = dp2
+        mDashGap = 2 * dp2
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
@@ -81,11 +83,11 @@ class MerchantVoucherView : CustomVoucherView {
                 isOwner = this.isOwner()
             }
             when {
-                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && !isOwner)-> {
+                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && !isOwner) -> {
                     btnUseVoucher.visibility = View.VISIBLE
                     tvVoucherStatus.visibility = View.GONE
                 }
-                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && isOwner)-> {
+                (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE && isOwner) -> {
                     btnUseVoucher.visibility = View.GONE
                     tvVoucherStatus.visibility = View.GONE
                 }

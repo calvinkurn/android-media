@@ -18,7 +18,7 @@ data class MerchantVoucherModel(
         @SerializedName("voucher_code")
         @Expose
         var voucherCode: String? = "",
-        @SerializedName("voucherType")
+        @SerializedName("voucher_type")
         @Expose
         var merchantVoucherType: MerchantVoucherType? = null,
         @SerializedName("amount")
@@ -45,7 +45,7 @@ data class MerchantVoucherModel(
 )
 
 data class MerchantVoucherType(
-        @SerializedName("voucherType")
+        @SerializedName("voucher_type")
         @Expose
         var type: Int = MerchantVoucherTypeDef.TYPE_FREE_ONGKIR,
         @SerializedName("identifier")

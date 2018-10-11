@@ -67,19 +67,22 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         if (voucherCodeInProgress.equals(voucherCode)) {
             return;
         }
-        voucherCodeInProgress = voucherCode;
+        voucherCodeInProgress = voucherCode
+        useMerchantVoucherUseCase.unsubscribe()
         useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),
                 object : Subscriber<Boolean>() {
                     override fun onCompleted() {
-                        voucherCodeInProgress = ""
+
                     }
 
                     override fun onError(e: Throwable) {
+                        voucherCodeInProgress = ""
                         view?.onErrorUseVoucher(e)
                     }
 
                     override fun onNext(success: Boolean) {
                         // success should be true
+                        voucherCodeInProgress = ""
                         view?.onSuccessUseVoucher()
                     }
                 })
