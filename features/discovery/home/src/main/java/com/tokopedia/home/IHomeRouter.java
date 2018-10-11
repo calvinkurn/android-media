@@ -62,4 +62,8 @@ public interface IHomeRouter {
     Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
                                                          String url,
                                                          String title);
+
+    Intent getBannerWebViewIntent(Activity activity, String url);
+
+    Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title);
 }
