@@ -2108,7 +2108,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
+    public void onDigitalItemClickFromExploreHome(
+            Activity activity, String appLink, String categoryId, String name, String url) {
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(appLink)
+                .categoryId(categoryId)
+                .categoryName(name)
+                .url(url)
+                .build();
+
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
         goToApplinkActivity(activity, appLink, bundle);

@@ -13,11 +13,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
@@ -129,14 +128,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof IHomeRouter
                 && ((IHomeRouter) getActivity().getApplicationContext()).isSupportApplink(data.getApplinks())) {
-            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                    .appLinks(data.getApplinks())
-                    .categoryId(String.valueOf(data.getCategoryId()))
-                    .categoryName(data.getName())
-                    .url(data.getUrl())
-                    .build();
-            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClick(getActivity(),
-                    passData, data.getApplinks());
+            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClickFromExploreHome(
+                    getActivity(),
+                    data.getApplinks(),
+                    String.valueOf(data.getCategoryId()),
+                    data.getName(),
+                    data.getUrl());
         } else {
             onGimickItemClicked(data);
         }
@@ -154,7 +151,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(redirectUrl), getActivity());
+                    Uri.encode(redirectUrl),
+                    userSession.getDeviceId(),
+                    userSession.getUserId());
             openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
         }
     }

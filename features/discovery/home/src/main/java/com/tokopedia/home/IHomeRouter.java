@@ -19,7 +19,12 @@ public interface IHomeRouter {
 
     void openIntermediaryActivity(Activity activity, String depID, String title);
 
-    void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink);
+    void onDigitalItemClickFromExploreHome(
+            Activity activity,
+            String appLink,
+            String categoryId,
+            String name,
+            String url);
 
     void openReactNativeOfficialStore(FragmentActivity activity);
 
