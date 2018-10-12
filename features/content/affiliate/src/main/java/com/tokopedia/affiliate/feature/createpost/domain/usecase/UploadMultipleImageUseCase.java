@@ -1,12 +1,12 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +19,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by milhamj on 10/1/18.
@@ -35,8 +36,8 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
     private static final String RESOLUTION_500 = "500";
     private static final String TEXT_PLAIN = "text/plain";
 
-    private final UploadImageUseCase<UploadImageResponse> uploadImageUseCase;
     private final UserSession userSession;
+    private final UploadImageUseCase<UploadImageResponse> uploadImageUseCase;
 
     @Inject
     UploadMultipleImageUseCase(UploadImageUseCase<UploadImageResponse> uploadImageUseCase,
@@ -56,7 +57,9 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
     private Func1<String, Observable<String>> uploadSingleImage() {
         return url -> {
             if (CreatePostViewModel.urlIsFile(url)) {
-                return uploadImageUseCase.createObservable(createUploadParams(url)).map(mapToUrl());
+                return uploadImageUseCase.createObservable(createUploadParams(url))
+                        .map(mapToUrl())
+                        .subscribeOn(Schedulers.computation());
             } else {
                 return Observable.just(url);
             }
