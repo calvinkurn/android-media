@@ -881,7 +881,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         float weight = 0f;
         try {
-            weight = Float.parseFloat(successResult.getInfo().getProductWeight());
+            weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
         } catch (Exception e){}
 
         if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())){
@@ -919,6 +919,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             startShowCase();
         }
         renderTopAds(15);
+    }
+
+    private float getUnformattedWeight(String productWeight) {
+        String unformatted = productWeight.replace(".", "");
+        return Float.parseFloat(unformatted);
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -2134,8 +2139,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void moveToEstimationDetail() {
-        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
-                Float.parseFloat(productData.getInfo().getProductWeight()), productData.getInfo().getProductWeightUnit()));
+        startActivity(RatesEstimationDetailActivity.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
+                productData.getInfo().getProductWeight(), productData.getInfo().getProductWeightUnit()));
     }
 
     private void renderTopAds(int itemSize) {
