@@ -10,4 +10,6 @@ import android.content.Intent;
 public interface DigitalModuleRouter {
 
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
+
+    String getBranchAutoApply(Activity activity);
 }

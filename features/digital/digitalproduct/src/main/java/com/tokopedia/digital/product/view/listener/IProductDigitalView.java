@@ -2,7 +2,7 @@ package com.tokopedia.digital.product.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.presentation.listener.IBaseView;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.BannerData;

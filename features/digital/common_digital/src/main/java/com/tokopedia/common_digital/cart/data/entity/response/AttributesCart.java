@@ -68,6 +68,9 @@ public class AttributesCart {
     @SerializedName("default_promo_dialog_tab")
     @Expose
     private String defaultPromoTab;
+    @SerializedName("cross_selling_type")
+    @Expose
+    private int crossSellingType;
 
     public String getClientNumber() {
         return clientNumber;
@@ -143,5 +146,9 @@ public class AttributesCart {
 
     public String getDefaultPromoTab() {
         return defaultPromoTab;
+    }
+
+    public int getCrossSellingType() {
+        return crossSellingType;
     }
 }

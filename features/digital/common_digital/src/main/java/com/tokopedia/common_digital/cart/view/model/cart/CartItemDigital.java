@@ -3,10 +3,12 @@ package com.tokopedia.common_digital.cart.view.model.cart;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+
 /**
  * @author by Nabilla Sabbaha on 2/28/2017.
  */
-public class CartItemDigital implements Parcelable {
+public class CartItemDigital implements Parcelable, Visitable {
 
     private String label;
 
@@ -62,4 +64,9 @@ public class CartItemDigital implements Parcelable {
                     return new CartItemDigital[size];
                 }
             };
+
+    @Override
+    public int type(Object typeFactory) {
+        return 0;
+    }
 }

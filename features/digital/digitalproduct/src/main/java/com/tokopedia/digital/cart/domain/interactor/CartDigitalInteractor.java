@@ -8,6 +8,8 @@ import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 
+import java.util.Map;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -45,7 +47,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
 
     @Override
     public void checkVoucher(
-            TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
+            Map<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     ) {
         compositeSubscription.add(
                 voucherDigitalRepository.checkVoucher(paramNetwork)
@@ -58,7 +60,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
 
     @Override
     public void patchCartOtp(
-            RequestBodyOtpSuccess requestBodyOtpSuccess, TKPDMapParam<String, String> paramgetCart,
+            RequestBodyOtpSuccess requestBodyOtpSuccess, Map<String, String> paramgetCart,
             Subscriber<CartDigitalInfoData> subscriber
     ) {
         compositeSubscription.add(

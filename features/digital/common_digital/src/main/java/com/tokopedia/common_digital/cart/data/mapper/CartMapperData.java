@@ -60,6 +60,7 @@ public class CartMapperData implements ICartMapperData {
             attributesDigital.setEnableVoucher(responseCartData.getAttributes().isEnableVoucher());
             attributesDigital.setIsCouponActive(responseCartData.getAttributes().isCouponActive());
             attributesDigital.setVoucherAutoCode(responseCartData.getAttributes().getVoucherAutoCode());
+            attributesDigital.setCrossSellingType(responseCartData.getAttributes().getCrossSellingType());
             if (responseCartData.getAttributes().getUserInputPrice() != null) {
                 UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
                 userInputPriceDigital.setMaxPaymentPlain(

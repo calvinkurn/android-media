@@ -14,7 +14,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -31,15 +31,15 @@ public class CartDigitalActivity extends BasePresenterActivity implements
     private DigitalCheckoutPassData passData;
 
 
-    public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
-        return new Intent(context, CartDigitalActivity.class)
-                .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         unregisterShake();
+    }
+
+    public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
+        return new Intent(context, CartDigitalActivity.class)
+                .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {

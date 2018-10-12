@@ -10,6 +10,8 @@ import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 
+import java.util.Map;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -30,7 +32,7 @@ public class VoucherDigitalRepository implements IVoucherDigitalRepository {
     }
 
     @Override
-    public Observable<VoucherDigital> checkVoucher(TKPDMapParam<String, String> param) {
+    public Observable<VoucherDigital> checkVoucher(Map<String, String> param) {
         return digitalRestApi.checkVoucher(param)
                 .map(getFuncResponseToVoucherDigital());
     }

@@ -65,4 +65,8 @@ public class DigitalAnalytics {
                 categoryName
         );
     }
+
+    public void eventClickVoucher(String categoryName, String voucherAutoCode, String operatorName) {
+
+    }
 }

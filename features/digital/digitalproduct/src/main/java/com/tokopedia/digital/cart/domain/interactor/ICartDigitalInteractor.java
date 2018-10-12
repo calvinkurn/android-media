@@ -6,6 +6,8 @@ import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtp
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 
+import java.util.Map;
+
 import rx.Subscriber;
 
 /**
@@ -19,11 +21,11 @@ public interface ICartDigitalInteractor {
     );
 
     void checkVoucher(
-            TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
+            Map<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     );
 
     void patchCartOtp(
-            RequestBodyOtpSuccess requestBodyOtpSuccess, TKPDMapParam<String, String> paramgetCart,
+            RequestBodyOtpSuccess requestBodyOtpSuccess, Map<String, String> paramgetCart,
             Subscriber<CartDigitalInfoData> subscriber
     );
 

@@ -25,20 +25,6 @@ public class CartMapperData implements ICartMapperData {
         try {
             VoucherDigital voucherDigital = new VoucherDigital();
 
-            voucherDigital.setId(responseVoucherData.getId());
-            voucherDigital.setType(responseVoucherData.getType());
-
-            RelationData relationDataCart = new RelationData();
-            relationDataCart.setId(
-                    responseVoucherData.getRelationships().getCart().getData().getId()
-            );
-            relationDataCart.setType(
-                    responseVoucherData.getRelationships().getCart().getData().getType()
-            );
-
-            Relation relationCart = new Relation(relationDataCart);
-            voucherDigital.setCart(relationCart);
-
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
             voucherAttributeDigital.setDiscountAmountPlain(

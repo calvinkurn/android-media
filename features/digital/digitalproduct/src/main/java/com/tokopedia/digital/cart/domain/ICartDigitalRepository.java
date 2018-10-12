@@ -5,6 +5,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 
+import java.util.Map;
+
 import rx.Observable;
 
 /**
@@ -16,7 +18,7 @@ public interface ICartDigitalRepository {
     Observable<CartDigitalInfoData> getCartInfoData(TKPDMapParam<String, String> param);
 
     Observable<CartDigitalInfoData> patchOtpCart(RequestBodyOtpSuccess requestBodyOtpSuccess,
-                                                 TKPDMapParam<String, String> paramGetCart);
+                                                 Map<String, String> paramGetCart);
 
     Observable<String> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher);
 

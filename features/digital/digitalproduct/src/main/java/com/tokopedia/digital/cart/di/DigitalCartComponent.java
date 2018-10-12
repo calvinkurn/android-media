@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.di;
 
 import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.cart.presentation.fragment.CartDigitalFragment;
+import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 
 import dagger.Component;
 
@@ -14,4 +15,5 @@ public interface DigitalCartComponent {
 
     void inject(CartDigitalFragment cartDigitalFragment);
 
+    void inject(DigitalCartActivity digitalCartActivity);
 }

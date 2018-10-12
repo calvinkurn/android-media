@@ -18,6 +18,7 @@ import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,6 +30,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 @Module
 public class DigitalCartModule {
+
+    @Provides
+    @DigitalCartScope
+    UserSession provideUserSession(@ApplicationContext Context context){
+        return new UserSession(context);
+    }
 
     @Provides
     @DigitalCartScope

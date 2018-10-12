@@ -131,4 +131,12 @@
     <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
     <string name="digital_list_device_consumer_app_prefix">android-%s</string>
     <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="digital_cart_total_payment_label">Total Pembayaran</string>
+    <string name="digital_cart_checkout_pay_label">Bayar</string>
+    <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
+    <string name="digital_cart_detail_close_label">Tutup</string>
+    <string name="digital_cart_default_toolbar_title">Checkout</string>
 </resources>

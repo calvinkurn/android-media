@@ -1,4 +1,11 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
-public class DigitalCartDefaultContract {
+public interface DigitalCartDefaultContract {
+    interface View extends DigitalBaseContract.View {
+
+    }
+
+    interface Presenter extends DigitalBaseContract.Presenter<View> {
+
+    }
 }

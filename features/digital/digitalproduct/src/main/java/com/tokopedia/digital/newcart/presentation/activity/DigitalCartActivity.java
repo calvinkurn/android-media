@@ -1,4 +1,4 @@
-package com.tokopedia.digital.newcart.presentation.fragment;
+package com.tokopedia.digital.newcart.presentation.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,7 @@ import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartContract;
+import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.utils.AuthUtil;
@@ -111,10 +112,16 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupView();
         initInjector();
         passData = getIntent().getParcelableExtra(EXTRA_PASS_DIGITAL_CART_DATA);
         presenter.attachView(this);
         presenter.onViewCreated();
+    }
+
+    private void setupView() {
+        progressBar = findViewById(R.id.progress_bar);
+        container = findViewById(R.id.parent_view);
     }
 
     private void initInjector() {
@@ -179,6 +186,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     }
 
     private void buildCheckoutData(CartDigitalInfoData cartDigitalInfoData) {
+        checkoutDataBuilder = new CheckoutDataParameter.Builder();
         checkoutDataBuilder.cartId(cartDigitalInfoData.getId());
         checkoutDataBuilder.accessToken(userSession.getAccessToken());
         checkoutDataBuilder.walletRefreshToken("");
@@ -220,6 +228,18 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     public Map<String, String> getGeneratedAuthParamNetwork(String userId, String
             deviceId, Map<String, String> paramGetCart) {
         return AuthUtil.generateParamsNetwork(userId, deviceId, paramGetCart);
+    }
+
+    @Override
+    public void inflateDefaultCartPage(CartDigitalInfoData cartDigitalInfoData) {
+        this.cartDigitalInfoDataState = cartDigitalInfoData;
+        inflateFragment(DigitalCartDefaultFragment.newInstance(cartDigitalInfoData, checkoutDataBuilder.build(), passData));
+    }
+
+    private void inflateFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.parent_view, fragment, getTagFragment())
+                .commit();
     }
 
     @Override

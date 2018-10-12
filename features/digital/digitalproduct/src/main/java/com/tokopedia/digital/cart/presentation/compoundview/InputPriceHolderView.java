@@ -6,15 +6,12 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by Nabilla Sabbaha on 3/3/2017.
@@ -22,11 +19,8 @@ import butterknife.ButterKnife;
 
 public class InputPriceHolderView extends LinearLayout {
 
-    @BindView(R2.id.input_price_info)
     TextView inputPriceInfo;
-    @BindView(R2.id.input_price_edittext)
     EditText inputPriceEdittext;
-    @BindView(R2.id.error_input_price)
     TextView errorInputError;
 
     private Context context;
@@ -54,10 +48,12 @@ public class InputPriceHolderView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(
+        View view = LayoutInflater.from(context).inflate(
                 R.layout.view_holder_checkout_input_price_digital_module, this, true
         );
-        ButterKnife.bind(this);
+        inputPriceInfo = view.findViewById(R.id.input_price_info);
+        inputPriceEdittext = view.findViewById(R.id.input_price_edittext);
+        errorInputError = view.findViewById(R.id.error_input_price);
     }
 
     public void setInputPriceInfo(String totalPayment, long minPayment, long maxPayment) {

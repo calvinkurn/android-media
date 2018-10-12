@@ -6,7 +6,7 @@ import android.content.Context;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 

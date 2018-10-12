@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -192,7 +193,7 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
                             selectedProduct);
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
                 if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {

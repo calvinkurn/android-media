@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -24,7 +25,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
@@ -207,12 +208,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 SessionHandler.getLoginID(getActivity()));
 
         if (SessionHandler.isV4Login(getActivity())) {
-            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) getActivity().getApplication();
+            if (getActivity().getApplication() instanceof DigitalRouter) {
+                DigitalRouter digitalModuleRouter =
+                        (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
                 );
             }
         } else {
@@ -339,7 +340,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
@@ -361,12 +362,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
                 if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
-                    if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-                        IDigitalModuleRouter digitalModuleRouter =
-                                (IDigitalModuleRouter) getActivity().getApplication();
+                    if (getActivity().getApplication() instanceof DigitalRouter) {
+                        DigitalRouter digitalModuleRouter =
+                                (DigitalRouter) getActivity().getApplication();
                         navigateToActivityRequest(
                                 digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                                DigitalRouter.REQUEST_CODE_CART_DIGITAL
                         );
                     }
                 }

@@ -38,4 +38,4 @@ include 'tkpdstream'
 include 'tkpdtransaction-common'
 //include 'posapp'
 
-include 'mitraapp'
+//include 'mitraapp'

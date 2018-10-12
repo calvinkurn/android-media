@@ -17,6 +17,8 @@ import com.tokopedia.digital.cart.data.entity.response.ResponsePatchOtpSuccess;
 import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 
+import java.util.Map;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -45,7 +47,7 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     @Override
     public Observable<CartDigitalInfoData> patchOtpCart(
             RequestBodyOtpSuccess requestBodyOtpSuccess,
-            final TKPDMapParam<String, String> paramGetCart
+            final Map<String, String> paramGetCart
     ) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyOtpSuccess));
         JsonObject requestBody = new JsonObject();
@@ -77,7 +79,7 @@ public class CartDigitalRepository implements ICartDigitalRepository {
 
     @NonNull
     private Func1<Response<TkpdDigitalResponse>, Observable<CartDigitalInfoData>>
-    getFuncResponsePatchToGetCartInfo(final TKPDMapParam<String, String> paramGetCart) {
+    getFuncResponsePatchToGetCartInfo(final Map<String, String> paramGetCart) {
         return tkpdDigitalResponseResponse -> {
             if (tkpdDigitalResponseResponse.code() == 200) {
                 ResponsePatchOtpSuccess responsePatchOtpSuccess =

@@ -71,8 +71,4 @@ public class UserSessionImpl implements UserSession {
         return sessionHandler.isHasPassword();
     }
 
-    @Override
-    public String getPhoneNumber() {
-        return userSession.getPhoneNumber();
-    }
 }
