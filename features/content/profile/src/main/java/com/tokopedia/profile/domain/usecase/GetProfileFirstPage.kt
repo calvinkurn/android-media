@@ -15,6 +15,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import rx.functions.Func1
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -46,16 +47,21 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
         return getProfileHeaderUseCase
                 .createObservable(GetProfileHeaderUseCase.createRequestParams(userId))
                 .map(convertToHeader())
+                .subscribeOn(Schedulers.io())
     }
 
     private fun getPost(): Observable<ContentListDomain> {
         return getContentListUseCase
                 .createObservable(GetContentListUseCase.getProfileParams(userId, ""))
+                .subscribeOn(Schedulers.io())
     }
 
     private fun getQuota(): Observable<AffiliatePostQuota> {
         return if (userId.toString() == userSession.userId) {
-            getAffiliateQuotaUseCase.createObservable(RequestParams.EMPTY).map(convertToPostQuota())
+            getAffiliateQuotaUseCase
+                    .createObservable(RequestParams.EMPTY)
+                    .map(convertToPostQuota())
+                    .subscribeOn(Schedulers.io())
         } else {
             Observable.just(AffiliatePostQuota())
         }
