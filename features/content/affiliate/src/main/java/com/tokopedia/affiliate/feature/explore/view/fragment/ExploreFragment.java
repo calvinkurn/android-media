@@ -30,6 +30,7 @@ import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.SearchInputView;
 
 import java.util.ArrayList;
@@ -99,8 +100,8 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-        testData();
-//        presenter.getFirstData(exploreParams, false);
+//        testData();
+        presenter.getFirstData(exploreParams, false);
     }
 
     private void initEmptyResultModel() {
@@ -114,7 +115,7 @@ public class ExploreFragment
             getActivity().onBackPressed();
         });
         ivBantuan.setOnClickListener(view -> {
-
+            //transition do webview
         });
     }
 
@@ -194,12 +195,12 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-
+        presenter.checkAffiliateQuota();
     }
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-
+        //transition do applink to pdp
     }
 
     @Override
@@ -269,6 +270,46 @@ public class ExploreFragment
         layoutManager = new GridLayoutManager(getActivity(), 1);
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
+    }
+
+    @Override
+    public void onErrorNonAffiliateUser() {
+        //transition do applink to onboarding
+    }
+
+    @Override
+    public void onSuccessCheckQuota() {
+        //transition do add product
+    }
+
+    @Override
+    public void onSuccessCheckQuotaButEmpty() {
+          Dialog dialog = buildDialog();
+          dialog.setOnOkClickListener(view ->{
+            //transition    do go profile
+          });
+          dialog.setOnCancelClickListener(view -> {
+              dialog.dismiss();
+          });
+          dialog.show();
+    }
+
+    private Dialog buildDialog() {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getActivity().getResources().getString(R.string.text_full_affiliate_title));
+        dialog.setDesc(getActivity().getResources().getString(R.string.text_full_affiliate));
+        dialog.setBtnOk(getActivity().getResources().getString(R.string.text_full_affiliate_ok));
+        dialog.setBtnCancel(getActivity().getResources().getString(R.string.text_full_affiliate_no));
+        dialog.getAlertDialog().setCancelable(true);
+        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
+        return dialog;
+    }
+
+    @Override
+    public void onErrorCheckQuota(String error) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, () -> {
+           presenter.checkAffiliateQuota();
+        });
     }
 
     @Override

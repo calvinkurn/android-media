@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreFirstQuery;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -33,6 +34,13 @@ public class ExploreUseCase extends GraphqlUseCase {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_explore),
+                ExploreFirstQuery.class, getParam(exploreParams).getParameters());
+    }
+
+    public GraphqlRequest getRequestLoadMore(ExploreParams exploreParams) {
+        return new GraphqlRequest(GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.query_explore_load_more),
                 ExploreQuery.class, getParam(exploreParams).getParameters());
     }
 

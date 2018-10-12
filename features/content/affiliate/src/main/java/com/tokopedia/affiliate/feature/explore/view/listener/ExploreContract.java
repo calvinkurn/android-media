@@ -40,6 +40,14 @@ public interface ExploreContract {
 
         void onEmptySearchResult();
 
+        void onErrorNonAffiliateUser();
+
+        void onSuccessCheckQuota();
+
+        void onSuccessCheckQuotaButEmpty();
+
+        void onErrorCheckQuota(String error);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -47,5 +55,7 @@ public interface ExploreContract {
         void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh);
 
         void loadMoreData(ExploreParams exploreParams);
+
+        void checkAffiliateQuota();
     }
 }
