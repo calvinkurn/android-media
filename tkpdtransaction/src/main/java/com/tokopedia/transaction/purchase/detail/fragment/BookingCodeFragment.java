@@ -33,7 +33,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     private TextView bookingCode;
     private ImageView barcodeImg;
     private RecyclerView recyclerView;
-    private View filterView;
+    private View filterView, tapBarcode;
     private ViewGroup copyLayout;
     private CardView cardBarcode;
     private BookingCodeData mData;
@@ -79,6 +79,8 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         recyclerView = view.findViewById(R.id.rv_message);
         barcodeImg = view.findViewById(R.id.barcode_img);
         filterView = view.findViewById(R.id.filter_view);
+        tapBarcode = view.findViewById(R.id.text_tap_barcode);
+        tapBarcode.setOnClickListener(view1 -> zoomBarcode());
         cardBarcode = view.findViewById(R.id.card_barcode);
         cardBarcode.setOnClickListener(view1 -> zoomBarcode());
 

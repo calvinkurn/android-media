@@ -227,9 +227,8 @@
 
                 <TextView
                     android:id="@+id/see_detail_button"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/lihat_detail"
                     android:textColor="@color/green_500"
