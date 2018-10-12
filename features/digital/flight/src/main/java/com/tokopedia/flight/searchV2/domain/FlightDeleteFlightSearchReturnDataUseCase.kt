@@ -9,18 +9,12 @@ import javax.inject.Inject
 /**
  * Created by Rizky on 12/10/18.
  */
-class FlightDeleteSearchUseCase @Inject constructor(
+class FlightDeleteFlightSearchReturnDataUseCase @Inject constructor(
         private val flightSearchRepository: FlightSearchRepository) : UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
-//        flightSearchRepository.deleteAllFlightSearchData()
-
-        return Observable.just(true)
-    }
-
-    fun createRequestParams() : RequestParams {
-        val requestParams = RequestParams.create()
-        return requestParams
+        return flightSearchRepository.deleteFlightSearchReturnData()
+                .map { true }
     }
 
 }

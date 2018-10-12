@@ -25,4 +25,6 @@ public interface FlightComboDao {
     @Query("SELECT * FROM FlightComboTable")
     List<FlightComboTable> findAllCombos();
 
+    @Query("DELETE FROM FlightComboTable")
+    void deleteTable();
 }

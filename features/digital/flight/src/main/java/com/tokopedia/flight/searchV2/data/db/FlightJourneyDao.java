@@ -27,18 +27,16 @@ public interface FlightJourneyDao {
     void insert(List<FlightJourneyTable> item);
 
     @Transaction
-    @Query("SELECT * FROM FlightJourneyTable " +
-            "WHERE " +
-            "FlightJourneyTable.isReturn = :isReturn & " +
-            "FlightJourneyTable.id = :journeyId & " +
-            "FlightJourneyTable.isBestPairing = :isBestPairing")
-    List<JourneyAndRoutes> findFilteredJourneys(boolean isReturn, String journeyId, boolean isBestPairing);
-
-    @Transaction
     @RawQuery
     List<JourneyAndRoutes> findFilteredJourneys(SupportSQLiteQuery supportSQLiteQuery);
 
     @Transaction
     @Query("SELECT * FROM FlightJourneyTable WHERE FlightJourneyTable.id = :onwardJourneyId")
     JourneyAndRoutes findJourneyById(String onwardJourneyId);
+
+    @Query("DELETE FROM FlightJourneyTable")
+    void deleteTable();
+
+    @Query("DELETE FROM FlightJourneyTable WHERE isReturn = 1")
+    void deleteFlightSearchReturnData();
 }
