@@ -10,6 +10,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.listener.ProfileContract
@@ -56,6 +58,15 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             } else {
                 itemView.followers.visibility = View.GONE
             }
+        }
+
+        if (element.isOwner) {
+            itemView.changeAvatar.visibility = View.VISIBLE
+            itemView.changeAvatar.setOnClickListener {
+                RouteManager.route(itemView.context, ApplinkConst.SETTING_PROFILE)
+            }
+        } else {
+            itemView.changeAvatar.visibility = View.GONE
         }
     }
 
