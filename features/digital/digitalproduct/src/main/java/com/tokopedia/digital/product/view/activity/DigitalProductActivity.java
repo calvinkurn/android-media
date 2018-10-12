@@ -170,7 +170,7 @@ public class DigitalProductActivity extends BasePresenterActivity
     public void updateTitleToolbar(String title) {
         this.titleToolbar = title;
         invalidateTitleToolBar();
-        TrackingUtils.sendMoEngageOpenDigitalCatScreen(title, passData.getCategoryId());
+        //TrackingUtils.sendMoEngageOpenDigitalCatScreen(title, passData.getCategoryId());
     }
 
     private void invalidateTitleToolBar() {

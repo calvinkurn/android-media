@@ -1011,6 +1011,8 @@ public interface AppEventTracking {
         String CHANNEL = "channel";
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
+        String HOTLIST_ID = "hotlist_id";
+
     }
 
     interface EventMoEngage {
@@ -1020,9 +1022,9 @@ public interface AppEventTracking {
         String OPEN_FAVORITE = "Favorite_Screen_Launched";
         String OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String CLICK_HOTLIST = "Clicked_HotList_Item";
         String ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
-        String CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
+        String CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
         String DIGITAL_CAT_SCREEN_OPEN = "Digital_Category_Screen_Launched";
         String CAT_SCREEN_OPEN = "Category_Screen_Launched";
         String PRODUCT_ADDED_TO_CART = "Product_Added_To_Cart_Marketplace";
