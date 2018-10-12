@@ -23,7 +23,7 @@ class FlightSearchCombinedUseCase @Inject constructor(
         val numOfAttempts = intArrayOf(0)
         val pollDelay = intArrayOf(0)
 
-        return flightSearchRepository.getSearchCombined2(flightSearchCombinedApiRequestModel).doOnNext {
+        return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel).doOnNext {
             pollDelay[0] = it.refreshTime
             numOfAttempts[0]++
         }.repeatWhen { o ->

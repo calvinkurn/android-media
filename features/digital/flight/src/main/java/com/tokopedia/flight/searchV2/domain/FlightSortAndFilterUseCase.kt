@@ -140,8 +140,8 @@ class FlightSortAndFilterUseCase @Inject constructor(
                                         null,
                                         it.departureAirportName,
                                         it.departureAirportCity,
-                                        null,
-                                        null
+                                        it.arrivalAirportName,
+                                        it.arrivalAirportCity
                                 )
                             }
                             with(journeyAndRoutes.flightJourneyTable) {

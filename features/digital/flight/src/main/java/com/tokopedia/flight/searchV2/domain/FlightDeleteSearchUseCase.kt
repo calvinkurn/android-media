@@ -13,7 +13,9 @@ class FlightDeleteSearchUseCase @Inject constructor(
         private val flightSearchRepository: FlightSearchRepository) : UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
-        flightSearchRepository.deleteAllFlightSearchData()
+//        flightSearchRepository.deleteAllFlightSearchData()
+
+        return Observable.just(true)
     }
 
     fun createRequestParams() : RequestParams {
