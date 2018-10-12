@@ -26,9 +26,6 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     open fun insert(journeyAndRoutes: JourneyAndRoutes) {
         flightJourneyDao.insert(journeyAndRoutes.flightJourneyTable)
         flightRouteDao.insert(journeyAndRoutes.routes)
-//        return Observable.create<Boolean> {
-//            it.onNext(true)
-//        }
     }
 
     open fun findAllJourneys(): Observable<List<JourneyAndRoutes>> {
@@ -137,7 +134,16 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     }
 
     fun deleteAllFlightSearchData() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        flightJourneyDao.deleteTable()
+        flightRouteDao.deleteTable()
+    }
+
+    fun deleteFlightSearchReturnData() {
+        flightJourneyDao.deleteFlightSearchReturnData()
+    }
+
+    fun deleteRouteByJourneyId(journeyId: String) {
+        flightRouteDao.deleteByJourneyId(journeyId)
     }
 
 //    private fun getOrderBy(flightSortOption: FlightSortOption): String {

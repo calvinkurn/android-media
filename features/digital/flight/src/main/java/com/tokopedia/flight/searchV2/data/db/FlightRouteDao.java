@@ -21,4 +21,10 @@ public interface FlightRouteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<FlightRouteTable> routes);
 
+    @Query("DELETE FROM FlightRouteTable")
+    void deleteTable();
+
+    @Query("DELETE FROM FlightRouteTable WHERE journeyId = journeyId")
+    void deleteByJourneyId(String journeyId);
+
 }

@@ -33,17 +33,6 @@ open class FlightSearchRepository @Inject constructor(
         private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
         private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
 
-    fun getSearchSingle(params: HashMap<String, Any>) : Observable<Meta> {
-        return flightSearchDataCloudSource.getData(params).flatMap { response ->
-            Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse)
-            }.toList().map {
-                flightSearchSingleDataDbSource.insertList(it)
-                response.meta
-            }
-        }
-    }
-
     private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData): Observable<JourneyAndRoutes> {
         return Observable.from(journeyResponse.attributes.routes)
                 .flatMap { route ->
@@ -66,6 +55,17 @@ open class FlightSearchRepository @Inject constructor(
                     createCompleteJourneyAndRoutes(journeyResponse, journeyAirports,
                             journeyAirlines, routesAirlinesAndAirports)
                 }
+    }
+
+    fun getSearchSingle(params: HashMap<String, Any>) : Observable<Meta> {
+        return flightSearchDataCloudSource.getData(params).flatMap { response ->
+            Observable.from(response.data).flatMap { journeyResponse ->
+                generateJourneyAndRoutesObservable(journeyResponse)
+            }.toList().map {
+                flightSearchSingleDataDbSource.insertList(it)
+                response.meta
+            }
+        }
     }
 
     // call search single api and then combine the result with combo, airport and airline db
@@ -193,10 +193,6 @@ open class FlightSearchRepository @Inject constructor(
                             }
                             .toList()
                 }
-    }
-
-    fun deleteAllFlightSearchData() {
-        flightSearchSingleDataDbSource.deleteAllFlightSearchData()
     }
 
     private fun getAirports(departureAirport: String, arrivalAirport: String) :
@@ -367,6 +363,24 @@ open class FlightSearchRepository @Inject constructor(
 
     private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
         return flightAirlineDataListDBSource.getAirline(airlineId)
+    }
+
+    fun deleteFlightSearchReturnData(): Observable<Unit> {
+        val filterModel = FlightFilterModel()
+        filterModel.isReturn
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
+                .flatMapIterable { it }
+                .map { flightSearchSingleDataDbSource.deleteRouteByJourneyId(it.flightJourneyTable.id) }
+                .toList()
+                .map { flightSearchSingleDataDbSource.deleteFlightSearchReturnData() }
+
+    }
+
+    fun deleteAllFlightSearchData() : Observable<Unit> {
+        return Observable.create {
+            flightSearchSingleDataDbSource.deleteAllFlightSearchData()
+            flightSearchCombinedDataDbSource.deleteAllFlightSearchCombinedData()
+        }
     }
 
 }

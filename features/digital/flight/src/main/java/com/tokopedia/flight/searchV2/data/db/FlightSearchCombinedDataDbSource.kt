@@ -28,4 +28,8 @@ open class FlightSearchCombinedDataDbSource @Inject constructor(private val flig
         flightComboDao.insert(item)
     }
 
+    fun deleteAllFlightSearchCombinedData() {
+        flightComboDao.deleteTable()
+    }
+
 }
