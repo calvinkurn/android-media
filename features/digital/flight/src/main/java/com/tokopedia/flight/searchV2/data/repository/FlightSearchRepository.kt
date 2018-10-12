@@ -161,9 +161,9 @@ open class FlightSearchRepository @Inject constructor(
                         }
                     }
                     ComboAndMetaWrapper(combosTable, response.meta)
-                }.flatMap { items ->
-                    Observable.just(flightSearchCombinedDataDbSource.insert(items.flightComboTables))
-                            .map { items.meta }
+                }.flatMap { comboAndMetaWrapper ->
+                    Observable.just(flightSearchCombinedDataDbSource.insert(comboAndMetaWrapper.flightComboTables))
+                            .map { comboAndMetaWrapper.meta }
                 }
     }
 
@@ -233,42 +233,6 @@ open class FlightSearchRepository @Inject constructor(
         return JourneyAndRoutes(completeJourney, routes)
     }
 
-    private fun createRoutes(routes: List<Route>, journeyId: String,
-                             routesAirports: List<Pair<FlightAirportDB, FlightAirportDB>>,
-                             routesAirlines: List<FlightAirlineDB>): List<FlightRouteTable> {
-        val gson = Gson()
-        return routes.zip(routesAirports).zip(routesAirlines).map { it ->
-            val (route, pairOfAirport) = it.first
-            val routeAirline = it.second
-            val routeDepartureAirport = pairOfAirport.first
-            val routeArrivalAirport = pairOfAirport.second
-            with(route) {
-                FlightRouteTable(
-                        journeyId,
-                        airline,
-                        routeAirline.name,
-                        routeAirline.logo,
-                        departureAirport,
-                        routeDepartureAirport.airportName,
-                        routeDepartureAirport.cityName,
-                        arrivalAirport,
-                        routeArrivalAirport.airportName,
-                        routeArrivalAirport.cityName,
-                        departureTimestamp,
-                        arrivalTimestamp,
-                        duration,
-                        gson.toJson(infos),
-                        layover,
-                        flightNumber,
-                        refundable,
-                        gson.toJson(amenities),
-                        stops,
-                        gson.toJson(stopDetails)
-                )
-            }
-        }
-    }
-
     private fun createFlightJourneyTable(journeyId: String, attributes: Attributes, isRefundable: RefundableEnum,
                                          isReturn: Boolean)
             : FlightJourneyTable {
@@ -318,6 +282,42 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
+    private fun createRoutes(routes: List<Route>, journeyId: String,
+                             routesAirports: List<Pair<FlightAirportDB, FlightAirportDB>>,
+                             routesAirlines: List<FlightAirlineDB>): List<FlightRouteTable> {
+        val gson = Gson()
+        return routes.zip(routesAirports).zip(routesAirlines).map { it ->
+            val (route, pairOfAirport) = it.first
+            val routeAirline = it.second
+            val routeDepartureAirport = pairOfAirport.first
+            val routeArrivalAirport = pairOfAirport.second
+            with(route) {
+                FlightRouteTable(
+                        journeyId,
+                        airline,
+                        routeAirline.name,
+                        routeAirline.logo,
+                        departureAirport,
+                        routeDepartureAirport.airportName,
+                        routeDepartureAirport.cityName,
+                        arrivalAirport,
+                        routeArrivalAirport.airportName,
+                        routeArrivalAirport.cityName,
+                        departureTimestamp,
+                        arrivalTimestamp,
+                        duration,
+                        gson.toJson(infos),
+                        layover,
+                        flightNumber,
+                        refundable,
+                        gson.toJson(amenities),
+                        stops,
+                        gson.toJson(stopDetails)
+                )
+            }
+        }
+    }
+
     private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
         journey.adultCombo = flightComboTable.adultPrice
         journey.childCombo = flightComboTable.childPrice
@@ -333,10 +333,11 @@ open class FlightSearchRepository @Inject constructor(
     private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
                                                    pairOfAirport: Pair<FlightAirportDB, FlightAirportDB>,
                                                    airlines: List<FlightAirlineDB>): FlightJourneyTable {
-        journey.departureAirportName = pairOfAirport.first.airportName
-        journey.departureAirportCity = pairOfAirport.first.cityName
-        journey.arrivalAirportName = pairOfAirport.second.airportName
-        journey.arrivalAirportCity = pairOfAirport.second.cityName
+        val (departureAirport, arrivalAirport) = pairOfAirport
+        journey.departureAirportName = departureAirport.airportName
+        journey.departureAirportCity = departureAirport.cityName
+        journey.arrivalAirportName = arrivalAirport.airportName
+        journey.arrivalAirportCity = arrivalAirport.cityName
         journey.flightAirlineDBS = airlines
         return journey
     }
