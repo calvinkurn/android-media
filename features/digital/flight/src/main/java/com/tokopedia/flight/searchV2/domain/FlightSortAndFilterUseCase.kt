@@ -1,8 +1,13 @@
 package com.tokopedia.flight.searchV2.domain
 
 import android.text.TextUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.flight.search.constant.FlightSortOption
+import com.tokopedia.flight.search.data.cloud.model.response.Amenity
+import com.tokopedia.flight.search.data.cloud.model.response.Info
 import com.tokopedia.flight.search.data.cloud.model.response.Route
+import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel
@@ -100,10 +105,23 @@ class FlightSortAndFilterUseCase @Inject constructor(
                         }
                     }
         } else {
+            val gson = Gson()
             flightSearchRepository.getSearchFilter(sortOption, filterModel)
                     .map { it ->
                         it.map { journeyAndRoutes ->
                             val routes = journeyAndRoutes.routes.map {
+                                val stopDetailJsonString = it.stopDetail
+                                val stopDetailType = object : TypeToken<List<StopDetailEntity>>() {}.type
+                                val stopDetails = gson.fromJson<List<StopDetailEntity>>(stopDetailJsonString, stopDetailType)
+
+                                val amenitiesJsonString = it.amenities
+                                val amenitiesType = object : TypeToken<List<Amenity>>() {}.type
+                                val amenities = gson.fromJson<List<Amenity>>(amenitiesJsonString, amenitiesType)
+
+                                val infosJsonString = it.infos
+                                val infosType = object : TypeToken<List<Info>>() {}.type
+                                val infos = gson.fromJson<List<Info>>(infosJsonString, infosType)
+
                                 Route(
                                         it.airline,
                                         it.departureAirport,
@@ -112,18 +130,18 @@ class FlightSortAndFilterUseCase @Inject constructor(
                                         it.arrivalTimestamp,
                                         it.duration,
                                         it.layover,
-                                        null,
+                                        infos,
                                         it.flightNumber,
                                         it.isRefundable,
-                                        null,
+                                        amenities,
                                         it.stops,
+                                        stopDetails,
                                         null,
                                         null,
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        it.departureAirportName,
+                                        it.departureAirportCity,
+                                        it.arrivalAirportName,
+                                        it.arrivalAirportCity
                                 )
                             }
                             with(journeyAndRoutes.flightJourneyTable) {

@@ -136,6 +136,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         return stringBuilder.toString()
     }
 
+    fun deleteAllFlightSearchData() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 //    private fun getOrderBy(flightSortOption: FlightSortOption): String {
 //        when (flightSortOption) {
 //            FlightSortOption.CHEAPEST -> "ORDER BY sortPrice"
