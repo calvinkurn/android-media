@@ -2,9 +2,9 @@ package com.tokopedia.checkout.data.repository;
 
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.util.List;
 import java.util.Map;

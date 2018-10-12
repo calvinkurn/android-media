@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.Paging;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.core.manage.people.address.model.AddressModel;
-import com.tokopedia.core.manage.people.address.model.GetPeopleAddress;
+import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.logisticaddaddress.GeoLocationUtils;
+import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -29,11 +30,14 @@ import com.tokopedia.user.session.UserSession;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import okhttp3.OkHttpClient;
 
 /**
  * Created by nisie on 9/6/16.
  */
+@AddressScope
 public class AddAddressPresenterImpl implements AddAddressPresenter {
 
     private static final String PARAM_ADDRESS_ID = "address_id";
@@ -53,23 +57,9 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     private final AddressRepository networkInteractor;
     private UserSession userSession;
 
-    public AddAddressPresenterImpl(UserSession userSession) {
-        Context context = mView.context();
-        NetworkRouter router = ((NetworkRouter) ((Fragment) mView).getActivity().getApplication());
-        this.networkInteractor = new AddAddressRetrofitInteractorImpl(
-                CommonNetwork.createRetrofit(LogisticDataConstantUrl.PeopleAction.BASE_URL,
-                        new TkpdOkHttpBuilder(context, new OkHttpClient.Builder()),
-                        new TkpdAuthInterceptor(context, router, userSession),
-                        new FingerprintInterceptor(router, userSession),
-                        new StringResponseConverter(), new GsonBuilder())
-                        .create(PeopleActApi.class),
-                CommonNetwork.createRetrofit(TkpdBaseURL.Etc.URL_ADDRESS,
-                        new TkpdOkHttpBuilder(context, new OkHttpClient.Builder()),
-                        new TkpdAuthInterceptor(context, router, userSession),
-                        new FingerprintInterceptor(router, userSession),
-                        new StringResponseConverter(), new GsonBuilder())
-                        .create(AddressApi.class)
-        );
+    @Inject
+    public AddAddressPresenterImpl(UserSession userSession, AddressRepository addressRepository) {
+        this.networkInteractor = addressRepository;
         this.userSession = userSession;
     }
 

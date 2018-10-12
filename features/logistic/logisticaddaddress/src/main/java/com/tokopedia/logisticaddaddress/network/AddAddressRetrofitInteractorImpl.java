@@ -14,6 +14,7 @@ import com.tkpd.library.utils.data.model.ListProvince;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.database.model.City_Table;
 import com.tokopedia.core.database.model.Province_Table;
+import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -48,6 +51,7 @@ import rx.subscriptions.CompositeSubscription;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@AddressScope
 public class AddAddressRetrofitInteractorImpl implements AddressRepository {
 
     private static final String TAG = AddAddressRetrofitInteractorImpl.class.getSimpleName();
@@ -57,6 +61,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     private final PeopleActApi peopleActService;
     private final AddressApi addressService;
 
+    @Inject
     public AddAddressRetrofitInteractorImpl(PeopleActApi peopleActApi, AddressApi addressApi) {
         this.compositeSubscription = new CompositeSubscription();
         this.peopleActService = peopleActApi;

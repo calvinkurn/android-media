@@ -60,7 +60,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
-import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;

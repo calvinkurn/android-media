@@ -31,14 +31,18 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
+import com.tokopedia.logisticaddaddress.di.AddressModule;
+import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -57,6 +61,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
@@ -72,8 +78,6 @@ import static com.tokopedia.logisticaddaddress.ManageAddressConstant.REQUEST_COD
  */
 public class AddAddressFragment extends BaseDaggerFragment
         implements AddAddressFragmentView, ITransactionAnalyticsAddAddress {
-
-    AddAddressPresenter mPresenter;
 
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
@@ -138,7 +142,20 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
-    private UserSession userSession;
+
+    @Inject
+    AddAddressPresenter mPresenter;
+    @Inject
+    UserSession userSession;
+
+    @Override
+    protected void initInjector() {
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(appComponent)
+                .addressModule(new AddressModule())
+                .build().inject(this);
+    }
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -154,7 +171,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
-        userSession = new UserSession(getContext());
     }
 
     @Nullable
@@ -166,7 +182,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (!isDistrictRecommendation()) mPresenter.getListProvince();
-        mPresenter = new AddAddressPresenterImpl(userSession);
         mPresenter.attachView(this);
         initView(view);
         initialVar();
@@ -1143,10 +1158,5 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void sendAnalyticsScreenName(String screenName) {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 }
