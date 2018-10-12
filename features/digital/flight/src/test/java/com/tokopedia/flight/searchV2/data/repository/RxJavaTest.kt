@@ -5,7 +5,6 @@ import rx.Observable
 import rx.observers.TestSubscriber
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created by Rizky on 10/10/18.
  */
@@ -35,7 +34,9 @@ class RxJavaTest {
 //                .repeatWhen {
 //                    it.delay(100L, TimeUnit.SECONDS)
 //                }
-                .takeUntil { it.second == "4" }
+//                .takeUntil { it.second == "4" }
+                .takeWhile { it.second == "4" }
+//                .filter { it.second == "4" }
                 .subscribe {
                     val str = it.second
                     println(str)
@@ -43,6 +44,52 @@ class RxJavaTest {
 
 //        assert(testSubscriber.valueCount == 1)
     }
+
+//    @Test
+//    fun testRetryWhen() {
+//        val someInt = listOf(1, 2, 3)
+//
+//        val observable = Observable.from(someInt)
+//
+//        observable.flatMap {
+//            if (it != 5) {
+//                val observableError: Observable<InvalidObjectException> =
+//                        Observable.error(InvalidObjectException(""))
+//                observableError
+//            } else {
+//                Observable.just(it)
+//            }
+//        }.retryWhen { errors ->
+//            errors.flatMap { error ->
+//                if (error is InvalidObjectException) {
+//                    Observable.just("")
+//                }
+//                // For anything else, don't retry
+//                Observable.just(error)
+//            }
+//        }.subscribe {
+//            println(it)
+//        }
+
+    //        return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel)
+//                .flatMap {
+//                    if (it.isNeedRefresh) {
+//                        val observableError: Observable<InvalidObjectException> =
+//                                Observable.error(InvalidObjectException(""))
+//                        observableError
+//                    } else {
+//                        Observable.just(it)
+//                    }
+//                }.retryWhen { errors ->
+//                    errors.flatMap { error ->
+//                        if (error is InvalidObjectException) {
+//                            Observable.timer(5, TimeUnit.SECONDS)
+//                        }
+//                        // For anything else, don't retry
+//                        Observable.error<Exception>(error)
+//                    }
+//                }.map { Meta() }
+//    }
 
     @Test
     fun testTimer() {
@@ -67,5 +114,40 @@ class RxJavaTest {
 //                    println(str)
 //                }
     }
+
+//    @Test
+//    fun testTakeUntil() {
+////        val someInt = listOf(1, 2, 3)
+//
+//        val isNeedRefresh = true
+//
+//        val observable = Observable.just(isNeedRefresh)
+//
+//        Observable.defer {
+//            val pollDelay = intArrayOf(0)
+//            observable.doOnNext {
+//                pollDelay[0] = 3
+//            }.repeatWhen { o ->
+//                o.flatMap { Observable.timer(pollDelay[0].toLong(), TimeUnit.MILLISECONDS) }
+//            }.takeUntil { it == false }.last()
+//        }.subscribe {
+//            println(it)
+//        }
+//    }
+
+    @Test
+    fun testRepeat() {
+        val isNeedRefresh = true
+
+        Observable.just(isNeedRefresh)
+                .repeat()
+                .takeUntil { !it }
+                .last()
+                .subscribe {
+                    println(it)
+                }
+    }
+
+
 
 }

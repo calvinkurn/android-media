@@ -16,14 +16,88 @@ import javax.inject.Inject
  * Created by Rizky on 26/09/18.
  */
 class FlightSortAndFilterUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<FlightJourneyViewModel>>() {
+        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<@JvmSuppressWildcards FlightJourneyViewModel>>() {
 
     private val PARAM_SORT = "PARAM_SORT"
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<FlightJourneyViewModel>> {
+    override fun createObservable(requestParams: RequestParams): Observable<List<@JvmSuppressWildcards FlightJourneyViewModel>> {
         val sortOption = requestParams.getInt(PARAM_SORT, FlightSortOption.CHEAPEST)
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
+
+//        return flightSearchRepository.getSearchReturnBestPairsByOnwardJourneyId(filterModel)
+//                .map { it ->
+//                    it.map { journeyAndRoutes ->
+//                        val routes = journeyAndRoutes.routes.map {
+//                            Route(
+//                                    it.airline,
+//                                    it.departureAirport,
+//                                    it.departureTimestamp,
+//                                    it.arrivalAirport,
+//                                    it.arrivalTimestamp,
+//                                    it.duration,
+//                                    it.layover,
+//                                    null,
+//                                    it.flightNumber,
+//                                    it.isRefundable,
+//                                    null,
+//                                    it.stops,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null,
+//                                    null
+//                            )
+//                        }
+//                        with(journeyAndRoutes.flightJourneyTable) {
+//                            val fare = FlightFareViewModel(
+//                                    adult,
+//                                    adultCombo,
+//                                    child,
+//                                    childCombo,
+//                                    infant,
+//                                    infantCombo,
+//                                    adultNumeric,
+//                                    adultNumericCombo,
+//                                    childNumeric,
+//                                    childNumericCombo,
+//                                    infantNumeric,
+//                                    infantNumericCombo
+//                            )
+//                            FlightJourneyViewModel(
+//                                    term,
+//                                    id,
+//                                    departureAirport,
+//                                    departureAirportName,
+//                                    departureAirportCity,
+//                                    departureTime,
+//                                    departureTimeInt,
+//                                    arrivalAirport,
+//                                    arrivalTime,
+//                                    arrivalAirportName,
+//                                    arrivalAirportCity,
+//                                    arrivalTimeInt,
+//                                    totalTransit,
+//                                    addDayArrival,
+//                                    duration,
+//                                    durationMinute,
+//                                    total,
+//                                    totalNumeric,
+//                                    totalCombo,
+//                                    0,
+//                                    isBestPairing,
+//                                    beforeTotal,
+//                                    isRefundable,
+//                                    isReturn,
+//                                    fare,
+//                                    routes,
+//                                    flightAirlineDBS
+//                            )
+//                        }
+//                    }
+//                }
 
         return if (!TextUtils.isEmpty(filterModel.journeyId)) {
             flightSearchRepository.getSearchReturnBestPairsByOnwardJourneyId(filterModel)
@@ -102,8 +176,8 @@ class FlightSortAndFilterUseCase @Inject constructor(
         } else {
             flightSearchRepository.getSearchFilter(sortOption, filterModel)
                     .map { it ->
-                        it.map { journerAndRoutes ->
-                            val routes = journerAndRoutes.routes.map {
+                        it.map { journeyAndRoutes ->
+                            val routes = journeyAndRoutes.routes.map {
                                 Route(
                                         it.airline,
                                         it.departureAirport,
@@ -126,7 +200,7 @@ class FlightSortAndFilterUseCase @Inject constructor(
                                         null
                                 )
                             }
-                            with(journerAndRoutes.flightJourneyTable) {
+                            with(journeyAndRoutes.flightJourneyTable) {
                                 val fare = FlightFareViewModel(
                                         adult,
                                         adultCombo,

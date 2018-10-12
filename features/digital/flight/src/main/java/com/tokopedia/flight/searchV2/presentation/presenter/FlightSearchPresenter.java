@@ -200,7 +200,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     private void fetch(FlightSearchApiRequestModel requestModel, FlightSearchPassDataViewModel passDataViewModel) {
-
         flightSearchV2UseCase.execute(flightSearchV2UseCase.createRequestParams(
                 requestModel,
                 getView().isReturning(),
@@ -258,7 +257,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
-                new Subscriber<List<? extends FlightJourneyViewModel>>() {
+                new Subscriber<List<FlightJourneyViewModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -270,7 +269,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     }
 
                     @Override
-                    public void onNext(List<? extends FlightJourneyViewModel> flightJourneyViewModels) {
+                    public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
 //                        getView().renderList((List<FlightJourneyViewModel>) flightJourneyViewModels);
                     }
                 }

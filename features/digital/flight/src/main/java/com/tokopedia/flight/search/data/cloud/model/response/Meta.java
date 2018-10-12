@@ -61,6 +61,10 @@ public class Meta {
         return infant;
     }
 
+    public void setNeedRefresh(boolean needRefresh) {
+        this.needRefresh = needRefresh;
+    }
+
     public void setDepartureAirport(String departureAirport) {
         this.departureAirport = departureAirport;
     }
