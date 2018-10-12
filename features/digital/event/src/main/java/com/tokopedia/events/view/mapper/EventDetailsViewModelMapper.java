@@ -17,6 +17,7 @@ import java.util.List;
 
 public class EventDetailsViewModelMapper {
     public static void mapDomainToViewModel(EventDetailsDomain source, EventsDetailsViewModel target) {
+        target.setId(source.getId);
         target.setTitle(source.getTitle());
         target.setConvenienceFee(source.getConvenienceFee());
         target.setDateRange(source.getDateRange());

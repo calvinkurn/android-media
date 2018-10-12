@@ -75,9 +75,9 @@ public class EventsDetailsPresenter
         CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
         try {
             if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
+                checkForScan(dataFromHome.getId());
                 getView().renderFromHome(dataFromHome);
                 url = dataFromHome.getUrl();
-                checkForScan(dataFromHome.getId());
             } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
                 url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
             }
