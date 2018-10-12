@@ -20,7 +20,7 @@ public class KelontongMainApplication extends Application {
     public void initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
-            Crashlytics.setUserIdentifier("");
+            Crashlytics.setUserIdentifier(getString(R.string.app_name));
         }
     }
 }

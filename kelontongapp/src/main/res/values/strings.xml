@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Kelontong App</string>
+    <string name="msg_exit">Tekan sekali lagi untuk keluar</string>
 </resources>

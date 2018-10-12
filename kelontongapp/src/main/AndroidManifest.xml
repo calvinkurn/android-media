@@ -3,6 +3,9 @@
     package="com.tokopedia.kelontongapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".KelontongMainApplication"
@@ -27,5 +30,8 @@
             android:name="io.fabric.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4"
             />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
     </application>
 </manifest>
