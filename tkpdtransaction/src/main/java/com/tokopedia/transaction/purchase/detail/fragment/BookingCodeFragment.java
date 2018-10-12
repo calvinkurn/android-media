@@ -120,7 +120,8 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         });
     }
 
-    private void changeBarcodeSize(int dp) {
+    @Override
+    public void changeBarcodeSize(int dp) {
         ViewGroup.LayoutParams params = barcodeImg.getLayoutParams();
         params.width = barcodeImg.getWidth() + dpToPx(dp);
         params.height = barcodeImg.getHeight() + dpToPx(dp);
