@@ -33,8 +33,8 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_IMAGE_LIST = "image_list";
     private static final String PARAM_INPUT = "input";
+    private static final String PARAM_MAIN_IMAGE_INDEX = "main_image_index";
     private static final String TYPE_AFFILIATE = "affiliate";
-    private static final String TYPE_IMAGE = "image";
 
     public static final int SUCCESS = 1;
 
@@ -55,21 +55,38 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
     @Override
     public Observable<SubmitPostData> createObservable(RequestParams requestParams) {
         List<String> imageList = (List<String>) requestParams.getObject(PARAM_IMAGE_LIST);
+        int mainImageIndex = requestParams.getInt(PARAM_MAIN_IMAGE_INDEX, 0);
         return uploadMultipleImageUseCase
-                .createObservable(UploadMultipleImageUseCase.createRequestParams(imageList))
+                .createObservable(
+                        UploadMultipleImageUseCase.createRequestParams(
+                                getMediumList(imageList, mainImageIndex)
+                        )
+                )
                 .flatMap(submitPostToGraphql(requestParams));
     }
 
-    private Func1<List<String>, Observable<SubmitPostData>> submitPostToGraphql(RequestParams
-                                                                                 requestParams) {
-        return imageUrlList -> {
+    private List<SubmitPostMedium> getMediumList(List<String> imageList, int mainImageIndex) {
+        List<SubmitPostMedium> mediumList = new ArrayList<>();
+        mediumList.add(new SubmitPostMedium(imageList.get(mainImageIndex), 0));
+        for (int i = 0; i < imageList.size(); i++) {
+            if (i != mainImageIndex) {
+                mediumList.add(new SubmitPostMedium(imageList.get(i), mediumList.size()));
+            }
+        }
+        return mediumList;
+    }
+
+
+    private Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> submitPostToGraphql(RequestParams
+                                                                                        requestParams) {
+        return mediumList -> {
             String query = GraphqlHelper.loadRawString(
                     context.getResources(),
                     R.raw.mutation_af_submit_post
             );
 
             HashMap<String, Object> variables = new HashMap<>();
-            variables.put(PARAM_INPUT, getContentSubmitInput(requestParams, imageUrlList));
+            variables.put(PARAM_INPUT, getContentSubmitInput(requestParams, mediumList));
 
             GraphqlRequest graphqlRequest = new GraphqlRequest(
                     query,
@@ -90,31 +107,25 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
     }
 
     private ContentSubmitInput getContentSubmitInput(RequestParams requestParams,
-                                                     List<String> imageUrlList) {
+                                                     List<SubmitPostMedium> mediumList) {
         ContentSubmitInput input = new ContentSubmitInput();
         input.setType(requestParams.getString(PARAM_TYPE, ""));
         input.setAdID(requestParams.getString(PARAM_AD_ID, ""));
         input.setProductID(requestParams.getString(PARAM_PRODUCT_ID, ""));
         input.setToken(requestParams.getString(PARAM_TOKEN, ""));
-
-        List<SubmitPostMedium> mediumList = new ArrayList<>();
-        for (int i = 0; i < imageUrlList.size(); i++) {
-            mediumList.add(
-                    new SubmitPostMedium(imageUrlList.get(i), TYPE_IMAGE, i)
-            );
-        }
         input.setMedia(mediumList);
         return input;
     }
 
     public static RequestParams createRequestParams(String productId, String adId, String token,
-                                                    List<String> imageList) {
+                                                    List<String> imageList, int mainImageIndex) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE);
         requestParams.putString(PARAM_PRODUCT_ID, productId);
         requestParams.putString(PARAM_AD_ID, adId);
         requestParams.putString(PARAM_TOKEN, token);
         requestParams.putObject(PARAM_IMAGE_LIST, imageList);
+        requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex);
         return requestParams;
     }
 }

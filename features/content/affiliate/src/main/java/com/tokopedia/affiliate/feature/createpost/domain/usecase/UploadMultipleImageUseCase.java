@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request.SubmitPostMedium;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
@@ -24,7 +25,7 @@ import rx.schedulers.Schedulers;
 /**
  * @author by milhamj on 10/1/18.
  */
-public class UploadMultipleImageUseCase extends UseCase<List<String>> {
+public class UploadMultipleImageUseCase extends UseCase<List<SubmitPostMedium>> {
     private static final String PARAM_URL_LIST = "url_list";
     private static final String PARAM_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
@@ -48,31 +49,33 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Observable<List<String>> createObservable(RequestParams requestParams) {
-        return Observable.from((List<String>) requestParams.getObject(PARAM_URL_LIST))
+    public Observable<List<SubmitPostMedium>> createObservable(RequestParams requestParams) {
+        return Observable.from((List<SubmitPostMedium>) requestParams.getObject(PARAM_URL_LIST))
                 .flatMap(uploadSingleImage())
                 .toList();
     }
 
-    private Func1<String, Observable<String>> uploadSingleImage() {
-        return url -> {
-            if (CreatePostViewModel.urlIsFile(url)) {
-                return uploadImageUseCase.createObservable(createUploadParams(url))
-                        .map(mapToUrl())
+    private Func1<SubmitPostMedium, Observable<SubmitPostMedium>> uploadSingleImage() {
+        return medium -> {
+            if (CreatePostViewModel.urlIsFile(medium.getMediaURL())) {
+                return uploadImageUseCase.createObservable(createUploadParams(medium.getMediaURL()))
+                        .map(mapToUrl(medium))
                         .subscribeOn(Schedulers.io());
             } else {
-                return Observable.just(url);
+                return Observable.just(medium);
             }
         };
     }
 
-    private Func1<ImageUploadDomainModel<UploadImageResponse>, String> mapToUrl() {
+    private Func1<ImageUploadDomainModel<UploadImageResponse>, SubmitPostMedium> mapToUrl(
+            SubmitPostMedium medium) {
         return uploadDomainModel -> {
             String imageUrl = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
             if (imageUrl != null && imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500);
             }
-            return imageUrl;
+            medium.setMediaURL(imageUrl);
+            return medium;
         };
     }
 
@@ -101,9 +104,9 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
         );
     }
 
-    public static RequestParams createRequestParams(List<String> urlList) {
+    public static RequestParams createRequestParams(List<SubmitPostMedium> mediumList) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(PARAM_URL_LIST, urlList);
+        requestParams.putObject(PARAM_URL_LIST, mediumList);
         return requestParams;
     }
 }

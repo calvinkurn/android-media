@@ -44,10 +44,17 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     }
 
     @Override
-    public void submitPost(String productId, String adId, String token, List<String> imageList) {
+    public void submitPost(String productId, String adId, String token, List<String> imageList,
+                           int mainImageIndex) {
         getView().showLoading();
         submitPostUseCase.execute(
-                SubmitPostUseCase.createRequestParams(productId, adId, token, imageList),
+                SubmitPostUseCase.createRequestParams(
+                        productId,
+                        adId,
+                        token,
+                        imageList,
+                        mainImageIndex
+                ),
                 new SubmitPostSubscriber(getView())
         );
     }

@@ -33,6 +33,7 @@ public interface CreatePostContract {
     interface Presenter extends CustomerPresenter<View> {
         void fetchContentForm(String productId, String adId);
 
-        void submitPost(String productId, String adId, String token, List<String> imageList);
+        void submitPost(String productId, String adId, String token, List<String> imageList,
+                        int mainImageIndex);
     }
 }

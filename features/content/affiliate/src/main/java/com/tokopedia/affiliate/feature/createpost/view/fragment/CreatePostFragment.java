@@ -342,7 +342,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 viewModel.getProductId(),
                 viewModel.getAdId(),
                 viewModel.getToken(),
-                viewModel.getCompleteList()
+                viewModel.getCompleteList(),
+                viewModel.getMainImageIndex()
         );
     }
 }
