@@ -80,11 +80,11 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 @Override
                 public void onNext(Boolean aBoolean) {
                     getView().setNeedRefreshAirline(false);
-                    getView().fetchFlightSearchData();
+//                    getView().fetchFlightSearchData();
                 }
             });
         } else {
-            getView().fetchFlightSearchData();
+//            getView().fetchFlightSearchData();
         }
     }
 
@@ -164,6 +164,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                             }
                         }
                     });
+        } else {
+            if (isViewAttached()) {
+                getView().fetchFlightSearchData();
+            }
         }
     }
 

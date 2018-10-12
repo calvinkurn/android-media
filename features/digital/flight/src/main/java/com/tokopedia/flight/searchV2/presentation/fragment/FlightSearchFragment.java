@@ -144,7 +144,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         super.onViewCreated(view, savedInstanceState);
 
         flightSearchPresenter.attachView(this);
-//        flightSearchPresenter.fetchCombineData(passDataViewModel);
+        flightSearchPresenter.fetchCombineData(passDataViewModel);
     }
 
     @Override
