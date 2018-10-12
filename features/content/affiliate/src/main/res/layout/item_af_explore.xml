@@ -41,16 +41,17 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_below="@id/iv_image"
         android:textSize="@dimen/sp_14"
         android:fontFamily="sans-serif"
         android:textColor="@color/font_black_primary_70"
         android:maxLines="2"
+        android:gravity="center|left"
         android:ellipsize="end"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/dp_8"
-        tools:text="default affiliate title"/>
+        tools:text="default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title default affiliate title "/>
 
     <TextView
         android:id="@+id/tv_commission"

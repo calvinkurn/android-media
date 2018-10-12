@@ -99,8 +99,8 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-//        testData();
-        presenter.getFirstData(exploreParams, false);
+        testData();
+//        presenter.getFirstData(exploreParams, false);
     }
 
     private void initEmptyResultModel() {
@@ -291,7 +291,7 @@ public class ExploreFragment
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi",
+                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 12.000",
                 "1",
                 "1"));
@@ -299,6 +299,21 @@ public class ExploreFragment
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
+                "Rp. 10.000",
+                "1",
+                "1"));
+
+        itemList.add(new ExploreViewModel(
+                "2",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "Nasi Goreng Sapi",
+                "Rp. 12.000",
+                "1",
+                "1"));
+        itemList.add(new ExploreViewModel(
+                "1",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 10.000",
                 "1",
                 "1"));
@@ -321,22 +336,7 @@ public class ExploreFragment
         itemList.add(new ExploreViewModel(
                 "2",
                 "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi",
-                "Rp. 12.000",
-                "1",
-                "1"));
-        itemList.add(new ExploreViewModel(
-                "1",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng",
-                "Rp. 10.000",
-                "1",
-                "1"));
-
-        itemList.add(new ExploreViewModel(
-                "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi",
+                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 12.000",
                 "1",
                 "1"));
