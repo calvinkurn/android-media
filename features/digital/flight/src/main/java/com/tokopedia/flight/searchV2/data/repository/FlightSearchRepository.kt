@@ -83,6 +83,40 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
+    fun getSearchCombined2(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel):
+            Observable<Meta> {
+        return flightSearchCombinedDataApiSource.getData(flightSearchCombinedApiRequestModel)
+                .map { response ->
+                    val combosTable = arrayListOf<FlightComboTable>()
+                    for (comboResponse in response.data) {
+                        with(comboResponse) {
+                            kotlin.with(attributes) {
+                                val onwardJourney = combos[0]
+                                val returnJourney = combos[1]
+                                combosTable.add(FlightComboTable(
+                                        onwardJourney.id,
+                                        returnJourney.id,
+                                        id,
+                                        onwardJourney.adultPrice,
+                                        onwardJourney.childPrice,
+                                        onwardJourney.infantPrice,
+                                        onwardJourney.adultPriceNumeric,
+                                        onwardJourney.childPriceNumeric,
+                                        onwardJourney.infantPriceNumeric,
+                                        isBestPairing
+                                ))
+                            }
+                        }
+                    }
+                    ComboAndMetaWrapper(combosTable, response.meta)
+                }.flatMap { items ->
+                    Observable.just(flightSearchCombinedDataDbSource.insert(items.flightComboTables))
+                            .map {
+                                items.meta
+                            }
+                }
+    }
+
     // simply call search combined and then insert to db
     fun getSearchCombined(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel):
             Observable<Meta> {
@@ -219,6 +253,21 @@ open class FlightSearchRepository @Inject constructor(
     fun getSearchFilter(@FlightSortOption sortOption: Int, filterModel: FlightFilterModel):
             Observable<List<JourneyAndRoutes>> {
         return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
+                .flatMapIterable { it }
+                .flatMap { journeyAndRoutes ->
+                    Observable.from(journeyAndRoutes.routes)
+                            .flatMap {
+                                getAirlineById(it.airline)
+                            }
+                            .toList()
+                            .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
+                                airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
+                                        journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
+                                journeyAndRoutes
+                            }
+                }
+                .toList()
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {

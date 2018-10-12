@@ -19,14 +19,19 @@ class FlightSearchCombinedUseCase @Inject constructor(
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
         val flightSearchCombinedApiRequestModel =
                 requestParams.getObject(PARAM_SEARCH_COMBINED) as FlightSearchCombinedApiRequestModel
-        return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel)
-                .repeat()
-                .delay {
-                    Observable.just(it)
-                            .delay(it.refreshTime.toLong(), TimeUnit.SECONDS)
-                }
-                .takeUntil { it.isNeedRefresh }
-                .map { true }
+
+        val numOfAttempts = intArrayOf(0)
+        val pollDelay = intArrayOf(0)
+
+        return flightSearchRepository.getSearchCombined2(flightSearchCombinedApiRequestModel).doOnNext {
+            pollDelay[0] = it.refreshTime
+            numOfAttempts[0]++
+        }.repeatWhen { o ->
+            o.delay(pollDelay[0].toLong(), TimeUnit.SECONDS)
+            o.flatMap { Observable.timer(pollDelay[0].toLong(), TimeUnit.SECONDS) }
+        }.takeUntil {
+            (!it.isNeedRefresh) || (numOfAttempts[0] >= it.maxRetry)
+        }.last().map { true }
     }
 
     fun createRequestParam(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel)
