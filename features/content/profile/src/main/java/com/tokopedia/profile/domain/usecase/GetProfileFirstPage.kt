@@ -83,9 +83,8 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
 
     private fun convertToPostQuota(): Func1<GraphqlResponse, AffiliatePostQuota> {
         return Func1 { graphqlResponse ->
-            val data: AffiliateQuotaData = graphqlResponse.getData(AffiliateQuotaData::class.java)
-                    ?: AffiliateQuotaData()
-            data.affiliatePostQuota
+            val data: AffiliateQuotaData? = graphqlResponse.getData(AffiliateQuotaData::class.java)
+            data?.affiliatePostQuota ?: AffiliatePostQuota()
         }
     }
 
