@@ -15,7 +15,28 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomSpace"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
         tools:src="@tools:sample/avatars" />
+
+    <FrameLayout
+        android:id="@+id/changeAvatar"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:background="@drawable/bg_af_circle_white"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="@dimen/dp_4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/avatar"
+        app:layout_constraintEnd_toEndOf="@id/avatar"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_af_camera" />
+    </FrameLayout>
 
     <View
         android:id="@+id/avatarSeparator"

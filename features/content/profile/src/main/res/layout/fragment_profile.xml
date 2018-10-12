@@ -67,7 +67,7 @@
                 android:id="@+id/shareOwn"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="0dp"
-                android:background="@drawable/af_rounded_corner"
+                android:background="@drawable/bg_af_rounded_corner"
                 android:padding="@dimen/dp_8"
                 android:src="@drawable/ic_af_share_grey"
                 android:focusable="true"
