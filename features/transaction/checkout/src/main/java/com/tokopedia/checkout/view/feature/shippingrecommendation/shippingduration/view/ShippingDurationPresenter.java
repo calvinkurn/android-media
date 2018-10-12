@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,12 +91,15 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                         public void onNext(ShippingRecommendationData shippingRecommendationData) {
                             if (getView() != null) {
                                 getView().hideLoading();
-                                if (shippingRecommendationData.getShippingDurationViewModels() != null &&
+                                if (shippingRecommendationData.getErrorId() != null &&
+                                        shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
+                                    getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
                                         shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
                                     shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
                                     getView().showData(shippingDurationViewModelList);
                                 } else {
-                                    getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                    getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
                                 }
                             }
                         }

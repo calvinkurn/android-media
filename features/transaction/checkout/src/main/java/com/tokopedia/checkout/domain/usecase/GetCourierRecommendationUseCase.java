@@ -57,22 +57,25 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                     public ShippingRecommendationData call(GraphqlResponse graphqlResponse) {
                         GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
                         ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
+
+                        // Check response not null
                         if (data != null && data.getRatesData() != null && data.getRatesData().getRatesDetailData() != null) {
+                            // Check has service / duration list
                             if (data.getRatesData().getRatesDetailData().getServices() != null &&
                                     data.getRatesData().getRatesDetailData().getServices().size() > 0) {
+                                // Check if has error
+                                if (data.getRatesData().getRatesDetailData().getError() != null &&
+                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getError().getErrorMessage())) {
+                                    shippingRecommendationData.setErrorMessage(data.getRatesData().getRatesDetailData().getError().getErrorMessage());
+                                    shippingRecommendationData.setErrorId(data.getRatesData().getRatesDetailData().getError().getErrorId());
+                                }
+                                // Has service / duration list
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
                                                 shopShipments, shipmentDetailData, selectedServiceId
                                         )
                                 );
-                            } else {
-                                if (data.getRatesData().getRatesDetailData().getError() != null &&
-                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getError().getErrorMessage())) {
-                                    shippingRecommendationData.setErrorMessage(data.getRatesData().getRatesDetailData().getError().getErrorMessage());
-                                } else {
-                                    throw new RuntimeException();
-                                }
                             }
                         }
                         return shippingRecommendationData;

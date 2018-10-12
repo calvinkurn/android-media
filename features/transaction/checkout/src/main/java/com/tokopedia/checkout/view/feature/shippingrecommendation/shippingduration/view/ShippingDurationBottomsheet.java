@@ -185,6 +185,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void showNoCourierAvailable(String message) {
         shippingDurationBottomsheetListener.onNoCourierAvailable(message);
+        dismiss();
     }
 
     @Override
