@@ -49,10 +49,10 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @Override
-    public void checkAffiliateQuota() {
+    public void checkAffiliateQuota(String productId, String adId) {
         checkQuotaUseCase.clearRequest();
         checkQuotaUseCase.addRequest(checkQuotaUseCase.getRequest());
-        checkQuotaUseCase.execute(new CheckQuotaSubscriber(getView()));
+        checkQuotaUseCase.execute(new CheckQuotaSubscriber(getView(), productId, adId));
 
     }
 

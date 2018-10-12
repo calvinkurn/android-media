@@ -11,15 +11,15 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreT
  */
 public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelable {
 
-    private String id;
+    private String adId;
     private String imageUrl;
     private String title;
     private String commissionString;
     private String productId;
     private String productLink;
 
-    public ExploreViewModel(String id, String imageUrl, String title, String commissionString, String productId, String productLink) {
-        this.id = id;
+    public ExploreViewModel(String adId, String imageUrl, String title, String commissionString, String productId, String productLink) {
+        this.adId = adId;
         this.imageUrl = imageUrl;
         this.title = title;
         this.commissionString = commissionString;
@@ -27,12 +27,12 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
         this.productLink = productLink;
     }
 
-    public String getId() {
-        return id;
+    public String getAdId() {
+        return adId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAdId(String adId) {
+        this.adId = adId;
     }
 
     public String getImageUrl() {
@@ -59,6 +59,22 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
         this.commissionString = commissionString;
     }
 
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductLink() {
+        return productLink;
+    }
+
+    public void setProductLink(String productLink) {
+        this.productLink = productLink;
+    }
+
     @Override
     public int type(ExploreTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -71,7 +87,7 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
+        dest.writeString(this.adId);
         dest.writeString(this.imageUrl);
         dest.writeString(this.title);
         dest.writeString(this.commissionString);
@@ -80,7 +96,7 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
     }
 
     protected ExploreViewModel(Parcel in) {
-        this.id = in.readString();
+        this.adId = in.readString();
         this.imageUrl = in.readString();
         this.title = in.readString();
         this.commissionString = in.readString();

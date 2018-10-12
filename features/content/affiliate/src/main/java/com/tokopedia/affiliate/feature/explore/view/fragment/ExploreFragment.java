@@ -30,8 +30,11 @@ import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,7 @@ public class ExploreFragment
         SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
-
+    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
     private static final int ITEM_COUNT = 10;
 
     private RecyclerView rvExplore;
@@ -58,6 +61,9 @@ public class ExploreFragment
     private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
     private EmptyModel emptyResultModel;
+
+    @Inject
+    UserSession userSession;
 
     @Inject
     ExplorePresenter presenter;
@@ -107,7 +113,7 @@ public class ExploreFragment
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
-        emptyResultModel.setTitle("Produk Tidak Ditemukan");
+        emptyResultModel.setTitle(getActivity().getResources().getString(R.string.text_product_not_found));
     }
 
     private void initListener() {
@@ -115,7 +121,10 @@ public class ExploreFragment
             getActivity().onBackPressed();
         });
         ivBantuan.setOnClickListener(view -> {
-            //transition do webview
+            RouteManager.route(
+                    getContext(),
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+            );
         });
     }
 
@@ -195,12 +204,12 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-        presenter.checkAffiliateQuota();
+        presenter.checkAffiliateQuota(model.getProductId(), model.getAdId());
     }
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-        //transition do applink to pdp
+        //TODO Yoas : transition do applink to pdp
     }
 
     @Override
@@ -274,19 +283,27 @@ public class ExploreFragment
 
     @Override
     public void onErrorNonAffiliateUser() {
-        //transition do applink to onboarding
+        //TODO Yoas : need to be tested
+        RouteManager.route(getActivity(), ApplinkConst.AFFILIATE_ONBOARDING);
     }
 
     @Override
-    public void onSuccessCheckQuota() {
-        //transition do add product
+    public void onSuccessCheckQuota(String productId, String adId) {
+        //TODO Yoas : transition do add product, need to be tested
+        RouteManager.route(
+                getActivity(),
+                ApplinkConst.AFFILIATE_CREATE_POST
+                        .replace("{product_id}", productId)
+                        .replace("{ad_id}", adId));
     }
 
     @Override
     public void onSuccessCheckQuotaButEmpty() {
           Dialog dialog = buildDialog();
           dialog.setOnOkClickListener(view ->{
-            //transition    do go profile
+              RouteManager.route(
+                      getActivity(),
+                      ApplinkConst.PROFILE.replace("{user_id}", userSession.getUserId()));
           });
           dialog.setOnCancelClickListener(view -> {
               dialog.dismiss();
@@ -306,9 +323,9 @@ public class ExploreFragment
     }
 
     @Override
-    public void onErrorCheckQuota(String error) {
+    public void onErrorCheckQuota(String error, String productId, String adId) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, () -> {
-           presenter.checkAffiliateQuota();
+           presenter.checkAffiliateQuota(productId, adId);
         });
     }
 

@@ -26,6 +26,7 @@
     <string name="text_empty_search_title">Oops, Produk Tidak Ditemukan</string>
     <string name="text_empty_search_desc">Coba lakukan pencarian dengan kata kunci baru</string>
     <string name="text_empty_search_btn">Lakukan Pencarian Baru</string>
+    <string name="text_product_not_found">Produk Tidak Ditemukan</string>
     <string name="text_full_affiliate_title">Jatah Rekomendasimu Habis</string>
     <string name="text_full_affiliate">Kamu sudah memiliki 15 rekomendasi. Silakan hapus salah satu rekomendasimu untuk menambah yang baru</string>
     <string name="text_full_affiliate_ok">Lihat Rekomendasi Saya</string>

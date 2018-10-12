@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,5 +19,11 @@ public class AffiliateModule {
     @Provides
     CheckQuotaUseCase provideCheckQuotaUseCase(@ApplicationContext Context context) {
         return new CheckQuotaUseCase(context);
+    }
+
+    @AffiliateScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

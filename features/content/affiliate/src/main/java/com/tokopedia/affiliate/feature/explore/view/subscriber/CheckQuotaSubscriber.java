@@ -12,9 +12,13 @@ import rx.Subscriber;
  */
 public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
     private ExploreContract.View mainView;
+    private String productId;
+    private String adId;
 
-    public CheckQuotaSubscriber(ExploreContract.View mainView) {
+    public CheckQuotaSubscriber(ExploreContract.View mainView, String productId, String adId) {
         this.mainView = mainView;
+        this.productId = productId;
+        this.adId = adId;
     }
 
     @Override
@@ -25,7 +29,7 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         mainView.hideLoading();
-        mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), e));
+        mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), e), productId, adId);
     }
 
     @Override
@@ -34,9 +38,9 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
         CheckQuotaQuery query = response.getData(CheckQuotaQuery.class);
         if (query != null) {
             if (query.getData().getNumber() == 0) mainView.onSuccessCheckQuotaButEmpty();
-            else mainView.onSuccessCheckQuota();
+            else mainView.onSuccessCheckQuota(productId, adId);
         } else {
-            mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()));
+            mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()), productId, adId);
         }
     }
 }

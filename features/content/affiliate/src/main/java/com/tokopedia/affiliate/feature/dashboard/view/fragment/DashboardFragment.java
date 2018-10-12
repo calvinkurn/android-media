@@ -59,13 +59,12 @@ public class DashboardFragment
     private CardView cvRecommendation;
     private DashboardAdapter adapter;
     private SwipeToRefresh swipeToRefresh;
-
-
     private boolean isCanLoadMore = false;
     private String cursor = "";
 
     @Inject
     DashboardPresenter presenter;
+
 
     public static DashboardFragment getInstance(Bundle bundle) {
         DashboardFragment fragment = new DashboardFragment();
@@ -104,7 +103,6 @@ public class DashboardFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cvRecommendation.setVisibility(View.GONE);
-
         initView();
         initViewListener();
     }

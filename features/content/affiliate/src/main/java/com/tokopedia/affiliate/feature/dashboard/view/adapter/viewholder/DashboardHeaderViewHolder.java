@@ -58,6 +58,13 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     @Override
     public void bind(DashboardHeaderViewModel element) {
         initView(element);
+        initViewListener(element);
+    }
+
+    private void initViewListener(DashboardHeaderViewModel element) {
+        layoutSaldo.setOnClickListener(view -> {
+            //TODO yoas : pindah ke halaman saldo
+        });
     }
 
     private void initView(DashboardHeaderViewModel element) {

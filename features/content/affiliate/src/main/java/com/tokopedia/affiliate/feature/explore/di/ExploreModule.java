@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,4 +23,9 @@ public class ExploreModule {
                                              CheckQuotaUseCase checkQuotaUseCase) {
         return new ExplorePresenter(new ExploreUseCase(context), checkQuotaUseCase);
     }
-}
+
+    @ExploreScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }}

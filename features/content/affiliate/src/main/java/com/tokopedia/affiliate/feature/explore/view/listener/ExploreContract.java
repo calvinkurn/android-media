@@ -42,11 +42,11 @@ public interface ExploreContract {
 
         void onErrorNonAffiliateUser();
 
-        void onSuccessCheckQuota();
+        void onSuccessCheckQuota(String productId, String adId);
 
         void onSuccessCheckQuotaButEmpty();
 
-        void onErrorCheckQuota(String error);
+        void onErrorCheckQuota(String error, String productId, String adId);
 
     }
 
@@ -56,6 +56,6 @@ public interface ExploreContract {
 
         void loadMoreData(ExploreParams exploreParams);
 
-        void checkAffiliateQuota();
+        void checkAffiliateQuota(String productId, String adId);
     }
 }
