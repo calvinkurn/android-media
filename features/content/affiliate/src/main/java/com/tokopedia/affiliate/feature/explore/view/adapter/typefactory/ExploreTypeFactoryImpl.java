@@ -5,9 +5,11 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreEmptySearchViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.EmptyExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 
 /**
@@ -32,12 +34,19 @@ public class ExploreTypeFactoryImpl extends BaseAdapterTypeFactory implements Ex
     }
 
     @Override
+    public int type(ExploreEmptySearchViewModel exploreEmptySearchViewModel) {
+        return ExploreEmptySearchViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder abstractViewHolder;
         if (type == ExploreViewHolder.LAYOUT) {
             abstractViewHolder = new ExploreViewHolder(view, mainView);
         } else if (type == EmptyViewHolder.LAYOUT) {
             abstractViewHolder = new EmptyViewHolder(view);
+        } else if (type == ExploreEmptySearchViewHolder.LAYOUT) {
+            abstractViewHolder = new ExploreEmptySearchViewHolder(view, mainView);
         } else
             abstractViewHolder = super.createViewHolder(view, type);
         return abstractViewHolder;

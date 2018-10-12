@@ -27,6 +27,7 @@ import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
 import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.design.text.SearchInputView;
@@ -55,6 +56,7 @@ public class ExploreFragment
     private ExploreAdapter adapter;
     private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
+    private EmptyModel emptyResultModel;
 
     @Inject
     ExplorePresenter presenter;
@@ -88,6 +90,7 @@ public class ExploreFragment
     }
 
     private void initView() {
+        initEmptyResultModel();
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         rvExplore.addOnScrollListener(getScrollListener());
@@ -100,6 +103,11 @@ public class ExploreFragment
         presenter.getFirstData(exploreParams, false);
     }
 
+    private void initEmptyResultModel() {
+        emptyResultModel = new EmptyModel();
+        emptyResultModel.setIconRes(R.drawable.ic_empty_search);
+        emptyResultModel.setTitle("Produk Tidak Ditemukan");
+    }
 
     private void initListener() {
         ivBack.setOnClickListener(view -> {
@@ -152,6 +160,7 @@ public class ExploreFragment
 
     @Override
     public void onSearchSubmitted(String text) {
+        adapter.clearAllElements();
         exploreParams.setSearchParam(text);
         presenter.getFirstData(exploreParams, false);
     }
@@ -163,7 +172,7 @@ public class ExploreFragment
 
     @Override
     public void onSearchReset() {
-        exploreParams.setSearchParam("");
+        exploreParams.resetSearch();
         presenter.getFirstData(exploreParams, true);
     }
 
@@ -196,10 +205,11 @@ public class ExploreFragment
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        adapter.clearAllElements();
         if (itemList.size() == 0) {
             layoutManager = new GridLayoutManager(getActivity(), 1);
             itemList = new ArrayList<>();
-            itemList.add(new EmptyModel());
+            itemList.add(emptyResultModel);
             exploreParams.disableLoadMore();
         } else {
             layoutManager = new GridLayoutManager(getActivity(), 2);
@@ -208,19 +218,11 @@ public class ExploreFragment
         rvExplore.setLayoutManager(layoutManager);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
         rvExplore.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onErrorGetFirstData(String error) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
-//        layoutManager = new GridLayoutManager(getActivity(), 1);
-//        rvExplore.setLayoutManager(layoutManager);
-//        List<Visitable> itemList = new ArrayList<>();
-//        itemList.add(new EmptyModel());
-//        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
-//        rvExplore.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
         NetworkErrorHelper.showEmptyState(getActivity(),
                 getView().getRootView(),
                 error,
@@ -234,7 +236,6 @@ public class ExploreFragment
     public void onSuccessGetMoreData(List<Visitable> itemList, String cursor) {
         adapter.hideLoading();
         adapter.addElement(itemList);
-        adapter.notifyDataSetChanged();
         if (TextUtils.isEmpty(cursor)) {
             exploreParams.disableLoadMore();
         } else {
@@ -250,6 +251,24 @@ public class ExploreFragment
                 () -> {
                     presenter.loadMoreData(exploreParams);
                 });
+    }
+
+    @Override
+    public void onButtonEmptySearchClicked() {
+        adapter.clearAllElements();
+        exploreParams.resetParams();
+        searchView.getSearchTextView().setText("");
+        searchView.getSearchTextView().setCursorVisible(false);
+        presenter.getFirstData(exploreParams, false);
+    }
+
+    @Override
+    public void onEmptySearchResult() {
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        adapter.clearAllElements();
+        layoutManager = new GridLayoutManager(getActivity(), 1);
+        adapter.addElement(new ExploreEmptySearchViewModel());
+        exploreParams.disableLoadMore();
     }
 
     @Override

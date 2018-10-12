@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.explore.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
@@ -26,7 +28,11 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         if (!isPullToRefresh) getView().showLoading();
         exploreUseCase.clearRequest();
         exploreUseCase.addRequest(exploreUseCase.getRequest(exploreParams));
-        exploreUseCase.execute(new GetExploreFirstSubscriber(getView()));
+        exploreUseCase.execute(
+                new GetExploreFirstSubscriber(
+                        getView(),
+                        !TextUtils.isEmpty(exploreParams.getKeyword()))
+        );
 
     }
 

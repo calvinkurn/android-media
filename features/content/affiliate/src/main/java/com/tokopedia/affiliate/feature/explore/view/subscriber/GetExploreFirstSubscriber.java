@@ -19,9 +19,11 @@ import rx.Subscriber;
 public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
 
     private ExploreContract.View mainView;
+    private boolean isSearch;
 
-    public GetExploreFirstSubscriber(ExploreContract.View mainView) {
+    public GetExploreFirstSubscriber(ExploreContract.View mainView, boolean isSearch) {
         this.mainView = mainView;
+        this.isSearch = isSearch;
     }
 
     @Override
@@ -39,14 +41,19 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
         ExploreQuery query = response.getData(ExploreQuery.class);
-        mainView.onSuccessGetFirstData(
-                query.getProducts() != null ?
-                        mappingProducts(query.getProducts()) :
-                        new ArrayList<Visitable>(),
-                query.getPagination() != null ?
-                        query.getPagination().getNextCursor() :
-                        ""
-        );    }
+        if (isSearch && query.getProducts() == null) {
+            mainView.onEmptySearchResult();
+        } else {
+            mainView.onSuccessGetFirstData(
+                    query.getProducts() != null ?
+                            mappingProducts(query.getProducts()) :
+                            new ArrayList<Visitable>(),
+                    query.getPagination() != null ?
+                            query.getPagination().getNextCursor() :
+                            ""
+            );
+        }
+    }
 
     public static List<Visitable> mappingProducts(List<ExploreProductPojo> pojoList) {
         List<Visitable> itemList = new ArrayList<>();

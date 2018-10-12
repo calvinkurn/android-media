@@ -36,6 +36,10 @@ public interface ExploreContract {
 
         void dropKeyboard();
 
+        void onButtonEmptySearchClicked();
+
+        void onEmptySearchResult();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

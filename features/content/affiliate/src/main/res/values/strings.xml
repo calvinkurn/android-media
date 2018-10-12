@@ -22,6 +22,10 @@
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di ByMe</string>
+    <string name="text_empty_search_title">Oops, Produk Tidak Ditemukan</string>
+    <string name="text_empty_search_desc">Coba lakukan pencarian dengan kata kunci baru</string>
+    <string name="text_empty_search_btn">Lakukan Pencarian Baru</string>
+
 
     <!--ONBOARDING-->
     <string name="title_af_onboarding">Tokopedia By.Me</string>

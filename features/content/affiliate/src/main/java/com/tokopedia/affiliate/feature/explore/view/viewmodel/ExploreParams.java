@@ -44,28 +44,21 @@ public class ExploreParams {
         this.cursor = cursor;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public void resetSearch() {
+        this.keyword = "";
+        setFirstData();
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public String getKeyword() {
+        return keyword;
     }
 
     public ArrayList<ExploreFilter> getFilter() {
         return filter;
     }
 
-    public void setFilter(ArrayList<ExploreFilter> filter) {
-        this.filter = filter;
-    }
-
     public ExploreSort getSort() {
         return sort;
-    }
-
-    public void setSort(ExploreSort sort) {
-        this.sort = sort;
     }
 
     public boolean isCanLoadMore() {
@@ -78,9 +71,5 @@ public class ExploreParams {
 
     public String getCursor() {
         return cursor;
-    }
-
-    public void setCursor(String cursor) {
-        this.cursor = cursor;
     }
 }
