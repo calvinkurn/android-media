@@ -59,7 +59,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
             if (CreatePostViewModel.urlIsFile(url)) {
                 return uploadImageUseCase.createObservable(createUploadParams(url))
                         .map(mapToUrl())
-                        .subscribeOn(Schedulers.computation());
+                        .subscribeOn(Schedulers.io());
             } else {
                 return Observable.just(url);
             }
