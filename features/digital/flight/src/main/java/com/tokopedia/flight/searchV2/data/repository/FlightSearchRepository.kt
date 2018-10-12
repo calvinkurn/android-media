@@ -253,21 +253,23 @@ open class FlightSearchRepository @Inject constructor(
     fun getSearchFilter(@FlightSortOption sortOption: Int, filterModel: FlightFilterModel):
             Observable<List<JourneyAndRoutes>> {
         return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
-                .flatMapIterable { it }
-                .flatMap { journeyAndRoutes ->
-                    Observable.from(journeyAndRoutes.routes)
-                            .flatMap {
-                                getAirlineById(it.airline)
+                .flatMap { journeyAndRoutesList ->
+                    Observable.from(journeyAndRoutesList)
+                            .flatMap { journeyAndRoutes ->
+                                Observable.from(journeyAndRoutes.routes)
+                                        .flatMap {
+                                            getAirlineById(it.airline)
+                                        }
+                                        .toList()
+                                        .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
+                                            airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                            journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
+                                                    journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
+                                            journeyAndRoutes
+                                        }
                             }
                             .toList()
-                            .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
-                                airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
-                                journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
-                                        journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
-                                journeyAndRoutes
-                            }
                 }
-                .toList()
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
