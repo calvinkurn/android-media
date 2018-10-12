@@ -32,7 +32,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
     private static final String DEFAULT_UPLOAD_PATH = "/upload/attachment";
     private static final String DEFAULT_UPLOAD_TYPE = "fileToUpload\"; filename=\"image.jpg";
     private static final String DEFAULT_RESOLUTION = "100-square";
-    private static final String RESOLUTION_300 = "300";
+    private static final String RESOLUTION_500 = "500";
     private static final String TEXT_PLAIN = "text/plain";
 
     private final UploadImageUseCase<UploadImageResponse> uploadImageUseCase;
@@ -67,7 +67,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
         return uploadDomainModel -> {
             String imageUrl = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
             if (imageUrl != null && imageUrl.contains(DEFAULT_RESOLUTION)) {
-                imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
+                imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500);
             }
             return imageUrl;
         };
@@ -81,7 +81,7 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
         );
         RequestBody resolution = RequestBody.create(
                 MediaType.parse(TEXT_PLAIN),
-                RESOLUTION_300
+                RESOLUTION_500
         );
         RequestBody id = RequestBody.create(
                 MediaType.parse(TEXT_PLAIN),

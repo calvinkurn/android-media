@@ -24,6 +24,8 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
     override fun detachView() {
         super.detachView()
         getProfileFirstPage.unsubscribe()
+        likeKolPostUseCase.unsubscribe()
+        followKolPostGqlUseCase.unsubscribe()
     }
 
     override fun getProfileFirstPage(userId: Int) {
