@@ -20,11 +20,6 @@ public class BookingCodeActivity extends BaseSimpleActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     protected Fragment getNewFragment() {
         BookingCodeFragment fragment = new BookingCodeFragment();
         if(getIntent().getExtras() != null) {

@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -59,7 +58,6 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
@@ -519,7 +517,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onError(String errorMessage) {
-        Log.d(OrderDetailActivity.class.getSimpleName(), "onError: " + errorMessage);
         NetworkErrorHelper.showEmptyState(this,
                 getMainView(),
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -543,7 +540,7 @@ public class OrderDetailActivity extends TActivity
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
-        ;
+
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();

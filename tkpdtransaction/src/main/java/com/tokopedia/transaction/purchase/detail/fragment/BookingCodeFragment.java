@@ -39,6 +39,9 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     private BookingCodeData mData;
     private BookingCodeContract.BookingPresenter mPresenter;
 
+    private static final int CONST_INCREASE_DP = 50;
+    private static final int CONST_REDUCE_DP = -50;
+
     OrderDetailAnalytics orderDetailAnalytics;
 
     public BookingCodeFragment() {
@@ -113,11 +116,11 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         orderDetailAnalytics.sendAnalyticsClickShipping(OrderDetailConstant.VALUE_CLICK_BARCODE,
                 OrderDetailConstant.VALUE_EMPTY);
         cardBarcode.setClickable(false);
-        changeBarcodeSize(50);
+        changeBarcodeSize(CONST_INCREASE_DP);
         filterView.setVisibility(View.VISIBLE);
         filterView.setOnClickListener(view -> {
             view.setVisibility(View.GONE);
-            changeBarcodeSize(-50);
+            changeBarcodeSize(CONST_REDUCE_DP);
             cardBarcode.setClickable(true);
         });
     }
