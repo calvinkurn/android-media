@@ -172,7 +172,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfo?.run {
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+
+                    val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
+                    if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
+                        shopInfoFragment.updateShopInfo(this)
+                    }
                 }
+
+
                 isShowFeed.run {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
                         R.color.tkpd_main_green else
@@ -475,6 +482,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     fun getShopInfoPosition() : Int {
-        return shopPageViewPagerAdapter.count
+        return shopPageViewPagerAdapter.count - 1
     }
 }
