@@ -20,7 +20,6 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
 
     @Override
     public Bitmap generateBarcode(String code, String type) {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         Bitmap bitmap = null;
         BarcodeFormat format = null;
         switch (type) {
@@ -36,6 +35,7 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
         }
         if (format != null) {
             try {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 BitMatrix bitMatrix = multiFormatWriter
                         .encode(code, format, BARCODE_WIDTH, BARCODE_HEIGHT);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();

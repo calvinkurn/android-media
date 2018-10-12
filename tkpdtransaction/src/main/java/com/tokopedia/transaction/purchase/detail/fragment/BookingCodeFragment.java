@@ -22,6 +22,7 @@ import com.tokopedia.transaction.purchase.adapter.MessageAdapter;
 import com.tokopedia.transaction.purchase.detail.activity.BookingCodeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.BookingCodeContract;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.transaction.purchase.detail.presenter.BookingCodePresenter;
 import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
@@ -29,14 +30,14 @@ import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 public class BookingCodeFragment extends BaseDaggerFragment implements BookingCodeContract.BookingView {
 
-    TextView bookingCode;
-    ImageView barcodeImg;
-    RecyclerView recyclerView;
-    View filterView;
-    ViewGroup copyLayout;
-    CardView cardBarcode;
-    OnlineBooking mData;
-    BookingCodeContract.BookingPresenter mPresenter;
+    private TextView bookingCode;
+    private ImageView barcodeImg;
+    private RecyclerView recyclerView;
+    private View filterView;
+    private ViewGroup copyLayout;
+    private CardView cardBarcode;
+    private BookingCodeData mData;
+    private BookingCodeContract.BookingPresenter mPresenter;
 
     OrderDetailAnalytics orderDetailAnalytics;
 

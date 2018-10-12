@@ -60,6 +60,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
@@ -168,7 +169,7 @@ public class OrderDetailActivity extends TActivity
         if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
             TextView text = findViewById(R.id.booking_code);
             text.setText(data.getBookingCode());
-            OnlineBooking codeData = new OnlineBooking(
+            BookingCodeData codeData = new BookingCodeData(
                     data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
             );
             layout.setOnClickListener(view -> {
