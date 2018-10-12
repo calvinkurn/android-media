@@ -114,6 +114,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -2120,6 +2121,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
         goToApplinkActivity(activity, appLink, bundle);
+    }
+
+    @Override
+    public Intent getActivityShopCreateEdit(Context context) {
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     @Override

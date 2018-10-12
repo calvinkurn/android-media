@@ -71,4 +71,6 @@ public interface IHomeRouter {
     Intent getBannerWebViewIntent(Activity activity, String url);
 
     Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title);
+
+    Intent getActivityShopCreateEdit(Context context);
 }

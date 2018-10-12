@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
@@ -293,9 +292,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        getActivity().startActivity(intent);
+        if(getActivity() != null &&
+                getActivity().getApplication() instanceof IHomeRouter){
+            Intent intent = ((IHomeRouter) getActivity().getApplication())
+                    .getActivityShopCreateEdit(getContext());
+            getActivity().startActivity(intent);
+        }
     }
 
     private void onGoToShop(String shopId) {
