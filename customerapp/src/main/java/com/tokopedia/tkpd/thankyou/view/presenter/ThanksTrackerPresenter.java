@@ -38,7 +38,7 @@ public class ThanksTrackerPresenter implements ThanksTracker.Presenter {
         requestParams.putString(ThanksTrackerConst.Key.ID, data.getId());
         requestParams.putString(ThanksTrackerConst.Key.PLATFORM, data.getPlatform());
         requestParams.putString(ThanksTrackerConst.Key.TEMPLATE, data.getTemplate());
-        //requestParams.putObject(ThanksTrackerConst.Key.SHOP_TYPES, data.getShopTypes());
+        requestParams.putObject(ThanksTrackerConst.Key.SHOP_TYPES, data.getShopTypes());
 
         thankYouPageTrackerUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.newThread())

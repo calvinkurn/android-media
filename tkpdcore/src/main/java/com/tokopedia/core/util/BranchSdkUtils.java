@@ -56,6 +56,7 @@ public class BranchSdkUtils {
     public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "ios_url";
+    private static final String ProductCategory = "ProductCategory";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -182,13 +183,9 @@ public class BranchSdkUtils {
                                             .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
                                             .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
                                             .setSku(String.valueOf(product.get(Product.KEY_ID)))
-                                            .addCustomMetadata("ProductCategory",String.valueOf(product.get(Product.KEY_CAT)))
-                                            .setProductCategory(ProductCategory.getValue(String.valueOf(product.get(Product.KEY_CAT))))
+                                            .addCustomMetadata(ProductCategory, String.valueOf(product.get(Product.KEY_CAT)))
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
-                    Log.e("Branch","productprice="+String.valueOf(product.get(BranchIOPayment.KEY_PRICE))+", ProductName= "+product.get(BranchIOPayment.KEY_NAME)
-                            +", productId= "+product.get(BranchIOPayment.KEY_ID)+", category= "+String.valueOf(product.get(Product.KEY_CAT)));
-
                 }
 
                 double revenuePrice;
@@ -211,8 +208,6 @@ public class BranchSdkUtils {
                         .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
                         .addContentItems(branchUniversalObjects)
                         .logEvent(MainApplication.getAppContext());
-                Log.e("Branch","setTransactionID="+purchase.getTransactionID()+", shippingPrice= "+shippingPrice
-                        +", revenuePrice= "+revenuePrice+", PAYMENT_KEY= "+PAYMENT_KEY+", PRODUCTTYPE_KEY= "+productType +", USERID_KEY= "+sessionHandler.getLoginID());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -235,10 +230,7 @@ public class BranchSdkUtils {
                                         .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
                                         .setSku(product.get(BranchIOPayment.KEY_ID))
                                         .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
-                                        .addCustomMetadata("ProductCategory",String.valueOf(product.get(BranchIOPayment.KEY_CATEGORY))));
-
-                Log.e("Branch","productprice="+convertIDRtoDouble(product.get(BranchIOPayment.KEY_PRICE))+", ProductName= "+product.get(BranchIOPayment.KEY_NAME)
-                        +", productId= "+product.get(BranchIOPayment.KEY_ID)+", category= "+product.get(BranchIOPayment.KEY_CATEGORY));
+                                        .addCustomMetadata(ProductCategory, String.valueOf(product.get(BranchIOPayment.KEY_CATEGORY))));
 
                 branchUniversalObjects.add(buo);
             }
@@ -263,9 +255,6 @@ public class BranchSdkUtils {
                     .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
                     .addContentItems(branchUniversalObjects)
                     .logEvent(MainApplication.getAppContext());
-            Log.e("Branch","setTransactionID="+branchIOPayment.getOrderId()+", shippingPrice= "+shippingPrice
-                    +", revenuePrice= "+revenuePrice+", PAYMENT_KEY= "+PAYMENT_KEY+", PRODUCTTYPE_KEY= "+branchIOPayment.getProductType()+", USERID_KEY= "+sessionHandler.getLoginID());
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

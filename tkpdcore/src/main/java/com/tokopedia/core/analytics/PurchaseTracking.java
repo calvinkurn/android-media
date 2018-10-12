@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
@@ -61,12 +62,13 @@ public class PurchaseTracking extends TrackingUtils {
         int quantity =  0;
         List<String> productList = new ArrayList<>();
         List<String> productId = new ArrayList<>();
+        List<String> productCategory = new ArrayList<>();
         for(Object product:trackignData.getListProduct()) {
             Map<String, Object> product1 = (Map<String, Object>) product;
             quantity += parseStringToInt(String.valueOf(product1.get(KEY_QTY)));
             productList.add(String.valueOf(product1.get(KEY_NAME)));
             productId.add(String.valueOf(product1.get(KEY_ID)));
-
+            productCategory.add(String.valueOf(product1.get(KEY_CAT)));
         }
 
 
@@ -80,6 +82,7 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(Jordan.AF_PURCHASE_SITE,productType);
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
+        afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
         if(productList != null && productList.size()>1) {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
         }else {
