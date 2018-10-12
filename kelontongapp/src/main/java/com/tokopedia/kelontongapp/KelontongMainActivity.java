@@ -39,7 +39,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
 
-        webView.loadUrl(KelontongBaseUrl.URL_BASE);
+        webView.loadUrl(KelontongBaseUrl.BASE_URL);
     }
 
     @Override
