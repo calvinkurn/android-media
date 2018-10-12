@@ -207,6 +207,10 @@ open class FlightSearchRepository @Inject constructor(
         )
     }
 
+    private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
+        return flightAirlineDataListDBSource.getAirline(airlineId)
+    }
+
     private fun createCompleteJourneyAndRoutes(journeyResponse: FlightSearchData,
                                                journeyAirports: Pair<FlightAirportDB, FlightAirportDB>,
                                                journeyAirlines: List<FlightAirlineDB>,
@@ -312,20 +316,6 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    private fun isRefundable(routes: List<Route>): RefundableEnum {
-        var refundableCount = 0
-        for (route in routes) {
-            if (route.refundable) {
-                refundableCount++
-            }
-        }
-        return when (refundableCount) {
-            routes.size -> RefundableEnum.REFUNDABLE
-            0 -> RefundableEnum.NOT_REFUNDABLE
-            else -> RefundableEnum.PARTIAL_REFUNDABLE
-        }
-    }
-
     private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
         journey.adultCombo = flightComboTable.adultPrice
         journey.childCombo = flightComboTable.childPrice
@@ -349,6 +339,20 @@ open class FlightSearchRepository @Inject constructor(
         return journey
     }
 
+    private fun isRefundable(routes: List<Route>): RefundableEnum {
+        var refundableCount = 0
+        for (route in routes) {
+            if (route.refundable) {
+                refundableCount++
+            }
+        }
+        return when (refundableCount) {
+            routes.size -> RefundableEnum.REFUNDABLE
+            0 -> RefundableEnum.NOT_REFUNDABLE
+            else -> RefundableEnum.PARTIAL_REFUNDABLE
+        }
+    }
+
     private fun getAirlines(journeyAndRoutesList: List<JourneyAndRoutes>): List<String> {
         val airlines = arrayListOf<String>()
         for (journeyAndRoutes in journeyAndRoutesList) {
@@ -359,10 +363,6 @@ open class FlightSearchRepository @Inject constructor(
             }
         }
         return airlines
-    }
-
-    private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
-        return flightAirlineDataListDBSource.getAirline(airlineId)
     }
 
     fun deleteFlightSearchReturnData(): Observable<Unit> {
