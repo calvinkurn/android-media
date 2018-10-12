@@ -225,19 +225,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (root != null) {
-            ViewTreeObserver viewTreeObserver = root.getViewTreeObserver();
-            viewTreeObserver.addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-                @Override
-                public void onDraw() {
-                    Log.d("MEY", "FINISH RENDERING");
-                }
-            });
-        }
-    }
+    int count = 0;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -285,6 +273,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onKeyboardHide() {
                 floatingTextButton.resetState();
+            }
+        });
+
+        ViewTreeObserver viewTreeObserver = recyclerView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.d("MEY"+count, "FINISH RENDERING");
+                count = count+1;
             }
         });
     }
