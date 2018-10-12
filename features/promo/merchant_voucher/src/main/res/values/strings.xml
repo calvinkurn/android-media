@@ -8,7 +8,7 @@
     <string name="valid_thru_colon">Berlaku hingga:</string>
     <string name="status_colon">Status:</string>
     <string name="see">Lihat</string>
-    <string name="terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="terms_and_conditions">Syarat &amp; Ketentuan</string>
     <string name="voucher_title_x_x">%1$s %2$s</string>
     <string name="cashback">Cashback</string>
     <string name="discount">Diskon</string>
