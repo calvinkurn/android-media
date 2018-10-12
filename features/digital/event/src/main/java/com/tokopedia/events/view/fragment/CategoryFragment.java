@@ -1,6 +1,7 @@
 package com.tokopedia.events.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,18 +35,19 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
 
     private Boolean isCreated = false;
     private Boolean isSelected = false;
+    private Boolean wasStopped = false;
 
     private static final String ARG_PARAM_EXTRA_EVENTS_DATA = "ARG_PARAM_EXTRA_EVENTS_DATA";
-    private static final String ARG_FRAGMENTPOSITION = "ARG_FRAG_POS";
+    private static final String ARG_CATEGORYID = "ARG_CATEGORYID";
 
-    CategoryViewModel categoryViewModel;
-    int mFragmentPos;
+    private CategoryViewModel categoryViewModel;
+    private String categoryId;
 
-    public static Fragment newInstance(CategoryViewModel categoryViewModel, int fragmentPosition) {
+    public static Fragment newInstance(CategoryViewModel categoryViewModel, String categoryId) {
         CategoryFragment categoryFragment = new CategoryFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_EXTRA_EVENTS_DATA, categoryViewModel);
-        args.putInt(ARG_FRAGMENTPOSITION, fragmentPosition);
+        args.putString(ARG_CATEGORYID, categoryId);
         categoryFragment.setArguments(args);
         return categoryFragment;
     }
@@ -54,13 +56,15 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.categoryViewModel = getArguments().getParcelable(ARG_PARAM_EXTRA_EVENTS_DATA);
-        this.mFragmentPos = getArguments().getInt(ARG_FRAGMENTPOSITION);
+        if (getArguments() != null) {
+            this.categoryViewModel = getArguments().getParcelable(ARG_PARAM_EXTRA_EVENTS_DATA);
+            this.categoryId = getArguments().getString(ARG_CATEGORYID);
+        }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_category_view, container, false);
         ButterKnife.bind(this, view);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -114,7 +118,15 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
 
     @Override
     public void onResume() {
+        if (wasStopped)
+            eventCategoryAdapter.notifyDataSetChanged();
         super.onResume();
         sendGAProductImpression();
+    }
+
+    @Override
+    public void onStop() {
+        wasStopped = true;
+        super.onStop();
     }
 }

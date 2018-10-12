@@ -12,6 +12,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.onboarding.CustomAnimationPageTransformerDelegate;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -183,8 +186,14 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             public void onClick(View v) {
                 SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
                 UnifyTracking.eventOnboardingStartNow();
-                Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
-                startActivity(intent);
+                if (TextUtils.isEmpty(AppsflyerContainer.getDefferedDeeplinkPathIfExists())) {
+                    Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
+                    startActivity(intent);
+                } else {
+                    Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(getActivity());
+                    homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, AppsflyerContainer.getDefferedDeeplinkPathIfExists());
+                    startActivity(homeIntent);
+                }
                 getActivity().finish();
             }
         });
