@@ -149,7 +149,8 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     }
 
     private void setAirline(FlightJourneyViewModel flightJourneyViewModel) {
-        if (flightJourneyViewModel.getAirlineDataList().size() > 1) {
+        if (flightJourneyViewModel.getAirlineDataList() != null &&
+                flightJourneyViewModel.getAirlineDataList().size() > 1) {
             List<FlightAirlineDB> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
             if (flightAirlineDBs != null && flightAirlineDBs.size() > 0) {
                 List<String> airlineLogoList = new ArrayList<>();
@@ -162,7 +163,8 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
                 flightMultiAirlineView.setAirlineLogos(null);
             }
             tvAirline.setText(R.string.flight_label_multi_maskapai);
-        } else if (flightJourneyViewModel.getAirlineDataList().size() == 1) {
+        } else if (flightJourneyViewModel.getAirlineDataList() != null &&
+                flightJourneyViewModel.getAirlineDataList().size() == 1) {
             flightMultiAirlineView.setAirlineLogo(flightJourneyViewModel.getAirlineDataList().get(0).getLogo());
             tvAirline.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
         }

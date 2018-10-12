@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by Rizky on 26/09/18.
  */
 class FlightSortAndFilterUseCase @Inject constructor(
-        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<FlightJourneyViewModel>>() {
+        private val flightSearchRepository: FlightSearchRepository) : UseCase<List<@kotlin.jvm.JvmSuppressWildcards FlightJourneyViewModel>>() {
 
     private val PARAM_SORT = "PARAM_SORT"
     private val PARAM_FILTER_MODEL = "PARAM_FILTER_MODEL"

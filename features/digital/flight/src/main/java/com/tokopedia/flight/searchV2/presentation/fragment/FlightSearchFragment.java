@@ -140,6 +140,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        flightSearchPresenter.attachView(this);
+//        flightSearchPresenter.fetchCombineData(passDataViewModel);
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -258,6 +266,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void reloadDataFromCache() {
 
+    }
+
+    @Override
+    public void renderSearchList(List<FlightJourneyViewModel> list) {
+        renderList(list);
+
+        if (list.size() > 0) {
+            showFilterAndSortView();
+        }
     }
 
     @Override

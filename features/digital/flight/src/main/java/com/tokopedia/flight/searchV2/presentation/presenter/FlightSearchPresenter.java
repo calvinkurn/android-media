@@ -114,6 +114,60 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
+    public void fetchCombineData(FlightSearchPassDataViewModel passDataViewModel) {
+        if (!passDataViewModel.isOneWay()) {
+            FlightPassengerViewModel flightPassengerViewModel = passDataViewModel.getFlightPassengerViewModel();
+            int adult = flightPassengerViewModel.getAdult();
+            int child = flightPassengerViewModel.getChildren();
+            int infant = flightPassengerViewModel.getInfant();
+            int classID = passDataViewModel.getFlightClass().getId();
+
+            FlightSearchCombinedApiRequestModel combinedRequestModel = null;
+
+            String depAirport, arrAirport;
+
+            depAirport = passDataViewModel.getDepartureAirport().getAirportCode();
+            if (depAirport == null || depAirport.equals("")) {
+                depAirport = passDataViewModel.getDepartureAirport().getCityCode();
+            }
+
+            arrAirport = passDataViewModel.getArrivalAirport().getAirportCode();
+            if (arrAirport == null || arrAirport.equals("")) {
+                arrAirport = passDataViewModel.getArrivalAirport().getCityCode();
+            }
+
+            List<FlightRouteModel> routes = new ArrayList<>();
+            routes.add(new FlightRouteModel(depAirport, arrAirport, passDataViewModel.getDate(false)));
+            routes.add(new FlightRouteModel(arrAirport, depAirport, passDataViewModel.getDate(true)));
+
+            combinedRequestModel = new FlightSearchCombinedApiRequestModel(routes, adult, child, infant, classID);
+
+            flightSearchCombinedUseCase.execute(
+                    flightSearchCombinedUseCase.createRequestParam(combinedRequestModel),
+                    new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (isViewAttached()) {
+                                getView().fetchFlightSearchData();
+                            }
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            if (isViewAttached()) {
+                                getView().fetchFlightSearchData();
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
     public void fetchSearchData(FlightSearchPassDataViewModel passDataViewModel,
                                 FlightAirportCombineModelList flightAirportCombineModelList) {
         if (isViewAttached()) {
@@ -156,50 +210,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 flightAirportCombineModel.getArrAirport(),
                 date, adult, child, infant, classID,
                 flightAirportCombineModel.getAirlines());
-        FlightSearchCombinedApiRequestModel combinedRequestModel = null;
-
-        if (!passDataViewModel.isOneWay()) {
-            String depAirport, arrAirport;
-
-            depAirport = passDataViewModel.getDepartureAirport().getAirportCode();
-            if (depAirport == null || depAirport.equals("")) {
-                depAirport = passDataViewModel.getDepartureAirport().getCityCode();
-            }
-
-            arrAirport = passDataViewModel.getArrivalAirport().getAirportCode();
-            if (arrAirport == null || arrAirport.equals("")) {
-                arrAirport = passDataViewModel.getArrivalAirport().getCityCode();
-            }
-
-            List<FlightRouteModel> routes = new ArrayList<>();
-            routes.add(new FlightRouteModel(depAirport, arrAirport, passDataViewModel.getDate(false)));
-            routes.add(new FlightRouteModel(arrAirport, depAirport, passDataViewModel.getDate(true)));
-
-            combinedRequestModel = new FlightSearchCombinedApiRequestModel(routes, adult, child, infant, classID);
-        }
-
-        flightSearchCombinedUseCase.execute(flightSearchCombinedUseCase.createRequestParam(combinedRequestModel),
-                new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        fetch(requestModel, passDataViewModel);
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            fetch(requestModel, passDataViewModel);
-                        }
-                    }
-                });
-    }
-
-    private void fetch(FlightSearchApiRequestModel requestModel, FlightSearchPassDataViewModel passDataViewModel) {
 
         flightSearchV2UseCase.execute(flightSearchV2UseCase.createRequestParams(
                 requestModel,
@@ -258,7 +268,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
-                new Subscriber<List<? extends FlightJourneyViewModel>>() {
+                new Subscriber<List<FlightJourneyViewModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -270,8 +280,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     }
 
                     @Override
-                    public void onNext(List<? extends FlightJourneyViewModel> flightJourneyViewModels) {
-//                        getView().renderList((List<FlightJourneyViewModel>) flightJourneyViewModels);
+                    public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
+                        getView().renderSearchList(flightJourneyViewModels);
                     }
                 }
         );
