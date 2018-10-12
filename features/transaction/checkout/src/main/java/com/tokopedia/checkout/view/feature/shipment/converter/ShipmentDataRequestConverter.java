@@ -102,8 +102,7 @@ public class ShipmentDataRequestConverter {
 
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null
-                && shipmentDetailData.getShippingCourierViewModels() != null) {
+        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
 
             // Create shop product model for shipment
@@ -111,7 +110,10 @@ public class ShipmentDataRequestConverter {
                     .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                             .shippingId(courierItemData.getShipperId())
                             .spId(courierItemData.getShipperProductId())
-                            .ratesId(shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId())
+                            .ratesId(
+                                shipmentDetailData.getShippingCourierViewModels() != null ?
+                                shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
+                            )
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
