@@ -33,18 +33,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
-import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
-import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateOtpStatus;
-import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
-import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateOtpStatusUseCase;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
@@ -206,30 +194,6 @@ public class SessionModule {
     @Provides
     EditUserInfoMapper provideEditUserInfoMapper() {
         return new EditUserInfoMapper();
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
-        return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberWarningFragmentListener.Presenter
-    provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase,
-                                             ValidateOtpStatusUseCase validateOtpStatusUseCase) {
-        return new ChangePhoneNumberWarningPresenter(getWarningUseCase, validateOtpStatusUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
-                                                                   CloudValidateNumberSource cloudValidateNumberSource,
-                                                                   CloudValidateOtpStatus cloudValidateOtpStatus) {
-        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
-                cloudValidateNumberSource,
-                cloudValidateOtpStatus);
     }
 
     @SessionScope

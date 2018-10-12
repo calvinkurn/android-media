@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="please_fill_phone_number">Harap isi Nomor Ponsel</string>
+    <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
+    <string name="tokocash_phone_verification">Dengan memverifikasi nomor ponsel, TokoCash akan diaktifkan</string>
+    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
+
+</resources>

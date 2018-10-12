@@ -7,8 +7,6 @@ import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMet
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionPhoneVerificationFragment;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
@@ -49,10 +47,6 @@ public interface SessionComponent {
     void inject(TokoCashVerificationFragment verificationFragment);
 
     void inject(ChooseTokocashVerificationMethodFragment selectVerificationMethodFragment);
-
-    void inject(ChangePhoneNumberInputFragment fragment);
-
-    void inject(ChangePhoneNumberWarningFragment fragment);
 
     void inject(ChooseTokocashAccountFragment chooseTokocashAccountFragment);
 
