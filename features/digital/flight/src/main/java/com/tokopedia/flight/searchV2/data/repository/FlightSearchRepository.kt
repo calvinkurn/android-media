@@ -1,6 +1,7 @@
 package com.tokopedia.flight.searchV2.data.repository
 
 import android.text.TextUtils
+import com.google.gson.Gson
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
@@ -256,9 +257,7 @@ open class FlightSearchRepository @Inject constructor(
                 .flatMapIterable { it }
                 .flatMap { journeyAndRoutes ->
                     Observable.from(journeyAndRoutes.routes)
-                            .flatMap {
-                                getAirlineById(it.airline)
-                            }
+                            .flatMap { getAirlineById(it.airline) }
                             .toList()
                             .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
                                 airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
@@ -266,8 +265,9 @@ open class FlightSearchRepository @Inject constructor(
                                         journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
                                 journeyAndRoutes
                             }
+                            .toList()
                 }
-                .toList()
+//                .toList()
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
@@ -280,6 +280,10 @@ open class FlightSearchRepository @Inject constructor(
                             }
                             .toList()
                 }
+    }
+
+    fun deleteAllFlightSearchData() {
+        flightSearchSingleDataDbSource.deleteAllFlightSearchData()
     }
 
     private fun getAirports(departureAirport: String, arrivalAirport: String) :
@@ -344,20 +348,28 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     private fun createRoutes(routes: List<Route>, journeyId: String) : List<FlightRouteTable> {
+        val gson = Gson()
         return routes.map {
             with(it) {
                 FlightRouteTable(
                         journeyId,
                         airline,
                         departureAirport,
+                        departureAirportName,
+                        departureAirportCity,
                         arrivalAirport,
+                        arrivalAirportName,
+                        arrivalAirportCity,
                         departureTimestamp,
                         arrivalTimestamp,
                         duration,
+                        gson.toJson(infos),
                         layover,
                         flightNumber,
                         refundable,
-                        stops
+                        gson.toJson(amenities),
+                        stops,
+                        gson.toJson(stopDetails)
                 )
             }
         }
