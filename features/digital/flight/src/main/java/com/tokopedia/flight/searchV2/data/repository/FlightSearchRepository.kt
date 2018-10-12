@@ -61,9 +61,11 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
                 generateJourneyAndRoutesObservable(journeyResponse)
-            }.toList().map {
-                flightSearchSingleDataDbSource.insertList(it)
-                response.meta
+            }.toList().map { journeyAndRoutesList ->
+                flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
+                val meta = response.meta
+                meta.airlines = getAirlines(journeyAndRoutesList)
+                meta
             }
         }
     }
