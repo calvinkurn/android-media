@@ -81,7 +81,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         cardBarcode = view.findViewById(R.id.card_barcode);
         cardBarcode.setOnClickListener(view1 -> zoomBarcode());
 
-        if(mData != null) {
+        if (mData != null) {
             bookingCode.setText(mData.getBookingCode());
             MessageAdapter adapter = new MessageAdapter(mData.getMessage());
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -109,8 +109,21 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     public void zoomBarcode() {
         orderDetailAnalytics.sendAnalyticsClickShipping(OrderDetailConstant.VALUE_CLICK_BARCODE,
                 OrderDetailConstant.VALUE_EMPTY);
+        cardBarcode.setClickable(false);
+        changeBarcodeSize(50);
         filterView.setVisibility(View.VISIBLE);
-        filterView.setOnClickListener(view -> view.setVisibility(View.GONE));
+        filterView.setOnClickListener(view -> {
+            view.setVisibility(View.GONE);
+            changeBarcodeSize(-50);
+            cardBarcode.setClickable(true);
+        });
+    }
+
+    private void changeBarcodeSize(int dp) {
+        ViewGroup.LayoutParams params = barcodeImg.getLayoutParams();
+        params.width = barcodeImg.getWidth() + dpToPx(dp);
+        params.height = barcodeImg.getHeight() + dpToPx(dp);
+        barcodeImg.setLayoutParams(params);
     }
 
     @Override
@@ -119,5 +132,12 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
                 OrderDetailConstant.VALUE_EMPTY);
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
                 getString(R.string.booking_code_copied_notif));
+    }
+
+    private int dpToPx(int dp) {
+        float density = getActivity().getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
     }
 }
