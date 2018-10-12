@@ -80,7 +80,6 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
 
-    private EventComponent eventComponent;
     SeatSelectionPresenter seatSelectionPresenter;
 
     private SelectedSeatViewModel selectedSeatViewModel;

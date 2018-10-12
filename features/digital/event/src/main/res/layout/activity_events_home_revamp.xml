@@ -65,7 +65,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_scrollFlags="scroll" />
 
-                <com.tkpd.library.ui.widget.TouchViewPager
+                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                     android:id="@+id/event_bannerpager"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dp_120"

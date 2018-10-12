@@ -37,7 +37,6 @@ import butterknife.Unbinder;
 public class EventSearchActivity extends EventBaseActivity implements
         EventSearchContract.EventSearchView, SearchInputView.Listener {
 
-    EventComponent eventComponent;
     public EventSearchPresenter eventSearchPresenter;
 
     @BindView(R2.id.main_content)

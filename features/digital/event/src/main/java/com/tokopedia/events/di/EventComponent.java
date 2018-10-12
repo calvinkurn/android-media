@@ -10,6 +10,7 @@ import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.contractor.EventsLocationContract;
+import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
@@ -53,4 +54,6 @@ public interface EventComponent {
     EventReviewTicketsContractor.EventReviewTicketPresenter getReviewTicketPresenter();
 
     SeatSelectionContract.SeatSelectionPresenter getSeatSelectionPresenter();
+
+    ScanCodeContract.ScanPresenter getScanCodePresenter();
 }

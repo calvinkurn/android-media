@@ -28,7 +28,7 @@ public class GetSearchEventsListRequestUseCase extends UseCase<SearchDomainModel
 
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
-        return eventRepository.getSearchEvents((HashMap<String, Object>) requestParams.getParameters());
+        return eventRepository.getSearchEvents(requestParams.getParameters());
 
     }
 }

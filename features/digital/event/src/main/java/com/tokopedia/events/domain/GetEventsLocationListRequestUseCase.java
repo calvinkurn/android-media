@@ -25,6 +25,6 @@ public class GetEventsLocationListRequestUseCase extends UseCase<List<EventLocat
 
     @Override
     public Observable<List<EventLocationDomain>> createObservable(RequestParams requestParams) {
-        return eventRepository.getEventsLocationList((TKPDMapParam<String, Object>) requestParams.getParameters());
+        return eventRepository.getEventsLocationList(requestParams.getParameters());
     }
 }

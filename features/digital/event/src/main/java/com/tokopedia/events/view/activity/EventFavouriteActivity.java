@@ -26,7 +26,6 @@ import butterknife.OnClick;
 
 public class EventFavouriteActivity extends EventBaseActivity implements EventFavouriteContract.EventFavouriteView {
 
-    EventComponent eventComponent;
     public EventFavouritePresenter eventFavouritePresenter;
     private EventsAnalytics eventsAnalytics;
 

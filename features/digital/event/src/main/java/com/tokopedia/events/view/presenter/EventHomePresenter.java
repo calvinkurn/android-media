@@ -117,6 +117,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
             totalPages = viewPager.getChildCount();
         }
         Observable.interval(5000, 5000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
@@ -296,7 +297,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
                     UserSession userSession = new UserSession(mView.getActivity());
                     if (userSession.isLoggedIn())
                         return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
-                                .subscribeOn(Schedulers.newThread())
+                                .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
                     else {
                         List<Integer> empty = new ArrayList<>();
@@ -437,5 +438,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     public void attachView(EventBaseContract.EventBaseView view) {
         super.attachView(view);
         mView = (EventsContract.EventHomeView) view;
+        getEventsList();
     }
 }

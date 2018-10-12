@@ -53,9 +53,10 @@ public class EventsDetailsPresenter
 
     private int hasSeatLayout;
 
-    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase, CheckScanOptionUseCase checkScanOptionUseCase) {
+    public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase, EventsAnalytics eventsAnalytics, CheckScanOptionUseCase checkScanOptionUseCase) {
         this.getEventDetailsRequestUseCase = eventDetailsRequestUseCase;
         this.eventsAnalytics = eventsAnalytics;
+        this.checkScanOptionUseCase = checkScanOptionUseCase;
     }
 
     @Override

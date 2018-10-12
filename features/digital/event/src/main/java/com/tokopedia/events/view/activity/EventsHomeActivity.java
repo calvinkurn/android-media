@@ -67,7 +67,6 @@ public class EventsHomeActivity extends EventBaseActivity
 
     private Menu mMenu;
 
-    EventComponent eventComponent;
     public EventHomePresenter eventHomePresenter;
 
     @BindView(R2.id.event_bannerpager)
@@ -144,7 +143,6 @@ public class EventsHomeActivity extends EventBaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setTheme(R.style.EventAppTheme);
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);

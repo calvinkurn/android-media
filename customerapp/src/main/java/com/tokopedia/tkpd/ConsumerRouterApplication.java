@@ -2854,12 +2854,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new Intent(activity, NewOnboardingActivity.class);
     }
 
-    @Override
-    public SessionHandler getSessionHandler() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler;
-    }
-
 
     @Override
     public String getStringRemoteConfig(String key) {

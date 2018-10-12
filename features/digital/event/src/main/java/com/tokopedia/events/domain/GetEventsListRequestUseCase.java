@@ -1,10 +1,10 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class GetEventsListRequestUseCase extends UseCase<List<EventsCategoryDoma
 
     @Override
     public Observable<List<EventsCategoryDomain>> createObservable(RequestParams requestParams) {
-       return eventRepository.getEvents((TKPDMapParam<String, Object>) requestParams.getParameters());
+       return eventRepository.getEvents(requestParams.getParameters());
 
     }
 }

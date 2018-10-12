@@ -111,7 +111,6 @@ public class EventDetailsActivity extends EventBaseActivity implements
     ImageTextViewHolder addressHolder;
     private Menu mMenu;
 
-    private EventComponent eventComponent;
 
     EventsDetailsContract.EventDetailPresenter eventsDetailsPresenter;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);

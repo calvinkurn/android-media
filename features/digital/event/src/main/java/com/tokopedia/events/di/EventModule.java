@@ -26,6 +26,9 @@ import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.RedeemTicketUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.ScanBarCodeUseCase;
 import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.contractor.EventFavouriteContract;
@@ -34,6 +37,7 @@ import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
+import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
@@ -43,6 +47,7 @@ import com.tokopedia.events.view.presenter.EventLocationsPresenter;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
@@ -110,7 +115,7 @@ public class EventModule {
 
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HeaderErrorResponseInterceptor errorResponseInterceptor, Context context) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor, @ApplicationContext Context context) {
         UserSession userSession = new UserSession(context);
         return new OkHttpClient.Builder()
                 .addInterceptor(httpLoggingInterceptor)
@@ -198,8 +203,8 @@ public class EventModule {
 
     @Provides
     @EventScope
-    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics) {
-        return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics);
+    EventsDetailsContract.EventDetailPresenter providesEventsDetailsPresenter(GetEventDetailsRequestUseCase getEventDetailsRequestUseCase, EventsAnalytics eventsAnalytics, CheckScanOptionUseCase checkScanOptionUseCase) {
+        return new EventsDetailsPresenter(getEventDetailsRequestUseCase, eventsAnalytics, checkScanOptionUseCase);
     }
 
     @Provides
@@ -248,6 +253,12 @@ public class EventModule {
     SeatSelectionContract.SeatSelectionPresenter providesSeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase,
                                                                                 PostVerifyCartUseCase postVerifyCartUseCase) {
         return new SeatSelectionPresenter(verifyCartUseCase, postVerifyCartUseCase);
+    }
+
+    @Provides
+    @EventScope
+    ScanCodeContract.ScanPresenter providesScanCodePresenter(ScanBarCodeUseCase scanBarCodeUseCase, RedeemTicketUseCase redeemTicketUseCase) {
+        return new ScanCodeDataPresenter(scanBarCodeUseCase, redeemTicketUseCase);
     }
 
 }
