@@ -39,7 +39,7 @@ public interface FlightSearchContract {
 
         void reloadDataFromCache();
 
-        void renderList(List<FlightJourneyViewModel> list);
+        void renderSearchList(List<FlightJourneyViewModel> list);
 
         void addToolbarElevation();
 
@@ -99,6 +99,8 @@ public interface FlightSearchContract {
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
         void setDelayHorizontalProgress();
+
+        void fetchCombineData(FlightSearchPassDataViewModel passDataViewModel);
 
         void fetchSearchData(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModelList flightAirportCombineModelList);
 
