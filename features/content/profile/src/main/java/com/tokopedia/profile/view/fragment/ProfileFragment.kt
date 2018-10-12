@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
@@ -44,6 +46,7 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.security.AccessController.getContext
 import javax.inject.Inject
 
 
@@ -154,10 +157,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (!firstPageViewModel.visitableList.isEmpty()) {
             visitables.addAll(firstPageViewModel.visitableList)
         } else {
-            if (firstPageViewModel.profileHeaderViewModel.isOwner
-                    && firstPageViewModel.profileHeaderViewModel.isAffiliate) {
-                visitables.add(getEmptyModel(firstPageViewModel.profileHeaderViewModel.isOwner))
-            }
+            visitables.add(getEmptyModel(
+                    firstPageViewModel.profileHeaderViewModel.isOwner,
+                    firstPageViewModel.profileHeaderViewModel.isAffiliate)
+            )
         }
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
     }
@@ -167,7 +170,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
-        if (userSession.isLoggedIn){
+        if (userSession.isLoggedIn) {
             if (follow) {
                 presenter.followKol(userId)
             } else {
@@ -390,15 +393,37 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun getEmptyModel(isOwner: Boolean): Visitable<*> {
+    private fun getEmptyModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_af_empty
-        emptyResultViewModel.title = getString(R.string.profile_add_recommendation)
-        return emptyResultViewModel
-    }
+        if (isOwner) {
+            if (isAffiliate) {
+                emptyResultViewModel.title = getString(R.string.profile_add_recommendation)
+            } else {
+                emptyResultViewModel.title = getString(R.string.profile_recommend_to_friends)
+                emptyResultViewModel.buttonTitle = getString(R.string.profile_find_out)
+                emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
+                    override fun onEmptyContentItemTextClicked() {
+                    }
 
-    private fun showError(message: String) {
-        NetworkErrorHelper.showRedSnackbar(activity, message)
+                    override fun onEmptyButtonClicked() {
+                        goToOnboading()
+                    }
+                }
+            }
+        } else {
+            emptyResultViewModel.title = getString(R.string.profile_no_content)
+            emptyResultViewModel.buttonTitle = getString(R.string.profile_see_others)
+            emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
+                override fun onEmptyContentItemTextClicked() {
+                }
+
+                override fun onEmptyButtonClicked() {
+                    goToExplore()
+                }
+            }
+        }
+        return emptyResultViewModel
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
@@ -427,7 +452,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun followSuccessOnClickListener(profileHeaderViewModel: ProfileHeaderViewModel)
             : View.OnClickListener {
         return View.OnClickListener {
-            RouteManager.route(getContext(), ApplinkConst.FEED)
+            RouteManager.route(context, ApplinkConst.FEED)
             abstractionRouter.analyticTracker.sendEventTracking(
                     EVENT_CLICK_TOP_PROFILE,
                     KOL_TOP_PROFILE,
@@ -435,5 +460,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     String.format(GO_TO_FEED_FORMAT, profileHeaderViewModel.name)
             )
         }
+    }
+
+    private fun goToOnboading() {
+        RouteManager.route(context, ApplinkConst.AFFILIATE_ONBOARDING)
+    }
+
+    private fun goToExplore() {
+        RouteManager.route(context, ApplinkConst.CONTENT_EXPLORE)
+    }
+
+    private fun showError(message: String) {
+        NetworkErrorHelper.showRedSnackbar(activity, message)
     }
 }
