@@ -1,4 +1,4 @@
-package com.tokopedia.kelontongapp.widget;
+package com.tokopedia.kelontongapp.webview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CommonWebViewClient extends WebChromeClient {
+public class KelontongWebChromeClient extends WebChromeClient {
 
     private static final int PROGRESS_COMPLETED = 100;
     public final static int ATTACH_FILE_REQUEST = 1;
@@ -27,7 +27,7 @@ public class CommonWebViewClient extends WebChromeClient {
 
     private FilePickerInterface filePickerInterface;
 
-    public CommonWebViewClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
+    public KelontongWebChromeClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
             this.filePickerInterface = filePickerInterface;
             this.progressBar = progressBar;

@@ -9,9 +9,10 @@ import android.view.KeyEvent;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.tokopedia.kelontongapp.widget.CommonWebViewClient;
-import com.tokopedia.kelontongapp.widget.FilePickerInterface;
-import com.tokopedia.kelontongapp.widget.KelontongWebview;
+import com.tokopedia.kelontongapp.webview.KelontongWebChromeClient;
+import com.tokopedia.kelontongapp.webview.FilePickerInterface;
+import com.tokopedia.kelontongapp.webview.KelontongWebview;
+import com.tokopedia.kelontongapp.webview.KelontongWebviewClient;
 
 /**
  * Created by meta on 02/10/18.
@@ -20,7 +21,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
     private static final int EXIT_DELAY_MILLIS = 2000;
 
-    private CommonWebViewClient webViewClient;
+    private KelontongWebChromeClient webViewClient;
     private KelontongWebview webView;
 
     private boolean doubleTapExit = false;
@@ -33,11 +34,12 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView = findViewById(R.id.webview);
         ProgressBar progressBar = findViewById(R.id.progress);
 
-        webViewClient = new CommonWebViewClient(this, progressBar);
+        webViewClient = new KelontongWebChromeClient(this, progressBar);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
+        webView.setWebViewClient(new KelontongWebviewClient());
 
         webView.loadUrl(KelontongBaseUrl.BASE_URL);
     }
@@ -45,7 +47,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webViewClient != null) {
+        if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewClient != null) {
             webViewClient.onActivityResult(requestCode, resultCode, data);
         }
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.kelontongapp.widget;
+package com.tokopedia.kelontongapp.webview;
 
 import android.content.Context;
 import android.util.AttributeSet;
