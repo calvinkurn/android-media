@@ -17,4 +17,5 @@
     <string name="topads_menu_seller_centre">Seller Center</string>
     <string name="label_top_ads_sold">Total Terjual</string>
     <string name="see_label">Lihat</string>
+    <string name="top_ads_template_credit_bonus">Bonus kredit TopAds %1$s berlaku hingga %2$s hari lagi</string>
 </resources>
