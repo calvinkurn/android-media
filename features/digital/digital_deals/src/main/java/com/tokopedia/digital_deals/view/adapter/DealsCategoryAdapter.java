@@ -775,22 +775,20 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class HeaderBrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ExpandableTextView tvExpandableDesc;
-        private LinearLayout tvSeeMoreBtn;
+        private TextView tvSeeMoreBtn;
         private TextView tvDealsCount;
         private TextView tvCityName;
         private View itemView;
         private TextView tvSeeMore;
-        private ImageView ivArrowSeeMore;
 
         private HeaderBrandViewHolder(View view) {
             super(view);
             this.itemView = view;
             tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-            tvSeeMoreBtn = view.findViewById(R.id.expand_view_description);
+            tvSeeMoreBtn = view.findViewById(R.id.seemorebutton_description);
             tvDealsCount = view.findViewById(R.id.number_of_locations);
             tvCityName = view.findViewById(R.id.tv_popular);
             tvSeeMore = view.findViewById(R.id.seemorebutton_description);
-            ivArrowSeeMore = view.findViewById(R.id.down_arrow_description);
         }
 
         void bindData(final String headerText, int count) {
@@ -810,15 +808,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.expand_view_description) {
+            if (v.getId() == R.id.seemorebutton_description) {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_MORE_BRAND_DETAIL, highLightText);
                 if (tvExpandableDesc.isExpanded()) {
                     tvSeeMore.setText(R.string.expand);
-                    ivArrowSeeMore.animate().rotation(0f);
 
                 } else {
                     tvSeeMore.setText(R.string.collapse);
-                    ivArrowSeeMore.animate().rotation(180f);
 
                 }
                 tvExpandableDesc.toggle();

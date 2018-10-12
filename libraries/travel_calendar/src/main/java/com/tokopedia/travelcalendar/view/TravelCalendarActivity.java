@@ -156,8 +156,11 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         Calendar calendarMaxDate = (Calendar) Calendar.getInstance();
         calendarMaxDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MAX_DATE));
 
+        Calendar calendarMinDate = (Calendar) Calendar.getInstance();
+        calendarMinDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MIN_DATE));
+
         for (int i = 0; i < monthDeviation; i++) {
-            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate,
+            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate, calendarMinDate,
                     (ArrayList) holidayResultList));
 
             calendarDateUser.set(Calendar.MONTH, month);

@@ -77,8 +77,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tvExpandableDesc;
     private TextView tvExpandableTC;
-    private LinearLayout seeMoreButtonDesc;
-    private LinearLayout seeMoreButtonTC;
+    private TextView seeMoreButtonDesc;
+    private TextView seeMoreButtonTC;
 
     private AppBarLayout appBarLayout;
 
@@ -174,12 +174,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         buyDealNow = view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-        seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
+        seeMoreButtonDesc = view.findViewById(R.id.seemorebutton_description);
         clDescription = view.findViewById(R.id.cl_description);
         clOutlets = view.findViewById(R.id.cl_outlets);
         clTnc = view.findViewById(R.id.cl_tnc);
         tvExpandableTC = view.findViewById(R.id.tv_expandable_tnc);
-        seeMoreButtonTC = view.findViewById(R.id.expand_view_tnc);
+        seeMoreButtonTC = view.findViewById(R.id.seemorebutton_tnc);
         recyclerViewDeals = view.findViewById(R.id.recycler_view);
         circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
@@ -528,9 +528,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         dealDetail.setIsLiked(isLiked);
         dealDetail.setLikes(likes);
         if (isLiked) {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
+            ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
         } else {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
+            ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
         }
         if (likes == 0) {
             tvLikes.setVisibility(View.GONE);
@@ -564,19 +564,20 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.expand_view_description) {
+        int Id = v.getId();
+        if (Id == R.id.seemorebutton_description) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getLongRichDesc(), getString(R.string.show_description), 0);
-        } else if (v.getId() == R.id.expand_view_tnc) {
+        } else if (Id == R.id.seemorebutton_tnc) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getTnc(), getString(R.string.show_tnc), 0);
-        } else if (v.getId() == R.id.tv_see_all_locations) {
+        } else if (Id == R.id.tv_see_all_locations) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
-        } else if (v.getId() == R.id.ll_buynow) {
+        } else if (Id == R.id.ll_buynow) {
             sendEvent(DealsAnalytics.EVENT_CLICK_BELI);
             fragmentCallbacks.replaceFragment(dealDetail, 1);
-        } else if (v.getId() == R.id.tv_view_map) {
+        } else if (Id == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
         } else if (v.getId() == R.id.iv_wish_list) {
             boolean isLoggedIn = mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
@@ -587,7 +588,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
                     setLikes(dealDetail.getLikes() + 1, !dealDetail.getIsLiked());
                 }
             }
-        } else if (v.getId() == R.id.cl_redeem_instructions) {
+        } else if (Id == R.id.cl_redeem_instructions) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL);
             startGeneralWebView(DealsUrl.WebUrl.REDEEM_URL);
 

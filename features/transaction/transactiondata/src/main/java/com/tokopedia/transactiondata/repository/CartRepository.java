@@ -12,6 +12,7 @@ import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataRespon
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -180,5 +181,16 @@ public class CartRepository implements ICartRepository {
     @Override
     public Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params) {
         return cartApi.cancelAutoApplyCoupon(os, params);
+    }
+
+    @Override
+    public Observable<SaveShipmentStateResponse> saveShipmentState(Map<String, String> params) {
+        return cartApi.postSaveShipmentState(params).map(
+                new Func1<Response<CartResponse>, SaveShipmentStateResponse>() {
+                    @Override
+                    public SaveShipmentStateResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(SaveShipmentStateResponse.class);
+                    }
+                });
     }
 }
