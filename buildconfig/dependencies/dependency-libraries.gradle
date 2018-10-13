@@ -1,0 +1,52 @@
+ext {
+
+    tkpdUseCaseVersion = '2.23'
+    tkpdAbstractionVersion = '2.22'
+    tkpdCacheApiVersion = '2.22'
+    tkpdApplinkVersion = '2.22'
+    tkpdDesignVersion = '2.22'
+    tkpdPushNotifVersion = '2.22'
+    tkpdOmsVersion = '2.22'
+    tkpdYoutubeUtilVersion = '2.22'
+    tkpdCommonNetworkVersion = '2.22'
+    tkpdAnalyticsVersion = '2.22'
+    tkpdGraphqlVersion = '2.22'
+
+    tkpdInternalLibDependencies = [
+            applink               : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
+            usecase               : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
+            cacheapi              : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
+            design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
+            pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
+    ]
+
+    libraries = [
+            design            : ":tkpddesign",
+            abstraction       : ":tkpdabstraction",
+            reactNative       : ":libraries:react_native",
+            pushNotif         : ":libraries:push_notification",
+            applink           : ":libraries:applink",
+            cacheApi          : ":libraries:cache_api",
+            useCase           : ":libraries:use_case",
+            userSession       : ":libraries:user_session",
+            config            : ":libraries:global_config",
+            network           : ":libraries:network",
+            williamchart      : ":libraries:williamchart",
+            fingerprint       : ":libraries:fingerprint",
+            bottomSheetBuilder: ":libraries:bottom_sheet_builder",
+            imagePicker       : ":libraries:image_picker",
+            cameraView        : ":libraries:camera_view",
+            imageuploader     : ":libraries:imageuploader",
+            datePickerRange   : ":libraries:date_picker_range",
+            youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
+            analytics         : ":libraries:analytics",
+            graphql           : ":libraries:graphql",
+            commonNetwork     : ":libraries:common_network",
+            omsApi            : ":libraries:oms",
+            youtubeutil       : ":libraries:youtubeutil",
+            travelCalendar    : ":libraries:travel_calendar"
+    ]
+}
