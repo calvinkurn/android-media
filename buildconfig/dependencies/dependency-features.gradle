@@ -1,191 +1,208 @@
 ext {
 
+    // Sort alphabetically by name
+    tkpdAttachProductVersion = '2.22'
+    tkpdBankDBVersion = '2.22'
+    tkpdChallengesVersion = '2.22'
+    tkpdContactUsVersion = '2.22'
     tkpdCoreVersion = '2.23'
-    tkpdInboxVersion = '2.22'
-    tkpdSessionVersion = '2.22'
-    tkpdSellerVersion = '2.22'
-    tkpdTransactionVersion = '2.22'
-    tkpdDiscoveryVersion = '2.22'
+    tkpdDealsVersion = '2.22'
     tkpdDigitalVersion = '2.22'
-    tkpdTopAdsSDKVersion = '2.22'
-    tkpdPaymentVersion = '2.22'
-    tkpdPdpVersion = '2.22'
-    tkpdFeedVersion = '2.22'
-    tkpdRideVersion = '2.22'
-    tkpdLoyaltyVersion = '2.22'
-    tkpdReactNativeVersion = '2.22'
-    tkpdFlightVersion = '2.22'
-    tkpdCacheApiVersion = '2.22'
-    tkpdReputationVersion = '2.22'
-    tkpdGroupchatVersion = '2.22'
-    tkpdRideVersion = '1.+'
-    tkpdProfileVersion = '2.22'
-    tkpdShopVersion = '2.22'
-    tkpdProductVersion = '2.22'
-    tkpdKolVersion = '2.22'
-    tkpdKolCommonVersion = '2.22'
+    tkpdDiscoveryVersion = '2.22'
+    tkpdDistrictRecommendationVersion = '2.22'
+    tkpdEventsVersion = '2.22'
     tkpdExploreVersion = '2.22'
-    tkpdInterestPickVersion = '2.22'
+    tkpdEventVersion = '2.22'
+    tkpdFeedVersion = '2.22'
+    tkpdFlightVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
-    tkpdEventsVersion = '2.22'
-    tkpdTokocashVersion = '2.22'
-    tkpdEventVersion = '2.22'
-    tkpdWishlistVersion = '2.22'
+    tkpdGroupchatVersion = '2.22'
     tkpdHomeVersion = '2.22'
+    tkpdInboxVersion = '2.22'
+    tkpdInterestPickVersion = '2.22'
+    tkpdKolCommonVersion = '2.22'
+    tkpdKolVersion = '2.22'
+    tkpdLoyaltyVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
-    tkpdDistrictRecommendationVersion = '2.22'
-    tkpdVoteVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
-    tkpdContactUsVersion = '2.22'
+    tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
-    tkpdTokopointVersion = '2.22'
-    tkpdDealsVersion = '2.22'
-    tkpdWithdrawVersion = '2.22'
-    tkpdTrainVersion = '2.22'
+    tkpdProductVersion = '2.22'
+    tkpdProfileVersion = '2.22'
+    tkpdReactNativeVersion = '2.22'
+    tkpdReputationVersion = '2.22'
+    tkpdRideVersion = '1.+'
+    tkpdPdpVersion = '2.22'
     tkpdRecentviewVersion = '2.22'
-    tkpdUpdateInactivePhoneVersion = '2.22'
-    tkpdBankDBVersion = '2.22'
-    transactionCheckoutVersion = '2.22'
-    tkpdChallengesVersion = '2.22'
+    tkpdRideVersion = '2.22'
+    tkpdSellerVersion = '2.22'
+    tkpdSessionVersion = '2.22'
+    tkpdShopVersion = '2.22'
     tkpdTalkVersion = '2.22'
-    tkpdAttachProductVersion = '2.22'
+    tkpdTokocashVersion = '2.22'
+    tkpdTokopointVersion = '2.22'
+    tkpdTopAdsSDKVersion = '2.22'
+    tkpdTrainVersion = '2.22'
+    tkpdTransactionVersion = '2.22'
+    tkpdUpdateInactivePhoneVersion = '2.22'
+    tkpdVoteVersion = '2.22'
+    tkpdWishlistVersion = '2.22'
+    tkpdWithdrawVersion = '2.22'
+    transactionCheckoutVersion = '2.22'
 
+
+    // Sort alphabetically by package name
     tkpdFeatureDependencies = [
-            core                  : "com.tokopedia.core:core:${tkpdCoreVersion}",
-            inbox                 : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
-            session               : "com.tokopedia.session:session:${tkpdSessionVersion}",
-            transaction           : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
-            transactioncommon     : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
-            discovery             : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
-            seller                : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
-            digital               : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
-            topads                : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment               : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
-            tkpdpdp               : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
-            feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
-            kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
-            kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
-            explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
-            ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
-            loyalty               : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
-            home                  : "com.tokopedia.home:home:${tkpdHomeVersion}",
-            flight                : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
-            flightNoOp            : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
-            reputation            : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
-            reputationCommon      : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
-            wishListCommon        : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
-            tokocash              : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
-            events                : "com.tokopedia.events:events:${tkpdEventVersion}",
-            groupchat             : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
-            profile               : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
-            shopCommon            : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
-            goldMerchantCommon    : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
-            shopPage              : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
-            shopOpen          : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
-            shopSettings          : "com.tokopedia.shop:shop-settings:${tkpdShopVersion}",
+            attachproduct               : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}",
+            challenges                  : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
+            core                        : "com.tokopedia.core:core:${tkpdCoreVersion}",
+            digital                     : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
+            digitalDeals                : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            discovery                   : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
+            districtRecommendation      : "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
+            explore                     : "com.tokopedia.explore:explore:${tkpdKolVersion}",
+            events                      : "com.tokopedia.events:events:${tkpdEventVersion}",
+            feed                        : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            flight                      : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp                  : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
+            gamification                : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
+            goldMerchantCommon          : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
+            goldMerchant                : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
+            goldMerchantSubscribe       : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
+            groupchat                   : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
+            home                        : "com.tokopedia.home:home:${tkpdHomeVersion}",
+            inbox                       : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
+            kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
+            loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            mitraToppers                : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
+            payment                     : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
+            paymentSetting              : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
+            paymentManagementSystem     : "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
             productManageItem           : "com.tokopedia.product:product-manage-item:${tkpdProductVersion}",
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
-            gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
-            mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
-            goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
-            goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
-            topAdsManagement      : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
-            vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
-            districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
-            productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
-            digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
-            challenges          : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
-            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
-            talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
-            attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
+            productDraftDatabase        : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
+            profile                     : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
+            reputation                  : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
+            reputationCommon            : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
+            ride                        : "com.tokopedia.ride:ride:${tkpdRideVersion}",
+            seller                      : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
+            session                     : "com.tokopedia.session:session:${tkpdSessionVersion}",
+            shopCommon                  : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
+            shopPage                    : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
+            shopOpen                    : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
+            shopSettings                : "com.tokopedia.shop:shop-settings:${tkpdShopVersion}",
+            talk                        : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
+            tkpdpdp                     : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
+            reactNative                 : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
+            tokocash                    : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
+            topads                      : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            topAdsManagement            : "com.tokopedia.topads:top_ads_management:${tkpdTopAdsSDKVersion}",
+            transaction                 : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
+            transactioncommon           : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
+            vote                        : "com.tokopedia.user:user:${tkpdVoteVersion}",
+            wishListCommon              : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
     ]
 
+    // Sort and categorize alphabetically by folder name
     features = [
-            loyalty               : ":tkpdloyalty",
-            nps                   : ":features:common:nps",
-            feed                  : ":features:content:feed",
-            kol                   : ":features:content:kol",
-            kolCommon             : ":features:content:kol_common",
-            explore               : ":features:content:explore",
-            interestPick          : ":features:content:interest_pick",
-            digitalproduct        : ":features:digital:digitalproduct",
-            core                  : ":tkpdcore",
-            inbox                 : ":tkpdinbox",
-            discovery             : ":tkpddiscovery",
-            transaction           : ":tkpdtransaction",
-            transactioncommon     : ":tkpdtransaction-common",
-            session               : ":tkpdsession",
-            topAdsSdk             : ":features:discovery:topadssdk",
-            productDetail         : ":tkpdpdp",
-            seller                : ":tkpdseller",
-            payment               : ":features:payment:payment",
-            wishlistCommon        : ":features:discovery:wishlist_common",
-            districtRecommendation: ":features:logistic:district_recommendation",
-            goldMerchantCommon    : ":features:merchant:gold_merchant_common",
-            goldMerchant          : ":features:merchant:gold_merchant",
-            goldMerchantSubscribe : ":features:merchant:gold_merchant_subscribe",
-            reputationCommon      : ":features:merchant:reputation_common",
-            reputation            : ":features:merchant:reputation",
-            shopCommon            : ":features:merchant:shop_common",
-            shopPage              : ":features:merchant:shop_page",
-            shopOpen              : ":features:merchant:shop_open",
-            shopSettings          : ":features:merchant:shop_settings",
-//            shopSettings          : ":features:merchant:shop_settings_no_op", // toggle for no op
-            productManageItem     : ":features:merchant:product_manage_item",
-            productManageList     : ":features:merchant:product_manage_list",
-            topAdsFreeClaim       : ":features:top_ads:top_ads_free_claim",
-            topAdsManagement      : ":features:top_ads:top_ads_management",
-            topAdsManagementCommon: ":features:top_ads:top_ads_management_common",
-            topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
-            tokoCash              : ":features:fintech:tokocash",
-            flight                : ":features:digital:flight",
-            flightNoOp            : ":features:digital:flight_no_op",
-            mitraToppers          : ":features:fintech:mitra_toppers",
-            event                 : ":features:digital:event",
-            home                  : ":features:discovery:home",
-            recentview            : ":features:discovery:recentview",
-            content               : ":tkpdcontent",
-            checkout              : ":features:transaction:checkout",
-            gamification          : ":features:promo:gamification",
-            groupchat             : ":features:user:groupchat",
-            profile               : ":features:user:profile",
-            settingbank           : ":features:user:settingbank",
-            topchat               : ":features:user:topchat",
-            changepassword        : ":features:user:changepassword",
-            bankdb                : ":features:user:bankdb",
-            talk                  : ":features:user:talk",
-            attachproduct         : ":features:user:attachproduct",
-            otp                   : ":features:user:otp",
-            vote                  : ":features:user:vote",
-            notifCenter           : ":features:user:notifcenter",
-            contactUs             : ":features:operational:contact_us",
-            logisticdata          : ":features:logistic:logisticdata",
-            logisticaddaddress    : ":features:logistic:logisticaddaddress",
-            logisticanalytics     : ":features:logistic:logisticanalytics",
-            transactiondata       : ":features:transaction:transactiondata",
-            transactionanalytics  : ":features:transaction:transactionanalytics",
-            tracking              : ":features:logistic:tracking",
-            logisticuploadawb     : ":features:logistic:logisticuploadawb",
-            districtrecommendation: ":features:logistic:district_recommendation",
-            logout                : ":features:user:logout",
-            instantLoan           : ":features:fintech:instant_loan",
-            tokopoints            : ":features:promo:tokopoints",
-            digitalDeals          : ":features:digital:digital_deals",
-            navigation            : ":features:home:navigation",
-            searchbar             : ":features:home:searchbar",
-            navigationCommon      : ":features:home:navigation-common",
-            accountHome           : ":features:home:account-home",
-            withdraw              : ":features:payment:withdraw",
-            productDraftDatabase  : ":features:merchant:product_draft_database",
+            nps                         : ":features:common:nps",
+
+            feed                        : ":features:content:feed",
+            explore                     : ":features:content:explore",
+            interestPick                : ":features:content:interest_pick",
+            kol                         : ":features:content:kol",
+            kolCommon                   : ":features:content:kol_common",
+
+            browse                      : ":features:digital:digital_browse",
+            digitalDeals                : ":features:digital:digital_deals",
+            digitalproduct              : ":features:digital:digitalproduct",
+            event                       : ":features:digital:event",
+            flight                      : ":features:digital:flight",
+            flightNoOp                  : ":features:digital:flight_no_op",
+            train                       : ":features:digital:train",
+
+            home                        : ":features:discovery:home",
+            recentview                  : ":features:discovery:recentview",
+            topAdsSdk                   : ":features:discovery:topadssdk",
+            wishlistCommon              : ":features:discovery:wishlist_common",
+
+            instantLoan                 : ":features:fintech:instant_loan",
+            mitraToppers                : ":features:fintech:mitra_toppers",
+            saldodetails                : ":features:fintech:saldo_details",
+            tokoCash                    : ":features:fintech:tokocash",
+
+            accountHome                 : ":features:home:account-home",
+            navigation                  : ":features:home:navigation",
+            navigationCommon            : ":features:home:navigation-common",
+            searchbar                   : ":features:home:searchbar",
+
+            challenges                  : ":features:im:challenges",
+
+            districtRecommendation      : ":features:logistic:district_recommendation",
+            logisticaddaddress          : ":features:logistic:logisticaddaddress",
+            logisticanalytics           : ":features:logistic:logisticanalytics",
+            logisticdata                : ":features:logistic:logisticdata",
+            logisticuploadawb           : ":features:logistic:logisticuploadawb",
+            tracking                    : ":features:logistic:tracking",
+
+            goldMerchant                : ":features:merchant:gold_merchant",
+            goldMerchantCommon          : ":features:merchant:gold_merchant_common",
+            goldMerchantSubscribe       : ":features:merchant:gold_merchant_subscribe",
+            productDraftDatabase        : ":features:merchant:product_draft_database",
+            productManageItem           : ":features:merchant:product_manage_item",
+            productManageList           : ":features:merchant:product_manage_list",
+            reputation                  : ":features:merchant:reputation",
+            reputationCommon            : ":features:merchant:reputation_common",
+            shopCommon                  : ":features:merchant:shop_common",
+            shopOpen                    : ":features:merchant:shop_open",
+            shopPage                    : ":features:merchant:shop_page",
+            shopSettings                : ":features:merchant:shop_settings",
+//            shopSettings                : ":features:merchant:shop_settings_no_op", // toggle for no op
+
+            contactUs                   : ":features:operational:contact_us",
+
+            payment                     : ":features:payment:payment",
+            paymentSetting              : ":features:payment:payment_setting",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train",
-            updateinactivephone   : ":features:user:updateinactivephone",
-            challenges            : ":features:im:challenges",
-            paymentSetting        : ":features:payment:payment_setting",
-            browse                : ":features:digital:digital_browse",
-            saldodetails            : ":features:fintech:saldo_details"
+            withdraw                    : ":features:payment:withdraw",
+
+            gamification                : ":features:promo:gamification",
+            tokopoints                  : ":features:promo:tokopoints",
+
+            topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
+            topAdsManagement            : ":features:top_ads:top_ads_management",
+            topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
+            topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
+
+            checkout                    : ":features:transaction:checkout",
+            transactiondata             : ":features:transaction:transactiondata",
+            transactionanalytics        : ":features:transaction:transactionanalytics",
+
+            attachproduct               : ":features:user:attachproduct",
+            bankdb                      : ":features:user:bankdb",
+            changepassword              : ":features:user:changepassword",
+            groupchat                   : ":features:user:groupchat",
+            logout                      : ":features:user:logout",
+            notifCenter                 : ":features:user:notifcenter",
+            otp                         : ":features:user:otp",
+            profile                     : ":features:user:profile",
+            settingbank                 : ":features:user:settingbank",
+            talk                        : ":features:user:talk",
+            topchat                     : ":features:user:topchat",
+            updateinactivephone         : ":features:user:updateinactivephone",
+            vote                        : ":features:user:vote",
+
+            content                     : ":tkpdcontent",
+            core                        : ":tkpdcore",
+            discovery                   : ":tkpddiscovery",
+            inbox                       : ":tkpdinbox",
+            loyalty                     : ":tkpdloyalty",
+            productDetail               : ":tkpdpdp",
+            seller                      : ":tkpdseller",
+            session                     : ":tkpdsession",
+            transaction                 : ":tkpdtransaction",
+            transactioncommon           : ":tkpdtransaction-common",
     ]
 }
