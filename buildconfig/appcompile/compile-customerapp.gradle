@@ -86,6 +86,7 @@ include "features:user:logout"
 include "features:user:attachproduct"
 include "features:user:updateinactivephone"
 
+include 'logisticanalytics'
 include 'tkpdloyalty'
 include 'tkpdfeed'
 include 'tkpdcore'
