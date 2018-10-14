@@ -24,7 +24,7 @@ public interface FlightRouteDao {
     @Query("DELETE FROM FlightRouteTable")
     void deleteTable();
 
-    @Query("DELETE FROM FlightRouteTable WHERE journeyId = journeyId")
+    @Query("DELETE FROM FlightRouteTable WHERE journeyId = :journeyId")
     void deleteByJourneyId(String journeyId);
 
 }
