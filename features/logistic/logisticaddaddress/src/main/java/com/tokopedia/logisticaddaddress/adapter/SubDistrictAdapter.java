@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.model.db.District;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class SubDistrictAdapter extends ArrayAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.spinner_item, null);
+            convertView = inflater.inflate(R.layout.logistic_spinner_item, null);
 
             holder.subDistrictName = (TextView) convertView.findViewById(android.R.id.text1);
             convertView.setTag(holder);

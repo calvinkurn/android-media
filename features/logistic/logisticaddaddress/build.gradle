@@ -36,8 +36,6 @@ dependencies {
     // TODO remove this when possible
     implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.dbDependencies.dbFlow
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
