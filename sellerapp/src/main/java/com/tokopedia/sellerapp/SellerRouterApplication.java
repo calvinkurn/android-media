@@ -1709,4 +1709,8 @@ public abstract class SellerRouterApplication extends MainApplication
     public String getKolCommentArgsTotalComment() {
         return null;
     }
+
+    public void onAppsFlyerInit() {
+
+    }
 }
