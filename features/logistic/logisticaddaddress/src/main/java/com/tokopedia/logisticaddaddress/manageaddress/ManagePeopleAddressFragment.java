@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -29,11 +31,16 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManagePeopleAddressAdapter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.di.AddressModule;
+import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
+import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -59,12 +66,17 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     private Token token;
     private ManagePeopleAddressFragmentPresenter presenter;
 
+    @Inject
+    PeopleActApi peopleActApi;
+
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
     }
+
+
 
     public ManagePeopleAddressFragment() {
     }
@@ -74,13 +86,17 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         this.list = new ArrayList<>();
         this.listener = (ManagePeopleAddressActivity) getActivity();
-        presenter = new ManagePeopleAddressPresenter(this, listener);
+        presenter = new ManagePeopleAddressPresenter(this, listener, peopleActApi);
         this.adapter = new ManagePeopleAddressAdapter(this.list, this.presenter);
     }
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(appComponent)
+                .addressModule(new AddressModule())
+                .build().inject(this);
     }
 
     @Override

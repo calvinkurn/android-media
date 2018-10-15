@@ -1,38 +1,23 @@
 package com.tokopedia.logisticaddaddress.addaddress;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import com.google.gson.GsonBuilder;
 import com.tokopedia.logisticaddaddress.GeoLocationUtils;
 import com.tokopedia.logisticaddaddress.di.AddressScope;
-import com.tokopedia.logisticdata.data.apiservice.AddressApi;
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.logisticaddaddress.network.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
-import com.tokopedia.logisticaddaddress.network.AddressRepository;
-import com.tokopedia.logisticaddaddress.network.AddAddressRetrofitInteractorImpl;
-import com.tokopedia.network.CommonNetwork;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import okhttp3.OkHttpClient;
 
 /**
  * Created by nisie on 9/6/16.

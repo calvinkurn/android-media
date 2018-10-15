@@ -38,33 +38,20 @@ import okhttp3.OkHttpClient;
  */
 public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragmentPresenter {
 
-    @SuppressWarnings("unused")
-    private static final String TAG = ManagePeopleAddressPresenter.class.getSimpleName();
-
     private final MPAddressActivityListener activityListener;
     private final MPAddressView fragmentListener;
     private final DataManager dataManager;
     private final PagingHandler pagingHandler;
     private boolean allowConnection;
 
-    public ManagePeopleAddressPresenter(ManagePeopleAddressFragment mFragment, MPAddressActivityListener listener) {
+    public ManagePeopleAddressPresenter(ManagePeopleAddressFragment mFragment, MPAddressActivityListener listener, PeopleActApi peopleActApi) {
         this.activityListener = listener;
         this.fragmentListener = mFragment;
         this.pagingHandler = new PagingHandler();
         NetworkRouter router = (NetworkRouter) mFragment.getActivity().getApplication();
 
-        this.dataManager = new DataManagerImpl(this, providePeopleApi(mFragment.getContext(), router));
+        this.dataManager = new DataManagerImpl(this, peopleActApi);
         this.setAllowConnection(true);
-    }
-
-    private PeopleActApi providePeopleApi(Context context, NetworkRouter router) {
-        UserSession userSession = new UserSession(context);
-        return CommonNetwork.createRetrofit(LogisticDataConstantUrl.PeopleAction.BASE_URL,
-                new TkpdOkHttpBuilder(context, new OkHttpClient.Builder()),
-                new TkpdAuthInterceptor(context, router, userSession),
-                new FingerprintInterceptor(router, userSession),
-                new StringResponseConverter(), new GsonBuilder())
-                .create(PeopleActApi.class);
     }
 
     @Override

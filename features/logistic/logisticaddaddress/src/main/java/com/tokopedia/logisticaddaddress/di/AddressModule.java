@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressPresenter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressPresenterImpl;
+import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
+import com.tokopedia.logisticaddaddress.model.datamanager.DataManagerImpl;
 import com.tokopedia.logisticaddaddress.network.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.network.AddressRepository;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
@@ -140,6 +142,12 @@ public class AddressModule {
     @AddressScope
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @Provides
+    @AddressScope
+    DataManager provideDataManager(DataManagerImpl dataManager) {
+        return dataManager;
     }
 
 }
