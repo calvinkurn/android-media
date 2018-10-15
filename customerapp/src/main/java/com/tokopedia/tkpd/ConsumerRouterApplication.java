@@ -3142,7 +3142,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        return userSession.getUserId();
+        return getSession().getUserId();
     }
 
     public void onAppsFlyerInit() {
