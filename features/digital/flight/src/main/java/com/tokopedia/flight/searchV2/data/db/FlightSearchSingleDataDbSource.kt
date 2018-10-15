@@ -16,7 +16,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
         private val flightRouteDao: FlightRouteDao) {
 
-    fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
+    open fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
             flightJourneyDao.insert(journey.flightJourneyTable)
             flightRouteDao.insert(journey.routes)

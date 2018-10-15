@@ -61,7 +61,11 @@ fun createFlightJourneyTable(journeyId: String): FlightJourneyTable {
 
 fun createRoutes(journeyId: String): List<FlightRouteTable> {
     val routes = arrayListOf<FlightRouteTable>()
-    routes.add(FlightRouteTable(journeyId, "JT", "CGK", "DPS", "123", "234", "2j", "layover",
-            "ABCDE", true, 1))
+    routes.add(FlightRouteTable(journeyId, "JT", "Lion Air", "Lion Air Logo",
+            "CGK", "Cengkareng", "Jakarta", "DPS",
+            "Denpasar", "Bali", "123", "234",
+            "2j", "infos", "layover", "ABCDE", true,
+            "amenities", 1, "stopDetail"))
     return routes
 }
+
