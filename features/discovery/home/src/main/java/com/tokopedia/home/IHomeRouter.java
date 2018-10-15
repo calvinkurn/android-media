@@ -4,14 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-
 import rx.Observable;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
-
-import rx.Observable;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
 /**
@@ -67,7 +62,7 @@ public interface IHomeRouter {
 
     Intent getIntentCreateShop(Context context);
 
-    void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity);
+    void goToTokoCash(String appLinkBalance, String redirectUrl, Activity activity);
 
     Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 

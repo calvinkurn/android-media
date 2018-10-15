@@ -16,9 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
@@ -354,7 +352,7 @@ public class HeaderHomeView extends BaseCustomView {
                     HomePageTracking.eventTokoCashActivateClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton(),""
                 );
             }
         };
@@ -391,7 +389,7 @@ public class HeaderHomeView extends BaseCustomView {
                     HomePageTracking.eventTokoCashCheckSaldoClick(getContext());
                 }
 
-                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance(), ""
                 );
             }
         };

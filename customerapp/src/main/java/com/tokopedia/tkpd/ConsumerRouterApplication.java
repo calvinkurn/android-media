@@ -1909,11 +1909,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 });
     }
 
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
-    }
-
     public GetShopInfoUseCase getShopInfo() {
         return getShopComponent().getShopInfoUseCase();
     }
@@ -2892,13 +2887,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
+    public void goToTokoCash(String appLinkBalance, String redirectUrl, Activity activity) {
         WalletRouterUtil.navigateWallet(
                 activity.getApplication(),
                 activity,
                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                applinkUrl,
-                redirectUrl,
+                appLinkBalance,
+                "",
                 new Bundle()
         );
     }

@@ -29,30 +29,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.analytics.ScreenTracking;
+
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.model.LoadingModel;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.helper.KeyboardHelper;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.BrandsWebViewActivity;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.home.TopPicksWebView;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
@@ -476,16 +457,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionAppLinkWalletHeader(String appLinkBalance) {
-        WalletRouterUtil.navigateWallet(
-                getActivity().getApplication(),
-                this,
-                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                appLinkBalance,
-                "",
-                new Bundle()
-        );
-    public void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance) {
+    public void actionAppLinkWalletHeader(String appLinkBalance, String redirectUrlBalance) {
         if ((getActivity()).getApplication() instanceof IHomeRouter) {
             ((IHomeRouter) (getActivity()).getApplication())
                     .goToTokoCash(appLinkBalance,
@@ -522,7 +494,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     if ((getActivity()).getApplication() instanceof IHomeRouter) {
                         ((IHomeRouter) (getActivity()).getApplication())
                                 .goToTokoCash(appLink,
-                                        url,
+                                        "",
                                         getActivity());
                     }
                 }
