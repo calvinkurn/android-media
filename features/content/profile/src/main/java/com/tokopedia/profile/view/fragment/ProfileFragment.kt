@@ -3,7 +3,6 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -44,7 +43,10 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
-import com.tokopedia.showcase.*
+import com.tokopedia.showcase.ShowCaseBuilder
+import com.tokopedia.showcase.ShowCaseContentPosition
+import com.tokopedia.showcase.ShowCaseDialog
+import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
