@@ -1,0 +1,7 @@
+query pendingCashback($userID: Int!, $msisdn: String){
+  pending_cashback(userID: $userID, msisdn : $msisdn) {
+   amount
+   amount_text
+   currency
+ }
+}
