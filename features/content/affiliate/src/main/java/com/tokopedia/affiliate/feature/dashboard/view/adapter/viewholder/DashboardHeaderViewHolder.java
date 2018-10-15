@@ -15,8 +15,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
-
-import java.util.Objects;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 
 /**
  * @author by yfsx on 19/09/18.
@@ -25,6 +25,8 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
 
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
     private static final String FINISH_IMAGE_NAME = "bg_af_dashboard";
+    private static final String IMAGE_URL_FORMAT = "%s/%s/%s/%s.png";
+    private static final String DRAWABLE = "drawable-";
 
     private static final int TEXT_TYPE_PROFILE_SEEN = 1;
     private static final int TEXT_TYPE_PRODUCT_CLICKED = 2;
@@ -44,15 +46,15 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     public DashboardHeaderViewHolder(View itemView, DashboardContract.View mainView) {
         super(itemView);
         this.mainView = mainView;
-        ivSaldo = (ImageView) itemView.findViewById(R.id.iv_saldo);
-        tvSaldo = (TextView) itemView.findViewById(R.id.tv_saldo);
-        tvProfileSeen = (TextView) itemView.findViewById(R.id.tv_profile_seen);
-        tvProductClicked = (TextView) itemView.findViewById(R.id.tv_product_clicked);
-        tvProductBought = (TextView) itemView.findViewById(R.id.tv_product_bought);
-        layoutProfileSeen = (LinearLayout) itemView.findViewById(R.id.layout_profile_seen);
-        layoutProductClicked = (LinearLayout) itemView.findViewById(R.id.layout_product_clicked);
-        layoutProductBought = (LinearLayout) itemView.findViewById(R.id.layout_product_bought);
-        layoutSaldo = (FrameLayout) itemView.findViewById(R.id.layout_saldo);
+        ivSaldo = itemView.findViewById(R.id.iv_saldo);
+        tvSaldo = itemView.findViewById(R.id.tv_saldo);
+        tvProfileSeen = itemView.findViewById(R.id.tv_profile_seen);
+        tvProductClicked = itemView.findViewById(R.id.tv_product_clicked);
+        tvProductBought = itemView.findViewById(R.id.tv_product_bought);
+        layoutProfileSeen = itemView.findViewById(R.id.layout_profile_seen);
+        layoutProductClicked = itemView.findViewById(R.id.layout_product_clicked);
+        layoutProductBought = itemView.findViewById(R.id.layout_product_bought);
+        layoutSaldo = itemView.findViewById(R.id.layout_saldo);
     }
 
     @Override
@@ -63,21 +65,26 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
 
     private void initViewListener(DashboardHeaderViewModel element) {
         layoutSaldo.setOnClickListener(view -> {
-            //TODO yoas : pindah ke halaman saldo
+            RouteManager.route(layoutSaldo.getContext(), ApplinkConst.DEPOSIT);
         });
     }
 
     private void initView(DashboardHeaderViewModel element) {
         ViewTreeObserver observer = layoutSaldo.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(() -> {
-            int height = layoutSaldo.getHeight();
-            ivSaldo.setMinimumHeight(height);
-            layoutSaldo.getViewTreeObserver().removeOnGlobalLayoutListener(this::initDefaultValue);
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                layoutSaldo.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                int height = layoutSaldo.getHeight();
+                ivSaldo.setMinimumHeight(height);
+                ivSaldo.requestLayout();
+            }
         });
-        String imageUrl = String.format("%s/%s/%s/%s.png",
+        String imageUrl = String.format(IMAGE_URL_FORMAT,
                 ANDROID_IMAGE_URL,
                 FINISH_IMAGE_NAME,
-                "drawable-"+DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(mainView.getContext())),
+                DRAWABLE + DisplayMetricUtils.getScreenDensity(mainView.getContext()),
                 FINISH_IMAGE_NAME
         );
         ImageHandler.loadImageWithoutPlaceholder(ivSaldo, imageUrl);
@@ -95,7 +102,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
         tvProductBought.setText(countTextBuilder(TEXT_TYPE_PROFILE_SEEN, 0));
         tvProductClicked.setText(countTextBuilder(TEXT_TYPE_PRODUCT_CLICKED, 0));
         tvProfileSeen.setText(countTextBuilder(TEXT_TYPE_PROFILE_SEEN, 0));
-        tvSaldo.setText(mainView.getContext().getResources().getString(R.string.text_af_default_saldo));
+        tvSaldo.setText(getString(R.string.text_af_default_saldo));
     }
 
     private String countTextBuilder(int textType, int count) {
