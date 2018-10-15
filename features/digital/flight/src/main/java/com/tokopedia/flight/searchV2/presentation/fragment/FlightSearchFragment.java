@@ -585,9 +585,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                             @SuppressWarnings("WrongConstant")
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
-                                /*if (getAdapter().getData() != null) {
-                                    flightSearchPresenter.sortFlight(getAdapter().getData(), item.getItemId());
-                                }*/
+                                if (getAdapter().getData() != null) {
+                                    selectedSortOption = item.getItemId();
+                                    flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, false);
+                                }
                             }
                         })
                         .createDialog();
