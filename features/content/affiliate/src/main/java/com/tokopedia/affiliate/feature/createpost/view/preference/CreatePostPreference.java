@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 public class CreatePostPreference {
     private static final String CREATE_POST_SHOW_EXAMPLE = "create_post_show_example";
+    private static final String FORMAT_FIRST_TIME = "first_time_%s";
 
     private final SharedPreferences sharedPrefs;
 
@@ -25,10 +26,10 @@ public class CreatePostPreference {
     }
 
     public boolean isFirstTimeUser(String userId) {
-        return sharedPrefs.getBoolean(userId, true);
+        return sharedPrefs.getBoolean(String.format(FORMAT_FIRST_TIME, userId), true);
     }
 
     public void setFirstTime(String userId) {
-        sharedPrefs.edit().putBoolean(userId, false).apply();
+        sharedPrefs.edit().putBoolean(String.format(FORMAT_FIRST_TIME, userId), false).apply();
     }
 }
