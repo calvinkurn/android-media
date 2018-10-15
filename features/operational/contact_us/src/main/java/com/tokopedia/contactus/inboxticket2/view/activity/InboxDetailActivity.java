@@ -123,6 +123,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
         edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
 
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
@@ -175,6 +176,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void updateAddComment() {
         edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
         imageUploadAdapter.clearAll();
         imageUploadAdapter.notifyDataSetChanged();
         rvSelectedImages.setVisibility(View.GONE);
@@ -299,8 +301,9 @@ public class InboxDetailActivity extends InboxBaseActivity
             textToolbar.setVisibility(View.GONE);
             isCustomReason = false;
             ivUploadImg.setVisibility(View.VISIBLE);
+            edMessage.getText().clear();
+            setSubmitButtonEnabled(false);
         }
-        edMessage.getText().clear();
         edMessage.setHint(R.string.type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
@@ -395,6 +398,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         ivUploadImg.setVisibility(View.GONE);
         rvSelectedImages.setVisibility(View.GONE);
         edMessage.getText().clear();
+        setSubmitButtonEnabled(false);
         edMessage.setHint(R.string.type_here);
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);

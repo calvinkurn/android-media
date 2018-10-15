@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
@@ -138,7 +138,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 return;
             }
             if (item.getCreatedBy() != null) {
-                ImageHandler.loadImageCircle2(mContext,ivProfile,item.getCreatedBy().getPicture());
+                ImageHandler.loadImageCircle2(mContext, ivProfile, item.getCreatedBy().getPicture());
                 tvName.setText(item.getCreatedBy().getName());
             }
             if (position == commentList.size() - 1 || !commentList.get(position).isCollapsed() || searchMode) {
@@ -161,6 +161,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 if (commentList.get(position).getAttachment() != null && commentList.get(position).getAttachment().size() > 0)
                     rvAttachedImage.setVisibility(View.VISIBLE);
             } else {
+                tvAttachmentHint.setVisibility(View.GONE);
                 tvDateRecent.setText(item.getMessagePlaintext());
                 tvComment.setText("");
                 tvCollapsedTime.setText(item.getShortTime());
@@ -178,14 +179,6 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         })
         void toggleCollapse() {
             int tapIndex = getAdapterPosition();
-//            if (tapIndex != commentList.size() - 1) {
-//                if (indexExpanded != tapIndex) {
-//                    indexExpanded = tapIndex;
-//                    collapsed = false;
-//                } else {
-//                    indexExpanded = commentList.size() - 1;
-//                    collapsed = true;
-//                }
             if (tapIndex != commentList.size() - 1) {
                 CommentsItem item = commentList.get(tapIndex);
                 boolean isCollapsed = item.isCollapsed();
@@ -193,11 +186,6 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
             notifyItemChanged(tapIndex);
             ((InboxDetailActivity) mContext).scrollTo(indexExpanded);
-
-//            if (!collapsed)
-//                ((InboxDetailActivity) mContext).scrollTo(indexExpanded);
-//            else
-//                ((InboxDetailActivity) mContext).scrollTo(0);
         }
     }
 }
