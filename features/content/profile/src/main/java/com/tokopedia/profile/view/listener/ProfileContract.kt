@@ -31,7 +31,7 @@ interface ProfileContract {
 
         fun onSuccessDeletePost(rowNumber: Int)
 
-        fun onErrorDeletePost(errorMessage: String)
+        fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String

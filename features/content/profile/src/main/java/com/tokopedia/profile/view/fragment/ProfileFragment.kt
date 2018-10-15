@@ -14,12 +14,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -369,7 +369,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
     }
 
-    override fun onErrorDeletePost(errorMessage: String) = showError(errorMessage)
+    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        showError(errorMessage, View.OnClickListener { presenter.deletePost(id, rowNumber) })
+    }
 
     private fun initVar() {
         arguments?.let {
@@ -559,6 +561,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showError(message: String) {
-        NetworkErrorHelper.showRedSnackbar(activity, message)
+        showError(message, null)
+    }
+
+    private fun showError(message: String, listener: View.OnClickListener?) {
+        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, listener)
+                .show()
     }
 }

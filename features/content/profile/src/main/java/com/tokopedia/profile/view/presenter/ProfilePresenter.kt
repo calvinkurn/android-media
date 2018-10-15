@@ -83,7 +83,7 @@ class ProfilePresenter @Inject constructor(
     override fun deletePost(id: Int, rowNumber: Int) {
         deletePostUseCase.execute(
                 DeletePostUseCase.createRequestParams(id.toString()),
-                DeletePostSubscriber(view, rowNumber)
+                DeletePostSubscriber(view, id, rowNumber)
         )
     }
 }

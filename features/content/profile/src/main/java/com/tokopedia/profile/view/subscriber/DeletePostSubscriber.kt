@@ -8,7 +8,7 @@ import rx.Subscriber
 /**
  * @author by milhamj on 10/15/18.
  */
-class DeletePostSubscriber(val view: ProfileContract.View, val rowNumber: Int)
+class DeletePostSubscriber(val view: ProfileContract.View, val id: Int, val rowNumber: Int)
     : Subscriber<Boolean>() {
     override fun onNext(isSuccess: Boolean?) {
         if (isSuccess == null || isSuccess.not()) {
@@ -24,6 +24,6 @@ class DeletePostSubscriber(val view: ProfileContract.View, val rowNumber: Int)
         if (GlobalConfig.isAllowDebuggingTools()) {
             e?.printStackTrace()
         }
-        view.onErrorDeletePost(ErrorHandler.getErrorMessage(view.context, e))
+        view.onErrorDeletePost(ErrorHandler.getErrorMessage(view.context, e), id, rowNumber)
     }
 }
