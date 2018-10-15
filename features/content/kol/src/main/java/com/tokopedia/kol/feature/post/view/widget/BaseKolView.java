@@ -116,7 +116,7 @@ public class BaseKolView extends BaseCustomView {
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
-        editButton.setVisibility(element.isEditable() ? View.VISIBLE : View.GONE);
+        editButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
