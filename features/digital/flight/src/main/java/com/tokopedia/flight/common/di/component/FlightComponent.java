@@ -17,6 +17,10 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
+import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
+import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
+import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -46,6 +50,14 @@ public interface FlightComponent {
     AnalyticTracker analyticTracker();
 
     FlightModuleRouter flightModuleRouter();
+
+    FlightSearchRoomDb flightSearchRoomDb();
+
+    FlightComboDao flightComboDao();
+
+    FlightJourneyDao flightJourneyDao();
+
+    FlightRouteDao flightRouteDao();
 
     void inject(BaseFlightActivity baseFlightActivity);
 
