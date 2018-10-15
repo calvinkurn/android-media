@@ -11,10 +11,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -37,12 +41,15 @@ import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter;
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.BannerContractor;
+import com.tokopedia.instantloan.view.contractor.OnGoingLoanContractor;
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment;
 import com.tokopedia.instantloan.view.fragment.DenganAgunanFragment;
 import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment;
 import com.tokopedia.instantloan.view.presenter.BannerListPresenter;
+import com.tokopedia.instantloan.view.presenter.OnGoingLoanPresenter;
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager;
 import com.tokopedia.instantloan.view.ui.InstantLoanItem;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +57,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>,
-        BannerContractor.View,
+        BannerContractor.View, OnGoingLoanContractor.View,
         BannerPagerAdapter.BannerClick,
         View.OnClickListener {
 
     public static final String PINJAMAN_TITLE = "Pinjaman Online";
     @Inject
     BannerListPresenter mBannerPresenter;
+
+    @Inject
+    OnGoingLoanPresenter onGoingLoanPresenter;
 
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
@@ -70,6 +80,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private HeightWrappingViewPager heightWrappingViewPager;
     private int activeTabPosition = 0;
     private boolean instantLoanEnabled = true;
+    private Menu menu;
+    private boolean onGoingLoanStatus = false;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -89,11 +101,20 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         super.setupLayout(savedInstanceState);
         initInjector();
         mBannerPresenter.attachView(this);
+        onGoingLoanPresenter.attachView(this);
         initializeView();
         attachViewListener();
         setupToolbar();
         loadSection();
         mBannerPresenter.loadBanners();
+
+        // TODO: 15/10/18 check if user logged in
+
+        UserSession userSession = new UserSession(this);
+        if (userSession != null && userSession.isLoggedIn()) {
+            onGoingLoanPresenter.checkUserOnGoingLoanStatus();
+        }
+
     }
 
     List<InstantLoanItem> instantLoanItemList = new ArrayList<>();
@@ -208,6 +229,39 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+
+        if (onGoingLoanStatus) {
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.instant_loan_menu, menu);
+            return true;
+        } else {
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.submission_history) {
+
+            Toast.makeText(this, "submission history clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.payment_method) {
+
+            Toast.makeText(this, "payment method clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.help) {
+
+            Toast.makeText(this, "help clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return null;
     }
@@ -226,6 +280,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     protected void onDestroy() {
         super.onDestroy();
         mBannerPresenter.detachView();
+        onGoingLoanPresenter.detachView();
     }
 
 
@@ -399,6 +454,13 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             }
         }
         InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
+    }
+
+    @Override
+    public void setUserOnGoingLoanStatus(boolean status) {
+
+        this.onGoingLoanStatus = status;
+        onCreateOptionsMenu(menu);
     }
 }
 

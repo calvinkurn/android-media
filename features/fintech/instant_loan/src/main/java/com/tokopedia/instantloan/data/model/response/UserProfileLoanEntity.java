@@ -30,6 +30,10 @@ public class UserProfileLoanEntity {
     @Expose
     private String redirectUrl;
 
+    @SerializedName("on_going_loan")
+    @Expose
+    private boolean onGoingLoan;
+
     public boolean getWhitelist() {
         return isWhitelist;
     }
@@ -70,4 +74,11 @@ public class UserProfileLoanEntity {
         this.redirectUrl = redirectUrl;
     }
 
+    public boolean isOnGoingLoan() {
+        return onGoingLoan;
+    }
+
+    public void setOnGoingLoan(boolean onGoingLoan) {
+        this.onGoingLoan = onGoingLoan;
+    }
 }
