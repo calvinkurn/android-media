@@ -908,7 +908,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        sendScreen();
     }
 
     private void restartBanner(boolean isVisibleToUser) {
@@ -919,7 +919,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void trackScreen(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            sendScreen();
+        }
+    }
+
+    private void sendScreen() {
+        if(getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
+            ((IHomeRouter) getActivity().getApplication()).sendIndexScreen(getActivity(), getScreenName());
         }
     }
 
