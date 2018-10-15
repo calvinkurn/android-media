@@ -86,11 +86,12 @@ public class AddAddressActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent createInstance(Activity activity, Token token) {
+    public static Intent createInstance(Activity activity, Token token, boolean isEmpty) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
         bundle.putBoolean(IS_EDIT, false);
+        bundle.putBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, isEmpty);
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
         return intent;
