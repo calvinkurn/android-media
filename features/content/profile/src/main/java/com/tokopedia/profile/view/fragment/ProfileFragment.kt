@@ -54,6 +54,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
+    private var onlyOnePost: Boolean = false
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -80,7 +81,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        initView()
+        initView(view)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -181,6 +182,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         presenter.cursor = firstPageViewModel.lastCursor
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
+
+        onlyOnePost = firstPageViewModel.visitableList.size == 1
+        if (afterPost) {
+            ToasterNormal
+                    .make(view,
+                            getString(R.string.profile_recommend_success),
+                            BaseToaster.LENGTH_LONG
+                    )
+                    .setAction(getString(R.string.profile_add_more)) {
+                        RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
+                    }
+                    .show()
+        }
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -341,7 +355,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun initView() {
+    private fun initView(view: View) {
     }
 
     private fun setToolbarTitle(title: String) {
@@ -377,11 +391,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showShowCaseDialog(view: View?) {
-        val showCaseTag = this::class.java.simpleName
-        if (ShowCasePreference.hasShown(this.context, showCaseTag)) {
+        if (onlyOnePost.not() && afterPost.not()) {
             return
         }
 
+        val showCaseTag = this::class.java.simpleName
         val showCaseDialog = createShowCaseDialog()
         val showcases = ArrayList<ShowCaseObject>()
         showcases.add(ShowCaseObject(
