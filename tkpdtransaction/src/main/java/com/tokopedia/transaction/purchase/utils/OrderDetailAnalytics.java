@@ -1,5 +1,9 @@
 package com.tokopedia.transaction.purchase.utils;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import static com.tokopedia.transaction.purchase.utils.OrderDetailConstant.*;
 
@@ -12,10 +16,19 @@ import java.util.HashMap;
  */
 public class OrderDetailAnalytics {
 
-    private ITransactionOrderDetailRouter router;
+    private AnalyticTracker analyticTracker;
+    private Context context;
 
-    public OrderDetailAnalytics(ITransactionOrderDetailRouter router) {
-        this.router = router;
+    public OrderDetailAnalytics(Context context) {
+        if (context == null)
+            return;
+
+        this.context = context;
+
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
+            analyticTracker = ((AbstractionRouter) context.getApplicationContext())
+                    .getAnalyticTracker();
+        }
     }
 
     private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {
@@ -28,7 +41,7 @@ public class OrderDetailAnalytics {
     }
 
     public void sendAnalytics(String event, String category, String action, String label) {
-        router.sendEventTrackingOrderDetail(createEventMap(event, category, action, label));
+        analyticTracker.sendEventTracking(createEventMap(event, category, action, label));
     }
 
     public void sendAnalyticsClickShipping(String action, String label) {

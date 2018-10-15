@@ -1144,11 +1144,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTrackingOrderDetail(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(eventTracking);
-    }
-
-    @Override
     public void sendScreenName(String screenName) {
         ScreenTracking.screen(screenName);
     }
