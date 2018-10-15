@@ -54,11 +54,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase) {
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase,
+                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
+        this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -97,12 +99,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-
+        deleteFlightReturnSearch(journeyViewModel.getId());
     }
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel) {
-
+        deleteFlightReturnSearch(journeyViewModel.getId());
     }
 
     @Override
@@ -300,6 +302,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         }
 
         super.detachView();
+    }
+
+    private void deleteFlightReturnSearch(String selectedId) {
+        flightDeleteFlightSearchReturnDataUseCase.execute(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    getView().navigateToNextPage(selectedId);
+                }
+            }
+        });
     }
 
     private void addSubscription(Subscription subscription) {
