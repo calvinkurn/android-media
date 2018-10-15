@@ -64,6 +64,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -104,8 +105,6 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.onboarding.NewOnboardingActivity;
-import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
@@ -298,10 +297,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -345,6 +340,7 @@ import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
+import com.tokopedia.tkpd.onboarding.NewOnboardingActivity;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -901,6 +897,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToGmSubscribeMembershipRedirect(Context context) {
+        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+       
+    @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
         context.startActivity(intent);
@@ -1254,11 +1256,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.getAutoLoginWebview(context, name, url);
-    }
-
-    @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return new Intent(context, OnboardingActivity.class);
     }
 
     @Override
@@ -2763,9 +2760,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShopEditor(Context context) {
-        Intent intent = new Intent(context, ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
         UnifyTracking.eventManageShopInfo();
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         context.startActivity(intent);
     }
 
@@ -2778,19 +2774,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageShopEtalase(Context context) {
         UnifyTracking.eventManageShopEtalase();
-        context.startActivity(new Intent(context, EtalaseShopEditor.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
     public void goTotManageShopNotes(Context context) {
         UnifyTracking.eventManageShopNotes();
-        context.startActivity(new Intent(context, ManageShopNotesActivity.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopLocation(Context context) {
         UnifyTracking.eventManageShopLocation();
-        context.startActivity(new Intent(context, ManageShopAddress.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
@@ -3157,5 +3156,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    public String getDefferedDeeplinkPathIfExists(){
+        return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 }
