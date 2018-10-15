@@ -158,7 +158,8 @@ public class EventReviewTicketPresenter
         this.number = umber;
     }
 
-    private void getProfile() {
+    @Override
+    public void getProfile() {
         mView.showProgressBar();
         email = Utils.getUserSession(mView.getActivity()).getEmail();
         number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
@@ -583,6 +584,5 @@ public class EventReviewTicketPresenter
         this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
         mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
         getAndInitForms();
-        getProfile();
     }
 }

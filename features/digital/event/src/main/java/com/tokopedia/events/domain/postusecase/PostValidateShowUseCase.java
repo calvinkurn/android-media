@@ -7,13 +7,11 @@ import com.google.gson.JsonParser;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
-import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 
 /**

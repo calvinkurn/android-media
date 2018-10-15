@@ -291,6 +291,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     public void getEventsList() {
         mView.showProgressBar();
         getEventsListRequestUsecase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .concatMap((Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>) eventsCategoryDomains -> {
                     categoryViewModels = Utils.getSingletonInstance()
                             .convertIntoCategoryListVeiwModel(eventsCategoryDomains);

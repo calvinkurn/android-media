@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -158,15 +157,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        timeHolder = new ImageTextViewHolder();
-        addressHolder = new ImageTextViewHolder();
 
         eventsAnalytics = new EventsAnalytics(getApplicationContext());
-
-        ButterKnife.bind(timeHolder, eventTimeTv);
-        ButterKnife.bind(addressHolder, eventAddressTv);
-
-
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
@@ -174,6 +166,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         tvTelephone.setEnabled(false);
         tvTelephone.setTextIsSelectable(false);
         tvTelephone.setFocusable(false);
+
+        eventReviewTicketPresenter.getProfile();
     }
 
     @Override
@@ -182,6 +176,10 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
+        timeHolder = new ImageTextViewHolder();
+        addressHolder = new ImageTextViewHolder();
+        ButterKnife.bind(timeHolder, eventTimeTv);
+        ButterKnife.bind(addressHolder, eventAddressTv);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
@@ -493,10 +491,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     }
 
     public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-
         holder.setImage(resID);
         holder.setTextView(label);
-
     }
 
     private void showDiscountSection(long discount, boolean show) {

@@ -77,8 +77,6 @@ public class EventDetailsActivity extends EventBaseActivity implements
     ImageView ivArrowSeating;
     @BindView(R2.id.tv_expandable_tnc)
     ExpandableTextView tvExpandableTermsNCondition;
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.event_time)
     LinearLayout timeView;
     @BindView(R2.id.event_location)
@@ -154,7 +152,6 @@ public class EventDetailsActivity extends EventBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_detail_activity);
         timeHolder = new ImageTextViewHolder();
         locationHolder = new ImageTextViewHolder();
         addressHolder = new ImageTextViewHolder();

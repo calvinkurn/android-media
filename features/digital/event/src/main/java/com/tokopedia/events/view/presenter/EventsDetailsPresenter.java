@@ -31,7 +31,9 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by ashwanityagi on 23/11/17.
@@ -82,7 +84,6 @@ public class EventsDetailsPresenter
     public void attachView(EventBaseContract.EventBaseView view) {
         super.attachView(view);
         mView = (EventsDetailsContract.EventDetailsView) view;
-        getEventDetails();
         Intent inIntent = mView.getActivity().getIntent();
         int from = inIntent.getIntExtra(EventDetailsActivity.FROM, 1);
         CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
@@ -98,13 +99,17 @@ public class EventsDetailsPresenter
             url = dataFromHome.getUrl();
             e.printStackTrace();
         }
+        getEventDetails();
     }
 
     public void getEventDetails() {
         mView.showProgressBar();
         RequestParams params = RequestParams.create();
         params.putString("detailsurl", url);
-        getEventDetailsRequestUseCase.getExecuteObservable(params).map(eventDetailsDomain -> convertIntoEventDetailsViewModel(eventDetailsDomain)).subscribe(new Subscriber<EventsDetailsViewModel>() {
+        getEventDetailsRequestUseCase.getExecuteObservable(params)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(eventDetailsDomain -> convertIntoEventDetailsViewModel(eventDetailsDomain)).subscribe(new Subscriber<EventsDetailsViewModel>() {
             @Override
             public void onCompleted() {
 
