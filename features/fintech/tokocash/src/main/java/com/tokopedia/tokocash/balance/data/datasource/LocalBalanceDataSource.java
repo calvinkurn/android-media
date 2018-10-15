@@ -2,8 +2,8 @@ package com.tokopedia.tokocash.balance.data.datasource;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.tokocash.CacheUtil;
+import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -22,19 +22,19 @@ public class LocalBalanceDataSource implements BalanceDataSource {
     }
 
     @Override
-    public Observable<Wallet> getBalanceTokoCash() {
-        return Observable.just(true).map(new Func1<Boolean, Wallet>() {
+    public Observable<BalanceTokoCashEntity> getBalanceTokoCash() {
+        return Observable.just(true).map(new Func1<Boolean, BalanceTokoCashEntity>() {
             @Override
-            public Wallet call(Boolean aBoolean) {
+            public BalanceTokoCashEntity call(Boolean aBoolean) {
                 if (getCache() != null) {
-                    return (CacheUtil.convertStringToModel(getCache(), new TypeToken<Wallet>() {
+                    return (CacheUtil.convertStringToModel(getCache(), new TypeToken<BalanceTokoCashEntity>() {
                     }.getType()));
                 } else
                     throw new RuntimeException("Cache has expired");
             }
-        }).map(new Func1<Wallet, Wallet>() {
+        }).map(new Func1<BalanceTokoCashEntity, BalanceTokoCashEntity>() {
             @Override
-            public Wallet call(Wallet wallet) {
+            public BalanceTokoCashEntity call(BalanceTokoCashEntity wallet) {
                 return wallet;
             }
         });
