@@ -33,7 +33,6 @@ public class ShipmentDataRequestConverter {
 
     public ShipmentAdapter.RequestData generateRequestData(
             List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
-
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
@@ -111,6 +110,10 @@ public class ShipmentDataRequestConverter {
                     .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                             .shippingId(courierItemData.getShipperId())
                             .spId(courierItemData.getShipperProductId())
+                            .ratesId(
+                                shipmentDetailData.getShippingCourierViewModels() != null ?
+                                shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
+                            )
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
