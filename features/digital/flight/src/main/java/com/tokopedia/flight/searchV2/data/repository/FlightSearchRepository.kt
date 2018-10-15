@@ -101,7 +101,7 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun getSearchCombinedReturn(params: java.util.HashMap<String, Any>?, onwardJourneyId: String?):
+    fun getSearchCombinedReturn(params: HashMap<String, Any>?, onwardJourneyId: String?):
             Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
@@ -376,14 +376,17 @@ open class FlightSearchRepository @Inject constructor(
                 .map { flightSearchSingleDataDbSource.deleteRouteByJourneyId(it.flightJourneyTable.id) }
                 .toList()
                 .map { flightSearchSingleDataDbSource.deleteFlightSearchReturnData() }
-
     }
 
     fun deleteAllFlightSearchData() : Observable<Unit> {
         return Observable.create {
-            flightSearchSingleDataDbSource.deleteAllFlightSearchData()
-            flightSearchCombinedDataDbSource.deleteAllFlightSearchCombinedData()
+            it.onNext(deleteFlightSearchData())
         }
+    }
+
+    private fun deleteFlightSearchData() {
+        flightSearchSingleDataDbSource.deleteAllFlightSearchData()
+        flightSearchCombinedDataDbSource.deleteAllFlightSearchCombinedData()
     }
 
 }

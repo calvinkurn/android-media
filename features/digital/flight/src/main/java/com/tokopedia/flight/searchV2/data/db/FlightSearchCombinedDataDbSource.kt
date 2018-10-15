@@ -8,7 +8,7 @@ import javax.inject.Inject
  */
 open class FlightSearchCombinedDataDbSource @Inject constructor(private val flightComboDao: FlightComboDao) {
 
-    fun getSearchCombined(journeyId: String): Observable<List<FlightComboTable>> {
+    open fun getSearchCombined(journeyId: String): Observable<List<FlightComboTable>> {
         return Observable.create {
             it.onNext(flightComboDao.findCombosByJourneyId(journeyId))
         }
