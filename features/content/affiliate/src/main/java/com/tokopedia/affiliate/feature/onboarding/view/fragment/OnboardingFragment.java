@@ -134,6 +134,6 @@ public class OnboardingFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         });
-        commission.setVisibility(View.GONE);
+        commission.setVisibility(View.INVISIBLE);
     }
 }

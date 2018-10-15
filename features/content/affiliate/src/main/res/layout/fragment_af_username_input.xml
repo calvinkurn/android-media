@@ -28,7 +28,7 @@
                 android:layout_height="@dimen/dp_90"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spaceTop"
+                app:layout_constraintTop_toBottomOf="@+id/spaceTop"
                 tools:src="@tools:sample/avatars" />
 
             <TextView
@@ -42,7 +42,7 @@
                 android:textColor="@color/black_70"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/avatar" />
+                app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/usernameWrapper"
@@ -54,7 +54,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:hint="@string/af_type_username"
                 android:textColorHint="@color/black_56"
-                app:layout_constraintTop_toBottomOf="@id/title">
+                app:layout_constraintTop_toBottomOf="@+id/title">
 
                 <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
                     android:id="@+id/usernameInput"
@@ -79,7 +79,7 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:visibility="gone"
                 app:cardElevation="@dimen/dp_2"
-                app:layout_constraintTop_toBottomOf="@id/usernameWrapper"
+                app:layout_constraintTop_toBottomOf="@+id/usernameWrapper"
                 tools:visibility="visible">
 
                 <android.support.v7.widget.RecyclerView
@@ -94,18 +94,16 @@
                     tools:listitem="@layout/item_af_username" />
             </android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/termsAndCondition"
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/saveBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/af_terms_and_condition"
-                android:textColor="@color/medium_green_two"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/af_save"
+                android:textAllCaps="false"
+                app:buttonCompatSize="big"
+                app:buttonCompatType="primary"
+                app:layout_constraintBottom_toTopOf="@+id/agreeTerms" />
 
             <TextView
                 android:id="@+id/agreeTerms"
@@ -118,18 +116,20 @@
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal"
-                app:layout_constraintBottom_toTopOf="@id/termsAndCondition" />
+                app:layout_constraintBottom_toTopOf="@+id/termsAndCondition" />
 
-            <com.tokopedia.design.component.ButtonCompat
-                android:id="@+id/saveBtn"
+            <TextView
+                android:id="@+id/termsAndCondition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:text="@string/af_save"
-                android:textAllCaps="false"
-                app:buttonCompatSize="big"
-                app:buttonCompatType="primary"
-                app:layout_constraintBottom_toTopOf="@id/agreeTerms" />
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/af_terms_and_condition"
+                android:textColor="@color/medium_green_two"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
         <FrameLayout
