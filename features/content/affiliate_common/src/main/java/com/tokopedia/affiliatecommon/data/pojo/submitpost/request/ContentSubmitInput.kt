@@ -8,6 +8,10 @@ data class ContentSubmitInput(
         @Expose
         var type: String? = null,
 
+        @SerializedName("action")
+        @Expose
+        var action: String? = null,
+
         @SerializedName("authorType")
         @Expose
         var authorType: String? = null,
@@ -27,6 +31,10 @@ data class ContentSubmitInput(
         @SerializedName("productID")
         @Expose
         var productID: String? = null,
+
+        @SerializedName("ID")
+        @Expose
+        var activityId: String? = null,
 
         @SerializedName("token")
         @Expose

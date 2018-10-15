@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.R
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -21,12 +23,17 @@ class DeletePostUseCase @Inject constructor(@ApplicationContext private val cont
                                             private val graphqlUseCase: GraphqlUseCase)
     : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
         val query: String = GraphqlHelper.loadRawString(
                 context.resources,
                 R.raw.mutation_af_submit_post
         )
-        val graphqlRequest = GraphqlRequest(query, SubmitPostData::class.java)
+
+        val variables = HashMap<String, Any>()
+        variables[PARAM_INPUT] = getContentSubmitInput(requestParams)
+
+        val graphqlRequest = GraphqlRequest(query, SubmitPostData::class.java, variables)
+
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
@@ -40,7 +47,16 @@ class DeletePostUseCase @Inject constructor(@ApplicationContext private val cont
         }
     }
 
+    private fun getContentSubmitInput(requestParams: RequestParams): ContentSubmitInput {
+        return ContentSubmitInput(
+                activityId = requestParams.getString(PARAM_ID, ""),
+                type = requestParams.getString(PARAM_TYPE, ""),
+                action = requestParams.getString(PARAM_ACTION, "")
+        )
+    }
+
     companion object {
+        private const val PARAM_INPUT = "input"
         private const val PARAM_ID = "ID"
         private const val PARAM_TYPE = "type"
         private const val PARAM_ACTION = "action"

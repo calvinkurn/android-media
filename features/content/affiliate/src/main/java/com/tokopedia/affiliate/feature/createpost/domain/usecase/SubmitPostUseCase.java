@@ -95,7 +95,6 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
 
             graphqlUseCase.clearRequest();
             graphqlUseCase.addRequest(graphqlRequest);
-
             return graphqlUseCase
                     .createObservable(RequestParams.create())
                     .map(mapGraphqlResponse());
