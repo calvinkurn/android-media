@@ -321,14 +321,16 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
-        journey.adultCombo = flightComboTable.adultPrice
-        journey.childCombo = flightComboTable.childPrice
-        journey.infantCombo = flightComboTable.infantPrice
-        journey.adultNumericCombo = flightComboTable.adultPriceNumeric
-        journey.childNumericCombo = flightComboTable.childPriceNumeric
-        journey.infantNumericCombo = flightComboTable.infantPriceNumeric
-        journey.isBestPairing = flightComboTable.isBestPairing
-        journey.sortPrice = flightComboTable.adultPriceNumeric
+        with(flightComboTable) {
+            journey.adultCombo = adultPrice
+            journey.childCombo = childPrice
+            journey.infantCombo = infantPrice
+            journey.adultNumericCombo = adultPriceNumeric
+            journey.childNumericCombo = childPriceNumeric
+            journey.infantNumericCombo = infantPriceNumeric
+            journey.isBestPairing = isBestPairing
+            journey.sortPrice = adultPriceNumeric
+        }
         return journey
     }
 
