@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.core.product.model.etalase.MonthsInstallmentItem;
 import com.tokopedia.core.product.model.productdetail.ProductInstallment;
 import com.tokopedia.core.product.model.productdetail.Terms;

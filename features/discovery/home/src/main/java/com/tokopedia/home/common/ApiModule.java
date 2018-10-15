@@ -2,17 +2,16 @@ package com.tokopedia.home.common;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.home.constant.ConstantKey;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -45,9 +44,9 @@ public class ApiModule {
                 .serializeNulls()
                 .create();
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL)
+                .baseUrl(ConstantKey.TkpdBaseUrl.HOME_DATA_BASE_URL)
                 .addConverterFactory(new GeneratedHostConverter())
-                .addConverterFactory(new TkpdResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

@@ -2,8 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;

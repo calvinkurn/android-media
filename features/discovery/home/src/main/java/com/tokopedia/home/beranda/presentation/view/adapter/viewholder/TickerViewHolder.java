@@ -12,9 +12,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -22,10 +21,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerView
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author by errysuprayogi on 11/28/17.

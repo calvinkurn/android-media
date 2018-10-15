@@ -16,10 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
@@ -144,12 +146,12 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokoPoint.setVisibility(VISIBLE);
             //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
             tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
-            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getRewardPointsStr());
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (headerViewModel.getTokoPointDrawerData() != null) {
-                        UnifyTracking.eventUserProfileTokopoints();
+                        HomePageTracking.eventUserProfileTokopoints(getContext());
                         listener.actionTokoPointClicked(
                                 headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
                                 TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
@@ -349,7 +351,7 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
                         !homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashActivateClick();
+                    HomePageTracking.eventTokoCashActivateClick(getContext());
                 }
 
                 listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
@@ -386,7 +388,7 @@ public class HeaderHomeView extends BaseCustomView {
                 if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
                         !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                         homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashCheckSaldoClick();
+                    HomePageTracking.eventTokoCashCheckSaldoClick(getContext());
                 }
 
                 listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()

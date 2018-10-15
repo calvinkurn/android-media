@@ -9,8 +9,13 @@ import android.content.Intent;
  */
 
 public interface DigitalModuleRouter {
+    int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
+    int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
 
     Intent getLoginIntent(Context activity);
+
+    Intent instanceIntentDigitalCategoryList();
 }

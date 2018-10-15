@@ -21,8 +21,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.abstraction.constant.TkpdAppLink;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -57,7 +57,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private int position = 0;
     private List<String> sectionList = new ArrayList<>();
 
-    @DeepLink(Constants.Applinks.EXPLORE)
+    @DeepLink(TkpdAppLink.EXPLORE)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ExploreActivity.class)
@@ -156,6 +156,11 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
+    public Context getContext() {
+        return getContext();
+    }
+
+    @Override
     protected void setupLayout(Bundle savedInstanceState) {
         super.setupLayout(savedInstanceState);
         root = findViewById(R.id.root);
@@ -210,7 +215,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             Glide.with(this).load(model.getImageUrl()).diskCacheStrategy(DiskCacheStrategy.RESULT).into(iconView);
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             labelTxt.setText(title);
-            view.setOnClickListener(new OnTabExplorerClickListener(title, tabLayout, i));
+            view.setOnClickListener(new OnTabExplorerClickListener(this, title, tabLayout, i));
             tab.setCustomView(view);
             Uri uri = Uri.parse(model.getApplinks());
             sectionList.add(uri.getLastPathSegment().toLowerCase());
@@ -242,18 +247,20 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         private final String title;
         private final TabLayout tab;
         private final int positionTab;
+        private final Context context;
 
-        OnTabExplorerClickListener(String title, TabLayout tab, int positionTab) {
+        OnTabExplorerClickListener(Context context, String title, TabLayout tab, int positionTab) {
             this.title = title;
             this.tab = tab;
             this.positionTab = positionTab;
+            this.context = context;
         }
 
         @Override
         public void onClick(View v) {
             TabLayout.Tab currentTab = tab.getTabAt(positionTab);
             if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
-                HomePageTracking.eventClickTabExplorer(title);
+                HomePageTracking.eventClickTabExplorer(context, title);
                 currentTab.select();
             }
         }

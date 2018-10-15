@@ -1,14 +1,12 @@
 package com.tokopedia.home.beranda.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -22,6 +20,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,14 @@ import rx.functions.Func1;
  */
 
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<Visitable>> {
+    private final Context context;
+
+    public HomeMapper(Context context) {
+        this.context = context;
+    }
+
+    private static final String ERROR_MESSAGE = "message_error";
+
     @Override
     public List<Visitable> call(Response<GraphqlResponse<HomeData>> response) {
         if (response.isSuccessful()) {
@@ -76,33 +87,37 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
                                         channel.getEnhanceImpressionSprintSaleHomePage(position)
-
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
                                         channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        context,
                                         channel.getEnhanceImpressionLegoBannerHomePage(position)
                                 );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        context,
                                         channel.getEnhanceImpressionDynamicChannelHomePage(position)
                                 );
                             }
                         }
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
+                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                         } else {
                             list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
+                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                    list.size(),channel);
                         }
                     }
                 }
@@ -110,13 +125,59 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             return list;
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = getErrorMessage(response);
             if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
+                throw new RuntimeException(messageError);
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
         }
+    }
+
+    public static String getErrorMessage(Response response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response.errorBody().string());
+
+            if (hasErrorMessage(jsonObject)) {
+                JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                return getErrorMessageJoined(jsonArray);
+            } else {
+                return "";
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getErrorMessageJoined(JSONArray errorMessages) {
+        try {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            if (errorMessages.length() != 0) {
+                for (int i = 0, statusMessagesSize = errorMessages.length(); i < statusMessagesSize; i++) {
+                    String string = null;
+                    string = errorMessages.getString(i);
+                    stringBuilder.append(string);
+                    if (i != errorMessages.length() - 1
+                            && !errorMessages.get(i).equals("")
+                            && !errorMessages.get(i + 1).equals("")) {
+                        stringBuilder.append("\n");
+                    }
+                }
+            }
+            return stringBuilder.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static boolean hasErrorMessage(JSONObject jsonObject) {
+        return jsonObject.has(ERROR_MESSAGE);
     }
 
     private Visitable mappingTicker(ArrayList<Ticker.Tickers> tickers) {

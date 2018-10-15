@@ -11,10 +11,6 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by errysuprayogi on 12/5/17.
  */

@@ -1,15 +1,12 @@
-package com.tokopedia.core.network.entity.home;
+package com.tokopedia.home.beranda.domain.model;
 
-import android.text.Html;
 import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.shop.model.etalasemodel.List;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Nisie on 7/15/16.

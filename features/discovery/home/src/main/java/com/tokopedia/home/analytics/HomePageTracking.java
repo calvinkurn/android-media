@@ -1,0 +1,376 @@
+package com.tokopedia.home.analytics;
+
+import android.app.Activity;
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.home.beranda.data.model.Promotion;
+
+import java.util.Map;
+
+/**
+ * Created by nakama on 2/6/18.
+ */
+
+public class HomePageTracking {
+
+    private static final String CLICK_HOME_PAGE = "clickHomePage";
+    private static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
+    private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomePage";
+    private static String STATIC_VALUE_HOMEPAGE = "homepage";
+    public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
+    public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
+    public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
+    public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
+    public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
+
+    private static final String EVENT_GIMMICK = "clickGimmick";
+    private static final String CATEGORY_GIMMICK = "Gimmick";
+    private static final String ACTION_GIMMICK_CLICK = "Click";
+
+    private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+    private static final String CATEGORY_HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+    private static final String ACTION_CLICK_WIDGET_BAR = "click widget";
+
+    private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
+    private static final String ACTION_CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
+
+    private static final String EVENT_TOKO_POINT = "eventTokopoint";
+    private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
+    private static final String ACTION_CLICK_TOKO_POINTS = "click tokopoints";
+    private static final String TOKOPOINTS_LABEL = "tokopoints";
+
+    private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
+    private static final String ACTION_CLICK_ACTIVATE = "click activate";
+
+    private static final String ACTION_CLICK_SALDO = "click saldo";
+
+
+    public static AnalyticTracker getTracker(Context context){
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return null;
+        }
+        return ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+    }
+
+    public static void eventPromoImpression(Context context,
+                                            Promotion promotion) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(promotion.getImpressionDataLayer());
+        }
+    }
+
+    public static void eventPromoClick(Context context, Promotion promotion) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(promotion.getClickDataLayer());
+        }
+    }
+
+    public static void eventClickViewAllPromo(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "slider banner click view all",
+                    ""
+            );
+        }
+    }
+
+    public static void sendScreen(Activity activity, String screenName) {
+        if(activity != null){
+            AnalyticTracker tracker = getTracker(activity.getBaseContext());
+            if(tracker != null){
+                tracker.sendScreen(activity, screenName);
+            }
+        }
+    }
+
+    public static void eventClickJumpRecomendation(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    CLICK_HOME_PAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "cek rekomendasi jumper click",
+                    ""
+            );
+        }
+    }
+
+    public static void eventImpressionJumpRecomendation(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if(tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_IMPRESSION_HOME_PAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "cek rekomendasi jumper impression",
+                    ""
+            );
+        }
+    }
+
+    public static void eventClickHomeUseCase(Context context, String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click 5 use cases",
+                    title
+            );
+        }
+    }
+
+    public static void eventClickTabExplorer(Context context,
+                                             String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click explorer tab",
+                    title
+            );
+        }
+    }
+
+    public static void eventClickDynamicIcons(Context context, String title) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "click 5 dynamic icons",
+                    title
+            );
+        }
+    }
+
+    public static void eventClickSeeAllProductSprint(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "sprint sale click view all",
+                    ""
+            );
+        }
+    }
+
+    public static void eventClickSeeAllProductSprintBackground(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "sprint sale with backgroud click view all",
+                    ""
+            );
+        }
+    }
+
+    public static void eventEnhancedImpressionSprintSaleHomePage(Context context,
+                                                                 Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedClickSprintSaleProduct(Context context,
+                                                           Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedImpressionDynamicChannelHomePage(Context context,
+                                                                     Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedClickDynamicChannelHomePage(Context context,
+                                                                Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(
+                    data
+            );
+        }
+    }
+
+    public static void eventClickSeeAllDynamicChannel(Context context, String applink) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "curated list click view all",
+                    applink
+            );
+        }
+    }
+
+    public static void eventClickSeeAllLegoBannerChannel(Context context,
+                                                         String applink) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "lego banner click view all",
+                    applink
+            );
+        }
+    }
+
+    public static void eventClickExplorerItem(Context context, String action, String label) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    action,
+                    label
+            );
+        }
+    }
+
+    public static void eventEnhancedImpressionFavoriteCategory(Context context,
+                                                               Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedClickFavoriteCategory(Context context,
+                                                          Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedImpressionProductHomePage(Context context,
+                                                              Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventEnhancedClickProductHomePage(Context context,
+                                                         Map<String, Object> data) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEnhancedEcommerce(data);
+        }
+    }
+
+    public static void eventClickOpenShop(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "jual ini itu buka toko",
+                    ""
+            );
+        }
+    }
+
+    public static void eventClickEditShop(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    STATIC_VALUE_CLICK_HOMEPAGE,
+                    STATIC_VALUE_HOMEPAGE,
+                    "jual ini itu click ubah",
+                    ""
+            );
+        }
+    }
+
+    public static void eventHomeGimmick(Context context, String label) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_GIMMICK,
+                    CATEGORY_GIMMICK,
+                    ACTION_GIMMICK_CLICK,
+                    label
+            );
+        }
+    }
+
+    public static void eventClickWidgetBar(Context context, String categoryItem) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_DIGITAL_WIDGET,
+                    ACTION_CLICK_WIDGET_BAR,
+                    categoryItem
+            );
+        }
+    }
+
+    public static void eventClickLihatSemua(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_DIGITAL,
+                    ACTION_CLICK_LIHAT_SEMUA_PRODUK,
+                    ""
+            );
+        }
+    }
+
+    public static void eventUserProfileTokopoints(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_TOKO_POINT,
+                    CATEGORY_TOKOPOINTS_USER_PAGE,
+                    ACTION_CLICK_TOKO_POINTS,
+                    TOKOPOINTS_LABEL
+            );
+        }
+    }
+
+    public static void eventTokoCashActivateClick(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
+                    ACTION_CLICK_ACTIVATE,
+                    ""
+            );
+        }
+    }
+
+    public static void eventTokoCashCheckSaldoClick(Context context) {
+        AnalyticTracker tracker = getTracker(context);
+        if (tracker != null){
+            tracker.sendEventTracking(
+                    EVENT_USER_INTERACTION_HOMEPAGE,
+                    CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
+                    ACTION_CLICK_SALDO,
+                    ""
+            );
+        }
+    }
+}

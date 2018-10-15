@@ -1,10 +1,9 @@
-package com.tokopedia.core.analytics.nishikino.model;
+package com.tokopedia.home.beranda.data.model;
 
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

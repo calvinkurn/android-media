@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.listener;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 import java.util.ArrayList;
 

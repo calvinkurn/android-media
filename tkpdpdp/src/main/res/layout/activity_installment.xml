@@ -22,13 +22,13 @@
             app:tabMode="fixed"
             style="@style/GreenTabLayoutStyle" />
 
-        <com.tokopedia.core.customView.WrapContentViewPager
+        <com.tokopedia.design.viewpager.WrapContentViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-        </com.tokopedia.core.customView.WrapContentViewPager>
+        </com.tokopedia.design.viewpager.WrapContentViewPager>
 
     </LinearLayout>
 

@@ -114,6 +114,7 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -203,6 +204,7 @@ import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
+import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
@@ -892,6 +894,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToWalletFromHome(Context context, String url) {
+        String seamlessUrl;
+        seamlessUrl = URLGenerator.generateURLSessionLogin((Uri.encode(url)),
+                context);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(WalletActivity.EXTRA_URL, seamlessUrl);
+        Intent intent = new Intent(context, WalletActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
@@ -902,7 +917,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
-       
+
     @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
@@ -1537,6 +1552,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title){
+        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, url);
+        intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+        return intent;
+    }
+
+    @Override
     public String getUserEmailProfil() {
         SessionHandler sessionHandler = new SessionHandler(this);
         return sessionHandler.getEmail();
@@ -1743,6 +1765,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getBannerWebViewOnAllPromoClickFromHomeIntent(Activity activity,
+                                                                String url,
+                                                                String title) {
+        return BannerWebView.getCallingIntentWithTitle(activity, url, title);
+    }
+
+    @Override
     public boolean isTrainNativeEnable() {
         return remoteConfig.getBoolean(TrainRouter.TRAIN_ENABLE_REMOTE_CONFIG);
     }
@@ -1857,6 +1886,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         params.putString(GetTokopointUseCase.KEY_PARAM,
                 CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
         return this.tokopointComponent.getTokopointUseCase().createObservable(params);
+    }
+
+    @Override
+    public Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome() {
+        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+        params.putString(GetTokopointUseCase.KEY_PARAM,
+                CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
+        return this.tokopointComponent.getTokopointUseCase().createObservable(params)
+                .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
+                    @Override
+                    public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
+                        TokopointHomeDrawerData tokopointHomeDrawerData
+                                = new TokopointHomeDrawerData(
+                                        tokoPointDrawerData.getOffFlag(),
+                                        tokoPointDrawerData.getUserTier().getRewardPointsStr(),
+                                        tokoPointDrawerData.getMainPageUrl(),
+                                        tokoPointDrawerData.getMainPageTitle());
+
+                        return tokopointHomeDrawerData;
+                    }
+                });
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
+        return new TokocashPendingDataBroadcastReceiver();
     }
 
     public GetShopInfoUseCase getShopInfo() {
@@ -2067,10 +2122,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
+    public void onDigitalItemClickFromExploreHome(
+            Activity activity, String appLink, String categoryId, String name, String url) {
+        DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                .appLinks(appLink)
+                .categoryId(categoryId)
+                .categoryName(name)
+                .url(url)
+                .build();
+
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
         goToApplinkActivity(activity, appLink, bundle);
+    }
+
+    @Override
+    public Intent getActivityShopCreateEdit(Context context) {
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     @Override
@@ -2220,6 +2290,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } else {
             activity.startActivity(getWebviewActivity(activity, url));
         }
+    }
+
+    @Override
+    public Intent getTopAdsProductDetailIntentForHome(Context context, Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
