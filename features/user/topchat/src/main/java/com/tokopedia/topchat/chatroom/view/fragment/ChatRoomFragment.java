@@ -495,11 +495,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onGoToWebView(String url, String id) {
         if (!TextUtils.isEmpty(url)) {
-            UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
-                    TopChatAnalytics.Action.CLICK_THUMBNAIL,
-                    TopChatAnalytics.Name.INBOX_CHAT,
-                    id
-            );
 
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
