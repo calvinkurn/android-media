@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.response.SubmitPostData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData;
 
 import rx.Subscriber;
 
@@ -37,8 +37,10 @@ public class SubmitPostSubscriber extends Subscriber<SubmitPostData> {
     @Override
     public void onNext(SubmitPostData submitPostData) {
         view.hideLoading();
-        if (submitPostData == null || submitPostData.getFeedContentSubmit() == null) {
-            throw new RuntimeException();
+        if (submitPostData == null
+                || submitPostData.getFeedContentSubmit().getSuccess() != SubmitPostData.SUCCESS) {
+            onError(new RuntimeException());
+            return;
         } else if (!TextUtils.isEmpty(submitPostData.getFeedContentSubmit().getError())) {
             view.onErrorSubmitPost(submitPostData.getFeedContentSubmit().getError());
             return;
