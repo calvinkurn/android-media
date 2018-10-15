@@ -357,6 +357,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         showError(errorMessage)
     }
 
+    override fun onSuccessDeletePost(rowNumber: Int) {
+    }
+
+    override fun onErrorDeletePost(errorMessage: String) {
+    }
+
     private fun initVar() {
         arguments?.let {
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()

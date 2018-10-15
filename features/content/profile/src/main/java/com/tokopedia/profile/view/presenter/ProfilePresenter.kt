@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
@@ -8,6 +9,7 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.profile.domain.usecase.GetProfileFirstPage
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.subscriber.DeletePostSubscriber
 import com.tokopedia.profile.view.subscriber.FollowSubscriber
 import com.tokopedia.profile.view.subscriber.GetProfileFirstPageSubscriber
 import com.tokopedia.profile.view.subscriber.GetProfilePostSubscriber
@@ -16,10 +18,12 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 9/21/18.
  */
-class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFirstPage,
-                                           val getContentListUseCase: GetContentListUseCase,
-                                           val likeKolPostUseCase: LikeKolPostUseCase,
-                                           val followKolPostGqlUseCase: FollowKolPostGqlUseCase)
+class ProfilePresenter @Inject constructor(
+        private val getProfileFirstPage: GetProfileFirstPage,
+        private val getContentListUseCase: GetContentListUseCase,
+        private val likeKolPostUseCase: LikeKolPostUseCase,
+        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+        private val deletePostUseCase: DeletePostUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -29,6 +33,7 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
         getProfileFirstPage.unsubscribe()
         likeKolPostUseCase.unsubscribe()
         followKolPostGqlUseCase.unsubscribe()
+        deletePostUseCase.unsubscribe()
     }
 
     override fun getProfileFirstPage(userId: Int) {
@@ -76,6 +81,9 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
     }
 
     override fun deletePost(id: Int, rowNumber: Int) {
-
+        deletePostUseCase.execute(
+                DeletePostUseCase.createRequestParams(id.toString()),
+                DeletePostSubscriber(view, rowNumber)
+        )
     }
 }

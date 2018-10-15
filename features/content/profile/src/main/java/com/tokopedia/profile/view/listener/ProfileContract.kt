@@ -28,6 +28,10 @@ interface ProfileContract {
         fun onSuccessFollowKol()
 
         fun onErrorFollowKol(errorMessage: String)
+
+        fun onSuccessDeletePost(rowNumber: Int)
+
+        fun onErrorDeletePost(errorMessage: String)
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String
