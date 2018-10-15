@@ -340,4 +340,6 @@ public interface ProductDetailView extends ViewListener {
     void onSuccesLoadRateEstimaion(RatesModel ratesModel);
 
     void moveToEstimationDetail();
+
+    void showPromoWidget(PromoAttributes promoAttributes);
 }

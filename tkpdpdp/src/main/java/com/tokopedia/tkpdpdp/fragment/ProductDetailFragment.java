@@ -64,6 +64,7 @@ import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
+import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -130,6 +131,7 @@ import com.tokopedia.tkpdpdp.customview.NewShopView;
 import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
 import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
+import com.tokopedia.tkpdpdp.customview.PromoWidgetView;
 import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
 import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
 import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
@@ -235,6 +237,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     private static final String ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant";
+    private static final String ENABLE_MERCHANT_VOUCHER = "app_flag_merchant_voucher";
     private static final String NON_VARIANT = "non-variant";
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
@@ -242,6 +245,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final String STATE_PRODUCT_STOCK_NON_VARIANT = "STATE_PRODUCT_STOCK_NON_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
+    public static final String STATE_PROMO_WIDGET = "STATE_PROMO_WIDGET";
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
     private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
@@ -256,6 +260,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private PictureView pictureView;
     private RatingTalkCourierView ratingTalkCourierView;
     private PriceSimulationView priceSimulationView;
+    private PromoWidgetView promoWidgetView;
 
     MerchantVoucherListPresenter voucherListpresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
@@ -293,10 +298,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ProductPass productPass;
     private ProductDetailData productData;
     private boolean useVariant = true;
+    private boolean useMerchantVoucherFeature = true;
     private ProductVariant productVariant;
     private Child productStockNonVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
+    private PromoAttributes promoAttributes;
     private Option variantLevel1;
     private Option variantLevel2;
     private boolean onClickBuyWhileRequestingVariant = false;
@@ -352,6 +359,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
             useVariant = false;
         }
+        if (!remoteConfig.getBoolean(ENABLE_MERCHANT_VOUCHER)) {
+            useMerchantVoucherFeature = false;
+        }
         cacheInteractor = new CacheInteractorImpl();
         localCacheHandler = new com.tokopedia.abstraction.common.utils.LocalCacheHandler(MainApplication.getAppContext(), PRODUCT_DETAIL);
         localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.FALSE);
@@ -391,6 +401,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
+        promoWidgetView = view.findViewById(R.id.view_promo_widget);
         merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
@@ -450,7 +461,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             @Override
             public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
-                if (getContext()!= null && productData!= null) {
+                if (getContext() != null && productData != null) {
                     Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
                             merchantVoucherViewModel, productData.getShopInfo().getShopId());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
@@ -459,7 +470,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
             @Override
             public void onSeeAllClicked() {
-                if (getContext()!= null &&  productData!= null) {
+                if (getContext() != null && productData != null) {
                     Intent intent = MerchantVoucherListActivity.createIntent(getContext(), productData.getShopInfo().getShopId(),
                             productData.getShopInfo().getShopName());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
@@ -542,6 +553,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         newShopView.setListener(this);
         shopInfoView.setListener(this);
         videoDescriptionLayout.setListener(this);
+        promoWidgetView.setListener(this);
         mostHelpfulReviewView.setListener(this);
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
@@ -554,6 +566,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             }
         });
+    }
+
+    @Override
+    public void showPromoWidget(PromoAttributes promoAttributes) {
+        this.promoAttributes = promoAttributes;
+        this.promoWidgetView.renderData(promoAttributes);
+        merchantVoucherListWidget.setVisibility(View.GONE);
     }
 
     @Override
@@ -810,15 +829,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void openProductModalActivity(int state) {
         if (getActivity() != null) {
             startActivityForResult(
-                ProductModalActivity.Companion.createActivity(
-                        getActivity(),
-                        productVariant,
-                        productData,
-                        selectedQuantity,
-                        state,
-                        selectedRemarkNotes
-                ),
-                REQUEST_PRODUCT_MODAL
+                    ProductModalActivity.Companion.createActivity(
+                            getActivity(),
+                            productVariant,
+                            productData,
+                            selectedQuantity,
+                            state,
+                            selectedRemarkNotes
+                    ),
+                    REQUEST_PRODUCT_MODAL
             );
             getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
         }
@@ -916,9 +935,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         float weight = 0f;
         try {
             weight = Float.parseFloat(successResult.getInfo().getProductWeight());
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
-        if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())){
+        if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())) {
             weight /= 1000;
         }
 
@@ -1280,6 +1300,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         presenter.saveStateProductStockNonVariant(outState, STATE_PRODUCT_STOCK_NON_VARIANT, productStockNonVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
+        presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
         presenter.saveStateAppBarCollapsed(outState, STATE_APP_BAR_COLLAPSED, isAppBarCollapsed);
     }
 
@@ -1452,7 +1473,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }
             case REQUEST_CODE_LOGIN_USE_VOUCHER:
             case REQUEST_CODE_MERCHANT_VOUCHER:
-            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL:{
+            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL: {
                 if (resultCode == Activity.RESULT_OK) {
                     needLoadVoucher = true;
                 }
@@ -1469,6 +1490,20 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             variantText += (", " + ((Option) variantLevel2).getValue());
         }
         return variantText;
+    }
+
+    @Override
+    public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        merchantVoucherListWidget.setData(merchantVoucherViewModelList);
+        merchantVoucherListWidget.setVisibility(View.VISIBLE);
+        promoWidgetView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onErrorGetMerchantVoucherList(@NotNull Throwable e) {
+        merchantVoucherListWidget.setData(null);
+        merchantVoucherListWidget.setVisibility(View.GONE);
+        promoWidgetView.setVisibility(View.GONE);
     }
 
     @Override
@@ -1792,7 +1827,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         BadgeView badgeView = new BadgeView(getContext());
         badgeView.bindTarget(view);
         badgeView.setGravityOffset(-10, 3, true);
-        badgeView.setBadgeGravity(Gravity.TOP|Gravity.END);
+        badgeView.setBadgeGravity(Gravity.TOP | Gravity.END);
         badgeView.setBadgeNumber(count);
     }
 
@@ -1885,16 +1920,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    @Override
-    public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
-        merchantVoucherListWidget.setData(merchantVoucherViewModelList);
-    }
-
-    @Override
-    public void onErrorGetMerchantVoucherList(@NotNull Throwable e) {
-        merchantVoucherListWidget.setData(null);
-    }
-
     private class EditClick implements View.OnClickListener {
         private final ProductDetailData data;
 
@@ -1929,9 +1954,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void loadPromo() {
-        if (productData!= null) {
-            voucherListpresenter.getVoucherList(productData.getShopInfo().getShopId(),
-                    NUM_VOUCHER_TO_SHOW);
+        if (productData != null) {
+            if (useMerchantVoucherFeature) {
+                voucherListpresenter.getVoucherList(productData.getShopInfo().getShopId(),
+                        NUM_VOUCHER_TO_SHOW);
+            } else {
+                if (!GlobalConfig.isSellerApp()) {
+                    presenter.getPromoWidget(getContext(), productData);
+                }
+            }
         }
     }
 
@@ -2292,10 +2323,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     public void setDrawableCount(Context context, int count) {
         MenuItem menuItem = menu.findItem(R.id.action_cart);
-        if(menuItem.getIcon() instanceof  LayerDrawable) {
+        if (menuItem.getIcon() instanceof LayerDrawable) {
             LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
             CountDrawable badge = new CountDrawable(context);
-            if(count > 99) {
+            if (count > 99) {
                 badge.setCount(getString(R.string.pdp_label_cart_count_max));
             } else {
                 badge.setCount(Integer.toString(count));

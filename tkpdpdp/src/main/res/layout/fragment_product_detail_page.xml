@@ -145,6 +145,13 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <com.tokopedia.tkpdpdp.customview.PromoWidgetView
+                android:id="@+id/view_promo_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/dp_10" />
+
             <com.tokopedia.tkpdpdp.customview.TransactionDetailView
                 android:id="@+id/view_transaction_detail"
                 android:layout_width="match_parent"
