@@ -84,11 +84,11 @@ public class ExploreFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_explore, container, false);
-        rvExplore = (RecyclerView) view.findViewById(R.id.rv_explore);
-        swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        searchView = (SearchInputView) view.findViewById(R.id.search_input_view);
-        ivBack = (ImageView) view.findViewById(R.id.iv_back);
-        ivBantuan = (ImageView) view.findViewById(R.id.action_bantuan);
+        rvExplore = view.findViewById(R.id.rv_explore);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        searchView = view.findViewById(R.id.search_input_view);
+        ivBack = view.findViewById(R.id.iv_back);
+        ivBantuan = view.findViewById(R.id.action_bantuan);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         presenter.attachView(this);
         return view;
@@ -243,7 +243,7 @@ public class ExploreFragment
     public void onErrorGetFirstData(String error) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView().getRootView(),
+                rvExplore,
                 error,
                 () -> presenter.getFirstData(exploreParams, false)
         );
