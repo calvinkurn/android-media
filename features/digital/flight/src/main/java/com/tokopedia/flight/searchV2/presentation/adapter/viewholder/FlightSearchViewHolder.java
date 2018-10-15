@@ -182,6 +182,11 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
             savingPrice.setText(flightJourneyViewModel.getTotal());
             tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
                     flightJourneyViewModel.getFare().getAdultNumericCombo()));
+        } else if(flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
+            savingPrice.setVisibility(View.VISIBLE);
+            savingPrice.setText(flightJourneyViewModel.getTotal());
+            tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
+                    flightJourneyViewModel.getFare().getAdultNumericCombo()));
         } else {
             bestPairingTag.setVisibility(View.GONE);
             discountTag.setVisibility(View.GONE);

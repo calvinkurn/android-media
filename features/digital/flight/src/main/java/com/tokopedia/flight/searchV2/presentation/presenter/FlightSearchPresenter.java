@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.domain.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSortAndFilterUseCase;
@@ -47,6 +48,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSortAndFilterUseCase flightSortAndFilterUseCase;
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
+    private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject

@@ -126,6 +126,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
             setNeedRefreshFromCache(true);
         }
+
+        showLoading();
+
     }
 
     @Nullable
@@ -271,6 +274,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
         if (!needRefresh || list.size() > 0) {
+            clearAllData();
             renderList(list);
         }
 

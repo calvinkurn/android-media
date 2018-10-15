@@ -14,7 +14,7 @@ public class AttributesResponse {
     @Expose
     private List<ComboResponse> combos;
 
-    @SerializedName("is_best_pair")
+    @SerializedName("is_best_pairing")
     @Expose
     private boolean isBestPairing;
 
