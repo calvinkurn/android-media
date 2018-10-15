@@ -31,7 +31,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
-import com.tokopedia.profile.R.id.*
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -327,6 +326,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 getString(R.string.profile_delete_post) ->
                     createDeleteDialog(rowNumber, element.contentId).show()
             }
+            menus.dismiss()
         }
         menus.show()
     }
@@ -532,12 +532,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
-        val dialog = Dialog(activity, Dialog.Type.LONG_PROMINANCE)
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.profile_delete_post))
         dialog.setDesc(getString(R.string.profile_after_delete_cant))
         dialog.setBtnOk(getString(R.string.kol_title_delete))
         dialog.setBtnCancel(getString(R.string.kol_title_cancel))
-        dialog.setOnOkClickListener { presenter.deletePost(id, rowNumber) }
+        dialog.setOnOkClickListener {
+            presenter.deletePost(id, rowNumber)
+            dialog.dismiss()
+        }
         dialog.setOnCancelClickListener { dialog.dismiss() }
         return dialog
     }
