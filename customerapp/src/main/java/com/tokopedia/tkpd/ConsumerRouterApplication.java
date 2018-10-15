@@ -314,10 +314,9 @@ import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.router.ShopSettingRouter;
+import com.tokopedia.shop.open.ShopOpenInternalRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
-import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
@@ -1992,7 +1991,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetShopInfoIntent(String shopId) {
-        return ShopPageActivity.createIntent(getAppContext(), shopId);
+        return ShopPageInternalRouter.getShopPageIntent(getAppContext(), shopId);
     }
 
     @Override
@@ -2217,17 +2216,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
+        return ShopPageInternalRouter.getShopPageIntentByDomain(context, domain);
     }
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+        return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
     }
 
     @Override
@@ -2236,7 +2235,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getOpenShopIntent(Context context) {
-        return ShopOpenDomainActivity.getIntent(context);
+        return ShopOpenInternalRouter.getOpenShopIntent(context);
     }
 
     public void showForceHockeyAppDialog() {
