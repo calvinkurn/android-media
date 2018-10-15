@@ -33,7 +33,7 @@ open class FlightSearchRepository @Inject constructor(
         private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
         private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
 
-    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData): Observable<JourneyAndRoutes> {
+    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, isReturn: Boolean): Observable<JourneyAndRoutes> {
         return Observable.from(journeyResponse.attributes.routes)
                 .flatMap { route ->
                     getAirlineById(route.airline)
@@ -53,14 +53,14 @@ open class FlightSearchRepository @Inject constructor(
                         }
                     }
                     createCompleteJourneyAndRoutes(journeyResponse, journeyAirports,
-                            journeyAirlines, routesAirlinesAndAirports)
+                            journeyAirlines, routesAirlinesAndAirports, isReturn)
                 }
     }
 
     fun getSearchSingle(params: HashMap<String, Any>) : Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse)
+                generateJourneyAndRoutesObservable(journeyResponse, false)
             }.toList().map { journeyAndRoutesList ->
                 flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
                 val meta = response.meta
@@ -74,7 +74,7 @@ open class FlightSearchRepository @Inject constructor(
     fun getSearchSingleCombined(params: HashMap<String, Any>): Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse)
+                generateJourneyAndRoutesObservable(journeyResponse, false)
                         .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)) {
                             journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
                             if (!combos.isEmpty()) {
@@ -105,7 +105,7 @@ open class FlightSearchRepository @Inject constructor(
             Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse)
+                generateJourneyAndRoutesObservable(journeyResponse, true)
                         .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)
                                 .flatMapIterable { it }
                                 .filter { it.onwardJourneyId == onwardJourneyId }
@@ -216,10 +216,11 @@ open class FlightSearchRepository @Inject constructor(
     private fun createCompleteJourneyAndRoutes(journeyResponse: FlightSearchData,
                                                journeyAirports: Pair<FlightAirportDB, FlightAirportDB>,
                                                journeyAirlines: List<FlightAirlineDB>,
-                                               routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>): JourneyAndRoutes {
+                                               routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                                               isReturn: Boolean): JourneyAndRoutes {
         val isRefundable = isRefundable(journeyResponse.attributes.routes)
         val flightJourneyTable = createFlightJourneyTable(journeyResponse.id, journeyResponse.attributes,
-                isRefundable, true)
+                isRefundable, isReturn)
         val routesAirlines = arrayListOf<FlightAirlineDB>()
         val routesAirports = arrayListOf<Pair<FlightAirportDB, FlightAirportDB>>()
         for (routeAirlineAndAirport in routesAirlinesAndAirports) {
