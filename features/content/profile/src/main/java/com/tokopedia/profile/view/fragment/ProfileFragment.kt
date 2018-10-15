@@ -311,7 +311,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
-    override fun onEditClicked(rowNumber: Int, element: BaseKolViewModel) {
+    override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
         val menus = Menus(context!!)
         val menuList = ArrayList<String>()
         if (element.isDeletable) {

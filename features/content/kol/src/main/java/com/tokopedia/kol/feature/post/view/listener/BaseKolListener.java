@@ -19,5 +19,5 @@ public interface BaseKolListener {
 
     void onCommentClickListener(BaseKolViewModel element);
 
-    void onEditClickListener(BaseKolViewModel element);
+    void onMenuClickListener(BaseKolViewModel element);
 }

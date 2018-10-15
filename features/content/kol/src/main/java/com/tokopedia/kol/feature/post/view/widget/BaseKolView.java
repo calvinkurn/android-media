@@ -34,7 +34,7 @@ public class BaseKolView extends BaseCustomView {
     private TextView commentText;
     private View commentButton;
     private View likeButton;
-    private View editButton;
+    private View menuButton;
     private TextView title;
     private TextView name;
     private ImageView avatar;
@@ -67,7 +67,7 @@ public class BaseKolView extends BaseCustomView {
         likeText = view.findViewById(R.id.like_text);
         commentText = view.findViewById(R.id.comment_text);
         commentButton = view.findViewById(R.id.comment_button);
-        editButton = view.findViewById(R.id.edit_button);
+        menuButton = view.findViewById(R.id.menu_button);
         likeButton = view.findViewById(R.id.like_button);
         title = view.findViewById(R.id.title);
         name = view.findViewById(R.id.name);
@@ -116,7 +116,7 @@ public class BaseKolView extends BaseCustomView {
 
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
-        editButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
+        menuButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {
@@ -140,7 +140,7 @@ public class BaseKolView extends BaseCustomView {
 
         commentButton.setOnClickListener(v -> viewListener.onCommentClickListener(element));
 
-        editButton.setOnClickListener(v -> viewListener.onEditClickListener(element));
+        menuButton.setOnClickListener(v -> viewListener.onMenuClickListener(element));
     }
 
     public void onViewRecycled() {

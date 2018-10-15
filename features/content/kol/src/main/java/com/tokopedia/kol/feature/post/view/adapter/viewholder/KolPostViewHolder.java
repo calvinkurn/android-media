@@ -237,8 +237,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     }
 
     @Override
-    public void onEditClickListener(BaseKolViewModel element) {
-        viewListener.onEditClicked(getAdapterPosition(), element);
+    public void onMenuClickListener(BaseKolViewModel element) {
+        viewListener.onMenuClicked(getAdapterPosition(), element);
     }
 
     private void setUpViewPager(List<String> images) {

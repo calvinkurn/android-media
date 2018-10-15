@@ -105,7 +105,7 @@ public class PollViewHolder extends AbstractViewHolder<PollViewModel> implements
     }
 
     @Override
-    public void onEditClickListener(BaseKolViewModel element) {
+    public void onMenuClickListener(BaseKolViewModel element) {
 
     }
 

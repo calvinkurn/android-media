@@ -69,7 +69,7 @@ public interface KolPostListener {
 
             void onGoToKolComment(int rowNumber, int id);
 
-            void onEditClicked(int rowNumber, BaseKolViewModel element);
+            void onMenuClicked(int rowNumber, BaseKolViewModel element);
         }
     }
 

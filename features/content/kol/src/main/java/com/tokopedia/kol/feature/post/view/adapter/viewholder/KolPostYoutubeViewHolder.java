@@ -175,7 +175,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     }
 
     @Override
-    public void onEditClickListener(BaseKolViewModel element) {
+    public void onMenuClickListener(BaseKolViewModel element) {
 
     }
 
