@@ -1,27 +1,21 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.source.CategoryListDataSource;
-import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.view.model.category.Category;
-import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
-import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
@@ -39,7 +33,8 @@ import java.util.List;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView, View.OnClickListener {
+public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements
+        RechargeCategoryView, View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
@@ -56,13 +51,16 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     private FragmentManager fragmentManager;
     private List<Category> mRechargeCategory;
+    private final DigitalWidgetRepository digitalWidgetRepository;
 
-    public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener) {
+    public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener,
+                              DigitalWidgetRepository digitalWidgetRepository) {
         super(itemView);
         this.listener = listener;
         this.context = itemView.getContext();
         this.fragmentManager = fragmentManager;
         this.mRechargeCategory = new ArrayList<>();
+        this.digitalWidgetRepository = digitalWidgetRepository;
         titleTxt = itemView.findViewById(R.id.title);
         tabLayout = itemView.findViewById(R.id.tab_layout_widget);
         viewPager = itemView.findViewById(R.id.view_pager_widget);
@@ -70,21 +68,6 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         container = itemView.findViewById(R.id.container);
         itemView.findViewById(R.id.see_more).setOnClickListener(this);
         cacheHandler = new LocalCacheHandler(context, ConstantKey.TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
-
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
-
-        StatusDataSource statusDataSource = new StatusDataSource(digitalEndpointService,
-                new GlobalCacheManager(),
-                new StatusMapper());
-
-        CategoryListDataSource categoryListDataSource = new CategoryListDataSource(digitalEndpointService,
-                new GlobalCacheManager(),
-                new CategoryMapper());
-
-        DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(
-                statusDataSource, categoryListDataSource
-        );
 
         DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
                 digitalWidgetRepository);
@@ -173,7 +156,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
             public void onTabUnselected(TabLayout.Tab tab) {
                 View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
-                    hideKeyboard(focus);
+                    hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
+                            focus);
                 }
             }
 
@@ -181,7 +165,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
             public void onTabReselected(TabLayout.Tab tab) {
                 View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
-                    hideKeyboard(focus);
+                    hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
+                            focus);
                 }
             }
         });
@@ -235,10 +220,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         }
     }
 
-    private void hideKeyboard(View v) {
-        CommonUtils.hideKeyboard(
-                com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
-                v);
+    public static void hideKeyboard(Activity activity, View view) {
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 }

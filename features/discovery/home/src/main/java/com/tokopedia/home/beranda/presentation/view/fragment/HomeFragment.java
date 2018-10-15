@@ -12,6 +12,7 @@ import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
-import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
@@ -39,6 +39,7 @@ import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -126,6 +127,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private boolean scrollToRecommendList = false;
     private boolean isTraceStopped = false;
+
+    @Inject
+    DigitalWidgetRepository digitalWidgetRepository;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -386,7 +390,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
-        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getChildFragmentManager(), this, this, this);
+        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(
+                getChildFragmentManager(),
+                this,
+                this,
+                this,
+                digitalWidgetRepository
+                );
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }

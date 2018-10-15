@@ -114,7 +114,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         RequestParams requestParams =
                 RequestParams.create();
         requestParams.putString(ConstantKey.RequestKey.USER_ID, userSession.getUserId());
-        return dataUseCase.getExecuteObservable(RequestParams.EMPTY)
+        return dataUseCase.getExecuteObservable(requestParams)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

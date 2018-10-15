@@ -17,6 +17,7 @@ public class ConstantKey {
     public class TkpdBaseUrl {
         public static final String URL_PROMO = "https://www.tokopedia.com/promo/";
         public static final String FLAG_APP = "?flag_app=1";
+        public static final String HOME_DATA_BASE_URL = "https://gql.tokopedia.com/";
     }
 
     public class RequestKey {

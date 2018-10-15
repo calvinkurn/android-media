@@ -3,6 +3,7 @@ package com.tokopedia.home.explore.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
@@ -35,12 +36,6 @@ public class ExploreModule {
 
     @ExploreScope
     @Provides
-    GlobalCacheManager cacheManager() {
-        return new GlobalCacheManager();
-    }
-
-    @ExploreScope
-    @Provides
     UserSession getUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
@@ -48,7 +43,7 @@ public class ExploreModule {
     @ExploreScope
     @Provides
     ExploreDataSource dataSource(@ApplicationContext Context context, HomeDataApi dataApi,
-                                 GlobalCacheManager cacheManager, CloudProfileSource profileSource, Gson gson) {
+                                 CacheManager cacheManager, CloudProfileSource profileSource, Gson gson) {
         return new ExploreDataSource(context, dataApi, cacheManager, profileSource, gson);
     }
 

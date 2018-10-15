@@ -10,7 +10,6 @@ import rx.Subscriber;
  * Created by meta on 16/07/18.
  */
 public class TokocashHomeSubscriber extends Subscriber<TokoCashData> {
-
     private HomeContract.Presenter presenter;
 
     public TokocashHomeSubscriber(HomeContract.Presenter presenter) {

@@ -7,6 +7,12 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.source.CategoryListDataSource;
+import com.tokopedia.digital.common.data.source.StatusDataSource;
+import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
+import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
@@ -84,5 +90,56 @@ public class HomeModule {
     @Provides
     protected GetLocalHomeDataUseCase getLocalHomeDataUseCase(HomeRepository repository){
         return new GetLocalHomeDataUseCase(repository);
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalEndpointService provideDigitalEndpointService(){
+        return new DigitalEndpointService();
+    }
+
+    @HomeScope
+    @Provides
+    protected StatusDataSource provideStatusDataSource(DigitalEndpointService digitalEndpointService,
+                                                       CacheManager cacheManager,
+                                                       StatusMapper statusMapper){
+        return new StatusDataSource(
+                digitalEndpointService,
+                cacheManager,
+                statusMapper);
+    }
+
+    @HomeScope
+    @Provides
+    protected CategoryListDataSource provideCategoryListDataSource(DigitalEndpointService digitalEndpointService,
+                                                       CacheManager cacheManager,
+                                                                   CategoryMapper categoryMapper){
+        return new CategoryListDataSource(
+                digitalEndpointService,
+                cacheManager,
+                categoryMapper);
+    }
+
+    @HomeScope
+    @Provides
+    protected StatusMapper provideStatusMapper(){
+        return new StatusMapper();
+    }
+
+    @HomeScope
+    @Provides
+    protected CategoryMapper provideCategoryMapper(){
+        return new CategoryMapper();
+    }
+
+    @HomeScope
+    @Provides
+    protected DigitalWidgetRepository providetDigitalWidgetRepository(
+            StatusDataSource statusDataSource,
+            CategoryListDataSource categoryListDataSource){
+        return new DigitalWidgetRepository(
+                statusDataSource,
+                categoryListDataSource
+        );
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.subscriber;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
