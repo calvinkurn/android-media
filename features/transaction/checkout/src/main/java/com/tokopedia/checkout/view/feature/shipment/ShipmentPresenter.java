@@ -40,6 +40,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
@@ -1052,6 +1053,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                         })
+        );
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSelectedCourier(String promoCode) {
+        getView().showLoading();
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                getGeneratedAuthParamNetwork(param));
+
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView()))
         );
     }
 

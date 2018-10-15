@@ -72,6 +72,8 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
+        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData);
+
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -191,6 +193,8 @@ public interface ShipmentContract {
         void checkPromoShipment();
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+
+        void processCheckPromoCodeFromSelectedCourier(String promoCode);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 

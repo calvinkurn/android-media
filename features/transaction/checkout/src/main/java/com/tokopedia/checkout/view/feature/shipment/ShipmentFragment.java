@@ -573,6 +573,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData
                                                                       promoCodeCartListData) {
+        setAppliedPromoCodeData(promoCodeCartListData);
+    }
+
+    private void setAppliedPromoCodeData(PromoCodeCartListData promoCodeCartListData) {
         shipmentPresenter.setPromoCodeAppliedData(new PromoCodeAppliedData.Builder()
                 .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
@@ -590,6 +594,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartItemPromoHolderData.setPromoVoucherType(promoCodeAppliedData.getPromoCode(),
                 promoCodeAppliedData.getDescription(), promoCodeAppliedData.getAmount());
         updateAppliedPromo(cartItemPromoHolderData);
+    }
+
+    @Override
+    public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData) {
+        setAppliedPromoCodeData(promoCodeCartListData);
     }
 
     @Override
@@ -1430,7 +1439,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
+                checkCourierPromo(recommendedCourier);
             }
+        }
+    }
+
+    private void checkCourierPromo(CourierItemData courierItemData) {
+        // Todo : read from remote config
+        boolean isToogleYearEndPromoOn = true;
+        if (isToogleYearEndPromoOn && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
+            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode());
         }
     }
 
@@ -1473,6 +1491,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
+            checkCourierPromo(courierItemData);
         }
     }
 
