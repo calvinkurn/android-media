@@ -113,24 +113,24 @@ public class ChatroomPresenter extends BaseDaggerPresenter<ChatroomContract.View
     public void loadPreviousMessages(OpenChannel mChannel, PreviousMessageListQuery mPrevMessageListQuery) {
         if (mChannel != null && mPrevMessageListQuery != null && mPrevMessageListQuery.hasMore()) {
             getView().showLoadingPreviousList();
-            loadPreviousChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
-                    LoadPreviousChatMessagesUseCase.LoadPreviousChatMessagesListener() {
-                        @Override
-                        public void onGetPreviousMessages(List<Visitable> listChat) {
-                            if (getView() != null) {
-                                getView().dismissLoadingPreviousList();
-                                getView().onSuccessGetPreviousMessage(listChat);
-                            }
-                        }
-
-                        @Override
-                        public void onErrorGetPreviousMessages(String errorMessage) {
-                            if (getView() != null) {
-                                getView().dismissLoadingPreviousList();
-                                getView().onErrorGetMessage(errorMessage);
-                            }
-                        }
-                    });
+//            loadPreviousChatMessagesUseCase.execute(getView().getContext(), mPrevMessageListQuery, new
+//                    LoadPreviousChatMessagesUseCase.LoadPreviousChatMessagesListener() {
+//                        @Override
+//                        public void onGetPreviousMessages(List<Visitable> listChat) {
+//                            if (getView() != null) {
+//                                getView().dismissLoadingPreviousList();
+//                                getView().onSuccessGetPreviousMessage(listChat);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onErrorGetPreviousMessages(String errorMessage) {
+//                            if (getView() != null) {
+//                                getView().dismissLoadingPreviousList();
+//                                getView().onErrorGetMessage(errorMessage);
+//                            }
+//                        }
+//                    });
         }
     }
 

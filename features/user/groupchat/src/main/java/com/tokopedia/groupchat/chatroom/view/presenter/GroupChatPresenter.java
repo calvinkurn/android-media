@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
@@ -181,17 +183,53 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 "&device_id=" + deviceId +
                 "&user_id=" + userId;
 
-//        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
-        magicString = "wss://echo.websocket.org";
+        magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
+        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
 
+        magicString = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
+        magicString = magicString.concat("/ws/groupchat?channel_id=96");
+
+        boolean showLog = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
+        String finalMagicString = magicString;
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
+                if(showLog){
+                    ChatViewModel dummy = new ChatViewModel(
+                            "onOpened ".concat(finalMagicString),
+                            System.currentTimeMillis(),
+                            System.currentTimeMillis(),
+                            String.valueOf(1231),
+                            "123321",
+                            "opeeen",
+                            "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                            false,
+                            false
+                    );
+                    getView().onMessageReceived(dummy);
+                }
+
                 Log.d("RxWebSocket Presenter", " on WebSocket open");
             }
 
             @Override
             protected void onMessage(@NonNull String text) {
+                if(showLog){
+                    ChatViewModel dummy = new ChatViewModel(
+                            text,
+                            System.currentTimeMillis(),
+                            System.currentTimeMillis(),
+                            String.valueOf(1231),
+                            "123321",
+                            "logger",
+                            "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                            false,
+                            false
+                    );
+                    getView().onMessageReceived(dummy);
+                }
                 Log.d("RxWebSocket Presenter", text);
             }
 
@@ -244,9 +282,48 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 "?os_type=1" +
                 "&device_id=" + userSession.getDeviceId() +
                 "&user_id=" + userSession.getUserId();
-//        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
+        magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
+        magicString = "ws://172.31.4.23:8000";
+        magicString = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
+        magicString = magicString.concat("/ws/groupchat?channel_id=96");
+        boolean showLog = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
 
-        RxWebSocket.send(magicString, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+
+        try {
+            RxWebSocket.send(magicString, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+        }catch (Exception e){
+            if(showLog){
+                ChatViewModel dummy = new ChatViewModel(
+                        e.toString(),
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis(),
+                        String.valueOf(1231),
+                        "123321",
+                        "error logger",
+                        "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                        false,
+                        false
+                );
+                getView().onMessageReceived(dummy);
+            }
+        }
+
+        if(showLog){
+            ChatViewModel dummy = new ChatViewModel(
+                    pendingChatViewModel.getMessage(),
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis(),
+                    String.valueOf(1231),
+                    "123321",
+                    "logger",
+                    "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                    false,
+                    false
+            );
+            getView().onMessageReceived(dummy);
+        }
     }
 
     public void destroyWebSocket() {

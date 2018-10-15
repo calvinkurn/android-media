@@ -30,6 +30,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
+    private static final String IP_GROUPCHAT = "ip_groupchat";
+    private static final String LOG_GROUPCHAT = "log_groupchat";
     //developer test
 
     private TextView vCustomIntent;
@@ -49,6 +51,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
     private TextView vGoToAnalytics;
     private CheckBox toggleAnalytics;
+
+    private AppCompatEditText ipGroupChat;
+    private View saveIpGroupChat;
+    private ToggleButton groupChatLogToggle;
 
     private static TkpdCoreRouter tkpdCoreRouter;
 
@@ -88,6 +94,10 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
+
+        ipGroupChat = findViewById(R.id.ip_groupchat);
+        saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
+        groupChatLogToggle = findViewById(R.id.groupchat_log);
     }
 
     private void initListener() {
@@ -188,6 +198,35 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 actionSaveValueRemoteConfig();
             }
         });
+
+        saveIpGroupChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionSaveIpGroupChat();
+            }
+        });
+
+        groupChatLogToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                actionLogGroupChat(isChecked);
+            }
+        });
+        ipGroupChat.setText(sharedPreferences.getString(IP_GROUPCHAT,""));
+        groupChatLogToggle.setChecked(sharedPreferences.getBoolean(LOG_GROUPCHAT, false));
+    }
+
+    private void actionLogGroupChat(boolean check) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(LOG_GROUPCHAT, check);
+        editor.apply();
+    }
+
+    private void actionSaveIpGroupChat() {
+        String ip = ipGroupChat.getText().toString();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(IP_GROUPCHAT, ip);
+        editor.apply();
     }
 
     private void actionSaveValueRemoteConfig() {

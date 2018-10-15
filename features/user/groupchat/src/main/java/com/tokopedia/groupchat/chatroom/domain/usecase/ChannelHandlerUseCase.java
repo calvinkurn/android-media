@@ -62,7 +62,7 @@ public class ChannelHandlerUseCase {
             public void onMessageReceived(BaseChannel baseChannel, BaseMessage baseMessage) {
                 try {
                     if (baseChannel.getUrl().equals(mChannelUrl) && mapper.map(baseMessage) != null) {
-                        listener.onMessageReceived(mapper.map(baseMessage));
+//                        listener.onMessageReceived(mapper.map(baseMessage));
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();

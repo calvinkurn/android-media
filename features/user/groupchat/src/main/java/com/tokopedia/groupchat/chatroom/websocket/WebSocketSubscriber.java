@@ -24,12 +24,14 @@ public abstract class WebSocketSubscriber extends Subscriber<WebSocketInfo> {
             onOpen(webSocketInfo.getWebSocket());
         } else if (webSocketInfo.getString() != null) {
             onMessage(webSocketInfo.getString());
-        }  else if (webSocketInfo.getItem() != null) {
-            onMessage(webSocketInfo.getItem());
         } else if (webSocketInfo.getByteString() != null) {
             onMessage(webSocketInfo.getByteString());
         } else if (webSocketInfo.isOnReconnect()) {
             onReconnect();
+        }
+
+        if (webSocketInfo.getItem() != null) {
+            onMessage(webSocketInfo.getItem());
         }
     }
 

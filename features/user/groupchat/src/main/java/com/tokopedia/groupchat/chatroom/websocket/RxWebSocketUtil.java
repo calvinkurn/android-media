@@ -4,6 +4,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
@@ -32,24 +33,9 @@ public class RxWebSocketUtil {
     private String logTag = "MainActivity RxWebSocket";
 
     private RxWebSocketUtil() {
-        try {
-            Class.forName("okhttp3.OkHttpClient");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Must be dependency okhttp3 !");
-        }
-        try {
-            Class.forName("rx.Observable");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Must be dependency rxjava 1.x");
-        }
-        try {
-            Class.forName("rx.android.schedulers.AndroidSchedulers");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Must be dependency rxandroid 1.x");
-        }
         observableMap = new ArrayMap<>();
         webSocketMap = new ArrayMap<>();
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder().pingInterval(10, TimeUnit.SECONDS).build();
     }
 
     public static RxWebSocketUtil getInstance() {
@@ -61,13 +47,6 @@ public class RxWebSocketUtil {
             }
         }
         return instance;
-    }
-
-    public void setClient(OkHttpClient client) {
-        if (client == null) {
-            throw new NullPointerException(" Are you stupid ? client == null");
-        }
-        this.client = client;
     }
 
     public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken) {
@@ -121,7 +100,7 @@ public class RxWebSocketUtil {
         if (webSocket != null) {
             webSocket.send(msg);
         } else {
-            throw new IllegalStateException("The WebSokcet not open");
+             throw new IllegalStateException("The WebSokcet not open");
         }
     }
 

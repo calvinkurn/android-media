@@ -648,11 +648,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
         try {
             this.mPrevMessageListQuery = previousMessageListQuery;
-            adapter.setList(listChat);
-            if (!listChat.isEmpty()) {
-                adapter.setCursor(listChat.get(0));
-            }
-            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
+//            adapter.setList(listChat);
+//            if (!listChat.isEmpty()) {
+//                adapter.setCursor(listChat.get(0));
+//            }
+//            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
             setSendButtonEnabled(true);
             replyEditText.addTextChangedListener(replyTextWatcher);
             scrollToBottom();

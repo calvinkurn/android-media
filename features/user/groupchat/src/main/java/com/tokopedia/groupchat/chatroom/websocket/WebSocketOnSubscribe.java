@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.chatroom.websocket;
 import android.util.Log;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,9 +12,6 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author : Steven 07/10/18
@@ -41,13 +37,6 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
 
     @Override
     public void call(final Subscriber<? super WebSocketInfo> subscriber) {
-//        if (webSocket != null) {
-//            if (!"main".equals(Thread.currentThread().getName())) {
-//                long ms = TimeUnit.SECONDS.toMillis(1);
-//                SystemClock.sleep(ms);
-//                subscriber.onNext(WebSocketInfo.createReconnect());
-//            }
-//        }
         initWebSocket(subscriber, accessToken);
     }
 
@@ -61,48 +50,19 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
 
     private void initWebSocket(final Subscriber<? super WebSocketInfo> subscriber, String accessToken) {
         webSocket = client.newWebSocket(getRequest(url, accessToken), new WebSocketListener() {
-            boolean receivePong;
-            Subscription subscription;
             @Override
             public void onOpen(final WebSocket webSocket, Response response) {
                 if (showLog) {
                     Log.d(logTag, url + " --> onOpen");
                 }
-                receivePong = true;
                 webSocketMap.put(url, webSocket);
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(new WebSocketInfo(webSocket, true));
                 }
-
-                subscription = Observable.interval(5, TimeUnit.SECONDS)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(aLong -> {
-                            if (receivePong) {
-                                Log.d(logTag, "sending ping");
-                                webSocket.send("ping");
-                                receivePong = false;
-                            } else {
-                                Log.i(logTag, "call: "+aLong);
-                                Log.i(logTag, "cancel");
-                                try {
-                                    webSocket.close(1000, "asdfad");
-                                }catch (Exception e){
-                                    Log.i(logTag, "crash: "+e.toString());
-                                }
-                                subscriber.onCompleted();
-                            }
-                        });
             }
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                if(text.equals("ping")){
-                    receivePong = true;
-                    Log.d(logTag, "pong received");
-                    return;
-                }
-
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(new WebSocketInfo(webSocket, text));
                 }
@@ -123,18 +83,11 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onError(t);
                 }
-
-                if(subscription != null && !subscription.isUnsubscribed()) {
-                    subscription.unsubscribe();
-                }
             }
 
             @Override
             public void onClosing(WebSocket webSocket, int code, String reason) {
                 webSocket.close(1000, "onClosing");
-                if(subscription != null && !subscription.isUnsubscribed()) {
-                    subscription.unsubscribe();
-                }
             }
 
             @Override
