@@ -7,15 +7,11 @@ import com.tokopedia.logisticaddaddress.GeoLocationUtils;
 import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticaddaddress.network.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -76,37 +72,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     public void getListProvince() {
         mView.setActionsEnabled(false);
         mView.showLoading();
-        // todo : test this
-        Map<String, String> param =
-                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>());
-        networkInteractor.getListProvince(mView.context(), param,
-                new AddressRepository.GetListProvinceListener() {
-                    @Override
-                    public void onSuccess(ArrayList<Province> provinces) {
-                        mView.setActionsEnabled(true);
-                        mView.setProvince(provinces);
-                    }
-
-                    @Override
-                    public void onTimeout() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        mView.finishLoading();
-                        mView.setActionsEnabled(true);
-                        mView.showErrorSnackbar(error);
-                    }
-
-                    @Override
-                    public void onNullData() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-
-                });
     }
 
     @Override
@@ -114,9 +79,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         mView.resetRegency();
         mView.hideSubDistrict();
         mView.resetSubDistrict();
-        if (pos != 0) {
-            getListCity(mView.getProvinceAdapter().getList().get(pos - 1));
-        }
     }
 
     @Override
@@ -125,7 +87,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
         mView.hideSubDistrict();
         mView.resetSubDistrict();
         if (pos != 0) {
-            provinceChanged(mView.getProvinceAdapter().getList().get(pos - 1));
         }
     }
 
@@ -133,7 +94,6 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     public void onRegencySelected(int pos) {
         mView.resetSubDistrict();
         if (pos != 0) {
-            getListDistrict(mView.getRegencyAdapter().getList().get(pos - 1));
         }
     }
 
@@ -141,103 +101,18 @@ public class AddAddressPresenterImpl implements AddAddressPresenter {
     public void getListCity(Province province) {
         mView.showLoadingRegency();
         mView.setActionsEnabled(false);
-        networkInteractor.getListCity(mView.context(),
-                province.getProvinceId(),
-                new AddressRepository.GetListCityListener() {
-
-                    @Override
-                    public void onSuccess(FormAddressDomainModel model) {
-                        mView.setActionsEnabled(true);
-                        mView.setCity(model.getCities());
-                    }
-
-                    @Override
-                    public void onTimeout() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        mView.finishLoading();
-                        mView.setActionsEnabled(true);
-                        mView.showErrorSnackbar(error);
-                    }
-
-                    @Override
-                    public void onNullData() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-
-                });
     }
 
     @Override
     public void provinceChanged(Province province) {
         mView.showLoadingRegency();
         mView.setActionsEnabled(false);
-        networkInteractor.getListCity(
-                mView.context(),
-                province.getProvinceId(),
-                new AddressRepository.GetListCityListener() {
-                    @Override
-                    public void onSuccess(FormAddressDomainModel model) {
-                        mView.setActionsEnabled(true);
-                        mView.changeProvince(model.getCities());
-                    }
-
-                    @Override
-                    public void onTimeout() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        mView.finishLoading();
-                        mView.setActionsEnabled(true);
-                        mView.showErrorSnackbar(error);
-                    }
-
-                    @Override
-                    public void onNullData() {
-                        mView.finishLoading();
-                        mView.showErrorSnackbar("");
-                    }
-                });
     }
 
     @Override
     public void getListDistrict(City city) {
         mView.showLoadingDistrict();
         mView.setActionsEnabled(false);
-        networkInteractor.getListDistrict(mView.context(), city.getCityId(), new AddressRepository.GetListDistrictListener() {
-            @Override
-            public void onSuccess(FormAddressDomainModel model) {
-                mView.setActionsEnabled(true);
-                mView.setDistrict(model.getDistricts());
-            }
-
-            @Override
-            public void onTimeout() {
-                mView.finishLoading();
-                mView.showErrorSnackbar("");
-            }
-
-            @Override
-            public void onError(String error) {
-                mView.finishLoading();
-                mView.setActionsEnabled(true);
-                mView.showErrorSnackbar(error);
-            }
-
-            @Override
-            public void onNullData() {
-                mView.finishLoading();
-                mView.showErrorSnackbar("");
-            }
-        });
     }
 
     @Override

@@ -30,7 +30,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
 
     // TODO remove this when possible
-    implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

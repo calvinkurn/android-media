@@ -28,13 +28,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
@@ -81,7 +80,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
-    private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 130715;
+    private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
     private static final String ADDRESS = "district_recommendation_address";
 
     private static final double MONAS_LATITUDE = -6.175794;
@@ -137,7 +136,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     List<City> mCities;
     List<District> mDistricts;
 
-    TkpdProgressDialog mProgressDialog;
+    ProgressBar mProgressBar;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private String extraPlatformPage;
@@ -237,7 +236,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        mProgressBar = view.findViewById(R.id.logistic_spinner);
 
         provinceAdapter = ProvinceAdapter.createInstance(getActivity());
         spinnerProvince.setAdapter(provinceAdapter);
@@ -410,9 +409,9 @@ public class AddAddressFragment extends BaseDaggerFragment
                             provinceError.setVisibility(View.GONE);
 
                             List<Province> provinceList = provinceAdapter.getList();
-                            Province province = provinceList.get(pos - 1);
-                            address.setProvinceName(province.getProvinceName());
-                            address.setProvinceId(province.getProvinceId());
+//                            Province province = provinceList.get(pos - 1);
+//                            address.setProvinceName(province.getProvinceName());
+//                            address.setProvinceId(province.getProvinceId());
                         }
 
                         if (isEdit()) mPresenter.onEditProvinceSelected(pos);
@@ -433,9 +432,9 @@ public class AddAddressFragment extends BaseDaggerFragment
                     regencyError.setVisibility(View.GONE);
 
                     List<City> cityList = regencyAdapter.getList();
-                    City city = cityList.get(pos - 1);
-                    address.setCityName(city.getCityName());
-                    address.setCityId(city.getCityId());
+//                    City city = cityList.get(pos - 1);
+//                    address.setCityName(city.getCityName());
+//                    address.setCityId(city.getCityId());
                     mPresenter.onRegencySelected(pos);
                 }
 
@@ -455,9 +454,9 @@ public class AddAddressFragment extends BaseDaggerFragment
                     subDistrictError.setVisibility(View.GONE);
 
                     List<District> districtList = subDistrictAdapter.getList();
-                    District district = districtList.get(pos - 1);
-                    address.setDistrictName(district.getDistrictName());
-                    address.setDistrictId(district.getDistrictId());
+//                    District district = districtList.get(pos - 1);
+//                    address.setDistrictName(district.getDistrictName());
+//                    address.setDistrictId(district.getDistrictId());
                 }
             }
 
@@ -691,7 +690,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
-        mProgressDialog.dismiss();
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -744,7 +743,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void showLoading() {
-        mProgressDialog.showDialog();
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -926,7 +925,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
         if (isEdit() && addressModel != null) {
             spinnerProvince.setSelection(provinceAdapter.getPositionFromName(addressModel.getProvinceName()));
-            mPresenter.getListCity(provinceAdapter.getList().get(spinnerProvince.getSelectedItemPosition() - 1));
+//            mPresenter.getListCity(provinceAdapter.getList().get(spinnerProvince.getSelectedItemPosition() - 1));
         }
         this.mProvinces = new ArrayList<>(provinces);
     }
@@ -976,7 +975,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         Destination addressModel = getArguments().getParcelable(EDIT_PARAM);
         if (isEdit() && addressModel != null) {
             spinnerRegency.setSelection(regencyAdapter.getPositionFromName(addressModel.getCityName()));
-            mPresenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
+//            mPresenter.getListDistrict(regencyAdapter.getList().get(spinnerRegency.getSelectedItemPosition() - 1));
         }
         this.mCities = new ArrayList<>(cities);
     }

@@ -34,6 +34,10 @@ public class LogisticDataConstantUrl {
         public static final String PATH_ADD_ADDRESS = VERSION + BASE_PATH + "add_address.pl";
 
         public static final String PATH_GET_ADDRESS = VERSION + PEOPLE_PATH + "get_address.pl";
+
+        public static final String PATH_EDIT_DEFAULT_ADDRESS = VERSION + BASE_PATH + "edit_default_address.pl";
+
+        public static final String PATH_DELETE_ADDRESS = VERSION + BASE_PATH + "delete_address.pl";
     }
 
     public static class CourierTracking {

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
@@ -44,13 +45,13 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
     private final PagingHandler pagingHandler;
     private boolean allowConnection;
 
-    public ManagePeopleAddressPresenter(ManagePeopleAddressFragment mFragment, MPAddressActivityListener listener, PeopleActApi peopleActApi) {
+    public ManagePeopleAddressPresenter(ManagePeopleAddressFragment mFragment, MPAddressActivityListener listener, PeopleActApi peopleActApi, CacheManager cacheManager) {
         this.activityListener = listener;
         this.fragmentListener = mFragment;
         this.pagingHandler = new PagingHandler();
         NetworkRouter router = (NetworkRouter) mFragment.getActivity().getApplication();
 
-        this.dataManager = new DataManagerImpl(this, peopleActApi);
+        this.dataManager = new DataManagerImpl(this, peopleActApi, cacheManager);
         this.setAllowConnection(true);
     }
 

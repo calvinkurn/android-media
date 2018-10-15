@@ -22,6 +22,7 @@ import android.view.Window;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -68,6 +69,8 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     @Inject
     PeopleActApi peopleActApi;
+    @Inject
+    CacheManager cacheManager;
 
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();
@@ -86,7 +89,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         this.list = new ArrayList<>();
         this.listener = (ManagePeopleAddressActivity) getActivity();
-        presenter = new ManagePeopleAddressPresenter(this, listener, peopleActApi);
+        presenter = new ManagePeopleAddressPresenter(this, listener, peopleActApi, cacheManager);
         this.adapter = new ManagePeopleAddressAdapter(this.list, this.presenter);
     }
 
@@ -228,12 +231,12 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     @Override
     public void setLoadingView(boolean isAble) {
-        this.adapter.showLoading(isAble);
+//        this.adapter.showLoading(isAble);
     }
 
     @Override
     public void setNoResultView(boolean isAble) {
-        this.adapter.showEmpty(isAble);
+//        this.adapter.showEmpty(isAble);
     }
 
     @Override

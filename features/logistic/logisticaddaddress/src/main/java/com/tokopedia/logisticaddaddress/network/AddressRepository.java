@@ -20,15 +20,6 @@ public interface AddressRepository {
     void editAddress(@NonNull Context context, @NonNull Map<String, String> params,
                      @NonNull AddAddressListener listener);
 
-    void getListProvince(@NonNull Context context, @NonNull Map<String, String> params,
-                         @NonNull GetListProvinceListener listener);
-
-    void getListDistrict(@NonNull Context context, @NonNull String cityId,
-                         @NonNull GetListDistrictListener listener);
-
-    void getListCity(@NonNull Context context, @NonNull String provinceID,
-                     @NonNull GetListCityListener listener);
-
     void unsubscribe();
 
     interface AddAddressListener {

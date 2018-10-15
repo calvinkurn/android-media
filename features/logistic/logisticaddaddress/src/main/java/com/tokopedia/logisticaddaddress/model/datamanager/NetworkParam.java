@@ -24,14 +24,14 @@ public class NetworkParam {
         return params;
     }
 
-    public static Map<String, String> paramEditDefaultAddress(String addressId) {
-        Map<String, String> params = new HashMap<>();
+    public static TKPDMapParam<String, String> paramEditDefaultAddress(String addressId) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(PARAM_ADDRESS_ID, addressId);
         return params;
     }
 
-    public static Map<String, String> paramDeleteAddress(String addressId) {
-        Map<String, String> params = new HashMap<>();
+    public static TKPDMapParam<String, String> paramDeleteAddress(String addressId) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(PARAM_ADDRESS_ID, addressId);
         return params;
     }

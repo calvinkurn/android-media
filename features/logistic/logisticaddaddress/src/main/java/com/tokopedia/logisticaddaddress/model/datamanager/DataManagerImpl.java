@@ -5,9 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.logisticaddaddress.network.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.network.RetrofitInteractorImpl;
@@ -34,10 +33,12 @@ public class DataManagerImpl implements DataManager {
 
     private final ManagePeopleAddressFragmentPresenter presenter;
     private final RetrofitInteractorImpl retrofit;
+    private CacheManager cacheManager;
 
-    public DataManagerImpl(ManagePeopleAddressFragmentPresenter presenter, PeopleActApi peopleActApi) {
+    public DataManagerImpl(ManagePeopleAddressFragmentPresenter presenter, PeopleActApi peopleActApi, CacheManager cacheManager) {
         this.presenter = presenter;
         this.retrofit = new RetrofitInteractorImpl(peopleActApi);
+        this.cacheManager = cacheManager;
     }
 
     private void requestData(@NonNull Context context,
@@ -122,10 +123,6 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey) {
-                        // initialize local variable CacheManager
-                        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
-                        // delete value
                         cacheManager.delete(cacheKey);
                         return true;
                     }
@@ -161,18 +158,12 @@ public class DataManagerImpl implements DataManager {
                 new Func2<String, GetPeopleAddress, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey, GetPeopleAddress cacheData) {
-                        // initialize local variable CacheManager
-                        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
                         // initialize class you want to be converted from string
                         Type type = new TypeToken<GetPeopleAddress>() {
                         }.getType();
-
-                        // set value
-                        cacheManager.setKey(cacheKey);
-                        cacheManager.setValue(CacheUtil.convertModelToString(cacheData, type));
-                        cacheManager.setCacheDuration(5000);
-                        cacheManager.store();
+                        cacheManager.save(cacheKey,
+                                LocalDatabase.convertModelToString(cacheData, type),
+                                5000);
 
                         return true;
                     }
@@ -204,17 +195,14 @@ public class DataManagerImpl implements DataManager {
                 .map(new Func1<String, GetPeopleAddress>() {
                     @Override
                     public GetPeopleAddress call(String cacheKey) {
-                        // initialize local variable CacheManager
-                        GlobalCacheManager cacheManager = new GlobalCacheManager();
-
                         // initialize class you want to be converted from string
                         Type type = new TypeToken<GetPeopleAddress>() {
                         }.getType();
 
                         // get json string which already cached
-                        String jsonCachedString = cacheManager.getValueString(cacheKey);
+                        String jsonCachedString = cacheManager.get(cacheKey);
 
-                        return CacheUtil.convertStringToModel(jsonCachedString, type);
+                        return LocalDatabase.convertStringToModel(jsonCachedString, type);
                     }
                 })
                 .subscribe(new Subscriber<GetPeopleAddress>() {

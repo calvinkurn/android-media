@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by nisie on 9/6/16.
  */
+@Deprecated
 public class RegencyAdapter extends ArrayAdapter {
 
     public static class ViewHolder {
@@ -54,11 +55,11 @@ public class RegencyAdapter extends ArrayAdapter {
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        String text;
+        String text = null;
         if (position == 0) {
             text = context.getString(R.string.msg_choose);
         } else {
-            text = list.get(position - 1).getCityName();
+//            text = list.get(position - 1).getCityName();
         }
 
         holder.regencyName.setText(text);
@@ -88,18 +89,18 @@ public class RegencyAdapter extends ArrayAdapter {
 
     public int getPositionFromId(String cityId) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getCityId().equals(cityId)){
-                return i+1;
-            }
+//            if(list.get(i).getCityId().equals(cityId)){
+//                return i+1;
+//            }
         }
         return 0;
     }
 
     public int getPositionFromName(String cityName) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getCityName().equals(cityName)){
-                return i+1;
-            }
+//            if(list.get(i).getCityName().equals(cityName)){
+//                return i+1;
+//            }
         }
         return 0;
     }

@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by nisie on 9/6/16.
  */
+@Deprecated
 public class ProvinceAdapter extends ArrayAdapter {
 
     public static class ViewHolder {
@@ -54,11 +55,11 @@ public class ProvinceAdapter extends ArrayAdapter {
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        String text;
+        String text = null;
         if (position == 0) {
             text = context.getString(R.string.msg_choose);
         } else {
-            text = list.get(position - 1).getProvinceName();
+//            text = list.get(position - 1).getProvinceName();
         }
 
         holder.provinceName.setText(text);
@@ -83,18 +84,18 @@ public class ProvinceAdapter extends ArrayAdapter {
 
     public int getPositionFromId(String provinceId) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getProvinceId().equals(provinceId)){
-                return i+1;
-            }
+//            if(list.get(i).getProvinceId().equals(provinceId)){
+//                return i+1;
+//            }
         }
         return 0;
     }
 
     public int getPositionFromName(String provinceName) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getProvinceName().contains(provinceName)){
-                return i+1;
-            }
+//            if(list.get(i).getProvinceName().contains(provinceName)){
+//                return i+1;
+//            }
         }
         return 0;
     }

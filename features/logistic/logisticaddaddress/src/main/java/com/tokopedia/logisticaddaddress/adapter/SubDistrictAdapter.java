@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by nisie on 9/6/16.
  */
+@Deprecated
 public class SubDistrictAdapter extends ArrayAdapter {
 
     public static class ViewHolder {
@@ -54,11 +55,11 @@ public class SubDistrictAdapter extends ArrayAdapter {
         } else
             holder = (ViewHolder) convertView.getTag();
 
-        String text;
+        String text = null;
         if (position == 0) {
             text = context.getString(R.string.msg_choose);
         } else {
-            text = list.get(position - 1).getDistrictName();
+//            text = list.get(position - 1).getDistrictName();
         }
 
         holder.subDistrictName.setText(text);
@@ -88,18 +89,18 @@ public class SubDistrictAdapter extends ArrayAdapter {
 
     public int getPositionFromId(String districtId) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getDistrictId().equals(districtId)){
-                return i+1;
-            }
+//            if(list.get(i).getDistrictId().equals(districtId)){
+//                return i+1;
+//            }
         }
         return 0;
     }
 
     public int getPositionFromName(String districtName) {
         for(int i = 0 ; i < list.size() ; i++){
-            if(list.get(i).getDistrictName().equals(districtName)){
-                return i+1;
-            }
+//            if(list.get(i).getDistrictName().equals(districtName)){
+//                return i+1;
+//            }
         }
         return 0;
     }

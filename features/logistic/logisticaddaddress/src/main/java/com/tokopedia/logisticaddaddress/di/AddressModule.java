@@ -105,7 +105,7 @@ public class AddressModule {
                                       GsonBuilder gsonBuilder
     ) {
         return CommonNetwork.createRetrofit(
-                TkpdBaseURL.User.URL_PEOPLE_ACTION,
+                TkpdBaseURL.BASE_DOMAIN,
                 tkpdOkHttpBuilder,
                 tkpdAuthInterceptor,
                 fingerprintInterceptor,

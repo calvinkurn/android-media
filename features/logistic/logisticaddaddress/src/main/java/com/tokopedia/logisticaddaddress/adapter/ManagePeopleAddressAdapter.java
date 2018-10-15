@@ -14,8 +14,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 
@@ -24,7 +22,7 @@ import java.util.List;
 /**
  * Created on 5/23/16.
  */
-public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
+public class ManagePeopleAddressAdapter extends RecyclerView.Adapter<ManagePeopleAddressAdapter.MPAddressViewHolder> {
 
     private static final int VIEW_ADDRESS_ITEM = 100;
 
@@ -77,31 +75,29 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MPAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_ADDRESS_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 View view = inflater.inflate(R.layout.logistic_item_manage_people_address, parent, false);
                 return new MPAddressViewHolder(view);
             default:
-                return super.onCreateViewHolder(parent, viewType);
+                return null;
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(MPAddressViewHolder viewHolder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_ADDRESS_ITEM:
                 bindAddressHolder((MPAddressViewHolder) viewHolder, position);
                 break;
             default:
-                super.onBindViewHolder(viewHolder, position);
-                break;
         }
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(MPAddressViewHolder holder) {
         super.onViewRecycled(holder);
         try {
             MPAddressViewHolder viewHolder = (MPAddressViewHolder) holder;
@@ -205,7 +201,8 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     private String getLatitude(String latitude) {
         if (latitude == null || latitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLatitude;
+            String defaultLatitude = "-6.1753924";
+            return defaultLatitude;
         } else {
             return latitude;
         }
@@ -213,7 +210,8 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     private String getLongitude(String longitude) {
         if (longitude == null || longitude.isEmpty()) {
-            return TkpdState.Geolocation.defaultLongitude;
+            String defaultLongitude = "106.8249641";
+            return defaultLongitude;
         } else {
             return longitude;
         }
@@ -221,7 +219,7 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (isLastItemPosition(position) && (list.isEmpty() || isLoading() || isRetry())) {
+        if (isLastItemPosition(position) && (list.isEmpty())) {
             return super.getItemViewType(position);
         } else {
             return VIEW_ADDRESS_ITEM;
@@ -234,6 +232,6 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemCount() {
-        return list.size() + super.getItemCount();
+        return list.size();
     }
 }
