@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.GlobalConfig;
 
 /**
  * Created by alvarisi on 9/7/17.

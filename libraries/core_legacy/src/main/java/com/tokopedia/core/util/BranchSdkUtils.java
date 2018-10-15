@@ -9,6 +9,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.BaseAbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
@@ -19,6 +20,7 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.deprecated.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
@@ -333,35 +335,35 @@ public class BranchSdkUtils {
             return "";
     }
 
-//    public static String getAutoApplyCouponIfAvailable(Context context) {
-//        if (TextUtils.isEmpty(REFERRAL_ADVOCATE_PROMO_CODE)) {
-//            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
-//            return localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-//        } else {
-//            return BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE;
-//        }
-//    }
-//
-//    public static void removeCouponCode(Context context) {
-//        REFERRAL_ADVOCATE_PROMO_CODE = "";
-//        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
-//        localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-//    }
-//
-//
-//    public static void storeWebToAppPromoCodeIfExist(JSONObject referringParams, Context context) {
-//        try {
-//            String branch_promo = referringParams.optString(BRANCH_PROMOCODE_KEY);
-//            if (!TextUtils.isEmpty(branch_promo)) {
-//                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
-//                localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, branch_promo);
-//                localCacheHandler.applyEditor();
-//            }
-//
-//        } catch (Exception e) {
-//
-//        }
-//    }
+    public static String getAutoApplyCouponIfAvailable(Context context) {
+        if (TextUtils.isEmpty(REFERRAL_ADVOCATE_PROMO_CODE)) {
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+            return localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+        } else {
+            return BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE;
+        }
+    }
+
+    public static void removeCouponCode(Context context) {
+        REFERRAL_ADVOCATE_PROMO_CODE = "";
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+        localCacheHandler.clearCache(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+    }
+
+
+    public static void storeWebToAppPromoCodeIfExist(JSONObject referringParams, Context context) {
+        try {
+            String branch_promo = referringParams.optString(BRANCH_PROMOCODE_KEY);
+            if (!TextUtils.isEmpty(branch_promo)) {
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+                localCacheHandler.putString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, branch_promo);
+                localCacheHandler.applyEditor();
+            }
+
+        } catch (Exception e) {
+
+        }
+    }
 
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);

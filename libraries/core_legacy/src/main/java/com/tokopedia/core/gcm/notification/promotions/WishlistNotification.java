@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.util.SessionHandler;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
@@ -23,21 +22,21 @@ public class WishlistNotification extends BasePromoNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, SimpleHomeRouter.getSimpleHomeActivityClass()),
+                new Intent(mContext, TkpdCoreRouter.getSimpleHomeActivityClass()),
                 data
         );
-        mNotificationPass.classParentStack = SimpleHomeRouter.getSimpleHomeActivityClass();
+        mNotificationPass.classParentStack = TkpdCoreRouter.getSimpleHomeActivityClass();
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.isAllowedBigStyle = true;
-        data.putInt(SimpleHomeRouter.FRAGMENT_TYPE, SimpleHomeRouter.WISHLIST_FRAGMENT);
+        data.putInt(TkpdCoreRouter.FRAGMENT_TYPE, TkpdCoreRouter.WISHLIST_FRAGMENT);
         mNotificationPass.mIntent.putExtras(data);
     }
 
     @Override
     protected void showNotification(Bundle inComingBundle) {
-        if (SessionHandler.isV4Login(mContext)) {
+        if (sessionHandler.isV4Login()) {
             super.showNotification(inComingBundle);
         }
     }

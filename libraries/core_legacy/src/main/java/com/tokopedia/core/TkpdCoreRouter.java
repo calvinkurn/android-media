@@ -14,6 +14,13 @@ public interface TkpdCoreRouter {
 
     String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
 
+    String ACTIVITY_SIMPLE_HOME = "com.tokopedia.tkpd.home.SimpleHomeActivity";
+
+    String FRAGMENT_TYPE = "FRAGMENT_TYPE";
+    int INVALID_FRAGMENT = 0;
+    int WISHLIST_FRAGMENT = 1;
+    int PRODUCT_HISTORY_FRAGMENT = 2;
+
     static Intent createInstanceCartActivity(Context context) {
         return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
     }
@@ -36,5 +43,19 @@ public interface TkpdCoreRouter {
         return parentIndexHomeClass;
     }
 
+    static Class<?> getSimpleHomeActivityClass() {
+        try {
+            return RouterUtils.getActivityClass(ACTIVITY_SIMPLE_HOME);
+        } catch (ClassNotFoundException e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     String getDesktopLinkGroupChat();
+
+    Intent getHomeIntent(Context context);
+
+    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 }
