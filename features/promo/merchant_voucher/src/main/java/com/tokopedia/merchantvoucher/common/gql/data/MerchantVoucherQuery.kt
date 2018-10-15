@@ -20,9 +20,6 @@ data class MerchantVoucherQuery(@SerializedName("getPublicMerchantVoucherList")
 data class MerchantVoucherQueryResult(@SerializedName("vouchers")
                                       @Expose
                                       var vouchers: ArrayList<MerchantVoucherModel>? = null,
-                                      @SerializedName("error_code")
-                                      @Expose
-                                      var errorCode: Int? = null,
                                       @SerializedName("error_message_title")
                                       @Expose
                                       var errorMessageTitle: String? = null,

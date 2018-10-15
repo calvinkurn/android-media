@@ -19,9 +19,6 @@ data class UseMerchantVoucherQuery(@SerializedName("useMerchantVoucher")
 data class UseMerchantVoucherQueryResult(@SerializedName("result")
                                       @Expose
                                       var result: Boolean = false,
-                                      @SerializedName("error_code")
-                                      @Expose
-                                      var errorCode: Int? = null,
                                       @SerializedName("error_message_title")
                                       @Expose
                                       var errorMessageTitle: String? = null,

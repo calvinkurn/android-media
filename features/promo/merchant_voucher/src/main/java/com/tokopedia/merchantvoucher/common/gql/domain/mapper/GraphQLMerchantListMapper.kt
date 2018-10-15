@@ -24,13 +24,11 @@ class GraphQLMerchantListMapper : Func1<MerchantVoucherQuery, Observable<ArrayLi
         if (merchantVoucherQueryResult == null) {
             return Observable.error(RuntimeException())
         }
-        val errorCode: Int? = merchantVoucherQueryResult.errorCode
-        return if (errorCode == null || TextUtils.isEmpty(merchantVoucherQueryResult.errorMessage)) {
+        return if (TextUtils.isEmpty(merchantVoucherQueryResult.errorMessage)) {
             Observable.just(merchantVoucherQueryResult.vouchers)
         } else {
             Observable.error(MessageTitleErrorException(merchantVoucherQueryResult.errorMessageTitle,
-                    merchantVoucherQueryResult.errorMessage,
-                    merchantVoucherQueryResult.errorCode.toString()))
+                    merchantVoucherQueryResult.errorMessage))
         }
     }
 }

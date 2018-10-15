@@ -37,7 +37,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
             override fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
                 return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                         .setSessionIncluded(true)
-                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
                         .build();
             }
         }
