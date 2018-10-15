@@ -87,4 +87,8 @@ public interface UserSessionInterface {
     void setTempLoginSession(String userId);
 
     void setIsMSISDNVerified(boolean isMsisdnVerified);
+
+    void setFirstTimeUserOnboarding(boolean isFirstTime);
+
+    void setFirstTimeUser(boolean isFirstTime);
 }

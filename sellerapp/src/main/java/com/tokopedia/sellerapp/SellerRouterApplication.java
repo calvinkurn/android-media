@@ -167,7 +167,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
@@ -487,11 +486,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getChangeNameIntent(Context context) {
         return ChangeNameActivity.newInstance(context);
-    }
-
-    @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return new Intent(context, OnboardingSellerActivity.class);
     }
 
     @Override
@@ -1153,12 +1147,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
@@ -1724,6 +1715,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getKolCommentArgsTotalComment() {
         return null;
+    }
+
+    @Override
+    public void onAppsFlyerInit() {
+
     }
 
     @Override

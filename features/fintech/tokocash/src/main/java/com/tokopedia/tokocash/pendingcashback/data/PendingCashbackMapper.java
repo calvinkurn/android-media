@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.pendingcashback.data;
 
-import com.tokopedia.tokocash.activation.data.entity.PendingCashbackEntity;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import javax.inject.Inject;

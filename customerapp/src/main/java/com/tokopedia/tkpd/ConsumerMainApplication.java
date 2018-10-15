@@ -233,6 +233,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        WalletUrl.BaseUrl.GQL_TOKOCASH_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         UpdateInactivePhoneURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;

@@ -42,7 +42,7 @@ public class PaymentTracking extends TrackingUtils {
 
         afValue.put(Jordan.AF_PURCHASE_SITE,Jordan.VALUE_ANDROID);
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
-        afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
+        afValue.put(Jordan.AF_VALUE_PRODUCT_TYPE, productList);
         if(productList != null && productList.length>1) {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
         }else {
