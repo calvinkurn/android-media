@@ -986,42 +986,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterSuccess(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_SUCCESS,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_SUCCESS,
-                label
-        ).getEvent());
-    }
-
-    public static void eventLoginSuccess(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.LOGIN,
-                AppEventTracking.Category.LOGIN,
-                AppEventTracking.Action.LOGIN_SUCCESS,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRegister(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRegisterChannel(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.CLICK_CHANNEL,
-                label
-        ).getEvent());
-    }
-
     public static void eventRegisterError(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.REGISTER_ERROR,
@@ -1307,15 +1271,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.OTP,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.VERIFICATION
-        ).getEvent());
-    }
-
-    public static void eventRegisterThroughLogin() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_LOGIN,
-                AppEventTracking.Category.LOGIN,
-                AppEventTracking.Action.REGISTER,
-                AppEventTracking.EventLabel.REGISTER
         ).getEvent());
     }
 
