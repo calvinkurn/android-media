@@ -2,7 +2,6 @@ package com.tokopedia.profile.domain.usecase
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kol.feature.post.data.mapper.GetContentListMapper
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
 import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
@@ -24,7 +23,6 @@ import javax.inject.Inject
 class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetProfileHeaderUseCase,
                                               val getContentListUseCase: GetContentListUseCase,
                                               val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
-                                              val getContentListMapper: GetContentListMapper,
                                               val userSession: UserSession)
     : UseCase<ProfileFirstPageViewModel>() {
 

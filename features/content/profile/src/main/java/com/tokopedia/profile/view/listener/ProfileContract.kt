@@ -13,6 +13,8 @@ interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>> {
         fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel)
 
+        fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String)
+
         fun goToFollowing()
 
         fun followUnfollowUser(userId: Int, follow: Boolean)

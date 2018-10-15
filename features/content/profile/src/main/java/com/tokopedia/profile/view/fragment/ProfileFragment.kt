@@ -174,7 +174,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
         }
+        presenter.cursor = firstPageViewModel.lastCursor
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
+    }
+
+    override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
+        presenter.cursor = lastCursor
+        renderList(visitables, !TextUtils.isEmpty(lastCursor))
     }
 
     override fun goToFollowing() {

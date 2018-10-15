@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
@@ -9,12 +10,14 @@ import com.tokopedia.profile.domain.usecase.GetProfileFirstPage
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.subscriber.FollowSubscriber
 import com.tokopedia.profile.view.subscriber.GetProfileFirstPageSubscriber
+import com.tokopedia.profile.view.subscriber.GetProfilePostSubscriber
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 9/21/18.
  */
 class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFirstPage,
+                                           val getContentListUseCase: GetContentListUseCase,
                                            val likeKolPostUseCase: LikeKolPostUseCase,
                                            val followKolPostGqlUseCase: FollowKolPostGqlUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
@@ -36,7 +39,10 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
     }
 
     override fun getProfilePost(userId: Int) {
-
+        getContentListUseCase.execute(
+                GetContentListUseCase.getProfileParams(userId, cursor),
+                GetProfilePostSubscriber(view)
+        )
     }
 
     override fun followKol(id: Int) {
