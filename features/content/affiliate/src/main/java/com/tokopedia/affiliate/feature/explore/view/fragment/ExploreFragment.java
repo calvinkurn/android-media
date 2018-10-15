@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
@@ -51,6 +52,9 @@ public class ExploreFragment
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
     private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
+    private static final String PRODUCT_ID_PARAM = "{product_id}";
+    private static final String AD_ID_PARAM = "{ad_id}";
+    private static final String USER_ID_USER_ID = "{user_id}";
     private static final int ITEM_COUNT = 10;
 
     private RecyclerView rvExplore;
@@ -77,7 +81,8 @@ public class ExploreFragment
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_explore, container, false);
         rvExplore = (RecyclerView) view.findViewById(R.id.rv_explore);
         swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
@@ -113,7 +118,8 @@ public class ExploreFragment
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
-        emptyResultModel.setTitle(getActivity().getResources().getString(R.string.text_product_not_found));
+        emptyResultModel.setTitle(getActivity().getResources().getString(R.string
+                .text_product_not_found));
     }
 
     private void initListener() {
@@ -127,12 +133,15 @@ public class ExploreFragment
             );
         });
     }
-
     @Override
     protected void initInjector() {
+        BaseAppComponent baseAppComponent =
+                ((BaseMainApplication) getActivity().getApplicationContext()).getBaseAppComponent();
 
-        DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
+        DaggerAffiliateComponent affiliateComponent =
+                (DaggerAffiliateComponent) DaggerAffiliateComponent
+                .builder()
+                .baseAppComponent(baseAppComponent).build();
 
         DaggerExploreComponent.builder()
                 .affiliateComponent(affiliateComponent)
@@ -159,7 +168,7 @@ public class ExploreFragment
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
                 if (exploreParams.isCanLoadMore()
                         && !TextUtils.isEmpty(exploreParams.getCursor())
-                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT){
+                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
                     exploreParams.setCanLoadMore(false);
                     adapter.addElement(new LoadingMoreModel());
                     presenter.loadMoreData(exploreParams);
@@ -236,9 +245,7 @@ public class ExploreFragment
         NetworkErrorHelper.showEmptyState(getActivity(),
                 getView().getRootView(),
                 error,
-                () -> {
-                    presenter.getFirstData(exploreParams, false);
-                }
+                () -> presenter.getFirstData(exploreParams, false)
         );
     }
 
@@ -258,9 +265,7 @@ public class ExploreFragment
         NetworkErrorHelper.createSnackbarWithAction(
                 getActivity(),
                 error,
-                () -> {
-                    presenter.loadMoreData(exploreParams);
-                });
+                () -> presenter.loadMoreData(exploreParams));
     }
 
     @Override
@@ -293,22 +298,22 @@ public class ExploreFragment
         RouteManager.route(
                 getActivity(),
                 ApplinkConst.AFFILIATE_CREATE_POST
-                        .replace("{product_id}", productId)
-                        .replace("{ad_id}", adId));
+                        .replace(PRODUCT_ID_PARAM, productId)
+                        .replace(AD_ID_PARAM, adId));
     }
 
     @Override
     public void onSuccessCheckQuotaButEmpty() {
-          Dialog dialog = buildDialog();
-          dialog.setOnOkClickListener(view ->{
-              RouteManager.route(
-                      getActivity(),
-                      ApplinkConst.PROFILE.replace("{user_id}", userSession.getUserId()));
-          });
-          dialog.setOnCancelClickListener(view -> {
-              dialog.dismiss();
-          });
-          dialog.show();
+        Dialog dialog = buildDialog();
+        dialog.setOnOkClickListener(view -> {
+            RouteManager.route(
+                    getActivity(),
+                    ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
+        });
+        dialog.setOnCancelClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.show();
     }
 
     private Dialog buildDialog() {
@@ -316,7 +321,8 @@ public class ExploreFragment
         dialog.setTitle(getActivity().getResources().getString(R.string.text_full_affiliate_title));
         dialog.setDesc(getActivity().getResources().getString(R.string.text_full_affiliate));
         dialog.setBtnOk(getActivity().getResources().getString(R.string.text_full_affiliate_ok));
-        dialog.setBtnCancel(getActivity().getResources().getString(R.string.text_full_affiliate_no));
+        dialog.setBtnCancel(getActivity().getResources().getString(R.string
+                .text_full_affiliate_no));
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
@@ -325,7 +331,7 @@ public class ExploreFragment
     @Override
     public void onErrorCheckQuota(String error, String productId, String adId) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, () -> {
-           presenter.checkAffiliateQuota(productId, adId);
+            presenter.checkAffiliateQuota(productId, adId);
         });
     }
 
@@ -340,7 +346,9 @@ public class ExploreFragment
 
         itemList.add(new ExploreViewModel(
                 "1",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "https://www.bbcgoodfood" +
+                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
+                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
                 "Rp. 10.000",
                 "1",
@@ -348,14 +356,17 @@ public class ExploreFragment
 
         itemList.add(new ExploreViewModel(
                 "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
+                        ".jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 12.000",
                 "1",
                 "1"));
         itemList.add(new ExploreViewModel(
                 "1",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "https://www.bbcgoodfood" +
+                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
+                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
                 "Rp. 10.000",
                 "1",
@@ -363,14 +374,17 @@ public class ExploreFragment
 
         itemList.add(new ExploreViewModel(
                 "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
+                        ".jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
                 "Rp. 12.000",
                 "1",
                 "1"));
         itemList.add(new ExploreViewModel(
                 "1",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "https://www.bbcgoodfood" +
+                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
+                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 10.000",
                 "1",
@@ -378,14 +392,17 @@ public class ExploreFragment
 
         itemList.add(new ExploreViewModel(
                 "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
+                        ".jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi",
                 "Rp. 12.000",
                 "1",
                 "1"));
         itemList.add(new ExploreViewModel(
                 "1",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "https://www.bbcgoodfood" +
+                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
+                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
                 "Nasi Goreng",
                 "Rp. 10.000",
                 "1",
@@ -393,12 +410,13 @@ public class ExploreFragment
 
         itemList.add(new ExploreViewModel(
                 "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
+                        ".jpg?fit=3264%2C2448&ssl=1",
                 "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
                 "Rp. 12.000",
                 "1",
                 "1"));
 
-        onSuccessGetFirstData(itemList,"");
+        onSuccessGetFirstData(itemList, "");
     }
 }

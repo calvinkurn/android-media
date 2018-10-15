@@ -29,7 +29,9 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         mainView.hideLoading();
-        mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), e), productId, adId);
+        mainView.onErrorCheckQuota(
+                ErrorHandler.getErrorMessage(mainView.getContext(), e), productId, adId
+        );
     }
 
     @Override
@@ -40,7 +42,11 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
             if (query.getData().getNumber() == 0) mainView.onSuccessCheckQuotaButEmpty();
             else mainView.onSuccessCheckQuota(productId, adId);
         } else {
-            mainView.onErrorCheckQuota(ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()), productId, adId);
+            mainView.onErrorCheckQuota(
+                    ErrorHandler.getErrorMessage(mainView.getContext(), new Throwable()),
+                    productId,
+                    adId
+            );
         }
     }
 }
