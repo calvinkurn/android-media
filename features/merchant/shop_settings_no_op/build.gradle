@@ -6,4 +6,3 @@ buildscript {
         mavenCentral()
     }
 }
-
