@@ -193,7 +193,7 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -1389,7 +1389,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
 
     public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
+        return SellerOrderListActivity.getInstance(context);
     }
 
     @Override
@@ -1618,6 +1618,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getManagePeopleIntent(Context context) {
-        return null;
+        return new Intent(context, ManagePeopleProfileActivity.class);
     }
 }
