@@ -13,6 +13,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,11 +54,12 @@ public class Utils {
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
     public static final String NEXT_URL = "nexturl";
-    private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
     public static Locale locale = new Locale("in", "ID");
-    public static final String RUPIAH_FORMAT = "Rp %s";
+    private static final String RUPIAH_FORMAT = "Rp %s";
+    private SparseIntArray likedEventMap;
+    private SparseIntArray unLikedEventMap;
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -67,6 +69,46 @@ public class Utils {
     }
 
     private Utils() {
+    }
+
+    public void addLikedEvent(int id, int currentLikes) {
+        if (likedEventMap == null)
+            likedEventMap = new SparseIntArray();
+        likedEventMap.put(id, currentLikes + 1);
+        removeUnlikedEvent(id);
+    }
+
+    public void removeLikedEvent(int id) {
+        if (likedEventMap != null && likedEventMap.size() > 0) {
+            int likes = likedEventMap.get(id);
+            likedEventMap.delete(id);
+            addUnlikedEvent(id, likes);
+        }
+    }
+
+    public int containsLikedEvent(int id) {
+        if (likedEventMap != null && likedEventMap.size() > 0)
+            return likedEventMap.get(id, -1);
+        return -1;
+    }
+
+    public int containsUnlikedEvent(int id) {
+        if (unLikedEventMap != null && unLikedEventMap.size() > 0)
+            return unLikedEventMap.get(id, -1);
+        return -1;
+    }
+
+    private void addUnlikedEvent(int id, int likes) {
+        if (unLikedEventMap == null)
+            unLikedEventMap = new SparseIntArray();
+        unLikedEventMap.put(id, likes - 1);
+    }
+
+    private void removeUnlikedEvent(int id) {
+        if (unLikedEventMap != null && unLikedEventMap.size() > 0) {
+            unLikedEventMap.delete(id);
+        }
+
     }
 
     public ArrayList<CategoryItem> convertIntoCategoryListViewModel(DealsResponse dealsResponse) {

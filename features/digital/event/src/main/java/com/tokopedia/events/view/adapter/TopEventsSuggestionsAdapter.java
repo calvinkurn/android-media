@@ -332,7 +332,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             mContext.startActivity(detailsIntent);
             eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
                     highLightText
-                            + " - " + categoryItems.get(getAdapterPosition()).getTitle()
+                            + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
                             + " - " + getAdapterPosition());
         }
 
@@ -383,6 +383,14 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
         void bindView(int position) {
             tvTitle.setText(getBoldTitle(categoryItems.get(position).getDisplayName()));
+        }
+
+        @OnClick(R2.id.tv_simple_item)
+        void onClick() {
+            Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
+            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
+            detailsIntent.putExtra("homedata", categoryItems.get(getAdapterPosition()));
+            mContext.startActivity(detailsIntent);
         }
     }
 

@@ -179,8 +179,8 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
                 CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
         getProfile();
     }
@@ -224,9 +224,9 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         } else {
             mView.showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     public void removeTickets() {
@@ -251,9 +251,9 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             mChildFragment.setDecorationHeight(0);
             mView.hidePayButton();
         }
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
                 selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     private void getSeatSelectionDetails() {

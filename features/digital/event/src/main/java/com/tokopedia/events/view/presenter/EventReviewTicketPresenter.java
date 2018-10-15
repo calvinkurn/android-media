@@ -108,7 +108,7 @@ public class EventReviewTicketPresenter
 
     @Override
     public void onActivityResult(int requestCode, int resultCode) {
-        
+
     }
 
     @Override
@@ -457,6 +457,8 @@ public class EventReviewTicketPresenter
                     String paymentURL = checkoutResponse.get("url").getAsString();
                     ScroogePGUtil.openScroogePage(mView.getActivity(), paymentURL, true, paymentData, mView.getActivity().getResources().getString(R.string.pembayaran));
                     mView.hideProgressBar();
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
+                            + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
 
                 }
             });

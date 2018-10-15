@@ -22,4 +22,6 @@ public interface SessionRouter {
     boolean isLoginInactivePhoneLinkEnabled();
 
     Intent getWithdrawIntent(Context context);
+
+    void sendAFCompleteRegistrationEvent(int userId,String methodName);
 }

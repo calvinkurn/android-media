@@ -25,7 +25,6 @@ public interface KolPostShopContract {
 
             void onLikeKolError(String message);
         }
-
     }
 
     interface Presenter extends CustomerPresenter<View> {

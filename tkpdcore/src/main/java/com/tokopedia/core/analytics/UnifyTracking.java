@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
+import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
@@ -1394,11 +1396,12 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
-    public static void sendAFCompleteRegistrationEvent() {
+    public static void sendAFCompleteRegistrationEvent(int userId,String methodName) {
         Map<String, Object> eventVal = new HashMap<>();
-        eventVal.put("advertising_id", "aifa");
         eventVal.put("custom_prop1", "registration");
         eventVal.put("os", "Android");
+        eventVal.put(CUSTOMER_USER_ID,userId);
+        eventVal.put(REGSITRATION_METHOD,methodName);
         getAFEngine().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
     }
 
