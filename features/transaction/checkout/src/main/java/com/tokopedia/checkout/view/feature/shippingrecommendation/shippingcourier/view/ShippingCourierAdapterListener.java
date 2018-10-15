@@ -8,4 +8,6 @@ public interface ShippingCourierAdapterListener {
 
     void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition);
 
+    boolean isToogleYearEndPromotionOn();
+
 }

@@ -237,4 +237,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
             shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
         }
     }
+
+    @Override
+    public boolean isToogleYearEndPromotionOn() {
+        // Todo : read data from remote config
+        return true;
+    }
 }

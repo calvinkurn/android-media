@@ -15,4 +15,6 @@ public interface ShippingDurationAdapterListener {
     void onAllShippingDurationItemShown();
 
     void onDurationShipmentRecommendationShowCaseClosed();
+
+    boolean isToogleYearEndPromotionOn();
 }

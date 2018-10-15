@@ -19,6 +19,8 @@
     <color name="warning_yellow_outline">#ffe38f</color>
     <color name="disabled_washout_foreground">#88FFFFFF</color>
     <color name="font_disabled">#33000000</color>
+    <color name="bg_promo_potency">#fce3e4</color>
+    <color name="text_promo_potency">#d50000</color>
 
     <color name="checkout_shadow_color_1">#00AAAAAA</color>
     <color name="checkout_shadow_color_2">#10AAAAAA</color>

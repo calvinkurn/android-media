@@ -140,4 +140,10 @@ public class ShippingCourierBottomsheet extends BottomSheets
                 courierItemData, presenter.getRecipientAddressModel(), cartPosition);
         dismiss();
     }
+
+    @Override
+    public boolean isToogleYearEndPromotionOn() {
+        // Todo : read data from remote config
+        return true;
+    }
 }
