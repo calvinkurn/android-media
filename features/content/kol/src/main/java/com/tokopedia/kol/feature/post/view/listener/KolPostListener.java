@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public interface KolPostListener {
 
             void onGoToKolComment(int rowNumber, int id);
 
-            void onEditClicked(int rowNumber, int id);
+            void onEditClicked(int rowNumber, BaseKolViewModel element);
         }
     }
 

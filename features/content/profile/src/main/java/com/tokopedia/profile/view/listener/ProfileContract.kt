@@ -43,5 +43,7 @@ interface ProfileContract {
         fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
 
         fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
+
+        fun deletePost(id: Int, rowNumber: Int)
     }
 }

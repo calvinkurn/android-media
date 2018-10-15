@@ -126,7 +126,8 @@
             android:layout_marginRight="@dimen/dp_10"
             android:src="@drawable/ic_menu_dots"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <FrameLayout

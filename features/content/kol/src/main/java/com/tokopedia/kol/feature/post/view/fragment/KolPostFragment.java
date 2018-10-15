@@ -30,6 +30,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -314,7 +315,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onEditClicked(int rowNumber, int id) {
+    public void onEditClicked(int rowNumber, BaseKolViewModel element) {
 
     }
 

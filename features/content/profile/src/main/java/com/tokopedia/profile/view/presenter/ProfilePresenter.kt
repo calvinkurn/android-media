@@ -74,4 +74,8 @@ class ProfilePresenter @Inject constructor(val getProfileFirstPage: GetProfileFi
                 LikeKolPostSubscriber(likeListener, rowNumber)
         )
     }
+
+    override fun deletePost(id: Int, rowNumber: Int) {
+
+    }
 }

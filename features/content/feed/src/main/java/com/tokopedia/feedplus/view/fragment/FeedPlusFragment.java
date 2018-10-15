@@ -934,7 +934,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onEditClicked(int rowNumber, int id) {
+    public void onEditClicked(int rowNumber, BaseKolViewModel element) {
 
     }
 

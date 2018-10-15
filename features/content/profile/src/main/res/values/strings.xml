@@ -24,4 +24,6 @@
     <string name="follow_success_check_now">Cek Sekarang</string>
     <string name="profile_recommend_success">Rekomendasi berhasil ditambahkan</string>
     <string name="profile_add_more">Tambah Lagi</string>
+    <string name="profile_delete_post">Hapus Rekomendasi</string>
+    <string name="profile_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari rekomendasi ini</string>
 </resources>

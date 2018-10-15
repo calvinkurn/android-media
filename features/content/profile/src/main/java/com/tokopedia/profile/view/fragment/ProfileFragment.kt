@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.Dialog
+import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -25,6 +27,7 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
@@ -307,8 +310,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
-    override fun onEditClicked(rowNumber: Int, id: Int) {
-
+    override fun onEditClicked(rowNumber: Int, element: BaseKolViewModel) {
+        val menus = Menus(context!!)
+        val menuList = ArrayList<String>()
+        if (element.isDeletable) {
+            menuList.add(getString(R.string.profile_delete_post))
+        }
+        menus.setItemMenuList(menuList.toTypedArray())
+        menus.setActionText(getString(R.string.close))
+        menus.setOnActionClickListener { menus.dismiss() }
+        menus.setOnItemMenuClickListener { itemMenus, pos ->
+            when (itemMenus.title) {
+                getString(R.string.profile_delete_post) ->
+                    createDeleteDialog(rowNumber, element.contentId).show()
+            }
+        }
+        menus.show()
     }
 
     override fun onSuccessFollowKol() {
@@ -499,6 +516,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     String.format(GO_TO_FEED_FORMAT, profileHeaderViewModel.name)
             )
         }
+    }
+
+    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
+        val dialog = Dialog(activity, Dialog.Type.LONG_PROMINANCE)
+        dialog.setTitle(getString(R.string.profile_delete_post))
+        dialog.setDesc(getString(R.string.profile_after_delete_cant))
+        dialog.setBtnOk(getString(R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(R.string.kol_title_cancel))
+        dialog.setOnOkClickListener { presenter.deletePost(id, rowNumber) }
+        dialog.setOnCancelClickListener { dialog.dismiss() }
+        return dialog
     }
 
     private fun goToOnboading() {
