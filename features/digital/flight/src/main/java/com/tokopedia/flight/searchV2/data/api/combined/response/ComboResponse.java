@@ -12,27 +12,27 @@ public class ComboResponse {
     @Expose
     private String id;
 
-    @SerializedName("adultPrice")
+    @SerializedName("adult_price")
     @Expose
     private String adultPrice;
 
-    @SerializedName("childPrice")
+    @SerializedName("child_price")
     @Expose
     private String childPrice;
 
-    @SerializedName("infantPrice")
+    @SerializedName("infant_price")
     @Expose
     private String infantPrice;
 
-    @SerializedName("adultPriceNumeric")
+    @SerializedName("adult_price_numeric")
     @Expose
     private int adultPriceNumeric;
 
-    @SerializedName("childPriceNumeric")
+    @SerializedName("child_price_numeric")
     @Expose
     private int childPriceNumeric;
 
-    @SerializedName("infantPriceNumeric")
+    @SerializedName("infant_price_numeric")
     @Expose
     private int infantPriceNumeric;
 

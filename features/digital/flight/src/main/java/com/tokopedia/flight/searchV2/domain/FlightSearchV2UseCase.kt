@@ -1,5 +1,6 @@
 package com.tokopedia.flight.searchV2.domain
 
+import com.tokopedia.flight.search.data.cloud.model.response.Meta
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel
@@ -27,58 +28,34 @@ class FlightSearchV2UseCase @Inject constructor(
         val flightSearchApiRequestModel =
                 requestParams.getObject(PARAM_INITIAL_SEARCH) as FlightSearchApiRequestModel
 
-        if (isRoundTrip && !isReturnTrip) {
-            return flightSearchRepository.getSearchSingleCombined(requestParams.parameters, isReturnTrip)
-                    .map { meta ->
-                        with(meta) {
-                            return@map FlightSearchMetaViewModel(
-                                    flightSearchApiRequestModel.depAirport,
-                                    flightSearchApiRequestModel.arrAirport,
-                                    flightSearchApiRequestModel.date,
-                                    isNeedRefresh,
-                                    refreshTime,
-                                    maxRetry,
-                                    0,
-                                    0,
-                                    airlines
-                            )
-                        }
-                    }
+        return if (isRoundTrip && !isReturnTrip) {
+            flightSearchRepository.getSearchSingleCombined(requestParams.parameters, isReturnTrip)
+                    .map { mapToFlightSearchMetaViewModel(it, flightSearchApiRequestModel) }
         } else if (isRoundTrip && isReturnTrip) {
-            return flightSearchRepository.getSearchCombinedReturn(requestParams.parameters, onwardJourneyId,
+            flightSearchRepository.getSearchCombinedReturn(requestParams.parameters, onwardJourneyId,
                     isReturnTrip)
-                    .map { meta ->
-                        with(meta) {
-                            return@map FlightSearchMetaViewModel(
-                                    flightSearchApiRequestModel.depAirport,
-                                    flightSearchApiRequestModel.arrAirport,
-                                    flightSearchApiRequestModel.date,
-                                    isNeedRefresh,
-                                    refreshTime,
-                                    maxRetry,
-                                    0,
-                                    0,
-                                    airlines
-                            )
-                        }
-                    }
+                    .map { mapToFlightSearchMetaViewModel(it, flightSearchApiRequestModel) }
         } else {
-            return flightSearchRepository.getSearchSingle(requestParams.parameters, isReturnTrip)
-                    .map { meta ->
-                        with(meta) {
-                            return@map FlightSearchMetaViewModel(
-                                    flightSearchApiRequestModel.depAirport,
-                                    flightSearchApiRequestModel.arrAirport,
-                                    flightSearchApiRequestModel.date,
-                                    isNeedRefresh,
-                                    refreshTime,
-                                    maxRetry,
-                                    0,
-                                    0,
-                                    airlines
-                            )
-                        }
-                    }
+            flightSearchRepository.getSearchSingle(requestParams.parameters, isReturnTrip)
+                    .map { mapToFlightSearchMetaViewModel(it, flightSearchApiRequestModel) }
+        }
+    }
+
+    private fun mapToFlightSearchMetaViewModel(meta: Meta,
+                                               flightSearchApiRequestModel: FlightSearchApiRequestModel):
+            FlightSearchMetaViewModel {
+        with(meta) {
+            return FlightSearchMetaViewModel(
+                    flightSearchApiRequestModel.depAirport,
+                    flightSearchApiRequestModel.arrAirport,
+                    flightSearchApiRequestModel.date,
+                    isNeedRefresh,
+                    refreshTime,
+                    maxRetry,
+                    0,
+                    0,
+                    airlines
+            )
         }
     }
 
