@@ -1,5 +1,6 @@
 package com.tokopedia.session.register.view.viewlistener;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
@@ -68,6 +69,8 @@ public interface RegisterInitial {
         void setTempPhoneNumber(String maskedPhoneNumber);
 
         void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

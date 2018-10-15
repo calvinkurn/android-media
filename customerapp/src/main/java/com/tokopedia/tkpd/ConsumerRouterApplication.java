@@ -3141,7 +3141,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        return userSession.getUserId();
+        return getSession().getUserId();
+    }
+
+    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
     }
 
     public void onAppsFlyerInit() {
