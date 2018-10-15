@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,7 +66,9 @@ public class CreatePostViewModel implements Parcelable {
     */
     public ArrayList<String> getCompleteList() {
         ArrayList<String> completeList = new ArrayList<>(imageList);
-        completeList.add(pdpImage);
+        if (!TextUtils.isEmpty(pdpImage)) {
+            completeList.add(pdpImage);
+        }
         return completeList;
     }
 
