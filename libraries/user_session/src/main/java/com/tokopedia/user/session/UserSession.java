@@ -145,6 +145,12 @@ public class UserSession implements UserSessionInterface {
         return sharedPrefs.getString(EMAIL, "");
     }
 
+    @Override
+    public boolean isFirstTimeUser() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
+    }
+
     /**
      * SETTER METHOD
      */
@@ -263,6 +269,18 @@ public class UserSession implements UserSessionInterface {
         editor.putString(ACCESS_TOKEN, accessToken);
         editor.putString(TOKEN_TYPE, tokenType);
         editor.apply();
+    }
+
+    @Override
+    public void setFirstTimeUser(boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).apply();
+    }
+
+    @Override
+    public void setFirstTimeUserOnboarding(boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).apply();
     }
 
     @Override

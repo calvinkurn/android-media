@@ -77,4 +77,8 @@ public interface CartApi {
 //    public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
 //    public static final String PATH_SAVE_PICKUP_STORE_POINT = "api/" + VERSION + "/save_pickup_store_point";
 
+    @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_SAVE_SHIPMENT)
+    Observable<Response<CartResponse>> postSaveShipmentState(@FieldMap Map<String, String> params);
+
 }

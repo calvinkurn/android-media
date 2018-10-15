@@ -19,4 +19,6 @@ public interface ConfirmShippingView {
     void hideLoading();
 
     void onShowError(String errorMessage);
+
+    void onShowErrorConfirmShipping(String message);
 }
