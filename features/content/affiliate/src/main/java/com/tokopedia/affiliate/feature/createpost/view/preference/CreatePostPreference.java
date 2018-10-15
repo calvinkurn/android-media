@@ -12,7 +12,7 @@ import javax.inject.Inject;
  */
 
 public class CreatePostPreference {
-    private static final String CREATE_POST_SHOW_EXAMPLE = "create_post_show_example";
+    private static final String CREATE_POST_AFFILIATE = "create_post_affiliate";
     private static final String FORMAT_FIRST_TIME = "first_time_%s";
 
     private final SharedPreferences sharedPrefs;
@@ -20,7 +20,7 @@ public class CreatePostPreference {
     @Inject
     public CreatePostPreference(@ApplicationContext Context context) {
         this.sharedPrefs = context.getSharedPreferences(
-                CREATE_POST_SHOW_EXAMPLE,
+                CREATE_POST_AFFILIATE,
                 Context.MODE_PRIVATE
         );
     }
