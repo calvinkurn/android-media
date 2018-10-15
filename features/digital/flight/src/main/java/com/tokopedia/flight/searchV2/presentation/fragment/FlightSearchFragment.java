@@ -269,8 +269,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void renderSearchList(List<FlightJourneyViewModel> list) {
-        renderList(list);
+    public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
+        if (!needRefresh || list.size() > 0) {
+            renderList(list);
+        }
 
         if (list.size() > 0) {
             showFilterAndSortView();
@@ -450,7 +452,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         setUpProgress();
 
-        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel);
+        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel,
+                flightAirportCombineModel.isNeedRefresh());
     }
 
     @Override
@@ -473,6 +476,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
         flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition);
+    }
+
+    @Override
+    public void onSeeAllClicked() {
+        // need in return search
     }
 
     @Override

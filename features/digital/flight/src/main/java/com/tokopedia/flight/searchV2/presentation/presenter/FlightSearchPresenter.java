@@ -269,7 +269,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel) {
+    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 new Subscriber<List<FlightJourneyViewModel>>() {
@@ -285,7 +285,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
-                        getView().renderSearchList(flightJourneyViewModels);
+                        getView().renderSearchList(flightJourneyViewModels, needRefresh);
                     }
                 }
         );
