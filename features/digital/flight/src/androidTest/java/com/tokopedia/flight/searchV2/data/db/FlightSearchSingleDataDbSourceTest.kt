@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.util.createRoutes
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
@@ -99,7 +100,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(1))
@@ -129,7 +130,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -161,7 +162,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -193,7 +194,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -201,6 +202,62 @@ class FlightSearchSingleDataDbSourceTest {
         assertThat(testSubscriber.onNextEvents[0][1].flightJourneyTable.id, `is`("3"))
         assertThat(testSubscriber.onNextEvents[0][0].flightJourneyTable.totalTransit, `is`(2))
         assertThat(testSubscriber.onNextEvents[0][1].flightJourneyTable.totalTransit, `is`(2))
+    }
+
+    @Test
+    fun getSearchCount() {
+        val flightJourneyTable1 = createFlightJourneyTable("1")
+        flightJourneyTable1.totalTransit = 0
+        val routes = createRoutes("1")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable1, routes))
+
+        val flightJourneyTable2 = createFlightJourneyTable("2")
+        flightJourneyTable2.totalTransit = 2
+        val routes2 = createRoutes("2")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable2, routes2))
+
+        val flightJourneyTable3 = createFlightJourneyTable("3")
+        flightJourneyTable3.totalTransit = 2
+        val routes3 = createRoutes("3")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable3, routes3))
+
+        val flightFilterModel = FlightFilterModel()
+        flightFilterModel.transitTypeList = arrayListOf(TransitEnum.TWO)
+
+        val testSubscriber = TestSubscriber<Int>()
+
+        flightSearchSingleDataDbSource.getSearchCount(flightFilterModel)
+                .subscribe(testSubscriber)
+
+        assertThat(testSubscriber.onNextEvents[0], `is`(2))
+    }
+
+    @Test
+    fun testSearchSort() {
+        val flightJourneyTable1 = createFlightJourneyTable("1")
+        flightJourneyTable1.sortPrice = 1000000
+        val routes = createRoutes("1")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable1, routes))
+
+        val flightJourneyTable2 = createFlightJourneyTable("2")
+        flightJourneyTable2.sortPrice = 1500000
+        val routes2 = createRoutes("2")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable2, routes2))
+
+        val flightJourneyTable3 = createFlightJourneyTable("3")
+        flightJourneyTable3.sortPrice = 500000
+        val routes3 = createRoutes("3")
+        flightSearchSingleDataDbSource.insert(JourneyAndRoutes(flightJourneyTable3, routes3))
+
+        val flightFilterModel = FlightFilterModel()
+
+        val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
+
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.CHEAPEST)
+                .subscribe(testSubscriber)
+
+        assertThat(testSubscriber.onNextEvents[0].size, `is`(3))
+        assertThat(testSubscriber.onNextEvents[0][0].flightJourneyTable.id, `is`("3"))
     }
 
     @After
