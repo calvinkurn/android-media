@@ -80,6 +80,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private static final int ADDRESS_MAX_CHARACTER = 175;
     private static final int ADDRESS_MIN_CHARACTER = 20;
 
+    private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
@@ -224,10 +227,10 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 int charLeft;
                 if (textLength < ADDRESS_MIN_CHARACTER) {
                     charLeft = ADDRESS_MIN_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi diperlukan", charLeft));
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING, charLeft));
                 } else {
                     charLeft = ADDRESS_MAX_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter tersisa", charLeft));
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING2, charLeft));
                 }
             }
 
