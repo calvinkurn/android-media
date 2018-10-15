@@ -33,7 +33,8 @@ open class FlightSearchRepository @Inject constructor(
         private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
         private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
 
-    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, isReturn: Boolean): Observable<JourneyAndRoutes> {
+    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, isReturnTrip: Boolean):
+            Observable<JourneyAndRoutes> {
         return Observable.from(journeyResponse.attributes.routes)
                 .flatMap { route ->
                     getAirlineById(route.airline)
@@ -53,14 +54,14 @@ open class FlightSearchRepository @Inject constructor(
                         }
                     }
                     createCompleteJourneyAndRoutes(journeyResponse, journeyAirports,
-                            journeyAirlines, routesAirlinesAndAirports, isReturn)
+                            journeyAirlines, routesAirlinesAndAirports, isReturnTrip)
                 }
     }
 
-    fun getSearchSingle(params: HashMap<String, Any>) : Observable<Meta> {
+    fun getSearchSingle(params: HashMap<String, Any>, isReturnTrip: Boolean) : Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse, false)
+                generateJourneyAndRoutesObservable(journeyResponse, isReturnTrip)
             }.toList().map { journeyAndRoutesList ->
                 flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
                 val meta = response.meta
@@ -71,10 +72,10 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     // call search single api and then combine the result with combo, airport and airline db
-    fun getSearchSingleCombined(params: HashMap<String, Any>): Observable<Meta> {
+    fun getSearchSingleCombined(params: HashMap<String, Any>, isReturnTrip: Boolean): Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse, false)
+                generateJourneyAndRoutesObservable(journeyResponse, isReturnTrip)
                         .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)) {
                             journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
                             if (!combos.isEmpty()) {
@@ -101,11 +102,11 @@ open class FlightSearchRepository @Inject constructor(
         }
     }
 
-    fun getSearchCombinedReturn(params: HashMap<String, Any>?, onwardJourneyId: String?):
+    fun getSearchCombinedReturn(params: HashMap<String, Any>?, onwardJourneyId: String?, isReturn: Boolean):
             Observable<Meta> {
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
-                generateJourneyAndRoutesObservable(journeyResponse, true)
+                generateJourneyAndRoutesObservable(journeyResponse, isReturn)
                         .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)
                                 .flatMapIterable { it }
                                 .filter { it.onwardJourneyId == onwardJourneyId }
@@ -320,14 +321,16 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     private fun createJourneyWithCombo(journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
-        journey.adultCombo = flightComboTable.adultPrice
-        journey.childCombo = flightComboTable.childPrice
-        journey.infantCombo = flightComboTable.infantPrice
-        journey.adultNumericCombo = flightComboTable.adultPriceNumeric
-        journey.childNumericCombo = flightComboTable.childPriceNumeric
-        journey.infantNumericCombo = flightComboTable.infantPriceNumeric
-        journey.isBestPairing = flightComboTable.isBestPairing
-        journey.sortPrice = flightComboTable.adultPriceNumeric
+        with(flightComboTable) {
+            journey.adultCombo = adultPrice
+            journey.childCombo = childPrice
+            journey.infantCombo = infantPrice
+            journey.adultNumericCombo = adultPriceNumeric
+            journey.childNumericCombo = childPriceNumeric
+            journey.infantNumericCombo = infantPriceNumeric
+            journey.isBestPairing = isBestPairing
+            journey.sortPrice = adultPriceNumeric
+        }
         return journey
     }
 

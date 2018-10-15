@@ -52,7 +52,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
 
             sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
-            sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
+            if (filterModel.isReturn) {
+                sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
+            }
             sqlStringBuilder.append("isReturn = $isReturnInt")
 
 //            sqlStringBuilder.append("ORDER BY ")
