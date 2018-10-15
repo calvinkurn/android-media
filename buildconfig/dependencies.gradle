@@ -89,7 +89,7 @@ ext {
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
-
+    tkpdSessionCommonVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -308,7 +308,11 @@ ext {
             talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
             attachproduct         : "com.tokopedia" +
                     ".attachproduct:attachproduct:${tkpdAttachProductVersion}",
-            loginregister         : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}"
+            loginregister         : "com.tokopedia" +
+                    ".loginregister:loginregister:${tkpdLoginRegisterVersion}",
+            sessioncommon         : "com.tokopedia" +
+                    ".loginregistercommon:loginregistercommon:${tkpdSessionCommonVersion}"
+
     ]
 
     tkpdLibDependencies = [
@@ -381,6 +385,7 @@ ext {
             talk                  : ":features:user:talk",
             attachproduct         : ":features:user:attachproduct",
             loginregister         : ":features:user:loginregister",
+            sessioncommon         : ":features:user:sessioncommon",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
             notifCenter           : ":features:user:notifcenter",

@@ -37,10 +37,16 @@ public interface UserSessionInterface {
 
     boolean isFirstTimeUser();
 
+    boolean isGoldMerchant();
 
-    /**
-     * SETTER METHOD
-     */
+    String getShopName();
+
+    boolean hasShop();
+
+
+        /**
+         * SETTER METHOD
+         */
 
     void setUUID(String uuid);
 
@@ -71,4 +77,14 @@ public interface UserSessionInterface {
     void clearToken();
 
     void logoutSession();
+
+    void setToken(String accessToken, String tokenType, String refreshToken);
+
+    void setLoginSession(boolean login, String userId, String fullName, String shopId,
+                         boolean isMsisdnVerified, String shopName, String email, int
+                                 shopIsGold, String msisdn);
+
+    void setTempLoginSession(String userId);
+
+    void setIsMSISDNVerified(boolean isMsisdnVerified);
 }

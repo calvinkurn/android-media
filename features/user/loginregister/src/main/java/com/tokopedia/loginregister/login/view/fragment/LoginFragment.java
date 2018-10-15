@@ -1,14 +1,19 @@
 package com.tokopedia.loginregister.login.view.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,10 +46,14 @@ import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
 import com.tokopedia.loginregister.common.data.SecurityDomain;
 import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.login.analytics.LoginAnalytics;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
 import com.tokopedia.loginregister.register.RegisterInitialActivity;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -56,7 +65,6 @@ import javax.inject.Inject;
  */
 
 public class LoginFragment extends BaseDaggerFragment implements LoginContract.View {
-
 
     private static final String COLOR_WHITE = "#FFFFFF";
     private static final String FACEBOOK = "facebook";
@@ -248,8 +256,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 presenter.saveLoginEmail(emailEditText.getText().toString());
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
-                analytics.eventClickLoginButton();
-//                SessionTrackingUtils.loginPageClickLogin();
+                analytics.eventClickLoginButton(getActivity().getApplicationContext());
             }
         });
 
@@ -278,55 +285,56 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                             .trim());
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             startActivity(intent);
-//            SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+            analytics.eventClickForgotPasswordFromLogin(getActivity().getApplicationContext());
         }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (getActivity() != null) {
+            autoCompleteAdapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    presenter.getLoginIdList());
+            emailEditText.setAdapter(autoCompleteAdapter);
 
-//        autoCompleteAdapter = new ArrayAdapter<>(getActivity(),
-//                android.R.layout.simple_dropdown_item_1line,
-//                presenter.getLoginIdList());
-//        emailEditText.setAdapter(autoCompleteAdapter);
-//
-//        presenter.discoverLogin();
+            presenter.discoverLogin();
 
-//        if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
-//            emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
-//        } else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
-//            switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
-//                case LoginActivity.METHOD_FACEBOOK:
-//                    onLoginFacebookClick();
-//                    break;
-//                case LoginActivity.METHOD_GOOGLE:
-//                    onLoginGoogleClick();
-//                    break;
-//                case LoginActivity.METHOD_WEBVIEW:
-//                    if (!TextUtils.isEmpty(getArguments().getString(LoginActivity
-//                            .AUTO_WEBVIEW_NAME, ""))
-//                            && !TextUtils.isEmpty(getArguments().getString(LoginActivity
-//                            .AUTO_WEBVIEW_URL, ""))) {
-//                        onLoginWebviewClick(getArguments().getString(LoginActivity.AUTO_WEBVIEW_NAME,
-//                                ""),
-//                                getArguments().getString(LoginActivity.AUTO_WEBVIEW_URL,
-//                                        ""));
-//                    }
-//                    break;
-//                case LoginActivity.METHOD_EMAIL:
-//                    String email = getArguments().getString(AUTO_LOGIN_EMAIL, "");
-//                    String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
-//                    emailEditText.setText(email);
-//                    passwordEditText.setText(pw);
-//                    presenter.login(email, pw);
-//                    break;
-//                default:
-//                    showSmartLock();
-//                    break;
-//            }
-//        } else {
-//            showSmartLock();
-//        }
+            if (getArguments() != null && getArguments().getBoolean(IS_AUTO_FILL, false)) {
+                emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
+            } else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+                switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
+                    case LoginActivity.METHOD_FACEBOOK:
+                        onLoginFacebookClick();
+                        break;
+                    case LoginActivity.METHOD_GOOGLE:
+                        onLoginGoogleClick();
+                        break;
+                    case LoginActivity.METHOD_WEBVIEW:
+                        if (!TextUtils.isEmpty(getArguments().getString(LoginActivity
+                                .AUTO_WEBVIEW_NAME, ""))
+                                && !TextUtils.isEmpty(getArguments().getString(LoginActivity
+                                .AUTO_WEBVIEW_URL, ""))) {
+                            onLoginWebviewClick(getArguments().getString(LoginActivity.AUTO_WEBVIEW_NAME,
+                                    ""),
+                                    getArguments().getString(LoginActivity.AUTO_WEBVIEW_URL,
+                                            ""));
+                        }
+                        break;
+                    case LoginActivity.METHOD_EMAIL:
+                        String email = getArguments().getString(AUTO_LOGIN_EMAIL, "");
+                        String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
+                        emailEditText.setText(email);
+                        passwordEditText.setText(pw);
+                        presenter.login(email, pw);
+                        break;
+                    default:
+                        showSmartLock();
+                        break;
+                }
+            } else {
+                showSmartLock();
+            }
+        }
     }
 
     private void showSmartLock() {
@@ -360,31 +368,31 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void showLoading(final boolean isLoading) {
-//        int shortAnimTime = getResources().getInteger(
-//                android.R.integer.config_shortAnimTime);
-//
-//        loadingView.animate().setDuration(shortAnimTime)
-//                .alpha(isLoading ? 1 : 0)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        if (loadingView != null) {
-//                            loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-//                        }
-//                    }
-//                });
-//
-//        loginView.animate().setDuration(shortAnimTime)
-//                .alpha(isLoading ? 0 : 1)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//                        if (loginView != null) {
-//                            loginView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-//                        }
-//                    }
-//                });
-//
+        int shortAnimTime = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        loadingView.animate().setDuration(shortAnimTime)
+                .alpha(isLoading ? 1 : 0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (loadingView != null) {
+                            loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                        }
+                    }
+                });
+
+        loginView.animate().setDuration(shortAnimTime)
+                .alpha(isLoading ? 0 : 1)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (loginView != null) {
+                            loginView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -426,7 +434,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             getActivity().finish();
 
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setTrackingUserId
-                    (userSession.getUserId());
+                    (userSession.getUserId(), getActivity().getApplicationContext());
         }
     }
 
@@ -461,41 +469,37 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onErrorDiscoverLogin(String errorMessage) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.discoverLogin();
-            }
-        }).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage,
+                () -> presenter.discoverLogin()).showRetrySnackbar();
     }
 
     @Override
     public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
         if (!GlobalConfig.isSellerApp()) listProvider.add(2, getLoginPhoneNumberBean());
 
-//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-//                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        layoutParams.setMargins(0, 20, 0, 15);
-//        loginButtonsContainer.removeAllViews();
-//        for (int i = 0; i < listProvider.size(); i++) {
-//            int colorInt = Color.parseColor(COLOR_WHITE);
-//            LoginTextView tv = new LoginTextView(getActivity(), colorInt);
-//            tv.setTag(listProvider.get(i).getId());
-//            tv.setText(listProvider.get(i).getName());
-//            if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
-//                tv.setImage(listProvider.get(i).getImage());
-//            } else if (listProvider.get(i).getImageResource() != 0) {
-//                tv.setImageResource(listProvider.get(i).getImageResource());
-//            }
-//            tv.setRoundCorner(10);
-//
-//            setDiscoverListener(listProvider.get(i), tv);
-//            if (loginButtonsContainer != null) {
-//                loginButtonsContainer.addView(tv, loginButtonsContainer.getChildCount(), layoutParams);
-//            }
-//        }
-//
-//        enableArrow();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 15);
+        loginButtonsContainer.removeAllViews();
+        for (int i = 0; i < listProvider.size(); i++) {
+            int colorInt = Color.parseColor(COLOR_WHITE);
+            LoginTextView tv = new LoginTextView(getActivity(), colorInt);
+            tv.setTag(listProvider.get(i).getId());
+            tv.setText(listProvider.get(i).getName());
+            if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
+                tv.setImage(listProvider.get(i).getImage());
+            } else if (listProvider.get(i).getImageResource() != 0) {
+                tv.setImageResource(listProvider.get(i).getImageResource());
+            }
+            tv.setRoundCorner(10);
+
+            setDiscoverListener(listProvider.get(i), tv);
+            if (loginButtonsContainer != null) {
+                loginButtonsContainer.addView(tv, loginButtonsContainer.getChildCount(), layoutParams);
+            }
+        }
+
+        enableArrow();
     }
 
     @Override
@@ -541,9 +545,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
-//        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-//                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
-//        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
     }
 
@@ -575,18 +579,19 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void onSuccessLoginEmail() {
         analytics.eventSuccessLoginEmail();
-//        TrackingUtils.setMoEUserAttributesLogin(
-//                sessionHandler.getLoginID(),
-//                sessionHandler.getLoginName(),
-//                sessionHandler.getEmail(),
-//                sessionHandler.getPhoneNumber(),
-//                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
-//                sessionHandler.getShopName(),
-//                sessionHandler.getShopID(),
-//                !TextUtils.isEmpty(sessionHandler.getShopID()),
-//                LoginAnalytics.Label.EMAIL
-//        );
-//        BranchSdkUtils.sendLoginEvent(getActivity());
+        if (getActivity() != null) {
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
+                    (userSession.getUserId(),
+                            userSession.getName(),
+                            userSession.getEmail(),
+                            userSession.getPhoneNumber(),
+                            userSession.isGoldMerchant(),
+                            userSession.getShopName(),
+                            userSession.getShopId(),
+                            userSession.hasShop(),
+                            LoginAnalytics.LABEL_EMAIL
+                    );
+        }
 
         onSuccessLogin();
     }
@@ -594,19 +599,19 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void onSuccessLoginSosmed(String loginMethod) {
         analytics.eventSuccessLoginSosmed(loginMethod);
-
-//        TrackingUtils.setMoEUserAttributesLogin(
-//                sessionHandler.getLoginID(),
-//                sessionHandler.getLoginName(),
-//                sessionHandler.getEmail(),
-//                sessionHandler.getPhoneNumber(),
-//                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
-//                sessionHandler.getShopName(),
-//                sessionHandler.getShopID(),
-//                !TextUtils.isEmpty(sessionHandler.getShopID()),
-//                loginMethod
-//        );
-//        BranchSdkUtils.sendLoginEvent(getActivity());
+        if (getActivity() != null) {
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
+                    (userSession.getUserId(),
+                            userSession.getName(),
+                            userSession.getEmail(),
+                            userSession.getPhoneNumber(),
+                            userSession.isGoldMerchant(),
+                            userSession.getShopName(),
+                            userSession.getShopId(),
+                            userSession.hasShop(),
+                            LoginAnalytics.LABEL_EMAIL
+                    );
+        }
         onSuccessLogin();
     }
 
@@ -640,44 +645,24 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 .getScrollY());
     }
 
-    //    private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
-//                                     LoginTextView tv) {
-//        if (discoverItemViewModel.getId().equalsIgnoreCase(FACEBOOK)) {
-//            tv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onLoginFacebookClick();
-//                }
-//            });
-//        } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
-//            tv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onLoginGoogleClick();
-//                }
-//            });
-//        } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
-//            tv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onLoginPhoneNumberClick();
-//                }
-//            });
-//        } else {
-//            tv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onLoginWebviewClick(discoverItemViewModel.getName(),
-//                            discoverItemViewModel.getUrl());
-//                }
-//            });
-//        }
-//    }
+    private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
+                                     LoginTextView tv) {
+        if (discoverItemViewModel.getId().equalsIgnoreCase(FACEBOOK)) {
+            tv.setOnClickListener(v -> onLoginFacebookClick());
+        } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
+            tv.setOnClickListener(v -> onLoginGoogleClick());
+        } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
+            tv.setOnClickListener(v -> onLoginPhoneNumberClick());
+        } else {
+            tv.setOnClickListener(v -> onLoginWebviewClick(discoverItemViewModel.getName(),
+                    discoverItemViewModel.getUrl()));
+        }
+    }
 
     private void onLoginWebviewClick(String name, String url) {
         analytics.eventClickLoginWebview(name);
 
-//        if (getFragmentManager() != null && getActivity() != null) {
+        if (getFragmentManager() != null && getActivity() != null) {
 //            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 //            WebViewLoginFragment newFragment = WebViewLoginFragment
 //                    .createInstance(url, name);
@@ -687,30 +672,33 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 //                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 //
 //            fragmentTransaction.commitAllowingStateLoss();
-//
-//        }
+
+        }
     }
 
     private void onLoginPhoneNumberClick() {
-        analytics.eventClickLoginPhoneNumber();
+        if(getActivity()!= null) {
+            analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
 //        Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
 //        startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
-//        SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
+        }
 
     }
 
     private void onLoginGoogleClick() {
-        analytics.eventClickLoginGoogle();
+        if (getActivity() != null) {
+            analytics.eventClickLoginGoogle(getActivity().getApplicationContext());
 //        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
 //        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-//        SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
+        }
 
     }
 
     private void onLoginFacebookClick() {
-        analytics.eventClickLoginFacebook();
-        presenter.getFacebookCredential(this, callbackManager);
-//        SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
+        if (getActivity() != null) {
+            analytics.eventClickLoginFacebook(getActivity().getApplicationContext());
+            presenter.getFacebookCredential(this, callbackManager);
+        }
     }
 
     private DiscoverItemViewModel getLoginPhoneNumberBean() {
@@ -760,56 +748,58 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_SMART_LOCK
-//                && resultCode == Activity.RESULT_OK
-//                && data != null
-//                && data.getExtras() != null
-//                && data.getExtras().getString(SmartLockActivity.USERNAME) != null
-//                && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
-//            emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
-//            passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
-//            presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
-//                    data.getExtras().getString(SmartLockActivity.PASSWORD));
-//        } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
-//            GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-//            String email = googleSignInAccount.getEmail();
-//            String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-//            presenter.loginGoogle(accessToken, email);
-//        } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
-//            presenter.loginWebview(data);
-//        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
-//            dismissLoadingLogin();
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
-//            dismissLoadingLogin();
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
-//            dismissLoadingLogin();
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
-//            dismissLoadingLogin();
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//        } else if (requestCode == REQUEST_VERIFY_PHONE) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-//            onSuccessLogin();
-//        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
-//            sessionHandler.clearUserData(getActivity());
-//            dismissLoadingLogin();
-//            getActivity().setResult(Activity.RESULT_CANCELED);
-//            getActivity().finish();
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
+        if(getActivity()!= null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+//            if (requestCode == REQUEST_SMART_LOCK
+//                    && resultCode == Activity.RESULT_OK
+//                    && data != null
+//                    && data.getExtras() != null
+//                    && data.getExtras().getString(SmartLockActivity.USERNAME) != null
+//                    && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
+//                emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+//                passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+//                presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+//                        data.getExtras().getString(SmartLockActivity.PASSWORD));
+//            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+//                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+//                String email = googleSignInAccount.getEmail();
+//                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+//                presenter.loginGoogle(accessToken, email);
+//            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
+//                presenter.loginWebview(data);
+//            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+//                dismissLoadingLogin();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+//                dismissLoadingLogin();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+//                dismissLoadingLogin();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+//                dismissLoadingLogin();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//            } else if (requestCode == REQUEST_VERIFY_PHONE) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+//                onSuccessLogin();
+//            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+//                userSession.logoutSession();
+//                dismissLoadingLogin();
+//                getActivity().setResult(Activity.RESULT_CANCELED);
+//                getActivity().finish();
+//            } else {
+//                super.onActivityResult(requestCode, resultCode, data);
+//            }
+        }
     }
 
     @Override

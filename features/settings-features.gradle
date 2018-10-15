@@ -56,6 +56,7 @@ include "features:user:otp"
 include "features:user:vote"
 include "features:user:topchat"
 include 'features:user:loginregister'
+include 'features:user:sessioncommon'
 include "features:user:changepassword"
 include "features:user:settingbank"
 include "features:user:bankdb"

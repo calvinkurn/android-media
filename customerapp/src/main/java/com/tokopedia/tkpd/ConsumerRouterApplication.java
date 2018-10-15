@@ -79,7 +79,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.Constants;
@@ -298,7 +297,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -905,7 +903,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
-       
+
     @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
@@ -2666,29 +2664,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopNotesIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopBasicDataIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
     @Override
-    public @NonNull Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
+    public @NonNull
+    Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
+
     /**
      * Global Nav Router
      */
@@ -3157,14 +3161,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
+
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override
-    public void setTrackingUserId(String userId) {
+    public void setTrackingUserId(String userId, Context applicationContext) {
+        onAppsFlyerInit();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(userSession.getUserId());
         BranchSdkUtils.sendIdentityEvent(userSession.getUserId());
+        BranchSdkUtils.sendLoginEvent(applicationContext);
+    }
+
+    @Override
+    public void setMoEUserAttributesLogin(String userId, String name, String email,
+                                          String phoneNumber, boolean isGoldMerchant,
+                                          String shopName, String shopId, boolean hasShop,
+                                          String loginMethod) {
+        TrackingUtils.setMoEUserAttributesLogin(
+                userId,
+                name,
+                email,
+                phoneNumber,
+                isGoldMerchant,
+                shopName,
+                shopId,
+                hasShop,
+                loginMethod
+        );
     }
 }

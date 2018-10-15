@@ -50,7 +50,6 @@ public class GetUserInfoMapper implements Func1<Response<String>, GetUserInfoDom
                 model.setSuccess(true);
             }
 
-
         } else {
             String messageError = ErrorHandler.getErrorMessage(response);
             if (!TextUtils.isEmpty(messageError)) {

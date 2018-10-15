@@ -271,4 +271,8 @@
     <string name="default_request_error_forbidden_auth">Halaman tidak dapat diakses. Mohon
         untuk menunggu beberapa saat lagi.</string>
 
+    <!--REGISTER PAGE -->
+    <string name="title_register">Daftar Sekarang di Tokopedia</string>
+
+
 </resources>

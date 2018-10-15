@@ -1,9 +1,15 @@
 package com.tokopedia.loginregister.login.analytics;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.analytics.TrackAnalytics;
+import com.tokopedia.analytics.firebase.FirebaseEvent;
+import com.tokopedia.analytics.firebase.FirebaseParams;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author by nisie on 10/2/18.
@@ -29,7 +35,7 @@ public class LoginAnalytics {
     private static final String LABEL_CTA = "CTA";
     private static final String LABEL_REGISTER = "Register";
     private static final String LABEL_PASSWORD = "Kata Sandi";
-    private static final String LABEL_EMAIL = "Email";
+    public static final String LABEL_EMAIL = "Email";
     private static final String LABEL_PHONE_NUMBER = "Phone Number";
     private static final String LABEL_GPLUS = "Google Plus";
     private static final String LABEL_FACEBOOK = "Facebook";
@@ -45,13 +51,18 @@ public class LoginAnalytics {
         analyticTracker.sendScreen(activity, screenName);
     }
 
-    public void eventClickLoginButton() {
+    public void eventClickLoginButton(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN,
                 ACTION_CLICK,
                 LABEL_CTA
         );
+
+        Map<String, Object> map = new HashMap<>();
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
+                map, applicationContext);
+
     }
 
     public void eventClickRegisterFromLogin() {
@@ -108,30 +119,53 @@ public class LoginAnalytics {
         );
     }
 
-    public void eventClickLoginPhoneNumber() {
+    public void eventClickLoginPhoneNumber(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN,
                 ACTION_CLICK,
                 LABEL_PHONE_NUMBER
         );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "LoginPhoneNumberActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
     }
 
-    public void eventClickLoginGoogle() {
+    public void eventClickLoginGoogle(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN,
                 ACTION_CLICK,
                 LABEL_GPLUS
         );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
     }
 
-    public void eventClickLoginFacebook() {
+    public void eventClickLoginFacebook(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
                 CATEGORY_LOGIN,
                 ACTION_CLICK,
                 LABEL_FACEBOOK
         );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext);
+    }
+
+    public void eventClickForgotPasswordFromLogin(Context applicationContext) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "ForgotPasswordActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_FORGOT_PASSWORD,
+                map, applicationContext);
+
     }
 }

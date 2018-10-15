@@ -92,8 +92,23 @@ public class UserSession implements UserSessionInterface {
         return shopId;
     }
 
+    @Override
+    public String getShopName() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(SHOP_NAME, "");
+    }
+
+    @Override
     public boolean hasShop() {
         return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
+    }
+
+    @Override
+    public boolean isGoldMerchant() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_GOLD_MERCHANT,false);
     }
 
     public String getName() {
@@ -264,6 +279,16 @@ public class UserSession implements UserSessionInterface {
         editor.putString(TOKEN_TYPE, tokenType);
         editor.apply();
     }
+
+    public void setToken(String accessToken, String tokenType, String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(ACCESS_TOKEN, accessToken);
+        editor.putString(TOKEN_TYPE, tokenType);
+        editor.putString(REFRESH_TOKEN, refreshToken);
+        editor.apply();
+    }
+
 
     @Override
     public boolean isFirstTimeUser() {

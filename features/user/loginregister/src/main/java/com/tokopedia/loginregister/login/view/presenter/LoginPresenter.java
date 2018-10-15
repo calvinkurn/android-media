@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginregister.common.util.ErrorHandlerSession;
+import com.tokopedia.loginregister.login.di.LoginModule;
 import com.tokopedia.loginregister.login.domain.DiscoverUseCase;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
@@ -15,6 +17,7 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Subscriber;
 
@@ -34,32 +37,29 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
     private static final String HTTPS = "https://";
     private static final String ACTIVATION_SOCIAL = "activation-social";
 
-    //    private final LocalCacheHandler loginCache;
+    private final LocalCacheHandler loginCache;
     private final DiscoverUseCase discoverUseCase;
 //    private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
 //    private final LoginWithSosmedUseCase loginWithSosmedUseCase;
 //    private final LoginWebviewUseCase loginWebviewUseCase;
 //    private final LoginEmailUseCase loginEmailUseCase;
-//    private final MakeLoginUseCase makeLoginUseCase;
 
     @Inject
     public LoginPresenter(
-//            @Named(SessionModule.LOGIN_CACHE) LocalCacheHandler loginCache,
+            @Named(LoginModule.LOGIN_CACHE) LocalCacheHandler loginCache,
 //                          SessionHandler sessionHandler,
 //                          LoginEmailUseCase loginEmailUseCase,
             DiscoverUseCase discoverUseCase
 //                          GetFacebookCredentialUseCase getFacebookCredentialUseCase,
 //                          LoginWithSosmedUseCase loginWithSosmedUseCase,
-//                          LoginWebviewUseCase loginWebviewUseCase,
-//                          MakeLoginUseCase makeLoginUseCase
+//                          LoginWebviewUseCase loginWebviewUseCase
     ) {
-//        this.loginCache = loginCache;
+        this.loginCache = loginCache;
 //        this.loginEmailUseCase = loginEmailUseCase;
         this.discoverUseCase = discoverUseCase;
 //        this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
 //        this.loginWithSosmedUseCase = loginWithSosmedUseCase;
 //        this.loginWebviewUseCase = loginWebviewUseCase;
-//        this.makeLoginUseCase = makeLoginUseCase;
     }
 
     @Override
@@ -69,7 +69,6 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
 //        loginEmailUseCase.unsubscribe();
 //        loginWithSosmedUseCase.unsubscribe();
 //        loginWebviewUseCase.unsubscribe();
-//        makeLoginUseCase.unsubscribe();
     }
 
     @Override
@@ -84,9 +83,7 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
 
     @Override
     public ArrayList<String> getLoginIdList() {
-//        return loginCache.getArrayListString(LOGIN_CACHE_KEY);
-
-        return null;
+        return loginCache.getArrayListString(LOGIN_CACHE_KEY);
     }
 
     @Override

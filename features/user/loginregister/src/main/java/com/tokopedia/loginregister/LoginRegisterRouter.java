@@ -9,5 +9,11 @@ import android.content.Intent;
 public interface LoginRegisterRouter {
     Intent getForgotPasswordIntent(Context context, String email);
 
-    void setTrackingUserId(String userId);
+    void setTrackingUserId(String userId, Context applicationContext);
+
+    void setMoEUserAttributesLogin(String userId, String name, String email,
+                                   String phoneNumber, boolean isGoldMerchant,
+                                   String shopName, String shopId,
+                                   boolean hasShop, String loginMethod);
+
 }
