@@ -109,13 +109,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         when (requestCode) {
             KOL_COMMENT_CODE ->
                 onSuccessAddDeleteKolComment(
-                        data!!.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                        data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
                         data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
         }
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
-        return recyclerView
+        return view!!.findViewById(R.id.recyclerView)
     }
 
     override fun getScreenName(): String? = null
