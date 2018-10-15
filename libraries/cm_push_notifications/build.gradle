@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'CMPushNotifications']
+            }
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+project.ext {
+    artifactId = 'cm_push_notifications'
+    groupId = 'com.tokopedia.notifications'
+    versionName = "${tkpdPushNotifVersion}"
+    artifactName ="cm_push_notifications-release"
+}
+dependencies {
+
+}
+
+apply from: '../../publish_local.gradle'
