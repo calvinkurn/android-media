@@ -48,6 +48,7 @@ import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
     private static final String VIEW_MODEL = "view_model";
+    private static final String PARAM_USER_ID = "{user_id}";
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
 
@@ -338,7 +339,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void goToProfile() {
-        RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.PROFILE_AFTER_POST);
+        RouteManager.route(
+                Objects.requireNonNull(getContext()),
+                ApplinkConst.PROFILE_AFTER_POST.replace(PARAM_USER_ID, getUserSession().getUserId())
+        );
     }
 
     private void submitPost() {
