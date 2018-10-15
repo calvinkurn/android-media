@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
@@ -35,9 +36,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
@@ -79,6 +77,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -90,7 +89,6 @@ import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
@@ -107,8 +105,8 @@ import rx.Observable;
  * @author by errysuprayogi on 11/27/17.
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener,
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, HomeFeedListener,
+        CountDownView.CountDownListener,
         NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -470,13 +468,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance) {
+    public void actionAppLinkWalletHeader(String appLinkBalance) {
         WalletRouterUtil.navigateWallet(
                 getActivity().getApplication(),
                 this,
                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
                 appLinkBalance,
-                redirectUrlBalance,
+                "",
                 new Bundle()
         );
     }
@@ -488,7 +486,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionInfoPendingCashBackTokocash(CashBackData cashBackData,
-                                                  String redirectUrlActionButton,
                                                   String appLinkActionButton) {
         BottomSheetView bottomSheetDialogTokoCash = new BottomSheetView(getActivity());
         bottomSheetDialogTokoCash.setListener(new BottomSheetView.ActionListener() {
@@ -526,7 +523,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setBody(String.format(getString(R.string.toko_cash_pending_body),
                         cashBackData.getAmountText()))
                 .setImg(R.drawable.ic_box)
-                .setUrlButton(redirectUrlActionButton,
+                .setUrlButton("",
                         appLinkActionButton,
                         getString(R.string.toko_cash_pending_proceed_button))
                 .build());
@@ -867,16 +864,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
-        presenter.updateHeaderTokoCashData(tokoCashData.getHomeHeaderWalletAction());
-    }
-
-    @Override
-    public void onTokoCashDataError(String errorMessage) {
-        Log.e(TAG, errorMessage);
-    }
-
-    @Override
     public void onRefreshTokoPointButtonClicked() {
         presenter.onRefreshTokoPoint();
     }
@@ -893,7 +880,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if(isVisible()) {
+        if (isVisible()) {
             presenter.hitBannerImpression(bannerSlidesModel);
         }
     }
@@ -943,9 +930,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
      * Tokocash & Tokopoint
      */
     @Override
-    public Observable<TokoCashData> getTokocashBalance() {
-        if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
-            return ((TkpdCoreRouter) getActivity().getApplication()).getTokoCashBalance();
+    public Observable<HomeHeaderWalletAction> getTokocashBalance() {
+        if (getActivity() != null && getActivity().getApplication() instanceof IHomeRouter) {
+            return ((IHomeRouter) getActivity().getApplication()).getWalletBalanceHomeHeader();
         }
         return null;
     }
@@ -970,10 +957,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() == null)
             return;
 
-        getActivity().registerReceiver(
-                tokoCashBroadcaseReceiver,
-                new IntentFilter(TokocashPendingDataBroadcastReceiver.class.getSimpleName())
-        );
+        if (getActivity().getApplication() instanceof IHomeRouter) {
+            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+            getActivity().registerReceiver(
+                    tokoCashBroadcaseReceiver,
+                    new IntentFilter(homeRouter.getExtraBroadcastReceiverWallet())
+            );
+        }
     }
 
     protected void unRegisterBroadcastReceiverTokoCash() {
@@ -987,8 +977,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            if (extras != null) {
-                String data = extras.getString(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+            if (extras != null && getActivity().getApplication() instanceof IHomeRouter) {
+                IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+                String data = extras.getString(homeRouter.getExtraBroadcastReceiverWallet());
                 if (data != null && !data.isEmpty())
                     presenter.getHeaderData(false); // update header data
             }
@@ -1014,6 +1005,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void startDeeplinkShopInfo(String url) {
         if (getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+    }
+
+    @Override
+    public void showPopupIntroOvo(String applinkActivation) {
+        if (RouteManager.isSupportApplink(getActivity(), applinkActivation)) {
+            Intent intentBalanceWalet = RouteManager.getIntent(getActivity(), applinkActivation);
+            getContext().startActivity(intentBalanceWalet);
+            Activity activity = (Activity) getContext();
+            activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+        }
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {

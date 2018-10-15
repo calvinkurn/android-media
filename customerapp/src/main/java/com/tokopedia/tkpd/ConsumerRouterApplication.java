@@ -206,6 +206,7 @@ import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -362,11 +363,10 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -1785,13 +1785,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TokoCashData> getTokoCashBalance() {
-        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
                 .processGetBalance();
     }
 
     @Override
+    public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+                .getWalletBalanceHomeHeader();
+    }
+
+    @Override
+    public String getExtraBroadcastReceiverWallet() {
+        return "Broadcast Wallet";
+    }
+
+    @Override
     public Observable<WalletModel> getTokoCashAccountBalance() {
-        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
+                tokoCashComponent.getPendingCasbackUseCase())
                 .getTokoCashAccountBalance();
     }
 
@@ -1845,11 +1857,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         params.putString(GetTokopointUseCase.KEY_PARAM,
                 CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
         return this.tokopointComponent.getTokopointUseCase().createObservable(params);
-    }
-
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
     }
 
     public GetShopInfoUseCase getShopInfo() {
