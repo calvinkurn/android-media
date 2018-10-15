@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -70,6 +68,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
@@ -78,6 +77,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         initVar()
         initView()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        if (userSession.userId == userId.toString()) {
+            inflater?.inflate(R.menu.menu_profile, menu)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_dashboard) {
+            goToDashboard()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {
@@ -313,7 +327,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun initView() {
-
     }
 
     private fun setToolbarTitle(title: String) {
@@ -466,6 +479,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToExplore() {
         RouteManager.route(context, ApplinkConst.CONTENT_EXPLORE)
+    }
+
+    private fun goToDashboard() {
+        RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
     }
 
     private fun showError(message: String) {
