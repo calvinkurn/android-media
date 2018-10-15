@@ -53,6 +53,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ProfileContract.View, KolPostListener.View.ViewHolder, KolPostListener.View.Like {
 
     private var userId: Int = 0
+    private var afterPost: Boolean = false
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -62,7 +63,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         const val TEXT_PLAIN = "text/plain"
         const val KOL_COMMENT_CODE = 13
 
-        fun createInstance() = ProfileFragment()
+        fun createInstance(bundle: Bundle): ProfileFragment {
+            val fragment = ProfileFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -323,6 +328,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun initVar() {
         arguments?.let {
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
+            afterPost = TextUtils.equals(
+                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
+                    ProfileActivity.TRUE
+            )
         }
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter

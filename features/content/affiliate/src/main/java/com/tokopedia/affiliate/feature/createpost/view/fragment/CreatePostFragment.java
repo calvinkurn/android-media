@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -31,6 +30,8 @@ import com.tokopedia.affiliate.feature.createpost.view.preference.CreatePostPref
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
 
@@ -209,9 +210,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onSuccessSubmitPost() {
-        //TODO milhamj
-        Toast.makeText(getContext(), "Create post success", Toast.LENGTH_LONG).show();
-        getActivity().finish();
+        goToProfile();
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override
@@ -335,6 +335,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                         Objects.requireNonNull(getActivity()),
                         viewModel.getImageList()),
                 REQUEST_IMAGE_PICKER);
+    }
+
+    private void goToProfile() {
+        RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.PROFILE_AFTER_POST);
     }
 
     private void submitPost() {

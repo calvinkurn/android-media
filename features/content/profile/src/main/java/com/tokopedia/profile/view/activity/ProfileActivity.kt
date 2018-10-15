@@ -19,9 +19,11 @@ class ProfileActivity : BaseSimpleActivity() {
         const val IS_FOLLOWING_TRUE = 1
         const val IS_FOLLOWING_FALSE = 0
 
-        val EXTRA_PARAM_USER_ID = "user_id"
-        val EXTRA_PARAM_POST_ID = "post_id"
-        val ZERO = "0"
+        const val EXTRA_PARAM_USER_ID = "user_id"
+        const val EXTRA_PARAM_POST_ID = "post_id"
+        const val EXTRA_PARAM_AFTER_POST = "after_post"
+        const val TRUE = "true"
+        const val ZERO = "0"
 
         fun createIntent(context: Context?, userId: String): Intent {
             val intent = Intent(context, ProfileActivity::class.java)
@@ -46,10 +48,10 @@ class ProfileActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        val fragment = ProfileFragment.createInstance()
+        val bundle = Bundle()
         intent.extras.let {
-            fragment.arguments = it
+            bundle.putAll(it)
         }
-        return fragment
+        return ProfileFragment.createInstance(bundle)
     }
 }
