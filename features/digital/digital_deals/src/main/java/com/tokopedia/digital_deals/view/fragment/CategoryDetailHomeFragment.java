@@ -76,6 +76,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
+    private boolean forceRefresh;
 
 
     @Override
@@ -394,5 +395,21 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
+    }
+
+    @Override
+    public void onStop() {
+        forceRefresh = true;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (forceRefresh) {
+            if (dealsAdapter != null)
+                dealsAdapter.notifyDataSetChanged();
+            forceRefresh = false;
+        }
     }
 }
