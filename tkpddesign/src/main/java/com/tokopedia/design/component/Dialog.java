@@ -67,6 +67,10 @@ public class Dialog extends BaseDialog {
         btnCancel.setOnClickListener((type == Type.RETORIC) ? null : onCancelClickListener);
     }
 
+    public TextView getTitleTextView () {
+        return title;
+    }
+
     public void setTitle(String title) {
         this.title.setText(title);
     }
