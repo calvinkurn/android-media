@@ -162,6 +162,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
+        presenter.cursor = firstPageViewModel.lastCursor
+        onlyOnePost = firstPageViewModel.visitableList.size == 1
+
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
@@ -180,11 +183,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
         }
-        presenter.cursor = firstPageViewModel.lastCursor
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
-        onlyOnePost = firstPageViewModel.visitableList.size == 1
-        if (afterPost) {
+        if (afterPost && !onlyOnePost) {
             ToasterNormal
                     .make(view,
                             getString(R.string.profile_recommend_success),
@@ -391,19 +392,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showShowCaseDialog(view: View?) {
-        if (onlyOnePost.not() && afterPost.not()) {
-            return
+        if (afterPost && onlyOnePost) {
+            val showCaseTag = this::class.java.simpleName
+            val showCaseDialog = createShowCaseDialog()
+            val showcases = ArrayList<ShowCaseObject>()
+            showcases.add(ShowCaseObject(
+                    view,
+                    getString(R.string.profile_showcase_title),
+                    getString(R.string.profile_showcase_description),
+                    ShowCaseContentPosition.UNDEFINED))
+            showCaseDialog.show(this.activity, showCaseTag, showcases)
         }
-
-        val showCaseTag = this::class.java.simpleName
-        val showCaseDialog = createShowCaseDialog()
-        val showcases = ArrayList<ShowCaseObject>()
-        showcases.add(ShowCaseObject(
-                view,
-                getString(R.string.profile_showcase_title),
-                getString(R.string.profile_showcase_description),
-                ShowCaseContentPosition.UNDEFINED))
-        showCaseDialog.show(this.activity, showCaseTag, showcases)
     }
 
     private fun createShowCaseDialog(): ShowCaseDialog {
