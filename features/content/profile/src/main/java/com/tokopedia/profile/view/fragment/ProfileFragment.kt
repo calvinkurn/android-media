@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.view.accessibility.AccessibilityEventCompat.setAction
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -353,15 +354,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onErrorFollowKol(errorMessage: String) {
-        showError(errorMessage)
-    }
+    override fun onErrorFollowKol(errorMessage: String) = showError(errorMessage)
 
     override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.data.removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
+        val snackbar = ToasterNormal.make(view,
+                getString(R.string.profile_post_deleted),
+                BaseToaster.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
     }
 
-    override fun onErrorDeletePost(errorMessage: String) {
-    }
+    override fun onErrorDeletePost(errorMessage: String) = showError(errorMessage)
 
     private fun initVar() {
         arguments?.let {
