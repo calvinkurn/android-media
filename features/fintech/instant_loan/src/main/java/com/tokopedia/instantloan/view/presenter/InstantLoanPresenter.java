@@ -14,7 +14,6 @@ import com.tokopedia.instantloan.constant.DeviceDataKeys;
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData;
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
-import com.tokopedia.instantloan.ddcollector.OnDeviceDataReady;
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
 import com.tokopedia.instantloan.ddcollector.account.Account;
 import com.tokopedia.instantloan.ddcollector.app.Application;
@@ -77,6 +76,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                 RestResponse restResponse = typeRestResponseMap.get(ResponseUserProfileStatus.class);
                 ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
                 getView().onSuccessLoanProfileStatus(responseUserProfileStatus.getUserProfileLoanEntity());
+                getView().setUserOnGoingLoanStatus(responseUserProfileStatus.getUserProfileLoanEntity().isOnGoingLoan());
             }
         });
     }

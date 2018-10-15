@@ -52,6 +52,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     private ProgressBar mProgressBar;
     private Dialog mDialogIntro;
 
+    private ActivityInteractor activityInteractor;
+
     @Inject
     InstantLoanPresenter presenter;
 
@@ -117,6 +119,17 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
 
     @Override
+    protected void onAttachActivity(Context context) {
+        try {
+            this.activityInteractor = (ActivityInteractor) context;
+        } catch (Exception e) {
+
+        }
+
+        super.onAttachActivity(context);
+    }
+
+    @Override
     public Context getAppContext() {
         return getContext().getApplicationContext();
     }
@@ -154,6 +167,13 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
             startIntroSlider();
         }
 
+    }
+
+    @Override
+    public void setUserOnGoingLoanStatus(boolean status) {
+        if (activityInteractor != null) {
+            activityInteractor.setUserOnGoingLoanStatus(status);
+        }
     }
 
     @Override
@@ -397,4 +417,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         return danaInstantFragment;
     }
 
+    public interface ActivityInteractor {
+        void setUserOnGoingLoanStatus(boolean status);
+    }
 }

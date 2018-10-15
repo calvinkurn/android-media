@@ -57,7 +57,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>,
-        BannerContractor.View, OnGoingLoanContractor.View,
+        BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor,
         BannerPagerAdapter.BannerClick,
         View.OnClickListener {
 
@@ -107,8 +107,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         setupToolbar();
         loadSection();
         mBannerPresenter.loadBanners();
-
-        // TODO: 15/10/18 check if user logged in
 
         UserSession userSession = new UserSession(this);
         if (userSession != null && userSession.isLoggedIn()) {
@@ -246,15 +244,17 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         int id = item.getItemId();
 
         if (id == R.id.submission_history) {
-
+            openWebView("");
             Toast.makeText(this, "submission history clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.payment_method) {
 
+            openWebView("");
             Toast.makeText(this, "payment method clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.help) {
 
+            openWebView("");
             Toast.makeText(this, "help clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -458,7 +458,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void setUserOnGoingLoanStatus(boolean status) {
-
         this.onGoingLoanStatus = status;
         onCreateOptionsMenu(menu);
     }
