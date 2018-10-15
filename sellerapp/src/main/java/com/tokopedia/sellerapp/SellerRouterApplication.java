@@ -103,6 +103,8 @@ import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
+import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -118,6 +120,8 @@ import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
+import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
@@ -160,7 +164,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
@@ -203,7 +206,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -235,8 +238,9 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, KolRouter, WithdrawRouter,
-        ProductEditModuleRouter, ShopSettingRouter, TopAdsWebViewRouter, PaymentSettingRouter, TalkRouter {
+        NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
+        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
+        KolRouter, PaymentSettingRouter, TalkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -342,6 +346,12 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToGmSubscribeMembershipRedirect(Context context) {
+        Intent intent = GmMembershipActivity.createIntent(context);
         context.startActivity(intent);
     }
 
@@ -476,11 +486,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return new Intent(context, OnboardingSellerActivity.class);
-    }
-
-    @Override
     public Intent getPhoneVerificationActivityIntent(Context context) {
         return PhoneVerificationActivationActivity.getIntent(context, true, false);
     }
@@ -517,6 +522,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
+        UnifyTracking.sendGTMEvent(eventTracking);
+        CommonUtils.dumper(eventTracking.toString());
+    }
+
+    @Override
+    public void sendEventTrackingGmSubscribe(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -1133,12 +1144,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
@@ -1380,7 +1388,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
 
     public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
+        return SellerOrderListActivity.getInstance(context);
     }
 
     @Override
@@ -1650,7 +1658,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getManagePeopleIntent(Context context) {
-        return null;
+        return new Intent(context, ManagePeopleProfileActivity.class);
     }
 
     @Override
@@ -1708,5 +1716,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getKolCommentArgsTotalComment() {
         return null;
+    }
+
+    @Override
+    public void onAppsFlyerInit() {
+
     }
 }
