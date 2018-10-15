@@ -2,6 +2,7 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
+import com.tokopedia.flight.searchV2.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
@@ -34,7 +35,8 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
-    fun getFilteredJourneys(filterModel: FlightFilterModel): Observable<List<JourneyAndRoutes>> {
+    fun getFilteredJourneys(filterModel: FlightFilterModel, @FlightSortOption flightSortOption: Int):
+            Observable<List<JourneyAndRoutes>> {
         return Observable.create {
             val sqlQuery = "SELECT * FROM FlightJourneyTable WHERE "
             val sqlStringBuilder = StringBuilder()
@@ -57,13 +59,44 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             }
             sqlStringBuilder.append("isReturn = $isReturnInt")
 
-//            sqlStringBuilder.append("ORDER BY ")
+            sqlStringBuilder.append(" ORDER BY ${getOrderBy(flightSortOption)}")
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 
-            Log.d("Flight search filter query: ", simpleSQLiteQuery.sql.toString())
+            Log.d("FlightSearchFilter: ", simpleSQLiteQuery.sql.toString())
 
             it.onNext(flightJourneyDao.findFilteredJourneys(simpleSQLiteQuery))
+        }
+    }
+
+    fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
+        return Observable.create {
+            val sqlQuery = "SELECT count(*) FROM FlightJourneyTable WHERE "
+            val sqlStringBuilder = StringBuilder()
+            sqlStringBuilder.append(sqlQuery)
+
+            sqlStringBuilder.append("durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
+            sqlStringBuilder.append("sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
+
+            val isSpecialPrice = if (filterModel.isSpecialPrice) 1 else 0
+            val isBestPairing = if (filterModel.isBestPairing) 1 else 0
+            val isReturnInt = if (filterModel.isReturn) 1 else 0
+
+            sqlStringBuilder.append("${getRefundableCondition(filterModel.refundableTypeList)}")
+            sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
+            sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
+
+            sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+            if (filterModel.isReturn) {
+                sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
+            }
+            sqlStringBuilder.append("isReturn = $isReturnInt")
+
+            val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
+
+            Log.d("FlightSearchCount: ", simpleSQLiteQuery.sql.toString())
+
+            it.onNext(flightJourneyDao.getSearchCount(simpleSQLiteQuery))
         }
     }
 
@@ -148,17 +181,19 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         flightRouteDao.deleteByJourneyId(journeyId)
     }
 
-//    private fun getOrderBy(flightSortOption: FlightSortOption): String {
-//        when (flightSortOption) {
-//            FlightSortOption.CHEAPEST -> "ORDER BY sortPrice"
-//            FlightSortOption.EARLIEST_ARRIVAL -> "ORDER BY sortPrice"
-//        }
-//    }
-
-//    fun insert(journey: JourneyAndRoutes?, combo: FlightComboTable?) {
-//        val flightJourneyComboJoinTable = FlightJourneyComboJoinTable(journey?.flightJourneyTable?.id,
-//                combo?.returnJourneyId)
-//        flightJourneyComboJoinDao.insert(flightJourneyComboJoinTable)
-//    }
+    private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
+        return when (flightSortOption) {
+            FlightSortOption.CHEAPEST -> "sortPrice ASC"
+            FlightSortOption.EARLIEST_ARRIVAL -> "arrivalTimeInt ASC"
+            FlightSortOption.EARLIEST_DEPARTURE -> "departureTimeInt ASC"
+            FlightSortOption.LATEST_ARRIVAL -> "arrivalTimeInt DESC"
+            FlightSortOption.LATEST_DEPARTURE -> "departureTimeInt DESC"
+            FlightSortOption.SHORTEST_DURATION -> "durationMinute ASC"
+            FlightSortOption.LONGEST_DURATION -> "durationMinute DESC"
+            FlightSortOption.MOST_EXPENSIVE -> "sortPrice DESC"
+            FlightSortOption.NO_PREFERENCE -> ""
+            else -> ""
+        }
+    }
 
 }

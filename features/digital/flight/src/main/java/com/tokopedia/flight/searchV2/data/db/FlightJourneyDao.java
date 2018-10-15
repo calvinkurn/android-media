@@ -31,6 +31,10 @@ public interface FlightJourneyDao {
     List<JourneyAndRoutes> findFilteredJourneys(SupportSQLiteQuery supportSQLiteQuery);
 
     @Transaction
+    @RawQuery
+    Integer getSearchCount(SupportSQLiteQuery supportSQLiteQuery);
+
+    @Transaction
     @Query("SELECT * FROM FlightJourneyTable WHERE FlightJourneyTable.id = :onwardJourneyId")
     JourneyAndRoutes findJourneyById(String onwardJourneyId);
 

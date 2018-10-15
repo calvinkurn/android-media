@@ -170,7 +170,7 @@ open class FlightSearchRepository @Inject constructor(
 
     fun getSearchFilter(@FlightSortOption sortOption: Int, filterModel: FlightFilterModel):
             Observable<List<JourneyAndRoutes>> {
-        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, sortOption)
                 .flatMap { journeyAndRoutesList ->
                     Observable.from(journeyAndRoutesList).flatMap { journeyAndRoutes ->
                         Observable.from(journeyAndRoutes.routes)
@@ -184,6 +184,14 @@ open class FlightSearchRepository @Inject constructor(
                                 }
                     }.toList()
                 }
+    }
+
+    fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
+        return flightSearchSingleDataDbSource.getSearchCount(filterModel)
+    }
+
+    fun getSearchJourneyById(journeyId: String): Observable<JourneyAndRoutes> {
+        return flightSearchSingleDataDbSource.getJourneyById(journeyId)
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
@@ -374,10 +382,12 @@ open class FlightSearchRepository @Inject constructor(
 
     fun deleteFlightSearchReturnData(): Observable<Unit> {
         val filterModel = FlightFilterModel()
-        filterModel.isReturn
-        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel)
-                .flatMapIterable { it }
-                .map { flightSearchSingleDataDbSource.deleteRouteByJourneyId(it.flightJourneyTable.id) }
+        filterModel.isReturn = true
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, FlightSortOption.NO_PREFERENCE)
+                .flatMap {
+                    Observable.from(it)
+                            .map { flightSearchSingleDataDbSource.deleteRouteByJourneyId(it.flightJourneyTable.id) }
+                }
                 .toList()
                 .map { flightSearchSingleDataDbSource.deleteFlightSearchReturnData() }
     }
