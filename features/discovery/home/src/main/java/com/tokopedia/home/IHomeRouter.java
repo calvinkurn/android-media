@@ -30,6 +30,8 @@ public interface IHomeRouter {
 
     void goToManageShop(Context context);
 
+    void sendIndexScreen(Activity activity, String screeName);
+
     Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
 
     String getExtraBroadcastReceiverWallet();

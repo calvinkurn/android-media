@@ -66,6 +66,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -1643,7 +1644,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, () -> screenName);
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
@@ -1966,7 +1969,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getAppContext());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -2909,6 +2912,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FragmentFavorite.newInstance();
     }
 
+    @Override
+    public void sendIndexScreen(Activity activity, String screenName) {
+        IndexScreenTracking.sendScreen(activity, () -> screenName);
+    }
+
     public void doLogoutAccount(Activity activity) {
         new GlobalCacheManager().deleteAll();
         Router.clearEtalase(activity);
@@ -3148,7 +3156,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        return userSession.getUserId();
+        return getSession().getUserId();
+    }
+
+    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
     }
 
     public void onAppsFlyerInit() {

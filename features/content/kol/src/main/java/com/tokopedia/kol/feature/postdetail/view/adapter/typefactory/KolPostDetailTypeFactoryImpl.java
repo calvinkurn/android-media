@@ -100,4 +100,9 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
     }
+
+    @Override
+    public void setType(KolPostViewHolder.Type type) {
+
+    }
 }
