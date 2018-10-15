@@ -33,14 +33,14 @@ class FlightSortAndFilterUseCase @Inject constructor(
 
         return if (!TextUtils.isEmpty(filterModel.journeyId)) {
             flightSearchRepository.getSearchReturnBestPairsByOnwardJourneyId(filterModel)
-                    .map { map(it) }
+                    .map { mapToFlightJourneyViewModel(it) }
         } else {
             flightSearchRepository.getSearchFilter(sortOption, filterModel)
-                    .map { map(it) }
+                    .map { mapToFlightJourneyViewModel(it) }
         }
     }
 
-    private fun map(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {
+    private fun mapToFlightJourneyViewModel(it: List<JourneyAndRoutes>): List<FlightJourneyViewModel> {
         val gson = Gson()
         return it.map { journeyAndRoutes ->
             val routes = journeyAndRoutes.routes.map {
