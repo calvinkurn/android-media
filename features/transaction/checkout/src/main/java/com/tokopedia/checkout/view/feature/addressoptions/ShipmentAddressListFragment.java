@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent;
@@ -166,7 +167,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (item.getItemId() == R.id.menu_add_address) {
             checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-            startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
+            startActivityForResult(((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                     getActivity(), null, token, false, false
                     ),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
@@ -432,7 +433,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya();
         AddressModelMapper mapper = new AddressModelMapper();
 
-        Intent intent = AddAddressActivity.createInstanceFromCartCheckout(
+        Intent intent = ((ICheckoutModuleRouter) getActivity().getApplication()).getAddAddressIntent(
                 getActivity(), mapper.transform(model), token, true, false
         );
         startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);

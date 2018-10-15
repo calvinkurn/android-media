@@ -3,6 +3,7 @@ package com.tokopedia.core.util;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -55,6 +56,7 @@ public class BranchSdkUtils {
     public static String REFERRAL_ADVOCATE_PROMO_CODE = "";
     private static final String BRANCH_ANDROID_DESKTOP_URL_KEY = "android_url";
     private static final String BRANCH_IOS_DESKTOP_URL_KEY = "ios_url";
+    private static final String ProductCategory = "ProductCategory";
 
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
@@ -116,6 +118,8 @@ public class BranchSdkUtils {
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
+        } else if (ShareData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = data.getDeepLink();
         } else {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
@@ -132,6 +136,10 @@ public class BranchSdkUtils {
         linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", data.getOgTitle());
+        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+
         return linkProperties;
     }
 
@@ -175,7 +183,7 @@ public class BranchSdkUtils {
                                             .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
                                             .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
                                             .setSku(String.valueOf(product.get(Product.KEY_ID)))
-                                            .setProductCategory(ProductCategory.getValue(String.valueOf(product.get(Product.KEY_CAT))))
+                                            .addCustomMetadata(ProductCategory, String.valueOf(product.get(Product.KEY_CAT)))
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
                 }
@@ -221,7 +229,9 @@ public class BranchSdkUtils {
                                         .setProductName(product.get(BranchIOPayment.KEY_NAME))
                                         .setQuantity(convertStringToDouble(product.get(BranchIOPayment.KEY_QTY)))
                                         .setSku(product.get(BranchIOPayment.KEY_ID))
-                                        .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
+                                        .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
+                                        .addCustomMetadata(ProductCategory, String.valueOf(product.get(BranchIOPayment.KEY_CATEGORY))));
+
                 branchUniversalObjects.add(buo);
             }
 
@@ -245,7 +255,6 @@ public class BranchSdkUtils {
                     .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
                     .addContentItems(branchUniversalObjects)
                     .logEvent(MainApplication.getAppContext());
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }

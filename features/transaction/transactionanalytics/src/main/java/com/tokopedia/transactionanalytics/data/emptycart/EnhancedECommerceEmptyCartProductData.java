@@ -19,6 +19,7 @@ public class EnhancedECommerceEmptyCartProductData {
     private static final String KEY_BRAND = "brand";
     private static final String KEY_CAT = "category";
     private static final String KEY_VARIANT = "variant";
+    private static final String KEY_LIST = "list";
     private static final String KEY_POS = "position";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
@@ -52,6 +53,10 @@ public class EnhancedECommerceEmptyCartProductData {
 
     public void setPosition(String position) {
         product.put(KEY_POS, !TextUtils.isEmpty(position) ? position : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setList(String list) {
+        product.put(KEY_LIST, !TextUtils.isEmpty(list) ? list : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public Map<String, Object> getProduct() {

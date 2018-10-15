@@ -37,10 +37,6 @@ public class ThanksTrackerService extends IntentService {
             if(isDataValid(data)) {
                 initInjection();
                 presenter.doAnalytics(data);
-                presenter.doAppsFlyerAnalytics(
-                        new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA),
-                        data
-                );
             }
         }
     }

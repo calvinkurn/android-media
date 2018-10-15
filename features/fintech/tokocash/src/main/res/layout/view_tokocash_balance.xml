@@ -67,7 +67,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_5"
                     android:text="@string/tokocash_label_hold_balance"
-                    android:textSize="@dimen/fontvs" />
+                    android:textSize="@dimen/sp_12" />
 
                 <ImageView
                     android:id="@+id/tooltip_tokocash"
@@ -79,7 +79,7 @@
                     android:layout_marginTop="@dimen/dp_5"
                     android:layout_toEndOf="@+id/title_hold_balance"
                     android:layout_toRightOf="@+id/title_hold_balance"
-                    android:src="@drawable/info_icon"
+                    android:src="@drawable/ic_tokocash_info"
                     tools:ignore="ContentDescription" />
 
                 <TextView
@@ -89,7 +89,7 @@
                     android:layout_below="@+id/title_hold_balance"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/dp_5"
-                    android:textSize="@dimen/font_medium"
+                    android:textSize="@dimen/sp_16"
                     tools:text="Rp 0" />
 
             </RelativeLayout>

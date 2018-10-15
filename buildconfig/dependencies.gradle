@@ -85,11 +85,13 @@ ext {
     tkpdUpdateInactivePhoneVersion = '2.22'
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
+    tkpdChallengesVersion = '2.22'
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
+
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -301,10 +303,10 @@ ext {
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            challenges          : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
             paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
             attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
-
     ]
 
     tkpdLibDependencies = [
@@ -381,6 +383,7 @@ ext {
             notifCenter           : ":features:user:notifcenter",
             contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
+            logisticaddaddress    : ":features:logistic:logisticaddaddress",
             logisticanalytics     : ":features:logistic:logisticanalytics",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
@@ -400,6 +403,7 @@ ext {
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
             updateinactivephone   : ":features:user:updateinactivephone",
+            challenges            : ":features:im:challenges",
             paymentSetting        : ":features:payment:payment_setting",
             browse                : ":features:digital:digital_browse",
             saldodetails            : ":features:fintech:saldo_details"

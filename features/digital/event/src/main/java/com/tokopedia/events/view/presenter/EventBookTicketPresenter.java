@@ -190,9 +190,9 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
         getProfile();
     }
 
@@ -235,9 +235,9 @@ public class EventBookTicketPresenter
         } else {
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     public void removeTickets() {
@@ -262,9 +262,9 @@ public class EventBookTicketPresenter
             mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     private void getSeatSelectionDetails() {

@@ -4,6 +4,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -24,6 +25,8 @@ public interface CartAdapterActionListener {
     void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position);
 
     void onCartDataEnableToCheckout();
+
+    void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
 
     void onCartDataDisableToCheckout(String message);
 
