@@ -49,8 +49,8 @@ public class DashboardActivity extends BaseSimpleActivity {
         if (item.getItemId() == R.id.action_help) {
             navigateToHelp();
             return true;
-        } else
-            return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void navigateToHelp() {
