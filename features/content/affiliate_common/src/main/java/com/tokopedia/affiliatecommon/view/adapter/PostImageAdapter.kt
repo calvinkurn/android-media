@@ -1,5 +1,6 @@
 package com.tokopedia.affiliatecommon.view.adapter
 
+import android.os.Build
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
@@ -31,8 +32,13 @@ class PostImageAdapter : PagerAdapter() {
         imageView.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        val viewTreeObserver = imageView.getViewTreeObserver()
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        val viewTreeObserver = imageView.viewTreeObserver
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            viewTreeObserver.removeGlobalOnLayoutListener(this)
+                        }
 
                         imageView.maxHeight = imageView.width
                         imageView.requestLayout()

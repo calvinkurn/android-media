@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder;
 
+import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -74,7 +75,12 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                layoutSaldo.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    layoutSaldo.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    layoutSaldo.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
 
                 int height = layoutSaldo.getHeight();
                 ivSaldo.setMinimumHeight(height);
