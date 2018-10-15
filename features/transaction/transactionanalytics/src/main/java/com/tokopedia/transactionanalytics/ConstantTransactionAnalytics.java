@@ -11,6 +11,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
+        String PAYMENT_ID = "payment_id";
     }
 
 
@@ -31,6 +32,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
         String CLICK_ADDRESS = "clickAddress";
+        String PRODUCT_CLICK = "productClick";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface EventCategory {
@@ -174,6 +177,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_UBAH_KURIR = "click ubah kurir";
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
 
+        String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+
         //ROBINHOOD
         String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
         String CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman";
@@ -183,6 +188,15 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
         String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
         String CLICK_UBAH_DURASI = "click ubah durasi";
+
+        //EMPTY CART
+        String CLICK_LIHAT_LAINNYA = "click lihat lainnya on empty cart";
+        String CLICK_LIHAT_SEMUA_WISHLIST = "click lihat semua wishlist on empty cart";
+        String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
+        String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
+        String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String VIEW_PRODUCT = "view product";
     }
 
     interface EventLabel {
@@ -199,12 +213,19 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_CHECK_ALL = "success - check all";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
-        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - shop and product";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
+
+        String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
+        String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
+
+        String PRODUCT_WISHLIST = "product wishlist";
+        String PRODUCT_LAST_SEEN = "product last seen";
+        String PRODUCT_RECOMMENDATION = "product recommendation";
     }
 
     interface ScreenName {
-        String CART = "/cart page (step 1)";
-        String CHECKOUT = "/cart summary page (step 2)";
+        String CART = "/cart";
+        String CHECKOUT = "/cart/shipment";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";

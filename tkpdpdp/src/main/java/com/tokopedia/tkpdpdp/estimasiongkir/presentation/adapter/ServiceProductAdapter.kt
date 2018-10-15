@@ -1,9 +1,6 @@
 package com.tokopedia.tkpdpdp.estimasiongkir.presentation.adapter
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,27 +33,10 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
 
         fun bind(product: ShippingServiceModel.Product) {
             if(product.etd.isEmpty()){
-                val title = itemView.context.getString(R.string.shipping_receiver_text_empty,
-                        product.name)
-
-                itemView.label_view.title = title
+                itemView.label_view.title = product.name
             } else {
-                if(product.etd == itemView.context.getString(R.string.address_has_not_pin_point)){
-                    val title = itemView.context.getString(R.string.shipping_receiver_text_empty, product.name)
-                    itemView.label_view.title = title
-                    itemView.label_view.setSubTitle(product.etd)
-                } else{
-                    val title = itemView.context.getString(R.string.shipping_receiver_text,
-                            product.name, product.etd)
-
-                    val spannableString = SpannableString(title)
-
-                    spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
-                            R.color.font_black_disabled_38)),
-                            product.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                    itemView.label_view.setTitle(spannableString)
-                }
+                itemView.label_view.title = product.name
+                itemView.label_view.setSubTitle(itemView.context.getString(R.string.shipping_etd_text, product.etd))
             }
 
             itemView.label_view.setContent(product.fmtPrice)

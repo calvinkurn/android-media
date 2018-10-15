@@ -39,8 +39,15 @@ public class PaymentTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.QUANTITY, qty);
         afValue.put(AFInAppEventParameterName.RECEIPT_ID, paymentId);
         afValue.put(AFInAppEventType.ORDER_ID, paymentId);
-        afValue.put(AFInAppEventParameterName.CURRENCY, "IDR");
-        afValue.put("product", productList);
+
+        afValue.put(Jordan.AF_PURCHASE_SITE,Jordan.VALUE_ANDROID);
+        afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
+        afValue.put(Jordan.AF_VALUE_PRODUCT_TYPE, productList);
+        if(productList != null && productList.length>1) {
+            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTGROUPTYPE);
+        }else {
+            afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        }
 
         getAFEngine().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
         getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
@@ -55,8 +62,10 @@ public class PaymentTracking extends TrackingUtils {
         values.put(AFInAppEventParameterName.CONTENT_ID, param.getProductId());
         values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         values.put(AFInAppEventParameterName.DESCRIPTION, param.getProductName());
-        values.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        values.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
+        values.put(AFInAppEventParameterName.QUANTITY, param.getOrderQuantity());
         values.put(AFInAppEventParameterName.PRICE, param.getPrice());
+        values.put(Jordan.AF_SHOP_ID,param.getShopId());
         getAFEngine().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
     }
 

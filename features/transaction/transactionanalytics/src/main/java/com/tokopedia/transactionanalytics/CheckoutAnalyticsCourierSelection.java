@@ -299,6 +299,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickCourierSelectionClickSelectCourierOnCart() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,
@@ -308,12 +309,13 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
 
-    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap) {
+    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
+                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -491,4 +493,23 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_UBAH_DURASI
         );
     }
+
+    public void eventViewPromoAutoApply() {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                EventLabel.CHECKOUT_COUPON_AUTO_APPLY
+        );
+    }
+
+    public void eventViewPromoManualApply(String type) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                String.format(EventLabel.CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY, type)
+        );
+    }
+
 }

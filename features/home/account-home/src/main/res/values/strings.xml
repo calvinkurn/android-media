@@ -32,7 +32,7 @@
     <string name="title_shop_shipment_setting">Pengiriman</string>
     <string name="title_shop_note_setting">Catatan</string>
     <string name="screentitle_store_setting">Atur Toko</string>
-    <string name="title_tokocard_setting">TokoCard</string>
+    <string name="title_tokocard_setting">TokoSwipe</string>
     <string name="title_saldo_setting">Saldo</string>
     <string name="title_bank_account_setting">Akun Bank</string>
     <string name="title_credit_card_setting">Kartu Kredit</string>
@@ -61,7 +61,7 @@
     <string name="label_receive_review">Ulasan</string>
     <string name="label_receive_promo">Promo</string>
     <string name="label_receive_seller_info">Info Penjual</string>
-    <string name="label_receive_group_chat">Group Chat</string>
+    <string name="label_receive_group_chat">Play</string>
 
 
     <string name="pref_receive_purchasing" translatable="false">notification_purchase</string>
@@ -101,6 +101,8 @@
     <string name="label_menu_seller_complain">Lihat status komplain</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
+    <string name="title_menu_favorite_topic">Topik Favorit</string>
+    <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
     <string name="label_menu_last_seen">Cek Produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>
@@ -146,7 +148,7 @@
     <string name="label_menu_topads">Lihat dan atur promo Anda</string>
     <string name="label_menu_seller_center">Edukasi dan inspirasi berjualan</string>
     <string name="title_menu_loan">Modal usaha untuk Toko Anda</string>
-    <string name="label_menu_loan">Potensi pinjaman senilai Rp 1.000.000</string>
+    <string name="label_menu_loan">Potensi pinjaman senilai</string>
     <string name="label_tokopoint_see_voucher">Lihat Kupon</string>
     <string name="title_app_notif_setting">Notifikasi Aplikasi</string>
     <string name="title_email_notif_setting">Notifikasi Email</string>
@@ -177,5 +179,8 @@
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="label_total_coupon">%1$d Kupon</string>
+
+    <string name="title_menu_challenge">Tokopedia Challenge</string>
+    <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
 
 </resources>

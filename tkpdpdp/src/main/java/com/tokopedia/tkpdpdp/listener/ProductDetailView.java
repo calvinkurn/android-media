@@ -33,6 +33,8 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
 
+    void onWishlistCountLoaded(String wishlistCountText);
+
     /**
      * Saat salah satu kategori product di klik.
      *

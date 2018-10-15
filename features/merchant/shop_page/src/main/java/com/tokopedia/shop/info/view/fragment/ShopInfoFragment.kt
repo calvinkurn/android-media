@@ -1,7 +1,6 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -41,12 +40,12 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
         ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
-        @JvmStatic fun createInstance(): Fragment = ShopInfoFragment()
+        @JvmStatic fun createInstance(): ShopInfoFragment = ShopInfoFragment()
     }
 
     @Inject lateinit var presenter: ShopInfoPresenter
     @Inject lateinit var shopPageTracking: ShopPageTracking
-    lateinit var shopInfo: ShopInfo
+    var shopInfo: ShopInfo? = null
     private val noteAdapter by lazy {
         BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory(this))
     }
@@ -63,6 +62,8 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
         recyclerViewNote.isFocusable = false
         recyclerViewLogistic.isNestedScrollingEnabled = false
         recyclerViewLogistic.isFocusable = false
+
+        shopInfo?.run { updateShopInfo(this) }
     }
 
     override fun onDestroy() {
@@ -134,9 +135,9 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
 
     private fun gotoShopDiscussion() {
         if (activity?.application is ShopModuleRouter){
-            shopInfo.run {
+            shopInfo?.run {
                 shopPageTracking.eventClickDiscussion(shopId,
-                        presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+                        presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo?.info))
             }
             (activity?.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
         }
@@ -220,9 +221,9 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
-        shopInfo.run {
+        shopInfo?.run {
             shopPageTracking.eventClickNoteList(position, shopId,
-                    presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+                    presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo?.info))
         }
 
         startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))

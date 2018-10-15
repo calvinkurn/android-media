@@ -419,27 +419,24 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object object : cartDataList) {
             if (object instanceof CartShopHolderData) {
                 CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
-                if (cartShopHolderData.isAllSelected()) {
-                    if (cartShopHolderData.getShopGroupData().isError()) {
-                        canProcess = false;
-                        break;
-                    } else {
+                if (!cartShopHolderData.getShopGroupData().isError()) {
+                    if (cartShopHolderData.isAllSelected()) {
                         checkedCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
-                    }
-                } else if (cartShopHolderData.isPartialSelected()) {
-                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected()) {
-                                checkedCount++;
-                                if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
-                                        cartItemHolderData.getCartItemData().isError()) {
-                                    canProcess = false;
-                                    break;
+                    } else if (cartShopHolderData.isPartialSelected()) {
+                        if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                                if (cartItemHolderData.isSelected()) {
+                                    checkedCount++;
+                                    if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
+                                            cartItemHolderData.getCartItemData().isError()) {
+                                        canProcess = false;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (!canProcess) {
-                            break;
+                            if (!canProcess) {
+                                break;
+                            }
                         }
                     }
                 }

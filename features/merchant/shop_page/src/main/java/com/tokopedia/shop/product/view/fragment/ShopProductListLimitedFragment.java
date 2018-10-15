@@ -248,6 +248,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         loadInitialData();
     }
 
+    public void setShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+    }
+
     public void clearCache() {
         merchantVoucherListPresenter.clearCache();
         shopProductLimitedListPresenter.clearCache();

@@ -15,6 +15,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
@@ -55,14 +56,30 @@ public class HomepagePagerAdapter extends PagerAdapter {
                 view.findViewById(R.id.text_empty_action).setOnClickListener(view1 -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
             }
 
-            view.findViewById(R.id.text_link_first).setOnClickListener(v -> mPresenter.getView().gotoCatalog());
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
+            view.findViewById(R.id.text_link_first).setOnClickListener(v -> {
+                mPresenter.getView().gotoCatalog();
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
+                        "");
+            });
+            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
+                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
+                        "");
+            });
         } else {
             if (mCoupons == null || mCoupons.isEmpty()) {
                 containerInner.setDisplayedChild(1);
-                ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-                ((TextView) view.findViewById(R.id.text_title_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
-                ((TextView) view.findViewById(R.id.text_label_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+                ((ImageView) view.findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
+                ((TextView) view.findViewById(R.id.text_title_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
+                ((TextView) view.findViewById(R.id.text_label_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
                 view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
                 view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
@@ -74,8 +91,24 @@ public class HomepagePagerAdapter extends PagerAdapter {
                 recyclerView.setAdapter(mCouponsAdapter);
             }
 
-            view.findViewById(R.id.text_link_first).setOnClickListener(v -> mPresenter.getView().gotoCoupons());
-            view.findViewById(R.id.text_link_second).setOnClickListener(v -> mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
+            view.findViewById(R.id.text_link_first).setOnClickListener(v -> {
+                mPresenter.getView().gotoCoupons();
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
+                        "");
+            });
+            view.findViewById(R.id.text_link_second).setOnClickListener(v -> {
+                mPresenter.getView().openWebView(CommonConstant.WebLink.INFO);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_BANTUAN,
+                        "");
+            });
         }
 
         view.setTag(position);

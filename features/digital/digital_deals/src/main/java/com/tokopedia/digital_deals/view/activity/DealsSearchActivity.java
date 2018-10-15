@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponentInstance;
+import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -64,11 +65,13 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Inject
     public DealsSearchPresenter mPresenter;
-    @Inject DealsAnalytics dealsAnalytics;
+    @Inject
+    DealsAnalytics dealsAnalytics;
     private DealsCategoryAdapter dealsCategoryAdapter;
     private int listCount;
     private String searchText;
     private int adapterPosition = -1;
+    private boolean forceRefresh;
 
     @Override
     public int getLayoutRes() {
@@ -252,7 +255,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             noContent.setVisibility(View.VISIBLE);
             clLocation.setVisibility(View.VISIBLE);
         }
-        tvCityName.setText(location.getName());
+        if (location != null)
+            tvCityName.setText(location.getName());
 
     }
 
@@ -309,7 +313,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 if (resultCode == Activity.RESULT_OK) {
                     Location location = Utils.getSingletonInstance().getLocation(getActivity());
                     if (location == null) {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         if (data != null) {
@@ -359,6 +362,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     protected void onDestroy() {
         mPresenter.onDestroy();
+        TopDealsCacheHandler.init().setTopDeals(null);
+        TopDealsCacheHandler.deInit();
         super.onDestroy();
     }
 
@@ -374,8 +379,25 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
+    public void onStop() {
+        forceRefresh = true;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (forceRefresh) {
+            if (dealsCategoryAdapter != null)
+                dealsCategoryAdapter.notifyDataSetChanged();
+            forceRefresh = false;
+        }
+    }
+
+    @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
+
 }

@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 
 /**
  * Created by ricoharisin on 5/30/16.
@@ -116,10 +118,9 @@ public class NetworkErrorHelper {
 
     public static void showSnackbar(Activity activity) {
         if (activity != null) {
-            SnackbarManager.make(activity,
+            ToasterError.make(BaseToaster.getContentView(activity),
                     activity.getResources().getString(R.string.msg_network_error),
-                    Snackbar.LENGTH_SHORT)
-                    .show();
+                    BaseToaster.LENGTH_SHORT).show();
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,8 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
@@ -55,17 +58,19 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Inject
     KolPostListener.Presenter presenter;
-    @Inject
-    KolPostAdapter adapter;
+
+    protected KolPostAdapter adapter;
+    protected KolPostTypeFactory typeFactory;
+
     @Inject
     UserSession userSession;
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
 
+    protected boolean canLoadMore = true;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
-    private boolean canLoadMore = true;
     private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {
@@ -101,7 +106,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initVar();
         initView(parentView);
         setViewListener();
-        presenter.initView(userId);
 
         if (getActivity().getApplicationContext() instanceof KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
@@ -119,8 +123,22 @@ public class KolPostFragment extends BaseDaggerFragment implements
         return parentView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchDataFirstTime();
+    }
+
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     private void initVar() {
         userId = getArguments().getString(PARAM_USER_ID);
+        typeFactory = new KolPostTypeFactoryImpl(this);
+        adapter = new KolPostAdapter(typeFactory);
     }
 
     private void initView(View view) {
@@ -132,7 +150,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         kolRecyclerView.setLayoutManager(layoutManager);
-
         adapter.clearData();
         kolRecyclerView.setAdapter(adapter);
     }
@@ -147,10 +164,18 @@ public class KolPostFragment extends BaseDaggerFragment implements
                 if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
                         canLoadMore &&
                         !adapter.isLoading()) {
-                    presenter.getKolPost(userId);
+                    fetchData();
                 }
             }
         });
+    }
+
+    protected void fetchDataFirstTime() {
+        presenter.initView(userId);
+    }
+
+    protected void fetchData() {
+        presenter.getKolPost(userId);
     }
 
     @Override
@@ -162,7 +187,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
+                .kolProfileModule(new KolProfileModule())
                 .build()
                 .inject(this);
     }
@@ -203,7 +228,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void onEmptyKolPost() {
         adapter.removeErrorNetwork();
         adapter.removeLoading();
-        adapter.showEmpty();
+        adapter.showEmpty(true);
     }
 
     @Override
@@ -211,7 +236,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getKolPost(userId);
+                fetchData();
             }
         });
     }

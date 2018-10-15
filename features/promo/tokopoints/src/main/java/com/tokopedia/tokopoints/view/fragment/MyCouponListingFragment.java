@@ -25,9 +25,11 @@ import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -127,11 +129,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-
-        ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-        ((TextView) view.findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
-        ((TextView) view.findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
-        view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
     }
 
     private void initListener() {
@@ -168,7 +165,16 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     }
 
     @Override
-    public void emptyCoupons() {
+    public void emptyCoupons(Map<String, String> errors) {
+        if (getView() == null || errors == null) {
+            return;
+        }
+
+        ((ImageView) getView().findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
+        ((TextView) getView().findViewById(R.id.text_title_error2)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
+        ((TextView) getView().findViewById(R.id.text_label_error2)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+        getView().findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
+
         mContainerMain.setDisplayedChild(CONTAINER_EMPTY);
     }
 
@@ -187,9 +193,19 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
             //Call api to validate the coupon
             mPresenter.redeemCoupon(code, cta);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
         });
         adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
-
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                    title);
         });
         AlertDialog dialog = adb.create();
         dialog.show();

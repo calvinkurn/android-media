@@ -35,7 +35,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
@@ -86,7 +86,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
+                .kolProfileModule(new KolProfileModule())
                 .build()
                 .inject(this);
     }

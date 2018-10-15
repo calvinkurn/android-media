@@ -52,21 +52,19 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .map(new Func1<GraphqlResponse, List<ShippingDurationViewModel>>() {
-                    @Override
-                    public List<ShippingDurationViewModel> call(GraphqlResponse graphqlResponse) {
-                        GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
-                        List<ShippingDurationViewModel> shippingDurationViewModels = null;
-                        if (data != null && data.getRatesData() != null &&
-                                data.getRatesData().getRatesDetailData() != null &&
-                                data.getRatesData().getRatesDetailData().getServices() != null) {
-                            shippingDurationViewModels = shippingDurationConverter.convertToViewModel(
-                                    data.getRatesData().getRatesDetailData().getServices(),
-                                    shopShipments, shipmentDetailData, selectedServiceId
-                            );
-                        }
-                        return shippingDurationViewModels;
+                .map(graphqlResponse -> {
+                    GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
+                    List<ShippingDurationViewModel> shippingDurationViewModels = null;
+                    if (data != null && data.getRatesData() != null &&
+                            data.getRatesData().getRatesDetailData() != null &&
+                            data.getRatesData().getRatesDetailData().getServices() != null) {
+                        String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
+                        shippingDurationViewModels = shippingDurationConverter.convertToViewModel(
+                                data.getRatesData().getRatesDetailData().getServices(),
+                                shopShipments, shipmentDetailData, ratesId, selectedServiceId
+                        );
                     }
+                    return shippingDurationViewModels;
                 })
                 .subscribe(subscriber);
     }

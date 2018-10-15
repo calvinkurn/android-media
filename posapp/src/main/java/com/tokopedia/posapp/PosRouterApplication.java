@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -438,6 +439,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getTalkIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -696,12 +702,9 @@ public class PosRouterApplication extends MainApplication implements
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override

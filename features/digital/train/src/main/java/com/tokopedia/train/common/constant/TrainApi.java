@@ -2,6 +2,7 @@ package com.tokopedia.train.common.constant;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.train.checkout.data.entity.TrainCheckoutWrapperEntity;
+import com.tokopedia.train.homepage.data.entity.TrainBannerEntity;
 import com.tokopedia.train.passenger.data.cloud.entity.TrainSoftbookWrapperEntity;
 import com.tokopedia.train.reviewdetail.data.entity.TrainCheckVoucherWrapperEntity;
 import com.tokopedia.train.search.data.entity.ScheduleAvailabilityResponse;
@@ -55,5 +56,9 @@ public interface TrainApi {
     @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<DataResponse<TrainCheckoutWrapperEntity>> checkout(@Body Map<String, Object> params);
+
+    @POST("./")
+    @Headers({"Content-Type: application/json"})
+    Observable<DataResponse<TrainBannerEntity>> banners(@Body Map<String, Object> params);
 
 }

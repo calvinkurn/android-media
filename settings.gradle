@@ -1,3 +1,4 @@
+include ':logisticanalytics'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -7,7 +8,7 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
-        allowUntrustedServer = true
+//        allowUntrustedServer = true
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"

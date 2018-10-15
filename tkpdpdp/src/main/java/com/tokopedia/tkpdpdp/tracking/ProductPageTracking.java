@@ -195,15 +195,16 @@ public class ProductPageTracking {
         );
     }
 
-    public static void eventAppsFlyer(String productId, String priceItem, int quantity) {
+    public static void eventAppsFlyer(String productId, String priceItem, int quantity,String productName, String category) {
         Map<String, Object> values = new HashMap<>();
 
         values.put(AFInAppEventParameterName.CONTENT_ID, productId);
-        values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         values.put(AFInAppEventParameterName.CURRENCY, "IDR");
         values.put(AFInAppEventParameterName.PRICE,
                 CurrencyFormatHelper.convertRupiahToInt(priceItem));
         values.put(AFInAppEventParameterName.QUANTITY, quantity);
+        values.put(AFInAppEventParameterName.DESCRIPTION,productName);
+        values.put(Jordan.AF_KEY_CATEGORY_NAME,category);
 
         PaymentTracking.atcAF(values);
     }

@@ -2,6 +2,7 @@ package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -130,12 +131,13 @@ public class Menus extends BaseBottomSheetView {
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             public TextView title;
-            public ImageView icon;
+            public ImageView icon, iconEnd;
 
             public ViewHolder(View view) {
                 super(view);
                 title = view.findViewById(R.id.tv_title_menu);
                 icon = view.findViewById(R.id.iv_icon_menu);
+                iconEnd = view.findViewById(R.id.iv_icon_menu_end);
             }
         }
 
@@ -197,11 +199,19 @@ public class Menus extends BaseBottomSheetView {
             } else if (viewHolder instanceof ViewHolder) {
                 final ItemMenus itemMenus = itemMenusList.get(i - headerCount());
                 final ViewHolder holder = (ViewHolder) viewHolder;
-                if (itemMenus.icon != 0) {
+                if (itemMenus.icon == -1) {
+                    holder.icon.setVisibility(View.GONE);
+                } else if (itemMenus.icon != 0) {
                     holder.icon.setImageResource(itemMenus.icon);
                     holder.icon.setVisibility(View.VISIBLE);
                 } else {
                     holder.icon.setVisibility(View.INVISIBLE);
+                }
+                if (itemMenus.iconEnd != 0) {
+                    holder.iconEnd.setImageResource(itemMenus.iconEnd);
+                    holder.iconEnd.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iconEnd.setVisibility(View.GONE);
                 }
                 holder.title.setText(itemMenus.title);
 
@@ -268,6 +278,7 @@ public class Menus extends BaseBottomSheetView {
 
         public String title;
         public int icon;
+        public @DrawableRes  int iconEnd;
 
         public ItemMenus(String title) {
             this.title = title;

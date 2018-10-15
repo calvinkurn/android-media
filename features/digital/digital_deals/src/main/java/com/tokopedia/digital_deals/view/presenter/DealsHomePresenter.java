@@ -22,6 +22,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
+import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
@@ -171,9 +172,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
+        if (id == R.id.search_input_view || id == R.id.action_menu_search) {
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-            searchIntent.putParcelableArrayListExtra("TOPDEALS", (ArrayList<? extends Parcelable>) getCarouselOrTop(categoryItems, TOP).getItems());
+            TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name) {
             getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
@@ -389,7 +390,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
                 CategoriesModel categoriesModel = new CategoriesModel();
                 categoriesModel.setName(listItems.get(i).getName());
                 categoriesModel.setTitle(listItems.get(i).getTitle());
-                categoriesModel.setUrl(listItems.get(i).getUrl());
+                categoriesModel.setCategoryUrl(listItems.get(i).getCategoryUrl());
                 categoriesModel.setPosition(i - 1);
                 categoriesModel.setCategoryId(listItems.get(i).getCategoryId());
                 categoriesModels.add(categoriesModel);
@@ -398,7 +399,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
         CategoriesModel categoriesModel = new CategoriesModel();
-        categoriesModel.setUrl("");
+        categoriesModel.setCategoryUrl("");
         categoriesModel.setTitle(getView().getActivity().getResources().getString(R.string.all_brands));
         categoriesModel.setName(getView().getActivity().getResources().getString(R.string.all_brands));
         categoriesModel.setPosition(0);
@@ -429,9 +430,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-    public void sendEventEcommerce(int id, int position, String creative, String event, String action, String name){
+    public void sendEventEcommerce(int id, int position, String creative, String event, String action, String name) {
         dealsAnalytics.sendEcommerceBrand(id, position, creative, event
-                ,action, name);
+                , action, name);
     }
 
     public void sendEventView(String action, String label) {
