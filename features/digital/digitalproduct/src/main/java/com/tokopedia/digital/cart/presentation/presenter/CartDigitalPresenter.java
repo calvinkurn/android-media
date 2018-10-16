@@ -19,9 +19,6 @@ import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParamet
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -41,6 +38,7 @@ import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.constant.DigitalCache;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.usecase.RequestParams;
 
@@ -63,6 +61,8 @@ import static com.tokopedia.digital.cart.presentation.model.NOTPExotelVerificati
 public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContract.View> implements CartDigitalContract.Presenter {
 
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
+    private final IDigitalCartView view;
+    private DigitalAnalytics digitalAnalytics;
     private final ICartDigitalInteractor cartDigitalInteractor;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
@@ -184,29 +184,9 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
     }
 
     @Override
-    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData) {
-        Product product = new Product();
-        String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
-                cartDigitalInfoData.getAttributes().getPrice();
-        product.setProductName(productName);
-        product.setProductID(cartDigitalInfoData.getRelationships().getRelationProduct().getData().getId()); // product digital id
-        product.setPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain())); // price
-        product.setBrand(cartDigitalInfoData.getAttributes().getOperatorName()); // brand
-        product.setCategory(cartDigitalInfoData.getAttributes().getCategoryName()); // category
-        product.setVariant("none"); // variant
-        product.setQty("1"); // quantity
-        product.setShopId(cartDigitalInfoData.getRelationships().getRelationOperator().getData().getId()); // shop_id
-        // shop_type
-        // shop_name
-        product.setCategoryId(cartDigitalInfoData.getRelationships().getRelationCategory().getData().getId()); // category_id
-        product.setCartId(cartDigitalInfoData.getId()); // cart_id
-
-        GTMCart gtmCart = new GTMCart();
-        gtmCart.addProduct(product.getProduct());
-        gtmCart.setCurrencyCode("IDR");
-        gtmCart.setAddAction(GTMCart.ADD_ACTION);
-
-        UnifyTracking.eventATCSuccess(gtmCart);
+    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
+        digitalAnalytics.eventAddToCart(cartDigitalInfoData, extraComeFrom);
+        digitalAnalytics.eventCheckout(cartDigitalInfoData);
     }
 
     @Override
@@ -285,6 +265,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
                 getView().hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
+                digitalAnalytics.eventProceedToPayment(getView().getCartDataInfo(), view.getCheckoutData().getVoucherCode());
                 getView().renderToTopPay(checkoutDigitalData);
             }
         };

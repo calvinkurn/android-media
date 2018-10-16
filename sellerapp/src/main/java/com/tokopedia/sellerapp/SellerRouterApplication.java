@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -70,8 +71,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.presentation.activity.CartDigitalActivity;
 import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -80,7 +79,6 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
-import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -98,7 +96,6 @@ import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -151,8 +148,6 @@ import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -208,7 +203,6 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -1541,15 +1535,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getTalkIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return InboxTalkActivity.Companion.createIntent(context);
-        else {
-            return InboxRouter.getInboxTalkActivityIntent(context);
-        }
-    }
-
-    @Override
     public Intent getProductTalk(Context context, String productId) {
         if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", false))
             return TalkProductActivity.Companion.createIntent(context, productId);
@@ -1699,5 +1684,29 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProductPageIntent(Context context, String productId) {
         return ProductInfoActivity.createInstance(context, productId);
+    }
+
+    @Override
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+        InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(@NonNull Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
+        }
+    }
+
+    @Override
+    public String getKolCommentArgsPosition() {
+        return null;
+    }
+
+    @Override
+    public String getKolCommentArgsTotalComment() {
+        return null;
     }
 }

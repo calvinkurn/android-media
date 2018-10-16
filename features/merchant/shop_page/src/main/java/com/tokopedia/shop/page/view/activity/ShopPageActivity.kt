@@ -27,7 +27,6 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
-import com.tokopedia.shop.R.id.*
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
@@ -173,7 +172,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfo?.run {
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+
+                    val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
+                    if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
+                        shopInfoFragment.updateShopInfo(this)
+                    }
                 }
+
+
                 isShowFeed.run {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
                         R.color.tkpd_main_green else
@@ -319,18 +325,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
 
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
-            if (productListFragment != null) {
+            if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
                 (productListFragment as ShopProductListLimitedFragment).displayProduct(this)
             }
 
             val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(getShopInfoPosition())
-            if (shopInfoFragment != null) {
+            if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
                 (shopInfoFragment as ShopInfoFragment).updateShopInfo(this)
             }
 
             presenter.getFeedWhitelist(info.shopId)
         }
-        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) shopPageViewPagerAdapter.titles.size else tabPosition
+        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         swipeToRefresh.isRefreshing = false
     }
 
@@ -476,6 +482,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     fun getShopInfoPosition() : Int {
-        return if (isShowFeed) TAB_POSITION_INFO else TAB_POSITION_INFO - 1
+        return shopPageViewPagerAdapter.count - 1
     }
 }

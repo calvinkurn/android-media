@@ -60,6 +60,7 @@ public class ApplinkNotificationHelper {
         model.setThumbnail(data.getString("thumbnail", ""));
         model.setTkpCode(Integer.parseInt(data.getString("tkp_code", "0")));
         model.setToUserId(data.getString("to_user_id", ""));
+        model.setTitle(data.getString("title", ""));
 
         return model;
     }
