@@ -2,8 +2,7 @@ package com.tokopedia.digital.common.data.source;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
@@ -25,6 +24,7 @@ import rx.functions.Func1;
 public class CategoryListDataSource {
 
     private final static String KEY_CATEGORY_LIST = "RECHARGE_CATEGORY_LIST";
+    private static final long DEFAULT_EXPIRED_TIME = 0;
 
     private DigitalEndpointService digitalEndpointService;
     private CacheManager cacheManager;
@@ -62,7 +62,7 @@ public class CategoryListDataSource {
                                     CacheUtil.convertListModelToString(categoryEntities,
                                             new TypeToken<List<CategoryEntity>>() {
                                             }.getType()),
-                                    0
+                                    DEFAULT_EXPIRED_TIME
                             );
                         }
                     }

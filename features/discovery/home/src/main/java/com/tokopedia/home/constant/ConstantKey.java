@@ -24,4 +24,12 @@ public class ConstantKey {
         public static final String USER_ID = "userId";
         public static final String DEFAULT_USER_ID = "";
     }
+
+    public class Analytics {
+        public class AppScreen {
+            public class UnifyTracking {
+                public static final String SCREEN_UNIFY_HOME_BERANDA = "/";
+            }
+        }
+    }
 }

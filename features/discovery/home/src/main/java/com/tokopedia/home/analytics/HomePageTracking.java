@@ -15,37 +15,47 @@ import java.util.Map;
 
 public class HomePageTracking {
 
-    private static final String CLICK_HOME_PAGE = "clickHomePage";
-    private static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
-    private static String STATIC_VALUE_CLICK_HOMEPAGE = "clickHomePage";
-    private static String STATIC_VALUE_HOMEPAGE = "homepage";
     public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
     public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
     public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
+    private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
     private static final String EVENT_GIMMICK = "clickGimmick";
-    private static final String CATEGORY_GIMMICK = "Gimmick";
-    private static final String ACTION_GIMMICK_CLICK = "Click";
-
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
-    private static final String CATEGORY_HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
-    private static final String ACTION_CLICK_WIDGET_BAR = "click widget";
-
-    private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
-    private static final String ACTION_CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
-
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
+    private static final String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
+
+    private static final String CATEGORY_HOME_PAGE = "homepage";
+    private static final String CATEGORY_GIMMICK = "Gimmick";
+    private static final String CATEGORY_HOMEPAGE_DIGITAL_WIDGET = "homepage digital widget";
+    private static final String CATEGORY_HOMEPAGE_DIGITAL = "homepage digital";
     private static final String CATEGORY_TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
-    private static final String ACTION_CLICK_TOKO_POINTS = "click tokopoints";
-    private static final String TOKOPOINTS_LABEL = "tokopoints";
-
     private static final String CATEGORY_HOMEPAGE_TOKOCASH_WIDGET = "homepage tokocash widget";
-    private static final String ACTION_CLICK_ACTIVATE = "click activate";
 
+    private static final String ACTION_CLICK_HOME_PAGE = "clickHomePage";
+    private static final String ACTION_CLICK_VIEW_ALL_PROMO = "slider banner click view all";
+    private static final String ACTION_GIMMICK_CLICK = "Click";
+    private static final String ACTION_CLICK_WIDGET_BAR = "click widget";
+    private static final String ACTION_CLICK_LIHAT_SEMUA_PRODUK = "click lihat semua produk";
+    private static final String ACTION_CLICK_TOKO_POINTS = "click tokopoints";
     private static final String ACTION_CLICK_SALDO = "click saldo";
+    private static final String ACTION_CLICK_ACTIVATE = "click activate";
+    private static final String ACTION_CLICK_JUMP_RECOMENDATION = "cek rekomendasi jumper click";
+    private static final String ACTION_IMPRESSION_JUMP_RECOMENDATION = "cek rekomendasi jumper impression";
+    private static final String ACTION_CLICK_HOME_USE_CASE = "click 5 use cases";
+    private static final String ACTION_CLICK_TAB_EXPLORER = "click explorer tab";
+    private static final String ACTION_CLICK_DYNAMIC_ICONS = "click 5 dynamic icons";
+    private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT = "sprint sale click view all";
+    private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
+    private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
+    private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
+    private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
+    private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
 
+    private static final String LABEL_TOKOPOINTS = "tokopoints";
+    private static final String LABEL_EMPTY = "";
 
     public static AnalyticTracker getTracker(Context context){
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -73,10 +83,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if(tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "slider banner click view all",
-                    ""
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_VIEW_ALL_PROMO,
+                    LABEL_EMPTY
             );
         }
     }
@@ -94,10 +104,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if(tracker != null){
             tracker.sendEventTracking(
-                    CLICK_HOME_PAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "cek rekomendasi jumper click",
-                    ""
+                    ACTION_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_JUMP_RECOMENDATION,
+                    LABEL_EMPTY
             );
         }
     }
@@ -107,9 +117,9 @@ public class HomePageTracking {
         if(tracker != null){
             tracker.sendEventTracking(
                     EVENT_IMPRESSION_HOME_PAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "cek rekomendasi jumper impression",
-                    ""
+                    CATEGORY_HOME_PAGE,
+                    ACTION_IMPRESSION_JUMP_RECOMENDATION,
+                    LABEL_EMPTY
             );
         }
     }
@@ -118,9 +128,9 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "click 5 use cases",
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_HOME_USE_CASE,
                     title
             );
         }
@@ -131,9 +141,9 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "click explorer tab",
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_TAB_EXPLORER,
                     title
             );
         }
@@ -143,9 +153,9 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "click 5 dynamic icons",
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_DYNAMIC_ICONS,
                     title
             );
         }
@@ -155,10 +165,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "sprint sale click view all",
-                    ""
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT,
+                    LABEL_EMPTY
             );
         }
     }
@@ -167,10 +177,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "sprint sale with backgroud click view all",
-                    ""
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND,
+                    LABEL_EMPTY
             );
         }
     }
@@ -213,9 +223,9 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "curated list click view all",
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL,
                     applink
             );
         }
@@ -226,9 +236,9 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "lego banner click view all",
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL,
                     applink
             );
         }
@@ -238,8 +248,8 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
                     action,
                     label
             );
@@ -282,10 +292,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "jual ini itu buka toko",
-                    ""
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_OPEN_SHOP,
+                    LABEL_EMPTY
             );
         }
     }
@@ -294,10 +304,10 @@ public class HomePageTracking {
         AnalyticTracker tracker = getTracker(context);
         if (tracker != null){
             tracker.sendEventTracking(
-                    STATIC_VALUE_CLICK_HOMEPAGE,
-                    STATIC_VALUE_HOMEPAGE,
-                    "jual ini itu click ubah",
-                    ""
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_EDIT_SHOP,
+                    LABEL_EMPTY
             );
         }
     }
@@ -333,7 +343,7 @@ public class HomePageTracking {
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_DIGITAL,
                     ACTION_CLICK_LIHAT_SEMUA_PRODUK,
-                    ""
+                    LABEL_EMPTY
             );
         }
     }
@@ -345,7 +355,7 @@ public class HomePageTracking {
                     EVENT_TOKO_POINT,
                     CATEGORY_TOKOPOINTS_USER_PAGE,
                     ACTION_CLICK_TOKO_POINTS,
-                    TOKOPOINTS_LABEL
+                    LABEL_TOKOPOINTS
             );
         }
     }
@@ -357,7 +367,7 @@ public class HomePageTracking {
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                     ACTION_CLICK_ACTIVATE,
-                    ""
+                    LABEL_EMPTY
             );
         }
     }
@@ -369,7 +379,7 @@ public class HomePageTracking {
                     EVENT_USER_INTERACTION_HOMEPAGE,
                     CATEGORY_HOMEPAGE_TOKOCASH_WIDGET,
                     ACTION_CLICK_SALDO,
-                    ""
+                    LABEL_EMPTY
             );
         }
     }

@@ -42,7 +42,6 @@ import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
-import com.tokopedia.home.analytics.Constant;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
@@ -146,15 +145,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected String getScreenName() {
-        return Constant.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
+        return ConstantKey.Analytics.AppScreen.UnifyTracking.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
     protected void initInjector() {
-        BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
-                getActivity().getApplication()).getBaseAppComponent()).build();
-        component.inject(this);
-        component.inject(presenter);
+        if(getActivity() != null){
+            BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                    getActivity().getApplication()).getBaseAppComponent()).build();
+            component.inject(this);
+            component.inject(presenter);
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -208,7 +209,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
         if(isUserLoggedIn()) {
-            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+            if(getArguments() != null){
+                scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+            }
         }
         presenter.attachView(this);
         presenter.setFeedListener(this);
@@ -266,7 +269,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void scrollToRecommendList() {
-
         recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
         scrollToRecommendList = false;
     }
