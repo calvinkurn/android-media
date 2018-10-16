@@ -107,6 +107,7 @@ public class ExploreFragment
     }
 
     private void initView() {
+        dropKeyboard();
         initEmptyResultModel();
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -205,6 +206,7 @@ public class ExploreFragment
 
     @Override
     public void onSearchSubmitted(String text) {
+        dropKeyboard();
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
         presenter.getFirstData(exploreParams, false);
@@ -217,6 +219,7 @@ public class ExploreFragment
 
     @Override
     public void onSearchReset() {
+        dropKeyboard();
         exploreParams.resetSearch();
         presenter.getFirstData(exploreParams, true);
     }
