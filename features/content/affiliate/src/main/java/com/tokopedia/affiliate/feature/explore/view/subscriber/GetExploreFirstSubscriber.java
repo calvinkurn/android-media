@@ -50,8 +50,8 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
-        ExploreFirstQuery query = response.getData(ExploreQuery.class);
-        if (query.getAffiliateCheck() != null && query.getAffiliateCheck().isIsAffiliate()) {
+        ExploreFirstQuery query = response.getData(ExploreFirstQuery.class);
+        if (query.getAffiliateCheck() != null && !query.getAffiliateCheck().isIsAffiliate()) {
             mainView.onErrorNonAffiliateUser();
             return;
         }
