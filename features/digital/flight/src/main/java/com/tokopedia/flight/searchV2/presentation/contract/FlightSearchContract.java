@@ -82,7 +82,7 @@ public interface FlightSearchContract {
 
         void finishFragment();
 
-        void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel);
+        void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel, boolean isBestPairing);
 
         void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
 
