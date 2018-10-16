@@ -39,7 +39,7 @@ public interface FlightSearchContract {
 
         void reloadDataFromCache();
 
-        void renderSearchList(List<FlightJourneyViewModel> list);
+        void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh);
 
         void addToolbarElevation();
 
@@ -96,6 +96,8 @@ public interface FlightSearchContract {
 
         void onSearchItemClicked(FlightJourneyViewModel journeyViewModel);
 
+        void onSearchItemClicked(String selectedId);
+
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
         void setDelayHorizontalProgress();
@@ -108,7 +110,7 @@ public interface FlightSearchContract {
 
         void fetchSearchDataFromCloudWithDelay(FlightSearchPassDataViewModel passDataViewModel, FlightAirportCombineModel flightAirportCombineModelList, int delayInSecond);
 
-        void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel);
+        void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh);
     }
 
 }

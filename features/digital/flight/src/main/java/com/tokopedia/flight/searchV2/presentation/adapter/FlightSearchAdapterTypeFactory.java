@@ -10,9 +10,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchViewHolder;
 import com.tokopedia.flight.searchV2.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeAllResultViewModel;
 
 /**
  * @author by furqan on 02/10/18.
@@ -31,6 +33,8 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightSearchViewHolder.LAYOUT) {
             return new FlightSearchViewHolder(parent, onFlightSearchListener);
+        } else if (type == FlightSearchSeeAllViewHolder.LAYOUT) {
+            return new FlightSearchSeeAllViewHolder(parent, onFlightSearchListener);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
@@ -63,12 +67,18 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return ErrorNetworkViewHolder.LAYOUT;
     }
 
+    public int type(FlightSearchSeeAllResultViewModel viewModel) {
+        return FlightSearchSeeAllViewHolder.LAYOUT;
+    }
+
     public interface OnFlightSearchListener {
         void onRetryClicked();
 
         void onDetailClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
 
         void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+
+        void onSeeAllClicked();
     }
 
 }

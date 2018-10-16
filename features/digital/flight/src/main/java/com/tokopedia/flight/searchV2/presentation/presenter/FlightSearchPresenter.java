@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.domain.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSortAndFilterUseCase;
@@ -47,16 +48,19 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSortAndFilterUseCase flightSortAndFilterUseCase;
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
+    private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase) {
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase,
+                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
+        this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -95,12 +99,17 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-
+        deleteFlightReturnSearch(journeyViewModel.getId());
     }
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel) {
+        deleteFlightReturnSearch(journeyViewModel.getId());
+    }
 
+    @Override
+    public void onSearchItemClicked(String selectedId) {
+        deleteFlightReturnSearch(selectedId);
     }
 
     @Override
@@ -269,7 +278,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel) {
+    public void fetchSortAndFilterLocalData(@FlightSortOption int flightSortOption, FlightFilterModel flightFilterModel, boolean needRefresh) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 new Subscriber<List<FlightJourneyViewModel>>() {
@@ -285,7 +294,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
-                        getView().renderSearchList(flightJourneyViewModels);
+                        getView().renderSearchList(flightJourneyViewModels, needRefresh);
                     }
                 }
         );
@@ -298,6 +307,28 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         }
 
         super.detachView();
+    }
+
+    private void deleteFlightReturnSearch(String selectedId) {
+        /*flightDeleteFlightSearchReturnDataUseCase.execute(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    getView().navigateToNextPage(selectedId);
+                }
+            }
+        });*/
+        getView().navigateToNextPage(selectedId);
     }
 
     private void addSubscription(Subscription subscription) {

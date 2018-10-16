@@ -126,6 +126,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0);
             setNeedRefreshFromCache(true);
         }
+
     }
 
     @Nullable
@@ -145,6 +146,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         flightSearchPresenter.attachView(this);
         flightSearchPresenter.fetchCombineData(passDataViewModel);
+
+        showLoading();
     }
 
     @Override
@@ -269,8 +272,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void renderSearchList(List<FlightJourneyViewModel> list) {
-        renderList(list);
+    public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
+        if (!needRefresh || list.size() > 0) {
+            clearAllData();
+            renderList(list);
+        }
 
         if (list.size() > 0) {
             showFilterAndSortView();
@@ -450,7 +456,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         setUpProgress();
 
-        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel);
+        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel,
+                flightAirportCombineModel.isNeedRefresh());
     }
 
     @Override
@@ -473,6 +480,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
         flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition);
+    }
+
+    @Override
+    public void onSeeAllClicked() {
+        // need in return search
     }
 
     @Override
@@ -573,9 +585,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                             @SuppressWarnings("WrongConstant")
                             @Override
                             public void onBottomSheetItemClick(MenuItem item) {
-                                /*if (getAdapter().getData() != null) {
-                                    flightSearchPresenter.sortFlight(getAdapter().getData(), item.getItemId());
-                                }*/
+                                if (getAdapter().getData() != null) {
+                                    selectedSortOption = item.getItemId();
+                                    flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, false);
+                                }
                             }
                         })
                         .createDialog();
@@ -657,6 +670,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         });
 
         return emptyResultViewModel;
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
+        flightSearchPresenter.onSearchItemClicked(selectedId);
     }
 
     private void setUpCombinationAirport() {

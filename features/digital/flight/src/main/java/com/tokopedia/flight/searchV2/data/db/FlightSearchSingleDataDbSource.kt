@@ -2,7 +2,7 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
-import com.tokopedia.flight.searchV2.constant.FlightSortOption
+import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
