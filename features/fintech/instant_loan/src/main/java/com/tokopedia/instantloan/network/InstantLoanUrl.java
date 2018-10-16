@@ -1,7 +1,5 @@
 package com.tokopedia.instantloan.network;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
-
 import static com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN;
 
 public interface InstantLoanUrl {
@@ -11,9 +9,9 @@ public interface InstantLoanUrl {
     }
 
     public static String PATH_USER_STATUS = "dana-instant/api/user/ismobiledevice";
-    String PATH_USER_PROFILE_STATUS = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL + "dana-instant/api/user/mobile/status";
-    String PATH_POST_PHONEDATA = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL + "dana-instant/api/user/mobiledevice";
-    String PATH_BANNER_OFFER = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL + "microfinance/banner/personal-loan";
+    String PATH_USER_PROFILE_STATUS = WEB_DOMAIN + "dana-instant/api/user/mobile/status";
+    String PATH_POST_PHONEDATA = WEB_DOMAIN + "dana-instant/api/user/mobiledevice";
+    String PATH_BANNER_OFFER = WEB_DOMAIN + "microfinance/banner/personal-loan";
     String WEB_LINK_NO_COLLATERAL = WEB_DOMAIN + "pinjaman-online/criteria";
     String WEB_LINK_COLLATERAL_FUND = WEB_DOMAIN + "pinjaman-online/criteria";
     String WEB_LINK_DASHBOARD = WEB_DOMAIN + "pinjaman-online/dashboard";
