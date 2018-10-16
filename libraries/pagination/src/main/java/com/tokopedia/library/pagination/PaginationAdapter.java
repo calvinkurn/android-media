@@ -48,12 +48,11 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     }
 
     /**
-     * Must have
      * Return list for current adapter
      *
      * @return
      */
-    protected List<T> getItems() {
+    public List<T> getItems() {
         return mItems;
     }
 
@@ -116,11 +115,11 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         return context.getString(R.string.pg_label_retry);
     }
 
-    protected T getItem(int position) {
+    public T getItem(int position) {
         return getItems().get(position);
     }
 
-    protected void remove(T t) {
+    public void remove(T t) {
         int position = getItems().indexOf(t);
         if (position > -1) {
             getItems().remove(position);
@@ -128,23 +127,23 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         }
     }
 
-    protected void clear() {
+    public void clear() {
         mIsLoadingAdded = false;
         while (getItemCount() > 0) {
             remove(getItem(0));
         }
     }
 
-    protected boolean isEmpty() {
+    public boolean isEmpty() {
         return getItemCount() == 0;
     }
 
-    protected void add(T t) {
+    public void add(T t) {
         getItems().add(t);
         notifyItemInserted(getItems().size() - 1);
     }
 
-    protected void addAll(List<T> items) {
+    public void addAll(List<T> items) {
         for (T t : items) {
             add(t);
         }
