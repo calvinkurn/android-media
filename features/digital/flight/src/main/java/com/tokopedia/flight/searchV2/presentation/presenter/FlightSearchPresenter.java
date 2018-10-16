@@ -358,8 +358,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
             @Override
             public void onNext(Boolean aBoolean) {
                 FlightPriceViewModel priceViewModel = new FlightPriceViewModel();
-                priceViewModel.setDeparturePrice(buildFare(journeyViewModel.getFare(), !getView().getFlightSearchPassData().isOneWay()));
-                getView().navigateToNextPage(journeyViewModel.getId(), priceViewModel);
+                priceViewModel.setDeparturePrice(buildFare(journeyViewModel.getFare(),
+                        !getView().getFlightSearchPassData().isOneWay()));
+                getView().navigateToNextPage(journeyViewModel.getId(), priceViewModel,
+                        journeyViewModel.isBestPairing());
             }
         });
     }

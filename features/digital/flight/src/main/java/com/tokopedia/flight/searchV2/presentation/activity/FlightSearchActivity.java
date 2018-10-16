@@ -129,16 +129,14 @@ public class FlightSearchActivity extends BaseFlightActivity
     }
 
     @Override
-    public void selectFlight(String selectedFlightID) {
+    public void selectFlight(String selectedFlightID, FlightPriceViewModel flightPriceViewModel, boolean isBestPairing) {
         if (passDataViewModel.isOneWay()) {
-            // TODO : PASS FLIGHTPRICEVIEWMODEL
-            FlightPriceViewModel flightPriceViewModel = null;
             startActivityForResult(FlightBookingActivity
                             .getCallingIntent(this, passDataViewModel, selectedFlightID, flightPriceViewModel),
                     REQUEST_CODE_BOOKING);
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                            .getCallingIntent(this, passDataViewModel, selectedFlightID, false),
+                            .getCallingIntent(this, passDataViewModel, selectedFlightID, isBestPairing),
                     REQUEST_CODE_RETURN);
         }
     }

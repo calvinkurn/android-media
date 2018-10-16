@@ -413,9 +413,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel) {
+    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel, boolean isBestPairing) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedId);
+            onFlightSearchFragmentListener.selectFlight(selectedId, fareViewModel, isBestPairing);
         }
     }
 
@@ -779,7 +779,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     public interface OnFlightSearchFragmentListener {
-        void selectFlight(String selectedFlightID);
+        void selectFlight(String selectedFlightID, FlightPriceViewModel flightPriceViewModel, boolean isBestPairing);
 
         void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
