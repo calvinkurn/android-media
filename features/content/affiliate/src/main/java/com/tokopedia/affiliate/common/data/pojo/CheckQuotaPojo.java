@@ -17,7 +17,7 @@ public class CheckQuotaPojo {
 
     @SerializedName("format")
     @Expose
-    private int format;
+    private String format;
 
     public String getFormatted() {
         return formatted;
@@ -35,11 +35,11 @@ public class CheckQuotaPojo {
         this.number = number;
     }
 
-    public int getFormat() {
+    public String getFormat() {
         return format;
     }
 
-    public void setFormat(int format) {
+    public void setFormat(String format) {
         this.format = format;
     }
 }

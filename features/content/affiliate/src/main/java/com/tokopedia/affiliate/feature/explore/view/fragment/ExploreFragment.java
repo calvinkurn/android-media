@@ -34,6 +34,7 @@ import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.user.session.UserSession;
 
@@ -218,7 +219,9 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-        //TODO Yoas : transition do applink to pdp
+        RouteManager.route(getContext(),
+                ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
+        );
     }
 
     @Override
@@ -262,10 +265,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetMoreData(String error) {
-        NetworkErrorHelper.createSnackbarWithAction(
-                getActivity(),
-                error,
-                () -> presenter.loadMoreData(exploreParams));
+        showError(error, (view) -> presenter.loadMoreData(exploreParams));
     }
 
     @Override
@@ -330,9 +330,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorCheckQuota(String error, String productId, String adId) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, () -> {
-            presenter.checkAffiliateQuota(productId, adId);
-        });
+        showError(error, (view) -> presenter.checkAffiliateQuota(productId, adId));
     }
 
     @Override
@@ -341,82 +339,13 @@ public class ExploreFragment
         presenter.detachView();
     }
 
-    private void testData() {
-        List<Visitable> itemList = new ArrayList<>();
+    private void showError(String message) {
+        showError(message, null);
+    }
 
-        itemList.add(new ExploreViewModel(
-                "1",
-                "https://www.bbcgoodfood" +
-                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
-                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng",
-                "Rp. 10.000",
-                "1",
-                "1"));
-
-        itemList.add(new ExploreViewModel(
-                "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
-                        ".jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
-                "Rp. 12.000",
-                "1",
-                "1"));
-        itemList.add(new ExploreViewModel(
-                "1",
-                "https://www.bbcgoodfood" +
-                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
-                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng",
-                "Rp. 10.000",
-                "1",
-                "1"));
-
-        itemList.add(new ExploreViewModel(
-                "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
-                        ".jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi",
-                "Rp. 12.000",
-                "1",
-                "1"));
-        itemList.add(new ExploreViewModel(
-                "1",
-                "https://www.bbcgoodfood" +
-                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
-                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
-                "Rp. 10.000",
-                "1",
-                "1"));
-
-        itemList.add(new ExploreViewModel(
-                "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
-                        ".jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi",
-                "Rp. 12.000",
-                "1",
-                "1"));
-        itemList.add(new ExploreViewModel(
-                "1",
-                "https://www.bbcgoodfood" +
-                        ".com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016" +
-                        "/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng",
-                "Rp. 10.000",
-                "1",
-                "1"));
-
-        itemList.add(new ExploreViewModel(
-                "2",
-                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi" +
-                        ".jpg?fit=3264%2C2448&ssl=1",
-                "Nasi Goreng Sapi Tambah Esteh Manis Enak Rasanya Bung Sedap Nikmat Mntap",
-                "Rp. 12.000",
-                "1",
-                "1"));
-
-        onSuccessGetFirstData(itemList, "");
+    private void showError(String message, View.OnClickListener listener) {
+        ToasterError.make(getView(), message, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again, listener)
+                .show();
     }
 }

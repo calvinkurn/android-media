@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class CheckQuotaQuery {
     @SerializedName("affiliatePostQuota")
     @Expose
-    private CheckQuotaPojo data ;
+    private CheckQuotaPojo data;
 
     public CheckQuotaPojo getData() {
         return data;
