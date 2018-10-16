@@ -95,6 +95,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
+    private static final int REQUEST_CODE_DIGITAL_CATEGORY_LIST = 222;
+    private static final int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
+    String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
     @Inject
     HomePresenter presenter;
@@ -448,7 +451,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     (DigitalModuleRouter) getActivity().getApplication();
             startActivityForResult(
                     digitalModuleRouter.instanceIntentDigitalCategoryList(),
-                    DigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
+                    REQUEST_CODE_DIGITAL_CATEGORY_LIST
             );
         }
     }
@@ -585,9 +588,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case DigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
-                if (data != null && data.hasExtra(DigitalModuleRouter.EXTRA_MESSAGE)) {
-                    String message = data.getStringExtra(DigitalModuleRouter.EXTRA_MESSAGE);
+            case REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
+                if (data != null && data.hasExtra(EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
                         NetworkErrorHelper.showSnackbar(getActivity(), message);
                     }

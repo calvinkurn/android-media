@@ -29,6 +29,7 @@ import rx.functions.Func1;
  */
 
 public class HomeDataSource {
+    public static final int DEFAULT_DURATION = 0;
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
@@ -80,7 +81,8 @@ public class HomeDataSource {
                     cacheManager.save(
                             ConstantKey.TkpdCache.HOME_DATA_CACHE,
                             gson.toJson(homeData),
-                            0);
+                            DEFAULT_DURATION
+                    );
                 }
                 return response;
             }
