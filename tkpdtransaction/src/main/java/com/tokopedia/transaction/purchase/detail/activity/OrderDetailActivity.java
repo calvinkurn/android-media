@@ -45,6 +45,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -79,7 +80,7 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFr
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView {
+        implements OrderDetailView, ToolbarChangeListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -648,7 +649,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Check Again Later
         Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }

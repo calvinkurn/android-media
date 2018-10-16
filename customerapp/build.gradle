@@ -363,6 +363,7 @@ dependencies {
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaOneClick
 
+    implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)

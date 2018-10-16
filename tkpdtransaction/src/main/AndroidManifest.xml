@@ -95,11 +95,6 @@
             android:name=".purchase.activity.PaymentProcedureActivity"
             android:theme="@style/Toolbar.White"
             android:label="@string/title_payment_procedure"/>
-
-        <activity
-            android:name="com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity"
-            android:label="@string/title_confirm_shipment"/>
-
         <activity
             android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
             android:label="@string/title_scan_awb" />

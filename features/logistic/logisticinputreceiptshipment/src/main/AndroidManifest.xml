@@ -7,6 +7,12 @@
         android:supportsRtl="true">
         <activity
             android:name=".barcodescanner.ReceiptShipmentBarcodeScannerActivity"
-            android:label="@string/title_receipt_shipement_barcode_scanner" />
+            android:label="@string/title_receipt_shipement_barcode_scanner"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".confirmshipment.ConfirmShippingActivity"
+            android:label="@string/title_confirm_shipment_logistic_module"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>
