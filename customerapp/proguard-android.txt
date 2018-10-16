@@ -199,7 +199,7 @@ public protected *;
 
 -dontwarn android.content.pm.PackageManager
 
--keep android.widget.Space
+-dontwarn com.tokopedia.topchat.R$id
 
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep public class android.support.design.widget.BottomNavigationView { *; }
