@@ -36,7 +36,7 @@ public class ReactNativeOfficialStoreActivity extends ReactFragmentActivity<Gene
 
         if (extras.getString(KEY_CATEGORY) != null &&
                 !extras.getString(KEY_CATEGORY).isEmpty()){
-            extras.putString(CATEGORY, KEY_CATEGORY);
+            extras.putString(CATEGORY, extras.getString(KEY_CATEGORY));
         }
 
         intent.putExtras(extras);
