@@ -1130,6 +1130,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isInstantLoanEnabled() {
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+    }
+
+    @Override
     public Intent getProfileCompletionIntent(Context context) {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         return intent;

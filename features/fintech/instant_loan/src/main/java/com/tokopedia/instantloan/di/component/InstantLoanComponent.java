@@ -6,10 +6,12 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.instantloan.di.module.InstantLoanModule;
 import com.tokopedia.instantloan.di.scope.InstantLoanScope;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment;
 import com.tokopedia.instantloan.view.fragment.DenganAgunanFragment;
 import com.tokopedia.instantloan.view.fragment.TanpaAgunanFragment;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Component;
 

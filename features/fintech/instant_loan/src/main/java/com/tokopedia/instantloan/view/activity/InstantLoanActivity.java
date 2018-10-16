@@ -21,23 +21,22 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics;
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
-import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
+import com.tokopedia.instantloan.network.InstantLoanUrl;
+import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.adapter.BannerPagerAdapter;
 import com.tokopedia.instantloan.view.adapter.InstantLoanPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.BannerContractor;
@@ -56,7 +55,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<AppComponent>,
+public class InstantLoanActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent>,
         BannerContractor.View, OnGoingLoanContractor.View, DanaInstantFragment.ActivityInteractor,
         BannerPagerAdapter.BannerClick,
         View.OnClickListener {
@@ -67,6 +66,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Inject
     OnGoingLoanPresenter onGoingLoanPresenter;
+
+    @Inject
+    InstantLoanAnalytics instantLoanAnalytics;
 
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
@@ -82,6 +84,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private boolean instantLoanEnabled = true;
     private Menu menu;
     private boolean onGoingLoanStatus = false;
+    private String loanId = "";
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -178,8 +181,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         NetworkClient.init(this);
         super.onCreate(savedInstanceState);
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        instantLoanEnabled = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+        if (getApplication() instanceof InstantLoanRouter) {
+            instantLoanEnabled = ((InstantLoanRouter) getApplication()).isInstantLoanEnabled();
+        }
 
         if (getIntent() != null && getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
@@ -244,17 +248,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         int id = item.getItemId();
 
         if (id == R.id.submission_history) {
-            openWebView("");
+            openWebView(InstantLoanUrl.SUBMISSION_HISTORY_URL);
             Toast.makeText(this, "submission history clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.payment_method) {
-
-            openWebView("");
+            openWebView(String.format(InstantLoanUrl.PAYMENT_METHODS_URL, loanId));
             Toast.makeText(this, "payment method clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.help) {
 
-            openWebView("");
+            openWebView(InstantLoanUrl.HELP_URL);
             Toast.makeText(this, "help clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -272,8 +275,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public AppComponent getComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 
     @Override
@@ -423,7 +426,10 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 bannerPagerAdapter.getBannerEntityList().get(position) != null) {
             String eventLabel = bannerPagerAdapter.getBannerEntityList().get(position).getLink()
                     + " - " + String.valueOf(position);
-            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
+
+            instantLoanAnalytics.eventLoanBannerImpression(eventLabel);
+
+//            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
         }
     }
 
@@ -435,15 +441,18 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public void onBannerClick(View view, int position) {
         String url = (String) view.getTag();
         String eventLabel = url + " - " + String.valueOf(position);
-        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
+        instantLoanAnalytics.eventLoanBannerClick(eventLabel);
+//        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }
     }
 
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
-        startActivity(intent);
+        /*Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
+        startActivity(intent);*/
+        RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
+
     }
 
     private void sendPermissionDeniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -453,7 +462,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 eventLabel.append(permissions[i]).append(", ");
             }
         }
-        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
+
+        instantLoanAnalytics.eventInstantLoanPermissionStatus(eventLabel.toString());
+//        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 
     @Override

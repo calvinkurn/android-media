@@ -21,14 +21,13 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics;
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
-import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -37,11 +36,11 @@ import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_OTP;
-import static com.tokopedia.instantloan.view.activity.InstantLoanActivity.PINJAMAN_TITLE;
 
 
 public class DanaInstantFragment extends BaseDaggerFragment implements InstantLoanContractor.View {
@@ -53,9 +52,15 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     private Dialog mDialogIntro;
 
     private ActivityInteractor activityInteractor;
+    private Context context;
 
     @Inject
     InstantLoanPresenter presenter;
+    @Inject
+    InstantLoanAnalytics instantLoanAnalytics;
+
+    @Inject
+    UserSession userSession;
 
     private int mCurrentTab;
     private int mCurrentPagePosition = 0;
@@ -120,6 +125,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected void onAttachActivity(Context context) {
+        this.context = context;
         try {
             this.activityInteractor = (ActivityInteractor) context;
         } catch (Exception e) {
@@ -144,10 +150,9 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         if (!data.getWhitelist()) {
             if (!TextUtils.isEmpty(data.getWhiteListUrl())) {
-                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
                 openWebView(data.getWhiteListUrl());
             } else {
-                com.tokopedia.core.network.NetworkErrorHelper.showSnackbar(getActivity(),
+                NetworkErrorHelper.showSnackbar(getActivity(),
                         getResources().getString(R.string.instant_loan_coming_soon));
             }
         } else if (!data.getDataCollection() ||
@@ -155,7 +160,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
             if (!TextUtils.isEmpty(data.getRedirectUrl())) {
 
-                com.tkpd.library.utils.CommonUtils.dumper(data.getWhiteListUrl());
                 openWebView(data.getRedirectUrl());
 
             } else {
@@ -203,9 +207,9 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((InstantLoanRouter) MainApplication.getAppContext())
-                .getLoginIntent(getContext());
-        startActivityForResult(intent, LOGIN_REQUEST_CODE);
+        if (getActivity() != null && getActivity().getApplication() instanceof InstantLoanRouter) {
+            startActivityForResult(((InstantLoanRouter) getActivity().getApplication()).getLoginIntent(getContext()), LOGIN_REQUEST_CODE);
+        }
     }
 
 
@@ -295,7 +299,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     private void sendIntroSliderScrollEvent(String label) {
-        InstantLoanEventTracking.eventIntroSliderScrollEvent(label);
+        instantLoanAnalytics.eventIntroSliderScrollEvent(label);
+//        InstantLoanEventTracking.eventIntroSliderScrollEvent(label);
     }
 
     @Override
@@ -305,9 +310,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(),
-                url, PINJAMAN_TITLE);
-        startActivity(intent);
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
     }
 
     @Override
@@ -384,7 +387,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (!SessionHandler.isV4Login(getContext())) {
+            if (userSession != null && userSession.isLoggedIn()) {
                 NetworkErrorHelper.showSnackbar(getActivity(),
                         getResources().getString(R.string.login_to_proceed));
             } else {
@@ -406,7 +409,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName();
-        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
+        instantLoanAnalytics.eventCariPinjamanClick(eventLabel);
+//        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     public static DanaInstantFragment createInstance(int position) {

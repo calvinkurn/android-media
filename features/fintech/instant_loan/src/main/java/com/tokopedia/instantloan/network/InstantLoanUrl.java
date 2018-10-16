@@ -1,8 +1,8 @@
 package com.tokopedia.instantloan.network;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
-import static com.tokopedia.core.network.constants.TkpdBaseURL.WEB_DOMAIN;
+import static com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN;
 
 public interface InstantLoanUrl {
 
@@ -21,5 +21,9 @@ public interface InstantLoanUrl {
     String WEB_LINK_LEARN_MORE = WEB_DOMAIN + "pinjaman-online/profil-kredit/";
     String WEB_LINK_TNC = WEB_DOMAIN + "bantuan/syarat-dan-ketentuan-pinjaman-dana-online/";
     String LOAN_AMOUNT_QUERY_PARAM = "?loan=";
+
+    String SUBMISSION_HISTORY_URL = "http://www.tokopedia.com/pinjaman-online/dana-instant/dashboard";
+    String PAYMENT_METHODS_URL = "http://www.tokopedia.com/pinjaman-online/dana-instant/payment-method/%s";
+    String HELP_URL = "https://www.tokopedia.com/contact-us?pid=162#step1";
 
 }

@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics;
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
-import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_LEARN_MORE;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_TNC;
@@ -37,6 +39,9 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
         this.mPresenter = presenter;
         this.mActivity = activity;
     }
+
+    @Inject
+    InstantLoanAnalytics instantLoanAnalytics;
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -113,7 +118,8 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
     }
 
     private void sendLoanPopupClickEvent(String label) {
-        InstantLoanEventTracking.eventLoanPopupClick(label);
+        instantLoanAnalytics.eventLoanPopupClick(label);
+//        InstantLoanEventTracking.eventLoanPopupClick(label);
     }
 
     @Override
