@@ -110,13 +110,23 @@ public class FlightDetailViewModel implements Parcelable {
             setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
             setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
             setTotalTransit(flightJourneyViewModel.getTotalTransit());
-            setTotal(flightJourneyViewModel.getTotal());
-            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
             setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
             setIsRefundable(flightJourneyViewModel.isRefundable());
-            setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
-            setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
-            setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
+
+            if (flightJourneyViewModel.getComboPriceNumeric() == 0) {
+                setTotal(flightJourneyViewModel.getTotal());
+                setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
+                setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
+                setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
+                setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
+            } else {
+                setTotal(flightJourneyViewModel.getComboPrice());
+                setTotalNumeric(flightJourneyViewModel.getComboPriceNumeric());
+                setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumericCombo());
+                setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumericCombo());
+                setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumericCombo());
+            }
+
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
             setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getAirlineDataList()));
