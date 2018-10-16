@@ -26,9 +26,11 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
+import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.R.id.*
@@ -62,6 +64,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var afterPost: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
+    private var resultIntent: Intent? = null
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -253,21 +256,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE)
 
-            //TODO milhamj
-//            if (activity != null &&
-//                    arguments != null &&
-//                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.kolId) {
-//
-//                if (resultIntent == null) {
-//                    resultIntent = Intent()
-//                    resultIntent.putExtras(arguments!!)
-//                }
-//                resultIntent.putExtra(
-//                        PARAM_IS_LIKED,
-//                        if (kolPostViewModel.isLiked) IS_LIKE_TRUE else IS_LIKE_FALSE)
-//                resultIntent.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.totalLike)
-//                activity!!.setResult(Activity.RESULT_OK, resultIntent)
-//            }
+            if (activity != null &&
+                    arguments != null &&
+                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.contentId) {
+
+                if (resultIntent == null) {
+                    resultIntent = Intent()
+                    resultIntent!!.putExtras(arguments!!)
+                }
+                resultIntent!!.putExtra(
+                        PARAM_IS_LIKED,
+                        if (kolPostViewModel.isLiked) IS_LIKE_TRUE else IS_LIKE_FALSE)
+                resultIntent!!.putExtra(PARAM_TOTAL_LIKES, kolPostViewModel.totalLike)
+                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+            }
         }
     }
 
@@ -509,18 +511,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             kolPostViewModel.totalComment = kolPostViewModel.totalComment + totalNewComment
             adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT)
 
-            //TODO milhamj
-//            if (activity != null &&
-//                    arguments != null &&
-//                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.kolId) {
-//
-//                if (resultIntent == null) {
-//                    resultIntent = Intent()
-//                    resultIntent.putExtras(arguments!!)
-//                }
-//                resultIntent.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
-//                activity!!.setResult(Activity.RESULT_OK, resultIntent)
-//            }
+            if (activity != null &&
+                    arguments != null &&
+                    arguments!!.getInt(PARAM_POST_ID, -1) == kolPostViewModel.contentId) {
+
+                if (resultIntent == null) {
+                    resultIntent = Intent()
+                    resultIntent!!.putExtras(arguments!!)
+                }
+                resultIntent!!.putExtra(PARAM_TOTAL_COMMENTS, kolPostViewModel.totalComment)
+                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+            }
         }
     }
 
