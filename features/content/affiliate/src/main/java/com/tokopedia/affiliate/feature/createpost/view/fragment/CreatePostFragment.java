@@ -275,7 +275,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         doneBtn.setOnClickListener(view -> submitPost());
         addImageBtn.setOnClickListener(view -> {
             if (shouldShowExample()) {
-                goToImageExample();
+                goToImageExample(true);
                 createPostPreference.setFirstTime(getUserSession().getUserId());
             } else {
                 goToImagePicker();
@@ -300,7 +300,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         this.guide = guide;
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
-        seeExample.setOnClickListener(v -> goToImageExample());
+        seeExample.setOnClickListener(v -> goToImageExample(false));
     }
 
     private void setupViewPager() {
@@ -350,15 +350,25 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         }
     }
 
-    private void goToImageExample() {
-        startActivityForResult(
-                CreatePostExampleActivity.createIntent(
-                        getContext(),
-                        guide != null ? guide.getImageUrl() : "",
-                        guide != null ? guide.getImageDescription() : ""
-                ),
-                REQUEST_EXAMPLE
-        );
+    private void goToImageExample(boolean needResult) {
+        if (needResult) {
+            startActivityForResult(
+                    CreatePostExampleActivity.createIntent(
+                            getContext(),
+                            guide != null ? guide.getImageUrl() : "",
+                            guide != null ? guide.getImageDescription() : ""
+                    ),
+                    REQUEST_EXAMPLE
+            );
+        } else {
+            startActivity(
+                    CreatePostExampleActivity.createIntent(
+                            getContext(),
+                            guide != null ? guide.getImageUrl() : "",
+                            guide != null ? guide.getImageDescription() : ""
+                    )
+            );
+        }
     }
 
     private void goToImagePicker() {
