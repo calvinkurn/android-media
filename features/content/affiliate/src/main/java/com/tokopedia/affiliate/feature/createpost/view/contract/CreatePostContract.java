@@ -26,6 +26,8 @@ public interface CreatePostContract {
 
         void onErrorGetContentForm(String message);
 
+        void onErrorNotAffiliate();
+
         void onSuccessSubmitPost();
 
         void onErrorSubmitPost(String message);

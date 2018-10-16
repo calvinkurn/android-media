@@ -41,4 +41,8 @@ query ContentForm($type: String, $productID: String, $adID: String) {
     }
     error
   }
+  affiliateCheck {
+    isAffiliate
+    status
+  }
 }

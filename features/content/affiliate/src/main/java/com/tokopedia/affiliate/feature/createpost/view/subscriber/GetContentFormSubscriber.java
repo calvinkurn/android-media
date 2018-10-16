@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -32,18 +33,29 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
             e.printStackTrace();
         }
         view.hideLoading();
-        view.onErrorGetContentForm(
-                ErrorHandler.getErrorMessage(view.getContext(), e)
-        );
+        if (e != null && e.getLocalizedMessage().contains(
+                view.getContext().getString(R.string.error_default_non_affiliate))) {
+            view.onErrorNotAffiliate();
+        } else {
+            view.onErrorGetContentForm(
+                    ErrorHandler.getErrorMessage(view.getContext(), e)
+            );
+        }
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         view.hideLoading();
         ContentFormData data = graphqlResponse.getData(ContentFormData.class);
-        if (data == null || data.getFeedContentForm() == null) {
-            throw new RuntimeException();
-        } else if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
+        if (data == null || data.getFeedContentForm() == null || data.getAffiliateCheck() == null) {
+            onError(new RuntimeException());
+            return;
+        }
+        if (!data.getAffiliateCheck().isIsAffiliate()) {
+            view.onErrorNotAffiliate();
+            return;
+        }
+        if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
             view.onErrorGetContentForm(data.getFeedContentForm().getError());
             return;
         }

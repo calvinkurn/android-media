@@ -220,6 +220,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     @Override
+    public void onErrorNotAffiliate() {
+
+    }
+
+    @Override
     public void onSuccessSubmitPost() {
         goToProfile();
         Objects.requireNonNull(getActivity()).finish();
