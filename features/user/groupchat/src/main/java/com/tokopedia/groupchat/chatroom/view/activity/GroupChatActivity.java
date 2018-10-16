@@ -247,8 +247,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
-            viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+            String path = getIntent().getExtras().getString("channel_id", "");
+            if(TextUtils.isEmpty(path)) {
+                path = getIntent().getExtras().getString(GroupChatActivity.EXTRA_CHANNEL_UUID, "");
+            }
+            viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
