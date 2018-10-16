@@ -61,6 +61,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var userId: Int = 0
     private var afterPost: Boolean = false
     private var onlyOnePost: Boolean = false
+    private var isAffiliate: Boolean = false
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -100,7 +101,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.itemId == R.id.action_dashboard) {
-            goToDashboard()
+            if (isAffiliate) goToDashboard()
+            else goToOnboading()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -170,6 +172,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel) {
         presenter.cursor = firstPageViewModel.lastCursor
         onlyOnePost = firstPageViewModel.visitableList.size == 1
+        isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
