@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.flight.search.view.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
-import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
+import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchViewHolder;
+import com.tokopedia.flight.searchV2.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 /**
