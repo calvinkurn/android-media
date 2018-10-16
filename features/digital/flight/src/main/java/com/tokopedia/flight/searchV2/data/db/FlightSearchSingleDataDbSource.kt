@@ -59,7 +59,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             }
             sqlStringBuilder.append("isReturn = $isReturnInt")
 
-            sqlStringBuilder.append(" ORDER BY ${getOrderBy(flightSortOption)}")
+            sqlStringBuilder.append(getOrderBy(flightSortOption))
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 
@@ -168,32 +168,31 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         return stringBuilder.toString()
     }
 
+    private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
+        return when (flightSortOption) {
+            FlightSortOption.CHEAPEST -> " ORDER BY sortPrice ASC"
+            FlightSortOption.EARLIEST_ARRIVAL -> " ORDER BY arrivalTimeInt ASC"
+            FlightSortOption.EARLIEST_DEPARTURE -> " ORDER BY departureTimeInt ASC"
+            FlightSortOption.LATEST_ARRIVAL -> " ORDER BY arrivalTimeInt DESC"
+            FlightSortOption.LATEST_DEPARTURE -> " ORDER BY departureTimeInt DESC"
+            FlightSortOption.SHORTEST_DURATION -> " ORDER BY durationMinute ASC"
+            FlightSortOption.LONGEST_DURATION -> " ORDER BY durationMinute DESC"
+            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY sortPrice DESC"
+            FlightSortOption.NO_PREFERENCE -> ""
+            else -> ""
+        }
+    }
+
     fun deleteAllFlightSearchData() {
         flightJourneyDao.deleteTable()
         flightRouteDao.deleteTable()
     }
 
-    fun deleteFlightSearchReturnData() {
-        flightJourneyDao.deleteFlightSearchReturnData()
-    }
-
-    fun deleteRouteByJourneyId(journeyId: String) {
-        flightRouteDao.deleteByJourneyId(journeyId)
-    }
-
-    private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
-        return when (flightSortOption) {
-            FlightSortOption.CHEAPEST -> "sortPrice ASC"
-            FlightSortOption.EARLIEST_ARRIVAL -> "arrivalTimeInt ASC"
-            FlightSortOption.EARLIEST_DEPARTURE -> "departureTimeInt ASC"
-            FlightSortOption.LATEST_ARRIVAL -> "arrivalTimeInt DESC"
-            FlightSortOption.LATEST_DEPARTURE -> "departureTimeInt DESC"
-            FlightSortOption.SHORTEST_DURATION -> "durationMinute ASC"
-            FlightSortOption.LONGEST_DURATION -> "durationMinute DESC"
-            FlightSortOption.MOST_EXPENSIVE -> "sortPrice DESC"
-            FlightSortOption.NO_PREFERENCE -> ""
-            else -> ""
+    fun deleteSearchReturnData(journeyAndRoutesList: List<JourneyAndRoutes>) {
+        for (journeyAndRoutes in journeyAndRoutesList) {
+            flightRouteDao.deleteByJourneyId(journeyAndRoutes.flightJourneyTable.id)
         }
+        flightJourneyDao.deleteFlightSearchReturnData()
     }
 
 }

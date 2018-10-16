@@ -383,19 +383,18 @@ open class FlightSearchRepository @Inject constructor(
     fun deleteFlightSearchReturnData(): Observable<Unit> {
         val filterModel = FlightFilterModel()
         filterModel.isReturn = true
-        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, FlightSortOption.CHEAPEST)
-                .flatMap {
-                    Observable.from(it)
-                            .map { flightSearchSingleDataDbSource.deleteRouteByJourneyId(it.flightJourneyTable.id) }
-                }
-                .toList()
-                .map { flightSearchSingleDataDbSource.deleteFlightSearchReturnData() }
+        return flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, FlightSortOption.NO_PREFERENCE)
+                .flatMap { Observable.just(deleteFlightSearchReturnData(it)) }
     }
 
     fun deleteAllFlightSearchData() : Observable<Unit> {
         return Observable.create {
             it.onNext(deleteFlightSearchData())
         }
+    }
+
+    private fun deleteFlightSearchReturnData(journeyAndRoutesList: List<JourneyAndRoutes>) {
+        flightSearchSingleDataDbSource.deleteSearchReturnData(journeyAndRoutesList)
     }
 
     private fun deleteFlightSearchData() {
