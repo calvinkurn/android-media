@@ -121,7 +121,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel);
-//        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     @Override
@@ -178,9 +177,6 @@ public class DenganAgunanFragment extends BaseDaggerFragment implements InstantL
 
     @Override
     public void openWebView(String url) {
-        /*Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(),
-                url, PINJAMAN_TITLE);
-        startActivity(intent);*/
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
     }
 

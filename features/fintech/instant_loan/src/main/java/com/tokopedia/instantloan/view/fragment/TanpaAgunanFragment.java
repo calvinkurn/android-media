@@ -134,7 +134,6 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel);
-//        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     @Override

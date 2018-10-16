@@ -119,7 +119,6 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
     private void sendLoanPopupClickEvent(String label) {
         instantLoanAnalytics.eventLoanPopupClick(label);
-//        InstantLoanEventTracking.eventLoanPopupClick(label);
     }
 
     @Override

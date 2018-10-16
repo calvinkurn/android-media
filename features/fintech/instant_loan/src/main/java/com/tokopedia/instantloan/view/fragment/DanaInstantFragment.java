@@ -131,7 +131,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         } catch (Exception e) {
 
         }
-
         super.onAttachActivity(context);
     }
 
@@ -157,11 +156,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
             }
         } else if (!data.getDataCollection() ||
                 (data.getDataCollection() && data.getDataCollected())) {
-
             if (!TextUtils.isEmpty(data.getRedirectUrl())) {
-
                 openWebView(data.getRedirectUrl());
-
             } else {
                 NetworkErrorHelper.showSnackbar(getActivity(),
                         getResources().getString(R.string.default_request_error_unknown));
@@ -300,7 +296,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     private void sendIntroSliderScrollEvent(String label) {
         instantLoanAnalytics.eventIntroSliderScrollEvent(label);
-//        InstantLoanEventTracking.eventIntroSliderScrollEvent(label);
     }
 
     @Override
@@ -410,7 +405,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName();
         instantLoanAnalytics.eventCariPinjamanClick(eventLabel);
-//        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     public static DanaInstantFragment createInstance(int position) {

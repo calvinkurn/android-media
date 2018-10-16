@@ -69,6 +69,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     @Inject
     InstantLoanAnalytics instantLoanAnalytics;
 
+    @Inject
+    UserSession userSession;
+
     private ViewPager mBannerPager;
     private FloatingActionButton mBtnNextBanner, mBtnPreviousBanner;
 
@@ -110,7 +113,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         loadSection();
         mBannerPresenter.loadBanners();
 
-        UserSession userSession = new UserSession(this);
         if (userSession != null && userSession.isLoggedIn()) {
             onGoingLoanPresenter.checkUserOnGoingLoanStatus();
         }
@@ -423,8 +425,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                     + " - " + String.valueOf(position);
 
             instantLoanAnalytics.eventLoanBannerImpression(eventLabel);
-
-//            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
         }
     }
 
@@ -437,17 +437,13 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         String url = (String) view.getTag();
         String eventLabel = url + " - " + String.valueOf(position);
         instantLoanAnalytics.eventLoanBannerClick(eventLabel);
-//        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }
     }
 
     public void openWebView(String url) {
-        /*Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
-        startActivity(intent);*/
         RouteManager.route(this, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
-
     }
 
     private void sendPermissionDeniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -459,7 +455,6 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
 
         instantLoanAnalytics.eventInstantLoanPermissionStatus(eventLabel.toString());
-//        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 
     @Override
