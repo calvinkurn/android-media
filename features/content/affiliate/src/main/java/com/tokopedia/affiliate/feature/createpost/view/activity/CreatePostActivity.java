@@ -22,6 +22,13 @@ public class CreatePostActivity extends BaseSimpleActivity {
         return intent;
     }
 
+    public static Intent getInstance(Context context, String productId, String adId) {
+        Intent intent = new Intent(context, CreatePostActivity.class);
+        intent.putExtra(PARAM_PRODUCT_ID, productId);
+        intent.putExtra(PARAM_AD_ID, adId);
+        return intent;
+    }
+
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();

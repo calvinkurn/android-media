@@ -49,7 +49,8 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
     //TODO milhamj change to real url
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
+    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia" +
+            ".com/bantuan/pembeli/";
 
     private View mainView;
     private ImageView avatar;
@@ -164,8 +165,10 @@ public class UsernameInputFragment extends BaseDaggerFragment
                     OnboardingActivity.FINISH_TRUE
             );
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     @Override

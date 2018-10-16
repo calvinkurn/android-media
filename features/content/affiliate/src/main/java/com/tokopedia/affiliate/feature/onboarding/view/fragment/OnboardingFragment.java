@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.applink.ApplinkConst;
@@ -130,8 +131,8 @@ public class OnboardingFragment extends Fragment {
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = ExploreActivity.getInstance(getContext());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(intent);
         });
         commission.setVisibility(View.INVISIBLE);

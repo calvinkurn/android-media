@@ -16,12 +16,12 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
+import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProductContract;
 import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProductViewModel;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
 
@@ -91,22 +91,20 @@ public class RecommendProductFragment extends BaseDaggerFragment
         name.setText(viewModel.getProductName());
         commission.setText(viewModel.getCommission());
         recommendBtn.setOnClickListener(v -> {
-            Intent intent = RouteManager.getIntent(
+            Intent intent = CreatePostActivity.getInstance(
                     getContext(),
-                    ApplinkConst.AFFILIATE_CREATE_POST
-                            .replace(PRODUCT_ID_BRACKET, productId)
-                            .replace(AD_ID_BRACKET, viewModel.getAdId())
+                    productId,
+                    viewModel.getAdId()
             );
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(intent);
         });
     }
 
     @Override
     public void onErrorGetProductInfo(String message) {
-        NetworkErrorHelper.showEmptyState(getContext(), getView(), message, () -> {
-
-        });
+        NetworkErrorHelper.showEmptyState(getContext(), getView(), message,
+                () -> presenter.getProductInfo(productId));
     }
 
     @Override
@@ -146,8 +144,8 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     private void initView() {
         seeOther.setOnClickListener(v -> {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent intent = ExploreActivity.getInstance(getContext());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             startActivity(intent);
         });
     }

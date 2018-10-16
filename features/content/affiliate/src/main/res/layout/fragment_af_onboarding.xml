@@ -74,7 +74,7 @@
         android:focusable="true"
         android:fontFamily="sans-serif-medium"
         android:foreground="?android:attr/selectableItemBackground"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:lines="2"
         android:padding="@dimen/dp_8"
         android:text="@string/af_about_comission"
