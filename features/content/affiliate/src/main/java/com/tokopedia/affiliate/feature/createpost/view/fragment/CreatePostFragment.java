@@ -221,7 +221,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onErrorNotAffiliate() {
-
+        if (getActivity() != null) {
+            String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
+                    + "?product_id=" +
+                    viewModel.getProductId();
+            RouteManager.route(getActivity(), onboardingApplink);
+            getActivity().finish();
+        }
     }
 
     @Override
