@@ -141,6 +141,7 @@ public class Jordan {
     public static final String CACHE_KEY_DATA_CHECKOUT = "cc_checkout";
 
     public static final String AF_VALUE_PRODUCTTYPE = "product";
+    public static final String AF_VALUE_PRODUCT_TYPE = "productType";
     public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
     public static final String VALUE_ANDROID ="Android" ;
     public static final String VALUE_IDR ="IDR" ;

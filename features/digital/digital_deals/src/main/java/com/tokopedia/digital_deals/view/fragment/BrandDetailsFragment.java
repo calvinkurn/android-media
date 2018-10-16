@@ -75,6 +75,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private Toolbar toolbar;
     private String locationName;
     private int adapterPosition = -1;
+    private boolean forceRefresh;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -331,5 +332,21 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
+    }
+
+    @Override
+    public void onStop() {
+        forceRefresh = true;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (forceRefresh) {
+            if (dealsAdapter != null)
+                dealsAdapter.notifyDataSetChanged();
+            forceRefresh = false;
+        }
     }
 }
