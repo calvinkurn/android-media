@@ -243,7 +243,7 @@ public class ExploreFragment
     public void onErrorGetFirstData(String error) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                rvExplore,
+                getView(),
                 error,
                 () -> presenter.getFirstData(exploreParams, false)
         );
