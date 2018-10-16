@@ -37,6 +37,7 @@ class ProfilePresenter @Inject constructor(
     }
 
     override fun getProfileFirstPage(userId: Int) {
+        cursor = ""
         getProfileFirstPage.execute(
                 GetProfileFirstPage.createRequestParams(userId),
                 GetProfileFirstPageSubscriber(view)

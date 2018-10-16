@@ -70,7 +70,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
         if (element.isOwner) {
             itemView.changeAvatar.visibility = View.VISIBLE
             itemView.changeAvatar.setOnClickListener {
-                RouteManager.route(itemView.context, ApplinkConst.SETTING_PROFILE)
+                viewListener.onChangeAvatarClicked()
             }
         } else {
             itemView.changeAvatar.visibility = View.GONE

@@ -3,6 +3,7 @@ package com.tokopedia.profile.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -73,6 +74,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     companion object {
         const val TEXT_PLAIN = "text/plain"
         const val KOL_COMMENT_CODE = 13
+        const val SETTING_PROFILE_CODE = 83
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -128,11 +130,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 onSuccessAddDeleteKolComment(
                         data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
                         data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+            SETTING_PROFILE_CODE ->
+                onSwipeRefresh()
         }
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
         return view!!.findViewById(R.id.recyclerView)
+    }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view!!.findViewById(R.id.swipeToRefresh)
+    }
+
+    override fun onSwipeRefresh() {
+        footerOwn.visibility = View.GONE
+        footerOther.visibility = View.GONE
+        super.onSwipeRefresh()
     }
 
     override fun getScreenName(): String? = null
@@ -389,6 +403,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
         showError(errorMessage, View.OnClickListener { presenter.deletePost(id, rowNumber) })
+    }
+
+    override fun onChangeAvatarClicked() {
+        startActivityForResult(
+                RouteManager.getIntent(context!!, ApplinkConst.SETTING_PROFILE),
+                SETTING_PROFILE_CODE
+        )
     }
 
     private fun initVar() {
