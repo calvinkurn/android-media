@@ -81,8 +81,6 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         return fragment;
     }
 
-
-
     public ManagePeopleAddressFragment() {
     }
 
@@ -253,6 +251,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     @Override
     public void clearCurrentList() {
         this.list.clear();
+        this.adapter.clearAllElements();
     }
 
     @Override
