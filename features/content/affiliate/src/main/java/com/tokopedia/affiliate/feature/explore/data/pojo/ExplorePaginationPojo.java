@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.data.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class ExplorePaginationPojo {
 
     @SerializedName("nextCursor")
+    @Expose
     private String nextCursor;
 
     public String getNextCursor() {

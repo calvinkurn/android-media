@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.data.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,8 +11,11 @@ import java.util.List;
 public class ExploreQuery {
 
     @SerializedName("pagination")
+    @Expose
     private ExplorePaginationPojo pagination;
+
     @SerializedName("products")
+    @Expose
     private List<ExploreProductPojo> products;
 
     public ExplorePaginationPojo getPagination() {

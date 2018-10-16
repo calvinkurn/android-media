@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreFirstQuery;
-import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
+import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreLoadMoreQuery;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -31,17 +31,27 @@ public class ExploreUseCase extends GraphqlUseCase {
     }
 
     public GraphqlRequest getRequest(ExploreParams exploreParams) {
-        return new GraphqlRequest(GraphqlHelper.loadRawString(
+        String query = GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.query_explore),
-                ExploreFirstQuery.class, getParam(exploreParams).getParameters());
+                R.raw.query_explore
+        );
+        return new GraphqlRequest(
+                query,
+                ExploreFirstQuery.class,
+                getParam(exploreParams).getParameters()
+        );
     }
 
     public GraphqlRequest getRequestLoadMore(ExploreParams exploreParams) {
-        return new GraphqlRequest(GraphqlHelper.loadRawString(
+        String query = GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.query_explore_load_more),
-                ExploreQuery.class, getParam(exploreParams).getParameters());
+                R.raw.query_explore_load_more
+        );
+        return new GraphqlRequest(
+                query,
+                ExploreLoadMoreQuery.class,
+                getParam(exploreParams).getParameters()
+        );
     }
 
     public static RequestParams getParam(ExploreParams exploreParams) {

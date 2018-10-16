@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.data.pojo;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,14 +9,19 @@ import com.google.gson.annotations.SerializedName;
 public class ExploreProductPojo {
 
     @SerializedName("adId")
+    @Expose
     private String adId;
     @SerializedName("productId")
+    @Expose
     private String productId;
     @SerializedName("image")
+    @Expose
     private String image;
     @SerializedName("name")
+    @Expose
     private String name;
     @SerializedName("commission")
+    @Expose
     private String commission;
 
     public String getAdId() {
