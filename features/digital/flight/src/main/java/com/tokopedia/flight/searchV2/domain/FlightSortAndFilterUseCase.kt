@@ -120,7 +120,8 @@ class FlightSortAndFilterUseCase @Inject constructor(
                         isReturn,
                         fare,
                         routes,
-                        flightAirlineDBS
+                        flightAirlineDBS,
+                        comboId
                 )
             }
         }

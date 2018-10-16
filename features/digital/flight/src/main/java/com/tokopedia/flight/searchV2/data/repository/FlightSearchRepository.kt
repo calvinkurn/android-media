@@ -174,24 +174,59 @@ open class FlightSearchRepository @Inject constructor(
                 .flatMap { journeyAndRoutesList ->
                     Observable.from(journeyAndRoutesList).flatMap { journeyAndRoutes ->
                         Observable.from(journeyAndRoutes.routes)
-                                .flatMap { it -> getAirlineById(it.airline) }
+                                .flatMap { route ->
+                                    getAirlineById(route.airline).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
+                                        airline: FlightAirlineDB, airport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                        Pair(airline, airport)
+                                    }
+                                }
                                 .toList()
                                 .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
-                                    airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                    routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                                    journeyAirports: Pair<FlightAirportDB, FlightAirportDB> ->
+                                    val journeyAirlines = arrayListOf<FlightAirlineDB>()
+                                    for (routeAirline in routesAirlinesAndAirports) {
+                                        if (!journeyAirlines.contains(routeAirline.first)) {
+                                            journeyAirlines.add(routeAirline.first)
+                                        }
+                                    }
                                     journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
-                                            journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
+                                            journeyAndRoutes.flightJourneyTable, journeyAirports, journeyAirlines)
                                     journeyAndRoutes
                                 }
                     }.toList()
                 }
     }
 
-    fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
-        return flightSearchSingleDataDbSource.getSearchCount(filterModel)
-    }
-
     fun getSearchJourneyById(journeyId: String): Observable<JourneyAndRoutes> {
         return flightSearchSingleDataDbSource.getJourneyById(journeyId)
+                .flatMap { journeyAndRoutes ->
+                    Observable.from(journeyAndRoutes.routes)
+                            .flatMap { route ->
+                                getAirlineById(route.airline).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
+                                    airline: FlightAirlineDB, airport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                    Pair(airline, airport)
+                                }
+                            }
+                            .toList()
+                            .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
+                                routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                                journeyAirports: Pair<FlightAirportDB, FlightAirportDB> ->
+                                val journeyAirlines = arrayListOf<FlightAirlineDB>()
+                                for (routeAirline in routesAirlinesAndAirports) {
+                                    if (!journeyAirlines.contains(routeAirline.first)) {
+                                        journeyAirlines.add(routeAirline.first)
+                                    }
+                                }
+                                journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
+                                        journeyAndRoutes.flightJourneyTable, journeyAirports, journeyAirlines)
+                                journeyAndRoutes
+                            }
+                }
+    }
+
+    fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
+        return flightSearchSingleDataDbSource.getSearchCount(filterModel)
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
@@ -284,10 +319,11 @@ open class FlightSearchRepository @Inject constructor(
                     0,
                     false,
                     beforeTotal,
-                    totalNumeric,
+                    fare.adultNumeric,
                     isReturn,
                     isRefundable,
-                    !TextUtils.isEmpty(beforeTotal)
+                    !TextUtils.isEmpty(beforeTotal),
+                    ""
             )
         }
     }
@@ -337,6 +373,7 @@ open class FlightSearchRepository @Inject constructor(
             journey.childNumericCombo = childPriceNumeric
             journey.infantNumericCombo = infantPriceNumeric
             journey.isBestPairing = isBestPairing
+            journey.comboId = comboId
             journey.sortPrice = adultPriceNumeric
         }
         return journey

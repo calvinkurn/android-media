@@ -53,7 +53,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
             sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
 
-            sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+            if (filterModel.isSpecialPrice) {
+                sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+            }
             if (filterModel.isReturn) {
                 sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
             }
@@ -86,7 +88,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
             sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
 
-            sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+            if (filterModel.isSpecialPrice) {
+                sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+            }
             if (filterModel.isReturn) {
                 sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
             }
