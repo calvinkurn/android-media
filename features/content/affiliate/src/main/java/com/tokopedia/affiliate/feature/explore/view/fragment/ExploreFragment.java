@@ -253,6 +253,13 @@ public class ExploreFragment
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
+        if (itemList.size() == 0) {
+            itemList = new ArrayList<>();
+            itemList.add(emptyResultModel);
+            exploreParams.disableLoadMore();
+        } else {
+            exploreParams.setCursorForLoadMore(cursor);
+        }
         adapter.clearAllElements();
         adapter.addElement(itemList);
     }
