@@ -380,6 +380,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -2551,10 +2552,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGeoLocationActivityIntent(Context context, com.tokopedia.logisticdata.data.entity.address.LocationPass locationPass, boolean isFromMarketplaceCart) {
+    public Intent getGeoLocationActivityIntent(Context context, HashMap<String, String> locationMap, boolean isFromMarketplaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putSerializable(GeolocationActivity.EXTRA_HASH_LOCATION, locationMap);
         bundle.putBoolean(GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketplaceCart);
         intent.putExtras(bundle);
         return intent;

@@ -232,12 +232,14 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     @Override
     public void setLoadingView(boolean isAble) {
-        this.adapter.showLoading();
+        if(isAble) this.adapter.showLoading();
+        else this.adapter.hideLoading();
     }
 
     @Override
     public void setNoResultView(boolean isAble) {
-        this.adapter.showEmptyState();
+        if(isAble) this.adapter.showEmptyState();
+        else this.adapter.hideLoading();
     }
 
     @Override

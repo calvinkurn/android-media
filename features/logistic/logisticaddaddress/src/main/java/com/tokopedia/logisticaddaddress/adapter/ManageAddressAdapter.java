@@ -22,4 +22,9 @@ public class ManageAddressAdapter extends BaseAdapter<AddressTypeFactory> {
         notifyDataSetChanged();
     }
 
+    public void hideEmptyState() {
+        visitables.clear();
+        notifyDataSetChanged();
+    }
+
 }

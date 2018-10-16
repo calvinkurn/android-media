@@ -52,6 +52,7 @@ public class ManagePeopleAddressActivity extends BaseSimpleActivity
     private void onFabClicked(View view) {
         dialog = BottomSheetFilterDialog.Builder(this).setView()
                 .setListener(this);
+        dialog.show();
     }
 
     @Override
