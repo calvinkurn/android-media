@@ -388,10 +388,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
             if (userSession != null && userSession.isLoggedIn()) {
+                presenter.getLoanProfileStatus();
+            } else {
                 NetworkErrorHelper.showSnackbar(getActivity(),
                         getResources().getString(R.string.login_to_proceed));
-            } else {
-                presenter.getLoanProfileStatus();
             }
         }
     }
