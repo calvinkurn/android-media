@@ -132,14 +132,14 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
+            
+        if(!checkAppSignature()){
+            throw new RuntimeException("please use original tokopedia apps.");
+        }    
         initializeDatabase();
         super.onCreate();
         initReact();
-
-        if(!checkAppSignature()){
-            throw new RuntimeException("please use original tokopedia apps.");
-        }
-
+        
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
