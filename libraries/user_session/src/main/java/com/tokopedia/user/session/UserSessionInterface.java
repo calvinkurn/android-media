@@ -58,8 +58,6 @@ public interface UserSessionInterface {
 
     void setEmail(String email);
 
-    void setIsMsisdnVerified(boolean isMsisdnVerified);
-
     void setPhoneNumber(String phoneNumber);
 
     void setShopId(String shopId);
@@ -72,6 +70,10 @@ public interface UserSessionInterface {
 
     void setTempUserId(String userId);
 
+    void setTempPhoneNumber(String userPhone);
+
+    void setTempLoginEmail(String email);
+
     void setToken(String accessToken, String tokenType);
 
     void clearToken();
@@ -80,15 +82,19 @@ public interface UserSessionInterface {
 
     void setToken(String accessToken, String tokenType, String refreshToken);
 
-    void setLoginSession(boolean login, String userId, String fullName, String shopId,
-                         boolean isMsisdnVerified, String shopName, String email, int
-                                 shopIsGold, String msisdn);
-
-    void setTempLoginSession(String userId);
+    void setLoginSession(boolean isLogin, String userId, String fullName, String shopId,
+                         boolean isMsisdnVerified, String shopName, String email, boolean
+                                 shopIsGold, String phoneNumber);
 
     void setIsMSISDNVerified(boolean isMsisdnVerified);
 
     void setFirstTimeUserOnboarding(boolean isFirstTime);
 
     void setFirstTimeUser(boolean isFirstTime);
+
+    void setHasPassword(boolean hasPassword);
+
+    void setProfilePicture(String profilePicture);
+
+
 }

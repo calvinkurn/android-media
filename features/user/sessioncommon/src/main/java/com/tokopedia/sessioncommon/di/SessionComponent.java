@@ -1,17 +1,12 @@
-package com.tokopedia.loginregister.common.di;
+package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
-import com.tokopedia.sessioncommon.di.SessionCommonScope;
-import com.tokopedia.sessioncommon.di.SessionComponent;
-import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -22,21 +17,16 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
- * @author by nisie on 10/15/18.
+ * @author by nisie on 10/16/18.
  */
-@LoginRegisterScope
 @SessionCommonScope
-@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = BaseAppComponent.class)
-public interface LoginRegisterComponent {
+@Component(modules = {SessionModule.class}, dependencies = {BaseAppComponent.class})
+public interface SessionComponent {
 
     @ApplicationContext
     Context getContext();
 
     Retrofit.Builder getRetrofitBuilder();
-
-    CacheManager globalCacheManager();
-
-    LoginRegisterApi provideLoginRegisterApi();
 
     UserSessionInterface provideUserSession();
 
@@ -56,8 +46,7 @@ public interface LoginRegisterComponent {
 
     MakeLoginApi provideMakeLoginApi();
 
-    GetProfileApi provideGetProfileApi();
+    GetProfileApi provideLoginRegisterApi();
 
     TokenApi provideTokenApi();
-
 }

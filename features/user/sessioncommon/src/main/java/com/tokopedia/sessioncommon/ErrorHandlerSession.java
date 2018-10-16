@@ -1,7 +1,7 @@
-package com.tokopedia.loginregister.common.util;
+package com.tokopedia.sessioncommon;
 
 import android.content.Context;
-import com.tokopedia.loginregister.R;
+import com.tokopedia.sessioncommon.R;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 

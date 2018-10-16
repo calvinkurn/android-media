@@ -48,7 +48,7 @@ public class MakeLoginDataSource {
                     userSession.setUserId(String.valueOf(makeLoginDomain.getUserId()));
                     userSession.setName(makeLoginDomain.getFullName());
                     userSession.setEmail(userSession.getTempEmail());
-                    userSession.setIsMsisdnVerified(makeLoginDomain.isMsisdnVerified());
+                    userSession.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
                     userSession.setPhoneNumber(userSession.getTempPhoneNumber());
                     userSession.setShopId(String.valueOf(makeLoginDomain.getShopId()));
                     userSession.setShopName(makeLoginDomain.getShopName());

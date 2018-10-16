@@ -14,8 +14,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;
-import com.tokopedia.sessioncommon.TkpdOldAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -29,39 +28,6 @@ import retrofit2.Retrofit;
  */
 @Module
 public class LoginRegisterModule {
-
-    @LoginRegisterScope
-    @Provides
-    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
-        return (NetworkRouter) context;
-    }
-
-    @LoginRegisterScope
-    @Provides
-    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @LoginRegisterScope
-    @Provides
-    TkpdOldAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                      NetworkRouter networkRouter,
-                                                      UserSessionInterface userSession) {
-        return new TkpdOldAuthInterceptor(context, networkRouter, userSession);
-    }
-
-    @LoginRegisterScope
-    @Provides
-    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
-    }
-
-    @LoginRegisterScope
-    @Provides
-    FingerprintInterceptor provideFingerprintInterceptor(UserSessionInterface userSessionInterface,
-                                                         NetworkRouter networkRouter) {
-        return new FingerprintInterceptor(networkRouter, userSessionInterface);
-    }
 
     @LoginRegisterScope
     @Provides

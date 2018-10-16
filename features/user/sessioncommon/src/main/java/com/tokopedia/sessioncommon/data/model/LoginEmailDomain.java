@@ -6,8 +6,8 @@ package com.tokopedia.sessioncommon.data.model;
 
 public class LoginEmailDomain {
     private TokenViewModel token;
-    private GetUserInfoDomainModel info;
-    private MakeLoginDomain loginResult;
+    private GetUserInfoData info;
+    private MakeLoginPojo loginResult;
 
     public void setToken(TokenViewModel token) {
         this.token = token;
@@ -17,19 +17,19 @@ public class LoginEmailDomain {
         return token;
     }
 
-    public void setInfo(GetUserInfoDomainModel info) {
+    public void setInfo(GetUserInfoData info) {
         this.info = info;
     }
 
-    public GetUserInfoDomainModel getInfo() {
+    public GetUserInfoData getInfo() {
         return info;
     }
 
-    public void setLoginResult(MakeLoginDomain loginResult) {
+    public void setLoginResult(MakeLoginPojo loginResult) {
         this.loginResult = loginResult;
     }
 
-    public MakeLoginDomain getLoginResult() {
+    public MakeLoginPojo getLoginResult() {
         return loginResult;
     }
 }

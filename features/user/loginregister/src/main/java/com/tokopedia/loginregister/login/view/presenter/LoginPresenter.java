@@ -2,16 +2,20 @@ package com.tokopedia.loginregister.login.view.presenter;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.loginregister.common.util.ErrorHandlerSession;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.login.di.LoginModule;
 import com.tokopedia.loginregister.login.domain.DiscoverUseCase;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
+import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -39,23 +43,23 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
 
     private final LocalCacheHandler loginCache;
     private final DiscoverUseCase discoverUseCase;
-//    private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
+    //    private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
 //    private final LoginWithSosmedUseCase loginWithSosmedUseCase;
 //    private final LoginWebviewUseCase loginWebviewUseCase;
-//    private final LoginEmailUseCase loginEmailUseCase;
+    private final LoginEmailUseCase loginEmailUseCase;
 
     @Inject
     public LoginPresenter(
             @Named(LoginModule.LOGIN_CACHE) LocalCacheHandler loginCache,
 //                          SessionHandler sessionHandler,
-//                          LoginEmailUseCase loginEmailUseCase,
+            LoginEmailUseCase loginEmailUseCase,
             DiscoverUseCase discoverUseCase
 //                          GetFacebookCredentialUseCase getFacebookCredentialUseCase,
 //                          LoginWithSosmedUseCase loginWithSosmedUseCase,
 //                          LoginWebviewUseCase loginWebviewUseCase
     ) {
         this.loginCache = loginCache;
-//        this.loginEmailUseCase = loginEmailUseCase;
+        this.loginEmailUseCase = loginEmailUseCase;
         this.discoverUseCase = discoverUseCase;
 //        this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
 //        this.loginWithSosmedUseCase = loginWithSosmedUseCase;
@@ -66,19 +70,54 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
     public void detachView() {
         super.detachView();
         discoverUseCase.unsubscribe();
-//        loginEmailUseCase.unsubscribe();
+        loginEmailUseCase.unsubscribe();
 //        loginWithSosmedUseCase.unsubscribe();
 //        loginWebviewUseCase.unsubscribe();
     }
 
     @Override
     public void login(String email, String password) {
+        getView().resetError();
+        if (isValid(email, password)) {
+            getView().showLoadingLogin();
+            getView().disableArrow();
+            loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
+                    new LoginSubscriber(getView().getContext(), getView().getLoginRouter(),
+                            email, getView()));
+        }
+    }
 
+    private boolean isValid(String email, String password) {
+        boolean isValid = true;
+
+        if (TextUtils.isEmpty(password)) {
+            getView().showErrorPassword(R.string.error_field_required);
+            isValid = false;
+        } else if (password.length() < 4) {
+            getView().showErrorPassword(R.string.error_incorrect_password);
+            isValid = false;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            getView().showErrorEmail(R.string.error_field_required);
+            isValid = false;
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            getView().showErrorEmail(R.string.error_invalid_email);
+            isValid = false;
+        }
+
+        return isValid;
     }
 
     @Override
     public void saveLoginEmail(String email) {
-
+        ArrayList<String> listId = loginCache.getArrayListString(LOGIN_CACHE_KEY);
+        if (!TextUtils.isEmpty(email) && !listId.contains(email)) {
+            listId.add(email);
+            loginCache.putArrayListString(LOGIN_CACHE_KEY, listId);
+            loginCache.applyEditor();
+            getView().setAutoCompleteAdapter(listId);
+        }
     }
 
     @Override

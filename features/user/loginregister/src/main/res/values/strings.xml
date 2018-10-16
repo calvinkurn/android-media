@@ -267,9 +267,9 @@
     <string name="title_forgot_password">Lupa Kata Sandi?</string>
     <string name="login_progress_signing_in">Signing in…</string>
     <string name="error_field_required">Harus diisi</string>
+    <string name="error_incorrect_password">Kata sandi tidak benar</string>
+    <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="code_error">Kode error :</string>
-    <string name="default_request_error_forbidden_auth">Halaman tidak dapat diakses. Mohon
-        untuk menunggu beberapa saat lagi.</string>
 
     <!--REGISTER PAGE -->
     <string name="title_register">Daftar Sekarang di Tokopedia</string>

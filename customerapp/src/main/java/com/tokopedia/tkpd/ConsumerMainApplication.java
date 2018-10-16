@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -22,8 +21,8 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
@@ -42,7 +41,6 @@ import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -63,10 +61,11 @@ import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -79,15 +78,15 @@ import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
-import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
-import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -137,7 +136,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         super.onCreate();
         initReact();
 
-        if(!checkAppSignature()){
+        if (!checkAppSignature()) {
             throw new RuntimeException("please use original tokopedia apps.");
         }
 
@@ -281,6 +280,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         LoginRegisterUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
 
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -391,7 +392,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         System.loadLibrary("native-lib");
     }
 
-    protected boolean checkAppSignature(){
+    protected boolean checkAppSignature() {
         PackageInfo info = null;
         try {
             info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -409,7 +410,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private String getInfoFromBytes(byte[] bytes) {
-        if(null == bytes) {
+        if (null == bytes) {
             return "null";
         }
 

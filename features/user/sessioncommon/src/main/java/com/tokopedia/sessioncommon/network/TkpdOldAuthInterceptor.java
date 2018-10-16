@@ -1,4 +1,4 @@
-package com.tokopedia.sessioncommon;
+package com.tokopedia.sessioncommon.network;
 
 import android.content.Context;
 import android.os.Build;

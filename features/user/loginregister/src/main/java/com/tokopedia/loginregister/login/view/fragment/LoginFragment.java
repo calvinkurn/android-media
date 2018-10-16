@@ -43,7 +43,6 @@ import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
-import com.tokopedia.loginregister.common.data.SecurityDomain;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.common.view.LoginTextView;
@@ -55,6 +54,9 @@ import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
 import com.tokopedia.loginregister.register.RegisterInitialActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
+import com.tokopedia.sessioncommon.data.model.SecurityPojo;
+import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -438,7 +440,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onErrorLogin(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        getLoginRouter().onErrorLogin(errorMessage);
     }
 
     @Override
@@ -520,97 +522,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     @Override
-    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
-//        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
-//                new CreatePasswordViewModel(
-//                        userInfoDomainData.getEmail(),
-//                        userInfoDomainData.getFullName(),
-//                        userInfoDomainData.getBdayYear(),
-//                        userInfoDomainData.getBdayMonth(),
-//                        userInfoDomainData.getBdayDay(),
-//                        userInfoDomainData.getCreatePasswordList(),
-//                        String.valueOf(userInfoDomainData.getUserId())));
-//        startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
-    }
-
-    @Override
-    public void onGoToPhoneVerification() {
-//        startActivityForResult(
-//                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
-//                REQUEST_VERIFY_PHONE);
-    }
-
-    @Override
-    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
-                                       String email, String phone) {
-        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
-        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
-
-    }
-
-    @Override
     public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
 //        Intent intent = AddNameActivity.newInstance(getActivity());
 //        startActivityForResult(intent, REQUEST_ADD_NAME);
-    }
-
-    @Override
-    public void setSmartLock() {
-//        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-//                emailEditText.getText().toString(),
-//                passwordEditText.getText().toString());
-    }
-
-    @Override
-    public void onErrorLogin(String errorMessage, int codeError) {
-        onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
-    }
-
-    @Override
-    public void onGoToActivationPage(String email) {
-//        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-//                email, passwordEditText.getText().toString());
-//        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
-    }
-
-    @Override
-    public void onSuccessLoginEmail() {
-        analytics.eventSuccessLoginEmail();
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginAnalytics.LABEL_EMAIL
-                    );
-        }
-
-        onSuccessLogin();
-    }
-
-    @Override
-    public void onSuccessLoginSosmed(String loginMethod) {
-        analytics.eventSuccessLoginSosmed(loginMethod);
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginAnalytics.LABEL_EMAIL
-                    );
-        }
-        onSuccessLogin();
     }
 
     @Override
@@ -635,6 +549,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onForbidden() {
+        dismissLoadingLogin();
 //        ForbiddenActivity.startActivity(getActivity());
     }
 
@@ -798,6 +713,119 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 //                super.onActivityResult(requestCode, resultCode, data);
 //            }
         }
+    }
+
+    @Override
+    public LoginSuccessRouter getLoginRouter() {
+        return new LoginSuccessRouter() {
+
+            @Override
+            public void onGoToCreatePasswordPage(GetUserInfoData info) {
+//        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
+//                new CreatePasswordViewModel(
+//                        info.getEmail(),
+//                        info.getFullName(),
+//                        info.getBdayYear(),
+//                        info.getBdayMonth(),
+//                        info.getBdayDay(),
+//                        info.getCreatePasswordList(),
+//                        String.valueOf(info.getUserId())));
+//        startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
+            }
+
+            @Override
+            public void onGoToPhoneVerification() {
+//        startActivityForResult(
+//                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
+//                REQUEST_VERIFY_PHONE);
+            }
+
+            @Override
+            public void onGoToSecurityQuestion(SecurityPojo securityDomain, String fullName,
+                                               String email, String phone) {
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                        getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
+                startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+
+            }
+
+            @Override
+            public void onForbidden() {
+
+            }
+
+            @Override
+            public void onErrorLogin(String errorMessage) {
+                dismissLoadingLogin();
+                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            }
+
+            @Override
+            public boolean isFromRegister() {
+                return false;
+            }
+
+            @Override
+            public void setSmartLock() {
+//        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+//                emailEditText.getText().toString(),
+//                passwordEditText.getText().toString());
+            }
+
+            @Override
+            public void onGoToActivationPage(String email) {
+//        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+//                email, passwordEditText.getText().toString());
+//        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
+            }
+
+            @Override
+            public void onSuccessLoginEmail() {
+                dismissLoadingLogin();
+                analytics.eventSuccessLoginEmail();
+                if (getActivity() != null) {
+                    ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
+                            (userSession.getUserId(),
+                                    userSession.getName(),
+                                    userSession.getEmail(),
+                                    userSession.getPhoneNumber(),
+                                    userSession.isGoldMerchant(),
+                                    userSession.getShopName(),
+                                    userSession.getShopId(),
+                                    userSession.hasShop(),
+                                    LoginAnalytics.LABEL_EMAIL
+                            );
+                }
+
+                onSuccessLogin();
+            }
+
+
+        };
+    }
+
+    @Override
+    public void onErrorLogin(String errorMessage, int codeError) {
+        onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
+    }
+
+    @Override
+    public void onSuccessLoginSosmed(String loginMethod) {
+        analytics.eventSuccessLoginSosmed(loginMethod);
+        if (getActivity() != null) {
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
+                    (userSession.getUserId(),
+                            userSession.getName(),
+                            userSession.getEmail(),
+                            userSession.getPhoneNumber(),
+                            userSession.isGoldMerchant(),
+                            userSession.getShopName(),
+                            userSession.getShopId(),
+                            userSession.hasShop(),
+                            LoginAnalytics.LABEL_EMAIL
+                    );
+        }
+        onSuccessLogin();
     }
 
     @Override

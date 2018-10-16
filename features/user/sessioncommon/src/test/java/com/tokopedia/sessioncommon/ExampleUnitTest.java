@@ -1,4 +1,4 @@
-package com.tokopedia.loginregistercommon;
+package com.tokopedia.sessioncommon;
 
 import org.junit.Test;
 

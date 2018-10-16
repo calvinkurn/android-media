@@ -1,11 +1,15 @@
 package com.tokopedia.sessioncommon.domain.usecase;
 
-import com.tokopedia.sessioncommon.data.SessionCommonApi;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
-import com.tokopedia.sessioncommon.domain.MakeLoginMapper;
+import com.tokopedia.sessioncommon.domain.mapper.MakeLoginMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -18,15 +22,22 @@ import rx.functions.Action1;
 
 public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
 
-    public static final String PARAM_USER_ID = "user_id";
+    private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_UUID = "uuid";
-    private final SessionCommonApi api;
+    private static final String PARAM_DEVICE_ID = "device_id";
+    private static final String PARAM_HASH = "hash";
+    private static final String PARAM_OS_TYPE = "os_type";
+    private static final String PARAM_TIMESTAMP = "device_time";
+
+    private static final String TYPE_ANDROID = "1";
+
+    private final MakeLoginApi api;
     private final MakeLoginMapper mapper;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public MakeLoginUseCase(SessionCommonApi api,
-                            UserSession userSession,
+    public MakeLoginUseCase(MakeLoginApi api,
+                            UserSessionInterface userSession,
                             MakeLoginMapper mapper) {
         this.api = api;
         this.userSession = userSession;
@@ -40,27 +51,33 @@ public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
                 .doOnNext(saveToCache());
     }
 
-    public static RequestParams getParam(String userId) {
+    public static RequestParams getParam(String userId, String deviceId) {
+        String hash = AuthUtil.md5(userId + "~" + deviceId);
+
         RequestParams params = RequestParams.create();
         params.putString(PARAM_USER_ID, userId);
+        params.putString(PARAM_DEVICE_ID, deviceId);
+        params.putString(PARAM_HASH, hash);
+        params.putString(PARAM_OS_TYPE, TYPE_ANDROID);
+        params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         return params;
     }
 
     private Action1<MakeLoginPojo> saveToCache() {
         return makeLoginDomain -> {
-            if (makeLoginDomain.getIsLogin().equals("1")) {
-                userSession.setLoginSession(makeLoginDomain.getIsLogin().equals("1"),
+            if (makeLoginDomain.getSecurityPojo().getAllowLogin() == 1) {
+                userSession.setLoginSession(true,
                         String.valueOf(makeLoginDomain.getUserId()),
                         makeLoginDomain.getFullName(),
                         String.valueOf(makeLoginDomain.getShopId()),
                         makeLoginDomain.getMsisdnIsVerified().equals("1"),
                         makeLoginDomain.getShopName(),
                         userSession.getTempEmail(),
-                        makeLoginDomain.getShopIsGold(),
+                        makeLoginDomain.getShopIsGold() == 1,
                         userSession.getTempPhoneNumber());
             } else {
                 userSession.setTempLoginName(makeLoginDomain.getFullName());
-                userSession.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
+                userSession.setTempUserId(String.valueOf(makeLoginDomain.getUserId()));
                 userSession.setIsMSISDNVerified(makeLoginDomain.getMsisdnIsVerified().equals("1"));
             }
         };

@@ -2,7 +2,6 @@ package com.tokopedia.sessioncommon.data;
 
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
-import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 
 import java.util.Map;
 
@@ -13,18 +12,12 @@ import retrofit2.http.POST;
 import rx.Observable;
 
 /**
- * @author by nisie on 10/12/18.
+ * @author by nisie on 10/16/18.
  */
-public interface SessionCommonApi {
-
-    @FormUrlEncoded
-    @POST(SessionCommonUrl.PATH_GET_TOKEN)
-    Observable<Response<DataResponse<TokenViewModel>>> getToken(@FieldMap Map<String, Object>
-                                                                        params);
+public interface MakeLoginApi {
 
     @FormUrlEncoded
     @POST(SessionCommonUrl.PATH_MAKE_LOGIN)
     Observable<Response<DataResponse<MakeLoginPojo>>> makeLogin(@FieldMap Map<String, Object>
-                                                                       params);
-
+                                                                        params);
 }

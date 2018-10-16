@@ -1,39 +1,77 @@
 package com.tokopedia.sessioncommon.data.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
  * @author by nisie on 6/19/17.
  */
 
-public class GetUserInfoDomainData {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+public class GetUserInfoData {
+
+    @SerializedName("user_id")
+    @Expose
     private int userId;
+    @SerializedName("full_name")
+    @Expose
     private String fullName;
+    @SerializedName("first_name")
+    @Expose
     private String firstName;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("email")
+    @Expose
     private String email;
+    @SerializedName("gender")
+    @Expose
     private int gender;
+    @SerializedName("bday")
+    @Expose
     private String bday;
+    @SerializedName("age")
+    @Expose
     private int age;
+    @SerializedName("phone")
+    @Expose
     private String phone;
+    @SerializedName("phone_masked")
+    @Expose
     private String phoneMasked;
+    @SerializedName("register_date")
+    @Expose
     private String registerDate;
+    @SerializedName("status")
+    @Expose
     private int status;
+    @SerializedName("lang")
+    @Expose
     private String lang;
+    @SerializedName("created_password")
+    @Expose
     private boolean createdPassword;
+    @SerializedName("phone_verified")
+    @Expose
     private boolean phoneVerified;
-
+    @SerializedName("roles")
+    @Expose
     private List<Integer> roles = null;
+    @SerializedName("profile_picture")
+    @Expose
     private String profilePicture;
+    @SerializedName("client_id")
+    @Expose
     private String clientId;
+    @SerializedName("completion")
+    @Expose
     private int completion;
-    private List<String> createPasswordList;
+    @SerializedName("create_password_list")
+    @Expose
+    private List<String> createPasswordList ;
 
     public int getUserId() {
         return userId;
@@ -185,55 +223,6 @@ public class GetUserInfoDomainData {
 
     public void setCompletion(int completion) {
         this.completion = completion;
-    }
-
-    public int getBdayYear() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.YEAR);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int getBdayMonth() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.MONTH) + 1;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int getBdayDay() {
-        try {
-            Date date = simpleDateFormat.parse(getBday());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            return calendar.get(Calendar.DAY_OF_MONTH);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public void setCreatePasswordList(List<String> createPasswordList) {
-        this.createPasswordList = createPasswordList;
     }
 
     public List<String> getCreatePasswordList() {

@@ -1,12 +1,12 @@
 package com.tokopedia.sessioncommon.domain.usecase;
 
 import com.tokopedia.network.refreshtoken.EncoderDecoder;
-import com.tokopedia.sessioncommon.data.SessionCommonApi;
+import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
-import com.tokopedia.sessioncommon.domain.TokenMapper;
+import com.tokopedia.sessioncommon.domain.mapper.TokenMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -36,14 +36,14 @@ public class GetTokenUseCase extends UseCase<TokenViewModel> {
     public static final String GRANT_SDK = "extension";
     public static final String GRANT_WEBVIEW = "authorization_code";
 
-    private final SessionCommonApi api;
+    private final TokenApi api;
     private final TokenMapper tokenMapper;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public GetTokenUseCase(SessionCommonApi api,
+    public GetTokenUseCase(TokenApi api,
                            TokenMapper tokenMapper,
-                           UserSession userSession) {
+                           UserSessionInterface userSession) {
         this.api = api;
         this.tokenMapper = tokenMapper;
         this.userSession = userSession;
