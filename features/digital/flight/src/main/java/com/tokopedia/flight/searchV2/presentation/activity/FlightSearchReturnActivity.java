@@ -19,15 +19,17 @@ public class FlightSearchReturnActivity extends FlightSearchActivity
 
     public static final String EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID";
     private static final int REQUEST_CODE_BOOKING = 13;
+    public static final String EXTRA_IS_BEST_PAIRING = "EXTRA_IS_BEST_PAIRING";
 
     private String selectedDepartureID;
 
     public static Intent getCallingIntent(Context context,
                                           FlightSearchPassDataViewModel passDataViewModel,
-                                          String selectedDepartureID) {
+                                          String selectedDepartureID, boolean isBestPairing) {
         Intent intent = new Intent(context, FlightSearchReturnActivity.class);
         intent.putExtra(EXTRA_PASS_DATA, passDataViewModel);
         intent.putExtra(EXTRA_DEPARTURE_ID, selectedDepartureID);
+        intent.putExtra(EXTRA_IS_BEST_PAIRING, isBestPairing);
         return intent;
     }
 
@@ -51,7 +53,8 @@ public class FlightSearchReturnActivity extends FlightSearchActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchReturnFragment.newInstance(passDataViewModel, selectedDepartureID);
+        return FlightSearchReturnFragment.newInstance(passDataViewModel, selectedDepartureID,
+                getIntent().getBooleanExtra(EXTRA_IS_BEST_PAIRING, false));
     }
 
     @Override
@@ -61,11 +64,13 @@ public class FlightSearchReturnActivity extends FlightSearchActivity
 
     @Override
     public void selectFlight(String selectedFlightID) {
+        // TODO : PASS FLIGHTPRICEVIEWMODEL
         startActivityForResult(FlightBookingActivity
                         .getCallingIntent(this,
                                 passDataViewModel,
                                 selectedDepartureID,
-                                selectedFlightID),
+                                selectedFlightID,
+                                null),
                 REQUEST_CODE_BOOKING);
     }
 

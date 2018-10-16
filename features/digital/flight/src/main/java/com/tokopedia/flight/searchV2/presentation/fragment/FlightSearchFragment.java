@@ -43,6 +43,7 @@ import com.tokopedia.flight.searchV2.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
@@ -114,7 +115,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         passDataViewModel = getArguments().getParcelable(EXTRA_PASS_DATA);
 
         if (savedInstanceState == null) {
-            flightFilterModel = new FlightFilterModel();
+            flightFilterModel = buildFilterModel();
             selectedSortOption = FlightSortOption.CHEAPEST;
             setUpCombinationAirport();
             progress = 0;
@@ -145,7 +146,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         super.onViewCreated(view, savedInstanceState);
 
         flightSearchPresenter.attachView(this);
-        flightSearchPresenter.fetchCombineData(passDataViewModel);
+
+        if (!isReturning()) {
+            flightSearchPresenter.fetchCombineData(passDataViewModel);
+        } else {
+            fetchFlightSearchData();
+        }
 
         showLoading();
     }
@@ -407,7 +413,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void navigateToNextPage(String selectedId) {
+    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel) {
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(selectedId);
         }
@@ -461,9 +467,19 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
+    public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
+        // do nothing
+    }
+
+    @Override
+    public FlightFilterModel getFilterModel() {
+        return flightFilterModel;
+    }
+
+    @Override
     public void onRetryClicked() {
         getAdapter().clearAllElements();
-        flightSearchPresenter.initialize();
+        fetchFlightSearchData();
     }
 
     @Override
@@ -673,7 +689,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     protected void onSelectedFromDetail(String selectedId) {
-        flightSearchPresenter.onSearchItemClicked(selectedId);
+//        flightSearchPresenter.onSearchItemClicked(selectedId);
+    }
+
+    protected FlightFilterModel buildFilterModel() {
+        return new FlightFilterModel();
     }
 
     private void setUpCombinationAirport() {

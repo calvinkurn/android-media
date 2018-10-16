@@ -8,6 +8,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
@@ -81,9 +82,13 @@ public interface FlightSearchContract {
 
         void finishFragment();
 
-        void navigateToNextPage(String selectedId);
+        void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel);
 
         void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
+
+        void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel);
+
+        FlightFilterModel getFilterModel();
     }
 
     interface Presenter {
@@ -96,11 +101,13 @@ public interface FlightSearchContract {
 
         void onSearchItemClicked(FlightJourneyViewModel journeyViewModel);
 
-        void onSearchItemClicked(String selectedId);
+//        void onSearchItemClicked(String selectedId);
 
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
         void setDelayHorizontalProgress();
+
+        void getDetailDepartureFlight(String journeyId);
 
         void fetchCombineData(FlightSearchPassDataViewModel passDataViewModel);
 

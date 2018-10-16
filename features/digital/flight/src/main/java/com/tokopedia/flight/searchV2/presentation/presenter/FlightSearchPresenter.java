@@ -12,12 +12,15 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.domain.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase;
+import com.tokopedia.flight.searchV2.domain.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
+import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiRequestModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
@@ -49,18 +52,22 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
     private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
+    private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase,
-                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase) {
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase,
+                                 FlightSearchCombinedUseCase flightSearchCombinedUseCase,
+                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase,
+                                 FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
         this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
+        this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -99,18 +106,18 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-        deleteFlightReturnSearch(journeyViewModel.getId());
+        deleteFlightReturnSearch(journeyViewModel);
     }
 
     @Override
     public void onSearchItemClicked(FlightJourneyViewModel journeyViewModel) {
-        deleteFlightReturnSearch(journeyViewModel.getId());
+        deleteFlightReturnSearch(journeyViewModel);
     }
 
-    @Override
+    /*@Override
     public void onSearchItemClicked(String selectedId) {
         deleteFlightReturnSearch(selectedId);
-    }
+    }*/
 
     @Override
     public void onSuccessDateChanged(int year, int month, int dayOfMonth) {
@@ -120,6 +127,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Override
     public void setDelayHorizontalProgress() {
 
+    }
+
+    @Override
+    public void getDetailDepartureFlight(String journeyId) {
+        flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(journeyId),
+                new Subscriber<FlightJourneyViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(FlightJourneyViewModel journeyViewModel) {
+                        getView().onSuccessGetDetailFlightDeparture(journeyViewModel);
+                    }
+                });
     }
 
     @Override
@@ -228,7 +256,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                 requestModel,
                 getView().isReturning(),
                 !passDataViewModel.isOneWay(),
-                ""),
+                getView().getFilterModel().getJourneyId()),
                 new Subscriber<FlightSearchMetaViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -295,6 +323,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
                         getView().renderSearchList(flightJourneyViewModels, needRefresh);
+
+                        if (getView().isDoneLoadData()) {
+                            getView().addBottomPaddingForSortAndFilterActionButton();
+                            getView().addToolbarElevation();
+                            getView().hideHorizontalProgress();
+                        }
                     }
                 }
         );
@@ -309,7 +343,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         super.detachView();
     }
 
-    private void deleteFlightReturnSearch(String selectedId) {
+    private void deleteFlightReturnSearch(FlightJourneyViewModel journeyViewModel) {
         flightDeleteFlightSearchReturnDataUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -323,11 +357,48 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
             @Override
             public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    getView().navigateToNextPage(selectedId);
-                }
+                FlightPriceViewModel priceViewModel = new FlightPriceViewModel();
+                priceViewModel.setDeparturePrice(buildFare(journeyViewModel.getFare(), !getView().getFlightSearchPassData().isOneWay()));
+                getView().navigateToNextPage(journeyViewModel.getId(), priceViewModel);
             }
         });
+    }
+
+    public FlightFareViewModel buildFare(FlightFareViewModel journeyFare, boolean isNeedCombo) {
+        FlightFareViewModel flightFareViewModel;
+        if (isNeedCombo) {
+            flightFareViewModel = new FlightFareViewModel(
+                    journeyFare.getAdult(),
+                    journeyFare.getAdultCombo(),
+                    journeyFare.getChild(),
+                    journeyFare.getChildCombo(),
+                    journeyFare.getInfant(),
+                    journeyFare.getInfantCombo(),
+                    journeyFare.getAdultNumeric(),
+                    journeyFare.getAdultNumericCombo(),
+                    journeyFare.getChildNumeric(),
+                    journeyFare.getChildNumericCombo(),
+                    journeyFare.getInfantNumeric(),
+                    journeyFare.getInfantNumericCombo()
+            );
+        } else {
+            flightFareViewModel = new FlightFareViewModel(
+                    journeyFare.getAdult(),
+                    "",
+                    journeyFare.getChild(),
+                    "",
+                    journeyFare.getInfant(),
+                    "",
+                    journeyFare.getAdultNumeric(),
+                    0,
+                    journeyFare.getChildNumeric(),
+                    0,
+                    journeyFare.getInfantNumeric(),
+                    0
+            );
+        }
+
+        return flightFareViewModel;
     }
 
     private void addSubscription(Subscription subscription) {
