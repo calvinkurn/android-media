@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder.PAYLOAD_FOLLOW
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
@@ -28,8 +29,8 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_header
-        val PAYLOAD_FOLLOW = 13
-        val TEXT_LENGTH_MIN = 3
+        const val PAYLOAD_FOLLOW = 13
+        const val TEXT_LENGTH_MIN = 3
     }
 
     override fun bind(element: ProfileHeaderViewModel) {
