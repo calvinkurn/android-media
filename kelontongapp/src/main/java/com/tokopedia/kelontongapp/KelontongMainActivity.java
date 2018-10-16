@@ -8,10 +8,12 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tokopedia.kelontongapp.firebase.Preference;
 import com.tokopedia.kelontongapp.webview.KelontongWebChromeClient;
 import com.tokopedia.kelontongapp.webview.FilePickerInterface;
 import com.tokopedia.kelontongapp.webview.KelontongWebview;
@@ -22,6 +24,8 @@ import com.tokopedia.kelontongapp.webview.KelontongWebviewClient;
  */
 public class KelontongMainActivity extends AppCompatActivity implements FilePickerInterface {
 
+    private static final String GCM_ID = "gcm_id";
+    private static final String ANDROID = "android";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
     private KelontongWebChromeClient webViewClient;
@@ -34,6 +38,10 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_kelontong);
 
+        initialize();
+    }
+
+    private void initialize() {
         webView = findViewById(R.id.webview);
         ProgressBar progressBar = findViewById(R.id.progress);
 
@@ -43,6 +51,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
+        webView.getSettings().setUserAgentString(ANDROID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
@@ -50,6 +59,8 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
             }
         }
 
+        String fcmToken = Preference.getFcmToken(this);
+        CookieManager.getInstance().setCookie(KelontongBaseUrl.BASE_URL, String.format("%s=%s", GCM_ID, fcmToken));
         webView.loadUrl(KelontongBaseUrl.BASE_URL);
     }
 
@@ -92,5 +103,4 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
             new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
         }
     }
-
 }

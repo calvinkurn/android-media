@@ -32,7 +32,7 @@ public class KelontongWebChromeClient extends WebChromeClient {
             this.filePickerInterface = filePickerInterface;
             this.progressBar = progressBar;
         } else {
-            throw new RuntimeException("Should be instance of Activity or Fragmant");
+            throw new RuntimeException("Should be instance of Activity or Fragment");
         }
     }
 
