@@ -14,12 +14,9 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.di.LoginComponent;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import javax.inject.Inject;
 
 /**
  * @author by nisie on 10/1/18.
@@ -53,7 +50,11 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+        return LoginFragment.createInstance(bundle);
     }
 
     public static Intent getCallingIntent(Context context) {

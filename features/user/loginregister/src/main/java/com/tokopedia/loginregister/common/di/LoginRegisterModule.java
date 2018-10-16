@@ -13,8 +13,8 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;
+import com.tokopedia.sessioncommon.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -44,10 +44,10 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                   NetworkRouter networkRouter,
-                                                   UserSessionInterface userSession) {
-        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+    TkpdOldAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                      NetworkRouter networkRouter,
+                                                      UserSessionInterface userSession) {
+        return new TkpdOldAuthInterceptor(context, networkRouter, userSession);
     }
 
     @LoginRegisterScope
@@ -65,7 +65,7 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor,
+    OkHttpClient provideOkHttpClient(TkpdOldAuthInterceptor tkpdAuthInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      DebugInterceptor debugInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,

@@ -166,7 +166,7 @@ public class AuthUtil {
         return params;
     }
 
-    private static String calculateRFC2104HMAC(String authString, String authKey) {
+    public static String calculateRFC2104HMAC(String authString, String authKey) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(authKey.getBytes(), MAC_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
@@ -180,11 +180,11 @@ public class AuthUtil {
         }
     }
 
-    private static String generateContentMd5(String s) {
+    public static String generateContentMd5(String s) {
         return md5(s);
     }
 
-    private static String generateDate(String dateFormat) {
+    public static String generateDate(String dateFormat) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
         return simpleDateFormat.format(new Date());
     }
