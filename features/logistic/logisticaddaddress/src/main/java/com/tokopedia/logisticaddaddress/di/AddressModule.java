@@ -2,8 +2,10 @@ package com.tokopedia.logisticaddaddress.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressPresenter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressPresenterImpl;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
@@ -12,6 +14,7 @@ import com.tokopedia.logisticaddaddress.network.AddAddressRetrofitInteractorImpl
 import com.tokopedia.logisticaddaddress.network.AddressRepository;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
+import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
@@ -26,6 +29,8 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Fajar Ulin Nuha on 11/10/18.
@@ -104,14 +109,16 @@ public class AddressModule {
                                       StringResponseConverter stringResponseConverter,
                                       GsonBuilder gsonBuilder
     ) {
-        return CommonNetwork.createRetrofit(
-                TkpdBaseURL.BASE_DOMAIN,
-                tkpdOkHttpBuilder,
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                stringResponseConverter,
-                gsonBuilder
-        );
+
+        tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
+        tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
+        return new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(stringResponseConverter)
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(tkpdOkHttpBuilder.build()).build();
     }
 
     @Provides
