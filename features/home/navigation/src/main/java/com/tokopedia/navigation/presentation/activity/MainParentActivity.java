@@ -394,6 +394,10 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
 
         registerBroadcastHockeyApp();
+
+        if(!GlobalConfig.IS_VALID_APK){
+            finish();
+        }
     }
 
     @Override
