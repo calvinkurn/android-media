@@ -889,12 +889,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onByMeClicked(AffiliateInfoViewModel affiliate) {
         if (getActivity() != null) {
-            RouteManager.route(
-                    getActivity(),
-                    ApplinkConst.AFFILIATE_CREATE_POST
-                            .replace(PRODUCT_ID, String.valueOf(affiliate.getProductId()))
-                            .replace(AD_ID, String.valueOf(affiliate.getAdId()))
-            );
+            if (userSession.isLoggedIn()) {
+                RouteManager.route(
+                        getActivity(),
+                        ApplinkConst.AFFILIATE_CREATE_POST
+                                .replace(PRODUCT_ID, String.valueOf(affiliate.getProductId()))
+                                .replace(AD_ID, String.valueOf(affiliate.getAdId()))
+                );
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("login", true);
+                presenter.processToLogin(getActivity(), bundle);
+            }
         }
     }
 
