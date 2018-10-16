@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.viewpager.WrapContentViewPager;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
@@ -154,7 +155,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
+                View focus = CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
                     hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
                             focus);
@@ -163,7 +164,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                View focus = com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context).getCurrentFocus();
+                View focus = CommonUtils.getActivity(context).getCurrentFocus();
                 if (focus != null) {
                     hideKeyboard(com.tokopedia.abstraction.common.utils.view.CommonUtils.getActivity(context),
                             focus);
