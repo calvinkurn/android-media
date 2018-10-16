@@ -10,6 +10,8 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
 import com.tokopedia.logisticaddaddress.model.datamanager.DataManagerImpl;
 import com.tokopedia.logisticaddaddress.model.datamanager.NetworkParam;
@@ -49,7 +51,6 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
         this.activityListener = listener;
         this.fragmentListener = mFragment;
         this.pagingHandler = new PagingHandler();
-        NetworkRouter router = (NetworkRouter) mFragment.getActivity().getApplication();
 
         this.dataManager = new DataManagerImpl(this, peopleActApi, cacheManager);
         this.setAllowConnection(true);
@@ -201,7 +202,7 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
     }
 
     @Override
-    public void setActionDefaultButtonClicked(final AddressModel data) {
+    public void setActionDefaultButtonClicked(final AddressViewModel data) {
         fragmentListener.showDialogConfirmation(
                 "Apakah Anda yakin ingin menggunakan alamat:" +
                         "<br/><br/><b>" + data.getAddressName() + "</b><br/>" +
@@ -224,7 +225,7 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
     }
 
     @Override
-    public void setActionDeleteButton(final AddressModel data) {
+    public void setActionDeleteButton(final AddressViewModel data) {
         fragmentListener.showDialogConfirmation(
                 "Apakah Anda yakin ingin menghapus alamat: " +
                         "<b>" + data.getAddressName() + "</b>?",
@@ -245,8 +246,10 @@ public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragment
     }
 
     @Override
-    public void setActionEditButton(AddressModel data) {
-        fragmentListener.openFormAddressView(data);
+    public void setActionEditButton(AddressViewModel data) {
+        fragmentListener.openFormAddressView(
+                AddressViewModelMapper.convertFromViewModel(data)
+        );
     }
 
     @Override

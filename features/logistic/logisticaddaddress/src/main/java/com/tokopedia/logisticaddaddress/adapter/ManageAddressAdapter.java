@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 
 import java.util.List;
 
@@ -10,8 +11,15 @@ import java.util.List;
  */
 public class ManageAddressAdapter extends BaseAdapter<AddressTypeFactory> {
 
+    private EmptyModel emptyModel = new EmptyModel();
+
     public ManageAddressAdapter(AddressTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
+    }
+    public void showEmptyState() {
+        visitables.clear();
+        visitables.add(emptyModel);
+        notifyDataSetChanged();
     }
 
 }

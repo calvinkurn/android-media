@@ -6,13 +6,14 @@ import android.support.annotation.NonNull;
 
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 
 /**
  * Created on 5/18/16.
  */
-public interface ManagePeopleAddressFragmentPresenter {
+public interface ManagePeopleAddressFragmentPresenter extends AddressViewHolder.ManageAddressListener {
     void setActionOnRefreshing(@NonNull Context context);
 
     void resetPage();
@@ -47,15 +48,9 @@ public interface ManagePeopleAddressFragmentPresenter {
 
     void setOnEmptyAddressList(GetPeopleAddress data);
 
-    void setActionDefaultButtonClicked(AddressModel data);
-
     void setOnStartActionSetDefaultAddress(String addressID);
 
-    void setActionDeleteButton(AddressModel data);
-
     void setOnStartActionDeleteAddress(String addressId);
-
-    void setActionEditButton(AddressModel data);
 
     void setBeforeLoadMoreData();
 

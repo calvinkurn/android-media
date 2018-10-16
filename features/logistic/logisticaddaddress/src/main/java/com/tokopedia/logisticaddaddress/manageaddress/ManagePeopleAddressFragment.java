@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -29,8 +30,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
-import com.tokopedia.logisticaddaddress.adapter.ManagePeopleAddressAdapter;
+import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
@@ -61,7 +65,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     private ArrayList<AddressModel> list;
     private MPAddressActivityListener listener;
-    private ManagePeopleAddressAdapter adapter;
+    private ManageAddressAdapter adapter;
     private RefreshHandler refreshHandler;
 
     private Token token;
@@ -90,7 +94,8 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         this.list = new ArrayList<>();
         this.listener = (ManagePeopleAddressActivity) getActivity();
         presenter = new ManagePeopleAddressPresenter(this, listener, peopleActApi, cacheManager);
-        this.adapter = new ManagePeopleAddressAdapter(this.list, this.presenter);
+        AddressTypeFactory typeFactory = new AddressTypeFactory(this.presenter);
+        this.adapter = new ManageAddressAdapter(typeFactory, new ArrayList<>());
     }
 
     @Override
@@ -231,18 +236,19 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     @Override
     public void setLoadingView(boolean isAble) {
-//        this.adapter.showLoading(isAble);
+        this.adapter.showLoading();
     }
 
     @Override
     public void setNoResultView(boolean isAble) {
-//        this.adapter.showEmpty(isAble);
+        this.adapter.showEmptyState();
     }
 
     @Override
     public void showCache(List<AddressModel> list) {
         this.clearCurrentList();
         this.list.addAll(list);
+        this.adapter.addElement(AddressViewModelMapper.convertToViewModel(list));
         this.adapter.notifyDataSetChanged();
     }
 
@@ -255,6 +261,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     public void replaceCache(List<AddressModel> list) {
         this.clearCurrentList();
         this.list.addAll(list);
+        this.adapter.addElement(AddressViewModelMapper.convertToViewModel(list));
         this.adapter.notifyDataSetChanged();
     }
 
@@ -295,6 +302,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         int positionStart = this.list.size();
         int itemCount = newData.size();
 
+        this.adapter.addElement(AddressViewModelMapper.convertToViewModel(newData));
         this.list.addAll(newData);
         this.adapter.notifyItemRangeInserted(positionStart, itemCount);
     }

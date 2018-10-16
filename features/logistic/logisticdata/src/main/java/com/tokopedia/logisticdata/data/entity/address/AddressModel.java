@@ -58,6 +58,25 @@ public class AddressModel implements Parcelable {
     @Expose
     private String districtName;
 
+    public AddressModel(String addressId, String receiverPhone, Integer addressStatus, String postalCode, String latitude, String addressStreet, String cityName, String districtId, String cityId, String countryName, String longitude, String provinceId, String addressName, String receiverName, String provinceName, String districtName) {
+        this.addressId = addressId;
+        this.receiverPhone = receiverPhone;
+        this.addressStatus = addressStatus;
+        this.postalCode = postalCode;
+        this.latitude = latitude;
+        this.addressStreet = addressStreet;
+        this.cityName = cityName;
+        this.districtId = districtId;
+        this.cityId = cityId;
+        this.countryName = countryName;
+        this.longitude = longitude;
+        this.provinceId = provinceId;
+        this.addressName = addressName;
+        this.receiverName = receiverName;
+        this.provinceName = provinceName;
+        this.districtName = districtName;
+    }
+
     /**
      * 
      * @return
