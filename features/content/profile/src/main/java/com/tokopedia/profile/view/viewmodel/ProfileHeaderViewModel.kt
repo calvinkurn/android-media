@@ -9,8 +9,8 @@ import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactory
 data class ProfileHeaderViewModel(
         val name: String = "",
         val avatar: String = "",
-        var followers: String = "0",
-        var following: String = "0",
+        var followers: String = ZERO,
+        var following: String = ZERO,
         val affiliateName: String = "",
         val link: String = "",
         val userId: Int = 0,
@@ -18,6 +18,10 @@ data class ProfileHeaderViewModel(
         val isAffiliate: Boolean = false,
         var isFollowed: Boolean = false,
         val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
+
+    companion object {
+        const val ZERO = "0"
+    }
 
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

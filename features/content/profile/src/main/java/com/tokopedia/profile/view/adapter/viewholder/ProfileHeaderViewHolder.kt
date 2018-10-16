@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
@@ -28,6 +29,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
         @LayoutRes
         val LAYOUT = R.layout.item_profile_header
         val PAYLOAD_FOLLOW = 13
+        val TEXT_LENGTH_MIN = 3
     }
 
     override fun bind(element: ProfileHeaderViewModel) {
@@ -36,7 +38,9 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
 
         if (element.isKol) {
             itemView.kolBadge.visibility = View.VISIBLE
-            itemView.followers.visibility = View.VISIBLE
+            itemView.followers.visibility =
+                    if (getFollowersText(element).length > TEXT_LENGTH_MIN) View.VISIBLE
+                    else View.GONE
             itemView.followers.text = getFollowersText(element)
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
@@ -52,7 +56,9 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
         } else {
             itemView.kolBadge.visibility = View.GONE
             if (element.isOwner) {
-                itemView.followers.visibility = View.VISIBLE
+                itemView.followers.visibility =
+                        if (getFollowersText(element).length > TEXT_LENGTH_MIN) View.VISIBLE
+                        else View.GONE
                 itemView.followers.text = getFollowersText(element)
                 itemView.followers.movementMethod = LinkMovementMethod.getInstance()
             } else {
@@ -73,8 +79,11 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
     override fun bind(element: ProfileHeaderViewModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         element?.let {
-            when(payloads[0]) {
+            when (payloads[0]) {
                 PAYLOAD_FOLLOW -> {
+                    itemView.followers.visibility =
+                            if (getFollowersText(element).length > TEXT_LENGTH_MIN) View.VISIBLE
+                            else View.GONE
                     itemView.followers.text = getFollowersText(element)
                     updateButtonState(it.isFollowed)
                 }
@@ -85,24 +94,27 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
 
     private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
         val spannableString: SpannableString
-        val following = String.format(
-                getString(R.string.profile_following_number),
-                element.following
-        )
-        if (element.isKol) {
+        val following =
+                if (element.following != ProfileHeaderViewModel.ZERO)
+                    String.format(getString(R.string.profile_following_number), element.following)
+                else ""
+        spannableString = if (element.isKol && element.followers != ProfileHeaderViewModel.ZERO) {
             val followers = String.format(
                     getString(R.string.profile_followers_number),
                     element.followers
             )
-            val followersAndFollowing = String.format(
-                    getString(R.string.profile_followers_and_following),
-                    followers,
-                    following
-            )
-            spannableString = SpannableString(followersAndFollowing)
+            val followersAndFollowing =
+                    if (!TextUtils.isEmpty(following)) String.format(
+                            getString(R.string.profile_followers_and_following),
+                            followers,
+                            following
+                    )
+                    else followers
+            SpannableString(followersAndFollowing)
         } else {
-            spannableString = SpannableString(following)
+            SpannableString(following)
         }
+
         val goToFollowing = object : ClickableSpan() {
             override fun onClick(p0: View?) {
                 viewListener.goToFollowing()
@@ -114,11 +126,14 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
                 ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
             }
         }
-        spannableString.setSpan(
-                goToFollowing,
-                spannableString.indexOf(following),
-                spannableString.indexOf(following) + following.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        if (spannableString.indexOf(following) != -1) {
+            spannableString.setSpan(
+                    goToFollowing,
+                    spannableString.indexOf(following),
+                    spannableString.indexOf(following) + following.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         return spannableString
     }
 
