@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
@@ -72,6 +74,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDonationModel shipmentDonationModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
+    private RatesDataConverter ratesDataConverter;
 
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
@@ -80,9 +83,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
-                           ShipmentDataRequestConverter shipmentDataRequestConverter) {
+                           ShipmentDataRequestConverter shipmentDataRequestConverter,
+                           RatesDataConverter ratesDataConverter) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
+        this.ratesDataConverter = ratesDataConverter;
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
     }
@@ -154,7 +159,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     showCaseObjectList, cartIds);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
-                    (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel, showCaseObjectList);
+                    (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
+                    ratesDataConverter, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder(
@@ -173,6 +179,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return shipmentDataList.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof ShipmentItemViewHolder) {
+            ((ShipmentItemViewHolder) holder).unsubscribeDebouncer();
+        }
     }
 
     private void setShowCase(Context context) {
@@ -450,22 +464,24 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setSelectedCourier(int position, CourierItemData courierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData courierItemData) {
+        ShipmentCartItemModel shipmentCartItemModel = null;
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
-            if (((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData() != null) {
-                ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseInsurance(null);
-                ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
+            shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
                 if (!courierItemData.isAllowDropshiper()) {
-                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(null);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(courierItemData);
-                shipmentDetailData.setShipmentCartData(((ShipmentCartItemModel) currentShipmentData).getShipmentCartData());
-                ((ShipmentCartItemModel) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+                shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
+                shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 if (!courierItemData.isAllowDropshiper()) {
-                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(null);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
             updateShipmentCostModel();
@@ -474,6 +490,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier();
+
+        return shipmentCartItemModel;
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
@@ -588,6 +606,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (itemAdapter instanceof RecipientAddressModel) {
                     ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, true);
                 }
             }
         } else {
@@ -604,11 +624,23 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (itemAdapter instanceof RecipientAddressModel) {
                     ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof ShipmentCartItemModel) {
+                    updateFirstInvoiceItemMargin(i, (ShipmentCartItemModel) itemAdapter, false);
                 }
             }
         }
         updateShipmentCostModel();
         notifyItemChanged(getShipmentCostPosition());
+    }
+
+    private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel,
+                                              boolean hasExtraMarginTop) {
+        if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
+                shipmentCartItemModelList.get(0) != null &&
+                shipmentCartItemModel.getShopId() == shipmentCartItemModelList.get(0).getShopId()) {
+            shipmentCartItemModel.setStateHasExtraMarginTop(hasExtraMarginTop);
+            notifyItemChanged(iteration);
+        }
     }
 
     public void updateItemPromoVoucher(CartItemPromoHolderData cartPromo) {

@@ -7,7 +7,6 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.train.common.TrainDataDBSource;
 import com.tokopedia.train.common.specification.DbFlowSpecification;
 import com.tokopedia.train.common.specification.DbFlowWithOrderSpecification;
@@ -25,10 +24,7 @@ import com.tokopedia.train.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import rx.Observable;
@@ -119,11 +115,11 @@ public class TrainScheduleDbDataStore implements TrainDataDBSource<TrainSchedule
         trainScheduleDbTable.setFastestFlag(false);
         trainScheduleDbTable.setReturnSchedule(scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE);
 
-        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_HOUR, trainScheduleEntity.getDepartureTimestamp());
         trainScheduleDbTable.setDepartureHour(Integer.valueOf(departureHour));
 
-        String departureTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String departureTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.DEFAULT_TIMESTAMP_FORMAT, trainScheduleEntity.getDepartureTimestamp());
         trainScheduleDbTable.setDepartureTime(convertTimestampToLong(departureTimestampCustom));
 

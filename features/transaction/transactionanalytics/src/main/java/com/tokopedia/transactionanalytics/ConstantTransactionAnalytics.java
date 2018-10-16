@@ -33,14 +33,15 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ORDER = "clickOrder";
         String CLICK_ADDRESS = "clickAddress";
         String PRODUCT_CLICK = "productClick";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface EventCategory {
-        String CART = "Cart";
-        String COURIER_SELECTION = "Courier Selection";
+        String CART = "cart";
+        String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
-        String CART_CHANGE_ADDRESS = "Cart Change Address";
-        String CART_MULTIPLE_ADDRESS = "Cart Multiple Address";
+        String CART_CHANGE_ADDRESS = "cart change address";
+        String CART_MULTIPLE_ADDRESS = "cart multiple address";
         String ORDER_TRACKING = "order tracking";
     }
 
@@ -195,6 +196,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
         String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
         String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
+        String VIEW_PRODUCT = "view product";
     }
 
     interface EventLabel {
@@ -215,6 +217,10 @@ public interface ConstantTransactionAnalytics {
 
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
+
+        String PRODUCT_WISHLIST = "product wishlist";
+        String PRODUCT_LAST_SEEN = "product last seen";
+        String PRODUCT_RECOMMENDATION = "product recommendation";
     }
 
     interface ScreenName {

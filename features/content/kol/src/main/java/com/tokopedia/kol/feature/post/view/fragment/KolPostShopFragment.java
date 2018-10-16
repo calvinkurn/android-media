@@ -15,6 +15,7 @@ import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerA
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 
 import java.util.List;
 
@@ -100,6 +101,10 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
             } else {
                 adapter.showEmpty();
             }
+        } else if (adapter.getList().isEmpty()
+                && TextUtils.equals(userSession.getShopId(), shopId)) {
+            adapter.addItem(new EntryPointViewModel(v -> goToCreatePost()));
+            adapter.addList(visitables);
         } else {
             adapter.addList(visitables);
         }
@@ -110,6 +115,17 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
         adapter.showErrorNetwork(message, this::fetchData);
     }
 
+    private void goToCreatePost() {
+        if (!TextUtils.isEmpty(createPostUrl)) {
+            startActivityForResult(
+                    CreatePostImagePickerActivity.getInstance(
+                            getActivity(),
+                            createPostUrl),
+                    CREATE_POST
+            );
+        }
+    }
+
     private EmptyResultViewModel getEmptyResultViewModel() {
         if (emptyResultViewModel == null) {
             emptyResultViewModel = new EmptyResultViewModel();
@@ -117,7 +133,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
             emptyResultViewModel.setTitle(getString(R.string.empty_own_feed_title));
             emptyResultViewModel.setContent(getString(R.string.empty_own_feed_subtitle));
 
-            if (!TextUtils.isEmpty(createPostUrl)){
+            if (!TextUtils.isEmpty(createPostUrl)) {
                 emptyResultViewModel.setButtonTitle(getString(R.string.empty_own_feed_button));
                 emptyResultViewModel.setCallback(new BaseEmptyViewHolder.Callback() {
                     @Override
@@ -127,12 +143,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
                     @Override
                     public void onEmptyButtonClicked() {
-                        startActivityForResult(
-                                CreatePostImagePickerActivity.getInstance(
-                                        getActivity(),
-                                        createPostUrl),
-                                CREATE_POST
-                        );
+                        goToCreatePost();
                     }
                 });
             }
