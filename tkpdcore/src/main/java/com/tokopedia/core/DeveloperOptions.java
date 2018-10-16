@@ -227,6 +227,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(IP_GROUPCHAT, ip);
         editor.apply();
+        Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
     }
 
     private void actionSaveValueRemoteConfig() {

@@ -203,8 +203,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                             System.currentTimeMillis(),
                             String.valueOf(1231),
                             "123321",
-                            "opeeen",
-                            "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                            "logger open",
+                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
                             false,
                             false
                     );
@@ -223,8 +223,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                             System.currentTimeMillis(),
                             String.valueOf(1231),
                             "123321",
-                            "logger",
-                            "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                            "logger message",
+                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
                             false,
                             false
                     );
@@ -247,11 +247,39 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             @Override
             protected void onReconnect() {
                 Log.d("RxWebSocket Presenter", "onReconnect");
+                if(showLog){
+                    ChatViewModel dummy = new ChatViewModel(
+                            "reconnecting ",
+                            System.currentTimeMillis(),
+                            System.currentTimeMillis(),
+                            String.valueOf(1231),
+                            "123321",
+                            "logger reconnect",
+                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
+                            false,
+                            false
+                    );
+                    getView().onMessageReceived(dummy);
+                }
             }
 
             @Override
             protected void onClose() {
                 Log.d("RxWebSocket Presenter", "onClose");
+                if(showLog){
+                    ChatViewModel dummy = new ChatViewModel(
+                            "onClose",
+                            System.currentTimeMillis(),
+                            System.currentTimeMillis(),
+                            String.valueOf(1231),
+                            "123321",
+                            "logger close",
+                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
+                            false,
+                            false
+                    );
+                    getView().onMessageReceived(dummy);
+                }
                 destroyWebSocket();
                 connect(userId, deviceId, accessToken, channelUrl);
             }
@@ -301,8 +329,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                         System.currentTimeMillis(),
                         String.valueOf(1231),
                         "123321",
-                        "error logger",
-                        "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                        "error logger send",
+                        "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
                         false,
                         false
                 );
@@ -317,8 +345,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     System.currentTimeMillis(),
                     String.valueOf(1231),
                     "123321",
-                    "logger",
-                    "https://imagerouter.tokopedia.com/img/100-square/user-1/2018/3/16/7822796/7822796_9963cc8f-91c7-4b0e-9ec5-ea538953995c.jpg",
+                    "logger send",
+                    "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
                     false,
                     false
             );
