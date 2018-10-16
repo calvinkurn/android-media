@@ -174,12 +174,24 @@ open class FlightSearchRepository @Inject constructor(
                 .flatMap { journeyAndRoutesList ->
                     Observable.from(journeyAndRoutesList).flatMap { journeyAndRoutes ->
                         Observable.from(journeyAndRoutes.routes)
-                                .flatMap { it -> getAirlineById(it.airline) }
+                                .flatMap { route ->
+                                    getAirlineById(route.airline).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
+                                        airline: FlightAirlineDB, airport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                        Pair(airline, airport)
+                                    }
+                                }
                                 .toList()
                                 .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
-                                    airlines: List<FlightAirlineDB>, pairOfAirport: Pair<FlightAirportDB, FlightAirportDB> ->
+                                    routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                                    journeyAirports: Pair<FlightAirportDB, FlightAirportDB> ->
+                                    val journeyAirlines = arrayListOf<FlightAirlineDB>()
+                                    for (routeAirline in routesAirlinesAndAirports) {
+                                        if (!journeyAirlines.contains(routeAirline.first)) {
+                                            journeyAirlines.add(routeAirline.first)
+                                        }
+                                    }
                                     journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
-                                            journeyAndRoutes.flightJourneyTable, pairOfAirport, airlines)
+                                            journeyAndRoutes.flightJourneyTable, journeyAirports, journeyAirlines)
                                     journeyAndRoutes
                                 }
                     }.toList()
@@ -287,7 +299,8 @@ open class FlightSearchRepository @Inject constructor(
                     totalNumeric,
                     isReturn,
                     isRefundable,
-                    !TextUtils.isEmpty(beforeTotal)
+                    !TextUtils.isEmpty(beforeTotal),
+                    ""
             )
         }
     }
@@ -337,6 +350,7 @@ open class FlightSearchRepository @Inject constructor(
             journey.childNumericCombo = childPriceNumeric
             journey.infantNumericCombo = infantPriceNumeric
             journey.isBestPairing = isBestPairing
+            journey.comboId = comboId
             journey.sortPrice = adultPriceNumeric
         }
         return journey

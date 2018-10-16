@@ -106,7 +106,8 @@ class FlightSearchJourneyByIdUseCase @Inject constructor(
                     isReturn,
                     fare,
                     routes,
-                    flightAirlineDBS
+                    flightAirlineDBS,
+                    comboId
             )
         }
     }

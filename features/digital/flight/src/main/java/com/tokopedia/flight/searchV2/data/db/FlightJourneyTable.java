@@ -58,6 +58,7 @@ public class FlightJourneyTable {
     private boolean isReturn;
     private boolean isSpecialPrice;
     private RefundableEnum isRefundable;
+    private String comboId;
 
     public FlightJourneyTable() {
     }
@@ -73,7 +74,7 @@ public class FlightJourneyTable {
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
                               boolean isBestPairing, String beforeTotal, int sortPrice, boolean isReturn,
-                              RefundableEnum isRefundable, boolean isSpecialPrice) {
+                              RefundableEnum isRefundable, boolean isSpecialPrice, String comboId) {
         this.id = id;
         this.term = term;
         this.departureAirport = departureAirport;
@@ -114,6 +115,7 @@ public class FlightJourneyTable {
         this.isReturn = isReturn;
         this.isRefundable = isRefundable;
         this.isSpecialPrice = isSpecialPrice;
+        this.comboId = comboId;
     }
 
     @NonNull
@@ -437,4 +439,11 @@ public class FlightJourneyTable {
         isSpecialPrice = specialPrice;
     }
 
+    public String getComboId() {
+        return comboId;
+    }
+
+    public void setComboId(String comboId) {
+        this.comboId = comboId;
+    }
 }
