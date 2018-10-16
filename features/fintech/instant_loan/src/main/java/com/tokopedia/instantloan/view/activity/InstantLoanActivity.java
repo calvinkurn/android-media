@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -249,16 +248,12 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
         if (id == R.id.submission_history) {
             openWebView(InstantLoanUrl.SUBMISSION_HISTORY_URL);
-            Toast.makeText(this, "submission history clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.payment_method) {
             openWebView(String.format(InstantLoanUrl.PAYMENT_METHODS_URL, loanId));
-            Toast.makeText(this, "payment method clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.help) {
-
             openWebView(InstantLoanUrl.HELP_URL);
-            Toast.makeText(this, "help clicked", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

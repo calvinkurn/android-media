@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/submission_history"
-        android:title="Riwayat Pengajuan Dana Instan"
+        android:title="@string/submission_history_menu_item"
         app:showAsAction="never" />
     <item
         android:id="@+id/payment_method"
-        android:title="Cara Pembayaran Dana Instan"
+        android:title="@string/payment_method_menu_item"
         app:showAsAction="never" />
     <item
         android:id="@+id/help"
-        android:title="Bantuan"
+        android:title="@string/help_menu_item"
         app:showAsAction="never" />
 </menu>
