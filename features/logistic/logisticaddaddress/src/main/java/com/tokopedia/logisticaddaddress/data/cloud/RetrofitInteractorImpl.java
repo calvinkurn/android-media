@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.network;
+package com.tokopedia.logisticaddaddress.data.cloud;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
-import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.utils.MapNulRemover;
 
 import java.io.IOException;

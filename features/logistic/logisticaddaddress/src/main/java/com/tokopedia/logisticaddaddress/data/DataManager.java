@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model.datamanager;
+package com.tokopedia.logisticaddaddress.data;
 
 import android.content.Context;
 

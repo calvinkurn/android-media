@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivityPresenter;
+import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressActivityPresenter;
 
 /**
  * Created on 5/25/16.

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.network;
+package com.tokopedia.logisticaddaddress.data.cloud;
 
 import android.content.Context;
 

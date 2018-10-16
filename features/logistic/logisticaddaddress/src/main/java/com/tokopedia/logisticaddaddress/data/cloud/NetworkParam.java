@@ -1,10 +1,7 @@
-package com.tokopedia.logisticaddaddress.model.datamanager;
+package com.tokopedia.logisticaddaddress.data.cloud;
 
 import com.tokopedia.logisticdata.data.entity.address.GetAddressDataPass;
 import com.tokopedia.network.utils.TKPDMapParam;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created on 5/19/16.

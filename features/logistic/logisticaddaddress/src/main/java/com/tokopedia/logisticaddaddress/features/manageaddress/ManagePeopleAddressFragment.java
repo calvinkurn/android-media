@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manageaddress;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -31,11 +30,10 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
-import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;

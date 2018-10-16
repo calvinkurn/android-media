@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.manageaddress;
+package com.tokopedia.logisticaddaddress.features.manageaddress;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,35 +6,24 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
-import com.tokopedia.logisticaddaddress.model.datamanager.DataManager;
-import com.tokopedia.logisticaddaddress.model.datamanager.DataManagerImpl;
-import com.tokopedia.logisticaddaddress.model.datamanager.NetworkParam;
+import com.tokopedia.logisticaddaddress.data.DataManager;
+import com.tokopedia.logisticaddaddress.data.DataManagerImpl;
+import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
-import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
-import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetAddressDataPass;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.Paging;
-import com.tokopedia.network.CommonNetwork;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
 
 import java.util.Map;
-
-import okhttp3.OkHttpClient;
 
 /**
  * Created on 5/18/16.

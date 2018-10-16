@@ -7,13 +7,13 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".addaddress.AddAddressActivity"
+            android:name=".features.addaddress.AddAddressActivity"
             android:label="@string/title_activity_add_address"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".manageaddress.ManagePeopleAddressActivity"
+            android:name=".features.manageaddress.ManagePeopleAddressActivity"
             android:label="@string/title_activity_manage_people_address"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />

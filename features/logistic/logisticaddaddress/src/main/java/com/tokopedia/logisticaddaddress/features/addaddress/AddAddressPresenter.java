@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.addaddress;
+package com.tokopedia.logisticaddaddress.features.addaddress;
 
 
 import android.content.Context;

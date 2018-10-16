@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model.datamanager;
+package com.tokopedia.logisticaddaddress.data.disk;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

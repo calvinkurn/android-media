@@ -1,11 +1,11 @@
-package com.tokopedia.logisticaddaddress.addaddress;
+package com.tokopedia.logisticaddaddress.features.addaddress;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.logisticaddaddress.GeoLocationUtils;
 import com.tokopedia.logisticaddaddress.di.AddressScope;
-import com.tokopedia.logisticaddaddress.network.AddressRepository;
+import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.model.datamanager;
+package com.tokopedia.logisticaddaddress.data;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,9 +7,11 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
-import com.tokopedia.logisticaddaddress.network.RetrofitInteractor;
-import com.tokopedia.logisticaddaddress.network.RetrofitInteractorImpl;
+import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
+import com.tokopedia.logisticaddaddress.data.disk.LocalDatabase;
+import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;
+import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractor;
+import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractorImpl;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.user.session.UserSession;

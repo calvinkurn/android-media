@@ -1,6 +1,4 @@
-package com.tokopedia.logisticaddaddress.manageaddress;
-
-import android.app.Fragment;
+package com.tokopedia.logisticaddaddress.features.manageaddress;
 
 /**
  * Created on 5/18/16.
