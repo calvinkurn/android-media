@@ -13,7 +13,6 @@ import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
 import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchReturnFragment;
-import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 public class FlightSearchReturnActivity extends FlightSearchActivity
         implements FlightSearchFragment.OnFlightSearchFragmentListener {
@@ -64,12 +63,14 @@ public class FlightSearchReturnActivity extends FlightSearchActivity
     }
 
     @Override
-    public void selectFlight(String selectedFlightID, FlightPriceViewModel priceViewModel) {
+    public void selectFlight(String selectedFlightID) {
+        // TODO : PASS FLIGHTPRICEVIEWMODEL
         startActivityForResult(FlightBookingActivity
                         .getCallingIntent(this,
                                 passDataViewModel,
                                 selectedDepartureID,
-                                selectedFlightID),
+                                selectedFlightID,
+                                null),
                 REQUEST_CODE_BOOKING);
     }
 
