@@ -7,6 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatactionballoon
+        .ChatActionBalloonSelectionAttachmentAttributes;
+import com.tokopedia.topchat.chatroom.domain.pojo.chatactionballoon.ChatActionPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponse;
 import com.tokopedia.topchat.chatroom.domain.pojo.common.WebSocketResponseData;
 import com.tokopedia.topchat.chatroom.domain.pojo.imageupload.ImageUploadAttributes;
@@ -18,6 +21,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.productattachment.ProductAttac
 import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyAttachmentAttributes;
 import com.tokopedia.topchat.chatroom.domain.pojo.quickreply.QuickReplyPojo;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionSelectionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSelectionViewModel;
@@ -28,7 +33,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.productattachment.ProductAt
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.rating.ChatRatingViewModel;
-import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,8 @@ public class WebSocketMapper {
     public static final String TYPE_INVOICES_SELECTION = "6";
     public static final String TYPE_INVOICE_SEND = "7";
     public static final String TYPE_QUICK_REPLY = "8";
+    public static final String TYPE_CHAT_BALLOON_ACTION = "9";
+
     private SessionHandler sessionHandler;
 
     @Inject
@@ -102,9 +108,37 @@ public class WebSocketMapper {
                 return convertToInvoiceSent(pojo.getData(), jsonAttributes);
             case TYPE_INVOICES_SELECTION:
                 return convertToInvoiceSelection(pojo.getData(), jsonAttributes);
+            case TYPE_CHAT_BALLOON_ACTION:
+                return convertToChatActionSelectionBubbleModel(pojo.getData(),jsonAttributes);
             default:
                 return convertToFallBackModel(pojo.getData());
         }
+    }
+
+    private ChatActionSelectionBubbleViewModel convertToChatActionSelectionBubbleModel
+            (WebSocketResponseData pojo , JsonObject jsonAttribute) {
+        ChatActionBalloonSelectionAttachmentAttributes pojoAttribute = new GsonBuilder().create().
+                fromJson(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes.class);
+        return new ChatActionSelectionBubbleViewModel(
+                String.valueOf(pojo.getMsgId()),
+                String.valueOf(pojo.getFromUid()),
+                pojo.getFrom(),
+                pojo.getFromRole(),
+                pojo.getAttachment().getId(),
+                pojo.getAttachment().getType(),
+                pojo.getMessage().getTimeStampUnix(),
+                pojo.getMessage().getCensoredReply(),
+                convertToChatActionBubbleViewModelList(pojoAttribute)
+        );
+    }
+
+    private List<ChatActionBubbleViewModel> convertToChatActionBubbleViewModelList(
+            ChatActionBalloonSelectionAttachmentAttributes pojo) {
+        ArrayList<ChatActionBubbleViewModel> result = new ArrayList<>();
+        for(ChatActionPojo item : pojo.getChatActions()) {
+            result.add(new ChatActionBubbleViewModel(item.getMessage()));
+        }
+        return result;
     }
 
     private BaseChatViewModel convertToMessageViewModel(WebSocketResponseData pojo) {

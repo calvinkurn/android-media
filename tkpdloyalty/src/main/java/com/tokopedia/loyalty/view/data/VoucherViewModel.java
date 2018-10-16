@@ -7,16 +7,22 @@ package com.tokopedia.loyalty.view.data;
 public class VoucherViewModel {
 
     private boolean isSuccess;
-
     private String message;
-
     private String amount;
-
     private String code;
-
     private long rawDiscount;
-
     private long rawCashback;
+
+    public VoucherViewModel() {}
+
+    public VoucherViewModel(boolean isSuccess, String message, String amount, String code, long rawDiscount, long rawCashback) {
+        this.isSuccess = isSuccess;
+        this.message = message;
+        this.amount = amount;
+        this.code = code;
+        this.rawDiscount = rawDiscount;
+        this.rawCashback = rawCashback;
+    }
 
     public boolean isSuccess() {
         return isSuccess;
@@ -65,4 +71,5 @@ public class VoucherViewModel {
     public void setRawCashback(long rawCashback) {
         this.rawCashback = rawCashback;
     }
+
 }

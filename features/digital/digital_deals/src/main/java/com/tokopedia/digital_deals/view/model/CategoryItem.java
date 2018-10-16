@@ -19,6 +19,9 @@ public class CategoryItem implements Parcelable {
     private String name;
     @SerializedName("category_url")
     @Expose
+    private String categoryUrl;
+    @SerializedName("url")
+    @Expose
     private String url;
     @SerializedName("media_url")
     @Expose
@@ -50,6 +53,15 @@ public class CategoryItem implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public String getCategoryUrl() {
+        return categoryUrl;
+    }
+
+    public void setCategoryUrl(String categoryUrl) {
+        this.categoryUrl = categoryUrl;
     }
 
     public String getUrl() {
@@ -102,6 +114,7 @@ public class CategoryItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
         dest.writeString(this.name);
+        dest.writeString(this.categoryUrl);
         dest.writeString(this.url);
         dest.writeString(this.mediaUrl);
         dest.writeList(this.items);
@@ -112,6 +125,7 @@ public class CategoryItem implements Parcelable {
     protected CategoryItem(Parcel in) {
         this.title = in.readString();
         this.name = in.readString();
+        this.categoryUrl = in.readString();
         this.url = in.readString();
         this.items = new ArrayList<ProductItem>();
         this.mediaUrl = in.readString();

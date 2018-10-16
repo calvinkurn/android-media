@@ -40,11 +40,6 @@
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".shopsettings.edit.view.ShopEditorActivity"
-            android:label="@string/shop_setting"
-            android:theme="@style/ShopAppTheme" />
-
         <!-- Product -->
         <!-- Product Manage -->
         <activity
@@ -120,18 +115,6 @@
             android:label="@string/title_activity_payment_editor"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".shopsettings.address.activity.ManageShopAddress"
-            android:label="@string/title_activity_manage_shop_address"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shopsettings.address.activity.ShopAddressForm"
-            android:label="@string/title_activity_shop_address_form"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".shopsettings.etalase.activity.EtalaseShopEditor"
-            android:label="@string/title_activity_etalase_shop_editor"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".shopsettings.shipping.EditShippingActivity"
             android:label="@string/shop_shipping_setting"
             android:screenOrientation="portrait">
@@ -139,7 +122,7 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="ANDROID.INTENT.CATEGORY.BROWSABLE" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="com.tokopedia.tkpd"
@@ -182,12 +165,13 @@
             android:label="@string/choose_image"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".seller.info.view.activity.SellerCenterActivity"
+            android:theme="@style/Theme.White"
+            android:label="@string/title_activity_seller_center"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".shopsettings.edit.view.ShopEditService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.product.manage.item.main.base.view.service.UploadProductService"
@@ -196,6 +180,16 @@
             android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity android:name=".product.edit.view.activity.ProductAddWholesaleActivity"
+            android:label="@string/product_label_product_wholesale"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".selling.view.activity.CustomerAppSellerTransactionActivity"
+            android:label="@string/title_activity_shop_transaction_new"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 
 </manifest>

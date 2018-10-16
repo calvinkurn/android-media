@@ -23,10 +23,6 @@ public interface MojitoService {
     @GET(TkpdBaseURL.Mojito.PATH_USER_RECENT_VIEW + "{userId}" + TkpdBaseURL.Mojito.PATH_RECENT_VIEW)
     Observable<Response<DataResponse<ProductItemData>>> getRecentProduct(@Path("userId") String UserId);
 
-    @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
-    Observable<Response<String>> getWishlist(@Path("userId") String UserId,
-                                             @QueryMap HashMap<String, Object> params);
-
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
             @Path("userId") String userId, @Query("q") String query);

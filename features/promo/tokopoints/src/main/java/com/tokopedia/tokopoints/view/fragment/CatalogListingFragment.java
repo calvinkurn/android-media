@@ -31,7 +31,9 @@ import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +56,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Inject
     public CatalogListingPresenter mPresenter;
 
-    public static Fragment newInstance() {
-        return new CatalogListingFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new CatalogListingFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -166,6 +170,27 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         hideLoader();
         //Setting up sort types tabs
         mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getSortType(), mPresenter);
+
+        mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                AnalyticsTrackerUtil.sendEvent(getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        "click " + filters.getSortType().get(position).getText(),
+                        mPresenter.getCategoryName(filters.getCategories(), mPresenter.getSelectedCategoryId()));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mPagerSortType.setAdapter(mViewPagerAdapter);
         mTabSortType.setupWithViewPager(mPagerSortType);
 
@@ -187,6 +212,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
         //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
         mPagerSortType.postDelayed(() -> refreshTab(getSelectedCategoryId()), CommonConstant.TAB_SETUP_DELAY_MS);
+
+        //excluding extra padding from tabs
+        TabUtil.wrapTabIndicatorToTitle(mTabSortType,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
     }
 
 
@@ -239,6 +269,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
+
+        if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
+            view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);
+        }
     }
 
     private void initListener() {

@@ -206,6 +206,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int PEOPLE_DIGITAL_TRANSACTION_LIST = 207;
         public static final int PEOPLE_FLIGHT_TRANSACTION_LIST = 208;
         public static final int PEOPLE_TRAIN_TRANSACTION_LIST = 209;
+        public static final int PEOPLE_PAYMENT_LIST = 212;
         public static final int PEOPLE_DEALS_TRANSACTION_LIST = 210;
         public static final int PEOPLE_EVENTS_TRANSACTION_LIST = 211;
 
@@ -244,6 +245,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int CATEGORY_NAVIGATION = 54;
         public static final int RESOLUTION_CENTER_BUYER = 55;
         public static final int RESOLUTION_CENTER_SELLER = 56;
+        public static final int MYBILLS = 57;
 
         public static final int FEATURED_PRODUCT = 99;
 

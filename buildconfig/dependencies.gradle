@@ -6,7 +6,7 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.40"
+    kotlinVersion = "1.2.71"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
@@ -17,14 +17,15 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
-    espressoVersion = "2.2.2"
-    runnerVersion = "0.5"
-    rulesVersion = "0.5"
+    espressoVersion = "3.0.1"
+    runnerVersion = "1.0.2"
+    rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
+    powerMockVersion = '1.6.2'
 
     tkpdUseCaseVersion = '2.23'
     tkpdAbstractionVersion = '2.22'
@@ -54,6 +55,9 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdKolCommonVersion = '2.22'
+    tkpdExploreVersion = '2.22'
+    tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -68,12 +72,23 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdVoteVersion = '2.22'
+    tkpdNotifCenterVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
+    tkpdPaymentManagementSystem = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
+    tkpdWithdrawVersion = '2.22'
+    tkpdTrainVersion = '2.22'
+    tkpdRecentviewVersion = '2.22'
+    tkpdUpdateInactivePhoneVersion = '2.22'
+    tkpdBankDBVersion = '2.22'
+    transactionCheckoutVersion = '2.22'
+
+    groupIdTransaction = 'com.tokopedia.transaction'
+    artifactIdCheckout = 'checkout'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -100,6 +115,7 @@ ext {
             cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
             exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
             constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
+            preferenceV7    : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport   : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     ]
 
@@ -186,7 +202,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.4.1",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
@@ -194,7 +210,7 @@ ext {
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:1.0.0"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
     ]
 
     testDependencies = [
@@ -207,11 +223,18 @@ ext {
             androidTestRunner  : "com.android.support.test:runner:$runnerVersion",
             androidRulesVersion: "com.android.support.test:rules:$rulesVersion",
             espressoIntents    : "com.android.support.test.espresso:espresso-intents:$espressoVersion",
+            espressoContrib    : "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
             retrofitMock       : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito    : 'com.google.dexmaker:dexmaker-mockito:1.2',
-            assertJ            : "org.assertj:assertj-core:1.7.1"
+            assertJ            : "org.assertj:assertj-core:1.7.1",
+            assertJCore        : 'org.assertj:assertj-core:3.8.0',
+            powerMock          : "org.powermock:powermock:$powerMockVersion",
+            powerMockJUnit     : "org.powermock:powermock-module-junit4:$powerMockVersion",
+            powerMockJUnitRule : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
+            powerMockito       : "org.powermock:powermock-api-mockito:$powerMockVersion",
+            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion"
     ]
 
     debugToolsDependencies = [
@@ -240,6 +263,9 @@ ext {
             tkpdpdp               : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}",
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
+            explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
             loyalty               : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
@@ -261,7 +287,6 @@ ext {
             shopSettings          : "com.tokopedia.shop:shop-settings:${tkpdShopVersion}",
             productManageItem           : "com.tokopedia.product:product-manage-item:${tkpdProductVersion}",
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
-            kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
@@ -272,13 +297,16 @@ ext {
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             districtRecommendation: "com.tokopedia.district_recommendation:district_recommendation:${tkpdDistrictRecommendationVersion}",
             productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
+            productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
-            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}"
+            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.15",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
@@ -290,6 +318,10 @@ ext {
             loyalty               : ":tkpdloyalty",
             nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
+            kol                   : ":features:content:kol",
+            kolCommon             : ":features:content:kol_common",
+            explore               : ":features:content:explore",
+            interestPick          : ":features:content:interest_pick",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
             inbox                 : ":tkpdinbox",
@@ -326,15 +358,20 @@ ext {
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
             home                  : ":features:discovery:home",
+            recentview            : ":features:discovery:recentview",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
-            kol                   : ":features:content:kol",
-            groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
+            groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
+            settingbank           : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
-            contactUs             : ":features:operational:contact_us",
+            changepassword        : ":features:user:changepassword",
+            bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
+            vote                  : ":features:user:vote",
+            notifCenter           : ":features:user:notifcenter",
+            contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
@@ -342,10 +379,25 @@ ext {
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
             vote                  : ":features:user:vote",
+            logout                : ":features:user:logout",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
-            productDraftDatabase  : ":features:merchant:product_draft_database"
+            navigation            : ":features:home:navigation",
+            searchbar             : ":features:home:searchbar",
+            navigationCommon      : ":features:home:navigation-common",
+            accountHome           : ":features:home:account-home",
+            withdraw              : ":features:payment:withdraw",
+            productDraftDatabase  : ":features:merchant:product_draft_database",
+            broadcastMessage      : ":features:communication:broadcast_message",
+            //broadcastMessage          : ":features:communication:broadcast_message_no_op", // toggle for no op
+            broadcastMessageCommon   : ":features:communication:broadcast_message_common",
+            paymentManagementSystem     : ":features:payment:pms",
+            train                 : ":features:digital:train",
+            updateinactivephone   : ":features:user:updateinactivephone",
+            paymentSetting        : ":features:payment:payment_setting",
+            browse                : ":features:digital:digital_browse",
+            saldodetails            : ":features:fintech:saldo_details"
     ]
 
     libraries = [
@@ -359,7 +411,6 @@ ext {
             userSession       : ":libraries:user_session",
             config            : ":libraries:global_config",
             network           : ":libraries:network",
-            useCase           : ":libraries:use_case",
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
@@ -373,6 +424,7 @@ ext {
             graphql           : ":libraries:graphql",
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
-            youtubeutil       : ":libraries:youtubeutil"
+            youtubeutil       : ":libraries:youtubeutil",
+            travelCalendar    : ":libraries:travel_calendar"
     ]
 }

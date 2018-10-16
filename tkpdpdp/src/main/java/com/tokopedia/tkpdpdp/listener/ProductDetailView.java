@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.listener;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 
 import java.util.List;
 
@@ -30,6 +32,8 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
+
+    void onWishlistCountLoaded(String wishlistCountText);
 
     /**
      * Saat salah satu kategori product di klik.
@@ -331,5 +335,11 @@ public interface ProductDetailView extends ViewListener {
 
     void trackingEnhanceProductDetail();
 
+    Context getActivityContext();
+
     void refreshData();
+
+    void onSuccesLoadRateEstimaion(RatesModel ratesModel);
+
+    void moveToEstimationDetail();
 }

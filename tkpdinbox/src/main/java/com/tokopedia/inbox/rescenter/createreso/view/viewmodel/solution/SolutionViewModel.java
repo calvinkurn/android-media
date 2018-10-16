@@ -16,6 +16,9 @@ public class SolutionViewModel implements Parcelable {
     private String solutionName;
     private AmountViewModel amount;
 
+    public SolutionViewModel() {
+    }
+
     public SolutionViewModel(int id, String name, String solutionName, AmountViewModel amount) {
         this.id = id;
         this.name = name;

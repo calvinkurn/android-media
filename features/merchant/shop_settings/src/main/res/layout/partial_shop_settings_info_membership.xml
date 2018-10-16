@@ -5,18 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_16">
+
     <LinearLayout android:layout_width="match_parent"
         android:id="@+id/vgMembershipContainer"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
-            style="@style/TextView.Title.Bold"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16"
-            android:text="@string/shop_settings_membership_label" />
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                style="@style/TextView.Title.Bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_16"
+                android:text="@string/shop_settings_membership_label" />
+
+            <TextView
+                android:id="@+id/tvManageGmSubscribe"
+                style="@style/TextView.Title.Green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_20"
+                android:text="@string/label_manage"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,6 +69,7 @@
                     android:id="@+id/tvMembershipDescription"
                     style="@style/TextView.Micro.BlackSecondary"
                     tools:text="@string/shop_settings_gold_merchant_invite" />
+
             </LinearLayout>
 
         </LinearLayout>

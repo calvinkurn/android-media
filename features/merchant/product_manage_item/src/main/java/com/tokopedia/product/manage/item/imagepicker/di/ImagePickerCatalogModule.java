@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.product.manage.item.imagepicker.data.repository.CatalogImageRepositoryImpl;
 import com.tokopedia.product.manage.item.imagepicker.data.source.CatalogApi;
 import com.tokopedia.product.manage.item.imagepicker.data.source.CatalogImageDataSource;
 import com.tokopedia.product.manage.item.imagepicker.domain.CatalogImageRepository;
-import com.tokopedia.product.manage.item.imagepicker.data.repository.CatalogImageRepositoryImpl;
 import com.tokopedia.product.manage.item.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
 import com.tokopedia.product.manage.item.imagepicker.domain.interactor.GetCatalogImageUseCase;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;

@@ -269,7 +269,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                 intent.getAction().equals(NfcAdapter.ACTION_TECH_DISCOVERED)) {
             if (!isDigitalSmartcardEnabled()) {
                 Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show();
-                RouteManager.route(this, Constants.Applinks.HOME_FEED);
+                RouteManager.route(this, ApplinkConst.HOME_FEED);
                 finish();
             } else {
                 final Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -287,6 +287,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         isoDep = IsoDep.get(tag);
 
         try {
+            if (isoDep.isConnected()) {
+                isoDep.close();
+            }
+
             isoDep.connect();
             isoDep.setTimeout(TRANSCEIVE_TIMEOUT_IN_SEC); // 5 sec time out
 

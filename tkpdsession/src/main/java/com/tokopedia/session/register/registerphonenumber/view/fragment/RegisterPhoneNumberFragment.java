@@ -21,10 +21,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
@@ -34,12 +32,11 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameActivity;
+import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.registerphonenumber.view.activity.WelcomePageActivity;
 import com.tokopedia.session.register.registerphonenumber.view.listener.RegisterPhoneNumber;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.RegisterPhoneNumberPresenter;
-import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.util.ViewUtil;
 
 import javax.inject.Inject;
@@ -288,7 +285,7 @@ public class RegisterPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     public void goToAddNamePage(String phoneNumber) {
-        startActivityForResult(AddNameActivity.newInstance(getActivity(), phoneNumber), REQUEST_ADD_NAME);
+        startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber), REQUEST_ADD_NAME);
     }
 
     private void goToWelcomePage() {

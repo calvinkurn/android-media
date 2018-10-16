@@ -27,6 +27,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -54,6 +56,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     InstantLoanPresenter presenter;
 
     private int mCurrentTab;
+    private int mCurrentPagePosition = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,8 +176,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void onErrorPhoneDataUploaded(String errorMessage) {
-        hideIntroDialog();
         hideLoaderIntroDialog();
+        hideIntroDialog();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -218,6 +221,20 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
                     pageIndicator.setVisibility(View.VISIBLE);
                     btnNext.show();
                 }
+
+                boolean right = mCurrentPagePosition < position;
+
+                if (mCurrentPagePosition == 0 && right) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                } else if (mCurrentPagePosition == 1 && !right) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_PREVIOUS);
+                } else if (mCurrentPagePosition == 1) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                } else if (mCurrentPagePosition == 2 && !right) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_THIRD_PREVIOUS);
+                }
+
+                mCurrentPagePosition = position;
             }
 
             @Override
@@ -228,6 +245,15 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         btnNext.setOnClickListener(v -> {
             if (pager.getCurrentItem() != layouts.length) {
+
+                int position = pager.getCurrentItem();
+
+                if (position == 0) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_FIRST_NEXT);
+                } else if (position == 1) {
+                    sendIntroSliderScrollEvent(InstantLoanEventConstants.EventLabel.PL_INTRO_SLIDER_SECOND_NEXT);
+                }
+
                 pager.setCurrentItem(pager.getCurrentItem() + 1, true);
             }
         });
@@ -248,6 +274,10 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         mDialogIntro.getWindow().setAttributes(lp);
     }
 
+    private void sendIntroSliderScrollEvent(String label) {
+        InstantLoanEventTracking.eventIntroSliderScrollEvent(label);
+    }
+
     @Override
     public void showToastMessage(String message, int duration) {
         Toast.makeText(getContext(), message, duration).show();
@@ -263,6 +293,7 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     @Override
     public void searchLoanOnline() {
         if (presenter.isUserLoggedIn()) {
+            sendCariPinjamanClickEvent();
             presenter.getLoanProfileStatus();
         } else {
             navigateToLoginPage();
@@ -290,8 +321,16 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         mDialogIntro.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
-                .findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
+
+        if (mDialogIntro.findViewById(R.id.view_pager_il_intro) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                        .findViewById(R.id.progress_bar_status) != null) {
+
+            mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                    .findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override
@@ -301,8 +340,16 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         }
 
         mDialogIntro.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
-                .findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+
+        if (mDialogIntro.findViewById(R.id.view_pager_il_intro) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                        .findViewById(R.id.progress_bar_status) != null) {
+
+            mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                    .findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+
+        }
     }
 
     @Override
@@ -311,10 +358,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
             return;
         }
         mDialogIntro.dismiss();
-    }
-
-    public String getScreenNameId() {
-        return "";
     }
 
     @Override
@@ -338,7 +381,12 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     protected String getScreenName() {
-        return getScreenNameId();
+        return InstantLoanEventConstants.Screen.DANA_INSTAN_SCREEN_NAME;
+    }
+
+    private void sendCariPinjamanClickEvent() {
+        String eventLabel = getScreenName();
+        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
     }
 
     public static DanaInstantFragment createInstance(int position) {

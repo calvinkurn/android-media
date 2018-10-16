@@ -728,6 +728,7 @@ public interface AppEventTracking {
         String EXPAND_SUB_CATEGORY = "Expand Subcategory";
         String PAYMENT_AND_TOPUP = "Pembayaran dan Top Up";
         String DIGITAL_TRANSACTION_LIST = "Daftar Transaksi Digital";
+        String DIGITAL_MY_BILLS = "MyBills";
         String ADD_BALANCE = "Add Balance";
         String BALANCE_OPTION_50_RB = "Rp. 50,000";
         String BALANCE_OPTION_100_RB = "Rp. 100,000";

@@ -10,6 +10,7 @@
     <string name="string_attach_product_empty_product">Toko Anda belum memiliki produk</string>
     <string name="string_attach_product_warning_max_product_format">Maksimal melampirkan %1$s produk</string>
     <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
+    <string name="string_attach_product_choose_button_text">Pilih (%1$s/%2$s)</string>
     <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>
     <string name="string_attach_product_search_not_found">Produk yang Anda cari tidak dapat ditemukan</string>
@@ -37,6 +38,7 @@ yang ditemukan</string>
     <string name="resend">"Kirim Ulang"</string>
     <string name="delete">"Hapus"</string>
     <string name="cancel">"Batal"</string>
+    <string name="cancel_bottom_sheet">Batal</string>
     <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
         Pesan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>
@@ -49,6 +51,8 @@ yang ditemukan</string>
     <!-- Chat Room -->
     <string name="time_machine_chat">Untuk melihat percakapan sebelumnya, kunjungi\nRiwayat
         Pesan</string>
+    <string name="chat_yesterday_date">Kemarin</string>
+    <string name="chat_today_date">Hari ini</string>
 
     <!-- Chat Template -->
     <string name="add_template_chat_title">Tambah Template Pesan</string>
@@ -70,5 +74,19 @@ yang ditemukan</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
     <string name="title_reason_bottom_sheet">Beritahu kami apa yang salah?</string>
-
+    <string name="template_subtitle_attach_product">Toko %1$s</string>
+    <string name="topchat_online_status_desc">Online</string>
+    <string name="topchat_online_minutes_ago">Terakhir online %1$d menit yang lalu</string>
+    <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
+    <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
+    <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
+    <string name="delete_chat_default_error_message">Hapus chat gagal!</string>
+    <string name="follow_store">Follow Toko</string>
+    <string name="already_follow_store">Following</string>
+    <string name="view_profile_container_string">Lihat Profil %1$s</string>
+    <string name="delete_conversation">Hapus Percakapan</string>
+    <string name="delete_chat_question">Hapus chat?</string>
+    <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
+    <string name="bm_title">Broadcast Chat</string>
+    <string name="bm_showcase_desc">Promosikan barang atau toko melalui chat ke followers Anda dengan fitur baru ini</string>
 </resources>

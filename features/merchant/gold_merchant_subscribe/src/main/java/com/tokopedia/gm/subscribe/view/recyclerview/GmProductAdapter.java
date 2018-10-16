@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
 
-    private static final int GM_PRODUCT = 100;
+    public static final int GM_PRODUCT = 100;
     private final List<GmProductViewModel> data;
     private final GmProductAdapterCallback listener;
     private String packageName;
@@ -59,6 +59,12 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
             public void onClick(View view) {
                 listener.selectedProductId(
                         Integer.valueOf(data.get(position).getProductId())
+                );
+                listener.selectedProductName(
+                        data.get(position).getTimeRange()
+                );
+                listener.selectedProductPrice(
+                        data.get(position).getPrice()
                 );
                 updatePackageName(position);
                 GmProductAdapter.this.notifyDataSetChanged();

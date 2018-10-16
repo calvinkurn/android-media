@@ -7,7 +7,9 @@ import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.viewholder.GridShopItemViewHolder;
@@ -39,8 +41,8 @@ public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implem
     }
 
     @Override
-    public int type(EmptyModel retryModel) {
-        return EmptyViewHolder.LAYOUT;
+    public int type(EmptySearchModel emptySearchModel) {
+        return EmptySearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -52,8 +54,8 @@ public class ShopListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implem
             viewHolder = new ListShopItemViewHolder(view, itemClickListener);
         } else if (type == GridShopItemViewHolder.LAYOUT) {
             viewHolder = new GridShopItemViewHolder(view, itemClickListener);
-        } else if (type == EmptyViewHolder.LAYOUT) {
-            viewHolder = new EmptyViewHolder(view, itemClickListener);
+        } else if (type == EmptySearchViewHolder.LAYOUT) {
+            viewHolder = new EmptySearchViewHolder(view, itemClickListener, null);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

@@ -21,10 +21,8 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
-
-import java.util.List;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -93,7 +91,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                     imageContainer.setVisibility(View.VISIBLE);
                     final Product product = cpm.getCpmShop().getProducts().get(0);
                     imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
-
                     productImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

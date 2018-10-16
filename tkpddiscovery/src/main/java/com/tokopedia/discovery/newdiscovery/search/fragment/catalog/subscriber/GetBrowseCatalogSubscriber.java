@@ -68,6 +68,11 @@ public class GetBrowseCatalogSubscriber extends rx.Subscriber<CatalogDomainModel
 
     protected List<Visitable> mappingCatalogViewModel(CatalogDomainModel domain) {
         List<Visitable> list = new ArrayList<>();
+
+        if (domain.getCatalogList().isEmpty()) {
+            return list;
+        }
+
         list.add(new CatalogHeaderViewModel());
         for (CatalogItem item : domain.getCatalogList()) {
             CatalogViewModel model = new CatalogViewModel();

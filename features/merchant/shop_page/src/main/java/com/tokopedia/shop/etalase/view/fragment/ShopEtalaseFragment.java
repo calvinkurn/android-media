@@ -5,9 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
@@ -45,12 +49,27 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
-            selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
-        }
-        super.onViewCreated(view, savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
+        selectedEtalaseId = getArguments().getString(ShopParamConstant.EXTRA_ETALASE_ID);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_base_list_swipe, container, false);
+    }
+
+    @Nullable
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        super.onSwipeRefresh();
+        shopEtalasePresenter.clearEtalaseCache();
     }
 
     @Override
@@ -69,6 +88,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, shopEtalaseViewModel.getEtalaseId());
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_NAME, shopEtalaseViewModel.getEtalaseName());
         intent.putExtra(ShopParamConstant.EXTRA_USE_ACE, shopEtalaseViewModel.isUseAce());
+        intent.putExtra(ShopParamConstant.EXTRA_ETALASE_BADGE, shopEtalaseViewModel.getEtalaseBadge());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -89,7 +109,6 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     protected void initInjector() {
         DaggerShopEtalaseComponent
                 .builder()
-                .shopEtalaseModule(new ShopEtalaseModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);

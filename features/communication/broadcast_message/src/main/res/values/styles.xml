@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BMHelperTextAppearance" parent="helperTextAppearance">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="BMCounterTextAppearance">
+        <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="BMAlertDialogStyle" parent="AppCompatAlertDialogStyle">
+        <item name="colorAccent">#999999</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+</resources>
