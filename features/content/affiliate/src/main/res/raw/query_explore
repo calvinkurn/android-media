@@ -11,8 +11,4 @@ query getExploreAffiliate($keyword: String, $nextCursor: String) {
       nextCursor
     }
   }
-  affiliateCheck{
-      isAffiliate
-      status
-  }
 }

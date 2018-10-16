@@ -40,8 +40,6 @@ public interface ExploreContract {
 
         void onEmptySearchResult();
 
-        void onErrorNonAffiliateUser();
-
         void onSuccessCheckQuota(String productId, String adId);
 
         void onSuccessCheckQuotaButEmpty();

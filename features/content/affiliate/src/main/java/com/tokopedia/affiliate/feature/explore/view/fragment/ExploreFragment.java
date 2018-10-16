@@ -311,19 +311,13 @@ public class ExploreFragment
     }
 
     @Override
-    public void onErrorNonAffiliateUser() {
-        //TODO Yoas : need to be tested
-        RouteManager.route(getActivity(), ApplinkConst.AFFILIATE_ONBOARDING);
-    }
-
-    @Override
     public void onSuccessCheckQuota(String productId, String adId) {
-        //TODO Yoas : transition do add product, need to be tested
         RouteManager.route(
                 Objects.requireNonNull(getActivity()),
                 ApplinkConst.AFFILIATE_CREATE_POST
                         .replace(PRODUCT_ID_PARAM, productId)
-                        .replace(AD_ID_PARAM, adId));
+                        .replace(AD_ID_PARAM, adId)
+        );
     }
 
     @Override

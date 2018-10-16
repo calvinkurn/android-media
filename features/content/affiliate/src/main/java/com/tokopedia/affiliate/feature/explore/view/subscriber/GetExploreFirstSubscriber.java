@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.explore.view.subscriber;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreFirstQuery;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
@@ -40,21 +39,13 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             e.printStackTrace();
         }
         mainView.hideLoading();
-        if (e.getLocalizedMessage().contains(mainView.getContext().getResources().getString(R.string.error_default_non_affiliate))) {
-            mainView.onErrorNonAffiliateUser();
-        } else {
-            mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
-        }
+        mainView.onErrorGetFirstData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
     }
 
     @Override
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
         ExploreFirstQuery query = response.getData(ExploreFirstQuery.class);
-        if (query.getAffiliateCheck() != null && !query.getAffiliateCheck().isIsAffiliate()) {
-            mainView.onErrorNonAffiliateUser();
-            return;
-        }
         if (isSearch && query.getExploreProduct() != null
                 && query.getExploreProduct().getProducts() == null) {
             mainView.onEmptySearchResult();
