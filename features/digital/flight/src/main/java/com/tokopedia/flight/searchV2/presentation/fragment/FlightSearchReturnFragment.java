@@ -18,12 +18,14 @@ import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchActivity.EXTRA_PASS_DATA;
 import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_DEPARTURE_ID;
+import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_IS_BEST_PAIRING;
 
 /**
  * @author by furqan on 15/10/18.
@@ -39,12 +41,14 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     private TextView airlineName;
     private TextView duration;
     private String selectedFlightDeparture;
+    private boolean isBestPairing = false;
 
     public static Fragment newInstance(FlightSearchPassDataViewModel passDataViewModel,
-                                       String selectedDepartureID) {
+                                       String selectedDepartureID, boolean bestPairing) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
         args.putString(EXTRA_DEPARTURE_ID, selectedDepartureID);
+        args.putBoolean(EXTRA_IS_BEST_PAIRING, bestPairing);
 
         FlightSearchReturnFragment fragment = new FlightSearchReturnFragment();
         fragment.setArguments(args);
@@ -53,8 +57,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         selectedFlightDeparture = getArguments().getString(EXTRA_DEPARTURE_ID);
+        isBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -68,13 +73,10 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         duration = view.findViewById(R.id.duration);
         departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
 
-        // getdeparturedetail
-
         clearAdapterData();
+        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
 
         super.onViewCreated(view, savedInstanceState);
-
-        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
 
     @Override
@@ -109,9 +111,11 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
-        if (flightJourneyViewModel.getAirlineDataList().size() > 1) {
+        if (flightJourneyViewModel.getAirlineDataList() != null &&
+                flightJourneyViewModel.getAirlineDataList().size() > 1) {
             airlineName.setText(getString(R.string.flight_label_multi_maskapai));
-        } else if (flightJourneyViewModel.getAirlineDataList().size() == 1) {
+        } else if (flightJourneyViewModel.getAirlineDataList() != null &&
+                flightJourneyViewModel.getAirlineDataList().size() == 1) {
             airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
         }
         if (flightJourneyViewModel.getAddDayArrival() > 0) {
@@ -176,6 +180,15 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     protected void onSelectedFromDetail(String selectedId) {
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
+    }
+
+    @Override
+    protected FlightFilterModel buildFilterModel() {
+        FlightFilterModel filterModel = new FlightFilterModel();
+        filterModel.setBestPairing(isBestPairing);
+        filterModel.setJourneyId(selectedFlightDeparture);
+
+        return filterModel;
     }
 
     @Override

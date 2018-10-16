@@ -136,7 +136,8 @@ public class FlightSearchActivity extends BaseFlightActivity
                     REQUEST_CODE_BOOKING);
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                            .getCallingIntent(this, passDataViewModel, selectedFlightID),
+                            .getCallingIntent(this, passDataViewModel, selectedFlightID,
+                                    fareViewModel.isBestPrice()),
                     REQUEST_CODE_RETURN);
         }
     }
