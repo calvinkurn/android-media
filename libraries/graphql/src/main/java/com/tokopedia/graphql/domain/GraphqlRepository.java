@@ -13,5 +13,4 @@ import rx.Observable;
  */
 public interface GraphqlRepository {
     Observable<GraphqlResponse> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy);
-    void clearCache(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy);
 }

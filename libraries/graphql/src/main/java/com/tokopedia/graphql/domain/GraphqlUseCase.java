@@ -1,6 +1,9 @@
 package com.tokopedia.graphql.domain;
 
 
+import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.GraphqlCacheManager;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -23,6 +26,9 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
     private List<GraphqlRequest> mRequests;
     private GraphqlCacheStrategy mCacheStrategy;
     private GraphqlRepositoryImpl graphqlRepository;
+
+    private GraphqlCacheManager mCacheManager;
+    private FingerprintManager mFingerprintManager;
 
     @Inject
     public GraphqlUseCase() {
@@ -69,9 +75,24 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mCacheStrategy = cacheStrategy;
     }
 
-    public void clearCache(){
-        if (mRequests != null && !mRequests.isEmpty()) {
-            graphqlRepository.clearCache(mRequests, mCacheStrategy);
+    public void clearCache() {
+        try {
+            initCacheManager();
+            if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
+                mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
+                        mCacheStrategy.isSessionIncluded()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initCacheManager() {
+        if (mCacheManager == null) {
+            mCacheManager = new GraphqlCacheManager();
+        }
+        if (mFingerprintManager == null) {
+            mFingerprintManager = GraphqlClient.getFingerPrintManager();
         }
     }
 

@@ -40,11 +40,5 @@ public class GraphqlCacheDataStore implements GraphqlDataStore {
 
         return Observable.just(null);
     }
-
-    public void clearCache(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy){
-        if (cacheStrategy!= null) {
-            mCacheManager.delete(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()));
-        }
-    }
 }
 

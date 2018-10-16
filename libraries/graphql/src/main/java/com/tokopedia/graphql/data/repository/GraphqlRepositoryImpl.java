@@ -72,14 +72,8 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     //Just to avoid any accidental data loss
                 }
             }
-
             return new GraphqlResponse(results, errors, response.isCached());
         });
-    }
-
-    @Override
-    public void clearCache(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
-        mGraphqlCache.clearCache(requests, cacheStrategy);
     }
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
