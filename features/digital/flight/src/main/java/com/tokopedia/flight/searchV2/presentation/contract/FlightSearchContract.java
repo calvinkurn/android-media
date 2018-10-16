@@ -87,6 +87,8 @@ public interface FlightSearchContract {
         void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
 
         void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel);
+
+        FlightFilterModel getFilterModel();
     }
 
     interface Presenter {

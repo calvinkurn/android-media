@@ -17,7 +17,6 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
 
@@ -161,14 +160,14 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Override
     public void navigateToCart(FlightJourneyViewModel journeyViewModel) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId(), new FlightPriceViewModel());
+            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId());
         }
     }
 
     @Override
     public void navigateToCart(String selectedFlightReturn) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn, new FlightPriceViewModel());
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
         }
     }
 

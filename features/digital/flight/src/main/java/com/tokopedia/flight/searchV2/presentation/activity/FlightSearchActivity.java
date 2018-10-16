@@ -129,7 +129,7 @@ public class FlightSearchActivity extends BaseFlightActivity
     }
 
     @Override
-    public void selectFlight(String selectedFlightID, FlightPriceViewModel fareViewModel) {
+    public void selectFlight(String selectedFlightID) {
         if (passDataViewModel.isOneWay()) {
             // TODO : PASS FLIGHTPRICEVIEWMODEL
             FlightPriceViewModel flightPriceViewModel = null;
@@ -138,8 +138,7 @@ public class FlightSearchActivity extends BaseFlightActivity
                     REQUEST_CODE_BOOKING);
         } else {
             startActivityForResult(FlightSearchReturnActivity
-                            .getCallingIntent(this, passDataViewModel, selectedFlightID,
-                                    fareViewModel.isBestPrice()),
+                            .getCallingIntent(this, passDataViewModel, selectedFlightID, false),
                     REQUEST_CODE_RETURN);
         }
     }

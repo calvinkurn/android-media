@@ -38,7 +38,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private boolean isSpecialPrice = false;
     private boolean isBestPairing = false;
     private boolean isReturn = false;
-    private String journeyId;
+    private String journeyId = "";
 
     public FlightFilterModel() {
     }

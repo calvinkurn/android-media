@@ -55,7 +55,6 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailAdapterTypeFactory;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.activity.OnBackActionListener;

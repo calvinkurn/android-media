@@ -12,6 +12,9 @@ public class FlightPriceViewModel implements Parcelable{
     private FlightFareViewModel returnPrice;
     private String comboKey;
 
+    public FlightPriceViewModel() {
+    }
+
     public FlightPriceViewModel(FlightFareViewModel departurePrice, FlightFareViewModel returnPrice, String comboKey) {
         this.departurePrice = departurePrice;
         this.returnPrice = returnPrice;
@@ -44,8 +47,8 @@ public class FlightPriceViewModel implements Parcelable{
         this.returnPrice = returnPrice;
     }
 
-    public void setBestPrice(boolean bestPrice) {
-        isBestPrice = bestPrice;
+    public void setComboKey(String comboKey) {
+        this.comboKey = comboKey;
     }
 
     public FlightFareViewModel getDeparturePrice() {
