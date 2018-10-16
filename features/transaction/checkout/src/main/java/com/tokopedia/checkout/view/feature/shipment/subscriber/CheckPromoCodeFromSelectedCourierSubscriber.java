@@ -13,9 +13,12 @@ import rx.Subscriber;
 public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<PromoCodeCartListData> {
 
     private final ShipmentContract.View view;
+    private final int itemPosition;
 
-    public CheckPromoCodeFromSelectedCourierSubscriber(ShipmentContract.View view) {
+    public CheckPromoCodeFromSelectedCourierSubscriber(ShipmentContract.View view,
+                                                       int itemPosition) {
         this.view = view;
+        this.itemPosition = itemPosition;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
             view.hideLoading();
             if (!promoCodeCartListData.isError()) {
                 view.showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
-                view.renderCheckPromoCodeFromCourierSuccess(promoCodeCartListData);
+                view.renderCheckPromoCodeFromCourierSuccess(promoCodeCartListData, itemPosition);
             } else {
                 view.showToastError(promoCodeCartListData.getErrorMessage());
             }

@@ -464,23 +464,24 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData courierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
-                if (!courierItemData.isAllowDropshiper()) {
+                checkAppliedCourierPromo(position, newCourierItemData, shipmentCartItemModel);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(newCourierItemData);
+                if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-                shipmentDetailData.setSelectedCourier(courierItemData);
+                shipmentDetailData.setSelectedCourier(newCourierItemData);
                 shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
                 shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
-                if (!courierItemData.isAllowDropshiper()) {
+                if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
@@ -492,6 +493,42 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         checkHasSelectAllCourier();
 
         return shipmentCartItemModel;
+    }
+
+    private void checkAppliedCourierPromo(int position, CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
+        // Todo : do this section if toogle year end promo is on
+        boolean isToogleYearEndPromoOn = shipmentAdapterActionListener.isToogleYearEndPromoOn();
+        if (isToogleYearEndPromoOn && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            // Todo : check if promo applied on old courier
+            if (shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied() &&
+                    TextUtils.isEmpty(newCourierItemData.getPromoCode())) {
+                // Todo : if applied on old but not on new, check all item if promo still exist
+                boolean courierPromoStillExist = false;
+                for (int i = 0; i < shipmentDataList.size(); i++) {
+                    if (i != position && shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                        ShipmentCartItemModel model = (ShipmentCartItemModel) shipmentDataList.get(i);
+                        if (model.getSelectedShipmentDetailData().isCourierPromoApplied()) {
+                            courierPromoStillExist = true;
+                            break;
+                        }
+                    }
+                }
+                // Todo : if not exist anymore, cancel promo
+                if (!courierPromoStillExist) {
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
+                    updatePromo(null);
+                    cancelAutoApplyCoupon();
+                }
+            }
+        }
+    }
+
+    public void cancelAllCourierPromo() {
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied()) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
+            }
+        }
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
@@ -707,6 +744,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         return false;
+    }
+
+    public void setCourierPromoApplied(int position) {
+        if (shipmentDataList.get(position) instanceof ShipmentCartItemModel) {
+            ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(position);
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(true);
+            }
+        }
     }
 
     public RequestData getRequestData(RecipientAddressModel recipientAddressModel, List<ShipmentCartItemModel> shipmentCartItemModelList) {

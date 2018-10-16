@@ -597,8 +597,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData) {
+    public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData,
+                                                       int itemPosition) {
         setAppliedPromoCodeData(promoCodeCartListData);
+        shipmentAdapter.setCourierPromoApplied(itemPosition);
     }
 
     @Override
@@ -1233,6 +1235,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCartPromoCancelVoucherPromoClicked(CartItemPromoHolderData cartPromo,
                                                      int position) {
         shipmentPresenter.cancelAutoApplyCoupon();
+        if (isToogleYearEndPromoOn()) {
+            shipmentAdapter.cancelAllCourierPromo();
+        }
     }
 
     @Override
@@ -1439,16 +1444,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
-                checkCourierPromo(recommendedCourier);
+                checkCourierPromo(recommendedCourier, cartItemPosition);
             }
         }
     }
 
-    private void checkCourierPromo(CourierItemData courierItemData) {
-        // Todo : read from remote config
-        boolean isToogleYearEndPromoOn = true;
-        if (isToogleYearEndPromoOn && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
-            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode());
+    private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
+        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
+            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
         }
     }
 
@@ -1491,7 +1494,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-            checkCourierPromo(courierItemData);
+            checkCourierPromo(courierItemData, cartItemPosition);
         }
     }
 
@@ -1579,5 +1582,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
         }
+    }
+
+    @Override
+    public boolean isToogleYearEndPromoOn() {
+        // Todo : read from remote config
+        return true;
     }
 }

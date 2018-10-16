@@ -1057,7 +1057,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckPromoCodeFromSelectedCourier(String promoCode) {
+    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition) {
         getView().showLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("promo_code", promoCode);
@@ -1072,7 +1072,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView()))
+                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView(), itemPosition))
         );
     }
 
