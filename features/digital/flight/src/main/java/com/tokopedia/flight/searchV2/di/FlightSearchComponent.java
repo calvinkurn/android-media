@@ -4,6 +4,7 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
+import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchReturnFragment;
 
 import dagger.Component;
 
@@ -20,5 +21,7 @@ public interface FlightSearchComponent {
     FlightApi flightApi();
 
     void inject(FlightSearchFragment flightSearchFragment);
+
+    void inject(FlightSearchReturnFragment flightSearchReturnFragment);
 
 }

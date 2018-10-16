@@ -18,6 +18,7 @@ import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.fragment.FlightSearchFragment;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 public class FlightSearchActivity extends BaseFlightActivity
         implements FlightSearchFragment.OnFlightSearchFragmentListener {
@@ -128,7 +129,7 @@ public class FlightSearchActivity extends BaseFlightActivity
     }
 
     @Override
-    public void selectFlight(String selectedFlightID) {
+    public void selectFlight(String selectedFlightID, FlightPriceViewModel fareViewModel) {
         if (passDataViewModel.isOneWay()) {
             startActivityForResult(FlightBookingActivity
                             .getCallingIntent(this, passDataViewModel, selectedFlightID),

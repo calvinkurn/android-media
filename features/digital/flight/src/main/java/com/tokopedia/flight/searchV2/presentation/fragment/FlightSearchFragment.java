@@ -43,6 +43,7 @@ import com.tokopedia.flight.searchV2.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
@@ -407,9 +408,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void navigateToNextPage(String selectedId) {
+    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedId);
+            onFlightSearchFragmentListener.selectFlight(selectedId, fareViewModel);
         }
     }
 
@@ -673,7 +674,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     protected void onSelectedFromDetail(String selectedId) {
-        flightSearchPresenter.onSearchItemClicked(selectedId);
+//        flightSearchPresenter.onSearchItemClicked(selectedId);
     }
 
     private void setUpCombinationAirport() {
@@ -759,7 +760,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     public interface OnFlightSearchFragmentListener {
-        void selectFlight(String selectedFlightID);
+        void selectFlight(String selectedFlightID, FlightPriceViewModel priceViewModel);
 
         void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }

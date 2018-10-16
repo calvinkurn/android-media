@@ -16,6 +16,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
 
 import javax.inject.Inject;
@@ -67,10 +68,9 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         duration = view.findViewById(R.id.duration);
         departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
 
-        flightSearchReturnPresenter.attachView(this);
-
         // getdeparturedetail
 
+        clearAdapterData();
         showLoading();
     }
 
@@ -86,6 +86,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
         flightSearchComponent
                 .inject(this);
+        flightSearchReturnPresenter.attachView(this);
     }
 
     @Override
@@ -136,14 +137,14 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Override
     public void navigateToCart(FlightJourneyViewModel journeyViewModel) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId());
+            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId(), new FlightPriceViewModel());
         }
     }
 
     @Override
     public void navigateToCart(String selectedFlightReturn) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn, new FlightPriceViewModel());
         }
     }
 
