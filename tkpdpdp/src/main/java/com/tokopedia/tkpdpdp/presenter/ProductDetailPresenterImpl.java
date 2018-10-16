@@ -26,8 +26,6 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -38,8 +36,6 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
-import com.tokopedia.core.network.entity.affiliateProductData.AffiliateProductDataResponse;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -79,8 +75,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
-import com.tokopedia.tkpdpdp.domain.GetAffiliateProductDataUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
@@ -112,7 +108,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -145,7 +140,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
     private final WishListActionListener wishListActionListener;
-    private final GetAffiliateProductDataUseCase getAffiliateProductUseCase;
+    private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
 
@@ -167,14 +162,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             WishListActionListener wishListActionListener,
             RetrofitInteractor retrofitInteractor,
             CacheInteractor cacheInteractor,
-            GetAffiliateProductDataUseCase getAffiliateProductDataUseCase) {
+            GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase) {
         this.viewListener = viewListener;
         this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = retrofitInteractor;
         this.cacheInteractor = cacheInteractor;
         this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-        this.getAffiliateProductUseCase = getAffiliateProductDataUseCase;
+        this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
     }
 
     private void checkWishlistCount(String productId) {
@@ -187,18 +182,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void initRetrofitInteractor() {
         this.retrofitInteractor = new RetrofitInteractorImpl();
-    }
-
-    @Override
-    public void openAffiliatePublishForm(Affiliate affiliate) {
-        RouteManager.route(
-                viewListener.getActivityContext(),
-                ApplinkConst.AFFILIATE_CREATE_POST
-                        .replace(PRODUCT_ID,
-                                String.valueOf(affiliate.getProductId()))
-                        .replace(AD_ID,
-                                String.valueOf(affiliate.getAdId()))
-        );
     }
 
     @Override
@@ -531,10 +514,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.refreshMenu();
 
                             checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
-                            requestAffiliateProductData(
-                                    productDetailData,
-                                    new AffiliateProductDataSubscriber(
-                                            ProductDetailPresenterImpl.this));
+                            requestAffiliateProductData(productDetailData);
 
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
@@ -1046,9 +1026,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
                         requestAffiliateProductData(
-                                data,
-                                new AffiliateProductDataSubscriber(
-                                        ProductDetailPresenterImpl.this));
+                                data
+                        );
 
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
@@ -1354,27 +1333,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void renderAffiliateButton(Affiliate affiliate) {
-        viewListener.renderAffiliateButton(affiliate);
-    }
+    public void requestAffiliateProductData(ProductDetailData productDetailData) {
 
-    @Override
-    public void requestAffiliateProductData(
-            ProductDetailData productDetailData,
-            Subscriber<Response<AffiliateProductDataResponse>> subscriber){
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetAffiliateProductDataUseCase.UI_PARAM,
-                GetAffiliateProductDataUseCase.PARAMS_REQUEST_UI);
-        requestParams.putString(GetAffiliateProductDataUseCase.PRODUCT_ID_PARAM,
-                String.valueOf(productDetailData.getInfo().getProductId()));
-        requestParams.putString(GetAffiliateProductDataUseCase.SHOP_ID_PARAM,
-                String.valueOf(productDetailData.getShopInfo().getShopId()));
-        requestParams.putString(GetAffiliateProductDataUseCase.USER_ID_PARAM,
-                SessionHandler.isV4Login(viewListener.getActivityContext())?
-                        SessionHandler.getLoginID(viewListener.getActivityContext()):
-                        GetAffiliateProductDataUseCase.PARAMS_GUEST_USER_ID);
+        RequestParams paramsProductAffiliateGql = RequestParams.create();
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        arrayList.add(productDetailData.getInfo().getProductId());
 
-        getAffiliateProductUseCase.execute(requestParams, subscriber);
+        paramsProductAffiliateGql.putObject(
+                GetProductAffiliateGqlUseCase.PRODUCT_ID_PARAM,
+                arrayList
+        );
+        paramsProductAffiliateGql.putInt(
+                GetProductAffiliateGqlUseCase.SHOP_ID_PARAM,
+                Integer.parseInt(productDetailData.getShopInfo().getShopId())
+        );
+        getProductAffiliateGqlUseCase.execute(paramsProductAffiliateGql, new AffiliateProductDataSubscriber(viewListener));
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {

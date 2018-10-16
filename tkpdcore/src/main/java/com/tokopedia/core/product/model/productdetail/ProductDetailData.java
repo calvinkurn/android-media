@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductDetailData implements Parcelable{
     private static final String TAG = ProductDetailData.class.getSimpleName();
 

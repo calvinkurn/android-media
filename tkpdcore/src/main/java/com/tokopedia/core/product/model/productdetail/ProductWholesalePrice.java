@@ -11,6 +11,7 @@ import java.util.Comparator;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductWholesalePrice implements Parcelable {
     private static final String TAG = ProductWholesalePrice.class.getSimpleName();
 

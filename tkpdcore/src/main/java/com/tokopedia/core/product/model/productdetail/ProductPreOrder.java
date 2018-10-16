@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 14/03/2016.
  */
+@Deprecated
 public class ProductPreOrder implements Parcelable {
     private static final String TAG = ProductPreOrder.class.getSimpleName();
 

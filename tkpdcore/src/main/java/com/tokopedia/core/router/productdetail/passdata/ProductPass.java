@@ -35,6 +35,7 @@ public class ProductPass implements Parcelable {
     private int countCourrier;
     private String cashback;
     private boolean isOfficial;
+    private boolean fromExploreAffiliate;
 
     public ProductPass() {
         dateTimeInMilis = 0;
@@ -315,6 +316,14 @@ public class ProductPass implements Parcelable {
         this.cashback = cashback;
     }
 
+    public void setFromExploreAffiliate(boolean fromExploreAffiliate) {
+        this.fromExploreAffiliate = fromExploreAffiliate;
+    }
+
+    public boolean isFromExploreAffiliate() {
+        return fromExploreAffiliate;
+    }
+
     public static class Builder {
         private String productId = "";
         private String productName = "";
@@ -341,6 +350,7 @@ public class ProductPass implements Parcelable {
         private int countCourrier;
         private String cashback;
         private boolean isOfficial;
+        private boolean fromExploreAffiliate;
 
         private Builder() {
         }
@@ -476,6 +486,11 @@ public class ProductPass implements Parcelable {
             return this;
         }
 
+        public Builder setFromExploreAffiliate(boolean fromExploreAffiliate) {
+            this.fromExploreAffiliate = fromExploreAffiliate;
+            return this;
+        }
+
         public Builder but() {
             return aProductPass().setProductId(productId).setProductName(productName).setProductPrice(productPrice).setProductImage(productImage).setShopName(shopName).setProductUri(productUri).setProductKey(productKey).setShopDomain(shopDomain).setAdKey(adKey).setAdR(adR).setProductDesc(productDesc).setPicToShare(picToShare).setDateTimeInMilis(dateTimeInMilis);
         }
@@ -506,6 +521,7 @@ public class ProductPass implements Parcelable {
             productPass.setCountDiscussion(countDiscussion);
             productPass.setCountCourrier(countCourrier);
             productPass.setCashback(cashback);
+            productPass.setFromExploreAffiliate(fromExploreAffiliate);
             return productPass;
         }
     }

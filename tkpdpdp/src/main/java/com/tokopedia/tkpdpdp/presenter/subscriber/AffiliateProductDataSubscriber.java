@@ -1,19 +1,19 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
-import com.tokopedia.core.network.entity.affiliateProductData.AffiliateProductDataResponse;
-import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
-import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
+import com.tokopedia.tkpdpdp.entity.TopAdsPdpAffiliateResponse;
+import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
+import com.tokopedia.tkpdpdp.entity.TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
-public class AffiliateProductDataSubscriber extends Subscriber<Response<AffiliateProductDataResponse>> {
-    private final ProductDetailPresenter productDetailPresenter;
+public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate> {
+    private ProductDetailView viewListener;
 
-    public AffiliateProductDataSubscriber(ProductDetailPresenter productDetailPresenter){
-        this.productDetailPresenter = productDetailPresenter;
+    public AffiliateProductDataSubscriber(ProductDetailView viewListener) {
+        this.viewListener = viewListener;
     }
+
     @Override
     public void onCompleted() {
 
@@ -25,14 +25,52 @@ public class AffiliateProductDataSubscriber extends Subscriber<Response<Affiliat
     }
 
     @Override
-    public void onNext(Response<AffiliateProductDataResponse> affiliateProductDataResponseResponse) {
-        AffiliateProductDataResponse affiliateProductDataResponse =
-                affiliateProductDataResponseResponse.body();
+    public void onNext(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate topAdsPdpAffiliate) {
+        if (topAdsPdpAffiliate != null
+                && topAdsPdpAffiliate.getData() != null
+                && topAdsPdpAffiliate.getData().getAffiliate() != null
+                && !topAdsPdpAffiliate.getData().getAffiliate().isEmpty()) {
+            PdpAffiliate entityModel = topAdsPdpAffiliate.getData().getAffiliate().get(0);
 
-        if (affiliateProductDataResponse.getData().getAffiliate().get(0)
-                != null){
-            Affiliate affiliate = affiliateProductDataResponse.getData().getAffiliate().get(0);
-            productDetailPresenter.renderAffiliateButton(affiliate);
+            if (entityModel.getAdId() != 0 && entityModel.getProductId() != 0) {
+                AffiliateInfoViewModel viewModel = new AffiliateInfoViewModel(
+                        entityModel.getAdId(),
+                        entityModel.getCommissionPercent(),
+                        entityModel.getCommissionPercentDispay(),
+                        entityModel.getCommissionValue(),
+                        entityModel.getCommissionValueDisplay(),
+                        entityModel.getProductId(),
+                        entityModel.getUniqueURL()
+                );
+                viewListener.renderAffiliateButton(viewModel);
+            }
         }
     }
+
+//    private final ProductDetailPresenter productDetailPresenter;
+
+//    public AffiliateProductDataSubscriber(ProductDetailPresenter productDetailPresenter){
+//        this.productDetailPresenter = productDetailPresenter;
+//    }
+//    @Override
+//    public void onCompleted() {
+//
+//    }
+//
+//    @Override
+//    public void onError(Throwable e) {
+//
+//    }
+//
+//    @Override
+//    public void onNext(Response<AffiliateProductDataResponse> affiliateProductDataResponseResponse) {
+//        AffiliateProductDataResponse affiliateProductDataResponse =
+//                affiliateProductDataResponseResponse.body();
+//
+//        if (affiliateProductDataResponse.getData().getAffiliate().get(0)
+//                != null){
+//            Affiliate affiliate = affiliateProductDataResponse.getData().getAffiliate().get(0);
+//            productDetailPresenter.renderAffiliateButton(affiliate);
+//        }
+//    }
 }

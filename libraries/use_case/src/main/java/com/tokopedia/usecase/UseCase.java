@@ -32,7 +32,7 @@ public abstract class UseCase<T> implements Interactor<T> {
     }
 
     @Override
-    public final void execute(RequestParams requestParams, Subscriber<T> subscriber) {
+    public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         execute(requestParams, subscriber, false);
     }
 

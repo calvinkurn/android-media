@@ -45,15 +45,14 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.tkpdpdp.domain.GetProductAffiliateGqlUseCase;
+import com.tokopedia.tkpdpdp.customview.ButtonAffiliate;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
-import com.tokopedia.tkpdpdp.domain.GetAffiliateProductDataUseCase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
@@ -139,6 +138,7 @@ import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -263,6 +263,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private TopAdsCarouselView topAds;
     private ProgressBar progressBar;
     private NestedScrollView nestedScrollView;
+    private ButtonAffiliate buttonAffiliate;
 
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
@@ -307,7 +308,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     GetWishlistCountUseCase getWishlistCountUseCase;
 
     @Inject
-    GetAffiliateProductDataUseCase getAffiliateProductDataUseCase;
+    GetProductAffiliateGqlUseCase getAffiliateProductDataUseCase;
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -409,6 +410,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
         fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
         rootView = (LinearLayout) view.findViewById(R.id.root_view);
+        buttonAffiliate = view.findViewById(R.id.buttonAffiliate);
 
         collapsingToolbarLayout.setTitle("");
         toolbar.setTitle("");
@@ -506,6 +508,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         transactionDetailView.setListener(this);
         priceSimulationView.setListener(this);
         latestTalkView.setListener(this);
+        buttonAffiliate.setListener(this);
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -880,14 +883,25 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onByMeClicked(Affiliate affiliate) {
-        presenter.openAffiliatePublishForm(affiliate);
+    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
+        if (getActivity() != null) {
+            RouteManager.route(
+                    getActivity(),
+                    ApplinkConst.AFFILIATE_CREATE_POST
+                            .replace("product_id", String.valueOf(affiliate.getProductId()))
+                            .replace("ad_id", String.valueOf(affiliate.getAdId()))
+            );
+        }
     }
 
     @Override
-    public void renderAffiliateButton(Affiliate affiliate) {
-        buttonBuyView.showByMeButton(true);
-        buttonBuyView.setByMeButtonListener(affiliate);
+    public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
+        if (productPass.isFromExploreAffiliate()) {
+            buttonAffiliate.renderView(affiliate);
+        } else {
+            buttonBuyView.showByMeButton(true);
+            buttonBuyView.setByMeButtonListener(affiliate);
+        }
     }
 
     @Override
@@ -914,7 +928,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.productData = successResult;
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
-        this.buttonBuyView.renderData(successResult);
+        if (!productPass.isFromExploreAffiliate()) {
+            this.buttonBuyView.renderData(successResult);
+        }
         this.ratingTalkCourierView.renderData(successResult);
         this.transactionDetailView.renderData(successResult);
         this.detailInfoView.renderData(successResult);

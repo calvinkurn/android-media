@@ -489,13 +489,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         EventModuleRouter,
         ChallengesModuleRouter,
         TravelCalendarRouter,
+        com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
         TalkRouter,
         TkpdAppsFlyerRouter,
         ScanQrCodeRouter {
-
 
     private static final String EXTRA = "extra";
 

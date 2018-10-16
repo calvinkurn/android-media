@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
@@ -52,6 +51,7 @@ import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -253,12 +253,12 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onByMeClicked(Affiliate affiliate) {
+    public void onByMeClicked(AffiliateInfoViewModel affiliate) {
 
     }
 
     @Override
-    public void renderAffiliateButton(Affiliate affiliate) {
+    public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
 
     }
 

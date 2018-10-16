@@ -238,9 +238,10 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
-        KolRouter, PaymentSettingRouter, TalkRouter {
+        NetworkRouter, TopChatRouter, com.tokopedia.tkpdpdp.ProductDetailRouter, KolRouter,
+        ProductEditModuleRouter, TopAdsWebViewRouter, BankRouter, ChangePasswordRouter,
+        WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter, PaymentSettingRouter,
+        TalkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;

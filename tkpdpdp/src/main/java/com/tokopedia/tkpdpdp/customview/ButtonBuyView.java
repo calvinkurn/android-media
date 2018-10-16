@@ -24,6 +24,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 
@@ -315,7 +316,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    public void setByMeButtonListener(Affiliate affiliate){
+    public void setByMeButtonListener(AffiliateInfoViewModel affiliate){
         btnByMe.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

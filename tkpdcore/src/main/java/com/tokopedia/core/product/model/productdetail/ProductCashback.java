@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by kris on 10/25/16. Tokopedia
  */
-
+@Deprecated
 public class ProductCashback implements Parcelable{
     @SerializedName("product_cashback")
     @Expose
