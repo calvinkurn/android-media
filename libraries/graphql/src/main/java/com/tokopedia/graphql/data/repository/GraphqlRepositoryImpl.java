@@ -66,8 +66,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         //Lookup for error
                         errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                         }.getType()));
-
-                        clearCache(requests, cacheStrategy);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
