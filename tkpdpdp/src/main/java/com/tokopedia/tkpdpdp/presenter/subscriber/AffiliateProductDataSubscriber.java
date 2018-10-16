@@ -1,13 +1,15 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
-import com.tokopedia.tkpdpdp.entity.TopAdsPdpAffiliateResponse;
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse;
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
+        .TopAdsPdpAffiliate.Data.PdpAffiliate;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
-import com.tokopedia.tkpdpdp.entity.TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate;
 
 import rx.Subscriber;
 
-public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate> {
+public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliateResponse
+        .TopAdsPdpAffiliate> {
     private ProductDetailView viewListener;
 
     public AffiliateProductDataSubscriber(ProductDetailView viewListener) {
@@ -63,7 +65,8 @@ public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliat
 //    }
 //
 //    @Override
-//    public void onNext(Response<AffiliateProductDataResponse> affiliateProductDataResponseResponse) {
+//    public void onNext(Response<AffiliateProductDataResponse>
+// affiliateProductDataResponseResponse) {
 //        AffiliateProductDataResponse affiliateProductDataResponse =
 //                affiliateProductDataResponseResponse.body();
 //

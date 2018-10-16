@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -75,7 +76,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
@@ -91,6 +91,7 @@ import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -112,7 +113,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi
+        .VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_LOGIN_USER;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_MERCHANT;
@@ -1334,20 +1336,19 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void requestAffiliateProductData(ProductDetailData productDetailData) {
-
-        RequestParams paramsProductAffiliateGql = RequestParams.create();
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        arrayList.add(productDetailData.getInfo().getProductId());
-
-        paramsProductAffiliateGql.putObject(
-                GetProductAffiliateGqlUseCase.PRODUCT_ID_PARAM,
-                arrayList
+        UserSession userSession = new UserSession(viewListener.getActivityContext());
+        ArrayList<Integer> productList = new ArrayList<>();
+        productList.add(productDetailData.getInfo().getProductId());
+        getProductAffiliateGqlUseCase.execute(
+                GetProductAffiliateGqlUseCase.Companion.createRequestParams(
+                        productList,
+                        Integer.parseInt(productDetailData.getShopInfo().getShopId()),
+                        userSession.isLoggedIn() ?
+                                Integer.valueOf(userSession.getUserId()) :
+                                Integer.valueOf(NON_LOGIN_USER_ID)
+                ),
+                new AffiliateProductDataSubscriber(viewListener)
         );
-        paramsProductAffiliateGql.putInt(
-                GetProductAffiliateGqlUseCase.SHOP_ID_PARAM,
-                Integer.parseInt(productDetailData.getShopInfo().getShopId())
-        );
-        getProductAffiliateGqlUseCase.execute(paramsProductAffiliateGql, new AffiliateProductDataSubscriber(viewListener));
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {
