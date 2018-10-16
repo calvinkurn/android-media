@@ -231,6 +231,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     private static final String ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant";
     private static final String NON_VARIANT = "non-variant";
+    private static final String PRODUCT_ID = "{product_id}";
+    private static final String AD_ID = "{ad_id}";
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
@@ -890,8 +892,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             RouteManager.route(
                     getActivity(),
                     ApplinkConst.AFFILIATE_CREATE_POST
-                            .replace("product_id", String.valueOf(affiliate.getProductId()))
-                            .replace("ad_id", String.valueOf(affiliate.getAdId()))
+                            .replace(PRODUCT_ID, String.valueOf(affiliate.getProductId()))
+                            .replace(AD_ID, String.valueOf(affiliate.getAdId()))
             );
         }
     }
