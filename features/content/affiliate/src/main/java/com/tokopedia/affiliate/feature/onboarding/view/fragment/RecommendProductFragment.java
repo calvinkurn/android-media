@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProduc
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author by milhamj on 10/4/18.
@@ -65,6 +66,11 @@ public class RecommendProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         initVar();
         initView();
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return new UserSession(getContext());
     }
 
     @Override

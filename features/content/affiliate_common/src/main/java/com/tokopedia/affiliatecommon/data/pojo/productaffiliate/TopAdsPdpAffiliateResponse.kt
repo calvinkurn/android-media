@@ -32,6 +32,10 @@ class TopAdsPdpAffiliateResponse {
                 var commissionValueDisplay: String? = ""
                 @SerializedName("UniqueURL")
                 var uniqueURL: String? = ""
+                @SerializedName("AdTitle")
+                var adTitle: String? = ""
+                @SerializedName("Image")
+                var image: String? = ""
             }
         }
     }
