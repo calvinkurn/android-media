@@ -85,6 +85,8 @@ public interface FlightSearchContract {
         void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel);
 
         void onGetSearchMeta(FlightSearchMetaViewModel flightSearchMetaViewModel);
+
+        void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel);
     }
 
     interface Presenter {
@@ -102,6 +104,8 @@ public interface FlightSearchContract {
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
         void setDelayHorizontalProgress();
+
+        void getDetailDepartureFlight(String journeyId);
 
         void fetchCombineData(FlightSearchPassDataViewModel passDataViewModel);
 

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
@@ -63,7 +64,6 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         airlineName = view.findViewById(R.id.airline_name);
         duration = view.findViewById(R.id.duration);
         departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
@@ -71,7 +71,10 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         // getdeparturedetail
 
         clearAdapterData();
-        showLoading();
+
+        super.onViewCreated(view, savedInstanceState);
+
+        flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
 
     @Override
@@ -104,8 +107,25 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         return true;
     }
 
-//    onSuccessGetDetailFlightDeparture
+    @Override
+    public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
+        if (flightJourneyViewModel.getAirlineDataList().size() > 1) {
+            airlineName.setText(getString(R.string.flight_label_multi_maskapai));
+        } else if (flightJourneyViewModel.getAirlineDataList().size() == 1) {
+            airlineName.setText(flightJourneyViewModel.getAirlineDataList().get(0).getName());
+        }
+        if (flightJourneyViewModel.getAddDayArrival() > 0) {
+            duration.setText(String.format("| %s - %s (+%sh)", flightJourneyViewModel.getDepartureTime(),
+                    flightJourneyViewModel.getArrivalTime(), String.valueOf(flightJourneyViewModel.getAddDayArrival())));
+        } else {
+            duration.setText(String.format("| %s - %s", flightJourneyViewModel.getDepartureTime(),
+                    flightJourneyViewModel.getArrivalTime()));
+        }
 
+        departureHeaderLabel.setText(String.format("%s - %s",
+                getString(R.string.flight_label_departure_flight),
+                FlightDateUtil.formatToUi(passDataViewModel.getDepartureDate())));
+    }
 
     @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel) {

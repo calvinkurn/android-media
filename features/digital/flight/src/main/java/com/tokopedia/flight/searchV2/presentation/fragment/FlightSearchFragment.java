@@ -146,7 +146,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         super.onViewCreated(view, savedInstanceState);
 
         flightSearchPresenter.attachView(this);
-        flightSearchPresenter.fetchCombineData(passDataViewModel);
+
+        if (!isReturning()) {
+            flightSearchPresenter.fetchCombineData(passDataViewModel);
+        }
 
         showLoading();
     }
@@ -459,6 +462,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel,
                 flightAirportCombineModel.isNeedRefresh());
+    }
+
+    @Override
+    public void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel) {
+        // do nothing
     }
 
     @Override

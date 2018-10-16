@@ -12,6 +12,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.domain.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase;
+import com.tokopedia.flight.searchV2.domain.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSearchV2UseCase;
 import com.tokopedia.flight.searchV2.domain.FlightSortAndFilterUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
@@ -51,18 +52,22 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
     private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
+    private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase, FlightSearchCombinedUseCase flightSearchCombinedUseCase,
-                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase) {
+                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase,
+                                 FlightSearchCombinedUseCase flightSearchCombinedUseCase,
+                                 FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase,
+                                 FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
         this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
+        this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -122,6 +127,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Override
     public void setDelayHorizontalProgress() {
 
+    }
+
+    @Override
+    public void getDetailDepartureFlight(String journeyId) {
+        flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(journeyId),
+                new Subscriber<FlightJourneyViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(FlightJourneyViewModel journeyViewModel) {
+                        getView().onSuccessGetDetailFlightDeparture(journeyViewModel);
+                    }
+                });
     }
 
     @Override
