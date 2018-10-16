@@ -3,7 +3,7 @@ package com.tokopedia.library.pagination;
 import android.support.annotation.Nullable;
 
 public interface PaginationAdapterCallback {
-    void onRetryPageLoad();
+    void onRetryPageLoad(int pageNumber);
 
     void onEmptyList(Object rawObject);
 

@@ -42,8 +42,9 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
 
     private List<T> mItems;
 
-    protected PaginationAdapter() {
+    protected PaginationAdapter(PaginationAdapterCallback callback) {
         this.mItems = new ArrayList<>();
+        this.mCallback = callback;
     }
 
     /**
@@ -203,6 +204,9 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         });
     }
 
+    /**
+     * Method to invoke page loading
+     */
     public void startDataLoading() {
         if (mCallback != null) {
             if (mCurrentPageIndex == 1) {
@@ -371,10 +375,6 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         }
     }
 
-    public void setPaginationCallback(PaginationAdapterCallback callback) {
-        this.mCallback = callback;
-    }
-
     public int getCurrentPageIndex() {
         return mCurrentPageIndex;
     }
@@ -404,7 +404,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         public void onClick(View view) {
             loadMore(mCurrentPageIndex);
             if (mCallback != null) {
-                mCallback.onRetryPageLoad();
+                mCallback.onRetryPageLoad(mCurrentPageIndex);
             }
         }
     }
