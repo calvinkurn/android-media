@@ -1,8 +1,6 @@
 package com.tokopedia.loginregister.common.view;
 
 import com.facebook.AccessToken;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.network.ErrorHandler;
 
 /**
  * @author by nisie on 10/11/17.

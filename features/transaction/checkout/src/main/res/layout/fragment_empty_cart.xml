@@ -323,11 +323,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/v_separator_recommendation"
-<<<<<<< HEAD
-                            android:layout_marginBottom="@dimen/dp_16"
-=======
                             android:layout_marginBottom="@dimen/dp_32"
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
                             android:layout_marginTop="@dimen/dp_16" />
 
                         <com.tokopedia.design.component.TextViewCompat

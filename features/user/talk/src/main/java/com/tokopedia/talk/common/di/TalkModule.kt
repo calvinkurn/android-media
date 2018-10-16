@@ -25,6 +25,7 @@ import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -40,7 +41,7 @@ class TalkModule {
 
     @TalkScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -60,14 +61,14 @@ class TalkModule {
     @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
                                    networkRouter: NetworkRouter,
-                                   userSession: UserSession
+                                   userSession: UserSessionInterface
     ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 
     @TalkScope
     @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSession):
+    fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface):
             FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSession)
     }
@@ -147,7 +148,7 @@ class TalkModule {
     @TalkScope
     @Provides
     fun provideCreateTalkUseCase(api: TalkApi,
-                                        createTalkMapper: CreateTalkMapper): CreateTalkUsecase {
+                                 createTalkMapper: CreateTalkMapper): CreateTalkUsecase {
         return CreateTalkUsecase(api, createTalkMapper)
     }
 

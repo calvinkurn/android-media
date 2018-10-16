@@ -32,7 +32,6 @@ public class LoginActivity extends TActivity implements HasComponent {
     public static final String AUTO_WEBVIEW_NAME = "webview_name";
     public static final String AUTO_WEBVIEW_URL = "webview_url";
 
-    @DeepLink({SessionApplinkUrl.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         if (SessionHandler.isV4Login(context)) {

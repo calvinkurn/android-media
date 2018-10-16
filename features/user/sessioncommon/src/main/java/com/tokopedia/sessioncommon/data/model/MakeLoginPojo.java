@@ -24,15 +24,9 @@ public class MakeLoginPojo {
     @SerializedName("full_name")
     @Expose
     private String fullName;
-    @SerializedName("shop_reputation")
-    @Expose
-    private ShopReputationPojo shopReputation;
     @SerializedName("is_login")
     @Expose
     private String isLogin;
-    @SerializedName("user_reputation")
-    @Expose
-    private UserReputationPojo userReputation;
     @SerializedName("shop_has_terms")
     @Expose
     private int shopHasTerms;
@@ -98,28 +92,12 @@ public class MakeLoginPojo {
         this.fullName = fullName;
     }
 
-    public ShopReputationPojo getShopReputation() {
-        return shopReputation;
-    }
-
-    public void setShopReputation(ShopReputationPojo shopReputation) {
-        this.shopReputation = shopReputation;
-    }
-
     public String getIsLogin() {
         return isLogin;
     }
 
     public void setIsLogin(String isLogin) {
         this.isLogin = isLogin;
-    }
-
-    public UserReputationPojo getUserReputation() {
-        return userReputation;
-    }
-
-    public void setUserReputation(UserReputationPojo userReputation) {
-        this.userReputation = userReputation;
     }
 
     public int getShopHasTerms() {

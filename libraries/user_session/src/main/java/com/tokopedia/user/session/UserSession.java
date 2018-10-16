@@ -307,6 +307,23 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
+    @Override
+    public void setLoginSession(boolean login, String userId, String fullName,
+                                String shopId, boolean isMsisdnVerified, String shopName,
+                                String email, int shopIsGold, String msisdn) {
+
+    }
+
+    @Override
+    public void setTempLoginSession(String userId) {
+
+    }
+
+    @Override
+    public void setIsMSISDNVerified(boolean isMsisdnVerified) {
+
+    }
+
     public void logoutSession() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();

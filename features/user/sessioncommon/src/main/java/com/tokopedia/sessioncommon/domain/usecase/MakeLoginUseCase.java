@@ -1,22 +1,11 @@
 package com.tokopedia.sessioncommon.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.userSession;
-import com.tokopedia.session.data.source.MakeLoginDataSource;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.sessioncommon.data.SessionCommonApi;
-import com.tokopedia.sessioncommon.data.model.MakeLoginDomain;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
 import com.tokopedia.sessioncommon.domain.MakeLoginMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.inject.Inject;
 
@@ -27,7 +16,7 @@ import rx.functions.Action1;
  * @author by nisie on 5/26/17.
  */
 
-public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
+public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
 
     public static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_UUID = "uuid";
@@ -45,7 +34,7 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
     }
 
     @Override
-    public Observable<MakeLoginDomain> createObservable(RequestParams requestParams) {
+    public Observable<MakeLoginPojo> createObservable(RequestParams requestParams) {
         return api.makeLogin(requestParams.getParameters())
                 .map(mapper)
                 .doOnNext(saveToCache());
@@ -59,20 +48,20 @@ public class MakeLoginUseCase extends UseCase<MakeLoginDomain> {
 
     private Action1<MakeLoginPojo> saveToCache() {
         return makeLoginDomain -> {
-            if (makeLoginDomain.getIsLogin() == 1) {
-                userSession.setLoginSession(makeLoginDomain.isLogin(),
+            if (makeLoginDomain.getIsLogin().equals("1")) {
+                userSession.setLoginSession(makeLoginDomain.getIsLogin().equals("1"),
                         String.valueOf(makeLoginDomain.getUserId()),
                         makeLoginDomain.getFullName(),
                         String.valueOf(makeLoginDomain.getShopId()),
-                        makeLoginDomain.isMsisdnVerified(),
+                        makeLoginDomain.getMsisdnIsVerified().equals("1"),
                         makeLoginDomain.getShopName(),
                         userSession.getTempEmail(),
                         makeLoginDomain.getShopIsGold(),
                         userSession.getTempPhoneNumber());
-            }else{
+            } else {
                 userSession.setTempLoginName(makeLoginDomain.getFullName());
                 userSession.setTempLoginSession(String.valueOf(makeLoginDomain.getUserId()));
-                userSession.setIsMSISDNVerified(makeLoginDomain.isMsisdnVerified());
+                userSession.setIsMSISDNVerified(makeLoginDomain.getMsisdnIsVerified().equals("1"));
             }
         };
     }

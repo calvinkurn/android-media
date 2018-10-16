@@ -12,16 +12,16 @@ import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * @author by Steven
  */
-class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
+class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessionInterface,
                                                private val deleteTalkUseCase: DeleteTalkUseCase,
-                                               @TalkScope val getProductTalkUseCase : GetProductTalkUseCase,
+                                               @TalkScope val getProductTalkUseCase: GetProductTalkUseCase,
                                                @TalkScope val deleteCommentTalkUseCase: DeleteCommentTalkUseCase,
                                                private val followUnfollowTalkUseCase: FollowUnfollowTalkUseCase,
                                                private val markTalkNotFraudUseCase: MarkTalkNotFraudUseCase) :
@@ -54,7 +54,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
     }
 
     fun getProductTalk(productId: String, reset: Boolean) {
-        if(!isRequesting){
+        if (!isRequesting) {
             isRequesting = true
             getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, page, productId)
                     , object : Subscriber<ProductTalkViewModel>() {
@@ -254,7 +254,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
         return userSession.isLoggedIn
     }
 
-    override fun isMyShop(shopId: String): Boolean{
+    override fun isMyShop(shopId: String): Boolean {
         return userSession.shopId == shopId
     }
 

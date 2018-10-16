@@ -26,11 +26,7 @@ public class CpmShop implements Parcelable {
     private static final String KEY_PRODUCT = "product";
 
     @SerializedName(KEY_ID)
-<<<<<<< HEAD
-    private int id;
-=======
     private String id;
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
     @SerializedName(KEY_NAME)
     private String name;
     @SerializedName(KEY_DOMAIN)
@@ -67,11 +63,7 @@ public class CpmShop implements Parcelable {
     }
 
     protected CpmShop(Parcel in) {
-<<<<<<< HEAD
-        id = in.readInt();
-=======
         id = in.readString();
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
         name = in.readString();
         domain = in.readString();
         tagline = in.readString();
@@ -81,11 +73,7 @@ public class CpmShop implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-<<<<<<< HEAD
-        dest.writeInt(id);
-=======
         dest.writeString(id);
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
         dest.writeString(name);
         dest.writeString(domain);
         dest.writeString(tagline);

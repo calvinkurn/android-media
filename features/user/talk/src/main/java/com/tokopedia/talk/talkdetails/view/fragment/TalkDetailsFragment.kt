@@ -40,7 +40,7 @@ import com.tokopedia.talk.talkdetails.view.adapter.AttachingProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_comments.*
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     lateinit var talkDialog: TalkDialog
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
 
     private var talkId: String = ""
     private var shopId: String = ""

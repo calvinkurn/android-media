@@ -22,7 +22,7 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
 import javax.inject.Inject
 
@@ -36,7 +36,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     private lateinit var inboxTalkPagerAdapter: InboxTalkPagerAdapter
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var titles: Array<String>
 

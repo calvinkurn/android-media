@@ -10,12 +10,13 @@ import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 /**
  * @author by nisie on 6/7/18.
  */
-class SettingBankPresenter(private val userSession: UserSession,
+class SettingBankPresenter(private val userSession: UserSessionInterface,
                            private val getBankAccountUseCase: GetBankAccountListUseCase,
                            private val setDefaultBankAccountUseCase: SetDefaultBankAccountUseCase,
                            private val deleteBankAccountUseCase: DeleteBankAccountUseCase) :

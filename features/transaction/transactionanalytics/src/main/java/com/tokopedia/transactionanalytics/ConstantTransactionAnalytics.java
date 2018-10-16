@@ -33,10 +33,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ORDER = "clickOrder";
         String CLICK_ADDRESS = "clickAddress";
         String PRODUCT_CLICK = "productClick";
-<<<<<<< HEAD
-=======
         String PRODUCT_VIEW = "productView";
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
     }
 
     interface EventCategory {
@@ -199,10 +196,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
         String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
         String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
-<<<<<<< HEAD
-=======
         String VIEW_PRODUCT = "view product";
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
     }
 
     interface EventLabel {

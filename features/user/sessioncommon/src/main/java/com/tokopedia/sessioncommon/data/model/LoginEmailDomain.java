@@ -1,9 +1,5 @@
 package com.tokopedia.sessioncommon.data.model;
 
-import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
-import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-
 /**
  * @author by nisie on 12/19/17.
  */

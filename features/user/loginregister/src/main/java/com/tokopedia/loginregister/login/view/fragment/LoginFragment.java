@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -45,9 +44,11 @@ import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
 import com.tokopedia.loginregister.common.data.SecurityDomain;
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.login.analytics.LoginAnalytics;
+import com.tokopedia.loginregister.login.di.DaggerLoginComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
@@ -136,14 +137,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     protected void initInjector() {
-//        AppComponent appComponent = getComponent(AppComponent.class);
-//
-//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-//                DaggerSessionComponent.builder()
-//                        .appComponent(appComponent)
-//                        .build();
-//
-//        daggerSessionComponent.inject(this);
+        DaggerLoginComponent daggerLoginComponent = (DaggerLoginComponent) DaggerLoginComponent
+                .builder().loginRegisterComponent(getComponent(LoginRegisterComponent.class))
+                .build();
+
+        daggerLoginComponent.inject(this);
     }
 
 //    public void initOuterInjector(SessionModule sessionModule) {
@@ -677,7 +675,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void onLoginPhoneNumberClick() {
-        if(getActivity()!= null) {
+        if (getActivity() != null) {
             analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
 //        Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
 //        startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
@@ -748,7 +746,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(getActivity()!= null) {
+        if (getActivity() != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
 //            if (requestCode == REQUEST_SMART_LOCK
 //                    && resultCode == Activity.RESULT_OK

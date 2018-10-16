@@ -2,8 +2,6 @@ package com.tokopedia.sessioncommon.data.model;
 
 import android.support.annotation.Nullable;
 
-import com.tokopedia.session.data.viewmodel.SecurityDomain;
-
 /**
  * @author by nisie on 5/26/17.
  */

@@ -3,11 +3,8 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-<<<<<<< HEAD
-=======
 import com.google.gson.annotations.SerializedName;
 
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
 import org.json.JSONException;
 import org.json.JSONObject;
 

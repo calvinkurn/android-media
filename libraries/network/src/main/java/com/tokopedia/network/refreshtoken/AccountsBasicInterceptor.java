@@ -6,6 +6,7 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,7 +20,8 @@ import okhttp3.Request;
 public class AccountsBasicInterceptor extends TkpdAuthInterceptor {
     private static final String X_TKPD_PATH = "x-tkpd-path";
 
-    public AccountsBasicInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
+    public AccountsBasicInterceptor(Context context, NetworkRouter networkRouter,
+                                    UserSessionInterface userSession) {
         super(context, networkRouter, userSession);
     }
 

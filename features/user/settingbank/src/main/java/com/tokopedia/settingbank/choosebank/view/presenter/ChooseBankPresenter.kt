@@ -10,12 +10,13 @@ import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListWSUseCase
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
 /**
  * @author by nisie on 7/2/18.
  */
-class ChooseBankPresenter(private val userSession: UserSession,
+class ChooseBankPresenter(private val userSession: UserSessionInterface,
                           private val getBankListDBUseCase: GetBankListDBUseCase,
                           private val getBankListWSUseCase: GetBankListWSUseCase,
                           private val bankCache: LocalCacheHandler) :

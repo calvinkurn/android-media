@@ -8,6 +8,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +31,8 @@ public class AccessTokenRefresh {
     private static final String GRANT_TYPE = "grant_type";
     private static final String REFRESH_TOKEN = "refresh_token";
 
-    public String refreshToken(Context context, UserSession userSession, NetworkRouter networkRouter) {
+    public String refreshToken(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter) {
 
         userSession.clearToken();
         Map<String, String> params = new HashMap<>();
@@ -74,7 +76,8 @@ public class AccessTokenRefresh {
         }
     }
 
-    private Retrofit getRetrofit(Context context, UserSession userSession, NetworkRouter networkRouter) {
+    private Retrofit getRetrofit(Context context, UserSessionInterface userSession, NetworkRouter
+            networkRouter) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)

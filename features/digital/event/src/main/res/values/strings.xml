@@ -110,8 +110,6 @@
     <string name="event_minggu_depan">Minggu Depan</string>
     <string name="event_besok">Besok</string>
     <string name="event_hari_ini">Hari Ini</string>
-<<<<<<< HEAD
-=======
     <string name="owner_profile">Data Pemilik Tiket</string>
     <string name="owner_profile_ticket_redeemed">Tiket Berhasil Diredeem</string>
     <string name="owner_profile_ticket_used">Tiket Telah Digunakan</string>
@@ -123,7 +121,6 @@
     <string name="btn_ticket_redeemed">Tutup</string>
     <string name="ticket_close">Kembali</string>
     <string name="ticket_updatedAt">Diredeem pada</string>
->>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
 
 
     <!-- need to changed -->

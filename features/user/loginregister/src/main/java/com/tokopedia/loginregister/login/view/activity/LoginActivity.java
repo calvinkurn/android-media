@@ -7,9 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.loginregister.login.di.LoginComponent;
 import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -19,7 +24,7 @@ import javax.inject.Inject;
 /**
  * @author by nisie on 10/1/18.
  */
-public class LoginActivity extends BaseSimpleActivity{
+public class LoginActivity extends BaseSimpleActivity implements HasComponent {
 
     public static final int METHOD_FACEBOOK = 111;
     public static final int METHOD_GOOGLE = 222;
@@ -104,5 +109,11 @@ public class LoginActivity extends BaseSimpleActivity{
         bundle.putString(LoginFragment.AUTO_LOGIN_PASS, password);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public LoginRegisterComponent getComponent() {
+        return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
+                getApplication()).getBaseAppComponent()).build();
     }
 }

@@ -8,6 +8,8 @@ import com.tokopedia.loginregister.login.domain.DiscoverUseCase;
 import com.tokopedia.loginregister.login.domain.mapper.DiscoverMapper;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -21,6 +23,7 @@ public class CloudDiscoverDataSource {
     private LoginRegisterApi loginRegisterApi;
     private DiscoverMapper discoverMapper;
 
+    @Inject
     public CloudDiscoverDataSource(CacheManager globalCacheManager,
                                    LoginRegisterApi loginRegisterApi,
                                    DiscoverMapper discoverMapper) {
