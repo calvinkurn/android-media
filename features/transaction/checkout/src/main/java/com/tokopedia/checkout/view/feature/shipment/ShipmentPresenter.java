@@ -22,7 +22,6 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
@@ -48,7 +47,6 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
@@ -66,10 +64,10 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
-import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductPreorder;
-import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductPreorder;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -127,6 +125,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
+    private boolean couponStateChanged;
     private List<ShippingCourierViewModel> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
@@ -1385,6 +1384,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (resultSuccess) {
+                                    setCouponStateChanged(true);
                                     getView().renderCancelAutoApplyCouponSuccess();
                                 } else {
                                     getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -1488,5 +1488,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState) {
         this.shippingCourierViewModelsState = shippingCourierViewModelsState;
+    }
+
+    @Override
+    public void setCouponStateChanged(boolean couponStateChanged) {
+        this.couponStateChanged = couponStateChanged;
+    }
+
+    @Override
+    public boolean getCouponStateChanged() {
+        return couponStateChanged;
     }
 }

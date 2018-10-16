@@ -759,6 +759,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void updateAppliedPromo(CartItemPromoHolderData cartPromo) {
+        shipmentPresenter.setCouponStateChanged(true);
         shipmentAdapter.updateItemPromoVoucher(cartPromo);
         if (shipmentAdapter.hasSetAllCourier()) {
             ShipmentAdapter.RequestData requestData =
@@ -1593,5 +1594,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public boolean isToogleYearEndPromoOn() {
         // Todo : read from remote config
         return true;
+    }
+
+    public int getResultCode() {
+        if (shipmentPresenter.getCouponStateChanged()) {
+            return ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED;
+        } else {
+            return Activity.RESULT_CANCELED;
+        }
     }
 }

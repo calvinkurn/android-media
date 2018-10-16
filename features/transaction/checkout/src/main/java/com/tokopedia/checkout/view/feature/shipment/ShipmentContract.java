@@ -256,6 +256,9 @@ public interface ShipmentContract {
 
         List<ShippingCourierViewModel> getShippingCourierViewModelsState();
 
+        void setCouponStateChanged(boolean appliedCoupon);
+
+        boolean getCouponStateChanged();
     }
 
 }

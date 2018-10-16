@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
@@ -25,6 +22,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
+    public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
@@ -32,7 +30,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final String EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED = "EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED";
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-
+    private ShipmentFragment shipmentFragment;
 
     public static Intent createInstance(Context context,
                                         PromoCodeAppliedData promoCodeCartListData,
@@ -92,47 +90,25 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return ShipmentFragment.newInstance(
+        shipmentFragment = ShipmentFragment.newInstance(
                 getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
                 getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false)
         );
+
+        return shipmentFragment;
     }
 
     @Override
     public void onBackPressed() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
-        super.onBackPressed();
-    }
-
-    void showResetDialog() {
-        final Dialog dialog = new Dialog(this, Dialog.Type.LONG_PROMINANCE);
-        dialog.setTitle(getString(R.string.dialog_title_back_to_cart));
-        dialog.setDesc(getString(R.string.dialog_message_back_to_cart));
-        dialog.setBtnCancel(getString(R.string.label_dialog_back_to_cart_button_positive));
-        dialog.setBtnOk(getString(R.string.label_dialog_back_to_cart_button_negative));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkoutAnalyticsCourierSelection
-                        .eventClickAtcCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
-                setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
-                finish();
-                dialog.dismiss();
-            }
-        });
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkoutAnalyticsCourierSelection
-                        .eventClickAtcCourierSelectionClickTetapDiHalamanIniFromBackArrow();
-                dialog.dismiss();
-            }
-        });
-        dialog.getAlertDialog().setCancelable(true);
-        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
-        dialog.show();
+        if (shipmentFragment != null) {
+            setResult(shipmentFragment.getResultCode());
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 }
