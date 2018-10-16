@@ -27,10 +27,6 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel
 import com.tokopedia.home.explore.view.adapter.viewmodel.MyShopViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

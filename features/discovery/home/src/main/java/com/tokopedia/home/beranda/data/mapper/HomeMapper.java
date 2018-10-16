@@ -20,11 +20,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
