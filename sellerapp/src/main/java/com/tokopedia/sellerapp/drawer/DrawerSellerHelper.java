@@ -35,6 +35,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.flashsale.management.view.activity.CampaignActivity;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
@@ -122,6 +123,9 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_flash_sale),
+                TkpdState.DrawerPosition.SELLER_FLASH_SALE,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
                 R.drawable.ic_reso,
@@ -483,6 +487,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventDrawerTopads();
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
+                    context.startActivity(CampaignActivity.createIntent(context));
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     if (isGoldMerchant) {

@@ -10,4 +10,7 @@
 
     <string name="fm_campaign_list_upcoming_empty_title">Belum ada yang dapat Anda ikuti</string>
     <string name="fm_campaign_list_upcoming_empty_content">Pelajari lebih lanjut</string>
+    <string name="flashsale_search_hint">Cari flash sale</string>
+    <string name="label_flash_sale_info">Info Flash Sale</string>
+    <string name="label_product_list">Daftar Product</string>
 </resources>

@@ -11,12 +11,11 @@ import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
+import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
-import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
 import com.tokopedia.flashsale.management.view.contract.CampaignContract
 import com.tokopedia.flashsale.management.view.presenter.CampaignPresenter
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusListViewModel
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import javax.inject.Inject
@@ -36,8 +35,10 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         return inflater.inflate(R.layout.fragment_list_campaign, container, false)
     }
 
-    override fun onItemClicked(t: CampaignViewModel?) {
-
+    override fun onItemClicked(t: CampaignViewModel) {
+        activity?.let {
+            startActivity(CampaignDetailActivity.createIntent(it, 1))
+        }
     }
 
     override fun getScreenName(): String {

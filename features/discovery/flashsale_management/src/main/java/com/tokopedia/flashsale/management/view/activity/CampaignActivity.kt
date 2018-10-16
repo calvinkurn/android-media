@@ -24,6 +24,8 @@ class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
         fun createIntent(context: Context): Intent {
             return Intent(context, CampaignActivity::class.java)
         }
+
+        private const val LIMIT_PAGER = 2
     }
 
     override fun getComponent(): CampaignComponent {
@@ -63,6 +65,6 @@ class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
     }
 
     override fun getPageLimit(): Int {
-        return 2
+        return LIMIT_PAGER
     }
 }

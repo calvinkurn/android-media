@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_4"
@@ -9,7 +10,9 @@
     android:layout_marginTop="@dimen/dp_4"
     android:layout_marginBottom="@dimen/dp_4"
     android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:focusable="true">
@@ -20,66 +23,88 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
-        <ImageView
-            android:id="@+id/ivImageCampaign"
+        <android.support.v7.widget.CardView
+            android:id="@+id/base_layout_image"
             android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80" />
+            android:layout_height="@dimen/dp_80"
+            app:cardBackgroundColor="@color/cardview_light_background"
+            app:cardCornerRadius="@dimen/dp_4"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/tvCampaignType"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/ivImageCampaign"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                tools:ignore="ContentDescription"/>
+
+        </android.support.v7.widget.CardView>
+
+
+        <TextView android:id="@+id/tvCampaignType"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Flash Sale"
+            tools:text="Flash Sale"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintLeft_toRightOf="@+id/ivImageCampaign"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintLeft_toRightOf="@+id/base_layout_image"
+            app:layout_constraintStart_toEndOf="@+id/base_layout_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvCampaignName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Gadget unik dan spesial untuk kado lebaran yang indah"
-            style="@style/TextView.Small.Bold"
+            tools:text="Gadget unik dan spesial untuk kado lebaran yang indah"
+            style="@style/TextView.Small"
             android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintLeft_toLeftOf="@+id/tvCampaignType"
             app:layout_constraintTop_toBottomOf="@+id/tvCampaignType"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="@+id/tvCampaignType"/>
 
-        <ImageView
-            android:id="@+id/ivClock"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:src="@drawable/ic_time"
-            android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@+id/ivImageCampaign"/>
-
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvCampaignDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="9 Apr, 08.00 - 12.00"
+            tools:text="9 Apr, 08.00 - 12.00"
             style="@style/TextView.Micro"
-            android:layout_marginLeft="@dimen/dp_8"
-            app:layout_constraintLeft_toRightOf="@+id/ivClock"
-            app:layout_constraintTop_toTopOf="@+id/ivClock"
-            app:layout_constraintBottom_toBottomOf="@id/ivClock" />
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_time"
+            android:drawableStart="@drawable/ic_time"
+            android:drawablePadding="@dimen/dp_6"
+            app:layout_constraintTop_toBottomOf="@+id/base_layout_image"
+            app:layout_constraintStart_toStartOf="@+id/base_layout_image"
+            app:layout_constraintLeft_toLeftOf="@+id/base_layout_image"
+            app:layout_constraintEnd_toStartOf="@+id/tvStatus"
+            app:layout_constraintRight_toLeftOf="@+id/tvStatus"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvStatus"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dibatalkan"
+            android:drawableLeft="@drawable/ic_status_dot"
+            android:drawableStart="@drawable/ic_status_dot"
+            android:drawablePadding="@dimen/dp_6"
+            tools:text="Dibatalkan"
             android:paddingTop="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_4"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             style="@style/TextView.Micro"
-            android:layout_marginLeft="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@+id/base_layout_image"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivClock"
-            app:layout_constraintBottom_toBottomOf="@id/ivClock"
+            app:layout_constraintTop_toTopOf="@+id/tvCampaignDate"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:background="@drawable/bg_tv_status"/>
 
     </android.support.constraint.ConstraintLayout>
