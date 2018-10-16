@@ -28,6 +28,8 @@ public interface CreatePostContract {
 
         void onErrorNotAffiliate();
 
+        void onErrorNoQuota();
+
         void onSuccessSubmitPost();
 
         void onErrorSubmitPost(String message);

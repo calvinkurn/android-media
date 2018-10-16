@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -40,10 +41,16 @@ public class GetContentFormUseCase {
                 context.getResources(),
                 R.raw.query_af_content_form
         );
-
         GraphqlRequest request = new GraphqlRequest(query, ContentFormData.class, variables);
 
+        String queryQouta = GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.query_af_quota
+        );
+        GraphqlRequest requestQouta = new GraphqlRequest(queryQouta, CheckQuotaQuery.class);
+
         graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(requestQouta);
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(subscriber);
     }

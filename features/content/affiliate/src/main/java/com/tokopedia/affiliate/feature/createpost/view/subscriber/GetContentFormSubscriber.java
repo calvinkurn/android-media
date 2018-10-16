@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -55,6 +56,17 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
             view.onErrorNotAffiliate();
             return;
         }
+
+        CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
+        if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
+            onError(new RuntimeException());
+            return;
+        }
+        if (checkQuotaQuery.getData().getNumber() == 0) {
+            view.onErrorNoQuota();
+            return;
+        }
+
         if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
             view.onErrorGetContentForm(data.getFeedContentForm().getError());
             return;

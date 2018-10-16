@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -226,6 +227,15 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                     + "?product_id=" +
                     viewModel.getProductId();
             RouteManager.route(getActivity(), onboardingApplink);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onErrorNoQuota() {
+        if (getActivity() != null) {
+            Toast.makeText(getActivity(), R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
+                    .show();
             getActivity().finish();
         }
     }
