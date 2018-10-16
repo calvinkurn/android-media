@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 
 import java.util.ArrayList;
@@ -24,18 +26,31 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
 
     RecyclerView recyclerView;
     RelatedSearchAdapter adapter;
+    TextView relatedSearchTitle;
 
     public RelatedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView);
         recyclerView = itemView.findViewById(R.id.recyclerView);
+        relatedSearchTitle = itemView.findViewById(R.id.relatedSearchTitle);
         adapter = new RelatedSearchAdapter(itemClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
+        ));
     }
 
     @Override
     public void bind(RelatedSearchModel element) {
-        adapter.setItemList(element.getOtherRelated());
+        if (ListHelper.isContainItems(element.getOtherRelated())) {
+            recyclerView.setVisibility(View.VISIBLE);
+            relatedSearchTitle.setVisibility(View.VISIBLE);
+            adapter.setItemList(element.getOtherRelated());
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            relatedSearchTitle.setVisibility(View.GONE);
+        }
     }
 
     public static class RelatedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
