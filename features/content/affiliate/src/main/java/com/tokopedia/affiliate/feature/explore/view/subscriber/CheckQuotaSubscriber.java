@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.common.data.pojo.CheckQuotaQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
@@ -28,6 +29,9 @@ public class CheckQuotaSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e.printStackTrace();
+        }
         mainView.hideLoading();
         mainView.onErrorCheckQuota(
                 ErrorHandler.getErrorMessage(mainView.getContext(), e), productId, adId
