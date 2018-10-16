@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white_fafafa">#fafafa</color>
+    <color name="yellow_sending">#fff0c2</color>
+    <color name="overlay_background">#CC000000</color>
+</resources>

@@ -42,6 +42,7 @@ public class PromoCodeCartShipmentData implements Parcelable {
         private int voucherAmount;
         private int voucherStatus;
         private String voucherPromoDesc;
+        private int isCoupon;
 
         public String getVoucherPromoDesc() {
             return voucherPromoDesc;
@@ -83,6 +84,13 @@ public class PromoCodeCartShipmentData implements Parcelable {
             this.voucherStatus = voucherStatus;
         }
 
+        public int getIsCoupon() {
+            return isCoupon;
+        }
+
+        public void setIsCoupon(int isCoupon) {
+            this.isCoupon = isCoupon;
+        }
 
         public DataVoucher() {
         }
@@ -99,6 +107,7 @@ public class PromoCodeCartShipmentData implements Parcelable {
             dest.writeInt(this.voucherAmount);
             dest.writeInt(this.voucherStatus);
             dest.writeString(this.voucherPromoDesc);
+            dest.writeInt(this.isCoupon);
         }
 
         protected DataVoucher(Parcel in) {
@@ -107,6 +116,7 @@ public class PromoCodeCartShipmentData implements Parcelable {
             this.voucherAmount = in.readInt();
             this.voucherStatus = in.readInt();
             this.voucherPromoDesc = in.readString();
+            this.isCoupon = in.readInt();
         }
 
         public static final Creator<DataVoucher> CREATOR = new Creator<DataVoucher>() {

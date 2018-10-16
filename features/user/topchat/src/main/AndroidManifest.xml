@@ -42,5 +42,9 @@
         <activity
             android:name=".attachproduct.view.activity.AttachProductActivity"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".attachproduct.view.activity.BroadcastMessageAttachProductActivity"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

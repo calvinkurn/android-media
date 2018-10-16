@@ -405,4 +405,22 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventLabel.FAILED
         );
     }
+
+    public void eventViewPromoAutoApply() {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.CART,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                EventLabel.CHECKOUT_COUPON_AUTO_APPLY
+        );
+    }
+
+    public void eventViewPromoManualApply(String type) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.CART,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                String.format(EventLabel.CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY, type)
+        );
+    }
 }

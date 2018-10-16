@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:background="@color/tkpd_main_green"
         android:minHeight="?android:attr/actionBarSize"
-        android:theme="@style/AppBarTheme"
+        app:theme="@style/AppBarTheme"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitleText"
         app:titleTextAppearance="@style/ToolbarText" />
 

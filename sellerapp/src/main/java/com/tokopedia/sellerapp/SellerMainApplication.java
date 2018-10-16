@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -34,12 +35,15 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
@@ -213,10 +217,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
+        ImageUploaderUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         LogoutUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_DOMAIN);
         SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
+        PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
 
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
     }

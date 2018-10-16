@@ -10,34 +10,64 @@
     android:paddingEnd="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-    <TextView style="@style/TextView.Micro.BlackSecondary"
-        android:id="@+id/shipping_destination"
+    <LinearLayout
+        android:id="@+id/ll_shipping_destination"
         android:layout_width="0dp"
-        tools:text="@string/rate_est_detail_dest_fmt"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
+        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/shipping_weight"
-        app:layout_constraintEnd_toStartOf="@+id/shipping_weight"/>
+        app:layout_constraintEnd_toStartOf="@+id/shipping_weight">
+
+        <TextView style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="wrap_content"
+            android:text="@string/rate_est_detail_dest_fmt"/>
+
+        <TextView style="@style/TextView.Micro.BlackSecondary"
+            android:id="@+id/shipping_destination"
+            android:layout_width="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/weight"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="wrap_content"
+        android:text="@string/rate_est_detail_weight_fmt"
+        app:layout_constraintTop_toTopOf="@+id/ll_shipping_destination"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/shipping_weight"
-        android:layout_width="0dp"
-        android:gravity="end"
-        tools:text="@string/rate_est_detail_weight_fmt"
-        app:layout_constraintTop_toTopOf="@+id/shipping_destination"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/shipping_destination"
-        app:layout_constraintStart_toEndOf="@+id/shipping_destination"/>
+        android:layout_width="wrap_content"
+        tools:text="1000 gram"
+        app:layout_constraintTop_toBottomOf="@+id/weight"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/shipping_receiver_name"
         android:layout_width="0dp"
         tools:text="@string/shipping_receiver_text"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@+id/shipping_destination"
+        app:layout_constraintTop_toBottomOf="@+id/ll_shipping_destination"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView style="@style/TextView.Micro.BlackSecondary"
+        android:id="@+id/shipping_receiver_phone"
+        android:layout_width="0dp"
+        tools:text="@string/shipping_receiver_text"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:lineSpacingExtra="@dimen/line_spacing_6"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_name"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -51,7 +81,7 @@
         android:layout_marginRight="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_32"
         android:lineSpacingExtra="@dimen/line_spacing_6"
-        app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_name"
+        app:layout_constraintTop_toBottomOf="@+id/shipping_receiver_phone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
