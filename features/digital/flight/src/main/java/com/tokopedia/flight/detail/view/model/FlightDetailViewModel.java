@@ -110,13 +110,14 @@ public class FlightDetailViewModel implements Parcelable {
             setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
             setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
             setTotalTransit(flightJourneyViewModel.getTotalTransit());
-            setTotal(flightJourneyViewModel.getTotal());
-            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
             setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
             setIsRefundable(flightJourneyViewModel.isRefundable());
+            setTotal(flightJourneyViewModel.getTotal());
+            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
             setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
             setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
             setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
+
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
             setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getAirlineDataList()));

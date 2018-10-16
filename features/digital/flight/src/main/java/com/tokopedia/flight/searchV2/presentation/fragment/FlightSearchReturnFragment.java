@@ -17,8 +17,12 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeAllResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,6 +45,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     private TextView duration;
     private String selectedFlightDeparture;
     private boolean isBestPairing = false;
+    private boolean isViewOnlyBestPairing = false;
 
     public static Fragment newInstance(FlightSearchPassDataViewModel passDataViewModel,
                                        String selectedDepartureID, boolean bestPairing) {
@@ -58,6 +63,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onCreate(Bundle savedInstanceState) {
         selectedFlightDeparture = getArguments().getString(EXTRA_DEPARTURE_ID);
         isBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
+        isViewOnlyBestPairing = isBestPairing;
         super.onCreate(savedInstanceState);
     }
 
@@ -158,16 +164,16 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     }
 
     @Override
-    public void navigateToCart(FlightJourneyViewModel journeyViewModel) {
+    public void navigateToCart(FlightJourneyViewModel journeyViewModel, FlightPriceViewModel flightPriceViewModel) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId());
+            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId(), flightPriceViewModel, false);
         }
     }
 
     @Override
-    public void navigateToCart(String selectedFlightReturn) {
+    public void navigateToCart(String selectedFlightReturn, FlightPriceViewModel flightPriceViewModel) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn, flightPriceViewModel, false);
         }
     }
 
@@ -177,6 +183,22 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
                 getString(R.string.flight_error_pick_journey));
     }
 
+    @Override
+    public void showSeeAllResultView() {
+        getAdapter().addElement(new FlightSearchSeeAllResultViewModel());
+        isViewOnlyBestPairing = true;
+    }
+
+    @Override
+    public void hideSeeAllResultView() {
+        isViewOnlyBestPairing = false;
+    }
+
+    @Override
+    public boolean isOnlyShowBestPair() {
+        return isViewOnlyBestPairing;
+    }
+
     protected void onSelectedFromDetail(String selectedId) {
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
     }
@@ -184,7 +206,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Override
     protected FlightFilterModel buildFilterModel() {
         FlightFilterModel filterModel = new FlightFilterModel();
-        filterModel.setBestPairing(isBestPairing);
+        filterModel.setBestPairing(isViewOnlyBestPairing);
         filterModel.setJourneyId(selectedFlightDeparture);
 
         return filterModel;
@@ -194,5 +216,16 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onDestroyView() {
         super.onDestroyView();
         flightSearchReturnPresenter.onDestroy();
+    }
+
+    @Override
+    public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
+        super.renderSearchList(list, needRefresh);
+
+        if (isDoneLoadData() && list.size() > 0 && isOnlyShowBestPair()) {
+            showSeeAllResultView();
+        } else {
+            hideSeeAllResultView();
+        }
     }
 }

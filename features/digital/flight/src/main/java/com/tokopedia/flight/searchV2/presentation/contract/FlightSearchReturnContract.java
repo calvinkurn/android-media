@@ -1,6 +1,7 @@
 package com.tokopedia.flight.searchV2.presentation.contract;
 
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 /**
  * @author by furqan on 15/10/18.
@@ -12,11 +13,18 @@ public interface FlightSearchReturnContract {
 
         void showReturnTimeShouldGreaterThanArrivalDeparture();
 
-        void navigateToCart(FlightJourneyViewModel returnFlightSearchViewModel);
+        void navigateToCart(FlightJourneyViewModel returnFlightSearchViewModel, FlightPriceViewModel flightPriceViewModel);
 
-        void navigateToCart(String selectedFlightReturn);
+        void navigateToCart(String selectedFlightReturn, FlightPriceViewModel flightPriceViewModel);
 
         void showErrorPickJourney();
+
+        void showSeeAllResultView();
+
+        void hideSeeAllResultView();
+
+        boolean isOnlyShowBestPair();
+
 
     }
 

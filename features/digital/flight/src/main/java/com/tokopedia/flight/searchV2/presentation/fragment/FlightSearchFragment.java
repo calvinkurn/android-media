@@ -413,9 +413,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel) {
+    public void navigateToNextPage(String selectedId, FlightPriceViewModel fareViewModel, boolean isBestPairing) {
         if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(selectedId);
+            onFlightSearchFragmentListener.selectFlight(selectedId, fareViewModel, isBestPairing);
         }
     }
 
@@ -488,6 +488,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(journeyViewModel);
         flightDetailViewModel.build(passDataViewModel);
+
+        if (journeyViewModel.getFare().getAdultNumericCombo() != 0) {
+            flightDetailViewModel.setTotal(journeyViewModel.getComboPrice());
+            flightDetailViewModel.setTotalNumeric(journeyViewModel.getComboPriceNumeric());
+            flightDetailViewModel.setAdultNumericPrice(journeyViewModel.getFare().getAdultNumericCombo());
+            flightDetailViewModel.setChildNumericPrice(journeyViewModel.getFare().getChildNumericCombo());
+            flightDetailViewModel.setInfantNumericPrice(journeyViewModel.getFare().getInfantNumericCombo());
+        }
+
         startActivityForResult(FlightDetailActivity.createIntent(getActivity(),
                 flightDetailViewModel, true),
                 REQUEST_CODE_SEE_DETAIL_FLIGHT);
@@ -779,7 +788,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     public interface OnFlightSearchFragmentListener {
-        void selectFlight(String selectedFlightID);
+        void selectFlight(String selectedFlightID, FlightPriceViewModel flightPriceViewModel, boolean isBestPairing);
 
         void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
