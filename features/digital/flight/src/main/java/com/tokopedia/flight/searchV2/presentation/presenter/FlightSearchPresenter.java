@@ -310,7 +310,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     private void deleteFlightReturnSearch(String selectedId) {
-        /*flightDeleteFlightSearchReturnDataUseCase.execute(new Subscriber<Boolean>() {
+        flightDeleteFlightSearchReturnDataUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
@@ -327,8 +327,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     getView().navigateToNextPage(selectedId);
                 }
             }
-        });*/
-        getView().navigateToNextPage(selectedId);
+        });
     }
 
     private void addSubscription(Subscription subscription) {
