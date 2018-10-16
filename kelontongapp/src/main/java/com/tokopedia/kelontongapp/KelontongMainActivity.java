@@ -26,6 +26,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
     private static final String GCM_ID = "gcm_id";
     private static final String ANDROID = "android";
+    private static final String X_DEVICE = "x-device";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
     private KelontongWebChromeClient webViewClient;
@@ -51,7 +52,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
-        webView.getSettings().setUserAgentString(ANDROID);
+        webView.getSettings().setUserAgentString(String.format("%s=%s-%s", X_DEVICE, ANDROID, BuildConfig.VERSION_NAME));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
