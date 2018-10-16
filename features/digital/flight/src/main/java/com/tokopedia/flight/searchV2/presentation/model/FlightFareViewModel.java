@@ -1,9 +1,12 @@
 package com.tokopedia.flight.searchV2.presentation.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Rizky on 26/09/18.
  */
-public class FlightFareViewModel {
+public class FlightFareViewModel implements Parcelable{
 
     private String adult;
     private String adultCombo;
@@ -34,6 +37,33 @@ public class FlightFareViewModel {
         this.infantNumeric = infantNumeric;
         this.infantNumericCombo = infantNumericCombo;
     }
+
+    protected FlightFareViewModel(Parcel in) {
+        adult = in.readString();
+        adultCombo = in.readString();
+        child = in.readString();
+        childCombo = in.readString();
+        infant = in.readString();
+        infantCombo = in.readString();
+        adultNumeric = in.readInt();
+        adultNumericCombo = in.readInt();
+        childNumeric = in.readInt();
+        childNumericCombo = in.readInt();
+        infantNumeric = in.readInt();
+        infantNumericCombo = in.readInt();
+    }
+
+    public static final Creator<FlightFareViewModel> CREATOR = new Creator<FlightFareViewModel>() {
+        @Override
+        public FlightFareViewModel createFromParcel(Parcel in) {
+            return new FlightFareViewModel(in);
+        }
+
+        @Override
+        public FlightFareViewModel[] newArray(int size) {
+            return new FlightFareViewModel[size];
+        }
+    };
 
     public String getAdult() {
         return adult;
@@ -83,4 +113,24 @@ public class FlightFareViewModel {
         return infantNumericCombo;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(adult);
+        parcel.writeString(adultCombo);
+        parcel.writeString(child);
+        parcel.writeString(childCombo);
+        parcel.writeString(infant);
+        parcel.writeString(infantCombo);
+        parcel.writeInt(adultNumeric);
+        parcel.writeInt(adultNumericCombo);
+        parcel.writeInt(childNumeric);
+        parcel.writeInt(childNumericCombo);
+        parcel.writeInt(infantNumeric);
+        parcel.writeInt(infantNumericCombo);
+    }
 }
