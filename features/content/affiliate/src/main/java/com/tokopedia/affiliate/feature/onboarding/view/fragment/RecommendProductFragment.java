@@ -10,10 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProductContract;
 import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProductViewModel;
@@ -21,6 +24,10 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.Objects;
+
+import javax.inject.Inject;
 
 /**
  * @author by milhamj on 10/4/18.
@@ -38,6 +45,9 @@ public class RecommendProductFragment extends BaseDaggerFragment
     private ButtonCompat recommendBtn;
     private TextView seeOther;
     private View loadingView;
+
+    @Inject
+    RecommendProductContract.Presenter presenter;
 
     private String productId = DEFAULT_PRODUCT_ID;
 
@@ -64,8 +74,10 @@ public class RecommendProductFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
         initVar();
         initView();
+        presenter.getProductInfo(productId);
     }
 
     @Override
@@ -109,7 +121,13 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent baseAppComponent
+                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                .getBaseAppComponent();
+        DaggerOnboardingComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this);
     }
 
     @Override
