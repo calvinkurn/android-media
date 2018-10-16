@@ -545,6 +545,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onRelatedSearchClicked(String keyword) {
+        SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
         performNewProductSearch(keyword, true);
     }
 
