@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "35242232860",
+    "firebase_url": "https://tokopedia-app-1.firebaseio.com",
+    "project_id": "tokopedia-app-1",
+    "storage_bucket": "tokopedia-app-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35242232860:android:78ec4b07f12bee1e",
+        "android_client_info": {
+          "package_name": "com.tokopedia.kelontongapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "35242232860-lqpmkv2g6r1hr4rd9r4ijbqfud57m54t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcLhzvmX6WcRUQUwKk6M61y0KK7C4tqME"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

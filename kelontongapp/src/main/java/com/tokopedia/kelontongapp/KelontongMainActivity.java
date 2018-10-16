@@ -1,11 +1,14 @@
 package com.tokopedia.kelontongapp;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -40,6 +43,12 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
+                WebView.setWebContentsDebuggingEnabled(true);
+            }
+        }
 
         webView.loadUrl(KelontongBaseUrl.BASE_URL);
     }
