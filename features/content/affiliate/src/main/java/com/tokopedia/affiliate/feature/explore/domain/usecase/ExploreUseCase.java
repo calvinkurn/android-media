@@ -20,7 +20,7 @@ import javax.inject.Inject;
  */
 public class ExploreUseCase extends GraphqlUseCase {
     private final Context context;
-    private final static String PARAM_CURSOR = "cursor";
+    private final static String PARAM_CURSOR = "nextCursor";
     private final static String PARAM_KEYWORD = "keyword";
     private final static String PARAM_FILTER= "filter";
     private final static String PARAM_SORT = "sort";
