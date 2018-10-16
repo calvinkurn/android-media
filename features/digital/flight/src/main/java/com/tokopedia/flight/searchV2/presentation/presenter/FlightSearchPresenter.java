@@ -295,6 +295,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
                         getView().renderSearchList(flightJourneyViewModels, needRefresh);
+
+                        if (getView().isDoneLoadData()) {
+                            getView().addBottomPaddingForSortAndFilterActionButton();
+                            getView().addToolbarElevation();
+                            getView().hideHorizontalProgress();
+                        }
                     }
                 }
         );
