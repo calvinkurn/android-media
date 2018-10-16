@@ -874,7 +874,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         if (getContext() != null) {
-            Intent profileIntent = ProfileActivity.Companion.createIntentFromFeed(getContext(), userId, postId)
+            Intent profileIntent = ProfileActivity.Companion
+                    .createIntentFromFeed(getContext(), userId, postId)
                     .putExtra(ARGS_ROW_NUMBER, rowNumber);
             startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
         }

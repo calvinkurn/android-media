@@ -359,6 +359,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         .show()
             }
             adapter.notifyItemChanged(0, ProfileHeaderViewHolder.PAYLOAD_FOLLOW)
+
+            if (activity != null && arguments != null) {
+                if (resultIntent == null) {
+                    resultIntent = Intent()
+                    resultIntent!!.putExtras(arguments!!)
+                }
+                resultIntent!!.putExtra(
+                        ProfileActivity.PARAM_IS_FOLLOWING,
+                        if (profileHeaderViewModel.isFollowed) ProfileActivity.IS_FOLLOWING_TRUE
+                        else ProfileActivity.IS_FOLLOWING_FALSE
+                )
+                activity!!.setResult(Activity.RESULT_OK, resultIntent)
+            }
         }
     }
 
