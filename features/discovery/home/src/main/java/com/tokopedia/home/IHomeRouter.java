@@ -3,7 +3,6 @@ package com.tokopedia.home;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import rx.Observable;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
@@ -15,6 +14,12 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 
 public interface IHomeRouter {
 
+    boolean isSupportApplink(String appLink);
+
+    Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
+
+    Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
+
     void openIntermediaryActivity(Activity activity, String depID, String title);
 
     void onDigitalItemClickFromExploreHome(
@@ -24,31 +29,11 @@ public interface IHomeRouter {
             String name,
             String url);
 
-    void openReactNativeOfficialStore(FragmentActivity activity);
-
-    Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
-
-    Intent getInstantLoanIntent(Context context);
-
-    Intent getTopAdsProductDetailIntentForHome(Context context, Product product);
-
     void goToManageShop(Context context);
 
     void sendIndexScreen(Activity activity, String screeName);
 
-    Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
-
-    String getExtraBroadcastReceiverWallet();
-
     void goToApplinkActivity(Context context, String applink);
-
-    boolean isSupportApplink(String appLink);
-
-    Intent getLoginIntent(Context context);
-
-    Intent getHomeIntent(Context context);
 
     void goToWalletFromHome(Context context, String url);
 
@@ -60,11 +45,7 @@ public interface IHomeRouter {
 
     void goToProductDetail(Context context, String productUrl);
 
-    Intent getIntentCreateShop(Context context);
-
     void goToTokoCash(String appLinkBalance, String redirectUrl, Activity activity);
-
-    Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
@@ -77,4 +58,18 @@ public interface IHomeRouter {
     Intent openWebViewGimicURLIntentFromExploreHome(Context context, String url, String title);
 
     Intent getActivityShopCreateEdit(Context context);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getInstantLoanIntent(Context context);
+
+    Intent getTopAdsProductDetailIntentForHome(Context context, Product product);
+
+    Intent getLoginIntent(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    String getExtraBroadcastReceiverWallet();
+
+    Intent getIntentCreateShop(Context context);
 }
