@@ -66,6 +66,19 @@ buckInstall( ) {
     fi
 }
 
+showHelp( ) {
+    echo "List Command:"
+    echo "init <android_sdk_path> -> init buck config on project"
+    echo "clean -> remove cache and buck binary"
+    echo "sync -> sync IDE with buck config (equal to gradle sync)"
+    echo "build <project> -> build customerapp / sellerapp"
+    echo "install <project> -> install costumerapp / sellerapp on connected device"
+}
+
+if [ -z "$1" ]; then
+    showHelp
+    exit 1
+fi
 if [ $1 = "init" ]; then
     initOkBuck $2
 elif [ $1 = "clean" ]; then
@@ -77,5 +90,5 @@ elif [ $1 = "build" ]; then
 elif [ $1 = "sync" ]; then
     buckInstall $2
 else
-    echo "please select command!"
+    showHelp
 fi
