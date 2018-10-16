@@ -53,6 +53,22 @@ public interface TkpdCoreRouter {
         }
     }
 
+    @Deprecated
+    static Intent getActivitySellingTransactionList(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionListReal(mContext);
+    }
+
+    @Deprecated
+    static Class<?> getSellingActivityClass(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getSellingActivityClassReal();
+    }
+
+    setNotificationPass
+
+    Class getSellingActivityClassReal();
+
+    Intent getActivitySellingTransactionListReal(Context mContext);
+
     String getDesktopLinkGroupChat();
 
     Intent getHomeIntent(Context context);
