@@ -431,7 +431,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             addRecommendation.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
             }
+            addRecommendation.setOnLongClickListener {
+                showToast(getString(R.string.profile_add_recommendation))
+                true
+            }
+
             shareOwn.setOnClickListener(shareLink(headerViewModel.link))
+            shareOwn.setOnLongClickListener {
+                showToast(getString(R.string.profile_share_profile))
+                true
+            }
 
             showShowCaseDialog(shareOwn)
         } else {
@@ -439,6 +448,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOther.visibility = View.VISIBLE
 
             shareOther.setOnClickListener(shareLink(headerViewModel.link))
+            shareOther.setOnLongClickListener {
+                showToast(getString(R.string.profile_share_profile))
+                true
+            }
         }
     }
 
@@ -478,7 +491,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             sharingIntent.type = TEXT_PLAIN
             sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody)
             startActivity(
-                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_title))
+                    Intent.createChooser(sharingIntent, getString(R.string.profile_share_profile))
             )
         }
     }
@@ -585,5 +598,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ToasterError.make(view, message, ToasterError.LENGTH_LONG)
                 .setAction(R.string.title_try_again, listener)
                 .show()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
