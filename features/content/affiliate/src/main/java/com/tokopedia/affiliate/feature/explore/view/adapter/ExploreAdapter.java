@@ -14,4 +14,8 @@ public class ExploreAdapter extends BaseAdapter<ExploreTypeFactory> {
     public ExploreAdapter(ExploreTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
     }
+
+    public List<Visitable> getData() {
+        return visitables;
+    }
 }

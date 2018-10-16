@@ -58,6 +58,8 @@ public class ExploreFragment
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
     private static final int ITEM_COUNT = 10;
+    private static final int IMAGE_SPAN_COUNT = 2;
+    private static final int SINGLE_SPAN_COUNT = 1;
 
     private RecyclerView rvExplore;
     private GridLayoutManager layoutManager;
@@ -92,28 +94,50 @@ public class ExploreFragment
         ivBack = view.findViewById(R.id.iv_back);
         ivBantuan = view.findViewById(R.id.action_bantuan);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
-        presenter.attachView(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
         initView();
         initListener();
+        presenter.getFirstData(exploreParams, false);
     }
 
     private void initView() {
         initEmptyResultModel();
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
-        rvExplore.addOnScrollListener(getScrollListener());
         searchView.setListener(this);
         searchView.setResetListener(this);
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-        presenter.getFirstData(exploreParams, false);
+
+        layoutManager = new GridLayoutManager(getContext(),
+                IMAGE_SPAN_COUNT,
+                GridLayoutManager.VERTICAL,
+                false);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter == null) {
+                    return 0;
+                }
+
+                if (adapter.getData().get(position) instanceof ExploreViewModel) {
+                    return SINGLE_SPAN_COUNT;
+                }
+                return IMAGE_SPAN_COUNT;
+            }
+        });
+        rvExplore.setLayoutManager(layoutManager);
+        rvExplore.addOnScrollListener(getScrollListener());
+
+        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
+        rvExplore.setAdapter(adapter);
     }
 
     private void initEmptyResultModel() {
@@ -230,18 +254,7 @@ public class ExploreFragment
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         adapter.clearAllElements();
-        if (itemList.size() == 0) {
-            layoutManager = new GridLayoutManager(getActivity(), 1);
-            itemList = new ArrayList<>();
-            itemList.add(emptyResultModel);
-            exploreParams.disableLoadMore();
-        } else {
-            layoutManager = new GridLayoutManager(getActivity(), 2);
-            exploreParams.setCursorForLoadMore(cursor);
-        }
-        rvExplore.setLayoutManager(layoutManager);
-        adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), itemList);
-        rvExplore.setAdapter(adapter);
+        adapter.addElement(itemList);
     }
 
     @Override
@@ -283,7 +296,6 @@ public class ExploreFragment
     public void onEmptySearchResult() {
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         adapter.clearAllElements();
-        layoutManager = new GridLayoutManager(getActivity(), 1);
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
     }
