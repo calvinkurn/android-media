@@ -127,8 +127,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
             setNeedRefreshFromCache(true);
         }
 
-        showLoading();
-
     }
 
     @Nullable
@@ -148,6 +146,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
         flightSearchPresenter.attachView(this);
         flightSearchPresenter.fetchCombineData(passDataViewModel);
+
+        showLoading();
     }
 
     @Override
@@ -670,6 +670,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         });
 
         return emptyResultViewModel;
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
+        flightSearchPresenter.onSearchItemClicked(selectedId);
     }
 
     private void setUpCombinationAirport() {

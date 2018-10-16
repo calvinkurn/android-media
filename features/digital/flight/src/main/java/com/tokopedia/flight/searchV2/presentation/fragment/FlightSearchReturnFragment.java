@@ -1,0 +1,164 @@
+package com.tokopedia.flight.searchV2.presentation.fragment;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.View;
+import android.widget.TextView;
+
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.flight.FlightComponentInstance;
+import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
+import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
+import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchActivity.EXTRA_PASS_DATA;
+import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_DEPARTURE_ID;
+
+/**
+ * @author by furqan on 15/10/18.
+ */
+
+public class FlightSearchReturnFragment extends FlightSearchFragment
+        implements FlightSearchReturnContract.View {
+
+    @Inject
+    FlightSearchReturnPresenter flightSearchReturnPresenter;
+
+    private TextView departureHeaderLabel;
+    private TextView airlineName;
+    private TextView duration;
+    private String selectedFlightDeparture;
+
+    public static Fragment newInstance(FlightSearchPassDataViewModel passDataViewModel,
+                                       String selectedDepartureID) {
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
+        args.putString(EXTRA_DEPARTURE_ID, selectedDepartureID);
+
+        FlightSearchReturnFragment fragment = new FlightSearchReturnFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        selectedFlightDeparture = getArguments().getString(EXTRA_DEPARTURE_ID);
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_search_return;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        airlineName = view.findViewById(R.id.airline_name);
+        duration = view.findViewById(R.id.duration);
+        departureHeaderLabel = view.findViewById(R.id.tv_departure_header_card_label);
+
+        // getdeparturedetail
+
+        showLoading();
+    }
+
+    @Override
+    protected final void initInjector() {
+        super.initInjector();
+        if (flightSearchComponent == null) {
+            flightSearchComponent =
+                    DaggerFlightSearchComponent.builder()
+                            .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
+                            .build();
+        }
+
+        flightSearchComponent
+                .inject(this);
+        flightSearchReturnPresenter.attachView(this);
+    }
+
+    @Override
+    protected FlightAirportViewModel getDepartureAirport() {
+        return passDataViewModel.getArrivalAirport();
+    }
+
+    @Override
+    protected FlightAirportViewModel getArrivalAirport() {
+        return passDataViewModel.getDepartureAirport();
+    }
+
+    @Override
+    public boolean isReturning() {
+        return true;
+    }
+
+//    onSuccessGetDetailFlightDeparture
+
+
+    @Override
+    public void onItemClicked(FlightJourneyViewModel journeyViewModel) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyViewModel);
+    }
+
+    @Override
+    public void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, journeyViewModel, adapterPosition);
+    }
+
+    @Override
+    public void showReturnTimeShouldGreaterThanArrivalDeparture() {
+        if (isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_search_return_departure_should_greater_message);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
+    }
+
+    @Override
+    public void navigateToCart(FlightJourneyViewModel journeyViewModel) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(journeyViewModel.getId());
+        }
+    }
+
+    @Override
+    public void navigateToCart(String selectedFlightReturn) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
+        }
+    }
+
+    @Override
+    public void showErrorPickJourney() {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(),
+                getString(R.string.flight_error_pick_journey));
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        flightSearchReturnPresenter.onDestroy();
+    }
+}
