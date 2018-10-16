@@ -63,7 +63,7 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
             mainView.onSuccessGetFirstData(
                     exploreQuery.getProducts() != null ?
                             mappingProducts(exploreQuery.getProducts()) :
-                            new ArrayList<Visitable>(),
+                            new ArrayList<>(),
                     exploreQuery.getPagination() != null ?
                             exploreQuery.getPagination().getNextCursor() :
                             ""

@@ -51,6 +51,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private static final String PARAM_USER_ID = "{user_id}";
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
+    private static final int REQUEST_LOGIN = 83;
 
     private View mainView;
     private TextView title;
@@ -123,7 +124,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         initView();
-        presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
+        if (getUserSession().isLoggedIn()) {
+            presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
+        } else {
+            startActivityForResult(
+                    RouteManager.getIntent(getContext(), ApplinkConst.LOGIN),
+                    REQUEST_LOGIN
+            );
+        }
     }
 
     @Override
@@ -160,6 +168,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             case REQUEST_EXAMPLE:
                 goToImagePicker();
                 break;
+            case REQUEST_LOGIN:
+                presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
             default:
                 break;
         }
