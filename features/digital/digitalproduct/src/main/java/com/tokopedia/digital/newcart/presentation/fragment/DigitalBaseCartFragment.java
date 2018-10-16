@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -15,8 +17,11 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
+import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
@@ -25,6 +30,10 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 
 import java.util.List;
 import java.util.Map;
@@ -56,6 +65,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupView(view);
+        presenter.attachView(this);
         presenter.onViewCreated();
     }
 
@@ -253,11 +263,54 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     presenter.onReceiveCoupon(couponTitle, couponMessage, couponCode, couponDiscountAmount, 1);
                 }
             }
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
+            switch (resultCode) {
+                case TopPayActivity.PAYMENT_SUCCESS:
+                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
+                        @Override
+                        public void onDismiss() {
+                            getActivity().setResult(DigitalRouter.PAYMENT_SUCCESS);
+                            getActivity().finish();
+                        }
+                    });
+
+                    presenter.onPaymentSuccess(checkoutPassData.getCategoryId());
+
+                    break;
+                case TopPayActivity.PAYMENT_FAILED:
+                    showToastMessage(
+                            getString(R.string.alert_payment_canceled_or_failed_digital_module)
+                    );
+//                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
+                    break;
+                case TopPayActivity.PAYMENT_CANCELLED:
+                    showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
+//                    presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
+                    break;
+                default:
+//                    presenter.processGetCartData(passData.getCategoryId());
+                    break;
+            }
         }
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCheckoutButtonClicked() {
         presenter.processToCheckout();
+    }
+
+    @Override
+    public void renderToTopPay(CheckoutDigitalData checkoutDigitalData) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.convertToPaymenPassData(checkoutDigitalData);
+        navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
+                TopPayActivity.REQUEST_CODE);
     }
 }

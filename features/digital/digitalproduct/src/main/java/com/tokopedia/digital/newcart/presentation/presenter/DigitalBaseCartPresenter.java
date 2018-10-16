@@ -1,23 +1,32 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Cart;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Data;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Relationships;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
+import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
+import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.presentation.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
+import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
@@ -33,15 +42,18 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalModuleRouter digitalModuleRouter;
     private ICartDigitalInteractor cartDigitalInteractor;
     private UserSession userSession;
+    private DigitalCheckoutUseCase digitalCheckoutUseCase;
 
     public DigitalBaseCartPresenter(DigitalAnalytics digitalAnalytics,
                                     DigitalModuleRouter digitalModuleRouter,
                                     ICartDigitalInteractor cartDigitalInteractor,
-                                    UserSession userSession) {
+                                    UserSession userSession,
+                                    DigitalCheckoutUseCase digitalCheckoutUseCase) {
         this.digitalAnalytics = digitalAnalytics;
         this.digitalModuleRouter = digitalModuleRouter;
         this.cartDigitalInteractor = cartDigitalInteractor;
         this.userSession = userSession;
+        this.digitalCheckoutUseCase = digitalCheckoutUseCase;
     }
 
     @Override
@@ -156,6 +168,33 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         };
     }
 
+
+
+    @NonNull
+    private Subscriber<CheckoutDigitalData> getSubscriberCheckout() {
+        return new Subscriber<CheckoutDigitalData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    getView().showContent();
+                    getView().hideLoading();
+                }
+            }
+
+            @Override
+            public void onNext(CheckoutDigitalData checkoutDigitalData) {
+                getView().hideLoading();
+                getView().renderToTopPay(checkoutDigitalData);
+            }
+        };
+    }
+
     private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
         if (userInputPriceDigital != null) {
             getView().getCheckoutDataParameter().transactionAmount(0);
@@ -266,6 +305,47 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
     @Override
     public void processToCheckout() {
+        CheckoutDataParameter checkoutData = getView().getCheckoutDataParameter().build();
+        /*if (checkoutData.isNeedOtp()) {
+            startOTPProcess();
+            return;
+        }*/
+        getView().hideContent();
+        getView().showLoading();
+        RequestParams requestParams = digitalCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData));
+        digitalCheckoutUseCase.execute(
+                requestParams,
+                getSubscriberCheckout()
+        );
+    }
 
+
+    @NonNull
+    private RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
+        RequestBodyCheckout requestBodyCheckout = new RequestBodyCheckout();
+        requestBodyCheckout.setType("checkout");
+        com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes attributes =
+                new com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Attributes();
+        attributes.setVoucherCode(checkoutData.getVoucherCode());
+        attributes.setTransactionAmount(checkoutData.getTransactionAmount());
+        attributes.setIpAddress(checkoutData.getIpAddress());
+        attributes.setUserAgent(checkoutData.getUserAgent());
+        attributes.setIdentifier(getView().getDigitalIdentifierParam());
+        attributes.setClientId(digitalModuleRouter.getTrackingClientId());
+        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
+        requestBodyCheckout.setAttributes(attributes);
+        requestBodyCheckout.setRelationships(
+                new Relationships(new Cart(new Data(
+                        checkoutData.getRelationType(), checkoutData.getRelationId()
+                )))
+        );
+        return requestBodyCheckout;
+    }
+
+    @Override
+    public void onPaymentSuccess(String categoryId) {
+        if (categoryId != null && categoryId.length() > 0) {
+            digitalModuleRouter.getGlobalCacheManager().delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
+        }
     }
 }

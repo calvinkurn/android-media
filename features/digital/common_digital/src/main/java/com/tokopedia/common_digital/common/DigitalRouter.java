@@ -15,6 +15,7 @@ import okhttp3.Interceptor;
 public interface DigitalRouter {
     int REQUEST_CODE_CART_DIGITAL = 216;
     String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    int PAYMENT_SUCCESS = 5;
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 

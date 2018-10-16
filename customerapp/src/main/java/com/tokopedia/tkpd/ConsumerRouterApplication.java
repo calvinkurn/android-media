@@ -1196,6 +1196,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String getTrackingClientId() {
+        return TrackingUtils.getClientID();
+    }
+
+    @Override
     public String getBranchAutoApply(Activity activity) {
         return BranchSdkUtils.getAutoApplyCouponIfAvailable(activity);
     }

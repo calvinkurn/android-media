@@ -44,6 +44,12 @@
             android:name=".product.view.activity.DigitalSearchNumberActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".product.view.activity.DigitalYoutubeActivity"></activity>
+
+        <activity
+            android:name=".newcart.presentation.activity.DigitalCartActivity"
+            android:theme="@style/Toolbar.White"
+            android:label="@string/digital_cart_toolbart_title"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

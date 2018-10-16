@@ -190,6 +190,8 @@ public class DigitalCartPresenter extends BaseDaggerPresenter<DigitalCartContrac
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                getView().showContent();
+                getView().hideLoading();
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     getView().interruptRequestTokenVerification();

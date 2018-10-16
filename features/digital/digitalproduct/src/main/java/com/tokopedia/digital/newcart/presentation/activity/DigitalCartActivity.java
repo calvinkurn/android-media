@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
@@ -38,7 +39,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCartContract.View {
+public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCartContract.View, HasComponent<DigitalCartComponent> {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private static final int REQUEST_CODE_OTP = 1001;
     private DigitalCheckoutPassData passData;
@@ -46,6 +47,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     private FrameLayout container;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private CheckoutDataParameter.Builder checkoutDataBuilder;
+    private DigitalCartComponent component;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, DigitalCartActivity.class)
@@ -127,12 +129,21 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     private void initInjector() {
         DigitalComponent digitalComponent = DaggerDigitalComponent.builder().baseAppComponent(
                 ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
-        DigitalCartComponent component = DaggerDigitalCartComponent.builder()
+        component = DaggerDigitalCartComponent.builder()
                 .digitalComponent(digitalComponent)
                 .build();
         component.inject(this);
     }
 
+    @Override
+    public void showContent() {
+        container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
 
     @Override
     public void hideContent() {
@@ -252,5 +263,11 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
 //                closeView();
             }
         }
+    }
+
+    @Override
+    public DigitalCartComponent getComponent() {
+        if (component == null) initInjector();
+        return component;
     }
 }

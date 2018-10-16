@@ -36,6 +36,10 @@ public interface DigitalCartContract {
         Map<String,String> getGeneratedAuthParamNetwork(String userId, String deviceId, Map<String, String> paramGetCart);
 
         void inflateDefaultCartPage(CartDigitalInfoData cartDigitalInfoData);
+
+        void showContent();
+
+        void hideLoading();
     }
 
     interface Presenter extends CustomerPresenter<View> {

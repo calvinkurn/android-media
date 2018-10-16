@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,10 @@ public interface DigitalBaseContract {
         RequestBodyIdentifier getDigitalIdentifierParam();
 
         void disableVoucherCheckoutDiscount();
+
+        void renderToTopPay(CheckoutDigitalData checkoutDigitalData);
+
+        void showToastMessage(String message);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
@@ -87,5 +92,7 @@ public interface DigitalBaseContract {
         void onClearVoucher();
 
         void processToCheckout();
+
+        void onPaymentSuccess(String categoryId);
     }
 }

@@ -18,6 +18,8 @@ import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
@@ -33,7 +35,7 @@ public class DigitalCartModule {
 
     @Provides
     @DigitalCartScope
-    UserSession provideUserSession(@ApplicationContext Context context){
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
@@ -101,5 +103,20 @@ public class DigitalCartModule {
     @DigitalCartScope
     DigitalCheckoutUseCase provideDigitalCheckoutUseCase(ICheckoutRepository checkoutRepository) {
         return new DigitalCheckoutUseCase(checkoutRepository);
+    }
+
+    @Provides
+    @DigitalCartScope
+    DigitalAnalytics provideDigitalAnalytics() {
+        return new DigitalAnalytics();
+    }
+
+    @Provides
+    @DigitalCartScope
+    DigitalModuleRouter provideDigitalModuleRouter(@ApplicationContext Context context) {
+        if (context instanceof DigitalModuleRouter) {
+            return (DigitalModuleRouter) context;
+        }
+        throw new RuntimeException("Application must implement " + DigitalModuleRouter.class.getSimpleName());
     }
 }

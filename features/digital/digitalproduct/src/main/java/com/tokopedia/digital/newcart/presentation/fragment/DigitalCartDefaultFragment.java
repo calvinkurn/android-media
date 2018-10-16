@@ -15,7 +15,11 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
+import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDefaultPresenter;
+
+import javax.inject.Inject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +30,8 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     private LinearLayout containerLayout;
     private AppCompatTextView categoryTextView;
 
+    @Inject
+    DigitalCartDefaultPresenter presenter;
 
     public static DigitalCartDefaultFragment newInstance(CartDigitalInfoData cartDigitalInfoData,
                                                          CheckoutDataParameter checkoutDataParameter,
@@ -53,7 +59,8 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     protected void initInjector() {
-
+        getComponent(DigitalCartComponent.class).inject(this);
+        super.presenter = presenter;
     }
 
     @Override

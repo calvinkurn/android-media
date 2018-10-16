@@ -139,4 +139,5 @@
     <string name="digital_cart_detail_see_detail_label">Lihat Detail</string>
     <string name="digital_cart_detail_close_label">Tutup</string>
     <string name="digital_cart_default_toolbar_title">Checkout</string>
+    <string name="digital_cart_toolbart_title">Checkout</string>
 </resources>
