@@ -112,20 +112,11 @@ public class FlightDetailViewModel implements Parcelable {
             setTotalTransit(flightJourneyViewModel.getTotalTransit());
             setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
             setIsRefundable(flightJourneyViewModel.isRefundable());
-
-            if (flightJourneyViewModel.getComboPriceNumeric() == 0) {
-                setTotal(flightJourneyViewModel.getTotal());
-                setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
-                setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
-                setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
-                setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
-            } else {
-                setTotal(flightJourneyViewModel.getComboPrice());
-                setTotalNumeric(flightJourneyViewModel.getComboPriceNumeric());
-                setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumericCombo());
-                setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumericCombo());
-                setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumericCombo());
-            }
+            setTotal(flightJourneyViewModel.getTotal());
+            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
+            setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
 
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);

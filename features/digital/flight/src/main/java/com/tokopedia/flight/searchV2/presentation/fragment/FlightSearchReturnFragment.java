@@ -206,7 +206,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     @Override
     protected FlightFilterModel buildFilterModel() {
         FlightFilterModel filterModel = new FlightFilterModel();
-        filterModel.setBestPairing(isBestPairing);
+        filterModel.setBestPairing(isViewOnlyBestPairing);
         filterModel.setJourneyId(selectedFlightDeparture);
 
         return filterModel;
