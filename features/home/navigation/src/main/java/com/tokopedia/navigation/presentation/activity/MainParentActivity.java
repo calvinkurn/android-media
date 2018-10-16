@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -395,7 +396,9 @@ public class MainParentActivity extends BaseActivity implements
 
         registerBroadcastHockeyApp();
 
-        if(!GlobalConfig.IS_VALID_APK){
+        CommonUtils.dumper("GlobalConfig.IS_VALID_APK "+GlobalConfig.IS_VALID_APK);
+        CommonUtils.dumper("GlobalConfig.IS_VALID_APK _real_"+((BaseMainApplication)getApplication()).checkAppSignature());
+        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
             finish();
         }
     }
