@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import dagger.Component
 
 @MerchantVoucherScope
-@Component(modules = arrayOf(MerchantVoucherModule::class, ShopCommonModule::class),
+@Component(modules = arrayOf(ShopCommonModule::class),
         dependencies = arrayOf(BaseAppComponent::class))
 interface MerchantVoucherComponent {
     fun inject(merchantVoucherListFragment: MerchantVoucherListFragment)
