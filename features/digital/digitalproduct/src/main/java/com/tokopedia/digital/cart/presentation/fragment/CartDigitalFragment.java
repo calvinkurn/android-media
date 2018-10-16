@@ -38,28 +38,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
-import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
-import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
-import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
-import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
-import com.tokopedia.digital.cart.domain.CartDigitalRepository;
-import com.tokopedia.digital.cart.domain.CheckoutRepository;
-import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
-import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
-import com.tokopedia.digital.cart.listener.IDigitalCartView;
-import com.tokopedia.digital.cart.model.CartAutoApplyVoucher;
-import com.tokopedia.digital.cart.model.CartDigitalInfoData;
-import com.tokopedia.digital.cart.model.CheckoutDataParameter;
-import com.tokopedia.digital.cart.model.CheckoutDigitalData;
-import com.tokopedia.digital.cart.model.InstantCheckoutData;
-import com.tokopedia.digital.cart.model.UserInputPriceDigital;
-import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
-import com.tokopedia.digital.cart.model.VoucherDigital;
-import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
-import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.cart.di.DigitalCartComponentInstance;
@@ -221,16 +201,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void initialPresenter() {
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         ICartMapperData cartMapperData = new CartMapperData();
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-        presenter = new CartDigitalPresenter(
-                this,
-                new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker()),
-                new CartDigitalInteractor(
-                        compositeSubscription,
-                        new CartDigitalRepository(digitalEndpointService, cartMapperData),
-                        new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
-                        new CheckoutRepository(digitalEndpointService, cartMapperData))
-        );
         presenter.attachView(this);
     }
 

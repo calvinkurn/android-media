@@ -100,6 +100,7 @@ public class CartDigitalContract {
         void showProgressLoading(String title,String message);
 
 
+        CartDigitalInfoData getCartDataInfo();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -124,7 +125,7 @@ public class CartDigitalContract {
 
         void callPermissionCheckFail();
 
-        void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData);
+        void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData,  int extraComeFrom);
 
         void onClearVoucher();
 

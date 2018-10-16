@@ -54,11 +54,6 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         unregisterShake();
     }
 
-    public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
-        return new Intent(context, CartDigitalActivity.class)
-                .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
-    }
-
     public static Intent newInstance(Context context, Bundle bundle) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
         passData.setAction(bundle.getString(DigitalCheckoutPassData.PARAM_ACTION));

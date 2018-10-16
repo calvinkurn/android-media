@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -52,6 +53,15 @@ public class DigitalModule {
             return ((NetworkRouter) context);
         }
         throw new RuntimeException("Application must implement " + NetworkRouter.class.getCanonicalName());
+    }
+
+    @DigitalScope
+    @Provides
+    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        if (context instanceof AnalyticTracker) {
+            return ((AnalyticTracker) context);
+        }
+        throw new RuntimeException("Application must implement " + AnalyticTracker.class.getCanonicalName());
     }
 
     @DigitalScope

@@ -61,7 +61,6 @@ import static com.tokopedia.digital.cart.presentation.model.NOTPExotelVerificati
 public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContract.View> implements CartDigitalContract.Presenter {
 
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
-    private final IDigitalCartView view;
     private DigitalAnalytics digitalAnalytics;
     private final ICartDigitalInteractor cartDigitalInteractor;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
@@ -265,7 +264,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
                 getView().hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
-                digitalAnalytics.eventProceedToPayment(getView().getCartDataInfo(), view.getCheckoutData().getVoucherCode());
+                digitalAnalytics.eventProceedToPayment(getView().getCartDataInfo(), getView().getCheckoutData().getVoucherCode());
                 getView().renderToTopPay(checkoutDigitalData);
             }
         };
