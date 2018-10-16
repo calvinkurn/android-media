@@ -246,7 +246,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId()),
-                    calculateTotalPassengerFare()
+                    calculateTotalPassengerFare(),
+                    getView().getComboKey()
             );
         } else {
             requestParams = addToCartUseCase.createRequestParam(

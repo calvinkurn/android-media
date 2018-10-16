@@ -61,11 +61,13 @@ public class FlightSearchReturnActivity extends FlightSearchActivity
 
     @Override
     public void selectFlight(String selectedFlightID) {
+        // TODO : PASS FLIGHTPRICEVIEWMODEL
         startActivityForResult(FlightBookingActivity
                         .getCallingIntent(this,
                                 passDataViewModel,
                                 selectedDepartureID,
-                                selectedFlightID),
+                                selectedFlightID,
+                                null),
                 REQUEST_CODE_BOOKING);
     }
 
