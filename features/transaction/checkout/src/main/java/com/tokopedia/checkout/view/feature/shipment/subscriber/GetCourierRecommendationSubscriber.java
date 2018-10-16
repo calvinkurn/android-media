@@ -55,6 +55,9 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                 if (shippingDurationViewModel.getShippingCourierViewModelList() != null &&
                         shippingDurationViewModel.getShippingCourierViewModelList().size() > 0) {
                     for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
+                        shippingCourierViewModel.setSelected(false);
+                    }
+                    for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
                         if (shippingCourierViewModel.getProductData().getShipperProductId() == spId &&
                                 shippingCourierViewModel.getProductData().getShipperId() == shipperId) {
                             if (shippingCourierViewModel.getProductData().getError() != null &&
@@ -62,7 +65,8 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                 view.renderCourierStateFailed(itemPosition);
                                 return;
                             } else {
-                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList());
+                                shippingCourierViewModel.setSelected(true);
+                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
                                 CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
                                 view.renderCourierStateSuccess(courierItemData, itemPosition);
                                 return;

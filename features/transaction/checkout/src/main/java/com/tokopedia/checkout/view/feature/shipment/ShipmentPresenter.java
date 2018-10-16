@@ -126,7 +126,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutData checkoutData;
     private boolean partialCheckout;
     private boolean couponStateChanged;
-    private List<ShippingCourierViewModel> shippingCourierViewModelsState;
+    private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
 
@@ -1057,7 +1057,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition) {
-        getView().showLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("promo_code", promoCode);
         param.put("lang", "id");
@@ -1481,13 +1480,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShippingCourierViewModel> getShippingCourierViewModelsState() {
-        return shippingCourierViewModelsState;
+    public List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition) {
+        if (shippingCourierViewModelsState != null) {
+            return shippingCourierViewModelsState.get(itemPosition);
+        }
+        return null;
     }
 
     @Override
-    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState) {
-        this.shippingCourierViewModelsState = shippingCourierViewModelsState;
+    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+                                                  int itemPosition) {
+        if (this.shippingCourierViewModelsState == null) {
+            this.shippingCourierViewModelsState = new HashMap<>();
+        }
+        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierViewModelsState);
     }
 
     @Override

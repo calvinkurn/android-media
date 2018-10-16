@@ -252,9 +252,10 @@ public interface ShipmentContract {
 
         CartItemPromoHolderData getCartItemPromoHolderData();
 
-        void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState);
+        void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+                                               int itemPosition);
 
-        List<ShippingCourierViewModel> getShippingCourierViewModelsState();
+        List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition);
 
         void setCouponStateChanged(boolean appliedCoupon);
 

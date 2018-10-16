@@ -526,6 +526,21 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public boolean isCourierPromoStillExist() {
+        boolean courierPromoStillExist = false;
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                ShipmentCartItemModel model = (ShipmentCartItemModel) shipmentDataList.get(i);
+                if (model.getSelectedShipmentDetailData() != null &&
+                        model.getSelectedShipmentDetailData().isCourierPromoApplied()) {
+                    courierPromoStillExist = true;
+                    break;
+                }
+            }
+        }
+        return courierPromoStillExist;
+    }
+
     public void cancelAllCourierPromo() {
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied()) {

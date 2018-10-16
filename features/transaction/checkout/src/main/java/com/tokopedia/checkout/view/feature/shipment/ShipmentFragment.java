@@ -599,6 +599,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData,
                                                        int itemPosition) {
+        if (!shipmentAdapter.isCourierPromoStillExist()) {
+            showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
+        }
         setAppliedPromoCodeData(promoCodeCartListData);
         shipmentAdapter.setCourierPromoApplied(itemPosition);
     }
@@ -665,6 +668,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
+        checkCourierPromo(courierItemData, itemPosition);
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
         shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
         onNeedUpdateViewItem(itemPosition);
@@ -1451,7 +1455,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
-        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
+        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode()) &&
+                !shipmentAdapter.isCourierPromoStillExist()) {
             shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
         }
     }
@@ -1554,8 +1559,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         int cartPosition) {
         sendAnalyticsOnClickChangeCourierShipmentRecommendation();
         if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
-                shipmentPresenter.getShippingCourierViewModelsState() != null) {
-            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState();
+                shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
+            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
         }
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                 shippingCourierViewModels, recipientAddressModel, cartPosition);
@@ -1587,6 +1592,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierPromoCanceled(String shipperName) {
+        onRemovePromoCode();
         showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
     }
 

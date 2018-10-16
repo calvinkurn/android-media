@@ -30,7 +30,6 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            view.hideLoading();
             view.showToastError(ErrorHandler.getErrorMessage(view.getActivityContext(), e));
         }
     }
@@ -38,9 +37,7 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
     @Override
     public void onNext(PromoCodeCartListData promoCodeCartListData) {
         if (view != null) {
-            view.hideLoading();
             if (!promoCodeCartListData.isError()) {
-                view.showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
                 view.renderCheckPromoCodeFromCourierSuccess(promoCodeCartListData, itemPosition);
             } else {
                 view.showToastError(promoCodeCartListData.getErrorMessage());
