@@ -44,7 +44,7 @@ public class EmptyDashboardViewHolder extends AbstractViewHolder<EmptyDashboardV
 
     private void initViewListener() {
         btnStartRecommendation.setOnClickListener(view -> {
-
+            mainView.goToAffiliateExplore();
         });
     }
 }

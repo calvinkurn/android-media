@@ -34,7 +34,7 @@ public interface DashboardContract {
 
         void onErrorLoadMoreDashboardItem(String error);
 
-
+        void goToAffiliateExplore();
     }
 
     interface Presenter extends CustomerPresenter<View> {

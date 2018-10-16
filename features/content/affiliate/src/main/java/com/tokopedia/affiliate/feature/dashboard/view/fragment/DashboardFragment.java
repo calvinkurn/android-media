@@ -32,9 +32,12 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderV
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -91,10 +94,10 @@ public class DashboardFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_dashboard, container, false);
-        rvHistory = (RecyclerView) view.findViewById(R.id.rv_history);
-        cvRecommendation = (CardView) view.findViewById(R.id.item_recommendation_count);
-        tvRecommendationCount = (TextView) view.findViewById(R.id.tv_recommendation_count);
-        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        rvHistory = view.findViewById(R.id.rv_history);
+        cvRecommendation = view.findViewById(R.id.item_recommendation_count);
+        tvRecommendationCount = view.findViewById(R.id.tv_recommendation_count);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         presenter.attachView(this);
         return view;
     }
@@ -193,11 +196,11 @@ public class DashboardFragment
         } else {
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
-        }
 
-        if (floatingModel.getCount() != 0) {
-            cvRecommendation.setVisibility(View.VISIBLE);
-            tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
+            if (floatingModel.getCount() != 0) {
+                cvRecommendation.setVisibility(View.VISIBLE);
+                tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
+            }
         }
 
         if (TextUtils.isEmpty(cursor) || cursor.equals("1")) {
@@ -243,6 +246,11 @@ public class DashboardFragment
                 () -> {
                     presenter.loadMoreDashboardItem(cursor);
         });
+    }
+
+    @Override
+    public void goToAffiliateExplore() {
+        RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.AFFILIATE_EXPLORE);
     }
 
     @Override
