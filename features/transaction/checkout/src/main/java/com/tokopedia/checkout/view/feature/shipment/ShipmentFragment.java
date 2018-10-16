@@ -1585,6 +1585,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onCourierPromoCanceled(String shipperName) {
+        showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+    }
+
+    @Override
     public boolean isToogleYearEndPromoOn() {
         // Todo : read from remote config
         return true;

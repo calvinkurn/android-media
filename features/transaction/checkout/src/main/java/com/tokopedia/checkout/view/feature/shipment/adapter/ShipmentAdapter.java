@@ -471,7 +471,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
-                checkAppliedCourierPromo(position, newCourierItemData, shipmentCartItemModel);
+                CourierItemData oldCourierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+                checkAppliedCourierPromo(position, oldCourierItemData, newCourierItemData, shipmentCartItemModel);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(newCourierItemData);
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
@@ -495,7 +496,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return shipmentCartItemModel;
     }
 
-    private void checkAppliedCourierPromo(int position, CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
+    private void checkAppliedCourierPromo(int position, CourierItemData oldCourierItemData,
+                                          CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
         // Todo : do this section if toogle year end promo is on
         boolean isToogleYearEndPromoOn = shipmentAdapterActionListener.isToogleYearEndPromoOn();
         if (isToogleYearEndPromoOn && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
@@ -515,6 +517,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 // Todo : if not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
+                    shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName());
                     shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
                     updatePromo(null);
                     cancelAutoApplyCoupon();

@@ -75,5 +75,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                              ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList,
                              boolean isCourierRecommendation);
 
+    void onCourierPromoCanceled(String shipperName);
+
     boolean isToogleYearEndPromoOn();
 }
