@@ -56,7 +56,7 @@ public class FlightTest {
         when(flightSearchDataCloudSource.getData(Mockito.any()))
                 .thenReturn(Observable.just(flightDataResponse));
 
-        flightSearchRepository.getSearchSingle(Mockito.any());
+        flightSearchRepository.getSearchSingle(Mockito.any(), false);
     }
 
 }

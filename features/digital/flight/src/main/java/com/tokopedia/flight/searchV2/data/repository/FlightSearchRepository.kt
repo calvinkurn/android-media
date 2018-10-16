@@ -76,7 +76,7 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
                 generateJourneyAndRoutesObservable(journeyResponse, isReturnTrip)
-                        .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)) {
+                        .zipWith(flightSearchCombinedDataDbSource.getSearchOnwardCombined(journeyResponse.id)) {
                             journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
                             if (!combos.isEmpty()) {
                                 val comboBestPairing = combos.find { it.isBestPairing }
@@ -107,21 +107,21 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchDataCloudSource.getData(params).flatMap { response ->
             Observable.from(response.data).flatMap { journeyResponse ->
                 generateJourneyAndRoutesObservable(journeyResponse, isReturn)
-                        .zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journeyResponse.id)
-                                .flatMapIterable { it }
-                                .filter { it.onwardJourneyId == onwardJourneyId }
-                                .toList()) {
-                            journeyAndRoutes: JourneyAndRoutes, combos: List<FlightComboTable> ->
-                            if (!combos.isEmpty()) {
-                                val comboBestPairing = combos.find { it.isBestPairing }
+                        .zipWith(flightSearchCombinedDataDbSource.getSearchReturnCombined(journeyResponse.id)
+                                .flatMap { it ->
+                                    if (it != null && !it.isEmpty()) {
+                                        Observable.from(it)
+                                                .takeFirst { it.onwardJourneyId == onwardJourneyId }
+                                                .defaultIfEmpty(null)
+                                    } else {
+                                        Observable.just(null)
+                                    }
+                                }) {
+                            journeyAndRoutes: JourneyAndRoutes, combo: FlightComboTable? ->
+                            if (combo != null) {
                                 val journeyTable = journeyAndRoutes.flightJourneyTable
-                                if (comboBestPairing != null) {
-                                    journeyAndRoutes.flightJourneyTable =
-                                            createJourneyWithCombo(journeyTable, comboBestPairing)
-                                } else {
-                                    journeyAndRoutes.flightJourneyTable =
-                                            createJourneyWithCombo(journeyTable, combos[0])
-                                }
+                                journeyAndRoutes.flightJourneyTable =
+                                        createJourneyWithCombo(journeyTable, combo)
                                 journeyAndRoutes
                             } else {
                                 journeyAndRoutes
@@ -230,7 +230,7 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     fun getSearchReturnBestPairsByOnwardJourneyId(filterModel: FlightFilterModel) : Observable<List<JourneyAndRoutes>> {
-        return flightSearchCombinedDataDbSource.getSearchCombined(filterModel.journeyId)
+        return flightSearchCombinedDataDbSource.getSearchOnwardCombined(filterModel.journeyId)
                 .flatMap {
                     Observable.from(it)
                             .filter { combo -> combo.isBestPairing }

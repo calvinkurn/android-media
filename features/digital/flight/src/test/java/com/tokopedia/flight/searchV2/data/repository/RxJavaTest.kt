@@ -71,7 +71,7 @@ class RxJavaTest {
 //            println(it)
 //        }
 
-    //        return flightSearchRepository.getSearchCombined(flightSearchCombinedApiRequestModel)
+    //        return flightSearchRepository.getSearchReturnCombined(flightSearchCombinedApiRequestModel)
 //                .flatMap {
 //                    if (it.isNeedRefresh) {
 //                        val observableError: Observable<InvalidObjectException> =

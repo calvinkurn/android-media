@@ -66,7 +66,7 @@ class FlightSearchRepositoryTest {
 
         `when`(flightSearchSingleDataDbSource.findAllJourneys()).thenReturn(observable)
 
-        val flightDataResponse = createFlightDataResponse()
+        val flightDataResponse = createFlightDataResponse("1")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any())).thenReturn(Observable.just(flightDataResponse))
 
@@ -85,7 +85,7 @@ class FlightSearchRepositoryTest {
         val testSubscriber = TestSubscriber<Meta>()
 
         val params = RequestParams.create()
-        flightSearchRepository.getSearchSingle(params.parameters)
+        flightSearchRepository.getSearchSingle(params.parameters, false)
                 .subscribe(testSubscriber)
 
         testSubscriber.assertCompleted()
@@ -96,21 +96,62 @@ class FlightSearchRepositoryTest {
     }
 
     @Test
-    fun `get search single combined`() {
-        val flightDataResponse = createFlightDataResponse()
+    fun `get search onward combined`() {
+        val flightDataResponse = createFlightDataResponse("1")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any()))
                 .thenReturn(Observable.just(flightDataResponse))
 
         val flightComboTableList = arrayListOf<FlightComboTable>()
 
-        `when`(flightSearchCombinedDataDbSource.getSearchCombined("1"))
+        `when`(flightSearchCombinedDataDbSource.getSearchOnwardCombined("1"))
                 .thenReturn(Observable.just(flightComboTableList))
 
         val testSubscriber = TestSubscriber<Meta>()
 
         val params = RequestParams.create()
-        flightSearchRepository.getSearchSingleCombined(params.parameters)
+        flightSearchRepository.getSearchSingleCombined(params.parameters, false)
+                .subscribe(testSubscriber)
+
+        verify(flightSearchSingleDataDbSource, times(1))
+                .insertList(Matchers.anyListOf(JourneyAndRoutes::class.java))
+    }
+
+    @Test
+    fun `get search return combined`() {
+        val flightDataResponse1 = createFlightDataResponse("2")
+        val flightDataResponse2 = createFlightDataResponse("3")
+
+        `when`(flightSearchDataCloudSource.getData(Mockito.any()))
+                .thenReturn(Observable.just(flightDataResponse1, flightDataResponse2))
+
+        `when`(flightAirportDataListDBSource.getAirport(Matchers.anyString())).thenReturn(
+                Observable.just(FlightAirportDB())
+        )
+
+        val flightAirlineDB = FlightAirlineDB()
+        flightAirlineDB.id = "JT"
+        flightAirlineDB.logo = "Logo Lion Air"
+
+        `when`(flightAirlineDataListDBSource.getAirline(Matchers.anyString())).thenReturn(
+                Observable.just(flightAirlineDB)
+        )
+
+        val flightComboTableList = arrayListOf<FlightComboTable>()
+        val flightComboTable = FlightComboTable("1", "2", "comboId", "adultPrice", "childPrice",
+                "infantPrice", 0, 0, 0, true)
+        flightComboTableList.add(flightComboTable)
+
+        `when`(flightSearchCombinedDataDbSource.getSearchReturnCombined("2"))
+                .thenReturn(Observable.just(flightComboTableList))
+
+        `when`(flightSearchCombinedDataDbSource.getSearchReturnCombined("3"))
+                .thenReturn(Observable.just(null))
+
+        val testSubscriber = TestSubscriber<Meta>()
+
+        val params = RequestParams.create()
+        flightSearchRepository.getSearchCombinedReturn(params.parameters, "1", true)
                 .subscribe(testSubscriber)
 
         verify(flightSearchSingleDataDbSource, times(1))

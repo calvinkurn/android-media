@@ -6,7 +6,7 @@ import java.util.ArrayList
 /**
  * Created by Rizky on 14/10/18.
  */
-fun createFlightDataResponse(): FlightDataResponse<List<FlightSearchData>> {
+fun createFlightDataResponse(journeyId: String): FlightDataResponse<List<FlightSearchData>> {
     val flightDataResponse = FlightDataResponse<List<FlightSearchData>>()
     val flightSearchDataList = ArrayList<FlightSearchData>()
     val flightSearchData = FlightSearchData()
@@ -43,7 +43,7 @@ fun createFlightDataResponse(): FlightDataResponse<List<FlightSearchData>> {
     fare.infant = "Rp 0"
     fare.infantNumeric = 0
     attributes.fare = fare
-    flightSearchData.id = "1"
+    flightSearchData.id = journeyId
     flightSearchData.attributes = attributes
     flightSearchDataList.add(flightSearchData)
     flightDataResponse.data = flightSearchDataList

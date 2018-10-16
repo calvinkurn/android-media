@@ -19,8 +19,11 @@ public interface FlightComboDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FlightComboTable flightComboTable);
 
-    @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.onwardJourneyId = :journeyId")
-    List<FlightComboTable> findCombosByJourneyId(String journeyId);
+    @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.onwardJourneyId = :onwardJourneyId")
+    List<FlightComboTable> findCombosByOnwardJourneyId(String onwardJourneyId);
+
+    @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.returnJourneyId = :returnJourneyId")
+    List<FlightComboTable> findCombosByReturnJourneyId(String returnJourneyId);
 
     @Query("SELECT * FROM FlightComboTable")
     List<FlightComboTable> findAllCombos();
