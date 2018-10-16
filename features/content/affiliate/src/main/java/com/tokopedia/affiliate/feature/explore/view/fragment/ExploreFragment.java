@@ -40,6 +40,7 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -112,28 +113,28 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-//        testData();
         presenter.getFirstData(exploreParams, false);
     }
 
     private void initEmptyResultModel() {
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
-        emptyResultModel.setTitle(getActivity().getResources().getString(R.string
-                .text_product_not_found));
+        emptyResultModel.setTitle(
+                Objects.requireNonNull(getActivity()).getResources()
+                        .getString(R.string.text_product_not_found)
+        );
     }
 
     private void initListener() {
-        ivBack.setOnClickListener(view -> {
-            getActivity().onBackPressed();
-        });
-        ivBantuan.setOnClickListener(view -> {
-            RouteManager.route(
-                    getContext(),
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
-            );
-        });
+        ivBack.setOnClickListener(view -> Objects.requireNonNull(getActivity()).onBackPressed());
+        ivBantuan.setOnClickListener(view ->
+                RouteManager.route(
+                        Objects.requireNonNull(getContext()),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                )
+        );
     }
+
     @Override
     protected void initInjector() {
         BaseAppComponent baseAppComponent =
@@ -141,8 +142,8 @@ public class ExploreFragment
 
         DaggerAffiliateComponent affiliateComponent =
                 (DaggerAffiliateComponent) DaggerAffiliateComponent
-                .builder()
-                .baseAppComponent(baseAppComponent).build();
+                        .builder()
+                        .baseAppComponent(baseAppComponent).build();
 
         DaggerExploreComponent.builder()
                 .affiliateComponent(affiliateComponent)
@@ -219,7 +220,8 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-        RouteManager.route(getContext(),
+        RouteManager.route(
+                Objects.requireNonNull(getContext()),
                 ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
         );
     }
@@ -296,7 +298,7 @@ public class ExploreFragment
     public void onSuccessCheckQuota(String productId, String adId) {
         //TODO Yoas : transition do add product, need to be tested
         RouteManager.route(
-                getActivity(),
+                Objects.requireNonNull(getActivity()),
                 ApplinkConst.AFFILIATE_CREATE_POST
                         .replace(PRODUCT_ID_PARAM, productId)
                         .replace(AD_ID_PARAM, adId));
@@ -307,12 +309,11 @@ public class ExploreFragment
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
             RouteManager.route(
-                    getActivity(),
+                    Objects.requireNonNull(getActivity()),
                     ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
-        });
-        dialog.setOnCancelClickListener(view -> {
             dialog.dismiss();
         });
+        dialog.setOnCancelClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 
