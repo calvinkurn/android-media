@@ -50,6 +50,7 @@
     <string name="af_minimal_character">Username minimum %d karakter</string>
     <string name="af_recommend_this_product">Rekomendasikan Produk ini?</string>
     <string name="af_recommend">Rekomendasikan</string>
+    <string name="af_see_other_product">Lihat Produk Lainnya</string>
 
     <!--CREATE POST-->
     <string name="af_add_images">Tambah Gambar</string>
