@@ -270,7 +270,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private PriceSimulationView priceSimulationView;
     private PromoWidgetView promoWidgetView;
 
-    MerchantVoucherListPresenter voucherListpresenter;
+    MerchantVoucherListPresenter voucherListPresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
 
     private ShopInfoViewV2 shopInfoView;
@@ -364,8 +364,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
                 .shopCommonModule(new ShopCommonModule())
                 .build();
-        voucherListpresenter = merchantVoucherComponent.merchantVoucherListPresenter();
-        voucherListpresenter.attachView(this);
+        voucherListPresenter = merchantVoucherComponent.merchantVoucherListPresenter();
+        voucherListPresenter.attachView(this);
 
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
@@ -470,11 +470,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (getContext() == null) {
                     return;
                 }
-                if (!voucherListpresenter.isLogin()) {
+                if (!voucherListPresenter.isLogin()) {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
                 } else if (!isOwner()) {
-                    voucherListpresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                    voucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                             merchantVoucherViewModel.getVoucherId());
                 }
             }
@@ -500,7 +500,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             @Override
             public boolean isOwner() {
                 if (productData != null) {
-                    return voucherListpresenter.isMyShop(productData.getShopInfo().getShopId());
+                    return voucherListPresenter.isMyShop(productData.getShopInfo().getShopId());
                 }
                 return false;
             }
@@ -1288,7 +1288,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView(getActivity());
-        voucherListpresenter.detachView();
+        voucherListPresenter.detachView();
         destroyVideoLayout();
     }
 
@@ -1550,7 +1550,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
         }
         if (needLoadVoucher) {
-            voucherListpresenter.clearCache();
+            voucherListPresenter.clearCache();
             loadPromo();
             needLoadVoucher = false;
         }
@@ -1931,7 +1931,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     .setAction(getString(R.string.title_ok), v -> {
                         //no op
                     }).show();
-            voucherListpresenter.clearCache();
+            voucherListPresenter.clearCache();
             loadPromo();
         }
     }
@@ -1990,7 +1990,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void loadPromo() {
         if (productData != null) {
             if (useMerchantVoucherFeature) {
-                voucherListpresenter.getVoucherList(productData.getShopInfo().getShopId(),
+                voucherListPresenter.getVoucherList(productData.getShopInfo().getShopId(),
                         NUM_VOUCHER_TO_SHOW);
             } else {
                 if (!GlobalConfig.isSellerApp()) {
