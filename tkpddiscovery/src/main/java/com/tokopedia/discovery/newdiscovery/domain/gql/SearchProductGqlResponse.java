@@ -94,6 +94,9 @@ public class SearchProductGqlResponse {
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion;
+        @SerializedName("related")
+        @Expose
+        private Related related;
         @SerializedName("products")
         @Expose
         private List<Product> products = null;
@@ -139,6 +142,51 @@ public class SearchProductGqlResponse {
 
         public List<Catalog> getCatalogs() {
             return catalogs;
+        }
+
+        public Related getRelated() {
+            return related;
+        }
+    }
+
+    public static class Related {
+        @SerializedName("related_keyword")
+        @Expose
+        private String relatedKeyword;
+
+        @SerializedName("other_related")
+        @Expose
+        private List<OtherRelated> otherRelated;
+
+        public String getRelatedKeyword() {
+            return relatedKeyword;
+        }
+
+        public List<OtherRelated> getOtherRelated() {
+            return otherRelated;
+        }
+    }
+
+    public static class OtherRelated {
+        @SerializedName("keyword")
+        private String keyword;
+        @SerializedName("url")
+        private String url;
+
+        public String getKeyword() {
+            return keyword;
+        }
+
+        public void setKeyword(String keyword) {
+            this.keyword = keyword;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 

@@ -24,6 +24,14 @@ searchProduct(params: $params) {
      text
      query
    }
+   related{
+     related_keyword
+     other_related {
+       keyword
+       url
+       applink
+     }
+   }
    products {
      id
      name

@@ -235,6 +235,9 @@ public class ProductListFragment extends SearchSectionFragment
             list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
         }
         list.addAll(productViewModel.getProductList());
+        if (productViewModel.getRelatedSearchModel() != null) {
+            list.add(productViewModel.getRelatedSearchModel());
+        }
         return list;
     }
 
@@ -537,6 +540,11 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSearchGuideClicked(String keyword) {
+        performNewProductSearch(keyword, true);
+    }
+
+    @Override
+    public void onRelatedSearchClicked(String keyword) {
         performNewProductSearch(keyword, true);
     }
 

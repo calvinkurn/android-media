@@ -281,6 +281,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
                         }
                         list.addAll(productViewModel.getProductList());
+                        if (productViewModel.getRelatedSearchModel() != null) {
+                            list.add(productViewModel.getRelatedSearchModel());
+                        }
                         getView().removeLoading();
                         getView().setProductList(list);
                         getView().addLoading();
