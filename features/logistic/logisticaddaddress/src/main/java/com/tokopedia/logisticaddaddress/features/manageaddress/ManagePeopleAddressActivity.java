@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.logisticaddaddress.BottomSheetFilterDialog;
+import com.tokopedia.logisticaddaddress.utils.BottomSheetFilterDialog;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;

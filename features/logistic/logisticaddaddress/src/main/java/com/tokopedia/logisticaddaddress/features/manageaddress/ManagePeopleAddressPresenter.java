@@ -13,7 +13,7 @@ import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.data.DataManager;
 import com.tokopedia.logisticaddaddress.data.DataManagerImpl;
-import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;
+import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetAddressDataPass;

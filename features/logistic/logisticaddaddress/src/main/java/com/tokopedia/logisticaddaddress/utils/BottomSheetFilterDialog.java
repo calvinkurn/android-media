@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressActivityPresenter;
 
 /**

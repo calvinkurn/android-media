@@ -148,10 +148,4 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
         compositeSubscription.unsubscribe();
     }
 
-    //todo : refactor this to network repository class
-    private TKPDMapParam<String, String> generateTKPDParam(Context context, TKPDMapParam<String, String> param) {
-        UserSession session = new UserSession(context);
-        return AuthUtil.generateParamsNetwork(session.getUserId(), session.getDeviceId(), param);
-    }
-
 }

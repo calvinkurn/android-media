@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
-import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;
+import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;

@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
-import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
@@ -44,6 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
+import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.RESULT_ERROR;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -344,10 +347,10 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     public void openFormAddressView(AddressModel data) {
         if (data == null) {
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token),
-                    ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+                    REQUEST_CODE_PARAM_CREATE);
         } else {
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token),
-                    ManageAddressConstant.REQUEST_CODE_PARAM_EDIT);
+                    REQUEST_CODE_PARAM_EDIT);
         }
     }
 
@@ -363,7 +366,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
             NetworkErrorHelper.removeEmptyState(getView());
             presenter.setAllowConnection(true);
             presenter.setActionOnRefreshing(getActivity());
-        } else if(resultCode == ManageAddressConstant.RESULT_ERROR){
+        } else if(resultCode == RESULT_ERROR){
             showErrorMessageSnackBar(data.getExtras().getString("message"));
         }
     }

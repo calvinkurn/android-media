@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.logisticaddaddress.data.disk.LocalDatabase;
-import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;
+import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractorImpl;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;

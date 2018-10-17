@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.data.cloud;
+package com.tokopedia.logisticaddaddress.utils;
 
 import com.tokopedia.logisticdata.data.entity.address.GetAddressDataPass;
 import com.tokopedia.network.utils.TKPDMapParam;

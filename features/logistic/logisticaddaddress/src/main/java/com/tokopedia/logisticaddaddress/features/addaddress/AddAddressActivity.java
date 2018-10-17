@@ -11,13 +11,13 @@ import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.SCREEN_ADD_ADDRESS_FORM;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.IS_EDIT;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MARKETPLACE_CART;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
+import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
+import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
+import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETPLACE_CART;
 
 /**
  * Created by nisie on 9/6/16.
