@@ -17,18 +17,18 @@ public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearc
     public static final int LAYOUT = R.layout.item_flight_search_selengkapnya;
 
     private FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
-    private ButtonCompat btnSeeAllResult;
+    private ButtonCompat btnShowAllResult;
 
     public FlightSearchSeeAllViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
 
         this.onFlightSearchListener = onFlightSearchListener;
 
-        btnSeeAllResult = itemView.findViewById(R.id.btn_see_all_result);
-        btnSeeAllResult.setOnClickListener(new View.OnClickListener() {
+        btnShowAllResult = itemView.findViewById(R.id.btn_show_all_result);
+        btnShowAllResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onFlightSearchListener.onSeeAllClicked();
+                onFlightSearchListener.onShowAllClicked();
             }
         });
     }

@@ -21,7 +21,7 @@ public interface FlightSearchReturnContract {
 
         void showSeeAllResultView();
 
-        void hideSeeAllResultView();
+        void showSeeBestPairingResultView();
 
         boolean isOnlyShowBestPair();
 

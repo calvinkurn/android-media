@@ -280,7 +280,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
         if (!needRefresh || list.size() > 0) {
-            clearAllData();
             renderList(list);
         }
 
@@ -404,7 +403,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     public void clearAdapterData() {
-        getAdapter().setElement(new ArrayList<>());
+        getAdapter().setElements(new ArrayList<>());
     }
 
     @Override
@@ -508,7 +507,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void onSeeAllClicked() {
+    public void onShowAllClicked() {
+        // need in return search
+    }
+
+    @Override
+    public void onShowBestPairingClicked() {
         // need in return search
     }
 

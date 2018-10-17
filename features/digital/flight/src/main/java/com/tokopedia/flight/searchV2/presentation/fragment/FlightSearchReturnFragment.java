@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -19,6 +21,7 @@ import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnCon
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeAllResultViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchReturnPresenter;
 
@@ -29,6 +32,7 @@ import javax.inject.Inject;
 import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchActivity.EXTRA_PASS_DATA;
 import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_DEPARTURE_ID;
 import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_IS_BEST_PAIRING;
+import static com.tokopedia.flight.searchV2.presentation.activity.FlightSearchReturnActivity.EXTRA_PRICE_VIEW_MODEL;
 
 /**
  * @author by furqan on 15/10/18.
@@ -47,12 +51,16 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     private boolean isBestPairing = false;
     private boolean isViewOnlyBestPairing = false;
 
+    private FlightPriceViewModel priceViewModel;
+
     public static Fragment newInstance(FlightSearchPassDataViewModel passDataViewModel,
-                                       String selectedDepartureID, boolean bestPairing) {
+                                       String selectedDepartureID, boolean bestPairing,
+                                       FlightPriceViewModel priceViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
         args.putString(EXTRA_DEPARTURE_ID, selectedDepartureID);
         args.putBoolean(EXTRA_IS_BEST_PAIRING, bestPairing);
+        args.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceViewModel);
 
         FlightSearchReturnFragment fragment = new FlightSearchReturnFragment();
         fragment.setArguments(args);
@@ -63,7 +71,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     public void onCreate(Bundle savedInstanceState) {
         selectedFlightDeparture = getArguments().getString(EXTRA_DEPARTURE_ID);
         isBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
-        isViewOnlyBestPairing = isBestPairing;
+        isViewOnlyBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
+        priceViewModel = getArguments().getParcelable(EXTRA_PRICE_VIEW_MODEL);
         super.onCreate(savedInstanceState);
     }
 
@@ -190,7 +199,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
     }
 
     @Override
-    public void hideSeeAllResultView() {
+    public void showSeeBestPairingResultView() {
+        getAdapter().addElement(new FlightSearchSeeOnlyBestPairingViewModel());
         isViewOnlyBestPairing = false;
     }
 
@@ -221,12 +231,80 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
+
+        if (isBestPairing && !isOnlyShowBestPair()) {
+            showSeeBestPairingResultView();
+        }
+
         super.renderSearchList(list, needRefresh);
 
         if (isDoneLoadData() && list.size() > 0 && isOnlyShowBestPair()) {
             showSeeAllResultView();
-        } else {
-            hideSeeAllResultView();
         }
+    }
+
+    @Override
+    public void onShowAllClicked() {
+        super.onShowAllClicked();
+
+        showSeeAllResultDialog(priceViewModel.getDeparturePrice().getAdultCombo(),
+                priceViewModel.getDeparturePrice().getAdult());
+    }
+
+    @Override
+    public void onShowBestPairingClicked() {
+        super.onShowBestPairingClicked();
+
+        showSeeBestPairingDialog(priceViewModel.getDeparturePrice().getAdult(), priceViewModel.getDeparturePrice().getAdultCombo());
+    }
+
+    private void showSeeAllResultDialog(String bestPairPrice, String normalPrice) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_search_choose_except_best_pairing_dialog_title));
+        dialog.setDesc(MethodChecker.fromHtml(
+                getString(R.string.flight_search_choose_except_best_pairing_dialog_description, bestPairPrice, normalPrice)));
+        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFilterModel().setBestPairing(false);
+                isViewOnlyBestPairing = false;
+                flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, getFilterModel(), false);
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel("Batal");
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void showSeeBestPairingDialog(String normalPrice, String bestPairPrice) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(getString(R.string.flight_search_choose_best_pairing_dialog_title));
+        dialog.setDesc(MethodChecker.fromHtml(
+                getString(R.string.flight_search_choose_best_pairing_dialog_description, normalPrice, bestPairPrice)));
+        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text));
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFilterModel().setBestPairing(true);
+                isViewOnlyBestPairing = true;
+                flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, getFilterModel(), false);
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel("Batal");
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

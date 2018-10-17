@@ -322,6 +322,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
+                        if (!needRefresh || flightJourneyViewModels.size() > 0) {
+                            getView().clearAdapterData();
+                        }
+
                         getView().renderSearchList(flightJourneyViewModels, needRefresh);
 
                         if (getView().isDoneLoadData()) {
