@@ -8,8 +8,8 @@
     <TextView
         android:id="@+id/related_search_text"
         style="@style/TextView.Small.BlackSecondary"
-        android:paddingTop="@dimen/guided_search_padding_vertical"
-        android:paddingBottom="@dimen/guided_search_padding_vertical"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:paddingLeft="@dimen/guided_search_padding_horizontal"
         android:paddingRight="@dimen/guided_search_padding_horizontal"
         android:layout_marginTop="@dimen/dp_16"
