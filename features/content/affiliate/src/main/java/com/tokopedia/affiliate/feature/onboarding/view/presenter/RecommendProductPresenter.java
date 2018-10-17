@@ -36,11 +36,7 @@ public class RecommendProductPresenter extends BaseDaggerPresenter<RecommendProd
         productList.add(Integer.valueOf(productId));
         //TODO milhamj add shopId
         getProductAffiliateGqlUseCase.execute(
-                GetProductAffiliateGqlUseCase.Companion.createRequestParams(
-                        productList,
-                        0,
-                        Integer.valueOf(getView().getUserSession().getUserId())
-                ),
+                GetProductAffiliateGqlUseCase.Companion.createRequestParams(productList),
                 new GetProductInfoSubscriber(getView())
         );
     }

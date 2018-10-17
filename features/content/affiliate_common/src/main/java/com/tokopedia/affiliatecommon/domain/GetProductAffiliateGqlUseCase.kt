@@ -43,22 +43,22 @@ class GetProductAffiliateGqlUseCase @Inject constructor(private val resources: R
     }
 
     companion object {
-        const val USER_ID_PARAM = "userId"
         const val SHOP_ID_PARAM = "shopId"
         const val PRODUCT_ID_PARAM = "productId"
         const val INCLUDE_UI_PARAM = "includeUI"
 
-        const val PARAMS_GUEST_USER_ID = "0"
-        const val PARAMS_DEFAULT_SHOP_ID = "1"
-        const val PARAMS_DEFAULT_PRODUCT_ID = "1"
         const val PARAMS_INCLUDE_UI = true
 
-        fun createRequestParams(produtIds: List<Int>, shopId: Int, userId: Int)
+        fun createRequestParams(produtIds: List<Int>, shopId: Int)
                 : RequestParams {
+            val requestParams = createRequestParams(produtIds)
+            requestParams.putInt(SHOP_ID_PARAM, shopId)
+            return requestParams
+        }
+
+        fun createRequestParams(produtIds: List<Int>): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PRODUCT_ID_PARAM, produtIds)
-            requestParams.putInt(SHOP_ID_PARAM, shopId)
-            requestParams.putInt(USER_ID_PARAM, userId)
             requestParams.putBoolean(INCLUDE_UI_PARAM, PARAMS_INCLUDE_UI)
             return requestParams
         }

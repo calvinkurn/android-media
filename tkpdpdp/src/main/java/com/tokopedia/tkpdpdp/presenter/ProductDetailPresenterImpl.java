@@ -91,7 +91,6 @@ import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -113,8 +112,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi
-        .VALUE_TARGET_GOLD_MERCHANT;
+import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GOLD_MERCHANT;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_GUEST;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_LOGIN_USER;
 import static com.tokopedia.core.network.apiservices.galadriel.GaladrielApi.VALUE_TARGET_MERCHANT;
@@ -1332,16 +1330,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void requestAffiliateProductData(ProductDetailData productDetailData) {
-        UserSession userSession = new UserSession(viewListener.getActivityContext());
         ArrayList<Integer> productList = new ArrayList<>();
         productList.add(productDetailData.getInfo().getProductId());
         getProductAffiliateGqlUseCase.execute(
                 GetProductAffiliateGqlUseCase.Companion.createRequestParams(
                         productList,
-                        Integer.parseInt(productDetailData.getShopInfo().getShopId()),
-                        userSession.isLoggedIn() ?
-                                Integer.valueOf(userSession.getUserId()) :
-                                Integer.valueOf(NON_LOGIN_USER_ID)
+                        Integer.parseInt(productDetailData.getShopInfo().getShopId())
                 ),
                 new AffiliateProductDataSubscriber(viewListener)
         );
