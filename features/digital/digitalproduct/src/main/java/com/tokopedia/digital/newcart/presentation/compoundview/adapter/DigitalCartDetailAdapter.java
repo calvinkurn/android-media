@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.presentation.compoundview.adapter.viewholder.DigitalCartDetailTitleViewHolder;
 import com.tokopedia.digital.newcart.presentation.compoundview.adapter.viewholder.DigitalCartDetailViewHolder;
 

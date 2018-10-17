@@ -8,13 +8,10 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

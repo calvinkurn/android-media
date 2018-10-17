@@ -1,42 +1,25 @@
 package com.tokopedia.digital.newcart.presentation.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.digital.R;
 import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
-import com.tokopedia.digital.newcart.presentation.contract.DigitalCartContract;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
-import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.Map;
 
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent> {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
