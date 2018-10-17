@@ -5,12 +5,15 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
+import com.tokopedia.user.session.UserSession
 
 /**
  * @author by milhamj on 9/17/18.
  */
 interface ProfileContract {
     interface View : BaseListViewListener<Visitable<*>> {
+        fun getUserSession(): UserSession
+
         fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel)
 
         fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String)
@@ -51,5 +54,7 @@ interface ProfileContract {
         fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostListener.View.Like)
 
         fun deletePost(id: Int, rowNumber: Int)
+
+        fun trackPostClick(uniqueTrackingId: String, redirectLink: String)
     }
 }

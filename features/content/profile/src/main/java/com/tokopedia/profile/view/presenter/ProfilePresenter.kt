@@ -8,11 +8,9 @@ import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.profile.domain.usecase.GetProfileFirstPage
+import com.tokopedia.profile.domain.usecase.TrackAffiliateClickUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
-import com.tokopedia.profile.view.subscriber.DeletePostSubscriber
-import com.tokopedia.profile.view.subscriber.FollowSubscriber
-import com.tokopedia.profile.view.subscriber.GetProfileFirstPageSubscriber
-import com.tokopedia.profile.view.subscriber.GetProfilePostSubscriber
+import com.tokopedia.profile.view.subscriber.*
 import javax.inject.Inject
 
 /**
@@ -23,7 +21,8 @@ class ProfilePresenter @Inject constructor(
         private val getContentListUseCase: GetContentListUseCase,
         private val likeKolPostUseCase: LikeKolPostUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-        private val deletePostUseCase: DeletePostUseCase)
+        private val deletePostUseCase: DeletePostUseCase,
+        private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase)
     : BaseDaggerPresenter<ProfileContract.View>(), ProfileContract.Presenter {
 
     override var cursor: String = ""
@@ -85,6 +84,17 @@ class ProfilePresenter @Inject constructor(
         deletePostUseCase.execute(
                 DeletePostUseCase.createRequestParams(id.toString()),
                 DeletePostSubscriber(view, id, rowNumber)
+        )
+    }
+
+    override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
+        trackAffiliateClickUseCase.execute(
+                TrackAffiliateClickUseCase.createRequestParams(
+                        uniqueTrackingId,
+                        view.getUserSession().deviceId,
+                        view.getUserSession().userId
+                ),
+                TrackPostClickSubscriber(view, uniqueTrackingId, redirectLink)
         )
     }
 }

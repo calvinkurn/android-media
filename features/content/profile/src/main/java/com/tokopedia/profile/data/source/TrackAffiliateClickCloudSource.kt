@@ -13,7 +13,10 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/17/18.
  */
-class TrackAffiliateClickCloudSource @Inject constructor(val topAdsApi: TopAdsApi, val gson: Gson) {
+class TrackAffiliateClickCloudSource @Inject constructor(
+        private val topAdsApi: TopAdsApi,
+        private val gson: Gson) {
+
     fun doTracking(requestParams: RequestParams): Observable<Boolean> {
         return topAdsApi.track(requestParams.parameters).map {
             if (it.isSuccessful) {
@@ -37,7 +40,7 @@ class TrackAffiliateClickCloudSource @Inject constructor(val topAdsApi: TopAdsAp
     }
 
     companion object {
-        const val EMPTY_BODY = "Response empty body"
+        const val EMPTY_BODY = "Response has empty body"
         const val NETWORK_ERROR = "Network error"
     }
 }
