@@ -285,8 +285,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
-
-        sendMoEngageClickedNewOrder();
     }
 
     public static void eventTrackOrder() {
@@ -1337,18 +1335,6 @@ public class UnifyTracking extends TrackingUtils {
                 .eventAddtoCart(gtmCart)
                 .sendScreen(AppScreen.SCREEN_CART_PAGE_REMOVE)
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
-    }
-
-    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrInt(
-                AppEventTracking.MOENGAGE.QUALITY_SCORE,
-                quality
-        );
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
-        );
     }
 
     public static void sendAFCompleteRegistrationEvent(int userId,String methodName) {

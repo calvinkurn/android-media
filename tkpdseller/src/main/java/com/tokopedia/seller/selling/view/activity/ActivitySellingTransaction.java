@@ -224,8 +224,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         if (fromWidget) {
             UnifyTracking.eventAccessAppViewWidget();
         }
-
-        TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
     @Override

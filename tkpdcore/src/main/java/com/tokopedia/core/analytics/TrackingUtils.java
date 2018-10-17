@@ -317,143 +317,10 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_HOTLIST);
     }
 
-    public static void sendMoEngageAddWishlistEvent(ProductDetailData productData) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productData.getInfo().getProductName());
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
-        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPriceUnformatted());
-
-        builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_NAME, productData.getInfo().getProductCatalogName());
-        builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_ID, productData.getInfo().getProductCatalogId());
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, productData.getShopInfo().getShopIsOfficial() == 1);
-
-        if (productData.getBreadcrumb().size() > 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
-            builder.putAttrString(
-                    AppEventTracking.MOENGAGE.CATEGORY,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
-                            .getDepartmentName()
-            );
-            builder.putAttrString(
-                    AppEventTracking.MOENGAGE.CATEGORY_ID,
-                    productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1)
-                            .getDepartmentId()
-            );
-        }
-
-        if (productData.getBreadcrumb().size() == 1) {
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, productData.getBreadcrumb().get(0).getDepartmentId());
-        }
-
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.ADD_WISHLIST);
-    }
-
     public static void sendMoEngageClickMainCategoryIcon(String categoryName) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICK_MAIN_CATEGORY_ICON);
-    }
-
-    public static void sendMoEngageOpenDigitalCatScreen(String categoryName, String id) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.DIGITAL_CAT_ID, id);
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.DIGITAL_CAT_SCREEN_OPEN
-        );
-    }
-
-    public static void sendMoEngageOpenCatScreen(String categoryName, String id) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, id);
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN
-        );
-    }
-
-    public static void sendMoEngageFavoriteEvent(ShopModel model) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial() == 1);
-        getMoEngine().sendEvent(
-                builder.build(),
-                model.info.shopAlreadyFavorited == 0 ?
-                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
-                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
-        );
-    }
-
-    public static void sendMoEngageShippingReceivedEvent(boolean success) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RECEIVED, success);
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SHIPPING_CONFIRMED
-        );
-    }
-
-    public static void sendMoEngageOpenSellerScreen() {
-        PayloadBuilder builder = new PayloadBuilder();
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SELLER_SCREEN_OPEN
-        );
-    }
-
-    public static void sendMoEngageAddToCart(@NonNull Product product) {
-        try {
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, product.getCategoryName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, product.getCategoryId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
-
-            builder.putAttrInt(
-                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
-                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
-            );
-
-            getMoEngine().sendEvent(
-                    builder.build(),
-                    AppEventTracking.EventMoEngage.PRODUCT_ADDED_TO_CART
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void sendMoEngageRemoveProductFromCart(@NonNull Product product) {
-        try {
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, product.getName());
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, product.getId());
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, product.getUrl());
-            builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_IMAGE_URL, product.getImageUrl());
-            builder.putAttrInt(
-                    AppEventTracking.MOENGAGE.PRODUCT_PRICE,
-                    CurrencyFormatHelper.convertRupiahToInt(product.getPrice())
-            );
-            builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, product.getShopId());
-            getMoEngine().sendEvent(
-                    builder.build(),
-                    AppEventTracking.EventMoEngage.PRODUCT_REMOVED_FROM_CART
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void sendMoEngageClickedNewOrder() {
-        PayloadBuilder builder = new PayloadBuilder();
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
     }
 
     public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {
@@ -558,33 +425,6 @@ public class TrackingUtils extends TrackingConfig {
                 builder.build(),
                 AppEventTracking.EventMoEngage.SEARCH_ATTEMPT
         );
-    }
-
-    public static void sendMoEngageOpenThankYouPage(String paymentType, String purchaseSite, double totalPrice) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.PAYMENT_TYPE, paymentType);
-        builder.putAttrString(AppEventTracking.MOENGAGE.PURCHASE_SITE, purchaseSite);
-        builder.putAttrDouble(AppEventTracking.MOENGAGE.TOTAL_PRICE, totalPrice);
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.OPEN_THANKYOU_PAGE
-        );
-    }
-
-    public static void sendMoEngagePurchaseReview(String reviewScore) {
-        try {
-            PayloadBuilder builder = new PayloadBuilder();
-            builder.putAttrDouble(
-                    AppEventTracking.MOENGAGE.REVIEW_SCORE,
-                    Double.parseDouble(reviewScore)
-            );
-            getMoEngine().sendEvent(
-                    builder.build(),
-                    AppEventTracking.EventMoEngage.SUCCESS_PURCHASE_REVIEW
-            );
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     public static void sendMoEngageReferralScreenOpen(String screenName) {

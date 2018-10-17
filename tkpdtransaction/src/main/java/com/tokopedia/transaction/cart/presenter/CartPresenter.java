@@ -711,32 +711,6 @@ public class CartPresenter implements ICartPresenter {
         cache.applyEditor();
     }
 
-    private void trackCanceledCart(CartItem canceledCartItem) {
-        if (canceledCartItem != null
-                && canceledCartItem.getCartProducts() != null
-                && !canceledCartItem.getCartProducts().isEmpty()) {
-            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
-                trackCanceledProduct(canceledCartItem, cartProduct);
-            }
-        }
-    }
-
-    private void trackCanceledProduct(CartItem cartData, CartProduct cartProduct) {
-        if (cartData != null
-                && cartData.getCartShop() != null
-                && cartProduct != null) {
-            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-            product.setName(cartProduct.getProductName());
-            product.setId(cartProduct.getProductId());
-            product.setUrl(cartProduct.getProductUrl());
-            product.setImageUrl(cartProduct.getProductPic());
-            product.setPrice(cartProduct.getProductPrice());
-            product.setShopId(cartData.getCartShop().getShopId());
-
-            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
-        }
-    }
-
     @NonNull
     private Map<String, String> generateDropShipperParam(List<String> dropShipperNameList,
                                                          List<String> dropShipperPhoneList,
