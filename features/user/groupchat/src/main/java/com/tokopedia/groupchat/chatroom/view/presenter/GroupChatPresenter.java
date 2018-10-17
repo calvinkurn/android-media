@@ -176,7 +176,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
         }
-
+        getView().setSnackBarErrorLoading();
         String magicString = "wss://chat.tokopedia.com" +
                 "/connect" +
                 "?os_type=1" +
@@ -188,7 +188,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
         magicString = getView().getContext().getSharedPreferences
                 ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
-        magicString = magicString.concat("/ws/groupchat?channel_id=96");
+        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=123");
 
         boolean showLog = getView().getContext().getSharedPreferences
                 ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
@@ -210,7 +210,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     );
                     getView().onMessageReceived(dummy);
                 }
-
+                getView().onOpenWebSocket();
                 Log.d("RxWebSocket Presenter", " on WebSocket open");
             }
 
@@ -261,6 +261,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     );
                     getView().onMessageReceived(dummy);
                 }
+
+                getView().setSnackBarErrorLoading();
             }
 
             @Override
@@ -288,6 +290,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             public void onError(Throwable e) {
                 super.onError(e);
                 Log.d("RxWebSocket Presenter", "onError " + e.toString());
+                getView().setSnackBarRetry();
             }
         };
         Subscription subscription = RxWebSocket.get(magicString, accessToken)
@@ -314,7 +317,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         magicString = "ws://172.31.4.23:8000";
         magicString = getView().getContext().getSharedPreferences
                 ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
-        magicString = magicString.concat("/ws/groupchat?channel_id=96");
+        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=123");
         boolean showLog = getView().getContext().getSharedPreferences
                 ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
 

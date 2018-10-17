@@ -81,6 +81,12 @@ public interface GroupChatContract {
         void onSuccessEnterRefreshChannel(OpenChannel openChannel);
 
         void onMessageReceived(Visitable text);
+
+        void setSnackBarRetry();
+
+        void setSnackBarErrorLoading();
+
+        void onOpenWebSocket();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

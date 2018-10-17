@@ -88,5 +88,7 @@
     <string name="exit_group_chat_yes">Yes</string>
     <string name="exit_group_chat_no">No</string>
     <string name="exit_group_chat_ok">Ok</string>
+    <string name="connecting">Menghubungkan...</string>
+    <string name="retry">Coba Lagi</string>
 
 </resources>

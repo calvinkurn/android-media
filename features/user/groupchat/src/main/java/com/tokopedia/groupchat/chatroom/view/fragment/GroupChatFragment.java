@@ -216,7 +216,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 super.onScrollStateChanged(recyclerView, newState);
                 if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
                         && !adapter.isLoading()) {
-                    presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
+//                    presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
                 }
 
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {

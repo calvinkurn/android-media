@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
@@ -32,10 +33,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -57,6 +60,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.design.card.ToolTipUtils;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
@@ -215,6 +219,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private CallbackManager callbackManager;
     private OpenChannel mChannel;
+    private Snackbar snackbarError;
 
     @Inject
     GroupChatPresenter presenter;
@@ -280,14 +285,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             findViewById(R.id.video_container_layout).setVisibility(View.VISIBLE);
             sponsorLayout.setVisibility(View.GONE);
 
-             if (youTubePlayer != null) {
+            if (youTubePlayer != null) {
                 youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
-                 new Handler().postDelayed(new Runnable() {
-                     @Override
-                     public void run() {
-                         youTubePlayer.play();
-                     }
-                 }, YOUTUBE_DELAY);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        youTubePlayer.play();
+                    }
+                }, YOUTUBE_DELAY);
                 return;
             }
 
@@ -461,6 +466,39 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showTooltip();
             }
         };
+    }
+
+    public void setSnackBarErrorLoading() {
+        snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
+        ViewGroup contentLay = (ViewGroup) snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text).getParent();
+        ProgressBar item = new ProgressBar(this, null, android.R.attr.progressBarStyleSmall);
+        contentLay.addView(item, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
+        snackbarError.show();
+    }
+
+
+    public void setSnackBarRetry() {
+        snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
+        snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
+        snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
+                        userSession.getName(), userSession.getProfilePicture(),
+                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken()
+                        , userSession.getDeviceId(), userSession.getAccessToken());
+                setSnackBarErrorLoading();
+            }
+        });
+        snackbarError.show();
+    }
+
+    @Override
+    public void onOpenWebSocket() {
+        if (snackbarError != null) {
+            snackbarError.dismiss();
+        }
     }
 
     private void initData() {
@@ -1430,7 +1468,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
                         userSession.getName(), userSession.getProfilePicture(),
                         GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken()
-                ,userSession.getDeviceId(), userSession.getAccessToken());
+                        , userSession.getDeviceId(), userSession.getAccessToken());
             }
         });
     }
