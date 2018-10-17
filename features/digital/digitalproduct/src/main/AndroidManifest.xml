@@ -47,7 +47,7 @@
 
         <activity
             android:name=".newcart.presentation.activity.DigitalCartActivity"
-            android:theme="@style/Toolbar.White"
+            android:theme="@style/Theme.White"
             android:label="@string/digital_cart_toolbart_title"
             android:screenOrientation="portrait" />
     </application>

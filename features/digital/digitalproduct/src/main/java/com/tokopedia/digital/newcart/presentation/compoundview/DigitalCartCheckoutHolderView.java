@@ -16,18 +16,20 @@ import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 public class DigitalCartCheckoutHolderView extends BaseCustomView {
-    private LinearLayout inputPriceContainer;
-    private InputPriceHolderView inputPriceHolderView;
+
     private VoucherCartHachikoView voucherCartHachikoView;
     private AppCompatTextView totalPaymentTextView;
     private AppCompatButton checkoutButton;
 
     private ActionListener actionListener;
-    private InputPriceHolderView.ActionListener inputPriceListener;
     private VoucherCartHachikoView.ActionListener voucherActionListener;
 
     private long pricePlain = 0;
+    private long voucherDiscount = 0;
 
     public DigitalCartCheckoutHolderView(@NonNull Context context) {
         super(context);
@@ -48,8 +50,7 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         View view = LayoutInflater.from(context).inflate(
                 R.layout.view_digital_cart_checkout_holder, this, true
         );
-        inputPriceContainer = view.findViewById(R.id.input_price_container);
-        inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
+
         voucherCartHachikoView = view.findViewById(R.id.voucher_cart_holder_view);
         totalPaymentTextView = view.findViewById(R.id.tv_total_payment);
         checkoutButton = view.findViewById(R.id.btn_checkout);
@@ -73,21 +74,8 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         super.onFinishInflate();
     }
 
-    public void setVoucherCartHachikoListener(VoucherCartHachikoView.ActionListener actionListener) {
-        voucherCartHachikoView.setActionListener(actionListener);
-    }
-
-    public void setInputPriceHolderListener(InputPriceHolderView.ActionListener actionListener) {
-        inputPriceHolderView.setActionListener(actionListener);
-    }
-
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
-    }
-
-    public void setInputPriceListener(InputPriceHolderView.ActionListener inputPriceListener) {
-        this.inputPriceListener = inputPriceListener;
-        inputPriceHolderView.setActionListener(this.inputPriceListener);
     }
 
     public void setVoucherActionListener(VoucherCartHachikoView.ActionListener voucherActionListener) {
@@ -115,29 +103,40 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         voucherCartHachikoView.setCoupon(title, message, voucherCode);
     }
 
-    public void enableVoucherDiscount(long discountAmountPlain) {
+    public void enableVoucherDiscount(long voucherDiscount) {
+        this.voucherDiscount = voucherDiscount;
+        long totalPrice = pricePlain - voucherDiscount;
+        totalPaymentTextView.setText(getStringIdrFormat((double) totalPrice));
+    }
 
+    public String getStringIdrFormat(Double value) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+
+        return kursIndonesia.format(value).replace(",", ".");
     }
 
     public void disableVoucherDiscount() {
-
+        this.voucherDiscount = 0;
+        totalPaymentTextView.setText(getStringIdrFormat((double) pricePlain));
     }
 
     public void setVoucher(String voucherCode, String message) {
         voucherCartHachikoView.setVoucher(voucherCode, message);
     }
 
-    public void renderInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
-        inputPriceHolderView.setVisibility(VISIBLE);
-        inputPriceHolderView.setInputPriceInfo(total, userInputPriceDigital.getMinPaymentPlain(),
-                userInputPriceDigital.getMaxPaymentPlain());
-        inputPriceHolderView.bindView(userInputPriceDigital.getMinPayment(),
-                userInputPriceDigital.getMaxPayment());
-    }
 
-    public void renderCheckout(String price, String totalPrice, long pricePlain) {
+    public void renderCheckout(long pricePlain) {
         this.pricePlain = pricePlain;
-        totalPaymentTextView.setText(price);
+        long resultPrice = pricePlain - voucherDiscount;
+        totalPaymentTextView.setText(getStringIdrFormat((double) resultPrice));
     }
 
     public void enableCheckoutButton() {
@@ -146,6 +145,10 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
 
     public void disableCheckoutButton() {
         checkoutButton.setEnabled(false);
+    }
+
+    public String getVoucherCode() {
+        return voucherCartHachikoView.getVoucherCode();
     }
 
     public interface ActionListener {

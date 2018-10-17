@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -30,7 +31,7 @@ public interface DigitalComponent {
 
     DigitalRestApi digitalApi();
 
-    AnalyticTracker analyticTracker();
+    AbstractionRouter abstractionRouter();
 
     DigitalAddToCartUseCase digitalAddToCartUseCase();
 

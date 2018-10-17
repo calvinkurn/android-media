@@ -57,15 +57,6 @@ public class DigitalModule {
 
     @DigitalScope
     @Provides
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AnalyticTracker) {
-            return ((AnalyticTracker) context);
-        }
-        throw new RuntimeException("Application must implement " + AnalyticTracker.class.getCanonicalName());
-    }
-
-    @DigitalScope
-    @Provides
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }

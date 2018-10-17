@@ -2,6 +2,7 @@ package com.tokopedia.digital.common.data.apiservice;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -29,7 +30,7 @@ public interface DigitalRestApi {
     Observable<Response<TkpdDigitalResponse>> getCategoryList();
 
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
-    Observable<Response<TkpdDigitalResponse>> getCart(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<ResponseCartData>>> getCart(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CHECK_VOUCHER)
     Observable<Response<TkpdDigitalResponse>> checkVoucher(@QueryMap Map<String, String> params);

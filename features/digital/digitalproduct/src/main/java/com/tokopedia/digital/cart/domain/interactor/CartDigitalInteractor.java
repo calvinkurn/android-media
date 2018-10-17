@@ -34,7 +34,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     }
 
     @Override
-    public void getCartInfoData(TKPDMapParam<String, String> paramNetwork,
+    public void getCartInfoData(Map<String, String> paramNetwork,
                                 Subscriber<CartDigitalInfoData> subscriber) {
         compositeSubscription.add(
                 cartDigitalRepository.getCartInfoData(paramNetwork)

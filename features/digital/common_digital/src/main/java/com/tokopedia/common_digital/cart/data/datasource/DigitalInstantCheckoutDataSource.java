@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
@@ -39,12 +40,16 @@ public class DigitalInstantCheckoutDataSource {
     }
 
     @NonNull
-    private Func1<Response<TkpdDigitalResponse>, InstantCheckoutData>
+    private Func1<Response<DataResponse<ResponseCheckoutData>>, InstantCheckoutData>
     getFuncResponseToCheckoutDigitalData() {
-        return tkpdDigitalResponseResponse -> cartMapperData.transformInstantCheckoutData(
-                tkpdDigitalResponseResponse.body()
-                        .convertDataObj(ResponseCheckoutData.class)
-        );
+        return new Func1<Response<DataResponse<ResponseCheckoutData>>, InstantCheckoutData>() {
+            @Override
+            public InstantCheckoutData call(Response<DataResponse<ResponseCheckoutData>> tkpdDigitalResponseResponse) {
+                return cartMapperData.transformInstantCheckoutData(
+                        tkpdDigitalResponseResponse.body().getData()
+                );
+            }
+        };
     }
 
 }

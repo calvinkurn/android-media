@@ -3,8 +3,10 @@ package com.tokopedia.digital.newcart.presentation.contract;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 
 import java.util.Map;
 
@@ -40,6 +42,12 @@ public interface DigitalCartContract {
         void showContent();
 
         void hideLoading();
+
+        DigitalCheckoutPassData getCheckoutPassData();
+
+        void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData);
+
+        void renderErrorInstantCheckout(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface ICartDigitalRepository {
 
-    Observable<CartDigitalInfoData> getCartInfoData(TKPDMapParam<String, String> param);
+    Observable<CartDigitalInfoData> getCartInfoData(Map<String, String> param);
 
     Observable<CartDigitalInfoData> patchOtpCart(RequestBodyOtpSuccess requestBodyOtpSuccess,
                                                  Map<String, String> paramGetCart);

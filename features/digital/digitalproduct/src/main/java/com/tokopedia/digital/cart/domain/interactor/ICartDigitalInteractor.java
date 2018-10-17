@@ -17,7 +17,7 @@ import rx.Subscriber;
 public interface ICartDigitalInteractor {
 
     void getCartInfoData(
-            TKPDMapParam<String, String> paramNetwork, Subscriber<CartDigitalInfoData> subscriber
+            Map<String, String> paramNetwork, Subscriber<CartDigitalInfoData> subscriber
     );
 
     void checkVoucher(

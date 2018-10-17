@@ -140,4 +140,9 @@
     <string name="digital_cart_detail_close_label">Tutup</string>
     <string name="digital_cart_default_toolbar_title">Checkout</string>
     <string name="digital_cart_toolbart_title">Checkout</string>
+    <string name="digital_cart_additional_payment_cost_label">Harga</string>
+    <string name="digital_cart_additional_payment_promo_label">Promo</string>
+    <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
+    <string name="digital_cart_additional_payment_label">Pembayaran</string>
+    <string name="digital_cart_type_service_label">Jenis Layanan</string>
 </resources>

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
@@ -39,7 +40,7 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     }
 
     @Override
-    public Observable<CartDigitalInfoData> getCartInfoData(TKPDMapParam<String, String> param) {
+    public Observable<CartDigitalInfoData> getCartInfoData(Map<String, String> param) {
         return digitalRestApi.getCart(param)
                 .map(getFuncResponseToCartDigitalInfoData());
     }
@@ -68,13 +69,16 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     }
 
     @NonNull
-    private Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>
+    private Func1<Response<DataResponse<ResponseCartData>>, CartDigitalInfoData>
     getFuncResponseToCartDigitalInfoData() {
-        return tkpdDigitalResponseResponse -> cartMapperData.transformCartInfoData(
-                tkpdDigitalResponseResponse.body().convertDataObj(
-                        ResponseCartData.class
-                )
-        );
+        return new Func1<Response<DataResponse<ResponseCartData>>, CartDigitalInfoData>() {
+            @Override
+            public CartDigitalInfoData call(Response<DataResponse<ResponseCartData>> tkpdDigitalResponseResponse) {
+                return cartMapperData.transformCartInfoData(
+                        tkpdDigitalResponseResponse.body().getData()
+                );
+            }
+        };
     }
 
     @NonNull

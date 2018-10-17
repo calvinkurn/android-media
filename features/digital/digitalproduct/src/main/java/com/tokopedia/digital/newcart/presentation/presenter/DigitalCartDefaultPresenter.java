@@ -1,5 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -10,15 +12,15 @@ import com.tokopedia.user.session.UserSession;
 import javax.inject.Inject;
 
 public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<DigitalCartDefaultContract.View> implements DigitalCartDefaultContract.Presenter {
-    private DigitalAnalytics digitalAnalytics;
 
     @Inject
-    public DigitalCartDefaultPresenter(DigitalAnalytics digitalAnalytics,
+    public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+                                       DigitalAnalytics digitalAnalytics,
                                        DigitalModuleRouter digitalModuleRouter,
                                        ICartDigitalInteractor cartDigitalInteractor,
                                        UserSession userSession,
-                                       DigitalCheckoutUseCase digitalCheckoutUseCase) {
-        super(digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase);
-        this.digitalAnalytics = digitalAnalytics;
+                                       DigitalCheckoutUseCase digitalCheckoutUseCase,
+                                       DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
+        super(digitalAddToCartUseCase, digitalAnalytics, digitalModuleRouter, cartDigitalInteractor, userSession, digitalCheckoutUseCase, digitalInstantCheckoutUseCase);
     }
 }

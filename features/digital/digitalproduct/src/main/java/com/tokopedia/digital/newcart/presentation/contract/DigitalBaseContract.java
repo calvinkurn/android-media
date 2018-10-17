@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public interface DigitalBaseContract {
 
         Activity getActivity();
 
-        DigitalCheckoutPassData getCheckoutPassData();
+        DigitalCheckoutPassData getCartPassData();
 
         void hideContent();
 
@@ -77,6 +78,30 @@ public interface DigitalBaseContract {
         void renderToTopPay(CheckoutDigitalData checkoutDigitalData);
 
         void showToastMessage(String message);
+
+        String getIdemPotencyKey();
+
+        String getClientNumber();
+
+        boolean isInstantCheckout();
+
+        int getProductId();
+
+        void closeViewWithMessageAlert(String message);
+
+        void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData, String accessToken);
+
+        void interruptRequestTokenVerification(String phoneNumber);
+
+        CheckoutDataParameter getCheckoutData();
+
+        void renderErrorInstantCheckout(String message);
+
+        void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData);
+
+        void expandAdditionalInfo();
+
+        String getString(@StringRes int resId);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
@@ -94,5 +119,9 @@ public interface DigitalBaseContract {
         void processToCheckout();
 
         void onPaymentSuccess(String categoryId);
+
+        void processPatchOtpCart(String categoryId);
+
+        void processGetCartDataAfterCheckout(String categoryId);
     }
 }

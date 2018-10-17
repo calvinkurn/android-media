@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
@@ -108,8 +109,8 @@ public class DigitalCartModule {
 
     @Provides
     @DigitalCartScope
-    DigitalAnalytics provideDigitalAnalytics(AnalyticTracker analyticTracker) {
-        return new DigitalAnalytics(analyticTracker);
+    DigitalAnalytics provideDigitalAnalytics(AbstractionRouter abstractionRouter) {
+        return new DigitalAnalytics(abstractionRouter.getAnalyticTracker());
     }
 
     @Provides

@@ -56,8 +56,7 @@ public class DigitalCartDetailHolderView extends LinearLayout {
 
     public void setMainInfo(List<CartItemDigital> mainInfos) {
         this.mainInfos = mainInfos;
-        List<Visitable> visitables = new ArrayList<>(mainInfos);
-        adapter.addInfos(visitables);
+        adapter.setInfos(new ArrayList<>(mainInfos));
         adapter.notifyDataSetChanged();
     }
 
@@ -69,6 +68,12 @@ public class DigitalCartDetailHolderView extends LinearLayout {
         } else {
             detailToggleAppCompatTextView.setVisibility(GONE);
         }
+        if (adapter.getItemCount() != mainInfos.size() && additionalInfos != null) {
+            List<Visitable> newLists = new ArrayList<>(mainInfos);
+            newLists.addAll(constructAdditionalInfo(additionalInfos));
+            adapter.setInfos(newLists);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -77,19 +82,17 @@ public class DigitalCartDetailHolderView extends LinearLayout {
 
         adapter = new DigitalCartDetailAdapter();
         mainInfoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mainInfoRecyclerView.setNestedScrollingEnabled(false);
         mainInfoRecyclerView.setAdapter(adapter);
 
         detailToggleAppCompatTextView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (adapter.getItemCount() == mainInfos.size()) {
-                    detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
-                    adapter.addInfos(constructAdditionalInfo(additionalInfos));
+                    expandAdditional();
                 } else {
-                    detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_see_detail_label);
-                    adapter.setInfos(new ArrayList<>(mainInfos));
+                    collapseAdditional();
                 }
-                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -104,4 +107,23 @@ public class DigitalCartDetailHolderView extends LinearLayout {
         }
         return visitables;
     }
+
+    public void expandAdditional() {
+        if (adapter.getItemCount() == mainInfos.size()) {
+            detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
+            adapter.addInfos(constructAdditionalInfo(additionalInfos));
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
+    public void collapseAdditional() {
+        if (adapter.getItemCount() != mainInfos.size()) {
+            detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_see_detail_label);
+            adapter.setInfos(new ArrayList<>(mainInfos));
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+
 }

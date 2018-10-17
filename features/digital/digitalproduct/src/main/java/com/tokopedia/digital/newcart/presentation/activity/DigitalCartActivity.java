@@ -16,8 +16,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
@@ -28,7 +30,6 @@ import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartContract;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
-import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
@@ -37,16 +38,9 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
-public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCartContract.View, HasComponent<DigitalCartComponent> {
+public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent> {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
-    private static final int REQUEST_CODE_OTP = 1001;
-    private DigitalCheckoutPassData passData;
-    private ProgressBar progressBar;
-    private FrameLayout container;
-    private CartDigitalInfoData cartDigitalInfoDataState;
-    private CheckoutDataParameter.Builder checkoutDataBuilder;
+    private DigitalCheckoutPassData cartPassData;
     private DigitalCartComponent component;
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
@@ -96,34 +90,16 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
     }
 
 
-    @Inject
-    UserSession userSession;
-    @Inject
-    DigitalCartPresenter presenter;
-
     @Override
     protected Fragment getNewFragment() {
-        return null;
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_digital_cart;
+        return DigitalCartDefaultFragment.newInstance(cartPassData);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupView();
+        cartPassData = getIntent().getParcelableExtra(EXTRA_PASS_DIGITAL_CART_DATA);
         initInjector();
-        passData = getIntent().getParcelableExtra(EXTRA_PASS_DIGITAL_CART_DATA);
-        presenter.attachView(this);
-        presenter.onViewCreated();
-    }
-
-    private void setupView() {
-        progressBar = findViewById(R.id.progress_bar);
-        container = findViewById(R.id.parent_view);
+        super.onCreate(savedInstanceState);
     }
 
     private void initInjector() {
@@ -133,136 +109,6 @@ public class DigitalCartActivity extends BaseSimpleActivity implements DigitalCa
                 .digitalComponent(digitalComponent)
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    public void showContent() {
-        container.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideLoading() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void hideContent() {
-        container.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public String getIdemPotencyKey() {
-        return passData.getIdemPotencyKey();
-    }
-
-    @Override
-    public String getClientNumber() {
-        return passData.getClientNumber();
-    }
-
-    @Override
-    public boolean isInstantCheckout() {
-        return passData.getInstantCheckout().equals("1");
-    }
-
-    @Override
-    public int getProductId() {
-        return Integer.parseInt(passData.getProductId());
-    }
-
-    @Override
-    public RequestBodyIdentifier getDigitalIdentifierParam() {
-        return DeviceUtil.getDigitalIdentifierParam(this);
-    }
-
-    @Override
-    public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(DigitalRouter.EXTRA_MESSAGE, message);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
-    }
-
-    @Override
-    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
-        if (cartDigitalInfoData != null) {
-            this.cartDigitalInfoDataState = cartDigitalInfoData;
-            buildCheckoutData(cartDigitalInfoData);
-        }
-    }
-
-    private void buildCheckoutData(CartDigitalInfoData cartDigitalInfoData) {
-        checkoutDataBuilder = new CheckoutDataParameter.Builder();
-        checkoutDataBuilder.cartId(cartDigitalInfoData.getId());
-        checkoutDataBuilder.accessToken(userSession.getAccessToken());
-        checkoutDataBuilder.walletRefreshToken("");
-        checkoutDataBuilder.ipAddress(DeviceUtil.getLocalIpAddress());
-        checkoutDataBuilder.relationId(cartDigitalInfoData.getId());
-        checkoutDataBuilder.relationType(cartDigitalInfoData.getType());
-        checkoutDataBuilder.transactionAmount(cartDigitalInfoData.getAttributes().getPricePlain());
-        checkoutDataBuilder.userAgent(DeviceUtil.getUserAgentForApiCall());
-        checkoutDataBuilder.needOtp(cartDigitalInfoData.isNeedOtp());
-    }
-
-    @Override
-    public void interruptRequestTokenVerification() {
-        Intent intent = VerificationActivity.getCallingIntent(this,
-                userSession.getPhoneNumber(),
-                RequestOtpUseCase.OTP_TYPE_CHECKOUT_DIGITAL,
-                true,
-                RequestOtpUseCase.MODE_SMS);
-        startActivityForResult(intent, REQUEST_CODE_OTP);
-    }
-
-    @Override
-    public CheckoutDataParameter getCheckoutData() {
-        if (cartDigitalInfoDataState.getAttributes().isEnableVoucher() &&
-                cartDigitalInfoDataState.getAttributes().getAutoApplyVoucher() != null &&
-                cartDigitalInfoDataState.getAttributes().getAutoApplyVoucher().isSuccess()) {
-            if (!(cartDigitalInfoDataState.getAttributes().isCouponActive() == 0 && cartDigitalInfoDataState.getAttributes().getAutoApplyVoucher().isCoupon() == 1)) {
-                checkoutDataBuilder.voucherCode(cartDigitalInfoDataState.getAttributes().getAutoApplyVoucher().getCode());
-            } else {
-                checkoutDataBuilder.voucherCode("");
-            }
-        } else {
-            checkoutDataBuilder.voucherCode("");
-        }
-        return checkoutDataBuilder.build();
-    }
-
-    @Override
-    public Map<String, String> getGeneratedAuthParamNetwork(String userId, String
-            deviceId, Map<String, String> paramGetCart) {
-        return AuthUtil.generateParamsNetwork(userId, deviceId, paramGetCart);
-    }
-
-    @Override
-    public void inflateDefaultCartPage(CartDigitalInfoData cartDigitalInfoData) {
-        this.cartDigitalInfoDataState = cartDigitalInfoData;
-        inflateFragment(DigitalCartDefaultFragment.newInstance(cartDigitalInfoData, checkoutDataBuilder.build(), passData));
-    }
-
-    private void inflateFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent_view, fragment, getTagFragment())
-                .commit();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_OTP) {
-            if (resultCode == Activity.RESULT_OK) {
-                presenter.processPatchOtpCart(passData.getCategoryId());
-            } else {
-//                closeView();
-            }
-        }
     }
 
     @Override
