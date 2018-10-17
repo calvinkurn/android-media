@@ -77,7 +77,9 @@ public class ShippingDurationConverter {
                 shippingDurationViewModel.setSelected(true);
             }
         } else if (selectedServiceId != 0) {
-            if (selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
+            if (!(shippingDurationViewModel.getServiceData().getError() != null &&
+                    !TextUtils.isEmpty(shippingDurationViewModel.getServiceData().getError().getErrorId())) &&
+                    selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
                 shippingDurationViewModel.setSelected(true);
             }
         } else {
