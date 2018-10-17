@@ -43,6 +43,10 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".searchV2.presentation.activity.FlightSearchV2FilterActivity"
+            android:label="@string/filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".dashboard.view.activity.FlightClassesActivity"
             android:label="@string/flight_classes_toolbar_title"

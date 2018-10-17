@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchReturnFragment;
+import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchV2FilterActivity;
 
 import dagger.Component;
 
@@ -22,4 +23,7 @@ public interface FlightSearchComponent {
     void inject(FlightSearchReturnFragment flightSearchFragment);
 
     void inject(FlightSearchFilterActivity flightSearchFilterActivity);
+
+    void inject(FlightSearchV2FilterActivity flightSearchV2FilterActivity);
+
 }

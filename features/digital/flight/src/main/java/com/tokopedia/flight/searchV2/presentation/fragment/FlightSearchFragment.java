@@ -6,17 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -36,6 +33,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
+import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchV2FilterActivity;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
@@ -68,7 +66,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     public static final int MAX_PROGRESS = 100;
     private static final int EMPTY_MARGIN = 0;
-    private static final int REQUEST_CODE_SEARCH_FILTER = 1;
+    private static final int REQUEST_CODE_SEARCH_V2_FILTER = 1001;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
     private static final String SAVED_NEED_REFRESH_AIRLINE = "svd_need_refresh_airline";
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
@@ -577,62 +575,49 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     protected void setUpSwipeRefresh(View view) {
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         swipeToRefresh.setSwipeDistance();
-        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                hideLoading();
-                swipeToRefresh.setEnabled(false);
+        swipeToRefresh.setOnRefreshListener(() -> {
+            hideLoading();
+            swipeToRefresh.setEnabled(false);
 //                resetDateAndReload();
-            }
         });
     }
 
     protected void setUpBottomAction(View view) {
-        filterAndSortBottomAction = (BottomActionView) view.findViewById(R.id.bottom_action_filter_sort);
-        filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
-                        .setMode(BottomSheetBuilder.MODE_LIST)
-                        .addTitleItem(getString(R.string.flight_search_sort_title));
+        filterAndSortBottomAction = view.findViewById(R.id.bottom_action_filter_sort);
+        filterAndSortBottomAction.setButton2OnClickListener(v -> {
+            BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                    .setMode(BottomSheetBuilder.MODE_LIST)
+                    .addTitleItem(getString(R.string.flight_search_sort_title));
 
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL);
+            ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL);
 
-                BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                        .setItemClickListener(new BottomSheetItemClickListener() {
-                            @SuppressWarnings("WrongConstant")
-                            @Override
-                            public void onBottomSheetItemClick(MenuItem item) {
-                                if (getAdapter().getData() != null) {
-                                    selectedSortOption = item.getItemId();
-                                    flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, false);
-                                }
-                            }
-                        })
-                        .createDialog();
-                bottomSheetDialog.show();
-            }
+            BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                    .setItemClickListener(item -> {
+                        if (getAdapter().getData() != null) {
+                            selectedSortOption = item.getItemId();
+                            flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, false);
+                        }
+                    })
+                    .createDialog();
+            bottomSheetDialog.show();
         });
 
         setUIMarkSort();
         setUIMarkFilter();
 
-        filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*FlightSearchFragment.this.addToolbarElevation();
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);*/
-            }
+        filterAndSortBottomAction.setButton1OnClickListener(v -> {
+            FlightSearchFragment.this.addToolbarElevation();
+            startActivityForResult(FlightSearchV2FilterActivity.createInstance(getActivity(),
+                    isReturning(),
+                    flightFilterModel),
+                    REQUEST_CODE_SEARCH_V2_FILTER);
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
