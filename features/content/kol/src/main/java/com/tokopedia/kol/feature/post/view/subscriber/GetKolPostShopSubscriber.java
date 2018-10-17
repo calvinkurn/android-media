@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.common.network.GraphqlErrorException;
 import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.common.util.TimeConverter;
@@ -75,6 +76,11 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
             Visitable visitable;
             Content content = getContent(post);
             String type =  content != null && content.getType() != null ? content.getType() : "";
+            view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
+                    KolEventTracking.Event.EVENT_SHOP_PAGE,
+                    KolEventTracking.Category.SHOP_PAGE_FEED,
+                    KolEventTracking.Action.SHOP_ITEM_IMPRESSION,
+                    String.valueOf(post.getId()));
             switch (type) {
                 case TYPE_IMAGE:
                     visitable = convertToKolPostViewModel(post);
