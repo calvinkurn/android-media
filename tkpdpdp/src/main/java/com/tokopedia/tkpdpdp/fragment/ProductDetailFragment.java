@@ -272,6 +272,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     MerchantVoucherListPresenter voucherListPresenter;
     private MerchantVoucherListWidget merchantVoucherListWidget;
+    private View promoContainer;
 
     private ShopInfoViewV2 shopInfoView;
     private TransactionDetailView transactionDetailView;
@@ -422,6 +423,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
         otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
         promoWidgetView = view.findViewById(R.id.view_promo_widget);
+        promoContainer = view.findViewById(R.id.promoContainer);
         merchantVoucherListWidget = view.findViewById(R.id.merchantVoucherListWidget);
         mostHelpfulReviewView = (MostHelpfulReviewView) view.findViewById(R.id.view_most_helpful);
         buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
@@ -592,7 +594,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void showPromoWidget(PromoAttributes promoAttributes) {
         this.promoAttributes = promoAttributes;
         this.promoWidgetView.renderData(promoAttributes);
-        merchantVoucherListWidget.setVisibility(View.GONE);
+        promoContainer.setVisibility(View.VISIBLE);
+        merchantVoucherListWidget.setData(null);
     }
 
     @Override
@@ -1529,15 +1532,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
-        merchantVoucherListWidget.setVisibility(View.VISIBLE);
         promoWidgetView.setVisibility(View.GONE);
+        promoContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onErrorGetMerchantVoucherList(@NotNull Throwable e) {
         merchantVoucherListWidget.setData(null);
-        merchantVoucherListWidget.setVisibility(View.GONE);
         promoWidgetView.setVisibility(View.GONE);
+        promoContainer.setVisibility(View.GONE);
     }
 
     @Override

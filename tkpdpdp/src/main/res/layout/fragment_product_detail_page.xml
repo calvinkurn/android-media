@@ -121,36 +121,52 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
 
+            <FrameLayout
+                android:id="@+id/promoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_shadow"
+                android:visibility="gone"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dp_2"
+                    android:paddingRight="@dimen/dp_2">
+
+                    <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+                        android:id="@+id/merchantVoucherListWidget"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:textColor="@color/black_70"
+                        android:textStyle="bold"
+                        app:mvlwTitleString="@string/promo"
+                        app:mvlwTitleTextSize="@dimen/sp_14" />
+                </LinearLayout>
+
+                <com.tokopedia.tkpdpdp.customview.PromoWidgetView
+                    android:id="@+id/view_promo_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
+                android:id="@+id/view_shop_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:background="@drawable/bg_shadow_top" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_2"
-                android:paddingRight="@dimen/dp_2"
-                android:clipToPadding="false"
-                android:clipChildren="false">
-                <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-                    android:id="@+id/merchantVoucherListWidget"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_10"
-                    app:mvlwTitleString="@string/promo"
-                    app:mvlwTitleTextSize="@dimen/sp_14"
-                    android:textColor="@color/black_70"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <com.tokopedia.tkpdpdp.customview.PromoWidgetView
-                android:id="@+id/view_promo_widget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_10" />
 
             <com.tokopedia.tkpdpdp.customview.TransactionDetailView
                 android:id="@+id/view_transaction_detail"
@@ -165,12 +181,6 @@
 
             <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                 android:id="@+id/video_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10" />
-
-            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
-                android:id="@+id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10" />
