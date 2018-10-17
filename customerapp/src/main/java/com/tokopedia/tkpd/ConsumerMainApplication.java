@@ -133,8 +133,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
 
-        GlobalConfig.IS_VALID_APK = checkAppSignature();
-
         initializeDatabase();
         super.onCreate();
         initReact();

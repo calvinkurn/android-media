@@ -396,8 +396,6 @@ public class MainParentActivity extends BaseActivity implements
 
         registerBroadcastHockeyApp();
 
-        CommonUtils.dumper("GlobalConfig.IS_VALID_APK "+GlobalConfig.IS_VALID_APK);
-        CommonUtils.dumper("GlobalConfig.IS_VALID_APK _real_"+((BaseMainApplication)getApplication()).checkAppSignature());
         if(!((BaseMainApplication)getApplication()).checkAppSignature()){
             finish();
         }
