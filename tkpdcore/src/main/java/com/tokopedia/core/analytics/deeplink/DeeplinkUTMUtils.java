@@ -150,7 +150,8 @@ public class DeeplinkUTMUtils {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
-                    campaign.setUtmMedium("referral");
+                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
 
