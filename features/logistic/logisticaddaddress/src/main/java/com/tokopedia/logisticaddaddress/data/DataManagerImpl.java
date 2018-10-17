@@ -8,7 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
-import com.tokopedia.logisticaddaddress.data.disk.LocalDatabase;
+import com.tokopedia.logisticaddaddress.utils.LocalDatabaseUtils;
 import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractorImpl;
@@ -164,7 +164,7 @@ public class DataManagerImpl implements DataManager {
                         Type type = new TypeToken<GetPeopleAddress>() {
                         }.getType();
                         cacheManager.save(cacheKey,
-                                LocalDatabase.convertModelToString(cacheData, type),
+                                LocalDatabaseUtils.convertModelToString(cacheData, type),
                                 5000);
 
                         return true;
@@ -204,7 +204,7 @@ public class DataManagerImpl implements DataManager {
                         // get json string which already cached
                         String jsonCachedString = cacheManager.get(cacheKey);
 
-                        return LocalDatabase.convertStringToModel(jsonCachedString, type);
+                        return LocalDatabaseUtils.convertStringToModel(jsonCachedString, type);
                     }
                 })
                 .subscribe(new Subscriber<GetPeopleAddress>() {

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.data.disk;
+package com.tokopedia.logisticaddaddress.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 /**
  * Created by Fajar Ulin Nuha on 15/10/18.
  */
-public class LocalDatabase {
+public class LocalDatabaseUtils {
 
     public static String convertModelToString(Object obj, Type type) {
         Gson gson = new Gson();
