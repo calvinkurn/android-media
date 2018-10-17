@@ -271,6 +271,10 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
                         this.mRetryView = getRetryView(loadingVH.container.getContext());
                     }
 
+                    if (mRetryView.getParent() != null) {
+                        ((ViewGroup) mRetryView.getParent()).removeView(mRetryView);
+                    }
+
                     loadingVH.container.removeAllViews();
                     loadingVH.container.addView(mRetryView);
                     if (item.getRetryMessage() == null || item.getRetryMessage().isEmpty()) {
@@ -287,6 +291,10 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
                 } else {
                     if (mLoaderView == null) {
                         this.mLoaderView = getLoaderView(loadingVH.container.getContext());
+                    }
+
+                    if (mLoaderView.getParent() != null) {
+                        ((ViewGroup) mLoaderView.getParent()).removeView(mLoaderView);
                     }
 
                     loadingVH.container.removeAllViews();
