@@ -340,6 +340,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
             compositeSubscription.unsubscribe();
         }
 
+        flightSearchJourneyByIdUseCase.unsubscribe();
+        flightDeleteFlightSearchReturnDataUseCase.unsubscribe();
+        flightSearchCombinedUseCase.unsubscribe();
+        flightSortAndFilterUseCase.unsubscribe();
+        flightAirlineHardRefreshUseCase.unsubscribe();
+        flightSearchV2UseCase.unsubscribe();
+
         super.detachView();
     }
 
