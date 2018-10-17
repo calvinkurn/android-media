@@ -3,6 +3,7 @@ package com.tokopedia.merchantvoucher.voucherList.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -70,7 +71,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         voucherCodeInProgress = voucherCode
         useMerchantVoucherUseCase.unsubscribe()
         useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),
-                object : Subscriber<Boolean>() {
+                object : Subscriber<UseMerchantVoucherQueryResult>() {
                     override fun onCompleted() {
 
                     }
@@ -80,10 +81,10 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
                         view?.onErrorUseVoucher(e)
                     }
 
-                    override fun onNext(success: Boolean) {
+                    override fun onNext(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
                         // success should be true
                         voucherCodeInProgress = ""
-                        view?.onSuccessUseVoucher()
+                        view?.onSuccessUseVoucher(useMerchantVoucherQueryResult)
                     }
                 })
     }

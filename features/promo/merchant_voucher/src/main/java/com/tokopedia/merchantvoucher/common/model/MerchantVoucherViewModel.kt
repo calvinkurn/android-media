@@ -104,7 +104,7 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
 
 fun MerchantVoucherViewModel.getTypeString(context: Context): String {
     return when (this.merchantVoucherType) {
-        MerchantVoucherTypeDef.TYPE_CASHBACK -> context.getString(R.string.cashback)
+        MerchantVoucherTypeDef.TYPE_CASHBACK -> context.getString(R.string.title_cashback)
         MerchantVoucherTypeDef.TYPE_DISCOUNT -> context.getString(R.string.discount)
         MerchantVoucherTypeDef.TYPE_FREE_ONGKIR -> {
             context.getString(R.string.free_ongkir)

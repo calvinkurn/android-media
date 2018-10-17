@@ -2,6 +2,7 @@ package com.tokopedia.merchantvoucher.voucherDetail.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.UseMerchantVoucherUseCase
 import rx.Subscriber
 import javax.inject.Inject
@@ -35,7 +36,7 @@ constructor(private val userSession: UserSession,
         voucherCodeInProgress = voucherCode
         useMerchantVoucherUseCase.unsubscribe()
         useMerchantVoucherUseCase.execute(UseMerchantVoucherUseCase.createRequestParams(voucherCode, voucherId),
-                object : Subscriber<Boolean>() {
+                object : Subscriber<UseMerchantVoucherQueryResult>() {
                     override fun onCompleted() {
 
                     }
@@ -45,10 +46,10 @@ constructor(private val userSession: UserSession,
                         view?.onErrorUseVoucher(e)
                     }
 
-                    override fun onNext(success: Boolean) {
+                    override fun onNext(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
                         // success should be true
                         voucherCodeInProgress = ""
-                        view?.onSuccessUseVoucher()
+                        view?.onSuccessUseVoucher(useMerchantVoucherQueryResult)
                     }
                 })
     }

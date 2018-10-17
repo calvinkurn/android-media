@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQuery
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.gql.domain.mapper.GraphQLUseMerchantVoucherMapper
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.base.SingleGraphQLUseCase
 import com.tokopedia.usecase.RequestParams
@@ -13,7 +14,7 @@ import java.util.*
 import javax.inject.Inject
 
 class UseMerchantVoucherUseCase @Inject
-constructor(@ApplicationContext context: Context) : UseCase<Boolean>() {
+constructor(@ApplicationContext context: Context) : UseCase<UseMerchantVoucherQueryResult>() {
     private val graphQLUseCase: SingleGraphQLUseCase<UseMerchantVoucherQuery>
 
     init {
@@ -35,7 +36,7 @@ constructor(@ApplicationContext context: Context) : UseCase<Boolean>() {
         }
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
+    override fun createObservable(requestParams: RequestParams): Observable<UseMerchantVoucherQueryResult> {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(GraphQLUseMerchantVoucherMapper())
                 .doOnError { graphQLUseCase.clearCache() }

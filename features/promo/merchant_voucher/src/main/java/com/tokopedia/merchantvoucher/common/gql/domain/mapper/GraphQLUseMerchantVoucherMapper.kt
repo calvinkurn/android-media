@@ -11,15 +11,15 @@ import rx.functions.Func1
  * Created by hendry on 08/08/18.
  */
 
-class GraphQLUseMerchantVoucherMapper : Func1<UseMerchantVoucherQuery, Observable<Boolean>> {
+class GraphQLUseMerchantVoucherMapper : Func1<UseMerchantVoucherQuery, Observable<UseMerchantVoucherQueryResult>> {
 
-    override fun call(query: UseMerchantVoucherQuery): Observable<Boolean> {
+    override fun call(query: UseMerchantVoucherQuery): Observable<UseMerchantVoucherQueryResult> {
         val useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult? = query.result
         if (useMerchantVoucherQueryResult == null) {
             return Observable.error(RuntimeException())
         }
-        return if (TextUtils.isEmpty(useMerchantVoucherQueryResult.errorMessage)) {
-            Observable.just(useMerchantVoucherQueryResult.result)
+        return if (useMerchantVoucherQueryResult.result) {
+            Observable.just(useMerchantVoucherQueryResult)
         } else {
             Observable.error(MessageTitleErrorException(useMerchantVoucherQueryResult.errorMessageTitle,
                     useMerchantVoucherQueryResult.errorMessage))

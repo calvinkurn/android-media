@@ -31,14 +31,13 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity;
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
@@ -476,6 +475,24 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
     }
 
+    private void showUseMerchantVoucherLoading() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog.show();
+    }
+
+    private void hideUseMerchantVoucherLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
     @Override
     public void onItemClicked(BaseShopProductViewModel baseShopProductViewModel) {
         // no op
@@ -848,6 +865,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
             }
         } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
+            showUseMerchantVoucherLoading();
             merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                     merchantVoucherViewModel.getVoucherId());
         }
@@ -885,16 +903,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onSuccessUseVoucher() {
+    public void onSuccessUseVoucher(@NonNull UseMerchantVoucherQueryResult useMerchantVoucherQueryResult) {
+        hideUseMerchantVoucherLoading();
         if (getActivity() != null) {
-            ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.title_ok), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //no op
-                        }
-                    }).show();
+            Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+            dialog.setTitle(useMerchantVoucherQueryResult.getErrorMessageTitle());
+            dialog.setDesc(useMerchantVoucherQueryResult.getErrorMessage());
+            dialog.setBtnOk(getString(R.string.label_close));
+            dialog.setOnOkClickListener(v -> dialog.dismiss());
+            dialog.show();
+
             merchantVoucherListPresenter.clearCache();
             loadVoucherList();
         }
@@ -902,10 +920,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onErrorUseVoucher(@NotNull Throwable e) {
+        hideUseMerchantVoucherLoading();
         if (getActivity() != null) {
             if (e instanceof MessageTitleErrorException) {
 
-                Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
+                Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
                 dialog.setTitle(((MessageTitleErrorException) e).getErrorMessageTitle());
                 dialog.setDesc(e.getMessage());
                 dialog.setBtnOk(getString(R.string.label_close));

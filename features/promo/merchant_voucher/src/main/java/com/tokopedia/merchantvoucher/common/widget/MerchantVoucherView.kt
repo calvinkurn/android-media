@@ -76,7 +76,6 @@ class MerchantVoucherView : CustomVoucherView {
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
             tvVoucherDesc.text = merchantVoucherViewModel.getMinSpendLongString(context)
-            ivVoucherLogo.setImageResource(R.drawable.ic_store_logo)
             tvCode.text = merchantVoucherViewModel.voucherCode
             var isOwner = false
             onMerchantVoucherViewListener?.run {

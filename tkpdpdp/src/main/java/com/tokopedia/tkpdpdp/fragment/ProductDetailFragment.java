@@ -96,6 +96,7 @@ import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity;
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
@@ -476,6 +477,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
                 } else if (!isOwner()) {
+                    showUseMerchantVoucherLoading();
                     voucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                             merchantVoucherViewModel.getVoucherId());
                 }
@@ -518,6 +520,24 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
+        }
+    }
+
+    private void showUseMerchantVoucherLoading(){
+        if (loading == null) {
+            loading = new ProgressDialog(getActivity());
+            loading.setCancelable(false);
+            loading.setMessage(getString(R.string.title_loading));
+        }
+        if (loading.isShowing()) {
+            loading.dismiss();
+        }
+        loading.show();
+    }
+
+    private void hideUseMerchantVoucherLoading(){
+        if (loading != null) {
+            loading.dismiss();
         }
     }
 
@@ -1927,13 +1947,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onSuccessUseVoucher() {
+    public void onSuccessUseVoucher(UseMerchantVoucherQueryResult useMerchantVoucherQueryResult) {
+        hideUseMerchantVoucherLoading();
         if (getActivity() != null) {
-            ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.title_ok), v -> {
-                        //no op
-                    }).show();
+            com.tokopedia.design.component.Dialog dialog = new com.tokopedia.design.component.Dialog(getActivity(),
+                    com.tokopedia.design.component.Dialog.Type.PROMINANCE);
+            dialog.setTitle(useMerchantVoucherQueryResult.getErrorMessageTitle());
+            dialog.setDesc(useMerchantVoucherQueryResult.getErrorMessage());
+            dialog.setBtnOk(getString(R.string.label_close));
+            dialog.setOnOkClickListener(v -> dialog.dismiss());
+            dialog.show();
+
             voucherListPresenter.clearCache();
             loadPromo();
         }
@@ -1941,11 +1965,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onErrorUseVoucher(@NotNull Throwable e) {
+        hideUseMerchantVoucherLoading();
         if (getActivity() != null) {
             if (e instanceof MessageTitleErrorException) {
 
                 com.tokopedia.design.component.Dialog dialog = new com.tokopedia.design.component.Dialog(getActivity(),
-                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
+                        com.tokopedia.design.component.Dialog.Type.PROMINANCE);
                 dialog.setTitle(((MessageTitleErrorException) e).getErrorMessageTitle());
                 dialog.setDesc(e.getMessage());
                 dialog.setBtnOk(getString(R.string.label_close));

@@ -137,6 +137,16 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
     }
 
     fun setData(merchantVoucherViewModelArrayList: ArrayList<MerchantVoucherViewModel>?) {
+        //logic to cater logic since data after refresh will go to index 0 (from api)
+        if (merchantVoucherViewModelArrayList != null) {
+            if (adapter!!.dataSize == merchantVoucherViewModelArrayList.size) {
+                try {
+                    recyclerView!!.smoothScrollToPosition(0)
+                } catch (e: Exception) {
+                    // no op
+                }
+            }
+        }
         adapter!!.clearAllElements()
         if (merchantVoucherViewModelArrayList != null && merchantVoucherViewModelArrayList.size > 0) {
             adapter!!.addElement(merchantVoucherViewModelArrayList)

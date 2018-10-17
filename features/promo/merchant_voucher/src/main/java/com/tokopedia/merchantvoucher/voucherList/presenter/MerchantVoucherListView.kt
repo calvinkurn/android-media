@@ -2,6 +2,7 @@ package com.tokopedia.merchantvoucher.voucherList.presenter
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 
@@ -15,7 +16,7 @@ interface MerchantVoucherListView : CustomerView {
 
     fun onErrorGetShopInfo(e: Throwable)
 
-    fun onSuccessUseVoucher()
+    fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult)
 
     fun onErrorUseVoucher(e: Throwable)
 

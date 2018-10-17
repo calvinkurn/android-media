@@ -1,6 +1,7 @@
 package com.tokopedia.merchantvoucher.voucherDetail
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,11 +16,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.*
 import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDetailPresenter
 import com.tokopedia.merchantvoucher.voucherDetail.presenter.MerchantVoucherDetailView
@@ -39,6 +41,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     var voucherId: Int = 0
     var merchantVoucherViewModel: MerchantVoucherViewModel? = null
     var voucherShopId: String? = null
+
+    var loadingUseMerchantVoucher: ProgressDialog? = null
 
     @Inject
     lateinit var presenter: MerchantVoucherDetailPresenter
@@ -90,7 +94,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                     val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
                     startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_LOGIN)
                 }
-            } else if (!presenter.isMyShop(voucherShopId)){
+            } else if (!presenter.isMyShop(voucherShopId)) {
+                showUseMerchantVoucherLoading()
                 merchantVoucherViewModel?.let {
                     presenter.useMerchantVoucher(it.voucherCode, voucherId)
                 }
@@ -98,27 +103,33 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSuccessUseVoucher() {
+    override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
+        hideUseMerchantVoucherLoading()
         merchantVoucherViewModel?.run {
             status = MerchantVoucherStatusTypeDef.TYPE_IN_USE
             onSuccessGetMerchantVoucherDetail(this)
         }
-        activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
-                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.title_ok)) {
-                        // no-op
-                    }.show()
-            setResult(Activity.RESULT_OK)
+        activity?.let { it ->
+            Dialog(it, Dialog.Type.PROMINANCE).apply {
+                setTitle(useMerchantVoucherQueryResult.errorMessageTitle)
+                setDesc(useMerchantVoucherQueryResult.errorMessage)
+                setBtnOk(getString(R.string.label_close))
+                setOnOkClickListener {
+                    dismiss()
+                }
+                show()
+            }
         }
     }
 
     override fun onErrorUseVoucher(e: Throwable) {
+        hideUseMerchantVoucherLoading()
         activity?.run {
             ToasterError.make(this.findViewById(android.R.id.content),
                     ErrorHandler.getErrorMessage(this, e), BaseToaster.LENGTH_LONG)
                     .setAction(this.getString(R.string.retry)) { _ ->
                         merchantVoucherViewModel?.let {
+                            showUseMerchantVoucherLoading()
                             presenter.useMerchantVoucher(it.voucherCode, voucherId)
                         }
                     }.show()
@@ -191,6 +202,24 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 + html_string
                 + "</body></html>")
         return returnString
+    }
+
+    private fun showUseMerchantVoucherLoading() {
+        if (loadingUseMerchantVoucher == null) {
+            loadingUseMerchantVoucher = ProgressDialog(activity)
+            loadingUseMerchantVoucher!!.setCancelable(false)
+            loadingUseMerchantVoucher!!.setMessage(getString(R.string.title_loading))
+        }
+        if (loadingUseMerchantVoucher!!.isShowing()) {
+            loadingUseMerchantVoucher!!.dismiss()
+        }
+        loadingUseMerchantVoucher!!.show()
+    }
+
+    private fun hideUseMerchantVoucherLoading() {
+        if (loadingUseMerchantVoucher != null) {
+            loadingUseMerchantVoucher!!.dismiss()
+        }
     }
 
     override fun onErrorGetMerchantVoucherDetail(e: Throwable) {

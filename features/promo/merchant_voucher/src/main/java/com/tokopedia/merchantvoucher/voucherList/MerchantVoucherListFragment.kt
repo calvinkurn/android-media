@@ -1,6 +1,7 @@
 package com.tokopedia.merchantvoucher.voucherList
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -42,6 +44,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
     lateinit var voucherShopId: String
     var needRefreshData: Boolean = false
+    var loadingUseMerchantVoucher: ProgressDialog? = null
 
     var shopInfo: ShopInfo? = null
         get
@@ -128,6 +131,24 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         loadInitialData()
     }
 
+    private fun showUseMerchantVoucherLoading() {
+        if (loadingUseMerchantVoucher == null) {
+            loadingUseMerchantVoucher = ProgressDialog(activity)
+            loadingUseMerchantVoucher!!.setCancelable(false)
+            loadingUseMerchantVoucher!!.setMessage(getString(R.string.title_loading))
+        }
+        if (loadingUseMerchantVoucher!!.isShowing()) {
+            loadingUseMerchantVoucher!!.dismiss()
+        }
+        loadingUseMerchantVoucher!!.show()
+    }
+
+    private fun hideUseMerchantVoucherLoading() {
+        if (loadingUseMerchantVoucher != null) {
+            loadingUseMerchantVoucher!!.dismiss()
+        }
+    }
+
     override fun callInitialLoadAutomatically() = false
 
     override fun hasInitialSwipeRefresh() = true
@@ -178,26 +199,33 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         } else if (!presenter.isMyShop(voucherShopId)) {
+            showUseMerchantVoucherLoading();
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }
     }
 
-    override fun onSuccessUseVoucher() {
-        activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
-                    getString(R.string.voucher_use_in_cart), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.title_ok)) {
-                        // no-op
-                    }.show()
+    override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
+        hideUseMerchantVoucherLoading()
+        activity?.let { it ->
+            Dialog(it, Dialog.Type.PROMINANCE).apply {
+                setTitle(useMerchantVoucherQueryResult.errorMessageTitle)
+                setDesc(useMerchantVoucherQueryResult.errorMessage)
+                setBtnOk(getString(R.string.label_close))
+                setOnOkClickListener {
+                    dismiss()
+                }
+                show()
+            }
 
             presenter.clearCache()
-            presenter.getVoucherList(voucherShopId, 0)
+            loadInitialData()
 
-            setResult(Activity.RESULT_OK)
+            it.setResult(Activity.RESULT_OK)
         }
     }
 
     override fun onErrorUseVoucher(e: Throwable) {
+        hideUseMerchantVoucherLoading()
         if (e is MessageTitleErrorException) {
             activity?.let { it ->
                 Dialog(it, Dialog.Type.PROMINANCE).apply {

@@ -69,7 +69,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     override fun enableShare(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.shopName = shopInfo.info.shopName
-        title = getString(R.string.merchant_voucher_x, shopName)
+        title = MethodChecker.fromHtml( getString(R.string.merchant_voucher_x, shopName))
         supportActionBar?.title = title
         invalidateOptionsMenu()
     }
