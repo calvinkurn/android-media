@@ -1,13 +1,13 @@
 package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
-import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.logisticinputreceiptshipment.network.MyShopOrderActService;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderActApi;
+import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderApi;
+import com.tokopedia.logisticinputreceiptshipment.network.apiservice.OrderDetailApi;
 import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
 import com.tokopedia.logisticinputreceiptshipment.network.response.courierlist.CourierResponse;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
 import java.util.Map;
@@ -23,20 +23,20 @@ public class OrderCourierRepository implements IOrderCourierRepository {
 
     private OrderDetailMapper mapper;
 
-    private MyShopOrderService service;
+    private MyShopOrderApi myShopOrderApi;
 
-    private MyShopOrderActService actionService;
+    private MyShopOrderActApi myShopOrderActApi;
 
-    private OrderDetailService orderDetailService;
+    private OrderDetailApi orderDetailApi;
 
     public OrderCourierRepository(OrderDetailMapper mapper,
-                                  MyShopOrderService shopService,
-                                  MyShopOrderActService actionService,
-                                  OrderDetailService orderDetailService) {
+                                  MyShopOrderApi myShopOrderApi,
+                                  MyShopOrderActApi myShopOrderActApi,
+                                  OrderDetailApi orderDetailApi) {
         this.mapper = mapper;
-        this.service = shopService;
-        this.actionService = actionService;
-        this.orderDetailService = orderDetailService;
+        this.myShopOrderApi = myShopOrderApi;
+        this.myShopOrderActApi = myShopOrderActApi;
+        this.orderDetailApi = orderDetailApi;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class OrderCourierRepository implements IOrderCourierRepository {
             final String selectedCourierId,
             TKPDMapParam<String, String> params
     ) {
-        return service.getApi().getEditShippingForm(params)
+        return myShopOrderApi.getEditShippingForm(params)
                 .map(tkpdResponseResponse -> mapper.getCourierServiceModel(
                         new Gson().fromJson(tkpdResponseResponse.body().getStringData(),
                                 CourierResponse.class),
@@ -54,17 +54,17 @@ public class OrderCourierRepository implements IOrderCourierRepository {
 
     @Override
     public Observable<String> processShipping(TKPDMapParam<String, String> param) {
-        return actionService.getApi().proceedShipping(param)
+        return myShopOrderActApi.proceedShipping(param)
                 .map(this::displayMessageToUser);
     }
 
     @Override
     public Observable<String> changeCourier(Map<String, String> param) {
-        return orderDetailService.getApi().changeCourier(param)
+        return orderDetailApi.changeCourier(param)
                 .map(this::displayMessageToUser);
     }
 
-    private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {
+    private String displayMessageToUser(Response<TokopediaWsV4Response> tkpdResponseResponse) {
         if (tkpdResponseResponse.isSuccessful() && !tkpdResponseResponse.body().isError())
             return tkpdResponseResponse.body().getStatusMessageJoined();
         else

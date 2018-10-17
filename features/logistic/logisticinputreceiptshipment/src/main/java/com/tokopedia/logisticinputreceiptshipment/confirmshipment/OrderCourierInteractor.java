@@ -1,6 +1,7 @@
 package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
 import java.util.Map;

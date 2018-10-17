@@ -2,12 +2,12 @@ package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
+import com.tokopedia.user.session.UserSession;
 
 import rx.Subscriber;
 
@@ -26,13 +26,15 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
     private static final String SP_ID = "sp_id";
     private static final String CONFIRM_ACTION_CONSTANT = "confirm";
     private static final String CREATE_BY = "create_by";
+    private final UserSession userSession;
 
     private OrderCourierInteractor interactor;
 
     private ConfirmShippingView view;
 
-    public OrderCourierPresenterImpl(OrderCourierInteractorImpl interactor) {
+    public OrderCourierPresenterImpl(OrderCourierInteractorImpl interactor, UserSession userSession) {
         this.interactor = interactor;
+        this.userSession = userSession;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         view.showLoading();
         interactor.onGetCourierList(
                 data.getShipmentId(),
-                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<>()),
+                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()),
                 new Subscriber<ListCourierViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -88,7 +90,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         params.put(SHIPMENT_NAME, editableModel.getShipmentName());
         params.put(SP_ID, editableModel.getPackageId());
         interactor.confirmShipping(
-                AuthUtil.generateParamsNetwork(context, params),
+                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
                 processCourierSubscriber());
     }
 
@@ -97,13 +99,13 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(ACTION_TYPE, CONFIRM_ACTION_CONSTANT);
         params.put(ORDER_ID, editableModel.getOrderId());
-        params.put(CREATE_BY, SessionHandler.getLoginID(context));
+        params.put(CREATE_BY, userSession.getUserId());
         params.put(SHIPPING_REF, editableModel.getShippingRef());
         params.put(AGENCY_ID, editableModel.getShipmentId());
         params.put(SHIPMENT_NAME, editableModel.getShipmentName());
         params.put(SP_ID, editableModel.getPackageId());
         interactor.changeCourier(
-                AuthUtil.generateParamsNetwork(context, params),
+                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params),
                 processCourierSubscriber());
     }
 

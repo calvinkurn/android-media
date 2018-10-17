@@ -1,6 +1,6 @@
 package com.tokopedia.logisticinputreceiptshipment.di;
 
-import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity;
 
 import dagger.Component;
@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @OrderCourierScope
-@Component(modules = OrderCourierModule.class, dependencies = AppComponent.class)
+@Component(modules = OrderCourierModule.class, dependencies = BaseAppComponent.class)
 public interface OrderCourierComponent {
     void inject(ConfirmShippingActivity activity);
 }

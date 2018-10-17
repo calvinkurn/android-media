@@ -1,7 +1,6 @@
 package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.logisticinputreceiptshipment.R;
 import com.tokopedia.transaction.common.data.order.CourierServiceModel;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by kris on 1/5/18. Tokopedia
  */
 
-public class ServiceSelectionFragment extends Fragment
+public class ServiceSelectionFragment extends TkpdBaseV4Fragment
         implements OrderServiceAdapter.OrderServiceAdapterListener {
 
     private static final String COURIER_MODEL_EXTRA = "COURIER_MODEL_EXTRA";
@@ -38,6 +38,11 @@ public class ServiceSelectionFragment extends Fragment
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override

@@ -18,13 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
 import com.tokopedia.logisticinputreceiptshipment.BaseActivity;
 import com.tokopedia.logisticinputreceiptshipment.R;
+import com.tokopedia.logisticinputreceiptshipment.TkpdProgressDialog;
 import com.tokopedia.logisticinputreceiptshipment.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
@@ -107,7 +108,7 @@ public class ConfirmShippingActivity extends BaseActivity
         } else {
             CourierSelectionFragment courierSelectionFragment = CourierSelectionFragment.
                     createInstance(model);
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
                     .commit();
@@ -124,7 +125,7 @@ public class ConfirmShippingActivity extends BaseActivity
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        CommonUtils.requestBarcodeScanner(this, ReceiptShipmentBarcodeScannerActivity.class);
+        requestBarcodeScanner(this, ReceiptShipmentBarcodeScannerActivity.class);
     }
 
     @Override
@@ -208,7 +209,7 @@ public class ConfirmShippingActivity extends BaseActivity
     public void initInjector() {
         OrderCourierComponent component = DaggerOrderCourierComponent
                 .builder()
-                .appComponent(getComponent())
+                .baseAppComponent(getComponent())
                 .build();
         component.inject(this);
     }
@@ -308,7 +309,7 @@ public class ConfirmShippingActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String barcode = CommonUtils.getBarcode(requestCode, resultCode, data);
+        String barcode = getBarcode(requestCode, resultCode, data);
         if (!TextUtils.isEmpty(barcode)) {
             sendAnalyticsOnViewScanAwb();
         }
@@ -349,5 +350,18 @@ public class ConfirmShippingActivity extends BaseActivity
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    public static String getBarcode(int requestCode, int resultCode, Intent data) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null && scanResult.getContents() != null) {
+            return scanResult.getContents();
+        }
+        return "";
+    }
+
+    public static void requestBarcodeScanner(Activity activity, Class customClass) {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
+        intentIntegrator.setCaptureActivity(customClass).initiateScan();
     }
 }

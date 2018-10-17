@@ -58,6 +58,7 @@ import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -3156,6 +3157,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
+    }
+
+    @Override
+    public boolean isAllowLogOnChuckInterceptorNotification() {
+        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptions.CHUCK_ENABLED);
+        return cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
     }
 
     public String getDefferedDeeplinkPathIfExists() {

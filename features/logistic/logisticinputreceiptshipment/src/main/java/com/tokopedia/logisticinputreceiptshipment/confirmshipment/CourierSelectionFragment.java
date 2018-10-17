@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.logisticinputreceiptshipment.R;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
@@ -22,7 +22,7 @@ import static com.tokopedia.logisticinputreceiptshipment.confirmshipment.Confirm
  * Created by kris on 1/3/18. Tokopedia
  */
 
-public class CourierSelectionFragment extends TkpdFragment implements OrderCourierAdapter.OrderCourierAdapterListener {
+public class CourierSelectionFragment extends TkpdBaseV4Fragment implements OrderCourierAdapter.OrderCourierAdapterListener {
 
     private static final String ORDER_COURIER_EXTRAS = "ORDER_COURIER_EXTRAS";
 
