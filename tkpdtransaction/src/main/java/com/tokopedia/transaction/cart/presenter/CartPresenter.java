@@ -298,7 +298,6 @@ public class CartPresenter implements ICartPresenter {
                         }
                         try {
                             processCartAnalytics(cartData);
-                            //trackCanceledCart(canceledCartItem);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -348,7 +347,6 @@ public class CartPresenter implements ICartPresenter {
                                 String.valueOf(canceledCartProduct.getProductQuantity()));
                         try {
                             processCartAnalytics(cartData);
-                            //trackCanceledProduct(canceledCartItem, canceledCartProduct);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
