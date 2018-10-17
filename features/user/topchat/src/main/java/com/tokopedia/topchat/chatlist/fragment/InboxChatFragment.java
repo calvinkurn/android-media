@@ -693,7 +693,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
         sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
 
-        checkNeedToShowCasing();
+        if (isValidToCreateBroadcast)
+            checkNeedToShowCasing();
     }
 
     private void checkNeedToShowCasing() {
