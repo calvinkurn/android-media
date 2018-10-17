@@ -8,7 +8,7 @@ public interface CommonConstant {
     String ARGS_CATEGORY_ID = "category_id";
     String ARGS_SORT_TYPE = "sort_type";
     int DEVICE_ID_BANNER = 256;
-    int PAGE_SIZE = 100;
+    int PAGE_SIZE = 5;
     int HOMEPAGE_PAGE_SIZE = 5;
     int TAB_SETUP_DELAY_MS = 150;
     int HOMEPAGE_TAB_COUNT = 2;
