@@ -93,6 +93,9 @@ public class AddAddressFragment extends BaseDaggerFragment
     private static final int ADDRESS_MIN_CHARACTER = 20;
     private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
+    private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
@@ -198,7 +201,103 @@ public class AddAddressFragment extends BaseDaggerFragment
         this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
-    private void initView(View view) {
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTextWatcher();
+    }
+
+    private void setTextWatcher() {
+        receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
+        addressEditText.addTextChangedListener(watcher(addressLayout));
+        addressEditText.addTextChangedListener(characterWatcher(addressLabel));
+        addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
+        receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
+        passwordEditText.addTextChangedListener(watcher(passwordLayout));
+
+        districtEditText.addTextChangedListener(watcher(districtLayout));
+        zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
+
+        postCodeEditText.addTextChangedListener(watcher(postCodeLayout));
+
+    }
+
+    private TextWatcher characterWatcher(TextView watcher) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (watcher.getVisibility() != View.VISIBLE) watcher.setVisibility(View.VISIBLE);
+                int textLength = charSequence.length();
+                int charLeft;
+                if (textLength < ADDRESS_MIN_CHARACTER) {
+                    charLeft = ADDRESS_MIN_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING, charLeft));
+                } else {
+                    charLeft = ADDRESS_MAX_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING2, charLeft));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    private TextWatcher zipPostTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (zipCodeTextView.getText().length() < 1) {
+                    zipCodeLayout.setError(getContext().getString(R.string.error_field_required));
+                } else {
+                    zipCodeLayout.setError(null);
+                    sendAnalyticsOnZipCodeInputFreeText(s.toString());
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void initView(View view) {
         receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
         receiverNameEditText = view.findViewById(R.id.receiver_name);
         addressTypeLayout = view.findViewById(R.id.address_type_layout);
@@ -233,14 +332,15 @@ public class AddAddressFragment extends BaseDaggerFragment
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
-        if (!isEdit()) {
+        if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
+            UserSession sess = new UserSession(getActivity());
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
-            receiverNameEditText.setText(userSession.getName());
-            receiverPhoneEditText.setText(userSession.getPhoneNumber());
+            receiverNameEditText.setText(sess.getName());
+            receiverPhoneEditText.setText(sess.getPhoneNumber());
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mProgressBar = view.findViewById(R.id.logistic_spinner);
+        mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
         provinceAdapter = ProvinceAdapter.createInstance(getActivity());
         spinnerProvince.setAdapter(provinceAdapter);
@@ -251,99 +351,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
         selectLayout();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setTextWatcher();
-    }
-
-    private void setTextWatcher() {
-        receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
-        addressEditText.addTextChangedListener(watcher(addressLayout));
-        addressEditText.addTextChangedListener(characterWatcher(addressLabel));
-        addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
-        receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
-        passwordEditText.addTextChangedListener(watcher(passwordLayout));
-
-        districtEditText.addTextChangedListener(watcher(districtLayout));
-        zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
-
-        postCodeEditText.addTextChangedListener(watcher(postCodeLayout));
-
-    }
-
-    private TextWatcher watcher(final TextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
-
-    private TextWatcher characterWatcher(TextView watcher) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                int textLength = charSequence.length();
-                int charLeft;
-                if (textLength < ADDRESS_MIN_CHARACTER) {
-                    charLeft = ADDRESS_MIN_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi deperlukan", charLeft));
-                } else {
-                    charLeft = ADDRESS_MAX_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter tersisa", charLeft));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-    }
-
-    private TextWatcher zipPostTextWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (zipCodeTextView.getText().length() < 1) {
-                    zipCodeLayout.setError(getContext().getString(R.string.error_field_required));
-                } else {
-                    zipCodeLayout.setError(null);
-                    sendAnalyticsOnZipCodeInputFreeText(s.toString());
-                }
-            }
-        };
     }
 
     private void selectLayout() {
@@ -825,6 +832,7 @@ public class AddAddressFragment extends BaseDaggerFragment
             }
 
             addressLayout.setError(errorMessage);
+            addressLabel.setVisibility(View.GONE);
             addressLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
             sendAnalyticsOnErrorInputAddress();

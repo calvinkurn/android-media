@@ -60,6 +60,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     private String querySearch;
     private int sortID;
+    private boolean IS_EMPTY = true;
 
     private View rootView;
     private LinearLayoutManager layoutManager;
@@ -243,6 +244,8 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     public void setNoResultView(boolean isAble) {
         if(isAble) this.adapter.showEmptyState();
         else this.adapter.hideLoading();
+        IS_EMPTY = isAble;
+        this.adapter.showEmpty(isAble);
     }
 
     @Override
@@ -346,7 +349,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     @Override
     public void openFormAddressView(AddressModel data) {
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token, IS_EMPTY),
                     REQUEST_CODE_PARAM_CREATE);
         } else {
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token),
