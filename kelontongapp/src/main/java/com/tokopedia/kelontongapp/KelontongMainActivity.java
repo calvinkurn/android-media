@@ -52,7 +52,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
-        webView.getSettings().setUserAgentString(String.format("%s=%s-%s", X_DEVICE, ANDROID, BuildConfig.VERSION_NAME));
+        webView.getSettings().setUserAgentString(String.format("%s-%s", ANDROID, BuildConfig.VERSION_NAME));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
