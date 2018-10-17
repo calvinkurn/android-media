@@ -1,6 +1,7 @@
 package com.tokopedia.library.pagination;
 
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,10 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     private List<T> mItems;
 
     protected PaginationAdapter(PaginationAdapterCallback callback) {
+        if (callback == null) {
+            throw new RuntimeException("PaginationAdapterCallback object cannot be null");
+        }
+
         this.mItems = new ArrayList<>();
         this.mCallback = callback;
     }
@@ -62,7 +67,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      *
      * @param parent
      * @param inflater
-     * @return
+     * @return VH
      */
     protected abstract RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent, LayoutInflater inflater);
 
@@ -107,7 +112,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      *
      * @return
      */
-    protected T getFooterObject() {
+    protected final T getFooterObject() {
         return (T) new PaginationItem();
     }
 
@@ -115,11 +120,11 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         return context.getString(R.string.pg_label_retry);
     }
 
-    public T getItem(int position) {
+    public final T getItem(int position) {
         return getItems().get(position);
     }
 
-    public void remove(T t) {
+    public final void remove(T t) {
         int position = getItems().indexOf(t);
         if (position > -1) {
             getItems().remove(position);
@@ -127,23 +132,23 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         }
     }
 
-    public void clear() {
+    public final void clear() {
         mIsLoadingAdded = false;
         while (getItemCount() > 0) {
             remove(getItem(0));
         }
     }
 
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return getItemCount() == 0;
     }
 
-    public void add(T t) {
+    public final void add(T t) {
         getItems().add(t);
         notifyItemInserted(getItems().size() - 1);
     }
 
-    public void addAll(List<T> items) {
+    public final void addAll(List<T> items) {
         for (T t : items) {
             add(t);
         }
@@ -167,12 +172,12 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @return
      */
     @Override
-    public int getItemViewType(int position) {
+    public final int getItemViewType(int position) {
         return (position == getItems().size() - 1 && mIsLoadingAdded) ? LOADING : ITEM;
     }
 
     @Override
-    public int getItemCount() {
+    public final int getItemCount() {
         return getItems() == null ? 0 : getItems().size();
     }
 
@@ -206,7 +211,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     /**
      * Method to invoke page loading
      */
-    public void startDataLoading() {
+    public final void startDataLoading() {
         if (mCallback != null) {
             if (mCurrentPageIndex == 1) {
                 mCallback.onStartFirstPageLoad();
@@ -227,7 +232,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      */
     @Nullable
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
@@ -252,7 +257,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final T item = getItems().get(position);
 
         switch (getItemViewType(position)) {
@@ -286,12 +291,12 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         }
     }
 
-    protected void addLoadingFooter() {
+    protected final void addLoadingFooter() {
         mIsLoadingAdded = true;
         add(getFooterObject());
     }
 
-    protected void removeLoadingFooter() {
+    protected final void removeLoadingFooter() {
         if (!mIsLoadingAdded) {
             return;
         }
@@ -314,9 +319,9 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      *
      * @param currentPageIndex
      */
-    protected void loadMore(int currentPageIndex) {
+    @CallSuper
+    public void loadMore(int currentPageIndex) {
         setLoading(true);
-        Log.d(TAG, "loadMore() page+" + currentPageIndex);
     }
 
     /**
@@ -324,7 +329,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      *
      * @param moreItems
      */
-    protected void loadCompleted(@NonNull List<T> moreItems, Object rawObject) {
+    protected final void loadCompleted(@NonNull List<T> moreItems, Object rawObject) {
         if (mCallback != null) {
             if (mCurrentPageIndex == 1 && moreItems.isEmpty()) {
                 mCallback.onFinishFirstPageLoad(moreItems == null ? ERROR_ITEM_COUNT : moreItems.size(), rawObject);
@@ -346,7 +351,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     /**
      * Must invoked by consumer with error message to show retry node
      */
-    protected void loadCompletedWithError() {
+    protected final void loadCompletedWithError() {
         if (mCallback != null) {
             mCallback.onError(mCurrentPageIndex);
         }
@@ -359,7 +364,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     /**
      * Must invoked by consumer with error message to show retry node
      */
-    protected void loadCompletedWithError(String errorMessage) {
+    protected final void loadCompletedWithError(String errorMessage) {
         getItem(getItems().size() - 1).setRetryMessage(errorMessage);
         loadCompletedWithError();
     }
@@ -369,7 +374,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      *
      * @param isLastPage
      */
-    public void setLastPage(boolean isLastPage) {
+    public final void setLastPage(boolean isLastPage) {
         this.mIsLastPage = isLastPage;
 
         if (isLastPage) {
@@ -379,19 +384,19 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         }
     }
 
-    public int getCurrentPageIndex() {
+    public final int getCurrentPageIndex() {
         return mCurrentPageIndex;
     }
 
-    protected boolean isLoading() {
+    protected final boolean isLoading() {
         return this.mIsLoading;
     }
 
-    protected void setLoading(boolean isLoading) {
+    protected final void setLoading(boolean isLoading) {
         this.mIsLoading = isLoading;
     }
 
-    protected boolean isLastPage() {
+    protected final boolean isLastPage() {
         return this.mIsLastPage;
     }
 
