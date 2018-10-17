@@ -3,9 +3,11 @@ package com.tokopedia.affiliate.feature.explore.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
+import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreLoadMoreSubscriber;
@@ -20,12 +22,15 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
 
     private ExploreUseCase exploreUseCase;
     private CheckQuotaUseCase checkQuotaUseCase;
+    private CheckAffiliateUseCase checkAffiliateUseCase;
 
     @Inject
     public ExplorePresenter(ExploreUseCase exploreUseCase,
-                            CheckQuotaUseCase checkQuotaUseCase) {
+                            CheckQuotaUseCase checkQuotaUseCase,
+                            CheckAffiliateUseCase checkAffiliateUseCase) {
         this.exploreUseCase = exploreUseCase;
         this.checkQuotaUseCase = checkQuotaUseCase;
+        this.checkAffiliateUseCase = checkAffiliateUseCase;
     }
 
     @Override
@@ -42,10 +47,16 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @Override
+
     public void loadMoreData(ExploreParams exploreParams) {
         exploreUseCase.clearRequest();
         exploreUseCase.addRequest(exploreUseCase.getRequestLoadMore(exploreParams));
         exploreUseCase.execute(new GetExploreLoadMoreSubscriber(getView()));
+    }
+
+    @Override
+    public void checkIsAffiliate(String productId, String adId) {
+        checkAffiliateUseCase.execute(new CheckAffiliateSubscriber(getView(), productId, adId));
     }
 
     @Override

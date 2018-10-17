@@ -27,7 +27,6 @@ import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
-import com.tokopedia.affiliate.feature.explore.view.presenter.ExplorePresenter;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
@@ -57,6 +56,7 @@ public class ExploreFragment
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
+    private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
@@ -74,7 +74,7 @@ public class ExploreFragment
     UserSession userSession;
 
     @Inject
-    ExplorePresenter presenter;
+    ExploreContract.Presenter presenter;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();
@@ -242,7 +242,7 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-        presenter.checkAffiliateQuota(model.getProductId(), model.getAdId());
+        presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
     }
 
     @Override
@@ -308,6 +308,25 @@ public class ExploreFragment
         adapter.clearAllElements();
         adapter.addElement(new ExploreEmptySearchViewModel());
         exploreParams.disableLoadMore();
+    }
+
+    @Override
+    public void onSuccessCheckAffiliate(boolean isAffiliate, String productId, String adId) {
+        if (isAffiliate) {
+            presenter.checkAffiliateQuota(productId, adId);
+        } else {
+            RouteManager.route(
+                    Objects.requireNonNull(getContext()),
+                    ApplinkConst.AFFILIATE_ONBOARDING
+                            .concat(PRODUCT_ID_QUERY_PARAM)
+                            .concat(productId)
+            );
+        }
+    }
+
+    @Override
+    public void onErrorCheckAffiliate(String error, String productId, String adId) {
+
     }
 
     @Override

@@ -5,8 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
-import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase;
-import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter;
 import com.tokopedia.imageuploader.di.ImageUploaderModule;
@@ -46,9 +44,8 @@ public class CreatePostModule {
 
     @Provides
     @CreatePostScope
-    CreatePostContract.Presenter providePresenter(GetContentFormUseCase getContentFormUseCase,
-                                                  SubmitPostUseCase submitPostUseCase) {
-        return new CreatePostPresenter(getContentFormUseCase, submitPostUseCase);
+    CreatePostContract.Presenter providePresenter(CreatePostPresenter createPostPresenter) {
+        return createPostPresenter;
     }
 
     @Provides

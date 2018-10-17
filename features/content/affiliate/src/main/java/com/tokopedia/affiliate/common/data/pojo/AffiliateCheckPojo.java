@@ -14,6 +14,7 @@ public class AffiliateCheckPojo {
 
     @SerializedName("isAffiliate")
     private boolean isAffiliate;
+
     @SerializedName("status")
     private String status;
 
