@@ -60,7 +60,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         }
 
         String fcmToken = Preference.getFcmToken(this);
-        CookieManager.getInstance().setCookie(KelontongBaseUrl.BASE_URL, String.format("%s=%s", GCM_ID, fcmToken));
+        CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken));
         webView.loadUrl(KelontongBaseUrl.BASE_URL);
     }
 

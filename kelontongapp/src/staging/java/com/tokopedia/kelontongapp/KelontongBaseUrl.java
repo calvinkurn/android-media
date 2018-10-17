@@ -5,4 +5,5 @@ package com.tokopedia.kelontongapp;
  */
 public class KelontongBaseUrl {
     public static final String BASE_URL = "https://mitra-staging.tokopedia.com/";
+    public static final String COOKIE_URL = ".tokopedia.com";
 }
