@@ -1,13 +1,16 @@
 package com.tokopedia.flight.searchV2.presentation.fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
@@ -113,7 +117,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         passDataViewModel = getArguments().getParcelable(EXTRA_PASS_DATA);
 
         if (savedInstanceState == null) {
-            flightFilterModel = buildFilterModel();
+            flightFilterModel = buildFilterModel(new FlightFilterModel());
             selectedSortOption = FlightSortOption.CHEAPEST;
             setUpCombinationAirport();
             progress = 0;
@@ -177,6 +181,32 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     public void onPause() {
         super.onPause();
         flightSearchPresenter.detachView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_SEARCH_FILTER:
+                    if (data != null && data.hasExtra(FlightSearchFilterActivity.EXTRA_FILTER_MODEL)) {
+                        flightFilterModel = (FlightFilterModel) data.getExtras().get(FlightSearchFilterActivity.EXTRA_FILTER_MODEL);
+                        flightFilterModel = buildFilterModel(flightFilterModel);
+
+                        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, false);
+                        setNeedRefreshFromCache(true);
+                    }
+                    break;
+                case REQUEST_CODE_SEE_DETAIL_FLIGHT:
+                    if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
+                        String selectedId = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED);
+                        if (!TextUtils.isEmpty(selectedId)) {
+                            onSelectedFromDetail(selectedId);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
@@ -278,7 +308,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     @Override
     public void renderSearchList(List<FlightJourneyViewModel> list, boolean needRefresh) {
         if (!needRefresh || list.size() > 0) {
-            clearAllData();
             renderList(list);
         }
 
@@ -402,7 +431,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     @Override
     public void clearAdapterData() {
-        getAdapter().setElement(new ArrayList<>());
+        getAdapter().setElements(new ArrayList<>());
     }
 
     @Override
@@ -506,7 +535,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void onSeeAllClicked() {
+    public void onShowAllClicked() {
+        // need in return search
+    }
+
+    @Override
+    public void onShowBestPairingClicked() {
         // need in return search
     }
 
@@ -522,7 +556,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     public void onResetFilterClicked() {
-        flightFilterModel = new FlightFilterModel();
+        flightFilterModel = buildFilterModel(new FlightFilterModel());
         getAdapter().clearAllNonDataElement();
         showLoading();
         setUIMarkFilter();
@@ -683,11 +717,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     protected void onSelectedFromDetail(String selectedId) {
-//        flightSearchPresenter.onSearchItemClicked(selectedId);
+        flightSearchPresenter.onSearchItemClicked(selectedId);
     }
 
-    protected FlightFilterModel buildFilterModel() {
-        return new FlightFilterModel();
+    protected FlightFilterModel buildFilterModel(FlightFilterModel flightFilterModel) {
+        return flightFilterModel;
     }
 
     private void setUpCombinationAirport() {

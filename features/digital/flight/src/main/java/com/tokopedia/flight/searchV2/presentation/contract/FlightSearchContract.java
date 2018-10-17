@@ -101,7 +101,7 @@ public interface FlightSearchContract {
 
         void onSearchItemClicked(FlightJourneyViewModel journeyViewModel);
 
-//        void onSearchItemClicked(String selectedId);
+        void onSearchItemClicked(String selectedId);
 
         void onSuccessDateChanged(int year, int month, int dayOfMonth);
 
