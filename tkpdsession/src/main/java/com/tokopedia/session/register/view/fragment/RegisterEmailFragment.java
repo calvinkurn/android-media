@@ -33,6 +33,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
@@ -674,6 +675,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         dismissLoadingProgress();
         setActionsEnabled(true);
         lostViewFocus();
+        if(getContext().getApplicationContext() instanceof SessionRouter) {
+            ((SessionRouter) getContext().getApplicationContext()).sendAFCompleteRegistrationEvent(registerResult.getUserId(),"Email");
+        }
         presenter.startAction(registerResult);
 
     }
@@ -805,7 +809,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             case REQUEST_ACTIVATE_ACCOUNT:
                 if (resultCode == Activity.RESULT_OK) {
                     UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
-
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {
