@@ -46,9 +46,7 @@ public class ScreenTrackingBuilder {
 
 
     public void execute() {
-        if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
-            ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
-        } else {
+        if (mOpenScreenAnalytics != null && !TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
             ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
         }
     }
