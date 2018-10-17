@@ -498,13 +498,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void checkAppliedCourierPromo(int position, CourierItemData oldCourierItemData,
                                           CourierItemData newCourierItemData, ShipmentCartItemModel shipmentCartItemModel) {
-        // Todo : do this section if toogle year end promo is on
+        // Do this section if toggle year end promo is on
         boolean isToogleYearEndPromoOn = shipmentAdapterActionListener.isToogleYearEndPromoOn();
         if (isToogleYearEndPromoOn && shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-            // Todo : check if promo applied on old courier
+            // Check if promo applied on current selected courier
             if (shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied() &&
                     TextUtils.isEmpty(newCourierItemData.getPromoCode())) {
-                // Todo : if applied on old but not on new, check all item if promo still exist
+                shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
+                // If applied on current selected courier but not on new selected courier then
+                // check all item if promo still exist
                 boolean courierPromoStillExist = false;
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     if (i != position && shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
@@ -515,12 +517,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     }
                 }
-                // Todo : if not exist anymore, cancel promo
+                // If courier promo not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
-                    shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName());
-                    shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
-                    updatePromo(null);
                     cancelAutoApplyCoupon();
+                    updatePromo(null);
+                    shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName());
                 }
             }
         }

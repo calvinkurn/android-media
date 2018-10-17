@@ -98,7 +98,9 @@ public interface ShipmentContract {
 
         Activity getActivityContext();
 
+        boolean checkCourierPromoStillExist();
 
+        void setCourierPromoApplied(int itemPosition);
     }
 
     interface AnalyticsActionListener {

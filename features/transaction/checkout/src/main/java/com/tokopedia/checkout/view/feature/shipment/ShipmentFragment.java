@@ -603,6 +603,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
         }
         setAppliedPromoCodeData(promoCodeCartListData);
+        setCourierPromoApplied(itemPosition);
+    }
+
+    @Override
+    public void setCourierPromoApplied(int itemPosition) {
         shipmentAdapter.setCourierPromoApplied(itemPosition);
     }
 
@@ -1455,10 +1460,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
-        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode()) &&
-                !shipmentAdapter.isCourierPromoStillExist()) {
-            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
+        if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
+            if (checkCourierPromoStillExist()) {
+                setCourierPromoApplied(itemPosition);
+            } else {
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
+            }
         }
+    }
+
+    @Override
+    public boolean checkCourierPromoStillExist() {
+        return shipmentAdapter.isCourierPromoStillExist();
     }
 
     @Override
