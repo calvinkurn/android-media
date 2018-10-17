@@ -30,10 +30,6 @@ public class UserProfileLoanEntity {
     @Expose
     private String redirectUrl;
 
-    @SerializedName("on_going_loan")
-    @Expose
-    private boolean onGoingLoan;
-
     @SerializedName("on_going_loan_id")
     @Expose
     private int onGoingLoanId;
@@ -76,14 +72,6 @@ public class UserProfileLoanEntity {
 
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
-    }
-
-    public boolean isOnGoingLoan() {
-        return onGoingLoan;
-    }
-
-    public void setOnGoingLoan(boolean onGoingLoan) {
-        this.onGoingLoan = onGoingLoan;
     }
 
     public int getOnGoingLoanId() {

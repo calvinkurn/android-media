@@ -80,8 +80,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                 ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
                 getView().onSuccessLoanProfileStatus(responseUserProfileStatus.getUserProfileLoanEntity());
                 getView().setUserOnGoingLoanStatus(
-                        responseUserProfileStatus.getUserProfileLoanEntity().isOnGoingLoan(),
+                        (responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId() != 0),
                         responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId());
+
             }
         });
     }

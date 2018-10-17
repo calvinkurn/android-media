@@ -40,7 +40,7 @@ public class OnGoingLoanPresenter extends BaseDaggerPresenter<OnGoingLoanContrac
                 RestResponse restResponse = typeRestResponseMap.get(ResponseUserProfileStatus.class);
                 ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
                 getView().setUserOnGoingLoanStatus(
-                        responseUserProfileStatus.getUserProfileLoanEntity().isOnGoingLoan(),
+                        (responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId() != 0),
                         responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId());
             }
         });
