@@ -21,7 +21,6 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     private static final int ERROR_ITEM_COUNT = -1;
-    public static final String TAG = "PaginationAdapter";
 
     /*For detecting if loader view added or not*/
     private boolean mIsLoadingAdded;
@@ -41,6 +40,8 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     /*Callback method for library consumer*/
     private PaginationAdapterCallback mCallback;
 
+    private View mRetryView, mLoaderView;
+
     private List<T> mItems;
 
     protected PaginationAdapter(PaginationAdapterCallback callback) {
@@ -50,6 +51,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
 
         this.mItems = new ArrayList<>();
         this.mCallback = callback;
+
     }
 
     /**
@@ -265,8 +267,12 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
                 LoadingVH loadingVH = (LoadingVH) holder;
 
                 if (mIsError) {
+                    if (mRetryView == null) {
+                        this.mRetryView = getRetryView(loadingVH.container.getContext());
+                    }
+
                     loadingVH.container.removeAllViews();
-                    loadingVH.container.addView(getRetryView(loadingVH.container.getContext()));
+                    loadingVH.container.addView(mRetryView);
                     if (item.getRetryMessage() == null || item.getRetryMessage().isEmpty()) {
                         ((TextView) loadingVH.container.findViewById(R.id.text_error_info)).setText(R.string.pg_error_info);
                     } else {
@@ -279,8 +285,12 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
                         ((TextView) loadingVH.container.findViewById(R.id.text_btn_retry)).setText(getRetryButtonLabel(loadingVH.container.getContext()));
                     }
                 } else {
+                    if (mLoaderView == null) {
+                        this.mLoaderView = getLoaderView(loadingVH.container.getContext());
+                    }
+
                     loadingVH.container.removeAllViews();
-                    loadingVH.container.addView(getLoaderView(loadingVH.container.getContext()));
+                    loadingVH.container.addView(mLoaderView);
                 }
                 break;
 
