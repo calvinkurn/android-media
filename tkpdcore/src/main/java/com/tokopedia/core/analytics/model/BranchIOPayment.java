@@ -25,6 +25,7 @@ public class BranchIOPayment {
     public static String KEY_NAME = "name";
     public static String KEY_VARIANT = "variant";
     public static String KEY_QTY = "qty";
+    public static String KEY_CATEGORY = "category";
 
     public String getPaymentId() {
         return paymentId;

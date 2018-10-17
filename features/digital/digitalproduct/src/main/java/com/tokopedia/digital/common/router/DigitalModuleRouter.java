@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.router;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 /**
@@ -10,4 +11,6 @@ import android.content.Intent;
 public interface DigitalModuleRouter {
 
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
+
+    Intent getLoginIntent(Context activity);
 }

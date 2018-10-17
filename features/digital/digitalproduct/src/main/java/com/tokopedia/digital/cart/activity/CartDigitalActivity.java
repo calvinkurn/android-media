@@ -62,7 +62,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.PARAM_OPERATOR_ID));
         passData.setProductId(bundle.getString(DigitalCheckoutPassData.PARAM_PRODUCT_ID));
         passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.PARAM_IS_PROMO));
-        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
+        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT, "0"));
         passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
         passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_MEDIUM));
         passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_SOURCE));

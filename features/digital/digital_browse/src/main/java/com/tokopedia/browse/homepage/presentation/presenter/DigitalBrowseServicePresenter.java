@@ -63,8 +63,9 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
         int selectedTabIndex = 0;
 
         for (DigitalBrowseServiceCategoryViewModel item : viewModel.getCategoryViewModelList()) {
-            if (item.getId() == categoryId) {
+            if (item.isTitle() && item.getId() == categoryId) {
                 selectedTab = item.getName();
+                break;
             }
         }
 

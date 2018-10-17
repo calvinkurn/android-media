@@ -20,21 +20,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.msisdn.IncomingSmsReceiver;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.activation.presentation.contract.RequestOtpTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.RequestOTPWalletPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.activation.presentation.util.IncomingSmsReceiver;
+import com.tokopedia.tokocash.activation.presentation.util.RequestPermissionUtil;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import java.util.concurrent.TimeUnit;
 
@@ -70,11 +71,13 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
     private ActionListener listener;
     private LocalCacheHandler cacheHandler;
     private CountDownTimer countDownTimer;
-    private TkpdProgressDialog progressDialog;
+    private ProgressBar progressBar;
     private IncomingSmsReceiver incomingSmsReceiver;
 
     @Inject
     RequestOTPWalletPresenter presenter;
+    @Inject
+    CacheManager cacheManager;
 
     public static RequestOTPWalletFragment newInstance() {
         RequestOTPWalletFragment fragment = new RequestOTPWalletFragment();
@@ -91,6 +94,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
         inputOtpView = view.findViewById(R.id.input_otp_view);
         verificationButton = view.findViewById(R.id.verification_btn);
         inputOtp = view.findViewById(R.id.input_otp);
+        progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -130,7 +134,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
                             RequestPermissionUtil
                                     .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
                     )
-                    .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             RequestOTPWalletFragmentPermissionsDispatcher
@@ -138,7 +142,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
 
                         }
                     })
-                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -190,7 +194,7 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
                 if (editable.length() == 6) {
                     verificationButton.setEnabled(true);
                     MethodChecker.setBackground(verificationButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded_unify));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_green));
                     verificationButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
                 } else {
                     verificationButton.setEnabled(false);
@@ -230,16 +234,14 @@ public class RequestOTPWalletFragment extends BaseDaggerFragment implements Requ
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        } else {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     private void finishProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        if (progressBar != null)
+            progressBar.setVisibility(View.GONE);
     }
 
     private void startTimer() {

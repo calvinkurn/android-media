@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -10,21 +11,41 @@ import java.util.List;
 
 public class GetWarningData {
     @SerializedName("is_success")
+    @Expose
     private int isSuccess;
     @SerializedName("warning")
+    @Expose
     private List<String> warning;
     @SerializedName("saldo")
+    @Expose
     private String saldo;
     @SerializedName("tokocash")
+    @Expose
     private String tokocash;
     @SerializedName("saldo_number")
+    @Expose
     private long saldoNumber;
     @SerializedName("tokocash_number")
+    @Expose
     private long tokocashNumber;
     @SerializedName("action")
+    @Expose
     private String action;
     @SerializedName("have_bank_acct")
+    @Expose
     private boolean hasBankAccount;
+    @SerializedName("is_ovo_eligible")
+    @Expose
+    private boolean isOvoEligible;
+    @SerializedName("is_ovo_primary")
+    @Expose
+    private boolean isOvoPrimary;
+    @SerializedName("is_ovo_activated")
+    @Expose
+    private boolean isOvoActivated;
+    @SerializedName("redirect_url")
+    @Expose
+    private String redirectUrl;
 
     public int getIsSuccess() {
         return isSuccess;
@@ -90,4 +111,35 @@ public class GetWarningData {
         this.tokocashNumber = tokocashNumber;
     }
 
+    public boolean isOvoEligible() {
+        return isOvoEligible;
+    }
+
+    public void setOvoEligible(boolean ovoEligible) {
+        isOvoEligible = ovoEligible;
+    }
+
+    public boolean isOvoPrimary() {
+        return isOvoPrimary;
+    }
+
+    public void setOvoPrimary(boolean ovoPrimary) {
+        isOvoPrimary = ovoPrimary;
+    }
+
+    public boolean isOvoActivated() {
+        return isOvoActivated;
+    }
+
+    public void setOvoActivated(boolean ovoActivated) {
+        isOvoActivated = ovoActivated;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
 }
