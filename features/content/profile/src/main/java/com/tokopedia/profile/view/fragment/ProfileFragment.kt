@@ -221,6 +221,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
                     }
                     .show()
+            afterPost = false
         }
     }
 
@@ -487,6 +488,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     getString(R.string.profile_showcase_description),
                     ShowCaseContentPosition.UNDEFINED))
             showCaseDialog.show(this.activity, showCaseTag, showcases)
+            afterPost = false
         }
     }
 
