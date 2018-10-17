@@ -68,8 +68,6 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getOnBoardingActivityIntent(Context context);
-
     Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;

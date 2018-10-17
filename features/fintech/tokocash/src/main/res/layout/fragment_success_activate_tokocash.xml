@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tokocash_title_success"
-        android:textColor="@color/digital_voucher"
-        android:textSize="@dimen/fontm"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_gravity="center_horizontal"/>
@@ -28,7 +28,7 @@
         android:id="@+id/desc_success"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_large"
+        android:padding="@dimen/dp_30"
         android:gravity="center_horizontal"/>
 
     <Button
@@ -36,14 +36,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/green_button_rounded_unify"
+        style="@style/Button.Submit.Green"
         android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_30"
         android:paddingRight="@dimen/dp_30"
         android:paddingTop="@dimen/dp_10"
-        android:text="@string/tokocash_direct_home_button"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/fonts" />
+        android:text="@string/tokocash_direct_home_button" />
 
 </LinearLayout>

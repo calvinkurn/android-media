@@ -71,4 +71,8 @@ public interface UserSessionInterface {
     void clearToken();
 
     void logoutSession();
+
+    void setFirstTimeUserOnboarding(boolean isFirstTime);
+
+    void setFirstTimeUser(boolean isFirstTime);
 }

@@ -1,16 +1,21 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'com.jakewharton.butterknife'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -31,8 +36,6 @@ dependencies {
     // TODO remove this when possible
     implementation project(rootProject.ext.features.core)
     implementation rootProject.ext.dbDependencies.dbFlow
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

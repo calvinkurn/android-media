@@ -25,6 +25,8 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
+import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -57,8 +59,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Inject
     KolPostListener.Presenter presenter;
 
-    @Inject
-    KolPostAdapter adapter;
+    protected KolPostAdapter adapter;
+    protected KolPostTypeFactory typeFactory;
 
     @Inject
     UserSessionInterface userSession;
@@ -139,6 +141,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     private void initVar() {
         userId = getArguments().getString(PARAM_USER_ID);
+        typeFactory = new KolPostTypeFactoryImpl(this);
+        adapter = new KolPostAdapter(typeFactory);
     }
 
     private void initView(View view) {
@@ -150,7 +154,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         kolRecyclerView.setLayoutManager(layoutManager);
-
         adapter.clearData();
         kolRecyclerView.setAdapter(adapter);
     }

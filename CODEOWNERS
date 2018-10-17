@@ -43,6 +43,10 @@
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
+/features/digital/digitalproduct        @tokopedia/minion-mark
+/featires/digital/common_travel         @tokopedia/minion-mark
+/features/fintech/tokocash              @nabillasab
+/libraries/travel_calendar              @nabillasab
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -52,6 +56,7 @@
 /features/transaction/transactiondata/          @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
+/features/logistic/logisticaddaddress/          @tokopedia/minion-bob
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
 

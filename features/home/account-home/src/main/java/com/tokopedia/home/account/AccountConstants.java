@@ -1,7 +1,5 @@
 package com.tokopedia.home.account;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
-
 /**
  * @author okasurya on 7/20/18.
  */
@@ -77,6 +75,11 @@ public class AccountConstants {
         public static final String EVENT_LABEL = "eventLabel";
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_ACCOUNT = "/account";
+    }
+
+    public class ImageUrl {
+        public static final String OVO_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_ovo_circle.png";
+        public static final String TOKOCASH_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokocash_circle.png";
     }
 
     public interface VccStatus {
