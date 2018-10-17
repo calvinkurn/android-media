@@ -34,6 +34,14 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @Override
+    public void detachView() {
+        super.detachView();
+        exploreUseCase.unsubscribe();
+        checkQuotaUseCase.unsubscribe();
+        checkAffiliateUseCase.unsubscribe();
+    }
+
+    @Override
     public void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh) {
         if (!isPullToRefresh) getView().showLoading();
         exploreUseCase.clearRequest();
@@ -64,11 +72,5 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         checkQuotaUseCase.clearRequest();
         checkQuotaUseCase.addRequest(checkQuotaUseCase.getRequest());
         checkQuotaUseCase.execute(new CheckQuotaSubscriber(getView(), productId, adId));
-    }
-
-    @Override
-    public void detachView() {
-        super.detachView();
-        exploreUseCase.unsubscribe();
     }
 }
