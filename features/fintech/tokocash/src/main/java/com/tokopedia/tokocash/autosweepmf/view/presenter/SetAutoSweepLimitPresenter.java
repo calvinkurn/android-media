@@ -8,8 +8,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.autosweepmf.domain.interactor.PostAutoSweepLimitUseCase;
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
@@ -42,7 +40,6 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
         implements SetAutoSweepLimitContract.Presenter {
     private PostAutoSweepLimitUseCase mAutoSweepLimitUseCase;
     private AutoSweepLimitMapper mMapper;
-    private RemoteConfig mRemoteConfig;
 
 
     @Inject
@@ -96,19 +93,19 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
     }
 
     public long getAutoSweepMaxLimit() {
-        if (mRemoteConfig == null) {
+        if (getView().getLongRemoteConfig(FIREBASE_APP_AUTOSWEEP_MAX_LIMIT) == null) {
             return AUTO_SWEEP_MF_MAX_LIMIT;
         }
 
-        return mRemoteConfig.getLong(FIREBASE_APP_AUTOSWEEP_MAX_LIMIT, AUTO_SWEEP_MF_MAX_LIMIT);
+        return getView().getLongRemoteConfig(FIREBASE_APP_AUTOSWEEP_MAX_LIMIT);
     }
 
     public long getAutoSweepMinLimit() {
-        if (mRemoteConfig == null) {
+        if (getView().getLongRemoteConfig(FIREBASE_APP_AUTOSWEEP_MIN_LIMIT) == null) {
             return AUTO_SWEEP_MF_MIN_LIMIT;
         }
 
-        return mRemoteConfig.getLong(FIREBASE_APP_AUTOSWEEP_MIN_LIMIT, AUTO_SWEEP_MF_MIN_LIMIT);
+        return getView().getLongRemoteConfig(FIREBASE_APP_AUTOSWEEP_MIN_LIMIT);
     }
 
     /**
@@ -151,9 +148,5 @@ public class SetAutoSweepLimitPresenter extends BaseDaggerPresenter<SetAutoSweep
         }
 
         return bundle.getLong(EXTRA_AUTO_SWEEP_LIMIT);
-    }
-
-    public void initRemoteConfig() {
-        mRemoteConfig = new FirebaseRemoteConfigImpl(getView().getAppContext());
     }
 }

@@ -67,6 +67,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.analytics.screen.IndexScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -206,6 +207,7 @@ import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -362,11 +364,10 @@ import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
-import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -1511,6 +1512,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
+    }
+
+    @Override
     public Intent getInboxMessageIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
     }
@@ -1644,7 +1650,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, () -> screenName);
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
@@ -1783,13 +1791,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<TokoCashData> getTokoCashBalance() {
-        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
                 .processGetBalance();
     }
 
     @Override
+    public Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader() {
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase())
+                .getWalletBalanceHomeHeader();
+    }
+
+    @Override
+    public String getExtraBroadcastReceiverWallet() {
+        return "Broadcast Wallet";
+    }
+
+    @Override
     public Observable<WalletModel> getTokoCashAccountBalance() {
-        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+        return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
+                tokoCashComponent.getPendingCasbackUseCase())
                 .getTokoCashAccountBalance();
     }
 
@@ -1843,11 +1863,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         params.putString(GetTokopointUseCase.KEY_PARAM,
                 CommonUtils.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
         return this.tokopointComponent.getTokopointUseCase().createObservable(params);
-    }
-
-    @Override
-    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
-        return new TokocashPendingDataBroadcastReceiver();
     }
 
     public GetShopInfoUseCase getShopInfo() {
@@ -1960,7 +1975,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getAppContext());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -2182,11 +2197,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getWithdrawIntent(Context context) {
-        if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
-            return WithdrawActivity.getCallingIntent(context);
-        else {
-            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
-        }
+        return WithdrawActivity.getCallingIntent(context);
     }
 
     @Override
@@ -2890,6 +2901,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public long getLongRemoteConfig(String key, long defaultValue) {
+        return remoteConfig.getLong(key, defaultValue);
+    }
+
+    @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
     }
@@ -2907,6 +2923,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getFavoriteFragment() {
         return FragmentFavorite.newInstance();
+    }
+
+    @Override
+    public void sendIndexScreen(Activity activity, String screenName) {
+        IndexScreenTracking.sendScreen(activity, () -> screenName);
     }
 
     public void doLogoutAccount(Activity activity) {
@@ -3148,7 +3169,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        return userSession.getUserId();
+        return getSession().getUserId();
+    }
+
+    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
     }
 
     public void onAppsFlyerInit() {

@@ -75,9 +75,9 @@ public class EventsDetailsPresenter
         CategoryItemsViewModel dataFromHome = inIntent.getParcelableExtra("homedata");
         try {
             if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
+                checkForScan(dataFromHome.getId());
                 getView().renderFromHome(dataFromHome);
                 url = dataFromHome.getUrl();
-                checkForScan(dataFromHome.getId());
             } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
                 url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
             }
@@ -148,7 +148,7 @@ public class EventsDetailsPresenter
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle().toLowerCase() + "-" + getSCREEN_NAME());
     }
 
     public void checkForScan(int productId) {

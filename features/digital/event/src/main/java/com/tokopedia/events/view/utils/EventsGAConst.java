@@ -32,8 +32,8 @@ public class EventsGAConst {
     public static String EVENT_CHECK_PROMO = "check promo code";
     public static String EVENT_PROMO_SUCCESS = "voucher success - ";
     public static String EVENT_PROMO_FAILURE = "voucher failed - ";
-    public static String EVENT_PAYMENT = "proceed to payment";
-    public static String EVENT_PURCHASE_ATTEMPT = "purchase attempt";
+    public static String EVENT_PAYMENT = "click proceed to payment";
+    public static String EVENT_PURCHASE_ATTEMPT = "view purchase attempt";
     public static String EVENT_ADD_TICKET = "add to cart";
     public static String EVENT_REMOVE_TICKET = "remove cart";
     public static String EVENT_CHECKOUT = "checkout";

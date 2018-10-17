@@ -257,4 +257,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
     }
+
+    @Override
+    public void setType(KolPostViewHolder.Type type) {
+
+    }
 }

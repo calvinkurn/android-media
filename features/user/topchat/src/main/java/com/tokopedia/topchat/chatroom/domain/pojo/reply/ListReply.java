@@ -71,6 +71,10 @@ public class ListReply {
     @Expose
     private int ratingStatus;
 
+    @SerializedName("blast_id")
+    @Expose
+    private int blastId;
+
     public int getReplyId() {
         return replyId;
     }
@@ -229,5 +233,9 @@ public class ListReply {
 
     public void setReplyTimeNano(String replyTimeNano) {
         this.replyTimeNano = replyTimeNano;
+    }
+
+    public int getBlastId() {
+        return blastId;
     }
 }
