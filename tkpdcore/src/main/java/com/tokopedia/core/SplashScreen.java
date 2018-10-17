@@ -48,7 +48,6 @@ import io.branch.referral.BranchError;
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
 
-    public static final String SPLASH_TRACE = "warm_start";
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
@@ -60,8 +59,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     String id = null;
     protected SessionHandler sessionHandler;
     protected View decorView;
-
-    private Trace trace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,7 +99,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onStart() {
         super.onStart();
-        startWarmStart();
         handleBranchDefferedDeeplink();
     }
 
@@ -153,17 +149,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         Intent intent = HomeRouter.getHomeActivity(this);
         startActivity(intent);
         finish();
-        finishWarmStart();
-    }
-
-    private void startWarmStart() {
-        trace = TrackingUtils.startTrace(SPLASH_TRACE);
-    }
-
-    private void finishWarmStart() {
-        if (trace != null) {
-            trace.stop();
-        }
     }
 
     @Override
