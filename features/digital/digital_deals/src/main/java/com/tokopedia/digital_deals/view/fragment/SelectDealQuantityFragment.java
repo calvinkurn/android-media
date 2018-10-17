@@ -40,7 +40,7 @@ import javax.inject.Inject;
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
 
-    private int MAX_QUANTITY = 8;
+    private int MAX_QUANTITY = 1;
     private int CURRENT_QUANTITY = 1;
 
     private TextView tvContinue;
