@@ -82,8 +82,8 @@ public class HeaderHomeView extends BaseCustomView {
         if (listener == null)
             return;
 
-        if (getContext() instanceof IHomeRouter) {
-            AnalyticTracker analyticTracker = ((IHomeRouter) getContext()).getAnalyticTracker();
+        if (getContext().getApplicationContext() instanceof IHomeRouter) {
+            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
             walletAnalytics = new WalletAnalytics(analyticTracker);
         }
 
