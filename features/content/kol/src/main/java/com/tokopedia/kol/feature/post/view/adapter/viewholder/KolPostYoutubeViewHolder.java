@@ -232,7 +232,9 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             );
         }
 
-        viewListener.onOpenKolTooltip(getAdapterPosition(),
+        viewListener.onOpenKolTooltip(
+                getAdapterPosition(),
+                "",
                 element.getTagsLink()
         );
     }

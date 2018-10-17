@@ -37,6 +37,11 @@ interface ProfileContract {
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
 
         fun onChangeAvatarClicked()
+
+        fun onSuccessTrackPostClick(redirectLink: String)
+
+        fun onErrorTrackPostClick(errorMessage: String, uniqueTrackingId: String,
+                                  redirectLink: String)
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String

@@ -266,7 +266,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onOpenKolTooltip(int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 

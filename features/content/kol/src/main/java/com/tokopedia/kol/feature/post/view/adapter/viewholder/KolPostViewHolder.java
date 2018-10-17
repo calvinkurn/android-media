@@ -340,7 +340,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        viewListener.onOpenKolTooltip(getAdapterPosition(),
+        viewListener.onOpenKolTooltip(
+                getAdapterPosition(),
+                element.getTrackingId(),
                 element.getTagsLink()
         );
     }
