@@ -17,7 +17,7 @@ import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
 import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
 import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
-import com.tokopedia.tokocash.di.TokoCashModule;
+import com.tokopedia.tokocash.common.di.TokoCashModule;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import dagger.Module;

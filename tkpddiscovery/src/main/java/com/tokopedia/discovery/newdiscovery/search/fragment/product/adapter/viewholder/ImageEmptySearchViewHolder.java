@@ -115,7 +115,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

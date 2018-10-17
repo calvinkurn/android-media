@@ -31,7 +31,7 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.DetailTransactionActivity;
@@ -116,7 +116,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_history_tokocash, container, false);
+        View view = inflater.inflate(R.layout.fragment_history_tokocash, container, false);
         layoutDate = view.findViewById(R.id.date_label_view);
         tvDate = view.findViewById(R.id.text_view_date);
         quickSingleFilterHistory = view.findViewById(R.id.filter_history_tokocash);

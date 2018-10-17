@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.LobDetails;
+import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ public interface CatalogListingContract {
         void updateSelectedCategoryId(int id);
 
         boolean isAddedView();
+
+        void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
     }
 
     interface Presenter extends CustomerPresenter<View> {
