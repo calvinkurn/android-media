@@ -209,13 +209,18 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         return isViewOnlyBestPairing;
     }
 
+    @Override
+    public FlightPriceViewModel getPriceViewModel() {
+        return priceViewModel;
+    }
+
     protected void onSelectedFromDetail(String selectedId) {
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
     }
 
     @Override
-    protected FlightFilterModel buildFilterModel() {
-        FlightFilterModel filterModel = new FlightFilterModel();
+    protected FlightFilterModel buildFilterModel(FlightFilterModel flightFilterModel) {
+        FlightFilterModel filterModel = flightFilterModel;
         filterModel.setBestPairing(isViewOnlyBestPairing);
         filterModel.setJourneyId(selectedFlightDeparture);
         filterModel.setReturn(isReturning());
@@ -225,8 +230,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         flightSearchReturnPresenter.onDestroy();
+        super.onDestroyView();
     }
 
     @Override
