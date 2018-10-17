@@ -511,7 +511,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     if (i != position && shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                         ShipmentCartItemModel model = (ShipmentCartItemModel) shipmentDataList.get(i);
-                        if (model.getSelectedShipmentDetailData().isCourierPromoApplied()) {
+                        if (model.getSelectedShipmentDetailData() != null &&
+                                model.getSelectedShipmentDetailData().isCourierPromoApplied()) {
                             courierPromoStillExist = true;
                             break;
                         }
