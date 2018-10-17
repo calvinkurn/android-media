@@ -411,6 +411,7 @@ public class ProductListFragment extends SearchSectionFragment
             @Override
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
+                        adapter.isRelatedSearch(position) ||
                         adapter.isHeaderBanner(position) ||
                         adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
