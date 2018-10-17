@@ -125,10 +125,6 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:label="com.tokopedia.tkpd:string/app_name" />
         <activity
-            android:name=".onboarding.OnboardingActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
@@ -168,10 +164,6 @@
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".manage.people.bank.activity.ManagePeopleBankActivity"
-            android:label="@string/title_activity_manage_people_bank"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
             android:screenOrientation="portrait" />
@@ -179,10 +171,6 @@
             android:name=".deposit.activity.DepositActivity"
             android:label="@string/title_activity_people_deposit"
             android:screenOrientation="portrait" />-->
-        <activity
-            android:name=".deposit.activity.WithdrawActivity"
-            android:label="@string/title_activity_people_withdraw_balance"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".com.tokopedia.seller.OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
@@ -347,11 +335,6 @@
             android:label="@string/title_activity_manage_people_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".manage.people.password.activity.ManagePasswordActivity"
-            android:label="@string/title_activity_manage_people_password"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
             android:name=".manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -431,12 +414,6 @@
         <service
             android:name=".talk.talkproduct.intentservice.TalkAddNewIntentService"
             android:exported="false" />
-        <service
-            android:name=".manage.people.bank.intentservice.ManagePeopleBankIntentService"
-            android:exported="false" />
-        <service
-            android:name=".manage.people.password.intentservice.ManagePasswordIntentService"
-            android:exported="false" />
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
@@ -453,7 +430,6 @@
         </provider>
 
         <activity android:name=".referral.ReferralActivity" />
-        <activity android:name=".onboarding.NewOnboardingActivity"></activity>
         <activity android:name=".referral.FriendsWelcomeActivity" />
     </application>
 

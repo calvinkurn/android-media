@@ -87,7 +87,7 @@ public abstract class TrainBaseActivity extends BaseSimpleActivity {
                 case MENU_PROMO:
                     if (getApplication() instanceof TrainRouter) {
                         trainAnalytics.eventClickPromoList();
-                        startActivity(((TrainRouter) getApplication()).getPromoListIntent(this));
+                        startActivity(((TrainRouter) getApplication()).getPromoListIntent(this,  TrainUrl.PARAM_TRAIN_MENU_ID, TrainUrl.PARAM_TRAIN_SUBMENU_ID));
                     }
                     break;
                 case MENU_HELP:

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.shipment;
 
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
@@ -69,5 +70,9 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                                  RecipientAddressModel recipientAddressModel, int position);
 
     void hideSoftKeyboard();
+
+    void onLoadShippingState(int shipperId, int spId, int itemPosition,
+                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList,
+                             boolean isCourierRecommendation);
 
 }

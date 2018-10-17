@@ -214,11 +214,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onScrollToTop() {
-        Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
-        if (currentFragment != null && currentFragment instanceof FragmentListener) {
-            ((FragmentListener) currentFragment).onScrollToTop();
+        if (viewPager != null && adapter != null) {
+            Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
+            if (currentFragment != null && currentFragment instanceof FragmentListener) {
+                ((FragmentListener) currentFragment).onScrollToTop();
+            }
+            if (appBarLayout != null)
+                appBarLayout.setExpanded(true);
         }
-        if (appBarLayout != null)
-            appBarLayout.setExpanded(true);
     }
 }

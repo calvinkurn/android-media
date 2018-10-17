@@ -1,10 +1,12 @@
 package com.tokopedia.digital.cart.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
@@ -28,12 +30,22 @@ import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 public class CartDigitalActivity extends BasePresenterActivity implements
         CartDigitalFragment.ActionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
+    private static final String EXTRA_PASS_EXTRA_FROM = "EXTRA_PASS_EXTRA_FROM";
+    public static final int PARAM_WIDGET = 1;
+    public static final int PARAM_NATIVE = 2;
     private DigitalCheckoutPassData passData;
 
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, CartDigitalActivity.class)
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
+    }
+
+
+    public static Intent newInstance(Activity activity, DigitalCheckoutPassData passData, int from) {
+        return new Intent(activity, CartDigitalActivity.class)
+                .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData)
+                .putExtra(EXTRA_PASS_EXTRA_FROM, from);
     }
 
     @Override
@@ -50,7 +62,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         passData.setOperatorId(bundle.getString(DigitalCheckoutPassData.PARAM_OPERATOR_ID));
         passData.setProductId(bundle.getString(DigitalCheckoutPassData.PARAM_PRODUCT_ID));
         passData.setIsPromo(bundle.getString(DigitalCheckoutPassData.PARAM_IS_PROMO));
-        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT));
+        passData.setInstantCheckout(bundle.getString(DigitalCheckoutPassData.PARAM_INSTANT_CHECKOUT, "0"));
         passData.setUtmCampaign(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_CAMPAIGN));
         passData.setUtmMedium(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_MEDIUM));
         passData.setUtmSource(bundle.getString(DigitalCheckoutPassData.PARAM_UTM_SOURCE));
@@ -119,7 +131,7 @@ public class CartDigitalActivity extends BasePresenterActivity implements
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartDigitalFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    CartDigitalFragment.newInstance(passData)).commit();
+                    CartDigitalFragment.newInstance(passData, getIntent().getIntExtra(EXTRA_PASS_EXTRA_FROM, PARAM_NATIVE))).commit();
     }
 
     @Override

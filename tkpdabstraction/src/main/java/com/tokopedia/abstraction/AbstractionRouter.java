@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction;
 
 import android.app.Activity;
+import android.view.MotionEvent;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -45,4 +46,6 @@ public interface AbstractionRouter {
     void showForceHockeyAppDialog();
 
     void logInvalidGrant(Response response);
+
+    void instabugCaptureUserStep(Activity activity, MotionEvent me);
 }

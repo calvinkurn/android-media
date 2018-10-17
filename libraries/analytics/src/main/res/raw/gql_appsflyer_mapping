@@ -1,0 +1,6 @@
+mutation appsflyerMapping($input: AppsflyerMappingInput!) {
+  appsflyer_mapping(Input: $input) {
+    status
+    msg
+  }
+}

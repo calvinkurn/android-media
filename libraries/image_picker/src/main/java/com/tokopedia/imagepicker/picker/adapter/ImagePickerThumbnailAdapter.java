@@ -38,11 +38,14 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     int primaryImageStringRes;
     private int grayColor;
     private int whiteColor;
+    private boolean canReorder;
 
     private OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener;
     private final float roundedSize;
 
     public interface OnImageEditThumbnailAdapterListener {
+        void onPickerThumbnailItemLongClicked(String imagePath, int position);
+
         void onPickerThumbnailItemClicked(String imagePath, int position);
 
         void onThumbnailRemoved(int index);
@@ -60,6 +63,10 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         whiteColor = ContextCompat.getColor(context, R.color.white);
     }
 
+    public void setCanReorder(boolean canReorder) {
+        this.canReorder = canReorder;
+    }
+
     public class ImagePickerThumbnailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageView;
         private TextView tvCounter;
@@ -73,6 +80,18 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
             tvCounterPrimary = itemView.findViewById(R.id.tv_counter_primary);
             ivDelete = itemView.findViewById(R.id.iv_delete);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (canReorder && onImageEditThumbnailAdapterListener!= null) {
+                        int position = getAdapterPosition();
+                        String imagePath = imagePathList.get(position);
+                        onImageEditThumbnailAdapterListener.onPickerThumbnailItemLongClicked(imagePath, position);
+                        return true;
+                    }
+                    return false;
+                }
+            });
             ivDelete.setOnClickListener(this);
         }
 

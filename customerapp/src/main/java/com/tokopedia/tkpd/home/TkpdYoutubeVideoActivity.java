@@ -20,6 +20,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.analytics.HomeGATracking;
 
 public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         YouTubePlayer.OnInitializedListener {
@@ -70,11 +71,13 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
         btnCta.setOnClickListener(v -> {
             if (!TextUtils.isEmpty(videoLand)) {
                 RouteManager.route(TkpdYoutubeVideoActivity.this, videoLand);
+                HomeGATracking.eventClickCTAButton();
             }
             finish();
         });
 
         extractValues(getIntent().getExtras());
+        HomeGATracking.eventYoutubeVideoImpression();
     }
 
     @Override

@@ -326,17 +326,26 @@ public class CartListPresenter implements ICartListPresenter {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
+        int errorProductCount = 0;
 
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
             if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
-                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                        if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
-                            allCartItemDataList.add(cartItemHolderData);
+                if (!cartShopHolderData.getShopGroupData().isError()) {
+                    if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (!cartItemHolderData.getCartItemData().isError()) {
+                                if (cartItemHolderData.isSelected()) {
+                                    allCartItemDataList.add(cartItemHolderData);
+                                }
+                            } else {
+                                errorProductCount++;
+                            }
                         }
                     }
+                } else {
+                    errorProductCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
                 }
             }
         }
@@ -456,7 +465,8 @@ public class CartListPresenter implements ICartListPresenter {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
         view.updateCashback(totalCashback);
-        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size();
+        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
+                allCartItemDataList.size() > 0;
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem);
 
     }
@@ -546,7 +556,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
-//                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
             }
@@ -782,7 +791,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
-//                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
@@ -888,16 +896,6 @@ public class CartListPresenter implements ICartListPresenter {
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
-    }
-
-    @Override
-    public ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData) {
-        return ProductPass.Builder.aProductPass()
-                .setProductId(originData.getProductId())
-                .setProductImage(originData.getProductImage())
-                .setProductName(originData.getProductName())
-                .setProductPrice(originData.getPriceFormatted())
-                .build();
     }
 
     @Override

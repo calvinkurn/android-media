@@ -9,26 +9,26 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 
 
 /**
  * Created by nisie on 2/7/17.
  */
 
-abstract class BaseActivity extends AppCompatActivity implements
+public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
-
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -73,23 +73,24 @@ abstract class BaseActivity extends AppCompatActivity implements
             ((AbstractionRouter) getApplication()).init();
         }
     }
+
     protected void registerShake() {
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
-            if(screenName ==  null) {
+            if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName,this);
+            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
         }
     }
 
     protected void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() &&  getApplication() instanceof AbstractionRouter) {
+        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).unregisterShake();
         }
     }
 
-    private void sendScreenAnalytics() {
+    protected void sendScreenAnalytics() {
         if (getApplication() instanceof AbstractionRouter) {
             AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
             analyticTracker.sendScreen(this, getScreenName());
@@ -181,5 +182,11 @@ abstract class BaseActivity extends AppCompatActivity implements
 
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
+        return super.dispatchTouchEvent(ev);
     }
 }
