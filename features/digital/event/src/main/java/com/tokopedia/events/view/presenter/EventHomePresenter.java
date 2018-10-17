@@ -19,10 +19,12 @@ import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
+import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsContract.AdapterCallbacks;
 import com.tokopedia.events.view.utils.EventsGAConst;
@@ -30,6 +32,7 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,10 +60,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
-    private GetProductRatingUseCase getProductRatingUseCase;
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
-    private List<CategoryItemsViewModel> likedEvents;
+    private ArrayList<Integer> likedEventsLocal;
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
@@ -69,15 +71,13 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
 
     @Inject
-
-    public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
-                              PostUpdateEventLikesUseCase eventLikesUseCase,
-                              GetUserLikesUseCase likesUseCase,
-                              GetProductRatingUseCase ratingUseCase) {
+    EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
+                       PostUpdateEventLikesUseCase eventLikesUseCase,
+                       GetUserLikesUseCase likesUseCase,
+                       GetProductRatingUseCase ratingUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
-        this.getProductRatingUseCase = ratingUseCase;
         adapterCallbacks = new ArrayList<>();
     }
 
@@ -144,6 +144,19 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         if (id == R.id.action_menu_search) {
             ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
                     .getTopEvents();
+            for (CategoryItemsViewModel model : searchViewModelList) {
+                if (Utils.getSingletonInstance().containsLikedEvent(model.getId())) {
+                    if (!model.isLiked()) {
+                        model.setLiked(true);
+                        model.setLikes();
+                    }
+                } else {
+                    if (model.isLiked()) {
+                        model.setLiked(false);
+                        model.setLikes();
+                    }
+                }
+            }
             Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             getView().navigateToActivityRequest(searchIntent,
@@ -206,8 +219,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 Log.d("UPDATEEVENTLIKE", "onNext");
                 if (likeUpdateResultDomain.isLiked() && model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().addLikedEvent(model.getId());
                 } else if (!likeUpdateResultDomain.isLiked() && !model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().removeLikedEvent(model.getId());
                 }
                 for (AdapterCallbacks callbacks : adapterCallbacks)
                     callbacks.notifyDatasetChanged(position);
@@ -247,8 +262,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     @Override
     public void onClickEventCalendar() {
+        ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                .getTopEvents();
         Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
         searchIntent.putExtra(EXTRA_EVENT_CALENDAR, true);
+        searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
         getView().navigateToActivityRequest(searchIntent, 1010);
     }
 
@@ -260,36 +278,31 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public void getEventsList() {
         getView().showProgressBar();
         getEventsListRequestUsecase.getExecuteObservableAsync(getView().getParams())
-                .concatMap(new Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>() {
-                    @Override
-                    public Observable<List<Integer>> call(List<EventsCategoryDomain> eventsCategoryDomains) {
-                        categoryViewModels = Utils.getSingletonInstance()
-                                .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
-                        if (SessionHandler.isV4Login(getView().getActivity()))
-                            return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
-                                    .subscribeOn(Schedulers.newThread())
-                                    .observeOn(AndroidSchedulers.mainThread());
-                        else {
-                            List<Integer> empty = new ArrayList<>();
-                            return Observable.just(empty);
-                        }
+                .concatMap((Func1<List<EventsCategoryDomain>, Observable<List<Integer>>>) eventsCategoryDomains -> {
+                    categoryViewModels = Utils.getSingletonInstance()
+                            .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
+                    UserSession userSession = new UserSession(getView().getActivity());
+                    if (userSession.isLoggedIn())
+                        return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
+                                .subscribeOn(Schedulers.newThread())
+                                .observeOn(AndroidSchedulers.mainThread());
+                    else {
+                        List<Integer> empty = new ArrayList<>();
+                        return Observable.just(empty);
                     }
-                }).flatMap(new Func1<List<Integer>, Observable<List<CategoryViewModel>>>() {
-            @Override
-            public Observable<List<CategoryViewModel>> call(List<Integer> integers) {
-                if (!integers.isEmpty() || integers.size() > 0)
-                    for (Integer id : integers) {
-                        for (CategoryViewModel category : categoryViewModels) {
-                            for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
-                                if (itemsViewModel.getId() == id) {
-                                    itemsViewModel.setLiked(true);
-                                    itemsViewModel.setWasLiked(true);
-                                }
+                }).flatMap((Func1<List<Integer>, Observable<List<CategoryViewModel>>>) integers -> {
+            if (!integers.isEmpty() || integers.size() > 0)
+                for (Integer id : integers) {
+                    for (CategoryViewModel category : categoryViewModels) {
+                        for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
+                            if (itemsViewModel.getId() == id) {
+                                itemsViewModel.setLiked(true);
+                                itemsViewModel.setWasLiked(true);
                             }
                         }
                     }
-                return Observable.just(categoryViewModels);
-            }
+                }
+            return Observable.just(categoryViewModels);
         }).subscribe(new Subscriber<List<CategoryViewModel>>() {
             @Override
             public void onCompleted() {
@@ -301,12 +314,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getEventsList();
-                    }
-                });
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), () -> getEventsList());
             }
 
             @Override
@@ -372,22 +380,19 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             getUserLikesUseCase.getExecuteObservable(RequestParams.create())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(new Func1<List<Integer>, Observable<List<CategoryItemsViewModel>>>() {
-                        @Override
-                        public Observable<List<CategoryItemsViewModel>> call(List<Integer> integers) {
-                            List<CategoryItemsViewModel> favouritesItems = new ArrayList<>();
-                            for (Integer id : integers) {
-                                for (CategoryViewModel category : categoryViewModels) {
-                                    for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
-                                        if (itemsViewModel.getId() == id) {
-                                            itemsViewModel.setLiked(true);
-                                            favouritesItems.add(itemsViewModel);
-                                        }
+                    .flatMap((Func1<List<Integer>, Observable<List<CategoryItemsViewModel>>>) integers -> {
+                        List<CategoryItemsViewModel> favouritesItems = new ArrayList<>();
+                        for (Integer id : integers) {
+                            for (CategoryViewModel category : categoryViewModels) {
+                                for (CategoryItemsViewModel itemsViewModel : category.getItems()) {
+                                    if (itemsViewModel.getId() == id) {
+                                        itemsViewModel.setLiked(true);
+                                        favouritesItems.add(itemsViewModel);
                                     }
                                 }
                             }
-                            return Observable.just(favouritesItems);
                         }
+                        return Observable.just(favouritesItems);
                     }).subscribe(new Subscriber<List<CategoryItemsViewModel>>() {
                 @Override
                 public void onCompleted() {
@@ -399,12 +404,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     CommonUtils.dumper("enter error");
                     e.printStackTrace();
                     getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getFavouriteItemsAndShow();
-                        }
-                    });
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), () -> getFavouriteItemsAndShow());
                 }
 
                 @Override

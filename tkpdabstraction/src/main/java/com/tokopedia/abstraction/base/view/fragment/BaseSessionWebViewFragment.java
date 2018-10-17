@@ -51,7 +51,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         return userSession.getAccessToken();
     }
 
-    private String getMitraToppersUrl() {
+    protected String getMitraToppersUrl() {
         return url;
     }
 }

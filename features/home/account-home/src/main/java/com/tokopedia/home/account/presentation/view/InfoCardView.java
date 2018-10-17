@@ -23,6 +23,7 @@ public class InfoCardView extends BaseCustomView {
     private ImageView icon;
     private TextView textMain;
     private TextView textSecondary;
+    private TextView textNew;
 
     public InfoCardView(@NonNull Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class InfoCardView extends BaseCustomView {
         icon = view.findViewById(R.id.image_view);
         textMain = view.findViewById(R.id.text_main);
         textSecondary = view.findViewById(R.id.text_secondary);
+        textNew = view.findViewById(R.id.txt_new);
     }
 
     public void setMainText(String text) {
@@ -69,5 +71,9 @@ public class InfoCardView extends BaseCustomView {
 
     public void setImage(@DrawableRes int res) {
         icon.setImageResource(res);
+    }
+
+    public void setTextNewVisiblity(int visiblity) {
+        textNew.setVisibility(visiblity);
     }
 }

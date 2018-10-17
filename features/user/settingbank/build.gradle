@@ -33,7 +33,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.bankdb)
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    kapt rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 

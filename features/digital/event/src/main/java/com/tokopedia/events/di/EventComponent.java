@@ -11,7 +11,9 @@ import com.tokopedia.events.view.activity.EventLocationActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
+import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 import com.tokopedia.oms.di.OmsModule;
@@ -33,6 +35,8 @@ public interface EventComponent {
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
+    EventBaseContract.EventBasePresenter getEventFilterPresenter();
+
     void inject(EventsHomeActivity activity);
 
     void inject(EventLocationActivity activity);
@@ -50,4 +54,6 @@ public interface EventComponent {
     void inject(SeatSelectionActivity activity);
 
     void inject(EventFavouriteActivity activity);
+
+    void inject(ScanQRCodeActivity activity);
 }

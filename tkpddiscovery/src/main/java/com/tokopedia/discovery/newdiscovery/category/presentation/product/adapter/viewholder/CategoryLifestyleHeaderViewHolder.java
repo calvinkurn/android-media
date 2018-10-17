@@ -78,6 +78,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(context));
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
