@@ -3,6 +3,7 @@ package com.tokopedia.events.view.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -193,5 +194,11 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        scanCodeDataPresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 }

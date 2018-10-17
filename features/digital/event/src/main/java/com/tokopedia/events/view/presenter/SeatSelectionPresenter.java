@@ -95,7 +95,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
 
     @Override
     public boolean onClickOptionMenu(int id) {
-        return false;
+        mView.getActivity().onBackPressed();
+        return true;
     }
 
     @Override

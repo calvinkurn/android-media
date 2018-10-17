@@ -102,7 +102,8 @@ public class ScanCodeDataPresenter extends BaseDaggerPresenter<EventBaseContract
 
     @Override
     public boolean onClickOptionMenu(int id) {
-        return false;
+        mView.getActivity().onBackPressed();
+        return true;
     }
 
     @Override

@@ -63,11 +63,14 @@ public class EventsDetailsPresenter
 
     @Override
     public boolean onClickOptionMenu(int id) {
-        return false;
+        mView.getActivity().onBackPressed();
+        return true;
     }
 
     @Override
-    public void onBackPressed() { }
+    public void onBackPressed() {
+
+    }
 
 
     @Override

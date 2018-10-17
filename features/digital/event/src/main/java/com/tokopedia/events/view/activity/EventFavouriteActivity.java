@@ -1,9 +1,13 @@
 package com.tokopedia.events.view.activity;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
@@ -56,6 +60,28 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        setLightToolbarStyle();
+    }
+
+
+    protected void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        if (drawable != null)
+            drawable.setBounds(5, 5, 5, 5);
+
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_webview_back_button);
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarSubtitleText);
     }
 
     @Override
@@ -115,5 +141,11 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        eventFavouritePresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 }

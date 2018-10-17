@@ -94,7 +94,8 @@ public class EventFavouritePresenter extends BaseDaggerPresenter<EventBaseContra
 
     @Override
     public boolean onClickOptionMenu(int id) {
-        return false;
+        mView.getActivity().onBackPressed();
+        return true;
     }
 
     @Override

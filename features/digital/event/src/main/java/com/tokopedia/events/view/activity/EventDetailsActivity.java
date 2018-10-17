@@ -208,6 +208,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
                     .gotoQrScannerPage(true), CODE);
             return true;
         }
+        eventsDetailsPresenter.onClickOptionMenu(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 
