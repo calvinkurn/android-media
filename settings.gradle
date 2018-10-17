@@ -15,32 +15,26 @@ buildCache {
     }
 }
 
-apply from: "features/settings-features.gradle"
-apply from: "libraries/settings-libraries.gradle"
+//apply from: "features/settings-features.gradle"
+//apply from: "libraries/settings-libraries.gradle"
 
 //include 'customerapp'
 include 'kelontongapp'
 //include 'tkpdloyalty'
 //include 'tkpdride'
 //include 'tkpdfeed'
-include 'tkpdcore'
+//include 'tkpdcore'
 //include 'tkpdinbox'
 //include 'tkpddiscovery'
 //include 'tkpdtransaction'
 //include 'tkpdsession'
 //include 'tkpdpdp'
-include 'tkpddesign'
+//include 'tkpddesign'
 //include 'sellerapp'
 //include 'tkpdseller'
 //include 'tkpdtokocash'
-include 'tkpdabstraction'
-//include 'tkpdflight'
+//include 'tkpdabstraction'
 //include 'tkpdcontent'
 //include 'tkpdstream'
-//include 'tkpdshop'
-//include 'tkpdshop-common'
-//include 'tkpdgm-common'
-//include 'tkpdreputation-common'
-//include 'tkpdwishlist-common'
 //include 'tkpdtransaction-common'
 //include 'posapp'

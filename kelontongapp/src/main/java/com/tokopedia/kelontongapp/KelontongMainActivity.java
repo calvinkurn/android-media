@@ -25,8 +25,7 @@ import com.tokopedia.kelontongapp.webview.KelontongWebviewClient;
 public class KelontongMainActivity extends AppCompatActivity implements FilePickerInterface {
 
     private static final String GCM_ID = "gcm_id";
-    private static final String ANDROID = "android";
-    private static final String X_DEVICE = "x-device";
+    private static final String ANDROID = "tkpd/mitra/android";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
     private KelontongWebChromeClient webViewClient;
