@@ -30,10 +30,10 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
-import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchV2FilterActivity;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchContract;
@@ -44,6 +44,7 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     public static final int MAX_PROGRESS = 100;
     private static final int EMPTY_MARGIN = 0;
-    private static final int REQUEST_CODE_SEARCH_V2_FILTER = 1001;
+    private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
     private static final String SAVED_NEED_REFRESH_AIRLINE = "svd_need_refresh_airline";
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
@@ -612,12 +613,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         setUIMarkSort();
         setUIMarkFilter();
 
+        com.tokopedia.flight.search.view.model.filter.FlightFilterModel mappedFlightFilterModel =
+                new FlightFilterModelMapper().map(flightFilterModel);
+
         filterAndSortBottomAction.setButton1OnClickListener(v -> {
             FlightSearchFragment.this.addToolbarElevation();
-            startActivityForResult(FlightSearchV2FilterActivity.createInstance(getActivity(),
+            startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                     isReturning(),
-                    flightFilterModel),
-                    REQUEST_CODE_SEARCH_V2_FILTER);
+                    mappedFlightFilterModel),
+                    REQUEST_CODE_SEARCH_FILTER);
         });
         filterAndSortBottomAction.setVisibility(View.GONE);
     }

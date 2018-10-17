@@ -7,10 +7,10 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
 import com.tokopedia.flight.search.constant.FlightSortOption
-import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.search.view.model.filter.TransitEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import rx.Observable
 import rx.functions.Func2
 import javax.inject.Inject
