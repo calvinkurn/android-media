@@ -208,6 +208,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         FlightFilterModel filterModel = new FlightFilterModel();
         filterModel.setBestPairing(isViewOnlyBestPairing);
         filterModel.setJourneyId(selectedFlightDeparture);
+        filterModel.setReturn(isReturning());
 
         return filterModel;
     }
