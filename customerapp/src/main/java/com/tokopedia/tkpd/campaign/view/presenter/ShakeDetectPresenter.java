@@ -61,7 +61,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
     public static final String SHAKE_SHAKE_ERROR = "Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
-    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
+    public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 15;
     Subscription subscription = null;
 
     @Inject
@@ -117,6 +117,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 @Override
                 public void onError(Throwable e) {
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
 
                     intent.putExtra("isSuccess", false);
 
@@ -144,22 +145,27 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
 
 
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                    getView().sendBroadcast(intent);
-                    getView().finish();
+                     getView().sendBroadcast(intent);
+                     getView().finish();
 
                 }
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
+                    if(!s.isEnable()) {
+                        CampaignTracking.eventShakeShake("shake shake disable", ShakeDetectManager.sTopActivity, "", "");
+                        return;
+                    }
                     if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
                             s.getUrl() != null && s.getUrl().isEmpty()) {
+                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         getView().showMessage(s.getMessage());
                         return;
                     }
                     ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
                         getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         return;
                     }
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
