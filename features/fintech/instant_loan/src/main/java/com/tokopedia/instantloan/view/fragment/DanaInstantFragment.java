@@ -170,9 +170,9 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     @Override
-    public void setUserOnGoingLoanStatus(boolean status) {
+    public void setUserOnGoingLoanStatus(boolean status, int loanId) {
         if (activityInteractor != null) {
-            activityInteractor.setUserOnGoingLoanStatus(status);
+            activityInteractor.setUserOnGoingLoanStatus(status, loanId);
         }
     }
 
@@ -416,6 +416,6 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
     }
 
     public interface ActivityInteractor {
-        void setUserOnGoingLoanStatus(boolean status);
+        void setUserOnGoingLoanStatus(boolean status, int id);
     }
 }

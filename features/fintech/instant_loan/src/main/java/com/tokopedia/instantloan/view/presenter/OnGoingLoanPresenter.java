@@ -33,14 +33,15 @@ public class OnGoingLoanPresenter extends BaseDaggerPresenter<OnGoingLoanContrac
 
             @Override
             public void onError(Throwable e) {
-//                getView().onErrorLoanProfileStatus(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 RestResponse restResponse = typeRestResponseMap.get(ResponseUserProfileStatus.class);
                 ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
-                getView().setUserOnGoingLoanStatus(responseUserProfileStatus.getUserProfileLoanEntity().isOnGoingLoan());
+                getView().setUserOnGoingLoanStatus(
+                        responseUserProfileStatus.getUserProfileLoanEntity().isOnGoingLoan(),
+                        responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId());
             }
         });
     }

@@ -189,7 +189,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     }
 
     @Override
-    public void setUserOnGoingLoanStatus(boolean status) {
+    public void setUserOnGoingLoanStatus(boolean status, int id) {
 
     }
 

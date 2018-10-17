@@ -86,7 +86,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private boolean instantLoanEnabled = true;
     private Menu menu;
     private boolean onGoingLoanStatus = false;
-    private String loanId = "";
+    private int onGoingLoanId;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -252,7 +252,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             openWebView(InstantLoanUrl.SUBMISSION_HISTORY_URL);
             return true;
         } else if (id == R.id.payment_method) {
-            openWebView(String.format(InstantLoanUrl.PAYMENT_METHODS_URL, loanId));
+            openWebView(String.format(InstantLoanUrl.PAYMENT_METHODS_URL, String.valueOf(onGoingLoanId)));
             return true;
         } else if (id == R.id.help) {
             openWebView(InstantLoanUrl.HELP_URL);
@@ -458,8 +458,9 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     }
 
     @Override
-    public void setUserOnGoingLoanStatus(boolean status) {
+    public void setUserOnGoingLoanStatus(boolean status, int loanId) {
         this.onGoingLoanStatus = status;
+        this.onGoingLoanId = loanId;
         onCreateOptionsMenu(menu);
     }
 }

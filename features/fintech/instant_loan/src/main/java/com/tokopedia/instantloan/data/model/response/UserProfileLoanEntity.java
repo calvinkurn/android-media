@@ -34,6 +34,10 @@ public class UserProfileLoanEntity {
     @Expose
     private boolean onGoingLoan;
 
+    @SerializedName("on_going_loan_id")
+    @Expose
+    private int onGoingLoanId;
+
     public boolean getWhitelist() {
         return isWhitelist;
     }
@@ -80,5 +84,13 @@ public class UserProfileLoanEntity {
 
     public void setOnGoingLoan(boolean onGoingLoan) {
         this.onGoingLoan = onGoingLoan;
+    }
+
+    public int getOnGoingLoanId() {
+        return onGoingLoanId;
+    }
+
+    public void setOnGoingLoanId(int onGoingLoanId) {
+        this.onGoingLoanId = onGoingLoanId;
     }
 }
