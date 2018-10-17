@@ -245,7 +245,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         if(isAble) this.adapter.showEmptyState();
         else this.adapter.hideLoading();
         IS_EMPTY = isAble;
-        this.adapter.showEmpty(isAble);
+        this.adapter.showEmptyState();
     }
 
     @Override

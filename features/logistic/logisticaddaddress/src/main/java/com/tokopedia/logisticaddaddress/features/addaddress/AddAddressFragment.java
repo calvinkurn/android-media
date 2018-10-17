@@ -296,7 +296,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         };
     }
 
-    @Override
     protected void initView(View view) {
         receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
         receiverNameEditText = view.findViewById(R.id.receiver_name);
@@ -340,7 +339,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        mProgressBar = view.findViewById(R.id.logistic_spinner);
 
         provinceAdapter = ProvinceAdapter.createInstance(getActivity());
         spinnerProvince.setAdapter(provinceAdapter);
