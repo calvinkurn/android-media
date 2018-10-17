@@ -88,7 +88,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @return View
      */
     protected View getRetryView(Context context) {
-        return View.inflate(context, R.layout.pg_retry, null);
+        return Utils.getRetryView(context);
     }
 
     /**
@@ -99,7 +99,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @return View
      */
     protected View getLoaderView(Context context) {
-        return View.inflate(context, R.layout.pg_progress, null);
+        return Utils.getLoaderView(context);
     }
 
     /**
@@ -364,6 +364,11 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         loadCompletedWithError();
     }
 
+    /**
+     * This method will be invoked by consumer for indicating last page so that library can stop loading next page
+     *
+     * @param isLastPage
+     */
     public void setLastPage(boolean isLastPage) {
         this.mIsLastPage = isLastPage;
 
