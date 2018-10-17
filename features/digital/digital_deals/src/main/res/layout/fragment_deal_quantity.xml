@@ -121,7 +121,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_purchase_details"
                 app:layout_constraintTop_toTopOf="@+id/tv_quantity"
-                app:srcCompat="@drawable/ic_plus" />
+                app:srcCompat="@drawable/ic_plus_deals" />
 
             <TextView
                 android:id="@+id/tv_no_quantity"
@@ -156,7 +156,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/iv_add"
                 app:layout_constraintRight_toLeftOf="@+id/tv_no_quantity"
                 app:layout_constraintTop_toTopOf="@+id/iv_add"
-                app:srcCompat="@drawable/ic_minus" />
+                app:srcCompat="@drawable/ic_minus_deals" />
 
             <TextView
                 android:id="@+id/tv_price"

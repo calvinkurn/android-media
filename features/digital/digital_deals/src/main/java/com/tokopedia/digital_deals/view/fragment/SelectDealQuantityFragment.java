@@ -274,6 +274,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     }
 
     @Override
+    public void showFailureMessage(String error) {
+        Utils.getSingletonInstance().showSnackBarDeals(error
+                , getContext(), mainContent, false);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mPresenter.onActivityResult(requestCode);
