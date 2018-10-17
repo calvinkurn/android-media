@@ -114,10 +114,26 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         deleteFlightReturnSearch(journeyViewModel);
     }
 
-    /*@Override
+    @Override
     public void onSearchItemClicked(String selectedId) {
-        deleteFlightReturnSearch(selectedId);
-    }*/
+        flightSearchJourneyByIdUseCase.execute(flightSearchJourneyByIdUseCase.createRequestParams(selectedId),
+                new Subscriber<FlightJourneyViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(FlightJourneyViewModel journeyViewModel) {
+                        deleteFlightReturnSearch(journeyViewModel);
+                    }
+                });
+    }
 
     @Override
     public void onSuccessDateChanged(int year, int month, int dayOfMonth) {
@@ -322,6 +338,10 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
                     @Override
                     public void onNext(List<FlightJourneyViewModel> flightJourneyViewModels) {
+                        if (!needRefresh || flightJourneyViewModels.size() > 0) {
+                            getView().clearAdapterData();
+                        }
+
                         getView().renderSearchList(flightJourneyViewModels, needRefresh);
 
                         if (getView().isDoneLoadData()) {
@@ -339,6 +359,13 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
+
+        flightSearchJourneyByIdUseCase.unsubscribe();
+        flightDeleteFlightSearchReturnDataUseCase.unsubscribe();
+        flightSearchCombinedUseCase.unsubscribe();
+        flightSortAndFilterUseCase.unsubscribe();
+        flightAirlineHardRefreshUseCase.unsubscribe();
+        flightSearchV2UseCase.unsubscribe();
 
         super.detachView();
     }
@@ -366,7 +393,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         });
     }
 
-    public FlightFareViewModel buildFare(FlightFareViewModel journeyFare, boolean isNeedCombo) {
+    private FlightFareViewModel buildFare(FlightFareViewModel journeyFare, boolean isNeedCombo) {
         FlightFareViewModel flightFareViewModel;
         if (isNeedCombo) {
             flightFareViewModel = new FlightFareViewModel(

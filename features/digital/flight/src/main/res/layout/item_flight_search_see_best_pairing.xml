@@ -18,28 +18,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.tokopedia.design.component.TextViewCompat
             style="@style/TextView.Small.Bold"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/flight_search_selengkapnya_label" />
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/flight_search_best_pairing_label" />
 
-        <com.tokopedia.design.component.TextViewCompat
-            style="@style/TextView.Micro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/flight_search_selengkapnya_desc" />
-
-        <com.tokopedia.design.component.ButtonCompat
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_show_best_pairing"
             style="@style/Button.Secondary.Green"
-            android:id="@+id/btn_show_all_result"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/flight_search_show_all_label" />
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="@string/flight_search_show_best_pairing_label" />
 
     </LinearLayout>
 </LinearLayout>

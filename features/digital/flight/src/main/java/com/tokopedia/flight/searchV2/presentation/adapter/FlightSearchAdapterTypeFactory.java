@@ -11,10 +11,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewH
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
+import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchViewHolder;
 import com.tokopedia.flight.searchV2.presentation.model.EmptyResultViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeAllResultViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeOnlyBestPairingViewModel;
 
 /**
  * @author by furqan on 02/10/18.
@@ -35,6 +37,8 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new FlightSearchViewHolder(parent, onFlightSearchListener);
         } else if (type == FlightSearchSeeAllViewHolder.LAYOUT) {
             return new FlightSearchSeeAllViewHolder(parent, onFlightSearchListener);
+        } else if (type == FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT) {
+            return new FlightSearchSeeOnlyBestPairingViewHolder(parent, onFlightSearchListener);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
@@ -71,6 +75,10 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
         return FlightSearchSeeAllViewHolder.LAYOUT;
     }
 
+    public int type(FlightSearchSeeOnlyBestPairingViewModel viewModel) {
+        return FlightSearchSeeOnlyBestPairingViewHolder.LAYOUT;
+    }
+
     public interface OnFlightSearchListener {
         void onRetryClicked();
 
@@ -78,7 +86,9 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
 
         void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
 
-        void onSeeAllClicked();
+        void onShowAllClicked();
+
+        void onShowBestPairingClicked();
     }
 
 }

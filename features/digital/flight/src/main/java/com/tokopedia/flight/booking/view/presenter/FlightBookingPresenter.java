@@ -328,7 +328,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(viewModel);
                                 flightDetailViewModel.build(getView().getCurrentBookingParamViewModel().getSearchParam());
                                 FlightPriceViewModel priceViewModel = getView().getPriceViewModel();
-                                if (priceViewModel.getComboKey() != null) {
+                                if (priceViewModel.getComboKey() != null && priceViewModel.getComboKey().length() > 0) {
                                     flightDetailViewModel.setAdultNumericPrice(priceViewModel.getDeparturePrice().getAdultNumericCombo());
                                     flightDetailViewModel.setChildNumericPrice(priceViewModel.getDeparturePrice().getChildNumericCombo());
                                     flightDetailViewModel.setInfantNumericPrice(priceViewModel.getDeparturePrice().getInfantNumericCombo());
@@ -515,7 +515,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                             FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(flightSearchViewModel);
                                             flightDetailViewModel.build(getView().getCurrentBookingParamViewModel().getSearchParam());
                                             FlightPriceViewModel priceViewModel = getView().getPriceViewModel();
-                                            if (priceViewModel.getComboKey() != null) {
+                                            if (priceViewModel.getComboKey() != null && priceViewModel.getComboKey().length() > 0) {
                                                 flightDetailViewModel.setAdultNumericPrice(priceViewModel.getReturnPrice().getAdultNumericCombo());
                                                 flightDetailViewModel.setChildNumericPrice(priceViewModel.getReturnPrice().getChildNumericCombo());
                                                 flightDetailViewModel.setInfantNumericPrice(priceViewModel.getReturnPrice().getInfantNumericCombo());

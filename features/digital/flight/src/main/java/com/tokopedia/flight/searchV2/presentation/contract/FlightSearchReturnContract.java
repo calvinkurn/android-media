@@ -21,20 +21,22 @@ public interface FlightSearchReturnContract {
 
         void showSeeAllResultView();
 
-        void hideSeeAllResultView();
+        void showSeeBestPairingResultView();
 
         boolean isOnlyShowBestPair();
+
+        FlightPriceViewModel getPriceViewModel();
 
 
     }
 
     interface Presenter {
 
-        void onFlightSearchSelected(String selectedFlightDeparture, FlightJourneyViewModel journeyViewModel);
+        void onFlightSearchSelected(String selectedFlightDeparture, FlightJourneyViewModel returnJourneyModel);
 
         void onFlightSearchSelected(String selectedFlightDeparture, String selectedFlightReturn);
 
-        void onFlightSearchSelected(String selectedFlightDeparture, FlightJourneyViewModel journeyViewModel, int adapterPosition);
+        void onFlightSearchSelected(String selectedFlightDeparture, FlightJourneyViewModel returnJourneyModel, int adapterPosition);
 
         void onDestroy();
     }
