@@ -1,5 +1,6 @@
-package com.tokopedia.logisticaddaddress.adapter;
+package com.tokopedia.logisticaddaddress.domain;
 
+import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 
 import java.util.ArrayList;

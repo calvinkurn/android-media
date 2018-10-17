@@ -30,7 +30,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
+import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;

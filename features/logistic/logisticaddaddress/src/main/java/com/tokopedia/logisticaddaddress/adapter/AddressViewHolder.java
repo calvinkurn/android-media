@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 
 /**
  * Created by Fajar Ulin Nuha on 15/10/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress;
+package com.tokopedia.logisticaddaddress.domain;
 
 import com.tokopedia.logisticdata.data.entity.address.LocationPass;
 

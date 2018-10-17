@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
-import com.tokopedia.logisticaddaddress.adapter.AddressViewModelMapper;
+import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.data.DataManager;
 import com.tokopedia.logisticaddaddress.data.DataManagerImpl;
 import com.tokopedia.logisticaddaddress.data.cloud.NetworkParam;

@@ -36,7 +36,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticaddaddress.LocationPassMapper;
+import com.tokopedia.logisticaddaddress.domain.LocationPassMapper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
@@ -64,7 +64,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.LocationPassMapper.bundleLocationMap;
+import static com.tokopedia.logisticaddaddress.domain.LocationPassMapper.bundleLocationMap;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;

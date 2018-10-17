@@ -1,7 +1,5 @@
 package com.tokopedia.logisticaddaddress.adapter;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 
