@@ -35,6 +35,7 @@
 
         <com.tokopedia.design.component.ButtonCompat
             style="@style/Button.Secondary.Green"
+            android:id="@+id/btn_see_all_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"

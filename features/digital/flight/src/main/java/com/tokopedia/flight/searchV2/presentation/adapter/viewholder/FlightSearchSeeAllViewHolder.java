@@ -3,6 +3,7 @@ package com.tokopedia.flight.searchV2.presentation.adapter.viewholder;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchSeeAllResultViewModel;
@@ -16,11 +17,20 @@ public class FlightSearchSeeAllViewHolder extends AbstractViewHolder<FlightSearc
     public static final int LAYOUT = R.layout.item_flight_search_selengkapnya;
 
     private FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
+    private ButtonCompat btnSeeAllResult;
 
     public FlightSearchSeeAllViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
 
         this.onFlightSearchListener = onFlightSearchListener;
+
+        btnSeeAllResult = itemView.findViewById(R.id.btn_see_all_result);
+        btnSeeAllResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFlightSearchListener.onSeeAllClicked();
+            }
+        });
     }
 
     @Override
