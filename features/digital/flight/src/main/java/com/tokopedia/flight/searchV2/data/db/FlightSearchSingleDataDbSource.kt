@@ -236,12 +236,6 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         flightJourneyDao.deleteFlightSearchReturnData()
     }
 
-    fun getAllSearchReturnJourneys(): Observable<List<JourneyAndRoutes>> {
-        return Observable.create {
-            it.onNext(flightJourneyDao.findAllReturnJourneys())
-        }
-    }
-
     private fun getAirports(departureAirport: String, arrivalAirport: String) :
             Observable<Pair<FlightAirportDB, FlightAirportDB>> {
         return Observable.zip(
