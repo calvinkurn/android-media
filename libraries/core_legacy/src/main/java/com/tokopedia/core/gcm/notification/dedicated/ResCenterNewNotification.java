@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.R;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.var.TkpdState;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -24,15 +24,15 @@ public class ResCenterNewNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, InboxRouter.getInboxResCenterActivityClass())
+                new Intent(mContext, TkpdCoreRouter.getInboxResCenterActivityClass(mContext))
         );
-        mNotificationPass.classParentStack = InboxRouter.getInboxResCenterActivityClass();
-        mNotificationPass.title = mContext.getString(R.string.title_new_rescenter);
+        mNotificationPass.classParentStack = TkpdCoreRouter.getInboxResCenterActivityClass(mContext);
+        mNotificationPass.title = mContext.getString(R.string.title_new_rescenter_);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();
-        bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
-                TkpdState.InboxResCenter.RESO_ALL);
+        bundle.putInt(TkpdCoreRouter.EXTRA_STATE_TAB_POSITION,
+                TkpdCoreRouter.RESO_ALL);
         mNotificationPass.mIntent.putExtras(bundle);
     }
 }

@@ -2,7 +2,9 @@ package com.tokopedia.core;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
+import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public interface TkpdCoreRouter {
@@ -20,6 +22,9 @@ public interface TkpdCoreRouter {
     int INVALID_FRAGMENT = 0;
     int WISHLIST_FRAGMENT = 1;
     int PRODUCT_HISTORY_FRAGMENT = 2;
+
+    String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
+    int RESO_ALL = 2;
 
     static Intent createInstanceCartActivity(Context context) {
         return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
@@ -63,7 +68,25 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getSellingActivityClassReal();
     }
 
-    setNotificationPass
+    @Deprecated
+    static Intent getActivitySellingTransactionShippingStatus(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionShippingStatusReal(mContext);
+    }
+
+    @Deprecated
+    static Class<?> getInboxResCenterActivityClass(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getInboxResCenterActivityClassReal();
+    }
+
+    static Class<?> getInboxMessageActivityClass(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getInboxMessageActivityClass();
+    }
+
+    Class<?> getInboxMessageActivityClass();
+
+    Class<?> getInboxResCenterActivityClassReal();
+
+    Intent getActivitySellingTransactionShippingStatusReal(Context mContext);
 
     Class getSellingActivityClassReal();
 
@@ -74,4 +97,8 @@ public interface TkpdCoreRouter {
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
+
+    Intent getInboxMessageIntent(Context mContext);
 }

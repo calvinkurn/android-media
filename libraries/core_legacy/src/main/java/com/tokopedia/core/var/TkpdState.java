@@ -1,6 +1,12 @@
 package com.tokopedia.core.var;
 
 public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState  {
+    public static class InboxResCenter {
+        public static int RESO_ALL = 2;
+        public static int RESO_MINE = 0;
+        public static int RESO_BUYER = 1;
+    }
+
     public class GCMServiceState {
         public static final int GCM_MESSAGE = 101;
         public static final int GCM_TALK = 102;

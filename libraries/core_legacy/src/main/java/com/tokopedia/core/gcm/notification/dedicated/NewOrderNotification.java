@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 
 /**
@@ -22,9 +22,9 @@ public class NewOrderNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, SellerRouter.getSellingActivityClass())
+                new Intent(mContext, TkpdCoreRouter.getSellingActivityClass(mContext))
         );
-        mNotificationPass.classParentStack = SellerRouter.getSellingActivityClass();
+        mNotificationPass.classParentStack = TkpdCoreRouter.getSellingActivityClass(mContext);
         mNotificationPass.title = String.format(
                 "%s %s",
                 incomingMessage.getString("counter"),

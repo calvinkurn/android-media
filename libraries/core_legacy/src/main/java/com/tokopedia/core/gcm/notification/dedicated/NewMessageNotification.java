@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
@@ -24,11 +22,11 @@ public class NewMessageNotification extends BaseNotification {
 
     @Override
     public void configureNotificationData(Bundle data) {
-        if (MainApplication.getAppContext() instanceof TkpdInboxRouter) {
+        if (mContext instanceof TkpdCoreRouter) {
             mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                    ((TkpdInboxRouter) MainApplication.getAppContext()).getInboxMessageIntent(mContext)
+                    ((TkpdCoreRouter)mContext).getInboxMessageIntent(mContext)
             );
-            mNotificationPass.classParentStack = InboxRouter.getInboxMessageActivityClass();
+            mNotificationPass.classParentStack = TkpdCoreRouter.getInboxMessageActivityClass(mContext);
             mNotificationPass.title = String.format(
                     "%s %s", data.getString("counter"), mContext.getString(R.string.title_new_message));
             mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);

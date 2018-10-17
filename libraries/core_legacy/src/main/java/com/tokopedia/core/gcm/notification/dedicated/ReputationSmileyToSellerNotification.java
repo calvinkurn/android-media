@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 
 /**
