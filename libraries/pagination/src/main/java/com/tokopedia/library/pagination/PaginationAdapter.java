@@ -55,9 +55,9 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     /**
      * Return list for current adapter
      *
-     * @return
+     * @return List
      */
-    public List<T> getItems() {
+    public final List<T> getItems() {
         return mItems;
     }
 
@@ -382,6 +382,17 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
         } else {
             addLoadingFooter();
         }
+    }
+
+    /**
+     * For resetting the adapter state. (This can be useful like swipe-to-refresh UI)
+     */
+    public final void resetAdapter() {
+        clear();
+        mCurrentPageIndex = 1;
+        mIsError = false;
+        setLoading(false);
+        setLastPage(false);
     }
 
     public final int getCurrentPageIndex() {
