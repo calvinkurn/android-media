@@ -2,12 +2,17 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
+import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
+import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
+import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
+import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
 import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import rx.Observable
+import rx.functions.Func2
 import javax.inject.Inject
 
 /**
@@ -15,7 +20,9 @@ import javax.inject.Inject
  */
 open class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
-        private val flightRouteDao: FlightRouteDao) {
+        private val flightRouteDao: FlightRouteDao,
+        private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
+        private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
 
     open fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
@@ -37,7 +44,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun getFilteredJourneys(filterModel: FlightFilterModel, @FlightSortOption flightSortOption: Int):
             Observable<List<JourneyAndRoutes>> {
-        return Observable.create {
+        return Observable.create<List<JourneyAndRoutes>> {
             val sqlQuery = "SELECT * FROM FlightJourneyTable WHERE "
             val sqlStringBuilder = StringBuilder()
             sqlStringBuilder.append(sqlQuery)
@@ -68,7 +75,35 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             Log.d("FlightSearchFilter: ", simpleSQLiteQuery.sql.toString())
 
             it.onNext(flightJourneyDao.findFilteredJourneys(simpleSQLiteQuery))
+        }.flatMap { journeyAndRoutesList ->
+            Observable.from(journeyAndRoutesList).flatMap { journeyAndRoutes ->
+                populateCompactJourneyAndRoutes(journeyAndRoutes)
+            }.toList()
         }
+    }
+
+    private fun populateCompactJourneyAndRoutes(journeyAndRoutes: JourneyAndRoutes): Observable<JourneyAndRoutes> {
+        return Observable.from(journeyAndRoutes.routes)
+                .flatMap { route ->
+                    getAirlineById(route.airline).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
+                        airline: FlightAirlineDB, airport: Pair<FlightAirportDB, FlightAirportDB> ->
+                        Pair(airline, airport)
+                    }
+                }
+                .toList()
+                .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
+                    routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                    journeyAirports: Pair<FlightAirportDB, FlightAirportDB> ->
+                    val journeyAirlines = arrayListOf<FlightAirlineDB>()
+                    for (routeAirline in routesAirlinesAndAirports) {
+                        if (!journeyAirlines.contains(routeAirline.first)) {
+                            journeyAirlines.add(routeAirline.first)
+                        }
+                    }
+                    journeyAndRoutes.flightJourneyTable = createJourneyWithAirportAndAirline(
+                            journeyAndRoutes.flightJourneyTable, journeyAirports, journeyAirlines)
+                    journeyAndRoutes
+                }
     }
 
     fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
@@ -105,8 +140,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     }
 
     fun getJourneyById(onwardJourneyId: String?): Observable<JourneyAndRoutes> {
-        return Observable.create {
+        return Observable.create<JourneyAndRoutes> {
             it.onNext(flightJourneyDao.findJourneyById(onwardJourneyId))
+        }.flatMap { journeyAndRoutes ->
+            populateCompactJourneyAndRoutes(journeyAndRoutes)
         }
     }
 
@@ -197,6 +234,40 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             flightRouteDao.deleteByJourneyId(journeyAndRoutes.flightJourneyTable.id)
         }
         flightJourneyDao.deleteFlightSearchReturnData()
+    }
+
+    fun getAllSearchReturnJourneys(): Observable<List<JourneyAndRoutes>> {
+        return Observable.create {
+            it.onNext(flightJourneyDao.findAllReturnJourneys())
+        }
+    }
+
+    private fun getAirports(departureAirport: String, arrivalAirport: String) :
+            Observable<Pair<FlightAirportDB, FlightAirportDB>> {
+        return Observable.zip(
+                flightAirportDataListDBSource.getAirport(departureAirport),
+                flightAirportDataListDBSource.getAirport(arrivalAirport),
+                Func2<FlightAirportDB, FlightAirportDB, Pair<FlightAirportDB, FlightAirportDB>>
+                { t1, t2 ->
+                    return@Func2 Pair(t1, t2)
+                }
+        )
+    }
+
+    private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
+        return flightAirlineDataListDBSource.getAirline(airlineId)
+    }
+
+    private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
+                                                   pairOfAirport: Pair<FlightAirportDB, FlightAirportDB>,
+                                                   airlines: List<FlightAirlineDB>): FlightJourneyTable {
+        val (departureAirport, arrivalAirport) = pairOfAirport
+        journey.departureAirportName = departureAirport.airportName
+        journey.departureAirportCity = departureAirport.cityName
+        journey.arrivalAirportName = arrivalAirport.airportName
+        journey.arrivalAirportCity = arrivalAirport.cityName
+        journey.flightAirlineDBS = airlines
+        return journey
     }
 
 }

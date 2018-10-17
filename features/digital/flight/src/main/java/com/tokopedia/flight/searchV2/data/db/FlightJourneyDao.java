@@ -20,6 +20,10 @@ public interface FlightJourneyDao {
     @Query("SELECT * FROM FlightJourneyTable")
     List<JourneyAndRoutes> findAllJourneys();
 
+    @Transaction
+    @Query("SELECT * FROM FlightJourneyTable WHERE isReturn = 1")
+    List<JourneyAndRoutes> findAllReturnJourneys();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FlightJourneyTable item);
 
