@@ -19,7 +19,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
@@ -111,7 +110,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
-    private static final String BERANDA_TRACE = "hot_start";
+    private static final String BERANDA_TRACE = "beranda_trace";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
     @Inject
     HomePresenter presenter;
@@ -223,8 +222,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         presenter.setFeedListener(this);
         return view;
     }
-
-    int count = 0;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
