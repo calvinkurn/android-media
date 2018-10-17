@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2.domain
+package com.tokopedia.flight.searchV2.domain.usecase
 
 import com.tokopedia.flight.search.data.cloud.model.response.Meta
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel

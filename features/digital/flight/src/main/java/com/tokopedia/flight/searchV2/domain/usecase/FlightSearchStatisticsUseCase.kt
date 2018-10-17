@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2.domain
+package com.tokopedia.flight.searchV2.domain.usecase
 
 import android.text.TextUtils
 import android.util.SparseIntArray

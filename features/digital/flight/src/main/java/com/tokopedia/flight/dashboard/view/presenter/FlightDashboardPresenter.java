@@ -29,7 +29,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
-import com.tokopedia.flight.searchV2.domain.FlightDeleteAllFlightSearchDataUseCase;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 
 import java.util.Calendar;
 import java.util.Date;

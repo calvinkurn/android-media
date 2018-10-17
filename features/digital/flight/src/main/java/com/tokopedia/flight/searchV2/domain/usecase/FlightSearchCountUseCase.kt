@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2.domain
+package com.tokopedia.flight.searchV2.domain.usecase
 
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel

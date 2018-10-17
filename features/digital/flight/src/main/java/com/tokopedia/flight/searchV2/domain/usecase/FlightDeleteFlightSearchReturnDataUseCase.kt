@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2.domain
+package com.tokopedia.flight.searchV2.domain.usecase
 
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.usecase.RequestParams
@@ -9,12 +9,11 @@ import javax.inject.Inject
 /**
  * Created by Rizky on 12/10/18.
  */
-class FlightDeleteAllFlightSearchDataUseCase @Inject constructor(
+class FlightDeleteFlightSearchReturnDataUseCase @Inject constructor(
         private val flightSearchRepository: FlightSearchRepository) : UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
-        return flightSearchRepository.deleteAllFlightSearchData()
+        return flightSearchRepository.deleteFlightSearchReturnData()
                 .map { true }
     }
-
 }

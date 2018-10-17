@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2.domain
+package com.tokopedia.flight.searchV2.domain.usecase
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -1,6 +1,6 @@
 package com.tokopedia.flight.searchV2.data.repository
 
-import com.tokopedia.flight.searchV2.domain.FlightSearchCombinedUseCase
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchCombinedUseCase
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
