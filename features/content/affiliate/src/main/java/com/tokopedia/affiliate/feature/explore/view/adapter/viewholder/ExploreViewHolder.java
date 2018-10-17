@@ -31,11 +31,11 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     public ExploreViewHolder(View itemView, ExploreContract.View mainView) {
         super(itemView);
         this.mainView = mainView;
-        ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
-        btnByme = (RelativeLayout) itemView.findViewById(R.id.iv_byme);
-        tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-        layout = (RelativeLayout) itemView.findViewById(R.id.main_view);
-        tvCommission = (TextView) itemView.findViewById(R.id.tv_commission);
+        ivImage = itemView.findViewById(R.id.iv_image);
+        btnByme = itemView.findViewById(R.id.iv_byme);
+        tvTitle = itemView.findViewById(R.id.tv_title);
+        layout = itemView.findViewById(R.id.main_view);
+        tvCommission = itemView.findViewById(R.id.tv_commission);
     }
 
     @Override
@@ -48,9 +48,6 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
         ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl());
         tvTitle.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(MethodChecker.fromHtml(element.getCommissionString()));
-    }
-
-    private void initValue() {
     }
 
     private void initViewListener(ExploreViewModel element) {

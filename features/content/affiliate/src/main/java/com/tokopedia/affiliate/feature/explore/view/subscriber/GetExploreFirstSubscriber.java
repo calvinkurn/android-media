@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.feature.explore.view.subscriber;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreFirstQuery;
+import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreProductPojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
@@ -45,7 +45,7 @@ public class GetExploreFirstSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
-        ExploreFirstQuery query = response.getData(ExploreFirstQuery.class);
+        ExploreData query = response.getData(ExploreData.class);
         if (isSearch && query.getExploreProduct() != null
                 && query.getExploreProduct().getProducts() == null) {
             mainView.onEmptySearchResult();

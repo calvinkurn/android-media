@@ -4,9 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by milhamj on 10/16/18.
+ * @author by yfsx on 12/10/18.
  */
-public class ExploreLoadMoreQuery {
+public class ExploreData {
+
     @SerializedName("topadsExploreAffiliateProduct")
     @Expose
     private ExploreQuery exploreProduct;
