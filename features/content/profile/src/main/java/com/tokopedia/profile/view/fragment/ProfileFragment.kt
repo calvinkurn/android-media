@@ -292,7 +292,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
-        if (TextUtils.isEmpty(uniqueTrackingId)) {
+        if (TextUtils.isEmpty(uniqueTrackingId) || userId.toString() == userSession.userId) {
             profileRouter.openRedirectUrl(activity as Activity, url)
         } else {
             presenter.trackPostClick(uniqueTrackingId, url)
