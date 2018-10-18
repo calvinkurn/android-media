@@ -20,8 +20,8 @@ public interface InstantLoanUrl {
     String WEB_LINK_TNC = WEB_DOMAIN + "bantuan/syarat-dan-ketentuan-pinjaman-dana-online/";
     String LOAN_AMOUNT_QUERY_PARAM = "?loan=";
 
-    String SUBMISSION_HISTORY_URL = "http://www.tokopedia.com/pinjaman-online/dana-instant/dashboard";
-    String PAYMENT_METHODS_URL = "http://www.tokopedia.com/pinjaman-online/dana-instant/payment-method/%s";
+    String SUBMISSION_HISTORY_URL = "https://www.tokopedia.com/pinjaman-online/dana-instant/dashboard";
+    String PAYMENT_METHODS_URL = "https://www.tokopedia.com/pinjaman-online/dana-instant/order-detail/aplikasi-disbursed/%s";
     String HELP_URL = "https://www.tokopedia.com/contact-us?pid=162#step1";
 
 }
