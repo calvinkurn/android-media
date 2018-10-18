@@ -446,22 +446,6 @@ public class OkHttpFactory {
                 .build();
     }
 
-//    public OkHttpClient buildDaggerClientBearerEvents(EventInerceptors eventInterceptor,
-//                                                      OkHttpRetryPolicy okHttpRetryPolicy,
-//                                                      ChuckInterceptor chuckInterceptor,
-//                                                      DebugInterceptor debugInterceptor,
-//                                                      HttpLoggingInterceptor loggingInterceptor) {
-//        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder)
-//                .addInterceptor(eventInterceptor)
-//                .setOkHttpRetryPolicy(okHttpRetryPolicy);
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            tkpdOkHttpBuilder.addInterceptor(debugInterceptor);
-//            tkpdOkHttpBuilder.addInterceptor(chuckInterceptor);
-//            tkpdOkHttpBuilder.addInterceptor(loggingInterceptor);
-//        }
-//        return tkpdOkHttpBuilder.build();
-//    }
-
     public OkHttpClient buildDaggerClientBearerTopAdsAuth(FingerprintInterceptor fingerprintInterceptor,
                                                           TopAdsAuthInterceptor topAdsAuthInterceptor,
                                                           OkHttpRetryPolicy okHttpRetryPolicy,

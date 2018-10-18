@@ -90,7 +90,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
         seatLayoutViewModel = mView.getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
         mView.setEventTitle(mView.getActivity().getIntent().getStringExtra("EventTitle"));
         getProfile();
-        getSeatSelectionDetails();
     }
 
     @Override
@@ -115,7 +114,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     }
 
 
-    private void getSeatSelectionDetails() {
+    public void getSeatSelectionDetails() {
         mView.renderSeatSelection(selectedpkgViewModel.getSalesPrice(),
                 selectedpkgViewModel.getSelectedQuantity(), seatLayoutViewModel);
         mView.setTicketPrice(selectedpkgViewModel.getSelectedQuantity());

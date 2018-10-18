@@ -196,8 +196,8 @@ public class EventReviewTicketPresenter
         JsonObject requestBody = convertPackageToCartItem(checkoutData);
         Intent loyaltyIntent = ((EventModuleRouter) getView().getActivity().getApplication()).
                 tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
-                        EventsUrl.AppLink.EVENTS,
-                        EventsUrl.AppLink.EVENTS,
+                        Utils.Constants.EVENTS,
+                        Utils.Constants.EVENTS,
                         "");
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,

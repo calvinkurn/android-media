@@ -127,6 +127,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
+        seatSelectionPresenter.getSeatSelectionDetails();
     }
 
     @Override
