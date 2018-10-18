@@ -3,4 +3,16 @@
     <string name="title_save_address_as">Label Alamat</string>
     <string name="minimal_karakter">Minimal 20 karakter</string>
     <string name="address_type_default">Rumah</string>
+    <string name="title_update_address">Ubah Alamat</string>
+    <string name="title_sort_by">Urutkan</string>
+    <string name="item_address_latest">Alamat Terbaru</string>
+    <string name="item_address_name">Nama Alamat</string>
+    <string name="item_address_receiver">Nama Penerima</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="title_no">Tidak</string>
+    <string name="title_yes">Ya</string>
+    <string name="title_address">Title Address</string>
+    <string name="detail_address">Detail Address</string>
+    <string name="tentukan_lokasi_google_map_anda">Tentukan lokasi Google Map Anda</string>
+    <string name="kata_kunci_pencarian">Kata Kunci Pencarian</string>
 </resources>

@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 
-import com.tokopedia.core.R;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressPresenter;
 
 /**
@@ -30,7 +30,7 @@ public class BottomSheetFilterDialog {
     public BottomSheetFilterDialog(Context context) {
         this.context = context;
         this.dialog = new BottomSheetDialog(context);
-        this.dialog.setContentView(R.layout.layout_filter_manage_people_address);
+        this.dialog.setContentView(R.layout.logistic_layout_filter_manage_people_address);
         spinnerSort = (Spinner) dialog.findViewById(R.id.sort);
         searchBox = (EditText) dialog.findViewById(R.id.search);
         submit = (Button) dialog.findViewById(R.id.submit);
@@ -44,7 +44,7 @@ public class BottomSheetFilterDialog {
     }
 
     private void initAdapter() {
-        adapterSort =  ArrayAdapter.createFromResource(context, R.array.address_sort_type, R.layout.dialog_item);
+        adapterSort =  ArrayAdapter.createFromResource(context, R.array.logistic_address_sort_type, R.layout.logistic_dialog_item);
         adapterSort.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     }
 

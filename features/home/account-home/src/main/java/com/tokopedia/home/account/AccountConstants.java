@@ -1,7 +1,5 @@
 package com.tokopedia.home.account;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
-
 /**
  * @author okasurya on 7/20/18.
  */
