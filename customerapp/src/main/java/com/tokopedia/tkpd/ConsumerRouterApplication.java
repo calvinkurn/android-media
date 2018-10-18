@@ -3185,4 +3185,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getDefferedDeeplinkPathIfExists(){
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
+    @Override
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
+        TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopLocation, isShopOfficaial, isFollowed);
+    }
 }

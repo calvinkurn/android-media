@@ -958,6 +958,7 @@ public interface AppEventTracking {
         String IS_SELLER = "is_seller";
         String SHOP_ID = "shop_id";
         String SHOP_NAME = "shop_name";
+        String SHOP_URL_SLUG = "url_slug";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";

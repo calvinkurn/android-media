@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
+import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
@@ -154,12 +155,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         view.buttonManageShop.visibility = View.GONE
         view.buttonChat.visibility = View.VISIBLE
         view.buttonChat.setOnClickListener { listener.goToChatSeller() }
-        updateFavoriteButton()
+        updateFavoriteButton(shopInfo)
     }
 
     fun isShopFavourited() = isShopFavourited
 
-    fun updateFavoriteButton() {
+    fun updateFavoriteButton(shopInfo: ShopInfo?) {
         view.buttonFollow.isEnabled = true
         view.buttonFollowed.isEnabled = true
         if (isShopFavourited){
@@ -168,6 +169,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             view.buttonFollowed.setOnClickListener{
                 view.buttonFollowed.isEnabled = false
                 listener.toggleFavorite(true)}
+            shopInfo?.info?.isShopOfficial?.let { (this as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopLocation, it, true) }
         } else {
             view.buttonFollowed.visibility = View.GONE
             view.buttonFollow.visibility = View.VISIBLE
@@ -175,6 +177,7 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             view.buttonFollow.setOnClickListener{
                 view.buttonFollow.isEnabled = false
                 listener.toggleFavorite(false)}
+            shopInfo?.info?.isShopOfficial?.let { (this as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopLocation, it, false) }
         }
     }
 

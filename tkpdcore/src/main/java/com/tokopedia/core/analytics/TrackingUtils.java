@@ -25,6 +25,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -376,15 +377,16 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
-    public static void sendMoEngageFavoriteEvent(ShopModel model) {
+    public static void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial() == 1);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, shopName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, shopID);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, shopLocation);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopName);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, isShopOfficaial);
         getMoEngine().sendEvent(
                 builder.build(),
-                model.info.shopAlreadyFavorited == 0 ?
+                isFollowed ?
                         AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
                         AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
