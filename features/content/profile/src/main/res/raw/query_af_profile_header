@@ -1,22 +1,27 @@
 query ProfileHeader ($userIDTarget: Int!) {
     bymeProfileHeader(userIDTarget: $userIDTarget) {
-       profile{
-          id
-          name
-          isKol
-          isAffiliate
-          avatar
-          affiliateName
-          link
-          isFollowed
-          totalFollowing{
-            formatted
-            number
-          }
-          totalFollower{
-            formatted
-            number
-          }
-       }
+      profile {
+        id
+        name
+        isKol
+        avatar
+        affiliateName
+        link
+        isAffiliate
+        isFollowed
+        totalFollowing {
+          formatted
+          number
+        }
+        totalFollower {
+          formatted
+          number
+        }
+      }
+      error {
+        message
+        type
+        code
+      }
     }
 }
