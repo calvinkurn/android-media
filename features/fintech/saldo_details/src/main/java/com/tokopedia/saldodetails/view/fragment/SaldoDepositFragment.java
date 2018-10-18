@@ -26,6 +26,9 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
@@ -44,13 +47,12 @@ import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import static android.content.ContentValues.TAG;
 
-public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailTransactionFactory> implements SaldoDetailContract.View, SaldoItemListener {
+public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailTransactionFactory>
+        implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback {
 
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
@@ -316,13 +318,14 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     }
 
     @Override
-    public void showProgressLoading() {
-        adapter.showLoading();
-    }
-
-    @Override
-    public void hideProgressLoading() {
-        adapter.hideLoading();
+    public Visitable getDefaultEmptyViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        emptyModel.setIconRes(R.drawable.ic_empty_search);
+        emptyModel.setTitle(getString(R.string.empty_search_result_default));
+        emptyModel.setContent(getString(R.string.empty_search_result_content_template));
+        emptyModel.setButtonTitle("Retry");
+        emptyModel.setCallback(this);
+        return emptyModel;
     }
 
     @Override
@@ -460,6 +463,12 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     }
 
     @Override
+    public void hideRefreshing() {
+        refreshHandler.setRefreshing(false);
+        refreshHandler.setIsRefreshing(false);
+    }
+
+    @Override
     public void showEmptyState() {
         setActionsEnabled(false);
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -545,6 +554,16 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     @Override
     public void onItemClicked(Deposit deposit) {
+
+    }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
 
     }
 

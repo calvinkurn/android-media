@@ -26,20 +26,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     private static final String TAG = "DEPOSIT_FRAGMENT";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initView();
-    }
-
-    private void initView() {
-        SaldoDepositFragment fragment = SaldoDepositFragment.createInstance();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, TAG);
-        fragmentTransaction.commit();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SaldoDetailsPresenter.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
@@ -52,21 +38,14 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         return SaldoDetailsComponentInstance.getComponent(getApplication());
     }
 
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.activity_saldo_deposit;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
-
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        return SaldoDepositFragment.createInstance();
     }
 
     @Override

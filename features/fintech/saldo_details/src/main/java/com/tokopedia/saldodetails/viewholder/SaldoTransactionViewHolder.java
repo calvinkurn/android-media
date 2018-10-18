@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<Deposit> {
     private TextView nominal;
     private TextView balance;
     private SaldoItemListener listener;
+    private Context context;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_saldo_transaction;
@@ -23,6 +25,7 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<Deposit> {
 
     public SaldoTransactionViewHolder(View itemView, SaldoItemListener listener) {
         super(itemView);
+        this.context = itemView.getContext();
         this.listener = listener;
         date = itemView.findViewById(R.id.date);
         note = itemView.findViewById(R.id.note);
@@ -40,10 +43,14 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<Deposit> {
         note.setOnClickListener(onNotesClicked());
         if (Float.parseFloat(element.getDepositAmount()) > 0) {
             listener.setTextColor(nominal, R.color.tkpd_light_green);
-//            nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
+            if (context != null) {
+                nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
+            }
         } else {
             listener.setTextColor(nominal, R.color.tkpd_prod_price);
-//            nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
+            if (context != null) {
+                nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
+            }
         }
     }
 

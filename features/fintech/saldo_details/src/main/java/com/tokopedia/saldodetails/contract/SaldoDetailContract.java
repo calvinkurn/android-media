@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
@@ -11,10 +12,6 @@ import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
 public interface SaldoDetailContract {
     interface View extends CustomerView {
-        void showProgressLoading();
-
-        void hideProgressLoading();
-
         Context getContext();
 
         void setStartDate(String startDate);
@@ -24,6 +21,8 @@ public interface SaldoDetailContract {
         String getStartDate();
 
         String getEndDate();
+
+        Visitable getDefaultEmptyViewModel();
 
         Activity getActivity();
 
@@ -46,6 +45,8 @@ public interface SaldoDetailContract {
         void setLoading();
 
         void showRefreshing();
+
+        void hideRefreshing();
 
         void refresh();
 

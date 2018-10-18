@@ -161,6 +161,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 @Override
                 public void onSuccess(@NonNull SummaryWithdraw data) {
                     getView().finishLoading();
+                    getView().hideRefreshing();
                     getView().setActionsEnabled(true);
 
                     if (!data.isErrorDate()) {
@@ -286,7 +287,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         getView().getAdapter().addElement(data.getList());
 
         if (getView().getAdapter().getItemCount() == 0) {
-//            getView().getAdapter().(true);
+            getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
         }
 
         if (paging.CheckNextPage()) {
