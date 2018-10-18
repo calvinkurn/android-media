@@ -55,7 +55,8 @@ fun createFlightJourneyTable(journeyId: String): FlightJourneyTable {
             500000,
             false,
             RefundableEnum.REFUNDABLE,
-            false
+            false,
+            "comboId"
     )
 }
 

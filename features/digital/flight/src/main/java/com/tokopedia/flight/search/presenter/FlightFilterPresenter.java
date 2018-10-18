@@ -1,10 +1,6 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.domain.FlightFilterCountUseCase;
-import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
-import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;

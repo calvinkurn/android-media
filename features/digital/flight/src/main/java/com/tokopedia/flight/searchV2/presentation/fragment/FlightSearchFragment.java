@@ -646,10 +646,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         setUIMarkSort();
         setUIMarkFilter();
 
-        com.tokopedia.flight.search.view.model.filter.FlightFilterModel mappedFlightFilterModel =
-                new FlightFilterModelMapper().map(flightFilterModel);
-
         filterAndSortBottomAction.setButton1OnClickListener(v -> {
+            com.tokopedia.flight.search.view.model.filter.FlightFilterModel mappedFlightFilterModel =
+                    new FlightFilterModelMapper().map(flightFilterModel);
             FlightSearchFragment.this.addToolbarElevation();
             startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                     isReturning(),

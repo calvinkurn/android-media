@@ -45,28 +45,34 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     fun getFilteredJourneys(filterModel: FlightFilterModel, @FlightSortOption flightSortOption: Int):
             Observable<List<JourneyAndRoutes>> {
         return Observable.create<List<JourneyAndRoutes>> {
-            val sqlQuery = "SELECT * FROM FlightJourneyTable WHERE "
+            val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
+                "SELECT FlightJourneyTable.* FROM FlightJourneyTable, FlightRouteTable WHERE " +
+                        "FlightJourneyTable.id = FlightRouteTable.journeyId AND "
+            } else {
+                "SELECT * FROM FlightJourneyTable WHERE "
+            }
             val sqlStringBuilder = StringBuilder()
             sqlStringBuilder.append(sqlQuery)
 
-            sqlStringBuilder.append("durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
-            sqlStringBuilder.append("sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
+            sqlStringBuilder.append("FlightJourneyTable.durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
+            sqlStringBuilder.append("FlightJourneyTable.sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
 
             val isSpecialPrice = if (filterModel.isSpecialPrice) 1 else 0
             val isBestPairing = if (filterModel.isBestPairing) 1 else 0
             val isReturnInt = if (filterModel.isReturn) 1 else 0
 
+            sqlStringBuilder.append("${getAirlineCondition(filterModel.airlineList)}")
             sqlStringBuilder.append("${getRefundableCondition(filterModel.refundableTypeList)}")
             sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
             sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
 
             if (filterModel.isSpecialPrice) {
-                sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+                sqlStringBuilder.append("FlightJourneyTable.isSpecialPrice = $isSpecialPrice AND ")
             }
             if (filterModel.isReturn) {
-                sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
+                sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
             }
-            sqlStringBuilder.append("isReturn = $isReturnInt")
+            sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
 
             sqlStringBuilder.append(getOrderBy(flightSortOption))
 
@@ -108,28 +114,34 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
         return Observable.create {
-            val sqlQuery = "SELECT count(*) FROM FlightJourneyTable WHERE "
+            val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
+                "SELECT count(*) FROM FlightJourneyTable, FlightRouteTable WHERE " +
+                        "FlightJourneyTable.id = FlightRouteTable.journeyId AND "
+            } else {
+                "SELECT count(*) FROM FlightJourneyTable WHERE "
+            }
             val sqlStringBuilder = StringBuilder()
             sqlStringBuilder.append(sqlQuery)
 
-            sqlStringBuilder.append("durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
-            sqlStringBuilder.append("sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
+            sqlStringBuilder.append("FlightJourneyTable.durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
+            sqlStringBuilder.append("FlightJourneyTable.sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
 
             val isSpecialPrice = if (filterModel.isSpecialPrice) 1 else 0
             val isBestPairing = if (filterModel.isBestPairing) 1 else 0
             val isReturnInt = if (filterModel.isReturn) 1 else 0
 
+            sqlStringBuilder.append("${getAirlineCondition(filterModel.airlineList)}")
             sqlStringBuilder.append("${getRefundableCondition(filterModel.refundableTypeList)}")
             sqlStringBuilder.append("${getTransitCondition(filterModel.transitTypeList)}")
             sqlStringBuilder.append("${getDepartureTimeCondition(filterModel.departureTimeList)}")
 
             if (filterModel.isSpecialPrice) {
-                sqlStringBuilder.append("isSpecialPrice = $isSpecialPrice AND ")
+                sqlStringBuilder.append("FlightJourneyTable.isSpecialPrice = $isSpecialPrice AND ")
             }
             if (filterModel.isReturn) {
-                sqlStringBuilder.append("isBestPairing = $isBestPairing AND ")
+                sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
             }
-            sqlStringBuilder.append("isReturn = $isReturnInt")
+            sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
 
             val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 
@@ -147,6 +159,22 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
+    private fun getAirlineCondition(airlines: List<String>?): String? {
+        if (airlines == null || airlines.isEmpty()) {
+            return ""
+        }
+        val stringBuilder = StringBuilder()
+        for (i in 0 until airlines.size) {
+            val airline = airlines[i]
+            stringBuilder.append("FlightRouteTable.airline = '$airline' ")
+            if (i < airlines.size-1) {
+                stringBuilder.append("OR ")
+            }
+        }
+        stringBuilder.append("AND ")
+        return stringBuilder.toString()
+    }
+
     private fun getRefundableCondition(refundableEnumList: List<RefundableEnum>?): String? {
         if (refundableEnumList == null || refundableEnumList.isEmpty()) {
             return ""
@@ -154,7 +182,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         val stringBuilder = StringBuilder()
         for (i in 0 until refundableEnumList.size) {
             val refundableEnum = refundableEnumList[i]
-            stringBuilder.append("isRefundable = ${refundableEnum.id} ")
+            stringBuilder.append("FlightJourneyTable.isRefundable = ${refundableEnum.id} ")
             if (i < refundableEnumList.size-1) {
                 stringBuilder.append("OR ")
             }
@@ -172,10 +200,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             val transitEnum = transitList[i]
             stringBuilder.append(
                     when (transitEnum) {
-                        TransitEnum.DIRECT -> "totalTransit = 0 "
-                        TransitEnum.ONE -> "totalTransit = 1 "
-                        TransitEnum.TWO -> "totalTransit = 2 "
-                        TransitEnum.THREE_OR_MORE -> "totalTransit > 3 "
+                        TransitEnum.DIRECT -> "FlightJourneyTable.totalTransit = 0 "
+                        TransitEnum.ONE -> "FlightJourneyTable.totalTransit = 1 "
+                        TransitEnum.TWO -> "FlightJourneyTable.totalTransit = 2 "
+                        TransitEnum.THREE_OR_MORE -> "FlightJourneyTable.totalTransit > 3 "
                     }
             )
             if (i < transitList.size-1) {
@@ -195,10 +223,10 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             val departureTimeEnum = departureTimeEnumList[i]
             stringBuilder.append(
                     when (departureTimeEnum) {
-                        DepartureTimeEnum._00 -> "departureTimeInt BETWEEN 0 AND 599 "
-                        DepartureTimeEnum._06 -> "departureTimeInt BETWEEN 600 AND 1200 "
-                        DepartureTimeEnum._12 -> "departureTimeInt BETWEEN 1200 AND 1800 "
-                        DepartureTimeEnum._18 -> "departureTimeInt BETWEEN 1800 AND 2400 "
+                        DepartureTimeEnum._00 -> "FlightJourneyTable.departureTimeInt BETWEEN 0 AND 599 "
+                        DepartureTimeEnum._06 -> "FlightJourneyTable.departureTimeInt BETWEEN 600 AND 1200 "
+                        DepartureTimeEnum._12 -> "FlightJourneyTable.departureTimeInt BETWEEN 1200 AND 1800 "
+                        DepartureTimeEnum._18 -> "FlightJourneyTable.departureTimeInt BETWEEN 1800 AND 2400 "
                     }
             )
             if (i < departureTimeEnumList.size-1) {
@@ -211,14 +239,14 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
-            FlightSortOption.CHEAPEST -> " ORDER BY sortPrice ASC"
-            FlightSortOption.EARLIEST_ARRIVAL -> " ORDER BY arrivalTimeInt ASC"
-            FlightSortOption.EARLIEST_DEPARTURE -> " ORDER BY departureTimeInt ASC"
-            FlightSortOption.LATEST_ARRIVAL -> " ORDER BY arrivalTimeInt DESC"
-            FlightSortOption.LATEST_DEPARTURE -> " ORDER BY departureTimeInt DESC"
-            FlightSortOption.SHORTEST_DURATION -> " ORDER BY durationMinute ASC"
-            FlightSortOption.LONGEST_DURATION -> " ORDER BY durationMinute DESC"
-            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY sortPrice DESC"
+            FlightSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPrice ASC"
+            FlightSortOption.EARLIEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt ASC"
+            FlightSortOption.EARLIEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt ASC"
+            FlightSortOption.LATEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt DESC"
+            FlightSortOption.LATEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt DESC"
+            FlightSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC"
+            FlightSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC"
+            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPrice DESC"
             FlightSortOption.NO_PREFERENCE -> ""
             else -> ""
         }

@@ -152,7 +152,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
             flightFilterModel.setHasFilter(flightSearchStaatisticModel);
             com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel mappedFlightFilterModel =
                     new FlightFilterModelMapper().map2(flightFilterModel);
-            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
+            intent.putExtra(EXTRA_FILTER_MODEL, mappedFlightFilterModel);
             setResult(Activity.RESULT_OK, intent);
         }
         this.onBackPressed(true);
