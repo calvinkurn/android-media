@@ -60,6 +60,7 @@ public class ExploreFragment
     private static final int ITEM_COUNT = 10;
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
+    private static final int LOGIN_CODE = 13;
 
     private RecyclerView rvExplore;
     private GridLayoutManager layoutManager;
@@ -242,7 +243,16 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-        presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+        if (userSession.isLoggedIn()) {
+            presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+        } else {
+            startActivityForResult(
+                    RouteManager.getIntent(
+                            Objects.requireNonNull(getContext()),
+                            ApplinkConst.LOGIN
+                    ),
+                    LOGIN_CODE);
+        }
     }
 
     @Override
