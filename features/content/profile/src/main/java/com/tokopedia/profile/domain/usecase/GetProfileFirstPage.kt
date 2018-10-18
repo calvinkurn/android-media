@@ -23,10 +23,11 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 9/21/18.
  */
-class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetProfileHeaderUseCase,
-                                              val getContentListUseCase: GetContentListUseCase,
-                                              val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
-                                              val userSession: UserSession)
+class GetProfileFirstPage @Inject constructor(
+        private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
+        private val getContentListUseCase: GetContentListUseCase,
+        private val getAffiliateQuotaUseCase: GetAffiliateQuotaUseCase,
+        private val userSession: UserSession)
     : UseCase<ProfileFirstPageViewModel>() {
 
     var userId = 0

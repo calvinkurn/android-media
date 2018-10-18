@@ -36,7 +36,7 @@ public class GetContentListMapper implements Func1<GraphqlResponse, Observable<C
     private final Context context;
 
     @Inject
-    public GetContentListMapper(@ApplicationContext Context context) {
+    GetContentListMapper(@ApplicationContext Context context) {
         this.context = context;
     }
 
