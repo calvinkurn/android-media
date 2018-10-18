@@ -52,8 +52,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), "My Submissions");
-
     }
 
     @Override
