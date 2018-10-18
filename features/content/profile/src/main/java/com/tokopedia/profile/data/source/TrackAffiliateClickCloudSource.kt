@@ -6,7 +6,6 @@ import com.tokopedia.profile.data.network.TopAdsApi
 import com.tokopedia.profile.data.pojo.trackaffiliate.TrackAffiliatePojo
 import com.tokopedia.usecase.RequestParams
 import org.json.JSONException
-import org.json.JSONObject
 import rx.Observable
 import javax.inject.Inject
 
@@ -22,10 +21,8 @@ class TrackAffiliateClickCloudSource @Inject constructor(
             if (it.isSuccessful) {
                 if (it.body() != null && it.body() != null) {
                     try {
-                        val jsonObject = JSONObject(it.body())
-                        val entity = jsonObject.getString("data")
                         val type = object : TypeToken<TrackAffiliatePojo>() {}.type
-                        gson.fromJson<TrackAffiliatePojo>(entity, type).success
+                        gson.fromJson<TrackAffiliatePojo>(it.body(), type).success
                     } catch (e: JSONException) {
                         e.printStackTrace()
                         false
