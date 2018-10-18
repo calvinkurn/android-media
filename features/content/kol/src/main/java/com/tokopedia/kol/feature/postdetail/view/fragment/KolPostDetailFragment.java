@@ -132,7 +132,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + KolRouter.class.getSimpleName());
         }
 
-        if (getContext() != null) GraphqlClient.init(getContext());
         initVar();
 
         swipeToRefresh.setOnRefreshListener(this);
