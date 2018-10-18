@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.barcodescanner;
+package com.tokopedia.logisticinputreceiptshipment.view.barcodescanner;
 
 import android.os.Bundle;
 

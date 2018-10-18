@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.network.apiservice;
+package com.tokopedia.logisticdata.data.apiservice;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.network.constant.TkpdBaseURL;

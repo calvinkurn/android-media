@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

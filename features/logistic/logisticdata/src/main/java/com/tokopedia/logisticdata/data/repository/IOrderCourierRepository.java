@@ -1,7 +1,7 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticdata.data.repository;
 
+import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
 import java.util.Map;
 
@@ -13,8 +13,8 @@ import rx.Observable;
 
 public interface IOrderCourierRepository {
 
-    Observable<ListCourierViewModel> onOrderCourierRepository(String selectedCourierId,
-                                                              TKPDMapParam<String, String> params);
+    Observable<CourierResponse> onOrderCourierRepository(String selectedCourierId,
+                                                         TKPDMapParam<String, String> params);
 
     Observable<String> processShipping(TKPDMapParam<String, String> param);
 

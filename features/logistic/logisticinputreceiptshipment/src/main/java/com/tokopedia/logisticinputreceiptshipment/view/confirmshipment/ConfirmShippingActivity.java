@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -23,12 +23,13 @@ import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
-import com.tokopedia.logisticinputreceiptshipment.BaseActivity;
+import com.tokopedia.logisticinputreceiptshipment.view.base.BaseActivity;
 import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticinputreceiptshipment.TkpdProgressDialog;
-import com.tokopedia.logisticinputreceiptshipment.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
+import com.tokopedia.logisticinputreceiptshipment.view.base.TkpdProgressDialog;
+import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
+import com.tokopedia.logisticinputreceiptshipment.view.data.CourierSelectionModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;

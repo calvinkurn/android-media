@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.base;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.logisticinputreceiptshipment.R;
 
 public abstract class BaseActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent> {
 

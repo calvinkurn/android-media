@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.data;
 
 /**
  * Created by kris on 1/5/18. Tokopedia

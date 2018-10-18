@@ -1,7 +1,7 @@
 package com.tokopedia.logisticinputreceiptshipment.network.mapper;
 
-import com.tokopedia.logisticinputreceiptshipment.network.response.courierlist.CourierResponse;
-import com.tokopedia.logisticinputreceiptshipment.network.response.courierlist.Shipment;
+import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
+import com.tokopedia.logisticdata.data.entity.courierlist.Shipment;
 import com.tokopedia.transaction.common.data.order.CourierServiceModel;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;

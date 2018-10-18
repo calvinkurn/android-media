@@ -42,7 +42,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.logisticinputreceiptshipment.confirmshipment.ConfirmShippingActivity;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.network.response.courierlist;
+package com.tokopedia.logisticdata.data.entity.courierlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseC
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
-import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierInteractorImpl;
-import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierPresenterImpl;
-import com.tokopedia.logisticinputreceiptshipment.confirmshipment.OrderCourierRepository;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.GeneratedHostConverter;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderActApi;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderApi;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.OrderDetailApi;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.OrderCourierInteractorImpl;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.OrderCourierPresenterImpl;
+import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
+import com.tokopedia.logisticdata.data.converter.GeneratedHostConverter;
+import com.tokopedia.logisticdata.data.apiservice.MyShopOrderActApi;
+import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;
+import com.tokopedia.logisticdata.data.apiservice.OrderDetailApi;
 import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
@@ -176,10 +176,10 @@ public class OrderCourierModule {
 
 
         return new OrderCourierRepository(
-                provideOrderDetailMapper(),
                 myShopOrderApi,
                 myShopOrderActApi,
-                orderDetailApi);
+                orderDetailApi
+        );
     }
 
     @Provides
@@ -187,7 +187,7 @@ public class OrderCourierModule {
     OrderCourierInteractorImpl provideOrderCourierInteractor(
             @CourierDataRepositoryQualifier OrderCourierRepository courierRepository) {
         return new OrderCourierInteractorImpl(provideCompositeSubsrciption(),
-                courierRepository);
+                courierRepository, provideOrderDetailMapper());
     }
 
     @Provides

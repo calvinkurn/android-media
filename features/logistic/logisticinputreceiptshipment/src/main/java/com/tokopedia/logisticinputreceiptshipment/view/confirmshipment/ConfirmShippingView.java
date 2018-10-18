@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 

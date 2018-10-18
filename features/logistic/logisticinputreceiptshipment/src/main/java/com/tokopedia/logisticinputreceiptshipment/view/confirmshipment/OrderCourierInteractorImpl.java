@@ -1,6 +1,8 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 
 
+import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
+import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
@@ -19,11 +21,13 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor {
 
     private CompositeSubscription compositeSubscription;
     private OrderCourierRepository repository;
+    private OrderDetailMapper mapper;
 
     public OrderCourierInteractorImpl(CompositeSubscription compositeSubscription,
-                                      OrderCourierRepository repository) {
+                                      OrderCourierRepository repository, OrderDetailMapper mapper) {
         this.compositeSubscription = compositeSubscription;
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -31,6 +35,9 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor {
                                  TKPDMapParam<String, String> params,
                                  Subscriber<ListCourierViewModel> subscriber) {
         compositeSubscription.add(repository.onOrderCourierRepository(selectedCourierId, params)
+                .map(courierResponse -> mapper.getCourierServiceModel(courierResponse,
+                        selectedCourierId
+                ))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

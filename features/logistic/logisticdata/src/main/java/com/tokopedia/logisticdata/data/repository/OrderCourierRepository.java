@@ -1,14 +1,11 @@
-package com.tokopedia.logisticinputreceiptshipment.confirmshipment;
+package com.tokopedia.logisticdata.data.repository;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderActApi;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.MyShopOrderApi;
-import com.tokopedia.logisticinputreceiptshipment.network.apiservice.OrderDetailApi;
-import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
-import com.tokopedia.logisticinputreceiptshipment.network.response.courierlist.CourierResponse;
+import com.tokopedia.logisticdata.data.apiservice.MyShopOrderActApi;
+import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;
+import com.tokopedia.logisticdata.data.apiservice.OrderDetailApi;
+import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
 import java.util.Map;
 
@@ -21,35 +18,27 @@ import rx.Observable;
 
 public class OrderCourierRepository implements IOrderCourierRepository {
 
-    private OrderDetailMapper mapper;
-
     private MyShopOrderApi myShopOrderApi;
 
     private MyShopOrderActApi myShopOrderActApi;
 
     private OrderDetailApi orderDetailApi;
 
-    public OrderCourierRepository(OrderDetailMapper mapper,
-                                  MyShopOrderApi myShopOrderApi,
+    public OrderCourierRepository(MyShopOrderApi myShopOrderApi,
                                   MyShopOrderActApi myShopOrderActApi,
                                   OrderDetailApi orderDetailApi) {
-        this.mapper = mapper;
         this.myShopOrderApi = myShopOrderApi;
         this.myShopOrderActApi = myShopOrderActApi;
         this.orderDetailApi = orderDetailApi;
     }
 
     @Override
-    public Observable<ListCourierViewModel> onOrderCourierRepository(
+    public Observable<CourierResponse> onOrderCourierRepository(
             final String selectedCourierId,
             TKPDMapParam<String, String> params
     ) {
         return myShopOrderApi.getEditShippingForm(params)
-                .map(tkpdResponseResponse -> mapper.getCourierServiceModel(
-                        new Gson().fromJson(tkpdResponseResponse.body().getStringData(),
-                                CourierResponse.class),
-                        selectedCourierId
-                ));
+                .map(tkpdResponseResponse -> tkpdResponseResponse.body().convertDataObj(CourierResponse.class));
     }
 
     @Override

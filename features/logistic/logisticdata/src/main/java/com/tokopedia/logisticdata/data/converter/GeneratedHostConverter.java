@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.network.apiservice;
+package com.tokopedia.logisticdata.data.converter;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.response.GeneratedHostResponse;
@@ -20,7 +20,6 @@ import retrofit2.Retrofit;
  * @author Angga.Prasetiyo on 10/12/2015.
  */
 public class GeneratedHostConverter extends Converter.Factory {
-    private static final String TAG = GeneratedHostConverter.class.getSimpleName();
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
     @Override

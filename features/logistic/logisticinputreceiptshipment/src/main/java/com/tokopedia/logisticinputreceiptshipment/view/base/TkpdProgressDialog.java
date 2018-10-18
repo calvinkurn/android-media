@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment;
+package com.tokopedia.logisticinputreceiptshipment.view.base;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -8,6 +8,8 @@ import android.content.DialogInterface.OnCancelListener;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.tokopedia.logisticinputreceiptshipment.R;
 
 
 public class TkpdProgressDialog {
