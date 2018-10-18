@@ -6,14 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 
 /**
  * Created by alvarisi on 5/22/17.
@@ -50,7 +50,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+            homeIntent = TkpdCoreRouter.getSellerHomeActivity(context);
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }

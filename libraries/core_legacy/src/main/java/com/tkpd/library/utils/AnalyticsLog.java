@@ -42,7 +42,7 @@ public class AnalyticsLog {
         );
     }
 
-    public static void logForceLogoutToken(GCMHandler gcmHandler, SessionHandler sessionHandler, String url) {
+    public static void logForceLogoutToken(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url) {
         String baseUrl = getBaseUrl(url);
 
         AnalyticsLog.log(context,"ErrorType=Force Logout Token!"
@@ -62,10 +62,10 @@ public class AnalyticsLog {
     }
 
 
-    public static void logNetworkError(GCMHandler gcmHandler, SessionHandler sessionHandler, String url, int errorCode) {
+    public static void logNetworkError(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
 
-        AnalyticsLog.log("ErrorType=Error Network! "
+        AnalyticsLog.log(context, "ErrorType=Error Network! "
                 + " ErrorCode=" + errorCode
                 + " UserID=" + (sessionHandler.getLoginID()
                 .equals("") ? "0" : sessionHandler.getLoginID())
@@ -98,10 +98,10 @@ public class AnalyticsLog {
         return baseUrl.contains("staging") ? "Staging" : "Production";
     }
 
-    public static void logNotification(SessionHandler sessionHandler, String notificationId, String notificationCode) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+    public static void logNotification(Context context, SessionHandler sessionHandler, String notificationId, String notificationCode) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
-            AnalyticsLog.log("Notification Received. User: " + sessionHandler.getLoginID()
+            AnalyticsLog.log(context, "Notification Received. User: " + sessionHandler.getLoginID()
                     + " Notification Id: " + notificationId
                     + " Notification Code: " + notificationCode
             );
@@ -131,7 +131,7 @@ public class AnalyticsLog {
 
     public static void printNOTPLog(Context context, String msg) {
         getAndroidNOTPLogger(context).log(msg + " - Phone Number:-" + new SessionHandler(context).getPhoneNumber()
-                + " - LoginID - " + new SessionHandler(context).getLoginID(MainApplication.getAppContext()));
+                + " - LoginID - " + new SessionHandler(context).getLoginID());
     }
 
     private static void log(Context context, String message) {
@@ -172,12 +172,12 @@ public class AnalyticsLog {
         return instance;
     }
 
-    public static void logInvalidGrant(String url) {
+    public static void logInvalidGrant(Context context, GCMHandler gcmHandler, SessionHandler sessionHandler, String url) {
         String baseUrl = getBaseUrl(url);
 
-        AnalyticsLog.log("ErrorType=Invalid Grant!"
-                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
-                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+        AnalyticsLog.log(context, "ErrorType=Invalid Grant!"
+                + " UserID=" + (sessionHandler.getLoginID()
+                .equals("") ? "0" : sessionHandler.getLoginID())
                 + " Url=" + "'" + url + "'"
                 + " BaseUrl=" + "'" + baseUrl + "'"
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
@@ -185,9 +185,9 @@ public class AnalyticsLog {
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + Build.MODEL
-                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " DeviceId=" + "'" + gcmHandler.getRegistrationId() + "'"
                 + " Environment=" + isStaging(baseUrl)
-                + " RefreshToken=" + "'" + (SessionHandler.getRefreshToken(MainApplication.getAppContext())) + "'"
+                + " RefreshToken=" + "'" + (sessionHandler.getRefreshToken()) + "'"
         );
     }
 }

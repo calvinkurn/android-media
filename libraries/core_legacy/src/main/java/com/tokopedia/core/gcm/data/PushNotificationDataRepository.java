@@ -1,9 +1,9 @@
 package com.tokopedia.core.gcm.data;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.domain.PushNotification;
@@ -27,10 +27,11 @@ import rx.functions.Func1;
 public class PushNotificationDataRepository implements PushNotificationRepository {
     private final PushNotificationDataStoreFactory mPushNotificationDataStoreFactory;
     private final PushNotificationMapper mPushNotificationMapper;
+    private Context context;
 
-    @Inject
-    public PushNotificationDataRepository() {
-        mPushNotificationDataStoreFactory = new PushNotificationDataStoreFactory(MainApplication.getAppContext());
+    public PushNotificationDataRepository(Context context) {
+        this.context = context;
+        mPushNotificationDataStoreFactory = new PushNotificationDataStoreFactory(context);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         gsonBuilder.setPrettyPrinting();

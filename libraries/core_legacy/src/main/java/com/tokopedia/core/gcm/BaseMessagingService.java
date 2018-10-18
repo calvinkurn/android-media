@@ -1,6 +1,7 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,11 +10,12 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.TkpdCoreRouter;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -24,15 +26,22 @@ import io.hansel.hanselsdk.Hansel;
 public class BaseMessagingService extends BaseNotificationMessagingService {
     private static IAppNotificationReceiver appNotificationReceiver;
     private SharedPreferences sharedPreferences;
+    private Context mContext;;
+    private SessionHandler sessionHandler;
+    private GCMHandler gcmHandler;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+        mContext = getApplicationContext();
+        sessionHandler = new SessionHandler(mContext);
+        gcmHandler = new GCMHandler(mContext);
+
         Bundle data = convertMap(remoteMessage);
         CommonUtils.dumper("FCM " + data.toString());
 
         if (appNotificationReceiver == null) {
-            appNotificationReceiver = createInstance();
+            appNotificationReceiver = createInstance(mContext);
             appNotificationReceiver.init(getApplication());
         }
 
@@ -41,7 +50,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         }else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
         } else {
-            AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
+            AnalyticsLog.logNotification(mContext, sessionHandler, remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
         }
     }
@@ -52,9 +61,9 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
     }
 
-    public static IAppNotificationReceiver createInstance() {
+    public static IAppNotificationReceiver createInstance(Context context) {
         if (GlobalConfig.isSellerApp()) {
-            return SellerAppRouter.getAppNotificationReceiver();
+            return TkpdCoreRouter.getAppNotificationReceiver(context);
         } else if(GlobalConfig.isPosApp()) {
             return new IAppNotificationReceiver() {
                 @Override

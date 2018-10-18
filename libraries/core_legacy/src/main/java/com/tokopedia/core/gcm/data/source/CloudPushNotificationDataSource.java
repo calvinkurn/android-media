@@ -1,14 +1,16 @@
 package com.tokopedia.core.gcm.data.source;
 
+import android.content.Context;
+
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.core.gcm.data.PushNotificationDataStore;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.domain.PushNotification;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.network.apiservices.notification.PushNotificationService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.gcm.network.PushNotificationService;
 
 import org.json.JSONException;
 
@@ -26,28 +28,34 @@ import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
  */
 
 public class CloudPushNotificationDataSource implements PushNotificationDataStore {
+
     private static final String KEY_FLAG_IS_SUCCESS = "is_success";
+    private Context context;
+
+    public CloudPushNotificationDataSource(Context context) {
+        this.context = context;
+    }
 
     public Observable<FCMTokenUpdateEntity> updateTokenServer(final FCMTokenUpdate data) {
         return Observable.just(data)
-                .flatMap(new Func1<FCMTokenUpdate, Observable<Response<TkpdResponse>>>() {
+                .flatMap(new Func1<FCMTokenUpdate, Observable<Response<TokopediaWsV4Response>>>() {
                     @Override
-                    public Observable<Response<TkpdResponse>> call(FCMTokenUpdate requestData) {
+                    public Observable<Response<TokopediaWsV4Response>> call(FCMTokenUpdate requestData) {
                         TKPDMapParam<String, String> param = new TKPDMapParam<>();
                         param.put("device_id_new", requestData.getNewToken());
                         param.put("os_type", requestData.getOsType());
                         param.put("user_id", requestData.getUserId());
-                        PushNotificationService service = new PushNotificationService(requestData.getAccessToken());
+                        PushNotificationService service = new PushNotificationService(context, requestData.getAccessToken());
                         return service.getApi().updateToken(param);
                     }
                 })
-                .map(new Func1<Response<TkpdResponse>, FCMTokenUpdateEntity>() {
+                .map(new Func1<Response<TokopediaWsV4Response>, FCMTokenUpdateEntity>() {
                     @Override
-                    public FCMTokenUpdateEntity call(Response<TkpdResponse> response) {
+                    public FCMTokenUpdateEntity call(Response<TokopediaWsV4Response> response) {
                         FCMTokenUpdateEntity entity = new FCMTokenUpdateEntity();
                         entity.setToken(data.getNewToken());
                         if (response.isSuccessful()) {
-                            TkpdResponse tkpdResponse = response.body();
+                            TokopediaWsV4Response tkpdResponse = response.body();
                             if (tkpdResponse.isError()) {
                                 entity.setSuccess(false);
                                 return entity;

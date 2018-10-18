@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 
@@ -81,6 +82,24 @@ public interface TkpdCoreRouter {
     static Class<?> getInboxMessageActivityClass(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxMessageActivityClass();
     }
+
+    static IAppNotificationReceiver getAppNotificationReceiver(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getAppNotificationReceiver();
+    }
+
+    static Intent getInboxTalkActivityIntent(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getInboxTalkActivityIntent();
+    }
+
+    static Intent getSellerHomeActivity(Context context) {
+        return RouterUtils.getRouterFromContext(context).getSellerHomeActivity();
+    }
+
+    Intent getSellerHomeActivity();
+
+    Intent getInboxTalkActivityIntent();
+
+    IAppNotificationReceiver getAppNotificationReceiver();
 
     Class<?> getInboxMessageActivityClass();
 

@@ -69,6 +69,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
+    implementation rootProject.ext.networkDependencies.glide
+
 }
 
 //apply plugin: 'com.google.gms.google-services'

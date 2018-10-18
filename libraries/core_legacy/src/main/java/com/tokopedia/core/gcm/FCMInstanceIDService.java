@@ -6,8 +6,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.util.SessionHandler;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -48,7 +48,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
                     tokenUpdate.setOldToken(localToken);
                     tokenUpdate.setNewToken(token);
                     tokenUpdate.setOsType(String.valueOf(1));
-                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken(this));
+                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
                     tokenUpdate.setUserId(sessionHandler.getLoginID());
                     fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
                 } else {

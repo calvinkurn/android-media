@@ -13,4 +13,6 @@
     <string name="title_get_edit_reputation">Feedback anda telah diperbarui</string>
     <string name="title_new_review">Ulasan baru</string>
     <string name="title_new_order">Pesanan baru</string>
+    <string name="title_new_talk">Diskusi Produk baru</string>
+    <string name="title_new_notif_general">Notifikasi baru dari Tokopedia</string>
 </resources>

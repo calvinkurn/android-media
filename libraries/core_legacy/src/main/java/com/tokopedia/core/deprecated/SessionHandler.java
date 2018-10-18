@@ -63,4 +63,12 @@ public class SessionHandler {
     public String getEmail() {
         return "";
     }
+
+    public String getRefreshToken() {
+        return "";
+    }
+
+    public String getAccessToken() {
+        return "";
+    }
 }

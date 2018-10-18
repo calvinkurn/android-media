@@ -15,18 +15,19 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.R;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
@@ -201,7 +202,7 @@ public class BuildAndShowNotification {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
         Intent homeIntent = null;
         if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(mContext);
+            homeIntent = TkpdCoreRouter.getSellerHomeActivity(mContext);
         } else {
             homeIntent = HomeRouter.getHomeActivity(mContext);
         }
@@ -326,7 +327,7 @@ public class BuildAndShowNotification {
 
     private NotificationCompat.Builder configureIconNotification(Bundle data, final NotificationCompat.Builder mBuilder) {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_ICON))) {
-            ImageHandler.loadImageBitmapNotification(
+            loadImageBitmapNotification(
                     mContext,
                     data.getString(ARG_NOTIFICATION_ICON), new OnGetFileListener() {
                         @Override
@@ -353,8 +354,7 @@ public class BuildAndShowNotification {
                                                  final NotificationConfiguration configuration){
 
         if (!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())) {
-
-            ImageHandler.loadImageBitmapNotification(
+            loadImageBitmapNotification(
                     mContext,
                     applinkNotificationPass.getBannerUrl(), new OnGetFileListener() {
 
@@ -392,9 +392,26 @@ public class BuildAndShowNotification {
 
     }
 
+    public static void loadImageBitmapNotification(Context context, String url, BuildAndShowNotification.
+            OnGetFileListener listener) {
+        FutureTarget<File> futureTarget = Glide.with(context)
+                .load(url)
+                .downloadOnly(210, 100);
+
+        try {
+            File file = futureTarget.get();
+            if (file.exists()) {
+                listener.onFileReady(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     private NotificationCompat.Builder configureBigPictureNotification(final Bundle data, final NotificationCompat.Builder mBuilder) {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
-            ImageHandler.loadImageBitmapNotification(
+            loadImageBitmapNotification(
                     mContext,
                     data.getString(ARG_NOTIFICATION_IMAGE), new OnGetFileListener() {
                         @Override
