@@ -38,6 +38,7 @@ import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
+import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
@@ -51,6 +52,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.util.*
 import javax.inject.Inject
 
 
@@ -65,6 +67,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var resultIntent: Intent? = null
+    private var affiliatePostQuota: AffiliatePostQuota? = null
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
@@ -187,6 +190,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = firstPageViewModel.lastCursor
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
+        affiliatePostQuota = firstPageViewModel.affiliatePostQuota
         setHasOptionsMenu(true)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
@@ -392,6 +396,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onSuccessDeletePost(rowNumber: Int) {
         adapter.data.removeAt(rowNumber)
         adapter.notifyItemRemoved(rowNumber)
+
+        affiliatePostQuota?.let {
+            it.number += 1
+            try {
+                recommendationQuota.text = String.format(it.format, it.number)
+            } catch (e: IllegalFormatException) { } catch (e: NullPointerException) { }
+        }
+
+
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.profile_post_deleted),
                 BaseToaster.LENGTH_LONG
