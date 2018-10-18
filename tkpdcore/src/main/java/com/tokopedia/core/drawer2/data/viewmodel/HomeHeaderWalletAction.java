@@ -23,6 +23,12 @@ public class HomeHeaderWalletAction implements Parcelable {
     private String redirectUrlActionButton;
     private boolean linked;
     private List<String> abTags = new ArrayList<>();
+    private String pointBalance;
+    private int rawPointBalance;
+    private String cashBalance;
+    private int rawCashBalance;
+    private String walletType;
+
 
     protected HomeHeaderWalletAction(Parcel in) {
         labelTitle = in.readString();
@@ -36,6 +42,36 @@ public class HomeHeaderWalletAction implements Parcelable {
         redirectUrlActionButton = in.readString();
         linked = in.readByte() != 0;
         abTags = in.createStringArrayList();
+        pointBalance = in.readString();
+        rawPointBalance = in.readInt();
+        cashBalance = in.readString();
+        rawCashBalance = in.readInt();
+        walletType = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(labelTitle);
+        dest.writeString(balance);
+        dest.writeString(redirectUrlBalance);
+        dest.writeString(appLinkBalance);
+        dest.writeInt(typeAction);
+        dest.writeByte((byte) (visibleActionButton ? 1 : 0));
+        dest.writeString(labelActionButton);
+        dest.writeString(appLinkActionButton);
+        dest.writeString(redirectUrlActionButton);
+        dest.writeByte((byte) (linked ? 1 : 0));
+        dest.writeStringList(abTags);
+        dest.writeString(pointBalance);
+        dest.writeInt(rawPointBalance);
+        dest.writeString(cashBalance);
+        dest.writeInt(rawCashBalance);
+        dest.writeString(walletType);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<HomeHeaderWalletAction> CREATOR = new Creator<HomeHeaderWalletAction>() {
@@ -138,26 +174,46 @@ public class HomeHeaderWalletAction implements Parcelable {
         this.linked = linked;
     }
 
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public void setPointBalance(String pointBalance) {
+        this.pointBalance = pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public void setRawPointBalance(int rawPointBalance) {
+        this.rawPointBalance = rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public void setRawCashBalance(int rawCashBalance) {
+        this.rawCashBalance = rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(String walletType) {
+        this.walletType = walletType;
+    }
+
     public HomeHeaderWalletAction() {
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(labelTitle);
-        parcel.writeString(balance);
-        parcel.writeString(redirectUrlBalance);
-        parcel.writeString(appLinkBalance);
-        parcel.writeInt(typeAction);
-        parcel.writeByte((byte) (visibleActionButton ? 1 : 0));
-        parcel.writeString(labelActionButton);
-        parcel.writeString(appLinkActionButton);
-        parcel.writeString(redirectUrlActionButton);
-        parcel.writeByte((byte) (linked ? 1 : 0));
-        parcel.writeStringList(abTags);
     }
 }

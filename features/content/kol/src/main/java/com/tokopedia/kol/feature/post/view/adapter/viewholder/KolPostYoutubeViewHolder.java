@@ -60,7 +60,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     private Type type;
 
     public enum Type {
-        PROFILE, FEED
+        PROFILE, FEED, SHOP_PAGE
     }
 
     public KolPostYoutubeViewHolder(View itemView,

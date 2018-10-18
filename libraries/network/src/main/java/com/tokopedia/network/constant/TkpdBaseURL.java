@@ -730,28 +730,6 @@ public class TkpdBaseURL {
         public static final String PATH_FEEDBACK = "ws/feedback";
     }
 
-    public static class TokoCash {
-        public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";
-        public static final String PATH_WALLET = "api/v1/wallet/balance";
-        public static final String PATH_REQUEST_OTP_WALLET = "api/v1/wallet/otp/request";
-        public static final String PATH_LINK_WALLET_TO_TOKOCASH = "api/v1/wallet/link";
-        public static final String GET_TOKEN_WALLET = "api/v1/wallet/token";
-    }
-
-    public static class Wallet {
-        public static final String GET_HISTORY = "api/v1/me/history";
-        public static final String POST_COMPLAINT = "api/v1/cs/complaint";
-        public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
-        public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
-        public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
-        public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
-        public static final String GET_BALANCE = "api/v1/wallet/balance";
-        public static final String REQUEST_OTP_LOGIN = "oauth/otp";
-        public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
-        public static final String AUTHORIZE = "oauth/authorize_native";
-        public static final String CHECK_MSISDN = "oauth/check/msisdn";
-    }
-
     public static class DigitalApi {
         public static final String VERSION = "v1.4/";
         public static final String HMAC_KEY = "web_service_v4";

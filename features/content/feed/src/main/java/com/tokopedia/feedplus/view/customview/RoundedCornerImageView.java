@@ -6,7 +6,8 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
-import com.tokopedia.core.customwidget.SquareImageView;
+import com.tokopedia.design.image.SquareImageView;
+
 
 /**
  * @author by nisie on 6/16/17.

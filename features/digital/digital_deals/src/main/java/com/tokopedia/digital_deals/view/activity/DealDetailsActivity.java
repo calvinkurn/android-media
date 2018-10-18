@@ -111,13 +111,4 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
         return dealDetail;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() < 1) {
-            setResult(RESULT_OK);
-        }
-        super.onBackPressed();
-    }
-
-
 }
