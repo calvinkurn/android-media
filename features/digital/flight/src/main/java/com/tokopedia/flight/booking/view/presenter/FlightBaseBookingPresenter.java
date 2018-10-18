@@ -108,6 +108,11 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                                 ));
                             }
 
+                            if (journeyAffected.size() == 0 && getComboKey() != null && getComboKey().length() > 0){
+                                NewFarePrice newFarePrice = flightBookingCartData.getNewFarePrices().get(0);
+                                fares.add(newFarePrice.getFare());
+                            }
+
                             int newTotalPrice = calculateTotalFareAndAmenities(
                                     fares,
                                     baseCartData.getAdult(),
@@ -245,6 +250,20 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 returnDetailViewModel.setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
                 returnDetailViewModel.setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
             }
+
+            if (getComboKey() != null && getComboKey().length() > 0 &&
+                            newFarePrice.getId().equalsIgnoreCase(getComboKey())) {
+                int newAdultPrice = newFarePrice.getFare().getAdultNumeric() / 2;
+                int newChildPrice = newFarePrice.getFare().getChildNumeric() / 2;
+                int newInfantPrice = newFarePrice.getFare().getInfantNumeric() / 2;
+                departureDetailViewModel.setAdultNumericPrice(newAdultPrice);
+                departureDetailViewModel.setChildNumericPrice(newChildPrice);
+                departureDetailViewModel.setInfantNumericPrice(newInfantPrice);
+
+                returnDetailViewModel.setAdultNumericPrice(newAdultPrice);
+                returnDetailViewModel.setChildNumericPrice(newChildPrice);
+                returnDetailViewModel.setInfantNumericPrice(newInfantPrice);
+            }
         }
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         if (departureDetailViewModel.getAdultNumericPrice() > 0) {
@@ -373,6 +392,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
 
         getView().renderPriceListDetails(simpleViewModels);
     }
+
+    protected abstract String getComboKey();
 
     private SimpleViewModel formatPassengerFarePriceDetail(String departureAirport,
                                                            String arrivalAirport,

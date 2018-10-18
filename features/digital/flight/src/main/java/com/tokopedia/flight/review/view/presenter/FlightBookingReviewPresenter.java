@@ -84,6 +84,11 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     }
 
     @Override
+    protected String getComboKey() {
+        return getView().getComboKey();
+    }
+
+    @Override
     public void verifyBooking(String promoCode, int price, int adult, String cartId,
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone,

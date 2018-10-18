@@ -181,6 +181,20 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     flightBookingCartData.getReturnTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
                     flightBookingCartData.getReturnTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
                     flightBookingCartData.getReturnTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
+                } else if (
+                        getView().getPriceViewModel().getComboKey() != null &&
+                                getView().getPriceViewModel().getComboKey().length() > 0 &&
+                                newFarePrice.getId().equalsIgnoreCase(getView().getPriceViewModel().getComboKey())) {
+                    int newAdultPrice = newFarePrice.getFare().getAdultNumeric() / 2;
+                    int newChildPrice = newFarePrice.getFare().getChildNumeric() / 2;
+                    int newInfantPrice = newFarePrice.getFare().getInfantNumeric() / 2;
+                    flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newAdultPrice);
+                    flightBookingCartData.getDepartureTrip().setChildNumericPrice(newChildPrice);
+                    flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newInfantPrice);
+
+                    flightBookingCartData.getReturnTrip().setAdultNumericPrice(newAdultPrice);
+                    flightBookingCartData.getReturnTrip().setChildNumericPrice(newChildPrice);
+                    flightBookingCartData.getReturnTrip().setInfantNumericPrice(newInfantPrice);
                 }
             }
             int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
@@ -483,7 +497,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private Observable<FlightJourneyViewModel> getDepartureDataObservable() {
         return flightSearchJourneyByIdUseCase
                 .createObservable(flightSearchJourneyByIdUseCase
-                        .createRequestParams( getView().getDepartureTripId()));
+                        .createRequestParams(getView().getDepartureTripId()));
     }
 
     @NonNull
@@ -817,6 +831,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestampChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
+    }
+
+    @Override
+    protected String getComboKey() {
+        return getView().getPriceViewModel().getComboKey();
     }
 
     @Override
