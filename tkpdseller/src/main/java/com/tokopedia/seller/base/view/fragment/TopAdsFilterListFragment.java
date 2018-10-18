@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.TopAdsFilterAdapter;
 import com.tokopedia.seller.base.view.model.FilterTitleItem;

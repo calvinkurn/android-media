@@ -1,8 +1,8 @@
 package com.tokopedia.gm.featured.view.adapter;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.

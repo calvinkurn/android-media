@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.model;
 
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * @author normansyahputa on 3/9/17.

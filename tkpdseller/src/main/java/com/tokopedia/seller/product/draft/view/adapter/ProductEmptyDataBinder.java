@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.draft.view.adapter;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 
 /**
  * Created by nathan on 7/7/17.

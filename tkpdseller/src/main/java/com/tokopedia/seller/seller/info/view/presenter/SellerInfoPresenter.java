@@ -3,7 +3,6 @@ package com.tokopedia.seller.seller.info.view.presenter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;

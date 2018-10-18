@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.topads.common.util.TopAdsSourceTaggingUseCaseUtil;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
