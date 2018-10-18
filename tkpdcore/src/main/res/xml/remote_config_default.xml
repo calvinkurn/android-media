@@ -185,6 +185,11 @@
         <key>app_show_referral_button</key>
         <value>false</value>
     </entry>
+
+    <entry>
+        <key>app_enable_challenges</key>
+        <value>true</value>
+    </entry>
     <entry>
         <key>mainapp_native_promo_list</key>
         <value>true</value>
@@ -236,28 +241,28 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_is_enabled_new_withdraw</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>sellerapp_is_enabled_new_withdraw</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>mainapp_wallet_label_register</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink_register</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_label_name</key>
-        <value></value>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_is_enabled_new_talk</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_is_enabled_new_talk</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_enable_feed_shop_page</key>

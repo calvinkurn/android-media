@@ -197,25 +197,35 @@ android {
         resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
     }
 
-    // Specifies two flavor dimensions.
-    flavorDimensions "tier"
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
 
     productFlavors {
         staging {
-
+            dimension "tier"
         }
-
         live {
-
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
         }
     }
-
-
 }
 
 repositories {
     flatDir {
         dirs 'libs'
+    }
+}
+
+afterEvaluate {
+    dependencies {
+        liveDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -229,6 +239,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.datePickerRange)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -261,13 +273,17 @@ dependencies {
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
+    implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
 
@@ -315,9 +331,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.fingerprint)
 
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }

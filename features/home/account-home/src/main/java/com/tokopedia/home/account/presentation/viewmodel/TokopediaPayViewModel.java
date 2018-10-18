@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
-import android.support.annotation.ColorRes;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;

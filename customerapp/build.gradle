@@ -33,8 +33,8 @@ def isAlpha() {
 }
 
 def allowSplit() {
-    return gradle.startParameter.taskNames.contains("assembleLiveProdRelease") &&
-            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit")
+    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit");
 }
 
 def allowDistribution() {
@@ -158,7 +158,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !isAlpha() && !allowDistribution()) {
+            if (!isProduction() && !isAlpha()) {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel=true
@@ -220,6 +220,7 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
         resConfigs "en", "id"
+
     }
 
 
@@ -335,7 +336,8 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.mitraToppers)
-
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.libraries.pushNotif)
@@ -354,9 +356,13 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
 
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaOneClick
+
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.config)
@@ -416,9 +422,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

@@ -298,11 +298,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     }
 
     @Override
-    public RequestParams getParams() {
-        return null;
-    }
-
-    @Override
     public View getRootView() {
         return mainContent;
     }
@@ -314,12 +309,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvPromoSuccessMsg.setVisibility(View.VISIBLE);
         batal.setVisibility(View.VISIBLE);
         edPromoLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showCashbackMessage(String text) {
-        tvPromoCashbackMsg.setText(text);
-        tvPromoCashbackMsg.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -521,6 +510,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 RouteManager.route(this, url);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
                 manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                 this.finish();
             }
         }

@@ -357,7 +357,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void showLoginSnackbar(String message, int position) {
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
-                getActivity().getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
+                getActivity().getResources().getString(R.string.title_activity_login), v -> {
                     Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
                     toActivityRequest.onNavigateToActivityRequest(intent, DealsHomeActivity.REQUEST_CODE_LOGIN, position);
@@ -389,7 +389,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private int index;
         private boolean isShown;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.iv_product);
@@ -407,7 +407,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             cvBrand = itemView.findViewById(R.id.cv_brand);
         }
 
-        public void bindData(final ProductItem productItem) {
+        void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
             ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             if (!brandPageCard) {
@@ -425,7 +425,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dealavailableLocations.setCompoundDrawablePadding(getActivity().getResources().getDimensionPixelSize(R.dimen.dp_8));
 
             }
-            setLikes(productItem.getLikes(), productItem.isLiked());
+            int likes = Utils.getSingletonInstance().containsLikedEvent(productItem.getId());
+            int prevLikes = Utils.getSingletonInstance().containsUnlikedEvent(productItem.getId());
+            if (likes > 0) {
+                setLikes(likes, true);
+            } else if (prevLikes >= 0) {
+                setLikes(prevLikes, false);
+            } else {
+                setLikes(productItem.getLikes(), productItem.isLiked());
+            }
 
             if (productItem.getDisplayTags() != null) {
                 hotDeal.setVisibility(View.VISIBLE);
@@ -483,16 +491,16 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
-        public boolean isShown() {
+        boolean isShown() {
             return isShown;
         }
 
-        public void setShown(boolean shown) {
+        void setShown(boolean shown) {
             isShown = shown;
         }
 
         private String getShareLabel(int position) {
-            if(categoryItems.get(getIndex()).getBrand()==null)
+            if (categoryItems.get(getIndex()).getBrand() == null)
                 return "";
             return String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
                     , categoryItems.get(getIndex()).getDisplayName(),
@@ -503,7 +511,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             String str = LIKE;
             if (categoryItems.get(getIndex()).isLiked())
                 str = UNLIKE;
-            if(categoryItems.get(getIndex()).getBrand()==null)
+            if (categoryItems.get(getIndex()).getBrand() == null)
                 return "";
             return String.format("%s - %s - %s - %s",
                     categoryItems.get(getIndex()).getBrand().getTitle()
@@ -526,7 +534,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb());
             } else if (v.getId() == R.id.iv_wish_list) {
-                boolean isLoggedIn = mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
+                ProductItem item = categoryItems.get(getIndex());
+                boolean isLoggedIn = mPresenter.setDealLike(item.getId(),item.isLiked(), getIndex(),item.getLikes() );
                 if (isLoggedIn) {
                     dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
                     if (categoryItems.get(getIndex()).isLiked()) {
@@ -554,12 +563,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setLike(int position) {
         if (position < categoryItems.size()) {
-            if (categoryItems.get(position).isLiked()) {
-                categoryItems.get(position).setLikes(categoryItems.get(position).getLikes() - 1);
-                categoryItems.get(position).setLiked(!categoryItems.get(position).isLiked());
+            ProductItem item = categoryItems.get(position);
+            mPresenter.setDealLike(item.getId(), item.isLiked(), position, item.getLikes());
+            if (item.isLiked()) {
+                categoryItems.get(position).setLikes(item.getLikes() - 1);
+                categoryItems.get(position).setLiked(!item.isLiked());
             } else {
-                categoryItems.get(position).setLikes(categoryItems.get(position).getLikes() + 1);
-                categoryItems.get(position).setLiked(!categoryItems.get(position).isLiked());
+                categoryItems.get(position).setLikes(item.getLikes() + 1);
+                categoryItems.get(position).setLiked(!item.isLiked());
             }
             notifyItemChanged(position);
         }
@@ -580,7 +591,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private int index;
         private boolean isShown;
 
-        public ItemViewHolder2(View itemView) {
+        ItemViewHolder2(View itemView) {
             super(itemView);
             this.itemView = itemView;
             dealImage = itemView.findViewById(R.id.iv_product);
@@ -601,7 +612,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         }
 
-        public void bindData(final ProductItem productItem) {
+        void bindData(final ProductItem productItem) {
             dealsDetails.setText(productItem.getDisplayName());
             ImageHandler.loadImage(context, dealImage, productItem.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             ImageHandler.loadImage(context, brandImage, productItem.getBrand().getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
@@ -640,11 +651,11 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
-        public boolean isShown() {
+        boolean isShown() {
             return isShown;
         }
 
-        public void setShown(boolean shown) {
+        void setShown(boolean shown) {
             isShown = shown;
         }
 
@@ -682,7 +693,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             dealsInCity = itemView.findViewById(R.id.deals_in_city);
         }
 
-        public void bindData(SpannableString headerText) {
+        void bindData(SpannableString headerText) {
             dealsInCity.setText(headerText);
         }
     }
@@ -736,11 +747,11 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
-        public boolean isShown() {
+        boolean isShown() {
             return isShown;
         }
 
-        public void setShown(boolean shown) {
+        void setShown(boolean shown) {
             isShown = shown;
         }
 
@@ -764,25 +775,23 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     public class HeaderBrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ExpandableTextView tvExpandableDesc;
-        private LinearLayout tvSeeMoreBtn;
+        private TextView tvSeeMoreBtn;
         private TextView tvDealsCount;
         private TextView tvCityName;
         private View itemView;
         private TextView tvSeeMore;
-        private ImageView ivArrowSeeMore;
 
         private HeaderBrandViewHolder(View view) {
             super(view);
             this.itemView = view;
             tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-            tvSeeMoreBtn = view.findViewById(R.id.expand_view_description);
+            tvSeeMoreBtn = view.findViewById(R.id.seemorebutton_description);
             tvDealsCount = view.findViewById(R.id.number_of_locations);
             tvCityName = view.findViewById(R.id.tv_popular);
             tvSeeMore = view.findViewById(R.id.seemorebutton_description);
-            ivArrowSeeMore = view.findViewById(R.id.down_arrow_description);
         }
 
-        public void bindData(final String headerText, int count) {
+        void bindData(final String headerText, int count) {
             tvExpandableDesc.setText(headerText);
             Location location = Utils.getSingletonInstance().getLocation(getActivity());
             if (location != null) {
@@ -799,15 +808,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.expand_view_description) {
+            if (v.getId() == R.id.seemorebutton_description) {
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_MORE_BRAND_DETAIL, highLightText);
                 if (tvExpandableDesc.isExpanded()) {
                     tvSeeMore.setText(R.string.expand);
-                    ivArrowSeeMore.animate().rotation(0f);
 
                 } else {
                     tvSeeMore.setText(R.string.collapse);
-                    ivArrowSeeMore.animate().rotation(180f);
 
                 }
                 tvExpandableDesc.toggle();

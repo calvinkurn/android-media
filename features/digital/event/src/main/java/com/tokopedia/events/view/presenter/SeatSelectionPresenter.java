@@ -62,7 +62,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private PackageViewModel selectedpkgViewModel;
     private ProfileUseCase profileUseCase;
     private ProfileModel profileModel;
-    private String promocode;
     private String email;
     private String number;
     private SelectedSeatViewModel mSelectedSeatViewModel;
@@ -172,8 +171,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         getView().showProgressBar();
         this.mSelectedSeatViewModel = selectedSeatViewModel;
         RequestParams params = RequestParams.create();
-        params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
-        params.putBoolean("ispromocodecase", false);
+        params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(selectedpkgViewModel));
+        params.putBoolean(Utils.Constants.ISSEATINGEVENT, true);
         if (isEventOmsEnabled()) {
             postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
@@ -330,11 +329,10 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         cartItems.add(cartItem);
         CartItems cart = new CartItems();
         cart.setCartItems(cartItems);
-        cart.setPromocode(promocode);
+        cart.setPromocode("");
 
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
-        JsonObject requestBody = jsonElement.getAsJsonObject();
-        return requestBody;
+        return jsonElement.getAsJsonObject();
     }
 
     public String getTicketCategory() {

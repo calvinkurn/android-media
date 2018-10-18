@@ -1,0 +1,19 @@
+package com.tokopedia.shop.common.constant;
+
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CUSTOM;
+import static com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT;
+
+/**
+ * @author normansyahputa on 4/25/17.
+ */
+@Retention(RetentionPolicy.SOURCE)
+@IntDef({ETALASE_DEFAULT, ETALASE_CUSTOM})
+public @interface ShopEtalaseTypeDef {
+    int ETALASE_DEFAULT = -1;
+    int ETALASE_CUSTOM = 1;
+}

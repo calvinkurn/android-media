@@ -14,7 +14,7 @@ import java.util.ArrayList
 import com.tokopedia.product.manage.item.R
 
 class ProductEditOptionMenuBottomSheets : BottomSheets() {
-    private lateinit var title: String
+    private var title: String = ""
     private val optionMenus = ArrayList<ProductEditOptionMenu>()
     private var mode: Int = 0
     private var selectedId: Int = 0

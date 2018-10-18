@@ -166,9 +166,6 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer"/>
-        <meta-data
-            android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="@string/key_truecaller_main_app"/>
 
         <activity
             android:name=".home.ParentIndexHome"
@@ -274,7 +271,7 @@
         <activity
             android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.White" />
         <activity android:name=".campaign.view.activity.ShakeShakeAudioCampaignActivity"
             android:launchMode="singleTop"
             android:theme="@style/DialogTheme"/>
@@ -340,6 +337,10 @@
                 <action android:name="com.tokopedia.tkpd.utils.delete" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.tokopedia.tkpd.onboarding.NewOnboardingActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

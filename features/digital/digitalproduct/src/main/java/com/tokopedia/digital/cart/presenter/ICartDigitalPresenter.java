@@ -28,9 +28,13 @@ public interface ICartDigitalPresenter {
 
     void callPermissionCheckFail();
 
-    void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData);
+    void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom);
 
     void onClearVoucher();
 
     void onPaymentSuccess(String categoryId);
+
+    void onFirstTimeLaunched();
+
+    void onLoginResultReceived();
 }

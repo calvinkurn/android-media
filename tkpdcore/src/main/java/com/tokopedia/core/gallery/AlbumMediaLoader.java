@@ -82,7 +82,20 @@ public class AlbumMediaLoader extends CursorLoader {
                 };
                 selectionAlbum = SELECTION_ALBUM_IMAGE_ONLY;
             }
-        }else {
+        }else if(galeryType == GalleryType.ofVideoOnly()) {
+            if (albumItem.isAll()) {
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+                };
+                selectionAlbum = SELECTION_ALL_IMAGE_ONLY;
+            }else{
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
+                        albumItem.getmId()
+                };
+                selectionAlbum = SELECTION_ALBUM_IMAGE_ONLY;
+            }
+        } else{
             if (albumItem.isAll()) {
                 selectionArgs = SELECTION_ALL_ARGS;
                 selectionAlbum = SELECTION_ALL;

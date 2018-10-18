@@ -94,7 +94,7 @@ public class EventBookTicketPresenter
         generateLocationDateModels();
         getView().renderFromDetails(dataModel);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             getView().renderSeatmap(dataModel.getSeatMapImage());
         else
@@ -190,9 +190,9 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
         getProfile();
     }
 
@@ -235,9 +235,9 @@ public class EventBookTicketPresenter
         } else {
             getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_ADD_TICKET, "add - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     public void removeTickets() {
@@ -262,9 +262,9 @@ public class EventBookTicketPresenter
             mChildFragment.setDecorationHeight(0);
             getView().hidePayButton();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle() + " - " +
-                selectedPackageViewModel.getDisplayName() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_REMOVE_TICKET, "remove - " + selectedPackageViewModel.getTitle().toLowerCase() + " - " +
+                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
+                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()).toLowerCase());
     }
 
     private void getSeatSelectionDetails() {
@@ -326,7 +326,7 @@ public class EventBookTicketPresenter
         SchedulesViewModel selectedSchedule = dataModel.getSchedulesViewModels().get(index);
         getView().setLocationDate(model.getmLocation(), model.getDate(), selectedSchedule);
         if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-            selectedPackageDate = Utils.convertEpochToString(selectedSchedule.getStartDate());
+            selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(selectedSchedule.getStartDate());
         mSelectedSchedule = index;
     }
 
@@ -336,7 +336,7 @@ public class EventBookTicketPresenter
             LocationDateModel model = new LocationDateModel();
             model.setmLocation(viewModel.getCityName());
             if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                model.setDate(Utils.convertEpochToString(viewModel.getStartDate()));
+                model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
             else
                 model.setDate("");
             locationDateModels.add(model);

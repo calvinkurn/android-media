@@ -1,3 +1,4 @@
+include ':logisticanalytics'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -15,26 +16,25 @@ buildCache {
     }
 }
 
-//apply from: "features/settings-features.gradle"
-//apply from: "libraries/settings-libraries.gradle"
+apply from: "features/settings-features.gradle"
+apply from: "libraries/settings-libraries.gradle"
 
-//include 'customerapp'
-include 'kelontongapp'
-//include 'tkpdloyalty'
+include 'customerapp'
+include 'tkpdloyalty'
 //include 'tkpdride'
-//include 'tkpdfeed'
-//include 'tkpdcore'
-//include 'tkpdinbox'
-//include 'tkpddiscovery'
-//include 'tkpdtransaction'
-//include 'tkpdsession'
-//include 'tkpdpdp'
-//include 'tkpddesign'
-//include 'sellerapp'
-//include 'tkpdseller'
-//include 'tkpdtokocash'
-//include 'tkpdabstraction'
-//include 'tkpdcontent'
-//include 'tkpdstream'
-//include 'tkpdtransaction-common'
-//include 'posapp'
+include 'tkpdfeed'
+include 'tkpdcore'
+include 'tkpdinbox'
+include 'tkpddiscovery'
+include 'tkpdtransaction'
+include 'tkpdsession'
+include 'tkpdpdp'
+include 'tkpddesign'
+include 'sellerapp'
+include 'tkpdseller'
+include 'tkpdtokocash'
+include 'tkpdabstraction'
+include 'tkpdcontent'
+include 'tkpdstream'
+include 'tkpdtransaction-common'
+include 'posapp'

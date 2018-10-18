@@ -2,10 +2,10 @@ package com.tokopedia.gm.statistic.view.activity;
 
 import android.os.Bundle;
 
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerCustomFragment;
-import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFragment;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.fragment.DatePickerCustomFragment;
+import com.tokopedia.datepicker.range.view.fragment.DatePickerPeriodFragment;
 import com.tokopedia.gm.statistic.view.fragment.GMStatisticDatePickerCustomFragment;
 import com.tokopedia.gm.statistic.view.fragment.GMStatisticDatePickerPeriodFragment;
 
