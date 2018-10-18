@@ -433,6 +433,7 @@ ext {
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
-            travelCalendar    : ":libraries:travel_calendar"
+            travelCalendar    : ":libraries:travel_calendar",
+            CmPushNotifications    : ":libraries:cm_push_notifications"
     ]
 }
