@@ -89,7 +89,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (getActivity() != null && getActivity().getApplication() != null) {
             DaggerKolProfileComponent.builder()
                     .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                    .kolProfileModule(new KolProfileModule(this))
+                    .kolProfileModule(new KolProfileModule())
                     .build()
                     .inject(this);
         }
