@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
@@ -53,6 +54,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
     private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
+    private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
 
     @Inject
@@ -61,13 +63,15 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                                  FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase,
                                  FlightSearchCombinedUseCase flightSearchCombinedUseCase,
                                  FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase,
-                                 FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
+                                 FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
+                                 FlightAnalytics flightAnalytics) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
         this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
         this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
+        this.flightAnalytics = flightAnalytics;
         this.compositeSubscription = new CompositeSubscription();
     }
 
