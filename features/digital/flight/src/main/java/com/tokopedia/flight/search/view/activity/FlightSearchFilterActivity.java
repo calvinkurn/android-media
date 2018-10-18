@@ -28,9 +28,8 @@ import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
-import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.List;
 
@@ -150,9 +149,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             Intent intent = new Intent();
             flightFilterModel.setHasFilter(flightSearchStaatisticModel);
-            com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel mappedFlightFilterModel =
-                    new FlightFilterModelMapper().map2(flightFilterModel);
-            intent.putExtra(EXTRA_FILTER_MODEL, mappedFlightFilterModel);
+            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
             setResult(Activity.RESULT_OK, intent);
         }
         this.onBackPressed(true);

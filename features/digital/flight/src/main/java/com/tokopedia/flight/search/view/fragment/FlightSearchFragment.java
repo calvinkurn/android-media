@@ -441,11 +441,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             @Override
             public void onClick(View v) {
 //                flightSearchPresenter.getFlightStatistic(isReturning());
-                FlightSearchFragment.this.addToolbarElevation();
+/*                FlightSearchFragment.this.addToolbarElevation();
                 startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                         isReturning(),
                         flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
+                        REQUEST_CODE_SEARCH_FILTER);*/
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);

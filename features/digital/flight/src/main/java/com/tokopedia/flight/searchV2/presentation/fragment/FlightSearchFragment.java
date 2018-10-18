@@ -47,7 +47,6 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
-import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
 
 import java.util.ArrayList;
@@ -647,12 +646,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         setUIMarkFilter();
 
         filterAndSortBottomAction.setButton1OnClickListener(v -> {
-            com.tokopedia.flight.search.view.model.filter.FlightFilterModel mappedFlightFilterModel =
-                    new FlightFilterModelMapper().map(flightFilterModel);
             FlightSearchFragment.this.addToolbarElevation();
             startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                     isReturning(),
-                    mappedFlightFilterModel),
+                    flightFilterModel),
                     REQUEST_CODE_SEARCH_FILTER);
         });
         filterAndSortBottomAction.setVisibility(View.GONE);

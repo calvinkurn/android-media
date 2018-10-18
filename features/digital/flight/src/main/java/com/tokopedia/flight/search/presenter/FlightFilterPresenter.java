@@ -2,11 +2,10 @@ package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchCountUseCase;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchStatisticsUseCase;
-import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import javax.inject.Inject;
 
@@ -28,9 +27,7 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
     }
 
     public void getFlightCount(boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel) {
-        com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel mappedFlightFilterModel =
-                new FlightFilterModelMapper().map2(flightFilterModel);
-        flightFilterCountUseCase.execute(flightFilterCountUseCase.createRequestParams(mappedFlightFilterModel),
+        flightFilterCountUseCase.execute(flightFilterCountUseCase.createRequestParams(flightFilterModel),
                 getSubscriberFlightCount());
     }
 
