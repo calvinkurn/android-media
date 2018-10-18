@@ -95,6 +95,12 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(context).getSellerHomeActivity();
     }
 
+    static Class<?> getInboxTalkActivityClass(Context mContext) {
+        return RouterUtils.getRouterFromContext(mContext).getInboxTalkActivityClass();
+    }
+
+    Class<?> getInboxTalkActivityClass();
+
     Intent getSellerHomeActivity();
 
     Intent getInboxTalkActivityIntent();

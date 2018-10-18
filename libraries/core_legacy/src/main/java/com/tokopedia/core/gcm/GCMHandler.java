@@ -50,7 +50,7 @@ public class GCMHandler {
         regid = getRegistrationId(context);
         CommonUtils.dumper(TAG + "start FCM get");
         if (TextUtils.isEmpty(regid)) {
-            final RegisterDeviceInteractor interactor = new RegisterDeviceInteractor();
+            final RegisterDeviceInteractor interactor = new RegisterDeviceInteractor(context);
             interactor.registerDevice(new Subscriber<DeviceRegistrationDataResponse>() {
                 @Override
                 public void onCompleted() {
@@ -66,7 +66,7 @@ public class GCMHandler {
                 public void onNext(DeviceRegistrationDataResponse response) {
                     if (response.getStatusCode() != REGISTRATION_STATUS_OK) {
                         TrackingUtils
-                                .eventError(context.getClass().toString(), response.getStatusMessage());
+                                .eventError(context, context.getClass().toString(), response.getStatusMessage());
                     }
                     interactor.storeRegistrationDevice(response.getDeviceRegistration());
                     gcmlistener.onGCMSuccess(regid);

@@ -1,5 +1,7 @@
 package com.tokopedia.core.gcm.data;
 
+import android.content.Context;
+
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 
@@ -17,8 +19,8 @@ public class RegisterDeviceInteractor {
     private final PushNotificationRepository mPushNotificationRepository;
 
     @Inject
-    public RegisterDeviceInteractor() {
-        this.mPushNotificationRepository = new PushNotificationDataRepository();
+    public RegisterDeviceInteractor(Context context) {
+        this.mPushNotificationRepository = new PushNotificationDataRepository(context);
     }
 
     public void registerDevice(Subscriber<DeviceRegistrationDataResponse> subscriber){

@@ -15,7 +15,7 @@ public class PushNotificationDataStoreFactory {
         mContext = context;
     }
     public PushNotificationDataStore createCloudPushNotificationDataStore(){
-        return new CloudPushNotificationDataSource();
+        return new CloudPushNotificationDataSource(mContext);
     }
 
     public PushNotificationDataStore createDiskPushNotificationDataStore(){

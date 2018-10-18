@@ -1,5 +1,7 @@
 package com.tokopedia.core.gcm.data;
 
+import android.content.Context;
+
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
@@ -16,10 +18,12 @@ import rx.subscriptions.CompositeSubscription;
 public class PushNotificationDataInteractor implements IPushNotificationDataInteractor {
     private final CompositeSubscription mCompositeSubscription;
     private final PushNotificationRepository mPushNotificationRepository;
+    private Context applicationContext;
 
-    public PushNotificationDataInteractor() {
+    public PushNotificationDataInteractor(Context applicationContext) {
+        this.applicationContext = applicationContext;
         this.mCompositeSubscription = new CompositeSubscription();
-        this.mPushNotificationRepository = new PushNotificationDataRepository();
+        this.mPushNotificationRepository = new PushNotificationDataRepository(applicationContext);
     }
 
     @Override

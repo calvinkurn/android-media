@@ -32,6 +32,7 @@ import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotific
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +61,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
         mContext = application.getApplicationContext();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository(mContext);
         mSavePushNotificationUseCase = new SavePushNotificationUseCase(
                 pushNotificationRepository
         );
@@ -79,20 +80,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected boolean isDedicatedNotification(Bundle data) {
         //disable message push notif
         return getCode(data) != 101 && (getCode(data) < 1000 || getCode(data) >= 1100);
-    }
-
-    protected void resetNotificationStatus(Bundle data) {
-        switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))) {
-            case TkpdState.GCMServiceState.GCM_DRAWER_UPDATE:
-                MainApplication.resetDrawerStatus(true);
-                break;
-            case TkpdState.GCMServiceState.GCM_CART_UPDATE:
-                MainApplication.resetCartStatus(true);
-                break;
-            default:
-                MainApplication.resetNotificationStatus(true);
-                break;
-        }
     }
 
     public abstract void handleDedicatedNotification(Bundle data);

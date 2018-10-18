@@ -14,7 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.var.TkpdCache;
@@ -40,6 +42,7 @@ public class FCMCacheManager {
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
+    public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
     private Context context;
 
@@ -69,51 +72,6 @@ public class FCMCacheManager {
         cache.applyEditor();
     }
 
-    public void resetCache(Bundle data) {
-        if (Integer.parseInt(data.getString(NOTIFICATION_CODE)) > 600
-                && Integer.parseInt(data.getString(NOTIFICATION_CODE)) < 802) {
-            doResetCache(Integer.parseInt(data.getString(NOTIFICATION_CODE)));
-        }
-    }
-
-    void updateUpdateAppStatus(Bundle data) {
-        LocalCacheHandler updateStats = new LocalCacheHandler(context, TkpdCache.STATUS_UPDATE);
-        updateStats.putInt(TkpdCache.Key.STATUS, Integer.parseInt(data.getString("status")));
-        updateStats.applyEditor();
-    }
-
-    private void doResetCache(int code) {
-        switch (code) {
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PROFILE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PROFILE, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_NOTIF_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTIFICATION, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_PRIVACY_SETTING:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PRIVACY, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PEOPLE_ADDRESS_SETTING:
-
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_INFO:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_SHOP_INFO, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_PAYMENT:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_PAYMENT, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_ETALASE:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_ETALASE, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_SHOP_NOTES:
-                ShopSettingCache.DeleteCache(ShopSettingCache.CODE_NOTES, context.getApplicationContext());
-                break;
-            case TkpdState.GCMServiceState.GCM_PRODUCT_LIST:
-                ManageProductCache.ClearCache(context.getApplicationContext());
-                break;
-        }
-    }
-
     public boolean isAllowToHandleNotif(Bundle data) {
         try {
             return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
@@ -139,7 +97,7 @@ public class FCMCacheManager {
 
     public Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        return settings.getBoolean(SettingsFragment.SETTING_NOTIFICATION_VIBRATE, false);
+        return settings.getBoolean(SETTING_NOTIFICATION_VIBRATE, false);
     }
 
     public Uri getSoundUri() {
@@ -290,7 +248,7 @@ public class FCMCacheManager {
             FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
             tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
             tokenUpdate.setOsType(String.valueOf(1));
-            tokenUpdate.setAccessToken(sessionHandler.getAccessToken(context));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
             tokenUpdate.setUserId(sessionHandler.getLoginID());
             fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
         }

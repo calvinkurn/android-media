@@ -15,4 +15,8 @@
     <string name="title_new_order">Pesanan baru</string>
     <string name="title_new_talk">Diskusi Produk baru</string>
     <string name="title_new_notif_general">Notifikasi baru dari Tokopedia</string>
+    <string name="notif_channel_general">Notifikasi</string>
+    <string name="title_reply_review">Ulasan yang dibalas</string>
+    <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
+    <string name="title_new_message">Pesan baru</string>
 </resources>

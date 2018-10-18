@@ -40,7 +40,7 @@ public class PushNotificationIntentService extends IntentService {
     }
 
     private void handleUpdateClientId(FCMTokenUpdate data) {
-        if (mInteractor == null) mInteractor = new PushNotificationDataInteractor();
+        if (mInteractor == null) mInteractor = new PushNotificationDataInteractor(getApplicationContext());
         mInteractor.updateTokenServer(data, new UpdateClientIdSubscriber());
     }
 

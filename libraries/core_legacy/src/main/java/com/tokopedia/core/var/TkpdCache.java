@@ -3,6 +3,7 @@ package com.tokopedia.core.var;
 public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String G_CODE = "G_CODE";
     public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
+    public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
 
     public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
 
