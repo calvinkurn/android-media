@@ -1,6 +1,8 @@
 package com.tokopedia.profile.domain.usecase
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain
 import com.tokopedia.kol.feature.post.domain.usecase.GetContentListUseCase
@@ -8,6 +10,7 @@ import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
 import com.tokopedia.profile.data.pojo.profileheader.Profile
 import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.usecase.RequestParams
@@ -68,6 +71,12 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
     private fun convertToHeader(): Func1<GraphqlResponse, ProfileHeaderViewModel> {
         return Func1 { graphqlResponse ->
             val data: ProfileHeaderData = graphqlResponse.getData(ProfileHeaderData::class.java)
+            val error: ProfileHeaderError = data.bymeProfileHeader.profileHeaderError
+
+            if (TextUtils.isEmpty(error.message).not()) {
+                throw MessageErrorException(error.message)
+            }
+
             val profile: Profile = data.bymeProfileHeader.profile
             ProfileHeaderViewModel(
                     profile.name,
