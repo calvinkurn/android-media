@@ -22,8 +22,6 @@ interface ProfileContract {
 
         fun followUnfollowUser(userId: Int, follow: Boolean)
 
-        fun goToProduct(productId: Int)
-
         fun addImages(productId: Int)
 
         fun updateCursor(cursor: String)

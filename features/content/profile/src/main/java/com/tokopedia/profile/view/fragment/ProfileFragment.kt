@@ -244,11 +244,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun goToProduct(productId: Int) {
-        //TODO milhamj
-        Toast.makeText(context, "Going to product~", Toast.LENGTH_SHORT).show()
-    }
-
     override fun addImages(productId: Int) {
         //TODO milhamj
         Toast.makeText(context, "Adding more images", Toast.LENGTH_SHORT).show()
