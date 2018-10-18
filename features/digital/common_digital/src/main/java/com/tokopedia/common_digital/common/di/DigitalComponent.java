@@ -14,6 +14,7 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 
 import dagger.Component;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -42,6 +43,8 @@ public interface DigitalComponent {
     CacheManager globalCacheManager();
 
     void inject(InstantCheckoutActivity instantCheckoutActivity);
+
+    HttpLoggingInterceptor httpLoggingInterceptor();
 
 }
 

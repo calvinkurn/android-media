@@ -6,6 +6,7 @@ import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 
 import dagger.Component;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by Rizky on 28/08/18.
@@ -13,6 +14,7 @@ import dagger.Component;
 @DigitalCartScope
 @Component(dependencies = DigitalComponent.class, modules = DigitalCartModule.class)
 public interface DigitalCartComponent {
+    HttpLoggingInterceptor httpLoggingInterceptor();
 
     void inject(CartDigitalFragment cartDigitalFragment);
 
