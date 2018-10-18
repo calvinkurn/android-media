@@ -512,4 +512,49 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    // Year End Promo
+    public void eventViewPreselectedCourierOption(String shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                shippingProductId
+        );
+    }
+
+    public void eventViewDuration(boolean isCourierPromo, String duration) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_DURATION,
+                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+        );
+    }
+
+    public void eventViewCourierOption(boolean isCourierPromo, String shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+        );
+    }
+
+    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_COURIER_OPTION,
+                isCourierPromo ? "promo - " + duration : "non promo - " + duration
+        );
+    }
+
+    public void eventClickChangeCourierOption(boolean isCourierPromo, String shippingProductId) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHANGE_COURIER_OPTION,
+                isCourierPromo ? "promo - " + shippingProductId : "non promo - " + shippingProductId
+        );
+    }
 }
