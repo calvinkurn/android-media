@@ -1729,4 +1729,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAutomaticResetPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
+
+    @Override
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
+    }
 }
