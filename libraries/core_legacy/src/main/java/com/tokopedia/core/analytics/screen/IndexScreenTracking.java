@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.ScreenTrackingBuilder;
 import com.tokopedia.core.analytics.TrackingUtils;
-//import com.tokopedia.core.database.manager.GlobalCacheManager;
 
 import java.util.concurrent.TimeUnit;
 

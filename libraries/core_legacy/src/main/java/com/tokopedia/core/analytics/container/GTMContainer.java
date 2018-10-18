@@ -15,6 +15,8 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -30,6 +32,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
 
@@ -92,22 +95,22 @@ public class GTMContainer implements IGTMContainer {
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
-//    private Boolean isAllowRefresh() {
-//        //if (MainApplication.isDebug()) return true;
-//        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-//        Log.i("GTM TKPD", "Allow Refresh? " + cache.isExpired());
-//        return cache.isExpired();
-//    }
+    private Boolean isAllowRefresh() {
+        //if (MainApplication.isDebug()) return true;
+        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
+        Log.i("GTM TKPD", "Allow Refresh? " + cache.isExpired());
+        return cache.isExpired();
+    }
 
-//    private void setExpiryRefresh() {
-//        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-//        if (MainApplication.isDebug()) {
-//            cache.setExpire(EXPIRE_CONTAINER_TIME_DEBUG);
-//        } else {
-//            cache.setExpire(EXPIRE_CONTAINER_TIME);
-//        }
-//        cache.applyEditor();
-//    }
+    private void setExpiryRefresh() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
+        if (GlobalConfig.DEBUG) {
+            cache.setExpire(EXPIRE_CONTAINER_TIME_DEBUG);
+        } else {
+            cache.setExpire(EXPIRE_CONTAINER_TIME);
+        }
+        cache.applyEditor();
+    }
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
