@@ -375,7 +375,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         startActivityForResult(
                 CreatePostImagePickerActivity.getInstance(
                         Objects.requireNonNull(getActivity()),
-                        viewModel.getImageList()),
+                        viewModel.getFileImageList()),
                 REQUEST_IMAGE_PICKER);
     }
 

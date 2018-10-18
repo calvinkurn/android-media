@@ -296,6 +296,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEditClicked(int id) {
+
+    }
+
+    @Override
     public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
 
     }

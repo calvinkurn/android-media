@@ -52,6 +52,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private TabLayout tabLayout;
     private TextView info;
     private TextView tooltip;
+    private View addImageBtn;
     private View bottomSpace;
     private Type type;
 
@@ -75,6 +76,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         tabLayout = view.findViewById(R.id.tabLayout);
         info = view.findViewById(R.id.info);
         tooltip = view.findViewById(R.id.tooltip);
+        addImageBtn = view.findViewById(R.id.addImageBtn);
         bottomSpace = view.findViewById(R.id.bottom_space);
     }
 
@@ -108,6 +110,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             info.setVisibility(View.VISIBLE);
             info.setText(element.getInfo());
         }
+
+        addImageBtn.setVisibility(element.isEditable() ? View.VISIBLE : View.GONE);
 
         if (TextUtils.isEmpty(element.getReview())) {
             bottomSpace.setVisibility(View.VISIBLE);
@@ -257,6 +261,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             if (tooltip.getVisibility() == View.VISIBLE)
                 tooltipAreaClicked(element);
         });
+
+        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
     }
 
     private void goToProfile(final BaseKolViewModel element) {

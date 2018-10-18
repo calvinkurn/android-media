@@ -74,9 +74,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
+        const val POST_ID = "{post_id}"
         const val TEXT_PLAIN = "text/plain"
         const val KOL_COMMENT_CODE = 13
         const val SETTING_PROFILE_CODE = 83
+        const val EDIT_POST_CODE = 1310
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -121,17 +123,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode != Activity.RESULT_OK || data == null) {
-            return
-        }
         when (requestCode) {
-            KOL_COMMENT_CODE ->
-                onSuccessAddDeleteKolComment(
-                        data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
-                        data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
-            SETTING_PROFILE_CODE ->
+            KOL_COMMENT_CODE -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    onSuccessAddDeleteKolComment(
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
+                }
+            }
+            SETTING_PROFILE_CODE, EDIT_POST_CODE -> {
                 onSwipeRefresh()
+            }
         }
     }
 
@@ -334,6 +336,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivityForResult(intent, KOL_COMMENT_CODE)
     }
 
+    override fun onEditClicked(id: Int) {
+        startActivityForResult(
+                RouteManager.getIntent(
+                        context,
+                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, id.toString())
+                ),
+                EDIT_POST_CODE
+        )
+    }
+
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
         val menus = Menus(context!!)
         val menuList = ArrayList<String>()
@@ -401,7 +413,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             it.number += 1
             try {
                 recommendationQuota.text = String.format(it.format, it.number)
-            } catch (e: IllegalFormatException) { } catch (e: NullPointerException) { }
+            } catch (e: IllegalFormatException) {
+            } catch (e: NullPointerException) {
+            }
         }
 
 
