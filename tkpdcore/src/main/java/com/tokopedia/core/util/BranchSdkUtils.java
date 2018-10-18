@@ -46,8 +46,6 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DEEPLINK_PATH_KEY = "$android_deeplink_path";
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
-    private static final String CHANNEL = "Android";
-    private static final String FEATURE = "Share";
     private static final String PAYMENT_KEY = "paymentID";
     private static final String PRODUCTTYPE_KEY = "productType";
     private static final String USERID_KEY = "userId";
@@ -129,12 +127,11 @@ public class BranchSdkUtils {
             linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
             linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
-
         }
 
-        linkProperties.setCampaign(getCampaignName(data.getType()));
-        linkProperties.setChannel(CHANNEL);
-        linkProperties.setFeature(FEATURE);
+        linkProperties.setCampaign(data.getCampaignName());
+        linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
+        linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter("$og_url", data.getOgUrl());
@@ -358,12 +355,5 @@ public class BranchSdkUtils {
 
     public interface GenerateShareContents {
         void onCreateShareContents(String shareContents, String shareUri, String branchUrl);
-    }
-
-    private static String getCampaignName(String type) {
-        String campaign = "Product%20Share";
-        if (type != null)
-            campaign = type + "%20Share";
-        return campaign;
     }
 }
