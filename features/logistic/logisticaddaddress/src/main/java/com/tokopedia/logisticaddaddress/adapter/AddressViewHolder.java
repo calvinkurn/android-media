@@ -21,6 +21,9 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     private ManageAddressListener listener;
 
+    public static final String DEFAULT_LATITUDE = "-6.1753924";
+    public static final String DEFAULT_LONGITUDE = "106.8249641";
+
     public interface ManageAddressListener {
 
         void setActionEditButton(AddressViewModel viewModel);
@@ -158,8 +161,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     private String getLatitude(String latitude) {
         if (latitude == null || latitude.isEmpty()) {
-            String defaultLatitude = "-6.1753924";
-            return defaultLatitude;
+            return DEFAULT_LATITUDE;
         } else {
             return latitude;
         }
@@ -167,8 +169,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     private String getLongitude(String longitude) {
         if (longitude == null || longitude.isEmpty()) {
-            String defaultLongitude = "106.8249641";
-            return defaultLongitude;
+            return DEFAULT_LONGITUDE;
         } else {
             return longitude;
         }
