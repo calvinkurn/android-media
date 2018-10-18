@@ -1,5 +1,6 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse;
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
         .TopAdsPdpAffiliate.Data.PdpAffiliate;
@@ -22,8 +23,18 @@ public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliat
     }
 
     @Override
-    public void onError(Throwable e) {
+    public void onStart() {
+        super.onStart();
+        viewListener.renderAffiliateButton(null);
+    }
 
+    @Override
+    public void onError(Throwable e) {
+        if (e instanceof MessageErrorException) {
+            viewListener.showErrorAffiliate(e.getMessage());
+        } else {
+            viewListener.showErrorAffiliate(null);
+        }
     }
 
     @Override
@@ -49,31 +60,4 @@ public class AffiliateProductDataSubscriber extends Subscriber<TopAdsPdpAffiliat
         }
     }
 
-//    private final ProductDetailPresenter productDetailPresenter;
-
-//    public AffiliateProductDataSubscriber(ProductDetailPresenter productDetailPresenter){
-//        this.productDetailPresenter = productDetailPresenter;
-//    }
-//    @Override
-//    public void onCompleted() {
-//
-//    }
-//
-//    @Override
-//    public void onError(Throwable e) {
-//
-//    }
-//
-//    @Override
-//    public void onNext(Response<AffiliateProductDataResponse>
-// affiliateProductDataResponseResponse) {
-//        AffiliateProductDataResponse affiliateProductDataResponse =
-//                affiliateProductDataResponseResponse.body();
-//
-//        if (affiliateProductDataResponse.getData().getAffiliate().get(0)
-//                != null){
-//            Affiliate affiliate = affiliateProductDataResponse.getData().getAffiliate().get(0);
-//            productDetailPresenter.renderAffiliateButton(affiliate);
-//        }
-//    }
 }

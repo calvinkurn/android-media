@@ -46,6 +46,7 @@ public class ButtonAffiliate extends BaseCustomView {
 
     public void renderView(AffiliateInfoViewModel affiliate) {
         setVisibility(VISIBLE);
+        loadingAffiliate.setVisibility(affiliate != null ? GONE : VISIBLE);
         buttonAffiliate.setOnClickListener(view -> {
             if (affiliate != null) {
                 listener.onByMeClicked(affiliate);

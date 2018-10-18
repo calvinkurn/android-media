@@ -909,8 +909,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productPass.isFromExploreAffiliate()) {
             buttonAffiliate.renderView(affiliate);
         } else {
-            buttonBuyView.showByMeButton(true);
-            buttonBuyView.setByMeButtonListener(affiliate);
+            if (affiliate != null) {
+                buttonBuyView.showByMeButton(true);
+                buttonBuyView.setByMeButtonListener(affiliate);
+            }
+        }
+    }
+
+    @Override
+    public void showErrorAffiliate(String message) {
+        if (getActivity() != null && productPass.isFromExploreAffiliate()) {
+            if (TextUtils.isEmpty(message)) message = getActivity().getString(R.string.error_no_connection2);
+            Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
+                    .setAction(
+                            getString(R.string.title_try_again),
+                            view -> presenter.requestAffiliateProductData(productData)
+                    )
+                    .show();
         }
     }
 
@@ -1925,6 +1940,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     )
             );
         }
+        String categoryId = "0";
+        if (productData.getBreadcrumb() != null && !productData.getBreadcrumb().isEmpty()) {
+            categoryId = productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId();
+        }
         ProductPageTracking.eventEnhanceProductDetail(
                 getActivity(),
                 DataLayer.mapOf(
@@ -1946,7 +1965,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         "shopDomain", productData.getShopInfo().getShopDomain(),
                         "shopLocation", productData.getShopInfo().getShopLocation(),
                         "shopIsGold", String.valueOf(productData.getShopInfo().shopIsGoldBadge() ? 1 : 0),
-                        "categoryId", productData.getBreadcrumb().get(productData.getBreadcrumb().size() - 1).getDepartmentId(),
+                        "categoryId", categoryId,
                         "url", productData.getInfo().getProductUrl(),
                         "shopType", productData.getEnhanceShopType()
                 )

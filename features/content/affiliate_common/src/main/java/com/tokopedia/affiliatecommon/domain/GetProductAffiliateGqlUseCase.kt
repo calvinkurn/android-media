@@ -1,6 +1,7 @@
 package com.tokopedia.affiliatecommon.domain
 
 import android.content.res.Resources
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.R
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
@@ -37,6 +38,9 @@ class GetProductAffiliateGqlUseCase @Inject constructor(private val resources: R
                     if (response?.topAdsPDPAffiliate != null) {
                         response.topAdsPDPAffiliate
                     } else {
+                        if (graphqlResponse.getError(TopAdsPdpAffiliateResponse::class.java).isEmpty().not()) {
+                            throw MessageErrorException(graphqlResponse.getError(TopAdsPdpAffiliateResponse::class.java)[0].message)
+                        }
                         null
                     }
                 }

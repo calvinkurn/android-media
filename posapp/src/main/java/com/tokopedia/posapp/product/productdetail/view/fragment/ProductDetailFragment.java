@@ -263,6 +263,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showErrorAffiliate(String message) {
+
+    }
+
+    @Override
     public void onWishlistCountLoaded(String wishlistCountText) {
 
     }

@@ -43,6 +43,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:visibility="gone"
             tools:visibility="visible"
+            android:indeterminateDrawable="@drawable/ic_progress_loading"
             style="?android:attr/progressBarStyleInverse"
             />
 

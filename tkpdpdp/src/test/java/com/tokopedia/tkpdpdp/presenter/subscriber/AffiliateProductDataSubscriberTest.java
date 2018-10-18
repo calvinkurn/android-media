@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdpdp.presenter.subscriber;
 
-import com.tokopedia.tkpdpdp.entity.TopAdsPdpAffiliateResponse;
+import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenAffiliateResponse_whenSubscriberOnNext_thenPresenterRenderAffiliateButton(){
+    public void givenAffiliateResponse_whenSubscriberOnNext_thenViewRenderAffiliateButton(){
         // Given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data data = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.class);
@@ -56,7 +56,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenResponseNull_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton(){
+    public void givenResponseNull_whenSubscriberOnNext_thenViewNotRenderAffiliateButton(){
         // given
 
         // when
@@ -67,7 +67,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenDataNull_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton() {
+    public void givenDataNull_whenSubscriberOnNext_thenViewNotRenderAffiliateButton() {
         // given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
 
@@ -81,7 +81,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenAffiliateNull_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton() {
+    public void givenAffiliateNull_whenSubscriberOnNext_thenViewNotRenderAffiliateButton() {
         // given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data data = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.class);
@@ -97,7 +97,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenAffiliateIsEmpty_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton() {
+    public void givenAffiliateIsEmpty_whenSubscriberOnNext_thenViewNotRenderAffiliateButton() {
         // given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data data = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.class);
@@ -115,7 +115,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenAdIdInvalid_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton() {
+    public void givenAdIdInvalid_whenSubscriberOnNext_thenViewNotRenderAffiliateButton() {
         // given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data data = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.class);
@@ -136,7 +136,7 @@ public class AffiliateProductDataSubscriberTest {
     }
 
     @Test
-    public void givenProductIdInvalid_whenSubscriberOnNext_thenPresenterNotRenderAffiliateButton() {
+    public void givenProductIdInvalid_whenSubscriberOnNext_thenViewNotRenderAffiliateButton() {
         // given
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate response = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.class);
         TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data data = Mockito.mock(TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.class);
@@ -155,5 +155,16 @@ public class AffiliateProductDataSubscriberTest {
 
         // then
         verify(viewListener, never()).renderAffiliateButton(any());
+    }
+
+    @Test
+    public void givenNothing_whenSubscriberOnStart_thenViewRenderAffiliateButtonWithNull() {
+        // given
+
+        // when
+        affiliateProductDataSubscriber.onStart();
+
+        // then
+        verify(viewListener, times(1)).renderAffiliateButton(null);
     }
 }

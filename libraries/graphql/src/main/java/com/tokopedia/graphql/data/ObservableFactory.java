@@ -37,8 +37,13 @@ public class ObservableFactory {
                             JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
                             if (error != null && !error.isJsonNull()) {
                                 //Lookup for error
-                                errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
-                                }.getType()));
+                                errors.put(
+                                        requests.get(i).getTypeOfT(),
+                                        CommonUtils.fromJson(
+                                                error.toString(),
+                                                new TypeToken<List<GraphqlError>>() {}.getType()
+                                        )
+                                );
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
