@@ -5,12 +5,15 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.network.utils.MapNulRemover;
 
 import java.io.IOException;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -22,6 +25,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created on 5/19/16.
  */
+@AddressScope
 public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     private static final String TAG = RetrofitInteractorImpl.class.getSimpleName();
@@ -29,6 +33,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final CompositeSubscription compsoiteSubscription;
     private final PeopleActApi peopleService;
 
+    @Inject
     public RetrofitInteractorImpl(PeopleActApi peopleActApi) {
         this.compsoiteSubscription = new CompositeSubscription();
         this.peopleService = peopleActApi;

@@ -29,6 +29,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
+import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
+import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
@@ -67,16 +69,14 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
 
     private ArrayList<AddressModel> list;
     private MPAddressActivityListener listener;
-    private ManageAddressAdapter adapter;
     private RefreshHandler refreshHandler;
 
     private Token token;
-    private ManagePeopleAddressFragmentPresenter presenter;
 
     @Inject
-    PeopleActApi peopleActApi;
+    ManageAddressAdapter adapter;
     @Inject
-    CacheManager cacheManager;
+    ManagePeopleAddressFragmentPresenter presenter;
 
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();
@@ -93,17 +93,16 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
         super.onCreate(savedInstanceState);
         this.list = new ArrayList<>();
         this.listener = (ManagePeopleAddressActivity) getActivity();
-        presenter = new ManagePeopleAddressPresenter(this, listener, peopleActApi, cacheManager);
-        AddressTypeFactory typeFactory = new AddressTypeFactory(this.presenter);
-        this.adapter = new ManageAddressAdapter(typeFactory, new ArrayList<>());
+        presenter.setView(this);
     }
 
     @Override
     protected void initInjector() {
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
-        DaggerAddressComponent.builder()
+        DaggerManageAddressComponent.builder()
                 .baseAppComponent(appComponent)
                 .addressModule(new AddressModule())
+                .manageAddressModule(new ManageAddressModule(getContext()))
                 .build().inject(this);
     }
 

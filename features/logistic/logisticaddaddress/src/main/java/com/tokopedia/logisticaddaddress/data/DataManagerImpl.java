@@ -7,7 +7,9 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
+import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenter;
 import com.tokopedia.logisticaddaddress.utils.LocalDatabaseUtils;
 import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractor;
@@ -19,6 +21,8 @@ import com.tokopedia.user.session.UserSession;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -29,18 +33,23 @@ import rx.schedulers.Schedulers;
 /**
  * Created on 5/19/16.
  */
+@AddressScope
 public class DataManagerImpl implements DataManager {
 
     private static final String TAG = DataManagerImpl.class.getSimpleName();
 
-    private final ManagePeopleAddressFragmentPresenter presenter;
+    private ManagePeopleAddressFragmentPresenter presenter;
     private final RetrofitInteractorImpl retrofit;
     private CacheManager cacheManager;
 
-    public DataManagerImpl(ManagePeopleAddressFragmentPresenter presenter, PeopleActApi peopleActApi, CacheManager cacheManager) {
-        this.presenter = presenter;
-        this.retrofit = new RetrofitInteractorImpl(peopleActApi);
+    @Inject
+    public DataManagerImpl(RetrofitInteractorImpl retrofit, CacheManager cacheManager) {
+        this.retrofit = retrofit;
         this.cacheManager = cacheManager;
+    }
+
+    public void setPresenter(ManagePeopleAddressPresenter presenter) {
+        this.presenter = presenter;
     }
 
     private void requestData(@NonNull Context context,

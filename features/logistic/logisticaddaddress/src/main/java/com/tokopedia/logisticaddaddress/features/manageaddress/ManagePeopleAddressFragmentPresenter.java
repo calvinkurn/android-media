@@ -13,6 +13,9 @@ import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
  * Created on 5/18/16.
  */
 public interface ManagePeopleAddressFragmentPresenter extends AddressViewHolder.ManageAddressListener {
+
+    void setView(MPAddressView view);
+
     void setActionOnRefreshing(@NonNull Context context);
 
     void resetPage();

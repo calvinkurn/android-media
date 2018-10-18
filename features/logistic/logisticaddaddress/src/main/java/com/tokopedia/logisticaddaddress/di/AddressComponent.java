@@ -16,8 +16,6 @@ public interface AddressComponent {
 
     void inject(AddAddressFragment addAddressFragment);
 
-    void inject(ManagePeopleAddressFragment managePeopleAddressFragment);
-
     void inject(ManagePeopleAddressService managePeopleAddressService);
 
 }

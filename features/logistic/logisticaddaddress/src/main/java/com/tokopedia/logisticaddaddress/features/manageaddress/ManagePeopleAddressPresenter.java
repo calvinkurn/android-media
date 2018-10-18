@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.di.AddressScope;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.data.DataManager;
 import com.tokopedia.logisticaddaddress.data.DataManagerImpl;
@@ -25,24 +26,34 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Created on 5/18/16.
  */
+@AddressScope
 public class ManagePeopleAddressPresenter implements ManagePeopleAddressFragmentPresenter {
 
     private final MPAddressActivityListener activityListener;
-    private final MPAddressView fragmentListener;
+    private MPAddressView fragmentListener;
     private final DataManager dataManager;
     private final PagingHandler pagingHandler;
     private boolean allowConnection;
 
-    public ManagePeopleAddressPresenter(ManagePeopleAddressFragment mFragment, MPAddressActivityListener listener, PeopleActApi peopleActApi, CacheManager cacheManager) {
+    @Inject
+    public ManagePeopleAddressPresenter(MPAddressActivityListener listener, DataManagerImpl dataManager) {
         this.activityListener = listener;
-        this.fragmentListener = mFragment;
         this.pagingHandler = new PagingHandler();
-
-        this.dataManager = new DataManagerImpl(this, peopleActApi, cacheManager);
+        this.dataManager = dataManager;
+        // this is a workaround for circular dependency issue when using dagger
+        // todo: try a better approach, rx? listener?
+        ((DataManagerImpl) this.dataManager).setPresenter(this);
         this.setAllowConnection(true);
+    }
+
+    @Override
+    public void setView(MPAddressView view) {
+        this.fragmentListener = view;
     }
 
     @Override
