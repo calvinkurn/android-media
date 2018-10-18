@@ -207,11 +207,8 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
-<<<<<<< HEAD
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
-=======
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
->>>>>>> 3056e193883cfb3a539256e4dcee2a9f1c641765
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -1731,5 +1728,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAutomaticResetPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
+    }
+
+    @Override
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
     }
 }
