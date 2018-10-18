@@ -19,4 +19,5 @@
     <string name="title_reply_review">Ulasan yang dibalas</string>
     <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
     <string name="title_new_message">Pesan baru</string>
+    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
 </resources>

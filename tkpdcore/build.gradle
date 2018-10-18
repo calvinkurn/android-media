@@ -142,6 +142,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.saldodetails)
+    implementation project(":libraries:core_legacy")
 }
 
 apply plugin: 'com.google.gms.google-services'
