@@ -63,6 +63,8 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
@@ -1611,8 +1613,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public boolean isToogleYearEndPromoOn() {
-        // Todo : read from remote config
-        return true;
+        if (getActivity() != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+        }
+        return false;
     }
 
     public int getResultCode() {

@@ -19,6 +19,8 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
@@ -240,7 +242,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public boolean isToogleYearEndPromotionOn() {
-        // Todo : read data from remote config
-        return true;
+        if (getActivity() != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+        }
+        return false;
     }
 }
