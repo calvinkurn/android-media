@@ -88,6 +88,7 @@ ext {
     tkpdChallengesVersion = '2.22'
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
+    promoCheckoutVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -305,7 +306,8 @@ ext {
             challenges          : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
             paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
-            attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
+            attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}",
+            promoCheckout         : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -405,7 +407,8 @@ ext {
             challenges            : ":features:im:challenges",
             paymentSetting        : ":features:payment:payment_setting",
             browse                : ":features:digital:digital_browse",
-            saldodetails            : ":features:fintech:saldo_details"
+            saldodetails            : ":features:fintech:saldo_details",
+            promoCheckout         : ":features:transaction:promo_checkout"
     ]
 
     libraries = [
