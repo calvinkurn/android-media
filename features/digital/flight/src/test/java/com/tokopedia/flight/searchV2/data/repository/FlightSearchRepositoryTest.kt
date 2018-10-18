@@ -49,9 +49,13 @@ class FlightSearchRepositoryTest {
 
     @Before
     fun setup() {
-        flightSearchRepository = FlightSearchRepository(flightSearchCombinedDataApiSource, flightSearchDataCloudSource,
+        flightSearchRepository = FlightSearchRepository(
+                flightSearchCombinedDataApiSource,
+                flightSearchDataCloudSource,
                 flightSearchCombinedDataDbSource,
-                flightSearchSingleDataDbSource, flightAirportDataListDBSource, flightAirlineDataListDBSource)
+                flightSearchSingleDataDbSource,
+                flightAirportDataListDBSource,
+                flightAirlineDataListDBSource)
     }
 
     @Test

@@ -389,7 +389,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightAnalytics.eventSearchProductClick(flightSearchViewModel);
+        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), flightSearchViewModel);
         deleteReturnFlightCache(flightSearchViewModel.getId());
     }
 
@@ -399,15 +399,32 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void onSearchItemClicked(FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
-        flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
+        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(),flightSearchViewModel, adapterPosition);
         deleteReturnFlightCache(flightSearchViewModel.getId());
     }
 
     public void onSearchItemClicked(String selectedId) {
-        deleteReturnFlightCache(selectedId);
+        flightBookingGetSingleResultUseCase.execute(flightBookingGetSingleResultUseCase.createRequestParam(false, selectedId), new Subscriber<FlightSearchViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(FlightSearchViewModel flightSearchViewModel) {
+                flightAnalytics.eventSearchProductClickFromDetail(getView().getFlightSearchPassData(), flightSearchViewModel);
+                deleteReturnFlightCache(selectedId);
+            }
+        });
+
     }
 
-    private void deleteReturnFlightCache(String selectedId){
+    private void deleteReturnFlightCache(String selectedId) {
         deleteFlightCache(true, getDeleteFlightReturnSubscriber(selectedId));
     }
 

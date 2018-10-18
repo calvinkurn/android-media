@@ -36,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.tokopedia.events.view.contractor.EventFilterContract.REQ_OPEN_FILTER;
+
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
@@ -65,6 +67,8 @@ public class EventSearchActivity extends TActivity implements
     RecyclerView rvTopEventSuggestions;
     @BindView(R2.id.tv_topevents)
     TextView tvTopevents;
+    @BindView(R2.id.btn_filter)
+    View filterBtn;
 
     LinearLayoutManager layoutManager;
 
@@ -92,12 +96,13 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
+        filterBtn.setVisibility(View.VISIBLE);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        filterBtn.setVisibility(View.GONE);
         mPresenter.searchTextChanged(text);
 
     }
@@ -114,7 +119,7 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -145,7 +150,7 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter, true);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
@@ -163,9 +168,9 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter, showCards);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
@@ -175,6 +180,7 @@ public class EventSearchActivity extends TActivity implements
             rvSearchResults.setVisibility(View.GONE);
             noResults.setVisibility(View.GONE);
         } else {
+            tvTopevents.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
             noResults.setVisibility(View.VISIBLE);
@@ -201,6 +207,18 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public LinearLayoutManager getLayoutManager() {
         return layoutManager;
+    }
+
+    @Override
+    public void setFilterActive() {
+        TextView tvFilter = findViewById(R.id.tv_filter);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, R.drawable.oval_3, 0);
+    }
+
+    @Override
+    public void setFilterInactive() {
+        TextView tvFilter = findViewById(R.id.tv_filter);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, 0, 0);
     }
 
     private void executeInjector() {
@@ -247,5 +265,16 @@ public class EventSearchActivity extends TActivity implements
     @OnClick(R2.id.iv_finish)
     void clickFinish() {
         finish();
+    }
+
+    @OnClick(R2.id.btn_filter)
+    void onClickFilter() {
+        mPresenter.openFilters();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
     }
 }

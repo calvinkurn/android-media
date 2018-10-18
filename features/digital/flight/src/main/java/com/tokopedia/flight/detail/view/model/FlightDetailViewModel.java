@@ -111,7 +111,19 @@ public class FlightDetailViewModel implements Parcelable {
             setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
             setTotalTransit(flightJourneyViewModel.getTotalTransit());
             setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
-            setIsRefundable(flightJourneyViewModel.isRefundable());
+            RefundableEnum refundableEnum = null;
+            switch (flightJourneyViewModel.isRefundable()) {
+                case NOT_REFUNDABLE:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
+                    break;
+                case REFUNDABLE:
+                    refundableEnum = RefundableEnum.REFUNDABLE;
+                    break;
+                case PARTIAL_REFUNDABLE:
+                    refundableEnum = RefundableEnum.PARTIAL_REFUNDABLE;
+                    break;
+            }
+            setIsRefundable(refundableEnum);
             setTotal(flightJourneyViewModel.getTotal());
             setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
             setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());

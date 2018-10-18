@@ -3,6 +3,9 @@ package com.tokopedia.flight.searchV2.presentation.model.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
+import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
@@ -48,12 +51,12 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.priceMax = in.readInt();
         this.durationMin = in.readInt();
         this.durationMax = in.readInt();
-        this.transitTypeList = new ArrayList<TransitEnum>();
+        this.transitTypeList = new ArrayList<>();
         in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
         this.airlineList = in.createStringArrayList();
-        this.departureTimeList = new ArrayList<DepartureTimeEnum>();
+        this.departureTimeList = new ArrayList<>();
         in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
-        this.refundableTypeList = new ArrayList<RefundableEnum>();
+        this.refundableTypeList = new ArrayList<>();
         in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
         this.isHasFilter = in.readByte() != 0;
         this.isSpecialPrice = in.readByte() != 0;
@@ -263,5 +266,9 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         dest.writeByte((byte) (isBestPairing ? 1 : 0));
         dest.writeByte((byte) (isReturn ? 1 : 0));
         dest.writeString(this.journeyId);
+    }
+
+    public void setHasFilter(boolean hasFilter) {
+        this.isHasFilter = hasFilter;
     }
 }

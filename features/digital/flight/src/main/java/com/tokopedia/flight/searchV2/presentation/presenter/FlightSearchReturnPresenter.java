@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.searchV2.domain.FlightSearchJourneyByIdUseCase;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
@@ -132,8 +132,8 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
             if (departureViewModel.getRouteList().size() > 0 && returnViewModel.getRouteList().size() > 0) {
                 Route lastDepartureRoute = departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1);
                 Route firstReturnRoute = returnViewModel.getRouteList().get(0);
-                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, lastDepartureRoute.getArrivalTimestamp());
-                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, firstReturnRoute.getDepartureTimestamp());
+                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.getArrivalTimestamp());
+                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.getDepartureTimestamp());
                 long different = returnDepartureTime.getTime() - departureArrivalTime.getTime();
                 if (different >= 0) {
                     long hours = different / ONE_HOUR;

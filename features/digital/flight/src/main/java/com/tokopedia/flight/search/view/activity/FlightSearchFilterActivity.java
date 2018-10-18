@@ -30,6 +30,7 @@ import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
 
 import java.util.List;
 
@@ -149,7 +150,9 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             Intent intent = new Intent();
             flightFilterModel.setHasFilter(flightSearchStaatisticModel);
-            intent.putExtra(EXTRA_FILTER_MODEL, flightFilterModel);
+            com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel mappedFlightFilterModel =
+                    new FlightFilterModelMapper().map2(flightFilterModel);
+            intent.putExtra(EXTRA_FILTER_MODEL, mappedFlightFilterModel);
             setResult(Activity.RESULT_OK, intent);
         }
         this.onBackPressed(true);
@@ -299,7 +302,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void showErrorGetFilterStatistic(Throwable e) {
         Toast.makeText(this, FlightErrorUtil.getMessageFromException(this, e), Toast.LENGTH_SHORT).show();
-        ;
     }
 
     @Override

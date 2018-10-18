@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_background"
+    android:gravity="center_vertical"
+    android:padding="@dimen/dp_8">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_top_ads_announcement"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"/>
+
+    <TextView style="@style/TextView.Small.BlackSecondary"
+        android:id="@+id/content_text"
+        android:layout_width="match_parent"
+        android:textColorLink="@color/tkpd_main_green"/>
+
+</LinearLayout>

@@ -30,6 +30,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
@@ -211,4 +212,11 @@ public class FlightModule {
     FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
         return flightSearchRoomDb.flightRouteDao();
     }
+
+    @FlightScope
+    @Provides
+    public FlightDateUtil provideFlightDateUtil(){
+        return new FlightDateUtil();
+    }
+
 }

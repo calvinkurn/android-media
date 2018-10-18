@@ -184,7 +184,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void onPaymentFailed() {
         getView().showPaymentFailedErrorMessage(R.string.flight_review_failed_checkout_message);
-        flightAnalytics.eventPurchaseAttemptFailed();
     }
 
     @Override
@@ -305,7 +304,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     @Override
                     public void onNext(Boolean aBoolean) {
                         getView().navigateToOrderList();
-                        flightAnalytics.eventPurchaseAttemptSuccess();
                     }
                 }
         );

@@ -1,13 +1,12 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.domain.FlightFilterCountUseCase;
-import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
-import com.tokopedia.flight.search.domain.FlightSearchUseCase;
 import com.tokopedia.flight.search.view.FlightFilterCountView;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchCountUseCase;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchStatisticsUseCase;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModelMapper;
 
 import javax.inject.Inject;
 
@@ -19,20 +18,19 @@ import rx.Subscriber;
 
 public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCountView> {
 
-    private final FlightFilterCountUseCase flightFilterCountUseCase;
-    private FlightSearchStatisticUseCase flightSearchStatisticUseCase;
+    private final FlightSearchCountUseCase flightFilterCountUseCase;
+    private FlightSearchStatisticsUseCase flightSearchStatisticUseCase;
 
     @Inject
-    public FlightFilterPresenter(FlightFilterCountUseCase flightFilterCountUseCase, FlightSearchStatisticUseCase flightSearchStatisticUseCase) {
+    public FlightFilterPresenter(FlightSearchCountUseCase flightFilterCountUseCase, FlightSearchStatisticsUseCase flightSearchStatisticUseCase) {
         this.flightFilterCountUseCase = flightFilterCountUseCase;
         this.flightSearchStatisticUseCase = flightSearchStatisticUseCase;
     }
 
     public void getFlightCount(boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel) {
-        flightFilterCountUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                null,
-                isReturning, isFromCache, flightFilterModel,
-                FlightSortOption.NO_PREFERENCE),
+        com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel mappedFlightFilterModel =
+                new FlightFilterModelMapper().map2(flightFilterModel);
+        flightFilterCountUseCase.execute(flightFilterCountUseCase.createRequestParams(mappedFlightFilterModel),
                 getSubscriberFlightCount());
     }
 
@@ -63,9 +61,9 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
 
     public void getFilterStatisticData() {
         getView().showGetFilterStatisticLoading();
-        flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                null,
-                getView().isReturning(), true, null, FlightSortOption.NO_PREFERENCE),
+        com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel flightFilterModel =
+                new com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel();
+        flightSearchStatisticUseCase.execute(flightSearchStatisticUseCase.createRequestParams(flightFilterModel),
                 getSubscriberSearchStatisticFlight());
     }
 

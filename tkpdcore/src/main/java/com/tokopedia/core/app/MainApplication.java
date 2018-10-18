@@ -258,7 +258,6 @@ public abstract class MainApplication extends BaseMainApplication{
         initFacebook();
         initCrashlytics();
         initStetho();
-        initializeAnalytics();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -276,6 +275,7 @@ public abstract class MainApplication extends BaseMainApplication{
 
         // initialize the Branch object
         initBranch();
+        initializeAnalytics();
         NotificationUtils.setNotificationChannel(this);
 
     }
