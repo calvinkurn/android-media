@@ -67,7 +67,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
     private PagingHandler pagingHandler;
-    private View mainView;
     private ProgressBar progressBar;
     private String detailId;
 
@@ -126,7 +125,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         shareButton = parentView.findViewById(R.id.share_button);
         seeShopButon = parentView.findViewById(R.id.see_shop);
         footer = parentView.findViewById(R.id.footer);
-        mainView = parentView.findViewById(R.id.main_layout);
         progressBar = parentView.findViewById(R.id.progress_bar);
         prepareView();
         presenter.attachView(this, this);
@@ -338,7 +336,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        mainView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -420,7 +417,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void dismissLoadingProgress() {
-        mainView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
