@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.firebase.perf.metrics.Trace;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
@@ -91,6 +92,7 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -127,6 +129,7 @@ import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
@@ -143,10 +146,12 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -316,12 +321,12 @@ import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
-import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -384,6 +389,7 @@ import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
+import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
@@ -514,6 +520,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
     private UserSession userSession;
+    private Trace feedTrace;
 
     @Override
     public void onCreate() {
@@ -1114,6 +1121,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
+    }
+
+    @Override
+    public Intent getBrandsWebViewIntent(Context context, String url) {
+        return BrandsWebViewActivity.newInstance(context, url);
     }
 
     @Override
@@ -1900,6 +1912,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
+    @Override
+    public Intent getAddToCartIntent(Context context, String productId, String price, String
+            imageSource) {
+        String EXTRA_PRODUCT_CART = "EXTRA_PRODUCT_CART";
+
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setProductId(productId)
+                .setPrice(price)
+                .setImageUri(imageSource)
+                .build();
+
+        Intent intent = new Intent(context, AddToCartActivity.class);
+        intent.putExtra(EXTRA_PRODUCT_CART, pass);
+        return intent;
+    }
+
     public Observable<String> getAtcObsr() {
         FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
         return useCase.createObservable(null)
@@ -2198,6 +2226,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getWithdrawIntent(Context context) {
         return WithdrawActivity.getCallingIntent(context);
+
     }
 
     @Override
@@ -2343,6 +2372,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
                 .setType(ShareData.GROUPCHAT_TYPE)
+                .build();
+        new DefaultShare(activity, shareData).show();
+    }
+
+    @Override
+    public void shareFeed(Activity activity, String detailId, String url, String title, String
+            imageUrl, String description) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setId(detailId)
+                .setName(title)
+                .setDescription(description)
+                .setImgUri(imageUrl)
+                .setUri(url)
+                .setType(ShareData.FEED_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
     }
@@ -3159,6 +3202,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             intent.putExtras(bundle);
             return intent;
 
+        }
+    }
+
+    @Override
+    public void startTrace(String traceName) {
+        if (traceName.equals("feed_trace")) {
+            this.feedTrace = TrackingUtils.startTrace(traceName);
+        }
+    }
+
+    @Override
+    public void stopTrace(String traceName) {
+        if (traceName.equals("feed_trace") && feedTrace != null) {
+            feedTrace.stop();
         }
     }
 

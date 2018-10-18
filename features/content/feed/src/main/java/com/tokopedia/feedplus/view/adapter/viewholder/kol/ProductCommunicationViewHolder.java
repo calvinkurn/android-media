@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
 
@@ -22,11 +23,10 @@ public class ProductCommunicationViewHolder extends
     public static final int LAYOUT = R.layout.product_communication;
 
 
-    public ProductCommunicationViewHolder(View itemView, FeedPlus.View viewListener) {
+    public ProductCommunicationViewHolder(View itemView, FeedPlus.View viewListener, FeedAnalytics analytics) {
         super(itemView);
         RecyclerView productCommunicationRv = itemView.findViewById(R.id.product_communication_rv);
-
-        adapter = new ProductCommunicationAdapter(getAdapterPosition(), viewListener);
+        adapter = new ProductCommunicationAdapter(getAdapterPosition(), viewListener, analytics);
         productCommunicationRv.setAdapter(adapter);
     }
 
