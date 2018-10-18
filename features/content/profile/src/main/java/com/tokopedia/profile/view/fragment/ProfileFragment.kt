@@ -122,7 +122,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (resultCode != Activity.RESULT_OK || data == null) {
             return
         }
-
         when (requestCode) {
             KOL_COMMENT_CODE ->
                 onSuccessAddDeleteKolComment(
@@ -217,7 +216,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             BaseToaster.LENGTH_LONG
                     )
                     .setAction(getString(R.string.profile_add_more)) {
-                        RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
+                        goToAffiliateExplore()
                     }
                     .show()
             afterPost = false
@@ -465,7 +464,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 recommendationQuota.visibility = View.GONE
             }
             addRecommendation.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.AFFILIATE_EXPLORE)
+                goToAffiliateExplore()
             }
             addRecommendation.setOnLongClickListener {
                 showToast(getString(R.string.profile_add_recommendation))
@@ -617,6 +616,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToOnboading() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_ONBOARDING)
+    }
+
+    private fun goToAffiliateExplore() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun goToExplore() {

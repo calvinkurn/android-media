@@ -380,10 +380,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void goToProfile() {
-        RouteManager.route(
+        Intent intent = RouteManager.getIntent(
                 Objects.requireNonNull(getContext()),
                 ApplinkConst.PROFILE_AFTER_POST.replace(PARAM_USER_ID, getUserSession().getUserId())
         );
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void submitPost() {
