@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -66,7 +67,6 @@ import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.addname.AddNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -295,41 +295,31 @@ public class LoginFragment extends BaseDaggerFragment
 
         emailEditText.addTextChangedListener(watcher(wrapperEmail));
 
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
-                        .toString());
-                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(intent);
-                SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+        forgotPass.setOnClickListener(v -> {
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .getForgotPasswordIntent(getActivity(), emailEditText.getText().toString()
+                            .trim());
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(intent);
+            SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
 
-            }
         });
 
-        loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (isLastItem()) {
-                    loadMoreFab.setVisibility(View.GONE);
-                } else {
-                    loadMoreFab.setVisibility(View.VISIBLE);
-                }
-
+        loginView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if (isLastItem()) {
+                loadMoreFab.setVisibility(View.GONE);
+            } else {
+                loadMoreFab.setVisibility(View.VISIBLE);
             }
+
         });
 
-        loadMoreFab.setOnClickListener(new View.OnClickListener() {
+        loadMoreFab.setOnClickListener(v -> loginView.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                loginView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        loginView.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
+            public void run() {
+                loginView.fullScroll(View.FOCUS_DOWN);
             }
-        });
+        }));
 
     }
 
@@ -472,6 +462,13 @@ public class LoginFragment extends BaseDaggerFragment
         ((TkpdCoreRouter)(getContext().getApplicationContext())).onAppsFlyerInit();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+
+        TrackingUtils.eventPushUserID();
+        if (!GlobalConfig.DEBUG) {
+            Crashlytics.setUserIdentifier(String.valueOf(sessionHandler.getLoginID()));
+        }
+        BranchSdkUtils.sendIdentityEvent(String.valueOf(sessionHandler
+                .getLoginID()));
     }
 
     @Override
@@ -817,35 +814,29 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
             presenter.loginWebview(data);
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
             sessionHandler.clearUserData(getActivity());
             dismissLoadingLogin();

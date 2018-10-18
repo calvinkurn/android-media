@@ -17,4 +17,6 @@ interface ShopSettingRouter {
     fun getDistrictRecommendationIntent(activity: Activity): Intent
 
     fun goToMerchantRedirect(context: Context)
+
+    fun goToGmSubscribeMembershipRedirect(context: Context)
 }

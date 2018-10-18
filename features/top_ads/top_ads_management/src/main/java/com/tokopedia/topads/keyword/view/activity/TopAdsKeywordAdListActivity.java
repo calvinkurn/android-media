@@ -1,12 +1,11 @@
 package com.tokopedia.topads.keyword.view.activity;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
@@ -34,17 +33,27 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
         TopAdsBaseListFragment.OnAdListFragmentListener, TopAdsKeywordAdListFragment.GroupTopAdsListener {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
+    private static final int TAB_POSITIVE = 0;
+    private static final int TAB_NEGATIVE = 1;
     private static final String TAG = TopAdsKeywordAdListActivity.class.getName();
+    private static final String DEFAULT_POSITIVE_PATH = "positive";
     private static final int DELAY_SHOW_CASE_THREAD = 300;//ms
     boolean isShowingShowCase = false;
     private ShowCaseDialog showCaseDialog;
     private int totalGroupAd;
+    private int tabPosition = TAB_POSITIVE;
     private TopAdsPagerAdapter topAdsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         totalGroupAd = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, 0);
+
+        Uri data = getIntent().getData();
+        if (data != null) {
+            tabPosition = data.getLastPathSegment().equalsIgnoreCase(DEFAULT_POSITIVE_PATH) ? TAB_POSITIVE : TAB_NEGATIVE;
+        }
+        viewPager.setCurrentItem(tabPosition);
     }
 
     @Override

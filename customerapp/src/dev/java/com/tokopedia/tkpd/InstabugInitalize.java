@@ -2,7 +2,6 @@ package com.tokopedia.tkpd;
 
 import android.app.Activity;
 import android.app.Application;
-import android.os.Build;
 import android.view.MotionEvent;
 
 import com.instabug.library.Instabug;
@@ -21,12 +20,11 @@ public class InstabugInitalize {
 
     public static void init(Application application) {
         new Instabug.Builder(application, INSTABUG_BETA_KEY)
-                .setInvocationEvents(InstabugInvocationEvent.SCREENSHOT_GESTURE,
-                        InstabugInvocationEvent.FLOATING_BUTTON)
+                .setInvocationEvents(InstabugInvocationEvent.SCREENSHOT_GESTURE)
                 .build();
 
         Instabug.setColorTheme(InstabugColorTheme.InstabugColorThemeLight);
-        Instabug.setWelcomeMessageState(WelcomeMessage.State.BETA);
+        Instabug.setWelcomeMessageState(WelcomeMessage.State.DISABLED);
 
         //To show instabug debug logs if necessary
         Instabug.setDebugEnabled(true);
@@ -41,9 +39,7 @@ public class InstabugInitalize {
         //setting user attributes
         Instabug.setUserAttribute("USER_TYPE", "instabug user");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Instabug.setAutoScreenRecordingEnabled(true);
-        }
+        Instabug.setAutoScreenRecordingEnabled(false);
     }
 
     public static void dispatchTouchEvent(Activity context, MotionEvent ev) {
