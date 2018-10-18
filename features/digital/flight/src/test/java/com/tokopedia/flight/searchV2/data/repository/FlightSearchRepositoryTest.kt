@@ -8,7 +8,9 @@ import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.cloud.model.response.Meta
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.db.*
+import com.tokopedia.flight.searchV2.data.repository.mapper.FlightSearchMapper
 import com.tokopedia.flight.searchV2.data.repository.util.createFlightDataResponse
+import com.tokopedia.flight.searchV2.data.repository.util.createFlightListSearchDataResponse
 import com.tokopedia.usecase.RequestParams
 import org.junit.Before
 import org.junit.Test
@@ -55,7 +57,20 @@ class FlightSearchRepositoryTest {
                 flightSearchCombinedDataDbSource,
                 flightSearchSingleDataDbSource,
                 flightAirportDataListDBSource,
-                flightAirlineDataListDBSource)
+                flightAirlineDataListDBSource,
+                FlightSearchMapper())
+
+        `when`(flightAirportDataListDBSource.getAirport(Matchers.anyString())).thenReturn(
+                Observable.just(FlightAirportDB())
+        )
+
+        val flightAirlineDB = FlightAirlineDB()
+        flightAirlineDB.id = "JT"
+        flightAirlineDB.logo = "Logo Lion Air"
+
+        `when`(flightAirlineDataListDBSource.getAirline(Matchers.anyString())).thenReturn(
+                Observable.just(flightAirlineDB)
+        )
     }
 
     @Test
@@ -73,18 +88,6 @@ class FlightSearchRepositoryTest {
         val flightDataResponse = createFlightDataResponse("1")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any())).thenReturn(Observable.just(flightDataResponse))
-
-        `when`(flightAirportDataListDBSource.getAirport(Matchers.anyString())).thenReturn(
-                Observable.just(FlightAirportDB())
-        )
-
-        val flightAirlineDB = FlightAirlineDB()
-        flightAirlineDB.id = "JT"
-        flightAirlineDB.logo = "Logo Lion Air"
-
-        `when`(flightAirlineDataListDBSource.getAirline(Matchers.anyString())).thenReturn(
-                Observable.just(flightAirlineDB)
-        )
 
         val testSubscriber = TestSubscriber<Meta>()
 
@@ -123,23 +126,10 @@ class FlightSearchRepositoryTest {
 
     @Test
     fun `get search return combined`() {
-        val flightDataResponse1 = createFlightDataResponse("2")
-        val flightDataResponse2 = createFlightDataResponse("3")
+        val flightDataResponse = createFlightListSearchDataResponse("2", "3")
 
         `when`(flightSearchDataCloudSource.getData(Mockito.any()))
-                .thenReturn(Observable.just(flightDataResponse1, flightDataResponse2))
-
-        `when`(flightAirportDataListDBSource.getAirport(Matchers.anyString())).thenReturn(
-                Observable.just(FlightAirportDB())
-        )
-
-        val flightAirlineDB = FlightAirlineDB()
-        flightAirlineDB.id = "JT"
-        flightAirlineDB.logo = "Logo Lion Air"
-
-        `when`(flightAirlineDataListDBSource.getAirline(Matchers.anyString())).thenReturn(
-                Observable.just(flightAirlineDB)
-        )
+                .thenReturn(Observable.just(flightDataResponse))
 
         val flightComboTableList = arrayListOf<FlightComboTable>()
         val flightComboTable = FlightComboTable("1", "2", "comboId", "adultPrice", "childPrice",

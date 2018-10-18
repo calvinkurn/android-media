@@ -9,6 +9,26 @@ import java.util.ArrayList
 fun createFlightDataResponse(journeyId: String): FlightDataResponse<List<FlightSearchData>> {
     val flightDataResponse = FlightDataResponse<List<FlightSearchData>>()
     val flightSearchDataList = ArrayList<FlightSearchData>()
+    val flightSearchData = createFlightSearchData(journeyId)
+    flightSearchDataList.add(flightSearchData)
+    flightDataResponse.data = flightSearchDataList
+    flightDataResponse.meta = Meta()
+    return flightDataResponse
+}
+
+fun createFlightListSearchDataResponse(journeyId1: String, journeyId2: String): FlightDataResponse<List<FlightSearchData>> {
+    val flightDataResponse = FlightDataResponse<List<FlightSearchData>>()
+    val flightSearchDataList = ArrayList<FlightSearchData>()
+    val flightSearchData1 = createFlightSearchData(journeyId1)
+    val flightSearchData2 = createFlightSearchData(journeyId2)
+    flightSearchDataList.add(flightSearchData1)
+    flightSearchDataList.add(flightSearchData2)
+    flightDataResponse.data = flightSearchDataList
+    flightDataResponse.meta = Meta()
+    return flightDataResponse
+}
+
+private fun createFlightSearchData(journeyId: String): FlightSearchData {
     val flightSearchData = FlightSearchData()
     var attributes = Attributes()
     val routes = arrayListOf<Route>()
@@ -45,8 +65,5 @@ fun createFlightDataResponse(journeyId: String): FlightDataResponse<List<FlightS
     attributes.fare = fare
     flightSearchData.id = journeyId
     flightSearchData.attributes = attributes
-    flightSearchDataList.add(flightSearchData)
-    flightDataResponse.data = flightSearchDataList
-    flightDataResponse.meta = Meta()
-    return flightDataResponse
+    return flightSearchData
 }
