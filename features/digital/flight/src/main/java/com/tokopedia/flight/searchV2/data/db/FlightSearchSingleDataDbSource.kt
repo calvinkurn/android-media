@@ -46,7 +46,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             Observable<List<JourneyAndRoutes>> {
         return Observable.create<List<JourneyAndRoutes>> {
             val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-                "SELECT DISTINCT FlightJourneyTable FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
                         "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
             } else {
                 "SELECT * FROM FlightJourneyTable WHERE "
