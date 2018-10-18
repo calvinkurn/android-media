@@ -10,9 +10,9 @@ public class DealCategoryEntity {
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("title")
+    @SerializedName("url")
     @Expose
-    private String title;
+    private String url;
 
     public long getId() {
         return id;
@@ -22,7 +22,7 @@ public class DealCategoryEntity {
         return name;
     }
 
-    public String getTitle() {
-        return title;
+    public String getUrl() {
+        return url;
     }
 }

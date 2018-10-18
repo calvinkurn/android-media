@@ -1,6 +1,9 @@
 package com.tokopedia.digital.newcart.domain.model;
 
-public class DealProductViewModel {
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
+
+public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFactory> {
     private long salesPriceNumeric;
     private long savePriceNumeric;
     private String title;
@@ -67,5 +70,10 @@ public class DealProductViewModel {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public int type(DigitalDealsAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

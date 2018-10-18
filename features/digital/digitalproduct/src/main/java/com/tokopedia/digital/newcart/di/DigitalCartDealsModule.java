@@ -10,7 +10,7 @@ import com.tokopedia.digital.newcart.data.DigitalDealsRepositoryImpl;
 import com.tokopedia.digital.newcart.data.DigitalDealsUrl;
 import com.tokopedia.digital.newcart.domain.DigitalDealsGetCategoriesUseCase;
 import com.tokopedia.digital.newcart.domain.DigitalDealsRepository;
-import com.tokopedia.digital.newcart.domain.model.DigitalDealGetProductsUseCase;
+import com.tokopedia.digital.newcart.domain.DigitalDealGetProductsUseCase;
 import com.tokopedia.digital.newcart.domain.model.mapper.DealCategoryViewModelMapper;
 import com.tokopedia.digital.newcart.domain.model.mapper.DealProductViewModelMapper;
 import com.tokopedia.network.converter.StringResponseConverter;

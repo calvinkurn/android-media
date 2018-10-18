@@ -38,7 +38,7 @@ public class DealProductViewModelMapper {
             viewModel.setTitle(entity.getTitle());
             viewModel.setBrandName(entity.getBrand().getTitle());
             viewModel.setSalesPriceNumeric(entity.getSalesPrice());
-            viewModel.setSavePriceNumeric(0);
+            viewModel.setSavePriceNumeric(entity.getMrp());
             viewModel.setImageUrl(entity.getImageThumbUrl());
             viewModel.setSelected(false);
         }

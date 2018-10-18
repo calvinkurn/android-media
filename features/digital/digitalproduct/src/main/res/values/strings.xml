@@ -145,4 +145,6 @@
     <string name="digital_cart_additional_payment_total_cost_label">Total Bayar</string>
     <string name="digital_cart_additional_payment_label">Pembayaran</string>
     <string name="digital_cart_type_service_label">Jenis Layanan</string>
+    <string name="digital_deal_buy_label">Beli</string>
+    <string name="digital_cart_deal_free_label">Gratis</string>
 </resources>

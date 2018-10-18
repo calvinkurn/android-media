@@ -5,10 +5,28 @@
     android:layout_height="match_parent"
     tools:context=".newcart.presentation.fragment.DigitalCartDealsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/deal_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_deal"
+            style="?tabTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+            android:id="@+id/pager_deals"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 </FrameLayout>

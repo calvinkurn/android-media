@@ -3,7 +3,7 @@ package com.tokopedia.digital.newcart.domain.model;
 public class DealCategoryViewModel {
     private long id;
     private String name;
-    private String title;
+    private String url;
 
     public DealCategoryViewModel() {
     }
@@ -24,11 +24,11 @@ public class DealCategoryViewModel {
         this.name = name;
     }
 
-    public String getTitle() {
-        return title;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

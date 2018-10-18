@@ -34,7 +34,7 @@ public class DealCategoryViewModelMapper {
             viewModel = new DealCategoryViewModel();
             viewModel.setId(entity.getId());
             viewModel.setName(entity.getName());
-            viewModel.setTitle(entity.getTitle());
+            viewModel.setUrl(entity.getUrl());
         }
         return viewModel;
     }

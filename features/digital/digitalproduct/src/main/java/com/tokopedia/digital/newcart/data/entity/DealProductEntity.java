@@ -19,6 +19,9 @@ public class DealProductEntity {
     @SerializedName("sales_price")
     @Expose
     private long salesPrice;
+    @SerializedName("mrp")
+    @Expose
+    private long mrp;
     @SerializedName("brand")
     @Expose
     private DealBrandEntity brand;
@@ -45,5 +48,9 @@ public class DealProductEntity {
 
     public long getSalesPrice() {
         return salesPrice;
+    }
+
+    public long getMrp() {
+        return mrp;
     }
 }
