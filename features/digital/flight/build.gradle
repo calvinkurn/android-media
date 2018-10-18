@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.features.commonTravel)
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -45,7 +46,6 @@ dependencies {
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
@@ -69,6 +69,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore

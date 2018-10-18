@@ -115,7 +115,7 @@ public class TrainSearchReturnFragment extends TrainSearchFragment
 
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, viewModel.getDepartureTimestamp());
-        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, viewModel.getArrivalTimestamp());
 
         String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,

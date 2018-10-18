@@ -120,6 +120,10 @@ public class NetworkErrorHelper {
         }
     }
 
+    /**
+     * use ToasterError instead
+     */
+    @Deprecated
     @SuppressWarnings("Range")
     public static void showRedCloseSnackbar(View view, String message) {
         SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).setAction(
@@ -137,12 +141,20 @@ public class NetworkErrorHelper {
         SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
     }
 
+    public static void showRedSnackbarShort(Activity activity, String message) {
+        SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_SHORT).show();
+    }
+
     public static void showRedSnackbar(View view, String message) {
         SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).show();
     }
 
     public static void showGreenSnackbar(Activity activity, String message) {
         SnackbarManager.makeGreen(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static void showGreenSnackbarShort(Activity activity, String message) {
+        SnackbarManager.makeGreen(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_SHORT).show();
     }
 
     public static void showGreenSnackbar(View view, String message) {
@@ -303,6 +315,12 @@ public class NetworkErrorHelper {
             });
         }
         dialog.create().show();
+    }
+
+    public static SnackbarRetry createSnackbarRedWithAction(Activity activity, String message, final RetryClickedListener listener) {
+        return new SnackbarRetry(SnackbarManager.makeRed(activity,
+                message,
+                Snackbar.LENGTH_INDEFINITE), listener);
     }
 
     public interface RetryClickedListener {

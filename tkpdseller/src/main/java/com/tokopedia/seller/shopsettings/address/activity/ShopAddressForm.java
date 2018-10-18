@@ -3,6 +3,8 @@ package com.tokopedia.seller.shopsettings.address.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -31,6 +33,7 @@ import com.tokopedia.core.network.apiservices.shop.MyShopAddressActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.seller.shopsettings.address.model.saveaddress.SaveAddress;
@@ -50,6 +53,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ShopAddressForm extends TActivity {
     private static final String TOKEN_KEY_PARAM = "token";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 199;
@@ -381,6 +388,10 @@ public class ShopAddressForm extends TActivity {
             String post_code = data.getString("post_code");
             String fullAddress = data.getString("address_detail");
 
+            this.provinceId = provinceId;
+            this.cityId = cityId;
+            this.districtId = districtId;
+
             AddressName.setText(location_name);
             Address.setText(location_address);
             etCompositeAddress.setText(fullAddress);
@@ -415,7 +426,16 @@ public class ShopAddressForm extends TActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.save_btn, menu);
+
         MenuItem item = menu.findItem(R.id.action_send);
+        Drawable checkDrawable = item.getIcon();
+        checkDrawable.mutate();
+        if (GlobalConfig.isCustomerApp()) {
+            checkDrawable.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_IN);
+        } else {
+            checkDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+        }
+
         item.setTitle(getString(com.tokopedia.core.R.string.title_action_save_address));
         return true;
     }

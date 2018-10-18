@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Token;
@@ -135,9 +136,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     protected void initView() {
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                startActivityForResult(AddAddressActivity.createInstanceFromCartCheckout(
-                        this, null, token, false, true
-                        ),
+                Intent intent = ((ICheckoutModuleRouter) getApplication()).getAddAddressIntent(
+                        this, null, token, false, true);
+                startActivityForResult(intent,
                         REQUEST_CODE_PARAM_CREATE);
                 break;
 

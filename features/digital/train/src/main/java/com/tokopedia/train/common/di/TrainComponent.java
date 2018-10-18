@@ -10,6 +10,7 @@ import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.presentation.TrainBaseActivity;
+import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.scheduledetail.domain.GetScheduleDetailUseCase;
 import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
@@ -28,6 +29,8 @@ public interface TrainComponent {
     Context getContext();
 
     AnalyticTracker analyticTracker();
+
+    TrainDateUtil trainDateUtil();
 
     UserSession userSession();
 

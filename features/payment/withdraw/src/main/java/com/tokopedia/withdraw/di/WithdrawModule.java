@@ -3,6 +3,8 @@ package com.tokopedia.withdraw.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -59,4 +61,12 @@ public class WithdrawModule {
         return builder.build();
     }
 
+    @WithdrawScope
+    @Provides
+    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return ((AbstractionRouter) context).getAnalyticTracker();
+        }
+        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
+    }
 }

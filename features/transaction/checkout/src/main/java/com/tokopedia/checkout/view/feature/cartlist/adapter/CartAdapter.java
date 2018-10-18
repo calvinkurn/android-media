@@ -26,6 +26,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -41,6 +42,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
+    private RecyclerView.RecycledViewPool viewPool;
+    private Map<Integer, Boolean> checkedItemState;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -49,6 +52,11 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.cartActionListener = cartActionListener;
         this.cartItemActionListener = cartItemActionListener;
         compositeSubscription = new CompositeSubscription();
+        viewPool = new RecyclerView.RecycledViewPool();
+    }
+
+    public void setCheckedItemState(Map<Integer, Boolean> checkedItemState) {
+        this.checkedItemState = checkedItemState;
     }
 
     @Override
@@ -74,7 +82,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
-            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription);
+            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription, viewPool);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
@@ -100,7 +108,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (getItemViewType(position) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             final CartShopViewHolder holderView = (CartShopViewHolder) holder;
             final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
-            holderView.bindData(data);
+            holderView.bindData(data, checkedItemState);
         } else if (getItemViewType(position) == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionViewHolder holderView = (CartPromoSuggestionViewHolder) holder;
             final CartPromoSuggestion data = (CartPromoSuggestion) cartDataList.get(position);
@@ -163,6 +171,40 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 cartItemDataList.add(cartItemHolderData.getCartItemData());
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        return cartItemDataList;
+    }
+
+    public List<CartItemData> getAllCartItemData() {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            cartItemDataList.add(cartItemHolderData.getCartItemData());
+                        }
+                    }
+                }
+            }
+        }
+
+        return cartItemDataList;
+    }
+
+    public List<CartItemHolderData> getAllCartItemHolderData() {
+        List<CartItemHolderData> cartItemDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        cartItemDataList.addAll(cartShopHolderData.getShopGroupData().getCartItemDataList());
                     }
                 }
             }
@@ -234,6 +276,38 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 cartShopHolderData.setAllSelected(true);
                 cartShopHolderData.setPartialSelected(false);
                 needToUpdateParent = !shopAlreadySelected;
+            }
+
+            // Check does has cash back item
+            boolean hasCashbackItem = false;
+            for (CartItemHolderData data : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                if (data.getCartItemData().getOriginData().isCashBack()) {
+                    hasCashbackItem = true;
+                    break;
+                }
+            }
+            // Check is it the last cash back item to uncheck & still contain non cash back item
+            boolean isTheLastCashbackItem = true;
+            boolean hasUncheckedItem = false;
+            if (!selected && hasCashbackItem) {
+                // Check does it still contain unchecked item
+                for (CartItemHolderData data : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (data.isSelected() && !data.getCartItemData().getOriginData().isCashBack()) {
+                        hasUncheckedItem = true;
+                        break;
+                    }
+                }
+                // Check is it the last cash back item to be unchecked
+                for (int j = 0; j < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); j++) {
+                    CartItemHolderData data = cartShopHolderData.getShopGroupData().getCartItemDataList().get(j);
+                    if (j != position && data.isSelected() && data.getCartItemData().getOriginData().isCashBack()) {
+                        isTheLastCashbackItem = false;
+                        break;
+                    }
+                }
+            }
+            if (hasUncheckedItem && isTheLastCashbackItem) {
+                needToUpdateParent = true;
             }
         }
 
@@ -345,27 +419,24 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object object : cartDataList) {
             if (object instanceof CartShopHolderData) {
                 CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
-                if (cartShopHolderData.isAllSelected()) {
-                    if (cartShopHolderData.getShopGroupData().isError()) {
-                        canProcess = false;
-                        break;
-                    } else {
+                if (!cartShopHolderData.getShopGroupData().isError()) {
+                    if (cartShopHolderData.isAllSelected()) {
                         checkedCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
-                    }
-                } else if (cartShopHolderData.isPartialSelected()) {
-                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected()) {
-                                checkedCount++;
-                                if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
-                                        cartItemHolderData.getCartItemData().isError()) {
-                                    canProcess = false;
-                                    break;
+                    } else if (cartShopHolderData.isPartialSelected()) {
+                        if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                                if (cartItemHolderData.isSelected()) {
+                                    checkedCount++;
+                                    if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
+                                            cartItemHolderData.getCartItemData().isError()) {
+                                        canProcess = false;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (!canProcess) {
-                            break;
+                            if (!canProcess) {
+                                break;
+                            }
                         }
                     }
                 }

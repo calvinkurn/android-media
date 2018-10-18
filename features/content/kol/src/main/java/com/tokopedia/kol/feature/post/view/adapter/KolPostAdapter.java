@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -92,13 +93,31 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         );
     }
 
+    public void addItem(Visitable item) {
+        int position = this.list.size();
+        if (this.list.add(item)) {
+            notifyItemInserted(position);
+        }
+    }
+
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();
     }
 
+    public void showEmpty(boolean showTopShadhow) {
+        emptyModel.setShowTopShadow(showTopShadhow);
+        this.list.add(emptyModel);
+        notifyDataSetChanged();
+    }
+
     public void showEmpty() {
         this.list.add(emptyModel);
+        notifyDataSetChanged();
+    }
+
+    public void showEmptyOwnShop(EmptyResultViewModel emptyResultViewModel) {
+        this.list.add(emptyResultViewModel);
         notifyDataSetChanged();
     }
 

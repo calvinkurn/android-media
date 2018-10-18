@@ -27,20 +27,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.home.account.analytics.AccountAnalytics;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
-import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.home.account.presentation.listener.LogoutView;
+import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -51,13 +51,26 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER;
+import static com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PAYMENT_METHOD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PRIVACY_POLICY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SETTING;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SHAKE_SHAKE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home.account.AccountConstants.Analytics.TERM_CONDITION;
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
-    @Inject LogoutPresenter presenter;
-    @Inject WalletPref walletPref;
+    @Inject
+    LogoutPresenter presenter;
+    @Inject
+    WalletPref walletPref;
 
     private View loadingView;
     private View baseSettingView;
@@ -111,14 +124,14 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
 
         WalletModel walletModel = walletPref.retrieveWallet();
-        String walletName = walletModel != null ? walletModel.getText() + "," : "";
+        String walletName = walletModel != null ? walletModel.getText() + ", " : "";
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
-                        getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting)));
+                getString(R.string.title_shake_setting), getString(R.string.subtitle_shake_setting)));
 
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)));
@@ -129,7 +142,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)));
 
-        if(GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEV_OPTIONS,
                     getString(R.string.title_dev_options)));
         }
@@ -148,7 +161,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     @Override
     public void onItemClicked(int settingId) {
-        switch (settingId){
+        switch (settingId) {
             case SettingConstant.SETTING_ACCOUNT_ID:
                 accountAnalytics.eventClickSetting(ACCOUNT);
                 startActivity(AccountSettingActivity.createIntent(getActivity()));
@@ -186,12 +199,13 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 showDialogLogout();
                 break;
             case SettingConstant.SETTING_DEV_OPTIONS:
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS);
                     RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                 }
                 break;
-            default: break;
+            default:
+                break;
         }
     }
 
@@ -265,9 +279,9 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     @Override
     public boolean isSwitchSelected(int settingId) {
-        switch (settingId){
+        switch (settingId) {
             case SettingConstant.SETTING_SHAKE_ID:
-                return isItemSelected(getString(R.string.pref_receive_shake));
+                return isItemSelected(getString(R.string.pref_receive_shake), true);
             default:
                 return false;
         }
@@ -275,7 +289,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     @Override
     public void onChangeChecked(int settingId, boolean value) {
-        switch (settingId){
+        switch (settingId) {
             case SettingConstant.SETTING_SHAKE_ID:
                 accountAnalytics.eventClickSetting(SHAKE_SHAKE);
                 saveSettingValue(getString(R.string.pref_receive_shake), value);
@@ -290,11 +304,16 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         return settings.getBoolean(key, false);
     }
 
+    private boolean isItemSelected(String key, boolean defaultValue) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return settings.getBoolean(key, defaultValue);
+    }
+
     private void gotoWebviewActivity(String path, String title) {
         Intent intent;
         String url = String.format("%s%s", SettingConstant.Url.BASE_MOBILE, path);
         if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            intent = SettingWebViewActivity.createIntent(getActivity(), url,title);
+            intent = SettingWebViewActivity.createIntent(getActivity(), url, title);
         } else {
             intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
@@ -316,7 +335,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     @Override
     public void onSuccessLogout() {
         showLoading(false);
-        if (getActivity().getApplication() instanceof AccountHomeRouter){
+        if (getActivity().getApplication() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
         }
     }

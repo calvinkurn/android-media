@@ -300,7 +300,7 @@
     <string name="flight_booking_contact_email_invalid_symbol_advance_error">Invalid email advance</string>
     <string name="flight_dashboard_analytic_one_way">One Way</string>
     <string name="flight_dashboard_analytic_round_trip">Round Trip</string>
-    <string name="flight_booking_analytics_customer_page">On Customer Page</string>
+    <string name="flight_booking_analytics_customer_page">on customer page</string>
     <string name="flight_order_waiting_for_payment_button">Order Detail</string>
     <string name="flight_order_refund_button_card">Order Detail</string>
     <string name="flight_order_detail_button_label">Order Detail</string>

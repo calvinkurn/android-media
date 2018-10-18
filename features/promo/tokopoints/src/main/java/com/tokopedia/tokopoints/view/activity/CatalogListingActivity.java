@@ -23,7 +23,6 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_label_exchange_points));
-        GraphqlClient.init(getApplicationContext());
     }
 
     @Override

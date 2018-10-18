@@ -20,6 +20,8 @@ import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
@@ -104,6 +106,13 @@ public class CartUseCaseModule {
             Context context, ICartRepository cartRepository, ICartMapper cartMapper
     ) {
         return new ResetCartGetCartListUseCase(context, cartRepository, cartMapper);
+    }
+
+    @Provides
+    UpdateAndReloadCartUseCase updateAndReloadCartUseCase(
+            Context context, ICartRepository cartRepository, ICartMapper cartMapper
+    ) {
+        return new UpdateAndReloadCartUseCase(context, cartRepository, cartMapper);
     }
 
     @Provides

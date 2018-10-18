@@ -8,6 +8,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.district_recommendation.domain.model.Token;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ShopAddress implements Parcelable {
 
     @SerializedName("list")

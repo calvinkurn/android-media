@@ -22,8 +22,10 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -59,6 +61,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -89,6 +92,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.ApplinkConstant;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -130,19 +134,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private MainToolbar mainToolbar;
 
-    public static HomeFragment newInstance() {
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
-        Bundle args = new Bundle();
+    private boolean scrollToRecommendList = false;
+    private boolean isTraceStopped = false;
 
+    public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
+        trace = TrackingUtils.startTrace("beranda_trace");
     }
 
     @Override
@@ -159,14 +167,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(BerandaComponent component){
+    public void reInitInjector(BerandaComponent component) {
         component.inject(this);
         component.inject(presenter);
         presenter.attachView(this);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public HomePresenter getPresenter(){ return presenter; }
+    public HomePresenter getPresenter() {
+        return presenter;
+    }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(HomePresenter presenter) {
@@ -174,7 +184,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void clearAll(){
+    public void clearAll() {
         adapter.clearItems();
         adapter.notifyDataSetChanged();
     }
@@ -206,17 +216,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-
+        if (SessionHandler.isV4Login(getActivity())) {
+            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (trace != null)
-            trace.stop();
     }
 
     @Override
@@ -233,7 +238,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+                scrollToRecommendList();
                 HomePageTracking.eventClickJumpRecomendation();
             }
         });
@@ -267,6 +272,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
+    }
+
+    private void scrollToRecommendList() {
+
+        recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+        scrollToRecommendList = false;
     }
 
     private void initTabNavigation() {
@@ -441,6 +452,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
             );
         }
+
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            analyticTracker.sendEventTracking(
+                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                    DigitalEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
+                    DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
+            );
+        }
     }
 
     @Override
@@ -522,6 +543,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             else
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
+                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
     }
 
     @Override
@@ -533,6 +560,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
+        presenter.onBannerClicked(slidesModel);
     }
 
     @Override
@@ -594,6 +622,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void hideLoading() {
         refreshLayout.setRefreshing(false);
+        if (trace != null && !isTraceStopped) {
+            trace.stop();
+            isTraceStopped = true;
+        }
     }
 
     @Override
@@ -603,6 +635,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
+        if (scrollToRecommendList) {
+            presenter.fetchNextPageFeed();
+        }
     }
 
     @Override
@@ -623,7 +658,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar =  NetworkErrorHelper.createSnackbarWithAction(
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             root, getString(com.tokopedia.core.R.string.msg_network_error),
                             () -> onRefresh()
                     );
@@ -767,6 +802,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
+        if (scrollToRecommendList) {
+            scrollToRecommendList();
+        }
+
     }
 
     @Override
@@ -853,6 +892,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
+        if(isVisible()) {
+            presenter.hitBannerImpression(bannerSlidesModel);
+        }
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         trackScreen(isVisibleToUser);
@@ -908,7 +954,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public Observable<TokoPointDrawerData> getTokopoint() {
-        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter){
+        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter) {
             return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
         }
         return null;
@@ -951,9 +997,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     public void startShopInfo(String shopId) {
-        if(getActivity() != null
+        if (getActivity() != null
                 && getActivity().getApplication() != null
-                && getActivity().getApplication() instanceof IHomeRouter){
+                && getActivity().getApplication() instanceof IHomeRouter) {
             IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
             startActivity(homeRouter.getShopPageIntent(getActivity(), shopId));
         }
@@ -961,7 +1007,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if(getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+        if (getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {

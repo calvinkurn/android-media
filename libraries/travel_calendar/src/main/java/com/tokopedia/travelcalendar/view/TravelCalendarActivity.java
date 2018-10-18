@@ -42,6 +42,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     public static final String EXTRA_MAX_DATE = "maxdate";
     public static final int DEPARTURE_TYPE = 1;
     public static final int RETURN_TYPE = 2;
+    public static final int DEFAULT_TYPE = 0;
     public static final String EXTRA_SCHEDULE_TYPE = "schedule_type";
 
 
@@ -80,10 +81,12 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
 
     private void updateTitleToolbar() {
         int scheduleType = getIntent().getIntExtra(EXTRA_SCHEDULE_TYPE, 0);
-        if (scheduleType == 1) {
+        if (scheduleType == DEPARTURE_TYPE) {
             updateTitle(getResources().getString(R.string.travel_calendar_label_choose_departure_trip_date));
-        } else {
+        } else if (scheduleType == RETURN_TYPE) {
             updateTitle(getResources().getString(R.string.travel_calendar_label_choose_return_trip_date));
+        } else {
+            updateTitle(getResources().getString(R.string.travel_calendar_label_choose_date));
         }
     }
 
@@ -152,8 +155,11 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         Calendar calendarMaxDate = (Calendar) Calendar.getInstance();
         calendarMaxDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MAX_DATE));
 
+        Calendar calendarMinDate = (Calendar) Calendar.getInstance();
+        calendarMinDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MIN_DATE));
+
         for (int i = 0; i < monthDeviation; i++) {
-            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate,
+            fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate, calendarMinDate,
                     (ArrayList) holidayResultList));
 
             calendarDateUser.set(Calendar.MONTH, month);

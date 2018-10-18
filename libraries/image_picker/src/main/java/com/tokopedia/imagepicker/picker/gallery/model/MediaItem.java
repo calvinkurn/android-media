@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker.picker.gallery.model;
 
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,26 +9,24 @@ import android.provider.MediaStore;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
-import java.io.File;
-
 /**
  * Created by hangnadi on 5/29/17.
  */
 
 public class MediaItem implements Parcelable {
 
-    public static final long ITEM_ID_CAPTURE = -1;
-    public static final String ITEM_DISPLAY_NAME_CAPTURE = "Capture";
+    public static final String X = "x";
     private final long id;
     private final String mimeType;
     private final Uri uri;
     private final long size;
     private final long duration; // only for video, in ms
+    private final String videoResolution; // only for video, in ms
     private long height;
     private long width;
     private final String realPath;
 
-    private MediaItem(long id, String realPath, String mimeType, long size, long duration) {
+    private MediaItem(long id, String realPath, String mimeType, long size, long duration, String videoResolution) {
         this.id = id;
         this.mimeType = mimeType;
         Uri contentUri;
@@ -45,6 +42,7 @@ public class MediaItem implements Parcelable {
         this.size = size;
         this.duration = duration;
         this.realPath = realPath;
+        this.videoResolution = videoResolution == null? "" : videoResolution;
     }
 
     public long getWidth() {
@@ -61,6 +59,25 @@ public class MediaItem implements Parcelable {
         return duration;
     }
 
+    public String getVideoResolution() {
+        return videoResolution;
+    }
+
+    public int getMinimumVideoResolution() {
+        String[] minResolution = videoResolution.split(X);
+        if (minResolution.length == 2) {
+            try {
+                return Math.min(
+                        Integer.parseInt(minResolution[0]),
+                        Integer.parseInt(minResolution[1]));
+            } catch (Exception e) {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
     private void calculateWidthAndHeight() {
         if (width == 0 || height == 0) {
             int[] widthHeight = ImageUtils.getWidthAndHeight(getRealPath());
@@ -74,7 +91,8 @@ public class MediaItem implements Parcelable {
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE)),
                 cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns.SIZE)),
-                cursor.getLong(cursor.getColumnIndex("duration"))
+                cursor.getLong(cursor.getColumnIndex(MediaStore.Video.VideoColumns.DURATION)),
+                cursor.getString(cursor.getColumnIndex(MediaStore.Video.VideoColumns.RESOLUTION))
         );
     }
 
@@ -129,6 +147,7 @@ public class MediaItem implements Parcelable {
         dest.writeLong(this.height);
         dest.writeLong(this.width);
         dest.writeString(this.realPath);
+        dest.writeString(this.videoResolution);
     }
 
     protected MediaItem(Parcel in) {
@@ -140,6 +159,7 @@ public class MediaItem implements Parcelable {
         this.height = in.readLong();
         this.width = in.readLong();
         this.realPath = in.readString();
+        this.videoResolution = in.readString();
     }
 
     public static final Creator<MediaItem> CREATOR = new Creator<MediaItem>() {

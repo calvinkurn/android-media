@@ -31,6 +31,8 @@ import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.contractor.EventBaseContract;
+import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
 import com.tokopedia.events.view.utils.VerifyCartWrapper;
 
 import dagger.Module;
@@ -222,5 +224,11 @@ public class EventModule {
         return new VerifyCartWrapper(useCase);
     }
 
+
+    @Provides
+    @EventScope
+    EventBaseContract.EventBasePresenter providesEventFilterPresenter() {
+        return new EventFilterPresenterImpl();
+    }
 
 }

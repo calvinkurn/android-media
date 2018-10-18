@@ -16,39 +16,7 @@ public class AccountConstants {
         public static final String TRAIN_ORDER_LIST = "train_order_list";
         public static final String TOPADS = "topads";
         public static final String FEATURED_PRODUCT = "featured_product";
-    }
-
-    public static class Url {
-
-        public static final String BASE_SELLER_URL = "https://seller.tokopedia.com/";
-
-        public static final String CDN_URL = "https://ecs7.tokopedia.net";
-        public static final String CDN_IMAGE_PATH = "/img/android/others/";
-        public static final String IMAGE_URL = CDN_URL + CDN_IMAGE_PATH;
-
-        public static final String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
-
-        public class Pulsa {
-
-            public static final String BASE_PULSA_URL = "https://pulsa.tokopedia.com/";
-
-            public static final String PULSA_SUBSCRIBE = BASE_PULSA_URL + "subscribe/";
-
-            public static final String PULSA_FAV_NUMBER = BASE_PULSA_URL + "favorite-list/";
-
-            public static final String ZAKAT_URL = BASE_PULSA_URL + "berbagi/operator/?category_id=16";
-
-            public static final String MYBILLS = BASE_PULSA_URL + "mybills/";
-        }
-
-        public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
-        public static final String REKSA_DANA_TX_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/mobile-dashboard/list";
-
-        public static final String TOKOCARD_URL = TkpdBaseURL.WEB_DOMAIN + "tokocard/";
-
-        public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
-        public static final String EMAS_TX_URL = TkpdBaseURL.WEB_DOMAIN + "emas/daftar-transaksi/";
-
+        public static final String MITRA_TOPPERS = "mitra-toppers";
     }
 
     public static class Analytics {
@@ -59,6 +27,7 @@ public class AccountConstants {
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
         public static final String PEMBELI = "pembeli";
+        public static final String CLICK_CHALLENGE = "challenge";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -101,5 +70,24 @@ public class AccountConstants {
         public static final String CHAT = "chat";
         public static final String TOKOPEDIA = "tokopedia";
         public static final String NEWS_LETTER = "newsletter";
+        public static final String SCREEN_NAME = "screenName";
+        public static final String EVENT = "event";
+        public static final String EVENT_CATEGORY = "eventCategory";
+        public static final String EVENT_ACTION = "eventAction";
+        public static final String EVENT_LABEL = "eventLabel";
+        public static final String TOP_NAV = "top nav";
+        public static final String SCREEN_NAME_ACCOUNT = "/account";
+    }
+
+    public interface VccStatus {
+        String ELIGIBLE = "eligible";
+        String NOT_ELIGIBLE = "not_eligible";
+        String HOLD = "hold";
+        String ACTIVE = "active";
+        String BLOCKED = "blocked";
+        String KYC_PENDING = "kyc pending";
+        String NOT_FOUND = "not_found";
+        String REJECTED = "rejected";
+        String DEACTIVATED = "deactivated";
     }
 }
