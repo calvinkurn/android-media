@@ -16,13 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -54,6 +57,7 @@ public class HeaderHomeView extends BaseCustomView {
     private ImageView ivLogoTokoPoint;
     private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
+    private WalletAnalytics walletAnalytics;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
@@ -77,6 +81,11 @@ public class HeaderHomeView extends BaseCustomView {
             return;
         if (listener == null)
             return;
+
+        if (getContext().getApplicationContext() instanceof IHomeRouter) {
+            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
+            walletAnalytics = new WalletAnalytics(analyticTracker);
+        }
 
         if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
             renderHeaderOnlyTokocash();
@@ -367,6 +376,7 @@ public class HeaderHomeView extends BaseCustomView {
                     getContext().startActivity(intentBalanceWalet);
                     if (!linkedOvo) {
                         showAnimationBottomSheetActivation();
+                        walletAnalytics.eventClickActivationOvoHomepage();
                     }
                 }
             }
