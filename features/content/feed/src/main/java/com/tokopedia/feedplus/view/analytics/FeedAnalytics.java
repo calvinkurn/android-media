@@ -214,7 +214,6 @@ public class FeedAnalytics {
 
         analyticTracker.sendEventTracking(mapEvent);
     }
-    //
 
     public void trackEventClickProductUploadEnhanced(String name,
                                                      String id,

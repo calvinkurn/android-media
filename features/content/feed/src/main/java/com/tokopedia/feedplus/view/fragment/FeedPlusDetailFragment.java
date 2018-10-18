@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -66,7 +67,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
     private PagingHandler pagingHandler;
-
+    private View mainView;
+    private ProgressBar progressBar;
     private String detailId;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
@@ -82,7 +84,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        if(getActivity()!= null && getActivity().getApplicationContext()!= null) {
+        if (getActivity() != null && getActivity().getApplicationContext() != null) {
             DaggerFeedPlusComponent.builder()
                     .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
                     .build()
@@ -124,6 +126,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         shareButton = parentView.findViewById(R.id.share_button);
         seeShopButon = parentView.findViewById(R.id.see_shop);
         footer = parentView.findViewById(R.id.footer);
+        mainView = parentView.findViewById(R.id.main_layout);
+        progressBar = parentView.findViewById(R.id.progress_bar);
         prepareView();
         presenter.attachView(this, this);
         return parentView;
@@ -172,7 +176,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onWishlistClicked(int adapterPosition, Integer productId, boolean isWishlist) {
-        if(getArguments()!= null) {
+        if (getArguments() != null) {
             if (!isWishlist) {
                 presenter.addToWishlist(adapterPosition, String.valueOf(productId));
                 analytics.eventFeedClickProduct(
@@ -334,7 +338,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        //TODO : CREATE LOADING PROGRESS
+        mainView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -415,7 +420,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private void dismissLoadingProgress() {
-        //TODO : DISMISS LOADING
+        mainView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
 
