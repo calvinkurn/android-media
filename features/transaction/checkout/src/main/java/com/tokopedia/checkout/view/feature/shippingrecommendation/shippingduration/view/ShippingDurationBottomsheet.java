@@ -180,8 +180,34 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
         shippingDurationAdapter.notifyDataSetChanged();
         updateHeight();
+        boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
+        if (hasCourierPromo) {
+            sendAnalyticCourierPromo(shippingDurationViewModelList);
+        }
+    }
+
+    private boolean checkHasCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        boolean hasCourierPromo = false;
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            if (shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
+                hasCourierPromo = true;
+                break;
+            }
+        }
+
+        return hasCourierPromo;
+    }
+
+    private void sendAnalyticCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            shippingDurationBottomsheetListener.onShowDurationListWithCourierPromo(
+                    shippingDurationViewModel.getServiceData().getIsPromo() == 1,
+                    shippingDurationViewModel.getServiceData().getServiceName()
+            );
+        }
     }
 
     @Override
@@ -192,7 +218,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, String serviceName) {
+                                          int cartPosition, String serviceName, boolean hasCourierPromo) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
@@ -210,7 +236,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName,
+                    flagNeedToSetPinpoint, hasCourierPromo);
         }
         dismiss();
     }

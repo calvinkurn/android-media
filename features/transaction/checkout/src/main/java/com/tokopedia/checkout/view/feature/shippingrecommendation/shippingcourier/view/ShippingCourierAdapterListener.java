@@ -6,7 +6,7 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcouri
 
 public interface ShippingCourierAdapterListener {
 
-    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition);
+    void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo);
 
     boolean isToogleYearEndPromotionOn();
 

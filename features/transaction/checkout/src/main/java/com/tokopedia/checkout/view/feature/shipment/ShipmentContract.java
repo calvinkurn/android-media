@@ -171,6 +171,16 @@ public interface ShipmentContract {
         void sendAnalyticsOnViewPromoAutoApply();
 
         void sendAnalyticsOnViewPromoManualApply(String type);
+
+        void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId);
+
+        void sendAnalyticsOnDisplayDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
+
+        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

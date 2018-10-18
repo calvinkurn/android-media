@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcouri
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -111,6 +112,14 @@ public class ShippingCourierBottomsheet extends BottomSheets
         shippingDurationAdapter.setShippingCourierAdapterListener(this);
         shippingDurationAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
         shippingDurationAdapter.setCartPosition(cartPosition);
+        boolean hasCourierPromo = false;
+        for (ShippingCourierViewModel shippingCourierViewModel : presenter.getShippingCourierViewModels()) {
+            if (!TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode())) {
+                hasCourierPromo = true;
+                break;
+            }
+        }
+        shippingDurationAdapter.setHasCourierPromo(hasCourierPromo);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvCourier.setLayoutManager(linearLayoutManager);
@@ -129,7 +138,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
+    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo) {
         if (shippingCourierViewModel.getProductData().getError() != null) {
             if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 presenter.updateSelectedCourier(shippingCourierViewModel);
@@ -139,7 +148,8 @@ public class ShippingCourierBottomsheet extends BottomSheets
         }
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
         shippingCourierBottomsheetListener.onCourierChoosen(
-                courierItemData, presenter.getRecipientAddressModel(), cartPosition);
+                courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
+                !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()));
         dismiss();
     }
 

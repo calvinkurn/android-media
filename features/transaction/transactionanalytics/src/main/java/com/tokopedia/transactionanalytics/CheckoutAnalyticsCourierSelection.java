@@ -513,12 +513,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     // Year End Promo
-    public void eventViewPreselectedCourierOption(String shippingProductId) {
+    public void eventViewPreselectedCourierOption(int shippingProductId) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_PRESELECTED_COURIER_OPTION,
-                shippingProductId
+                String.valueOf(shippingProductId)
         );
     }
 
@@ -531,7 +531,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventViewCourierOption(boolean isCourierPromo, String shippingProductId) {
+    public void eventViewCourierOption(boolean isCourierPromo, int shippingProductId) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
@@ -549,7 +549,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickChangeCourierOption(boolean isCourierPromo, String shippingProductId) {
+    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,

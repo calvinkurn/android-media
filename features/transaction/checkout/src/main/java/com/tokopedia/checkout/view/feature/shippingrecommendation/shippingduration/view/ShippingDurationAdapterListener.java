@@ -10,7 +10,8 @@ import java.util.List;
 
 public interface ShippingDurationAdapterListener {
 
-    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList, int cartPosition, String serviceName);
+    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList,
+                                   int cartPosition, String serviceName, boolean hasCourierPromo);
 
     void onAllShippingDurationItemShown();
 

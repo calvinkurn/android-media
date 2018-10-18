@@ -24,10 +24,13 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoPotency;
 
     private int cartPosition;
+    // set true if has courier promo, whether own courier or other courier
+    private boolean hasCourierPromo;
 
-    public ShippingCourierViewHolder(View itemView, int cartPosition) {
+    public ShippingCourierViewHolder(View itemView, int cartPosition, boolean hasCourierPromo) {
         super(itemView);
         this.cartPosition = cartPosition;
+        this.hasCourierPromo = hasCourierPromo;
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);
@@ -57,7 +60,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
             tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
-            itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition));
+            itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(
+                    shippingCourierViewModel, cartPosition, hasCourierPromo));
         }
         imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
     }
