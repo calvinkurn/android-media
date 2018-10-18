@@ -279,27 +279,27 @@ public class ConfirmShippingActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
+        if (getSupportFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
             removeServiceSelectionFragment();
             toolbar.setTitle(R.string.label_select_courier_logistic_module);
-        } else if (getFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
             removeCourierSelectionFragment();
             toolbar.setTitle(R.string.title_confirm_shipment_logistic_module);
         } else super.onBackPressed();
     }
 
     private void removeCourierSelectionFragment() {
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
-                .remove(getFragmentManager()
+                .remove(getSupportFragmentManager()
                         .findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG)).commit();
     }
 
     private void removeServiceSelectionFragment() {
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                .remove(getFragmentManager()
+                .remove(getSupportFragmentManager()
                         .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }
 
