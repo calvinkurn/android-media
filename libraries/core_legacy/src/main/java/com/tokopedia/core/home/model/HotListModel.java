@@ -11,6 +11,8 @@ import com.tokopedia.core.var.TkpdState;
  * Created by m.normansyah on 28/10/2015.
  */
 public class HotListModel extends RecyclerViewItem{
+    // hotlist view type
+    public static final int VIEW_STANDARD = 9;
     @SerializedName("id")
     String hotListId;
     @SerializedName("title")
@@ -31,7 +33,7 @@ public class HotListModel extends RecyclerViewItem{
     private String trackerEnhanceName;
 
     public HotListModel(){
-        setType(TkpdState.RecyclerView.VIEW_STANDARD);
+        setType(VIEW_STANDARD);
     }
 
     public String getHotListId() {

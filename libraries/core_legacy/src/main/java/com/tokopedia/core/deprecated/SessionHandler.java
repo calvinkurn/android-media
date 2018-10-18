@@ -4,7 +4,12 @@ import android.content.Context;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-public class SessionHandler {
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+
+/**
+ * most of the codes is no-op that need to defined at the application.
+ */
+public class SessionHandler implements UserSession {
     private Context context;
 
     public SessionHandler(Context context) {
@@ -70,5 +75,55 @@ public class SessionHandler {
 
     public String getAccessToken() {
         return "";
+    }
+
+    @Override
+    public String getFreshToken() {
+        return null;
+    }
+
+    @Override
+    public String getUserId() {
+        return null;
+    }
+
+    @Override
+    public String getDeviceId() {
+        return null;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return false;
+    }
+
+    @Override
+    public String getShopId() {
+        return null;
+    }
+
+    @Override
+    public boolean hasShop() {
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getProfilePicture() {
+        return null;
+    }
+
+    @Override
+    public boolean isMsisdnVerified() {
+        return false;
+    }
+
+    @Override
+    public boolean isHasPassword() {
+        return false;
     }
 }

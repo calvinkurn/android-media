@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.RouterUtils;
@@ -126,4 +127,6 @@ public interface TkpdCoreRouter {
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 
     Intent getInboxMessageIntent(Context mContext);
+
+    SessionHandler legacySessionHandler();
 }
