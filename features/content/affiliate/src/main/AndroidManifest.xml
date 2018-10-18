@@ -60,6 +60,23 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".feature.tracking.view.AffiliateTrackingActivity" >
+            <intent-filter android:order="1">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="tokopedia.me"
+                    android:pathPattern="/.*"
+                    android:scheme="https" />
+                <data
+                    android:host="tokopedia.me"
+                    android:pathPattern="/.*"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
