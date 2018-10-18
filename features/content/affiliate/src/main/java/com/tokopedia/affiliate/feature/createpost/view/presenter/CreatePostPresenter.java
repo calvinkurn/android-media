@@ -44,6 +44,15 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     }
 
     @Override
+    public void fetchEditContentForm(String postId) {
+        getView().showLoading();
+        getContentFormUseCase.execute(
+                GetContentFormUseCase.createEditRequestParams(postId),
+                new GetContentFormSubscriber(getView(), true)
+        );
+    }
+
+    @Override
     public void submitPost(String productId, String adId, String token, List<String> imageList,
                            int mainImageIndex) {
         getView().showLoading();
@@ -51,6 +60,20 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
                 SubmitPostUseCase.createRequestParams(
                         productId,
                         adId,
+                        token,
+                        imageList,
+                        mainImageIndex
+                ),
+                new SubmitPostSubscriber(getView())
+        );
+    }
+
+    @Override
+    public void editPost(String postId, String token, List<String> imageList, int mainImageIndex) {
+        getView().showLoading();
+        submitPostUseCase.execute(
+                SubmitPostUseCase.createEditRequestParams(
+                        postId,
                         token,
                         imageList,
                         mainImageIndex

@@ -26,6 +26,8 @@ public interface CreatePostContract {
 
         void onErrorGetContentForm(String message);
 
+        void onErrorGetEditContentForm(String message);
+
         void onErrorNotAffiliate();
 
         void onErrorNoQuota();
@@ -37,7 +39,11 @@ public interface CreatePostContract {
     interface Presenter extends CustomerPresenter<View> {
         void fetchContentForm(String productId, String adId);
 
+        void fetchEditContentForm(String postId);
+
         void submitPost(String productId, String adId, String token, List<String> imageList,
                         int mainImageIndex);
+
+        void editPost(String postId, String token, List<String> imageList, int mainImageIndex);
     }
 }

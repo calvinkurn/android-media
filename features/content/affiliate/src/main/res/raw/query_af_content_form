@@ -1,5 +1,5 @@
-query ContentForm($type: String, $productID: String, $adID: String) {
-  feed_content_form(type: $type, productID: $productID, adID: $adID) {
+query ContentForm($type: String, $productID: String, $adID: String, $ID: String) {
+  feed_content_form(type: $type, productID: $productID, adID: $adID, ID: $ID) {
     token
     type
     components {

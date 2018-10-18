@@ -41,10 +41,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-        .RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
@@ -126,10 +123,17 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         presenter.attachView(this);
         initView();
         if (getUserSession().isLoggedIn()) {
-            presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
+            if (!viewModel.isEdit()) {
+                presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
+            } else {
+                presenter.fetchEditContentForm(viewModel.getPostId());
+            }
         } else {
             startActivityForResult(
-                    RouteManager.getIntent(getContext(), ApplinkConst.LOGIN),
+                    RouteManager.getIntent(
+                            Objects.requireNonNull(getContext()),
+                            ApplinkConst.LOGIN
+                    ),
                     REQUEST_LOGIN
             );
         }
@@ -155,10 +159,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 if (resultCode == Activity.RESULT_OK) {
                     ArrayList<String> imageListResult
                             = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    ArrayList<String> imageListOriginal
-                            = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
-                    ArrayList<String> imageListDescription
-                            = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
 
                     viewModel.getImageList().clear();
                     viewModel.getImageList().addAll(imageListResult);
@@ -198,14 +198,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             setupHeader(feedContentForm.getGuides().get(0));
         }
         if (!feedContentForm.getMedia().getMedia().isEmpty()) {
-            int lastIndex = feedContentForm.getMedia().getMedia().size() - 1;
-            Medium medium = feedContentForm.getMedia().getMedia().get(lastIndex);
-            viewModel.setPdpImage(medium.getMediaUrl());
-
             if (viewModel.getImageList().isEmpty()) {
                 viewModel.getImageList().clear();
-                for (int i = 0; i < lastIndex; i++) {
-                    medium = feedContentForm.getMedia().getMedia().get(i);
+                for (int i = 0; i < feedContentForm.getMedia().getMedia().size(); i++) {
+                    Medium medium = feedContentForm.getMedia().getMedia().get(i);
                     viewModel.getImageList().add(medium.getMediaUrl());
                 }
             }
@@ -215,9 +211,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onErrorGetContentForm(String message) {
-        NetworkErrorHelper.showEmptyState(getContext(), mainView, message, () -> {
-            presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
-        });
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, message,
+                () -> presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId()));
+    }
+
+    @Override
+    public void onErrorGetEditContentForm(String message) {
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, message,
+                () -> presenter.fetchEditContentForm(viewModel.getPostId()));
     }
 
     @Override
@@ -268,6 +269,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             viewModel.setAdId(
                     getArguments().getString(CreatePostActivity.PARAM_AD_ID, "")
             );
+            viewModel.setPostId(
+                    getArguments().getString(CreatePostActivity.PARAM_POST_ID, "")
+            );
+            viewModel.setEdit(
+                    getArguments().getBoolean(CreatePostActivity.PARAM_IS_EDIT, false)
+            );
         }
     }
 
@@ -304,7 +311,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void setupViewPager() {
-        adapter.setList(viewModel.getCompleteList());
+        adapter.setList(viewModel.getImageList());
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
         tabLayout.setupWithViewPager(imageViewPager);
@@ -393,7 +400,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 viewModel.getProductId(),
                 viewModel.getAdId(),
                 viewModel.getToken(),
-                viewModel.getCompleteList(),
+                viewModel.getImageList(),
                 viewModel.getMainImageIndex()
         );
     }

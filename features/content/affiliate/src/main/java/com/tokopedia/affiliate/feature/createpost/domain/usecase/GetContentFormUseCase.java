@@ -24,6 +24,7 @@ public class GetContentFormUseCase {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_PRODUCT_ID = "productID";
     private static final String PARAM_AD_ID = "adID";
+    private static final String PARAM_POST_ID = "ID";
     private static final String TYPE_AFFILIATE = "affiliate";
 
     private final Context context;
@@ -64,6 +65,13 @@ public class GetContentFormUseCase {
         variables.put(PARAM_TYPE, TYPE_AFFILIATE);
         variables.put(PARAM_PRODUCT_ID, productId);
         variables.put(PARAM_AD_ID, adId);
+        return variables;
+    }
+
+    public static HashMap<String, Object> createEditRequestParams(String postId) {
+        HashMap<String, Object> variables = new HashMap<>();
+        variables.put(PARAM_TYPE, TYPE_AFFILIATE);
+        variables.put(PARAM_POST_ID, postId);
         return variables;
     }
 }

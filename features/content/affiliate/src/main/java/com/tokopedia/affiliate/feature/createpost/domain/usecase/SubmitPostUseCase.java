@@ -30,10 +30,12 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_AD_ID = "adID";
     private static final String PARAM_PRODUCT_ID = "productID";
+    private static final String PARAM_POST_ID = "ID";
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_IMAGE_LIST = "image_list";
     private static final String PARAM_INPUT = "input";
     private static final String PARAM_MAIN_IMAGE_INDEX = "main_image_index";
+    private static final String PARAM_IS_EDIT = "is_edit";
     private static final String TYPE_AFFILIATE = "affiliate";
 
     public static final int SUCCESS = 1;
@@ -109,9 +111,15 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
                                                      List<SubmitPostMedium> mediumList) {
         ContentSubmitInput input = new ContentSubmitInput();
         input.setType(requestParams.getString(PARAM_TYPE, ""));
-        input.setAdID(requestParams.getString(PARAM_AD_ID, ""));
-        input.setProductID(requestParams.getString(PARAM_PRODUCT_ID, ""));
         input.setToken(requestParams.getString(PARAM_TOKEN, ""));
+
+        if (!requestParams.getBoolean(PARAM_IS_EDIT, false)) {
+            input.setAdID(requestParams.getString(PARAM_AD_ID, ""));
+            input.setProductID(requestParams.getString(PARAM_PRODUCT_ID, ""));
+        } else {
+            input.setActivityId(requestParams.getString(PARAM_POST_ID, ""));
+        }
+
         input.setMedia(mediumList);
         return input;
     }
@@ -125,6 +133,18 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
         requestParams.putString(PARAM_TOKEN, token);
         requestParams.putObject(PARAM_IMAGE_LIST, imageList);
         requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex);
+        return requestParams;
+    }
+
+    public static RequestParams createEditRequestParams(String postId, String token,
+                                                        List<String> imageList, int mainImageIndex) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE);
+        requestParams.putString(PARAM_POST_ID, postId);
+        requestParams.putString(PARAM_TOKEN, token);
+        requestParams.putObject(PARAM_IMAGE_LIST, imageList);
+        requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex);
+        requestParams.putBoolean(PARAM_IS_EDIT, true);
         return requestParams;
     }
 }

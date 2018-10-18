@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.createpost.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,18 +11,11 @@ public class CreatePostViewModel implements Parcelable {
 
     private String productId = "";
     private String adId = "";
+    private String postId = "";
     private String token = "";
-    private String pdpImage = "";
     private int mainImageIndex = 0;
+    private boolean isEdit = false;
     private ArrayList<String> imageList = new ArrayList<>();
-
-    public int getMainImageIndex() {
-        return mainImageIndex;
-    }
-
-    public void setMainImageIndex(int mainImageIndex) {
-        this.mainImageIndex = mainImageIndex;
-    }
 
     public String getProductId() {
         return productId;
@@ -41,6 +33,14 @@ public class CreatePostViewModel implements Parcelable {
         this.adId = adId;
     }
 
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
     public String getToken() {
         return token;
     }
@@ -49,12 +49,20 @@ public class CreatePostViewModel implements Parcelable {
         this.token = token;
     }
 
-    public String getPdpImage() {
-        return pdpImage;
+    public int getMainImageIndex() {
+        return mainImageIndex;
     }
 
-    public void setPdpImage(String pdpImage) {
-        this.pdpImage = pdpImage;
+    public void setMainImageIndex(int mainImageIndex) {
+        this.mainImageIndex = mainImageIndex;
+    }
+
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
     }
 
     public void setImageList(ArrayList<String> imageList) {
@@ -62,18 +70,7 @@ public class CreatePostViewModel implements Parcelable {
     }
 
     /*
-    Get complete image list with PDP image in the end
-    */
-    public ArrayList<String> getCompleteList() {
-        ArrayList<String> completeList = new ArrayList<>(imageList);
-        if (!TextUtils.isEmpty(pdpImage)) {
-            completeList.add(pdpImage);
-        }
-        return completeList;
-    }
-
-    /*
-    Get image list without PDP image
+    Get complete image list
     */
     public ArrayList<String> getImageList() {
         return imageList;
@@ -110,9 +107,10 @@ public class CreatePostViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productId);
         dest.writeString(this.adId);
+        dest.writeString(this.postId);
         dest.writeString(this.token);
-        dest.writeString(this.pdpImage);
         dest.writeInt(this.mainImageIndex);
+        dest.writeByte(this.isEdit ? (byte) 1 : (byte) 0);
         dest.writeStringList(this.imageList);
     }
 
@@ -122,9 +120,10 @@ public class CreatePostViewModel implements Parcelable {
     protected CreatePostViewModel(Parcel in) {
         this.productId = in.readString();
         this.adId = in.readString();
+        this.postId = in.readString();
         this.token = in.readString();
-        this.pdpImage = in.readString();
         this.mainImageIndex = in.readInt();
+        this.isEdit = in.readByte() != 0;
         this.imageList = in.createStringArrayList();
     }
 
