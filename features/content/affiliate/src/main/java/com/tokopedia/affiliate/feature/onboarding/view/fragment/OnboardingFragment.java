@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivi
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ public class OnboardingFragment extends Fragment {
     private static final String START_IMAGE_NAME = "af_onboarding_start";
     //TODO milhamj change to real url
     private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
+    private static final int LOGIN_CODE = 13;
 
     private ImageView image;
     private TextView title;
@@ -38,6 +40,7 @@ public class OnboardingFragment extends Fragment {
     private ButtonCompat goBtn;
     private TextView commission;
 
+    private UserSession userSession;
     private String productId = "";
     private boolean isOnboardingFinish = false;
 
@@ -64,6 +67,14 @@ public class OnboardingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initVar(savedInstanceState);
         initView();
+        if (!userSession.isLoggedIn()) {
+            startActivityForResult(
+                    RouteManager.getIntent(
+                            Objects.requireNonNull(getContext()),
+                            ApplinkConst.LOGIN
+                    ),
+                    LOGIN_CODE);
+        }
     }
 
     @Override
@@ -74,6 +85,9 @@ public class OnboardingFragment extends Fragment {
     }
 
     private void initVar(Bundle savedInstanceState) {
+        if (userSession == null) {
+            userSession = new UserSession(getContext());
+        }
         if (savedInstanceState != null) {
             isOnboardingFinish = savedInstanceState.getBoolean(
                     OnboardingActivity.PARAM_IS_FINISH,
