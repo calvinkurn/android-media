@@ -11,6 +11,7 @@ import com.tkpd.library.utils.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
 
@@ -1339,24 +1340,24 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-//    public static void eventAppsFlyerViewListingSearch(List<ProductItem> model, String keyword) {
-//        JSONArray afProdIds = new JSONArray();
-//        ArrayList<String> prodIdArray = new ArrayList<>();
-//
-//        if (model.size() > 0) {
-//            for (int i = 0; i < model.size(); i++) {
-//                if (i < 3) {
-//                    prodIdArray.add(model.get(i).getId());
-//                    afProdIds.put(model.get(i).getId());
-//                } else {
-//                    break;
-//                }
-//            }
-//        }
-//
-//        eventAppsFlyerViewListingSearch(afProdIds, keyword, prodIdArray);
-//        eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
-//    }
+    public static void eventAppsFlyerViewListingSearch(Context context, List<ProductItem> model, String keyword) {
+        JSONArray afProdIds = new JSONArray();
+        ArrayList<String> prodIdArray = new ArrayList<>();
+
+        if (model.size() > 0) {
+            for (int i = 0; i < model.size(); i++) {
+                if (i < 3) {
+                    prodIdArray.add(model.get(i).getId());
+                    afProdIds.put(model.get(i).getId());
+                } else {
+                    break;
+                }
+            }
+        }
+
+        eventAppsFlyerViewListingSearch(context, afProdIds, keyword, prodIdArray);
+        eventAppsFlyerContentView(context, afProdIds, keyword, prodIdArray);
+    }
 
     public static void eventPDPDetail(Context context, ProductDetail productDetail) {
         getGTMEngine(context)
