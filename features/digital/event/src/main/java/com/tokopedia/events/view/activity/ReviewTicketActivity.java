@@ -199,8 +199,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         String baseBreak = String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), CurrencyUtil.convertToCurrencyString(packageViewModel.getSalesPrice()));
         baseFareBreak.setText("(" + baseBreak + ")");
-        if (selectedSeats != null && selectedSeats.getSeatIds() != null && selectedSeats.getPhysicalRowIds() != null) {
-            List<String> seatID = selectedSeats.getSeatIds();
+        if (selectedSeats != null && selectedSeats.getSeatNos() != null && selectedSeats.getPhysicalRowIds() != null) {
+            List<String> seatID = selectedSeats.getSeatNos();
             List<String> rowID = selectedSeats.getPhysicalRowIds();
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < seatID.size(); i++) {

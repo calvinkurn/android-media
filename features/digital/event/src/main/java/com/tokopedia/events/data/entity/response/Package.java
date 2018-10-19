@@ -99,6 +99,15 @@ public class Package {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("invoice_status")
+    @Expose
+    private String invoiceStatus;
+    @SerializedName("tkp_invoice_id")
+    @Expose
+    private int tkpInvoiceId;
+    @SerializedName("tkp_invoice_item_id")
+    @Expose
+    private int tkpInvoiceItemId;
 
     public int getId() {
         return id;
@@ -346,6 +355,30 @@ public class Package {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
+
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
+
+    public int getTkpInvoiceId() {
+        return tkpInvoiceId;
+    }
+
+    public void setTkpInvoiceId(int tkpInvoiceId) {
+        this.tkpInvoiceId = tkpInvoiceId;
+    }
+
+    public int getTkpInvoiceItemId() {
+        return tkpInvoiceItemId;
+    }
+
+    public void setTkpInvoiceItemId(int tkpInvoiceItemId) {
+        this.tkpInvoiceItemId = tkpInvoiceItemId;
     }
 
 }

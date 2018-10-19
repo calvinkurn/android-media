@@ -44,6 +44,10 @@ public class PackageViewModel implements Parcelable {
     private long startDate;
     private long endDate;
     private boolean isSaleStarted;
+    private String invoiceStatus;
+    private int invoiceItemId;
+    private int invoiceId;
+
 
     public String getTitle() {
         return title;
@@ -331,6 +335,38 @@ public class PackageViewModel implements Parcelable {
         this.forms = forms;
     }
 
+    public boolean isSaleStarted() {
+        return isSaleStarted;
+    }
+
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
+
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
+
+    public int getInvoiceItemId() {
+        return invoiceItemId;
+    }
+
+    public void setInvoiceItemId(int invoiceItemId) {
+        this.invoiceItemId = invoiceItemId;
+    }
+
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public static Creator<PackageViewModel> getCREATOR() {
+        return CREATOR;
+    }
+
     public PackageViewModel() {
     }
 
@@ -376,6 +412,9 @@ public class PackageViewModel implements Parcelable {
         dest.writeLong(this.endDate);
         dest.writeByte(this.isSaleStarted ? (byte) 1 : (byte) 0);
         dest.writeInt(this.categoryId);
+        dest.writeString(this.invoiceStatus);
+        dest.writeInt(this.invoiceId);
+        dest.writeInt(this.invoiceItemId);
     }
 
     protected PackageViewModel(Parcel in) {
@@ -414,6 +453,9 @@ public class PackageViewModel implements Parcelable {
         this.endDate = in.readLong();
         this.isSaleStarted = in.readByte() != 0;
         this.categoryId = in.readInt();
+        this.invoiceStatus = in.readString();
+        this.invoiceId = in.readInt();
+        this.invoiceItemId = in.readInt();
     }
 
     public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {

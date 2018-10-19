@@ -54,6 +54,15 @@ public class EntityPackageItem implements Parcelable {
     @SerializedName("schedule_id")
     private int scheduleId;
 
+    @SerializedName("invoice_status")
+    private String invoiceStatus;
+
+    @SerializedName("tkp_invoice_id")
+    private int invoiceId;
+
+    @SerializedName("tkp_invoice_item_id")
+    private int invoiceItemId;
+
     public void setPricePerSeat(int pricePerSeat) {
         this.pricePerSeat = pricePerSeat;
     }
@@ -166,6 +175,42 @@ public class EntityPackageItem implements Parcelable {
         this.areaCode = areaCode;
     }
 
+    public List<String> getSeatRowId() {
+        return seatRowId;
+    }
+
+    public List<String> getAreaCode() {
+        return areaCode;
+    }
+
+    public String getInvoiceStatus() {
+        return invoiceStatus;
+    }
+
+    public void setInvoiceStatus(String invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
+
+    public int getInvoiceId() {
+        return invoiceId;
+    }
+
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
+    }
+
+    public int getInvoiceItemId() {
+        return invoiceItemId;
+    }
+
+    public void setInvoiceItemId(int invoiceItemId) {
+        this.invoiceItemId = invoiceItemId;
+    }
+
+    public static Creator<EntityPackageItem> getCREATOR() {
+        return CREATOR;
+    }
+
     @Override
     public String toString() {
         return
@@ -206,6 +251,9 @@ public class EntityPackageItem implements Parcelable {
         dest.writeString(this.sessionId);
         dest.writeInt(this.packageId);
         dest.writeInt(this.scheduleId);
+        dest.writeString(this.invoiceStatus);
+        dest.writeInt(this.invoiceId);
+        dest.writeInt(this.invoiceItemId);
     }
 
     public EntityPackageItem() {
@@ -227,6 +275,9 @@ public class EntityPackageItem implements Parcelable {
         this.sessionId = in.readString();
         this.packageId = in.readInt();
         this.scheduleId = in.readInt();
+        this.invoiceStatus = in.readString();
+        this.invoiceId = in.readInt();
+        this.invoiceItemId = in.readInt();
     }
 
     public static final Creator<EntityPackageItem> CREATOR = new Creator<EntityPackageItem>() {

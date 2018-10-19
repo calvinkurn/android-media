@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -47,8 +48,6 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         SeatSelectionContract.SeatSelectionView {
 
 
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.tv_movie_name)
     TextView movieName;
     @BindView(R2.id.selected_seats)
@@ -95,6 +94,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     List<String> rowIds = new ArrayList<>();
     List<String> physicalRowIds = new ArrayList<>();
     List<String> seatIds = new ArrayList<>();
+    List<String> seatNos = new ArrayList<>();
     List<String> actualseat = new ArrayList<>();
     private HashMap<String, Integer> seatNumberMap;
     String areaId;
@@ -137,7 +137,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
 
     @Override
     public void renderSeatSelection(int salesPrice, int maxTickets, SeatLayoutViewModel viewModel) {
-        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         price = salesPrice;
         this.maxTickets = maxTickets;
         this.seatLayoutViewModel = viewModel;
@@ -240,6 +240,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         selectedSeatViewModel.setQuantity(quantity);
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
+        selectedSeatViewModel.setSeatNos(seatNos);
         selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
         selectedSeatViewModel.setActualSeatNos(actualseat);
     }
@@ -267,6 +268,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         seatIds.clear();
         physicalRowIds.clear();
         areacodes.clear();
+        seatNos.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 int k = 0;
@@ -280,6 +282,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
                 }
                 physicalRowIds.add(physicalRowID.toString());
                 seatIds.add(String.valueOf(seatNumberMap.get(selectedSeat)));
+                seatNos.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             selectedSeatViewModel.setQuantity(selectedSeats.size());
@@ -307,6 +310,12 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     public void onBackPressed() {
         super.onBackPressed();
         eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        seatSelectionPresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
