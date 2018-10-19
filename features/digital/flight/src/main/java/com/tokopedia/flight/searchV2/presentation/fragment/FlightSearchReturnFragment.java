@@ -291,7 +291,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Batal");
+        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,7 +316,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
                 dialog.dismiss();
             }
         });
-        dialog.setBtnCancel("Batal");
+        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort));
         dialog.setOnCancelClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

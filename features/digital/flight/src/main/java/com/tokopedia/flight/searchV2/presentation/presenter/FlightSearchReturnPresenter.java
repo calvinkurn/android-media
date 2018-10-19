@@ -32,6 +32,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
         implements FlightSearchReturnContract.Presenter {
 
     private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
+    private static final int MIN_DIFF_HOURS = 6;
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
@@ -150,7 +151,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
                 if (different >= 0) {
                     long hours = different / ONE_HOUR;
                     CommonUtils.dumper("diff : " + hours);
-                    return hours >= 6;
+                    return hours >= MIN_DIFF_HOURS;
                 } else {
                     return false;
                 }

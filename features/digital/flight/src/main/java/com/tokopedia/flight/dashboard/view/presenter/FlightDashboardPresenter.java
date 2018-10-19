@@ -446,24 +446,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                     }
                 }
             });
-            /*deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    if (isViewAttached()) {
-                        getView().navigateToSearchPage(getView().getCurrentDashboardViewModel());
-                    }
-                }
-            });*/
         }
     }
 

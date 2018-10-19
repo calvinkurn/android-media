@@ -122,6 +122,8 @@ public class FlightDetailViewModel implements Parcelable {
                 case PARTIAL_REFUNDABLE:
                     refundableEnum = RefundableEnum.PARTIAL_REFUNDABLE;
                     break;
+                default:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
             }
             setIsRefundable(refundableEnum);
             setTotal(flightJourneyViewModel.getTotal());

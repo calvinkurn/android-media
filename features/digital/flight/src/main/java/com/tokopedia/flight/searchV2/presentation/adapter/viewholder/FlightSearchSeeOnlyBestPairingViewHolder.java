@@ -16,13 +16,10 @@ public class FlightSearchSeeOnlyBestPairingViewHolder extends AbstractViewHolder
 
     public static final int LAYOUT = R.layout.item_flight_search_see_best_pairing;
 
-    private FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
     private AppCompatButton btnShowBestPairing;
 
     public FlightSearchSeeOnlyBestPairingViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
-
-        this.onFlightSearchListener = onFlightSearchListener;
 
         btnShowBestPairing = itemView.findViewById(R.id.btn_show_best_pairing);
         btnShowBestPairing.setOnClickListener(new View.OnClickListener() {

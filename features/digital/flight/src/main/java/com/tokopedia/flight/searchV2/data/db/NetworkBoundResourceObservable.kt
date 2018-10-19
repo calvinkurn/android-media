@@ -13,9 +13,6 @@ abstract class NetworkBoundResourceObservable<ApiResponseType, DbType> {
         @Suppress("LeakingThis")
 
         result =
-//                loadFromDb()
-//                .flatMap { it ->
-//                    if (shouldFetch()) {
                 createCall()
                         .map { mapResponse(it) }
                         .flatMap { it ->
@@ -25,21 +22,7 @@ abstract class NetworkBoundResourceObservable<ApiResponseType, DbType> {
                         .doOnError {
                             onFetchFailed(it.message)
                         }
-//                    }
-//                    else {
-//                        Observable.just(null)
-//                    }
-//                    else {
-//                        loadFromDb()
-//                    }
-//                }.doOnError {
-//                    onFetchFailed(it.message)
-//                }
     }
-
-//    protected abstract fun loadFromDb(): Observable<DbType>
-
-//    protected abstract fun shouldFetch(): Boolean
 
     protected abstract fun createCall(): Observable<ApiResponseType>
 
