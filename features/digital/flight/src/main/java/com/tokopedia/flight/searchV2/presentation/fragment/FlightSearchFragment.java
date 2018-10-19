@@ -498,6 +498,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
+    public void onErrorDeleteFlightCache(Throwable throwable) {
+        resetDateAndReload();
+    }
+
+    @Override
+    public void onSuccessDeleteFlightCache() {
+        resetDateAndReload();
+    }
+
+    @Override
     public FlightFilterModel getFilterModel() {
         return flightFilterModel;
     }
@@ -611,7 +621,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         swipeToRefresh.setOnRefreshListener(() -> {
             hideLoading();
             swipeToRefresh.setEnabled(false);
-//                resetDateAndReload();
+            resetDateAndReload();
         });
     }
 
@@ -803,6 +813,25 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
 
     private int divideTo(int number, int pieces) {
         return (int) Math.ceil(((double) number / pieces));
+    }
+
+    private void resetDateAndReload() {
+        flightSearchPresenter.detachView();
+
+        onFlightSearchFragmentListener.changeDate(passDataViewModel);
+
+        setUpCombinationAirport();
+        progressBar.setVisibility(View.VISIBLE);
+        progress = 0;
+        filterAndSortBottomAction.setVisibility(View.GONE);
+
+        flightSearchPresenter.attachView(this);
+
+        if (!isReturning()) {
+            flightSearchPresenter.fetchCombineData(passDataViewModel);
+        } else {
+            fetchFlightSearchData();
+        }
     }
 
     public interface OnFlightSearchFragmentListener {

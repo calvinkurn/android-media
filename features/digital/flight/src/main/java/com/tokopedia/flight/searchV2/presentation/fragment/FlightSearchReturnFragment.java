@@ -3,6 +3,7 @@ package com.tokopedia.flight.searchV2.presentation.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -69,10 +70,12 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        selectedFlightDeparture = getArguments().getString(EXTRA_DEPARTURE_ID);
-        isBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
-        isViewOnlyBestPairing = getArguments().getBoolean(EXTRA_IS_BEST_PAIRING);
-        priceViewModel = getArguments().getParcelable(EXTRA_PRICE_VIEW_MODEL);
+        Bundle arguments = (savedInstanceState != null) ? savedInstanceState : getArguments();
+
+        selectedFlightDeparture = arguments.getString(EXTRA_DEPARTURE_ID);
+        isBestPairing = arguments.getBoolean(EXTRA_IS_BEST_PAIRING);
+        isViewOnlyBestPairing = arguments.getBoolean(EXTRA_IS_BEST_PAIRING);
+        priceViewModel = arguments.getParcelable(EXTRA_PRICE_VIEW_MODEL);
         super.onCreate(savedInstanceState);
     }
 
@@ -91,6 +94,16 @@ public class FlightSearchReturnFragment extends FlightSearchFragment
         flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
 
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(EXTRA_PASS_DATA, passDataViewModel);
+        outState.putString(EXTRA_DEPARTURE_ID, selectedFlightDeparture);
+        outState.putBoolean(EXTRA_IS_BEST_PAIRING, isBestPairing);
+        outState.putParcelable(EXTRA_PRICE_VIEW_MODEL, priceViewModel);
     }
 
     @Override

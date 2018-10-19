@@ -88,6 +88,10 @@ public interface FlightSearchContract {
 
         void onSuccessGetDetailFlightDeparture(FlightJourneyViewModel flightJourneyViewModel);
 
+        void onErrorDeleteFlightCache(Throwable throwable);
+
+        void onSuccessDeleteFlightCache();
+
         FlightFilterModel getFilterModel();
     }
 
