@@ -58,8 +58,7 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
 
     public void getFilterStatisticData() {
         getView().showGetFilterStatisticLoading();
-        com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel flightFilterModel =
-                new com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel();
+        FlightFilterModel flightFilterModel = new FlightFilterModel();
         flightSearchStatisticUseCase.execute(flightSearchStatisticUseCase.createRequestParams(flightFilterModel),
                 getSubscriberSearchStatisticFlight());
     }
