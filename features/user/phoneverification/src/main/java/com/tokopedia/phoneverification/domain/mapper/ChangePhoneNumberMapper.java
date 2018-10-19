@@ -1,10 +1,6 @@
 package com.tokopedia.phoneverification.domain.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.otp.common.network.ErrorMessageException;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.phoneverification.domain.pojo.ChangePhoneNumberPojo;
 
@@ -25,6 +21,7 @@ public class ChangePhoneNumberMapper implements Func1<Response<TokopediaWsV4Resp
 
     @Override
     public ChangePhoneNumberViewModel call(Response<TokopediaWsV4Response> response) {
+        ChangePhoneNumberViewModel viewModel = new ChangePhoneNumberViewModel();
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
                     && response.body().getErrorMessageJoined().equals(""))
@@ -32,23 +29,17 @@ public class ChangePhoneNumberMapper implements Func1<Response<TokopediaWsV4Resp
                     && response.body().getErrorMessages() == null)) {
                 ChangePhoneNumberPojo pojo = response.body().convertDataObj(ChangePhoneNumberPojo
                         .class);
-                return mappingToViewModel(pojo, response.body().getStatusMessageJoined());
+                viewModel =  mappingToViewModel(pojo, response.body().getStatusMessageJoined());
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                    throw new RuntimeException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException("");
+                    throw new RuntimeException("");
                 }
             }
-        } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
         }
+        return viewModel;
     }
 
     private ChangePhoneNumberViewModel mappingToViewModel(ChangePhoneNumberPojo pojo,

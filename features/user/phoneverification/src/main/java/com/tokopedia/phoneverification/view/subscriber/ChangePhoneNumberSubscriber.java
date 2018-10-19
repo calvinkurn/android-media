@@ -1,7 +1,6 @@
 package com.tokopedia.phoneverification.view.subscriber;
 
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.phoneverification.view.listener.ChangePhoneNumber;
 
@@ -26,7 +25,7 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberVie
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
+        viewListener.onErrorChangePhoneNumber(e.getLocalizedMessage());
     }
 
     @Override
@@ -34,7 +33,6 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberVie
         if (changePhoneNumberViewModel.isSuccess())
             viewListener.onSuccessChangePhoneNumber();
         else
-            viewListener.onErrorChangePhoneNumber(ErrorHandler.getDefaultErrorCodeMessage
-                    (ErrorCode.UNSUPPORTED_FLOW));
+            viewListener.onErrorChangePhoneNumber(changePhoneNumberViewModel.getStatusMessage());
     }
 }

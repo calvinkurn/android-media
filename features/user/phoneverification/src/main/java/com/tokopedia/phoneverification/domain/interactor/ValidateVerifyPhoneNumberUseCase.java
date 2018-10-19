@@ -1,7 +1,6 @@
 package com.tokopedia.phoneverification.domain.interactor;
 
 import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase;
-import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
 import com.tokopedia.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.phoneverification.data.model.ValidateVerifyPhoneNumberDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -20,15 +19,15 @@ import rx.functions.Func1;
 
 public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhoneNumberDomain> {
 
-    private ValidateOtpUseCase validateOtpUseCase;
+//    private ValidateOtpUseCase validateOtpUseCase;
     private VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
     private UserSession userSession;
 
     @Inject
-    public ValidateVerifyPhoneNumberUseCase(ValidateOtpUseCase validateOtpUseCase,
+    public ValidateVerifyPhoneNumberUseCase(/*ValidateOtpUseCase validateOtpUseCase,*/
                                             VerifyPhoneNumberUseCase verifyPhoneNumberUseCase,
                                             UserSession userSession) {
-        this.validateOtpUseCase = validateOtpUseCase;
+//        this.validateOtpUseCase = validateOtpUseCase;
         this.verifyPhoneNumberUseCase = verifyPhoneNumberUseCase;
         this.userSession = userSession;
     }
@@ -77,19 +76,20 @@ public class ValidateVerifyPhoneNumberUseCase extends UseCase<ValidateVerifyPhon
 
     private Observable<ValidateVerifyPhoneNumberDomain> validateOtp(RequestParams requestParams,
                                                                     final ValidateVerifyPhoneNumberDomain domain) {
-        return validateOtpUseCase.createObservable(
-                ValidateOtpUseCase.getParam(
-                        requestParams.getString(ValidateOtpUseCase.PARAM_USER, ""),
-                        requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
-                        requestParams.getString(ValidateOtpUseCase.PARAM_CODE, "")
-                ))
-                .flatMap(new Func1<ValidateOtpDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
-                    @Override
-                    public Observable<ValidateVerifyPhoneNumberDomain> call(ValidateOtpDomain validateOTPDomain) {
-                        domain.setValidateOtpDomain(validateOTPDomain);
-                        return Observable.just(domain);
-                    }
-                });
+//        return validateOtpUseCase.createObservable(
+//                ValidateOtpUseCase.getParam(
+//                        requestParams.getString(ValidateOtpUseCase.PARAM_USER, ""),
+//                        requestParams.getInt(ValidateOtpUseCase.PARAM_OTP_TYPE, -1),
+//                        requestParams.getString(ValidateOtpUseCase.PARAM_CODE, "")
+//                ))
+//                .flatMap(new Func1<ValidateOtpDomain, Observable<ValidateVerifyPhoneNumberDomain>>() {
+//                    @Override
+//                    public Observable<ValidateVerifyPhoneNumberDomain> call(ValidateOtpDomain validateOTPDomain) {
+//                        domain.setValidateOtpDomain(validateOTPDomain);
+//                        return Observable.just(domain);
+//                    }
+//                });
+        return Observable.just(null);
     }
 
     public static RequestParams getParam(int otpType, String otpCode, String phoneNumber, String

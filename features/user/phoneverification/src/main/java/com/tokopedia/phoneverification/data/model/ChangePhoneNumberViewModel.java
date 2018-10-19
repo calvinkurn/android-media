@@ -14,6 +14,8 @@ public class ChangePhoneNumberViewModel {
         this.statusMessage = statusMessage;
     }
 
+    public ChangePhoneNumberViewModel() {}
+
     public boolean isSuccess() {
         return isSuccess;
     }

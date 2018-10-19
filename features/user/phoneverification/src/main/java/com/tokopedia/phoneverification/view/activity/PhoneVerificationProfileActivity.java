@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFragment;
@@ -19,6 +19,8 @@ import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFra
  */
 
 public class PhoneVerificationProfileActivity extends BaseSimpleActivity {
+
+    private static final int RESULT_CODE_MANAGE_PROFILE = 123;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,14 +85,8 @@ public class PhoneVerificationProfileActivity extends BaseSimpleActivity {
     }
 
     private void goToManageProfile() {
-        Intent intent = new Intent(PhoneVerificationProfileActivity.this,
-                ManagePeopleProfileActivity.class);
-        startActivityForResult(intent, 0);
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getProfileSettingIntent(this);
+        startActivityForResult(intent, RESULT_CODE_MANAGE_PROFILE);
     }
 
     public static Intent getCallingIntent(Context context) {

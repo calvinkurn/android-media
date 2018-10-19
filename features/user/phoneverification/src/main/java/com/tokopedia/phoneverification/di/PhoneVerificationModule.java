@@ -68,6 +68,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationQualifier
     Retrofit provideRetrofit(@PhoneVerificationQualifier OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(PhoneVerificationConst.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
@@ -76,6 +77,14 @@ public class PhoneVerificationModule {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
                 .build();
+    }
+
+    @Provides
+    @PhoneVerificationQualifier
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                   @PhoneVerificationQualifier NetworkRouter networkRouter,
+                                                   UserSession userSession){
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
@@ -95,8 +104,7 @@ public class PhoneVerificationModule {
     @Provides
     @PhoneVerificationQualifier
     public FingerprintInterceptor provideFingerPrintInterceptor(@ApplicationContext Context context,
-                                                                @PhoneVerificationQualifier
-                                                                        UserSession userSession) {
+                                                                UserSession userSession) {
         return new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
                 userSession);
     }
@@ -108,7 +116,6 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }

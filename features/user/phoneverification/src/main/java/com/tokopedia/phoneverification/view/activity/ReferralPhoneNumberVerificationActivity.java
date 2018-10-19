@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFragment;
 import com.tokopedia.phoneverification.view.fragment.ReferralPhoneNumberVerificationFragment;
 
-public class ReferralPhoneNumberVerificationActivity extends TActivity implements HasComponent {
+public class ReferralPhoneNumberVerificationActivity extends BaseSimpleActivity {
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, ReferralPhoneNumberVerificationActivity.class);
@@ -21,7 +21,21 @@ public class ReferralPhoneNumberVerificationActivity extends TActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_referral_phone_number_verification);
+        initView();
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_referral_phone_number_verification;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected void inflateFragment() {
         initView();
     }
 

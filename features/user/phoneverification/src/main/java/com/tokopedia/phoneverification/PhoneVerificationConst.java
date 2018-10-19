@@ -5,6 +5,10 @@ package com.tokopedia.phoneverification;
  */
 
 public class PhoneVerificationConst {
+
+    public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final int INIT_STATE_FRAGMENT_HOME = 0;
+
     public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
 

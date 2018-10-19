@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.R;
 
 
@@ -61,6 +62,6 @@ public class PhoneVerificationProfileFragment extends TkpdBaseV4Fragment {
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_PHONE_VERIFICATION;
+        return PhoneVerificationConst.SCREEN_PHONE_VERIFICATION;
     }
 }

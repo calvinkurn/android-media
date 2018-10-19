@@ -13,6 +13,9 @@ public class VerifyPhoneNumberDomain {
         this.statusMessage = statusMessage;
     }
 
+    public VerifyPhoneNumberDomain() {
+    }
+
     public boolean isSuccess() {
         return isSuccess;
     }

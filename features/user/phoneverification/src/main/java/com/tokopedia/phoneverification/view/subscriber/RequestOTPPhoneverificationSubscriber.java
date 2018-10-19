@@ -28,7 +28,7 @@ public class RequestOTPPhoneverificationSubscriber extends Subscriber<RequestOtp
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorRequestOTP(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorRequestOTP(e.getLocalizedMessage());
     }
 
     @Override
@@ -37,10 +37,10 @@ public class RequestOTPPhoneverificationSubscriber extends Subscriber<RequestOtp
                 .getMessageStatus())) {
             viewListener.onSuccessRequestOtp(requestOtpViewModel.getMessageStatus());
         } else if (requestOtpViewModel.isSuccess()) {
-            viewListener.onSuccessRequestOtp(MainApplication.getAppContext().getString(R.string
+            viewListener.onSuccessRequestOtp(viewListener.getActivity().getString(R.string
                     .success_request_otp));
         } else {
-            viewListener.onErrorRequestOTP(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
+            viewListener.onErrorRequestOTP(requestOtpViewModel.getMessageStatus());
         }
     }
 }

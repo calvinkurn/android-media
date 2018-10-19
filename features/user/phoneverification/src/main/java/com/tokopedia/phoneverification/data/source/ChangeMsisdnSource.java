@@ -1,10 +1,15 @@
 package com.tokopedia.phoneverification.data.source;
 
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.phoneverification.domain.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -13,19 +18,34 @@ import rx.Observable;
  */
 
 public class ChangeMsisdnSource {
-    private final AccountsService accountsService;
+    private final PhoneVerificationApi phoneVerificationApi;
     private final ChangePhoneNumberMapper changePhoneNumberMapper;
+    private UserSession userSession;
 
-    public ChangeMsisdnSource(AccountsService accountsService,
-                              ChangePhoneNumberMapper changePhoneNumberMapper) {
-        this.accountsService = accountsService;
+    @Inject
+    public ChangeMsisdnSource(PhoneVerificationApi phoneVerificationApi,
+                              ChangePhoneNumberMapper changePhoneNumberMapper,
+                              UserSession userSession) {
+        this.phoneVerificationApi = phoneVerificationApi;
         this.changePhoneNumberMapper = changePhoneNumberMapper;
+        this.userSession = userSession;
     }
 
 
     public Observable<ChangePhoneNumberViewModel> changePhoneNumber(HashMap<String, Object> parameters) {
-        return accountsService.getApi()
-                .changePhoneNumber(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(), parameters))
+        TKPDMapParam<String, Object> map = new TKPDMapParam<>();
+
+        return phoneVerificationApi
+                .changePhoneNumber(AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                        userSession.getDeviceId(), generateRequestParam(parameters)))
                 .map(changePhoneNumberMapper);
+    }
+
+    private TKPDMapParam<String, String> generateRequestParam(HashMap<String, Object> param) {
+        TKPDMapParam<String, String> result = new TKPDMapParam<>();
+        for (String key: param.keySet()){
+            result.put(key, param.get(key).toString());
+        }
+        return result;
     }
 }

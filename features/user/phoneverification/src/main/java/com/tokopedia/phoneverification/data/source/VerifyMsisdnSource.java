@@ -1,9 +1,12 @@
 package com.tokopedia.phoneverification.data.source;
 
+import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -12,17 +15,18 @@ import rx.Observable;
  */
 
 public class VerifyMsisdnSource {
-    private AccountsService accountsService;
+    private PhoneVerificationApi phoneVerificationApi;
     private VerifyPhoneNumberMapper verifyPhoneNumberMapper;
 
-    public VerifyMsisdnSource(AccountsService accountsService,
+    @Inject
+    public VerifyMsisdnSource(PhoneVerificationApi phoneVerificationApi,
                               VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
-        this.accountsService = accountsService;
+        this.phoneVerificationApi = phoneVerificationApi;
         this.verifyPhoneNumberMapper = verifyPhoneNumberMapper;
     }
 
     public Observable<VerifyPhoneNumberDomain> verifyPhoneNumber(HashMap<String, Object> params) {
-        return accountsService.getApi()
+        return phoneVerificationApi
                 .verifyPhoneNumber(params).map(verifyPhoneNumberMapper);
     }
 

@@ -23,7 +23,7 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<ValidateVerifyPhoneN
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorVerifyPhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
+        viewListener.onErrorVerifyPhoneNumber(e.getLocalizedMessage());
     }
 
     @Override
@@ -32,8 +32,7 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<ValidateVerifyPhoneN
                 && validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().isSuccess()) {
             viewListener.onSuccessVerifyPhoneNumber();
         } else {
-            viewListener.onErrorVerifyPhoneNumber(ErrorHandler.getDefaultErrorCodeMessage
-                    (ErrorCode.UNSUPPORTED_FLOW));
+            viewListener.onErrorVerifyPhoneNumber(validateVerifyPhoneNumberDomain.getVerifyPhoneDomain().getStatusMessage());
         }
     }
 }

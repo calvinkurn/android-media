@@ -1,6 +1,7 @@
 package com.tokopedia.phoneverification.data;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import rx.Observable;
 public interface PhoneVerificationApi {
     @FormUrlEncoded
     @POST(PhoneVerificationConst.CHANGE_PHONE_NUMBER)
-    Observable<Response<TokopediaWsV4Response>> changePhoneNumber(@FieldMap HashMap<String, Object> parameters);
+    Observable<Response<TokopediaWsV4Response>> changePhoneNumber(@FieldMap TKPDMapParam<String, String> parameters);
 
     @FormUrlEncoded
     @POST(PhoneVerificationConst.VERIFY_PHONE_NUMBER)

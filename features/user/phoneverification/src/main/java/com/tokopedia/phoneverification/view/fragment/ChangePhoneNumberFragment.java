@@ -17,6 +17,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.R;
+import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
+import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
+import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.listener.ChangePhoneNumber;
 import com.tokopedia.phoneverification.view.presenter.ChangePhoneNumberPresenter;
 
@@ -40,7 +43,7 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     EditText phoneNumberEditText;
     TextView changePhoneNumberButton;
-    TkpdProgressDialog progressDialog;
+    View progressDialog;
 
     @Inject
     ChangePhoneNumberPresenter presenter;
@@ -52,15 +55,16 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        BaseAppComponent appComponent = getComponent(BaseAppComponent.class);
+        BaseAppComponent baseAppComponent = getComponent(BaseAppComponent.class);
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
+        PhoneVerificationComponent phoneVerificationComponent =
+                DaggerPhoneVerificationComponent.
+                        builder().
+                        baseAppComponent(baseAppComponent).
+                        build();
 
 
-        daggerSessionComponent.inject(this);
+        phoneVerificationComponent.inject(this);
     }
 
     @Nullable
@@ -125,10 +129,10 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     private void showLoading() {
         if (progressDialog == null && getActivity() != null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            //progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         }
         if (progressDialog != null) {
-            progressDialog.showDialog();
+            //progressDialog.showDialog();
         }
     }
 
@@ -145,7 +149,7 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     private void finishLoading() {
         if (progressDialog != null) {
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
         }
     }
 

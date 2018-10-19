@@ -1,6 +1,9 @@
 package com.tokopedia.phoneverification.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.fragment.ChangePhoneNumberFragment;
+import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 
 import dagger.Component;
 
@@ -10,5 +13,10 @@ import dagger.Component;
 
 @PhoneVerificationScope
 @Component(modules = PhoneVerificationModule.class, dependencies = BaseAppComponent.class)
-public class PhoneVerificationComponent {
+public interface PhoneVerificationComponent {
+    void inject(PhoneVerificationActivationActivity activity);
+
+    void inject(PhoneVerificationFragment fragment);
+
+    void inject(ChangePhoneNumberFragment fragment);
 }

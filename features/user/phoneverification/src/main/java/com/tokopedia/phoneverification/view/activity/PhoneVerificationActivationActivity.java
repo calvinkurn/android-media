@@ -8,13 +8,21 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
+import com.tokopedia.phoneverification.PhoneVerificationConst;
+import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.R;
+import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
+import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationActivationFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 /**
  * Created by nisie on 2/22/17.
@@ -28,6 +36,8 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     private boolean canSkip = false;
     private boolean isLogoutOnBack = false;
     PhoneVerificationAnalytics analytics;
+    @Inject
+    UserSession userSession;
 
     public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
         Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
@@ -46,9 +56,22 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
             isLogoutOnBack = intent.getBooleanExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
         }
         super.onCreate(savedInstanceState);
+        initInjector();
         initView();
 
         analytics = PhoneVerificationAnalytics.createInstance(getApplicationContext());
+    }
+
+    private void initInjector(){
+        BaseAppComponent baseAppComponent =
+                ((BaseMainApplication) this.getApplication()).getBaseAppComponent();
+        PhoneVerificationComponent phoneVerificationComponent =
+                DaggerPhoneVerificationComponent.
+                        builder().
+                        baseAppComponent(baseAppComponent).
+                        build();
+
+        phoneVerificationComponent.inject(this);
     }
 
     @Override
@@ -121,36 +144,36 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
         }
 
         if (isLogoutOnBack) {
-            SessionHandler session = new SessionHandler(this);
-            session.Logout(this);
+            //TODO @alvinatin confirm this
+            userSession.logoutSession();
         } else {
             super.onBackPressed();
         }
     }
 
     private void goToSellerHome() {
-        Intent intent = SellerAppRouter.getSellerHomeActivity(PhoneVerificationActivationActivity.this);
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent(getApplicationContext());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
 
     private void goToConsumerHome() {
-        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(PhoneVerificationActivationActivity.this);
-        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent(getApplicationContext());
+        intent.putExtra(PhoneVerificationConst.EXTRA_INIT_FRAGMENT,
+                PhoneVerificationConst.INIT_STATE_FRAGMENT_HOME);
         startActivity(intent);
         finish();
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(PhoneVerificationActivationActivity.this);
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getIntentCreateShop(getApplicationContext());
         startActivity(intent);
         finish();
     }
 
     private boolean isHasShop() {
-        return SessionHandler.isUserHasShop(this);
+        return userSession.hasShop();
     }
 
     @Override
@@ -163,10 +186,5 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
         intent.putExtra(EXTRA_IS_MANDATORY, false);
         intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
         return intent;
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 }

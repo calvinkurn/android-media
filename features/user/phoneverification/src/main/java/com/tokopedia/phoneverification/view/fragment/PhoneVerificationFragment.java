@@ -35,12 +35,18 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.otp.common.util.IncomingSmsReceiver;
 import com.tokopedia.otp.common.util.RequestPermissionUtil;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
+import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.R;
+import com.tokopedia.phoneverification.di.DaggerPhoneVerificationComponent;
+import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
+import com.tokopedia.phoneverification.di.PhoneVerificationQualifier;
+import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.phoneverification.view.presenter.PhoneVerificationPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
@@ -65,20 +71,21 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_PHONE_VERIFICATION;
+        return PhoneVerificationConst.SCREEN_PHONE_VERIFICATION;
     }
 
     @Override
     protected void initInjector() {
-        BaseAppComponent appComponent = getComponent(BaseAppComponent.class);
+        BaseAppComponent baseAppComponent = getComponent(BaseAppComponent.class);
 
-        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-                DaggerSessionComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
+        PhoneVerificationComponent phoneVerificationComponent =
+                DaggerPhoneVerificationComponent.
+                        builder().
+                        baseAppComponent(baseAppComponent).
+                        build();
 
 
-        daggerSessionComponent.inject(this);
+        phoneVerificationComponent.inject(this);
     }
 
     public interface PhoneVerificationFragmentListener {
@@ -107,7 +114,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     protected CountDownTimer countDownTimer;
     protected IncomingSmsReceiver smsReceiver;
-    protected TkpdProgressDialog progressDialog;
+    protected View progressDialog;
     protected LocalCacheHandler cacheHandler;
     PhoneVerificationFragmentListener listener;
     private String phoneNumber;
@@ -116,6 +123,8 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     @Inject
     PhoneVerificationPresenter presenter;
+    @Inject
+    UserSession userSession;
 
     private boolean isMandatory = false;
 
@@ -254,7 +263,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
-                SessionHandler.getPhoneNumber()));
+                userSession.getPhoneNumber()));
         if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
             inputOtpView.setVisibility(View.VISIBLE);
             changePhoneNumberButton.setVisibility(View.GONE);
@@ -452,18 +461,18 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     }
 
     protected void finishProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+//        if (progressDialog != null)
+//            progressDialog.dismiss();
     }
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog == null)
-            progressDialog = new TkpdProgressDialog(getActivity(),
-                    TkpdProgressDialog.NORMAL_PROGRESS);
-
-        if (getActivity() != null)
-            progressDialog.showDialog();
+//        if (progressDialog == null)
+//            progressDialog = new TkpdProgressDialog(getActivity(),
+//                    TkpdProgressDialog.NORMAL_PROGRESS);
+//
+//        if (getActivity() != null)
+//            progressDialog.showDialog();
     }
 
     @Override
@@ -478,7 +487,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
             getActivity().finish();
         }
 
-        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
+//        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }
 
     @Override
@@ -549,7 +558,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                 MethodChecker.getDrawable(getActivity(),
                         com.tokopedia.core.R.drawable.cards_ui));
         requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
-        requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
+        requestOtpButton.setText(R.string.title_resend_otp_sms);
         requestOtpCallButton.setVisibility(View.VISIBLE);
         changePhoneNumberButton.setVisibility(View.VISIBLE);
     }

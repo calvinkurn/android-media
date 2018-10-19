@@ -1,13 +1,9 @@
 package com.tokopedia.phoneverification.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
-import com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.phoneverification.R;
-import com.tokopedia.phoneverification.domain.interactor.ValidateVerifyPhoneNumberUseCase;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
-import com.tokopedia.phoneverification.view.subscriber.RequestOTPPhoneverificationSubscriber;
-import com.tokopedia.phoneverification.view.subscriber.VerifyPhoneNumberSubscriber;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -18,19 +14,19 @@ import javax.inject.Inject;
 public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerification.View>
         implements PhoneVerification.Presenter {
 
-    private final RequestOtpUseCase requestOtpUseCase;
-    private final ValidateVerifyPhoneNumberUseCase validateVerifyPhoneNumberUseCase;
-    private final SessionHandler sessionHandler;
+//    private final RequestOtpUseCase requestOtpUseCase;
+//    private final ValidateVerifyPhoneNumberUseCase validateVerifyPhoneNumberUseCase;
+    private final UserSession userSession;
     private PhoneVerification.View viewListener;
 
     @Inject
-    public PhoneVerificationPresenter(RequestOtpUseCase requestOtpUseCase,
-                                      ValidateVerifyPhoneNumberUseCase
-                                              validateVerifyPhoneNumberUseCase,
-                                      SessionHandler sessionHandler) {
-        this.requestOtpUseCase = requestOtpUseCase;
-        this.validateVerifyPhoneNumberUseCase = validateVerifyPhoneNumberUseCase;
-        this.sessionHandler = sessionHandler;
+    public PhoneVerificationPresenter(/*RequestOtpUseCase requestOtpUseCase,*/
+//                                      ValidateVerifyPhoneNumberUseCase
+//                                              validateVerifyPhoneNumberUseCase,
+                                      UserSession userSession) {
+//        this.requestOtpUseCase = requestOtpUseCase;
+//        this.validateVerifyPhoneNumberUseCase = validateVerifyPhoneNumberUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -42,8 +38,8 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
     @Override
     public void detachView() {
         super.detachView();
-        requestOtpUseCase.unsubscribe();
-        validateVerifyPhoneNumberUseCase.unsubscribe();
+//        requestOtpUseCase.unsubscribe();
+//        validateVerifyPhoneNumberUseCase.unsubscribe();
     }
 
     @Override
@@ -52,12 +48,12 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
             viewListener.showProgressDialog();
             viewListener.setViewEnabled(false);
 
-            validateVerifyPhoneNumberUseCase.execute(ValidateVerifyPhoneNumberUseCase.getParam(
-                    ValidateOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                    otpCode,
-                    phoneNumber,
-                    sessionHandler.getLoginID()),
-                    new VerifyPhoneNumberSubscriber(viewListener));
+//            validateVerifyPhoneNumberUseCase.execute(ValidateVerifyPhoneNumberUseCase.getParam(
+//                    ValidateOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+//                    otpCode,
+//                    phoneNumber,
+//                    userSession.getUserId()),
+//                    new VerifyPhoneNumberSubscriber(viewListener));
 
         }
     }
@@ -65,7 +61,8 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
     private boolean isValid() {
         boolean isValid = true;
         if (viewListener.getPhoneNumber().length() == 0) {
-            viewListener.showErrorPhoneNumber(viewListener.getString(R.string.error_field_required));
+            viewListener.showErrorPhoneNumber(viewListener.getString(R.string
+                    .error_field_required));
             isValid = false;
         }
         return isValid;
@@ -77,12 +74,13 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
             viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
-            requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
-                    RequestOtpUseCase.MODE_SMS,
-                    viewListener.getPhoneNumber(),
-                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION
-                    ), new RequestOTPPhoneverificationSubscriber(viewListener)
-            );
+//            requestOtpUseCase.execute(RequestOtpUseCase.getParam(
+//                    RequestOtpUseCase.MODE_SMS,
+//                    viewListener.getPhoneNumber(),
+//                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+//                    userSession.getUserId()), new RequestOTPPhoneverificationSubscriber
+//                    (viewListener)
+//            );
         }
     }
 
@@ -92,11 +90,12 @@ public class PhoneVerificationPresenter extends BaseDaggerPresenter<PhoneVerific
             viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
-            requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
-                    RequestOtpUseCase.MODE_CALL,
-                    viewListener.getPhoneNumber(),
-                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION
-            ), new RequestOTPPhoneverificationSubscriber(viewListener));
+//            requestOtpUseCase.execute(RequestOtpUseCase.getParam(
+//                    RequestOtpUseCase.MODE_CALL,
+//                    viewListener.getPhoneNumber(),
+//                    RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
+//                    userSession.getUserId()
+//            ), new RequestOTPPhoneverificationSubscriber(viewListener));
         }
     }
 }

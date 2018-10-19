@@ -13,7 +13,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.phoneverification.R;
+import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 /**
  * Created by ashwanityagi on 12/12/17.
@@ -31,20 +35,25 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
     EditText tvPhoneNumber;
     TextView btnActivation;
     private ReferralPhoneNumberVerificationFragmentListener listener;
-    private SessionHandler sessionHandler;
+    @Inject
+    UserSession userSession;
 
     public static ReferralPhoneNumberVerificationFragment newInstance() {
-        ReferralPhoneNumberVerificationFragment fragment = new ReferralPhoneNumberVerificationFragment();
+        ReferralPhoneNumberVerificationFragment fragment = new
+                ReferralPhoneNumberVerificationFragment();
         return fragment;
     }
 
-    public static ReferralPhoneNumberVerificationFragment createInstance(ReferralPhoneNumberVerificationFragmentListener listener) {
-        ReferralPhoneNumberVerificationFragment fragment = new ReferralPhoneNumberVerificationFragment();
+    public static ReferralPhoneNumberVerificationFragment createInstance
+            (ReferralPhoneNumberVerificationFragmentListener listener) {
+        ReferralPhoneNumberVerificationFragment fragment =
+                new ReferralPhoneNumberVerificationFragment();
         fragment.setReferralPhoneVerificationListener(listener);
         return fragment;
     }
 
-    public void setReferralPhoneVerificationListener(ReferralPhoneNumberVerificationFragmentListener listener) {
+    public void setReferralPhoneVerificationListener
+            (ReferralPhoneNumberVerificationFragmentListener listener) {
         this.listener = listener;
     }
 
@@ -52,58 +61,14 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
         return listener;
     }
 
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_referral_phone_number_verification, container, false);
+        View view = inflater.inflate(R.layout.fragment_referral_phone_number_verification,
+                container, false);
         initView(view);
         return view;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-        if (sessionHandler == null) {
-            sessionHandler = new SessionHandler(getActivity());
-        }
-        tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
-                sessionHandler.getPhoneNumber()));
-    }
-
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_referral_phone_number_verification;
     }
 
     @Override
@@ -111,14 +76,10 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
         return null;
     }
 
-    @Override
-    protected void initView(View view) {
-        if (sessionHandler == null) {
-            sessionHandler = new SessionHandler(getActivity());
-        }
+    private void initView(View view) {
         tvPhoneNumber = (EditText) view.findViewById(R.id.tv_phone_number);
         tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
-                sessionHandler.getPhoneNumber()));
+                userSession.getPhoneNumber()));
         btnActivation = (TextView) view.findViewById(R.id.btn_activation);
         setViewListener();
         tvPhoneNumber.setOnClickListener(new View.OnClickListener() {
@@ -133,13 +94,15 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
         });
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         btnActivation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_VERIFY_NUMBER, tvPhoneNumber.getText().toString().replace("-", ""));
+                    //TODO alvinatin check this
+//                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action
+// .CLICK_VERIFY_NUMBER,
+//                            tvPhoneNumber.getText().toString().replace("-", ""));
 
                     listener.onClickVerification(tvPhoneNumber.getText().toString());
                 }
@@ -152,7 +115,8 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER &&
                 resultCode == Activity.RESULT_OK) {
-            tvPhoneNumber.setText(data.getStringExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER));
+            tvPhoneNumber.setText(data.getStringExtra(ChangePhoneNumberFragment
+                    .EXTRA_PHONE_NUMBER));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
