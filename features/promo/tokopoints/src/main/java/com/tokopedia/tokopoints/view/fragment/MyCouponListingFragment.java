@@ -165,17 +165,16 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     }
 
     @Override
-    public void emptyCoupons(Map<String, String> errors) {
-        if (getView() == null || errors == null) {
+    public void emptyCoupons(Map<String,String> errors) {
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+
+        if(getView() == null || errors == null){
             return;
         }
 
-        ((ImageView) getView().findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
-        ((TextView) getView().findViewById(R.id.text_title_error2)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
-        ((TextView) getView().findViewById(R.id.text_label_error2)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
-        getView().findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
-
-        mContainerMain.setDisplayedChild(CONTAINER_EMPTY);
+        ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
+        ((TextView) getView().findViewById(R.id.text_title_error)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
+        ((TextView) getView().findViewById(R.id.text_label_error)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {

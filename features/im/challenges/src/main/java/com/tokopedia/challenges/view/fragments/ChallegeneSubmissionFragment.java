@@ -81,7 +81,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private List<SubmissionResult> submissionResults, winnerResults;
     private CustomVideoPlayer videoPlayer;
     private View timerView;
-    private View rlExpiry;
     private View clAbout;
     private View clVideoPlayer;
     private View clAwards;
@@ -187,7 +186,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         winnerRecyclerView = view.findViewById(R.id.rv_winners);
         submitButton = view.findViewById(R.id.ll_continue);
         awardRecylerView = view.findViewById(R.id.rv_awards);
-        rlExpiry = view.findViewById(R.id.cl_expiry);
         clAbout = view.findViewById(R.id.cl_about);
         clVideoPlayer = view.findViewById(R.id.cl_video_player);
         clAwards = view.findViewById(R.id.cl_awards);
@@ -386,11 +384,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             Utils.setTextViewBackground(getContext(), tvParticipated, participatedText);
             submitPhoto.setText(R.string.ch_view_post_text);
         }
-    }
-
-    public void setTextStatus(int textColor, Drawable bgColor, TextView statusText) {
-        statusText.setTextColor(textColor);
-        statusText.setBackground(bgColor);
     }
 
     @Override
