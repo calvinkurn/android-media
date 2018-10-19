@@ -2,7 +2,6 @@ package com.tokopedia.digital.newcart.presentation.contract;
 
 import android.support.annotation.StringRes;
 
-import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -11,6 +10,7 @@ import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DigitalCartDealsContract {
 
@@ -39,12 +39,22 @@ public interface DigitalCartDealsContract {
         CartDigitalInfoData getCartInfoData();
 
         void showCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData);
+
+        void notifySelectedDealsInCheckout(DealProductViewModel viewModel);
+
+        void updateSelectedDeal(int currentFragmentPosition, DealProductViewModel viewModel);
+
+        Map<DealProductViewModel, Integer> getSelectedDealsMap();
+
+        void notifyAdapterInSpecifyFragment(Integer position);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void onViewCreated();
 
-        void onSelectDealProduct(DealProductViewModel viewModel);
+        void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition);
+
+        void unSelectDealFromCheckoutView(DealProductViewModel viewModel);
     }
 }

@@ -32,16 +32,20 @@ import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealL
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DigitalCartDealsFragment extends BaseDaggerFragment implements DigitalCartDealsContract.View, DigitalCartDealsListFragment.InteractionListener {
+public class DigitalCartDealsFragment extends BaseDaggerFragment implements DigitalCartDealsContract.View,
+        DigitalCartDealsListFragment.InteractionListener, DigitalDealCheckoutFragment.InteractionListener {
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final String EXTRA_CART_DATA = "EXTRA_CART_DATA";
+    private static final String TAG_DIGITAL_CHECKOUT = "digital_deals_checkout_fragment";
 
     private ProgressBar progressBar;
     private TabLayout dealTabLayout;
@@ -49,6 +53,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private LinearLayout dealContainer;
     private FrameLayout checkoutContainer;
     private List<DealProductViewModel> selectedProducts;
+    private Map<DealProductViewModel, Integer> selectedDealsMap;
 
     private CartDigitalInfoData cartInfoData;
     private DigitalCheckoutPassData cartPassData;
@@ -76,6 +81,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         cartInfoData = getArguments().getParcelable(EXTRA_CART_DATA);
         cartPassData = getArguments().getParcelable(EXTRA_PASS_DATA);
         selectedProducts = new ArrayList<>();
+        selectedDealsMap = new HashMap<>();
         super.onCreate(savedInstanceState);
     }
 
@@ -170,6 +176,32 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
+    public void notifySelectedDealsInCheckout(DealProductViewModel viewModel) {
+        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+            ((DigitalDealCheckoutFragment) checkoutFragment).updateSelectedDeal(viewModel);
+        }
+    }
+
+    @Override
+    public void updateSelectedDeal(int currentFragmentPosition, DealProductViewModel viewModel) {
+        selectedDealsMap.put(viewModel, currentFragmentPosition);
+    }
+
+    @Override
+    public Map<DealProductViewModel, Integer> getSelectedDealsMap() {
+        return selectedDealsMap;
+    }
+
+    @Override
+    public void notifyAdapterInSpecifyFragment(Integer position) {
+        Object fragment = pagerAdapter.instantiateItem(dealViewPager, position);
+        if (fragment instanceof DigitalCartDealsListFragment) {
+            ((DigitalCartDealsListFragment) fragment).notifySelectedDeal();
+        }
+    }
+
+    @Override
     public DigitalCheckoutPassData getCartPassData() {
         return cartPassData;
     }
@@ -188,14 +220,22 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         } else {
             checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
         }
+        DigitalDealCheckoutFragment fragment = DigitalDealCheckoutFragment.newInstance(cartPassData, cartInfoData);
+        fragment.setInteractionListener(this);
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.checkout_fragment, DigitalDealCheckoutFragment.newInstance(cartPassData, cartInfoData), null)
+                .replace(R.id.checkout_fragment, fragment, TAG_DIGITAL_CHECKOUT)
                 .commit();
     }
 
 
     @Override
     public void selectDeal(DealProductViewModel viewModel) {
-        presenter.onSelectDealProduct(viewModel);
+        presenter.onSelectDealProduct(viewModel, dealViewPager.getCurrentItem());
     }
+
+    @Override
+    public void unSelectDeal(DealProductViewModel viewModel) {
+        presenter.unSelectDealFromCheckoutView(viewModel);
+    }
+
 }

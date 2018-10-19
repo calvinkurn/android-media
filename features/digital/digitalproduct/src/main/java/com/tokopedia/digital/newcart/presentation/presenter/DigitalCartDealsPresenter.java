@@ -30,38 +30,52 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                         getView().getCartPassData().getCategoryId()
                 ),
                 new Subscriber<List<DealCategoryViewModel>>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    getView().showGetCategoriesError(e.getMessage());
-                    getView().hideGetCategoriesLoading();
-                }
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().showGetCategoriesError(e.getMessage());
+                            getView().hideGetCategoriesLoading();
+                        }
+                    }
 
-            @Override
-            public void onNext(List<DealCategoryViewModel> dealCategoryViewModels) {
-                getView().hideGetCategoriesLoading();
-                getView().showDealsPage();
-                getView().renderDealsTab(dealCategoryViewModels);
-                getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
-            }
-        });
+                    @Override
+                    public void onNext(List<DealCategoryViewModel> dealCategoryViewModels) {
+                        getView().hideGetCategoriesLoading();
+                        getView().showDealsPage();
+                        getView().renderDealsTab(dealCategoryViewModels);
+                        getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
+                    }
+                });
     }
 
     @Override
-    public void onSelectDealProduct(DealProductViewModel viewModel) {
+    public void onSelectDealProduct(DealProductViewModel viewModel, int currentFragmentPosition) {
         if (getView().getSelectedDeals().size() >= 5) {
             getView().showErrorInRedSnackbar(R.string.digital_deals_maximum_error_message);
         } else {
             viewModel.setSelected(true);
             getView().getSelectedDeals().add(viewModel);
             getView().notifySelectedDeal();
+            getView().notifySelectedDealsInCheckout(viewModel);
+            getView().updateSelectedDeal(currentFragmentPosition, viewModel);
+        }
+    }
+
+    @Override
+    public void unSelectDealFromCheckoutView(DealProductViewModel viewModel) {
+        int indexOf = getView().getSelectedDeals().indexOf(viewModel);
+        if (indexOf != -1) {
+            viewModel.setSelected(false);
+            getView().getSelectedDeals().remove(indexOf);
+            Integer fragmentPosition = getView().getSelectedDealsMap().get(viewModel);
+            getView().notifyAdapterInSpecifyFragment(fragmentPosition);
+            getView().getSelectedDealsMap().remove(viewModel);
         }
     }
 }

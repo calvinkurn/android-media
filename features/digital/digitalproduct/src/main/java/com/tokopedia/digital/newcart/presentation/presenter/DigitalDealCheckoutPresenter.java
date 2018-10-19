@@ -6,6 +6,7 @@ import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
 import com.tokopedia.user.session.UserSession;
 
@@ -27,12 +28,31 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onExpandCollapseButtonView() {
-        if (getView().isCartDetailViewVisible()){
+        if (getView().isCartDetailViewVisible()) {
             getView().hideCartDetailView();
+            getView().hideDealsContainerView();
             getView().renderIconToExpand();
-        }else {
+        } else {
             getView().showCartDetailView();
+            getView().showDealsContainerView();
             getView().renderIconToCollapse();
         }
+    }
+
+    @Override
+    public void onNewSelectedDeal(DealProductViewModel viewModel) {
+        getView().addSelectedDeal(viewModel);
+        getView().renderCartDealListView(viewModel);
+    }
+
+    @Override
+    public void onDealRemoved(DealProductViewModel viewModel) {
+        int indexOf = getView().getSelectedDeals().indexOf(viewModel);
+        if (indexOf != -1) {
+            getView().getSelectedDeals().remove(indexOf);
+            getView().notifySelectedDealListView(viewModel);
+        }
+
+        getView().updateDealListView(viewModel);
     }
 }

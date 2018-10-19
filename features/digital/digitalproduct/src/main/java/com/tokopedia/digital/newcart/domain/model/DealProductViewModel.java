@@ -3,6 +3,8 @@ package com.tokopedia.digital.newcart.domain.model;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
 
+import javax.annotation.Nullable;
+
 public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFactory> {
     private long salesPriceNumeric;
     private long savePriceNumeric;
@@ -70,6 +72,11 @@ public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFa
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof DealProductViewModel && ((DealProductViewModel) obj).getId() == getId();
     }
 
     @Override

@@ -28,11 +28,13 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     private LinearLayout infoContainer;
 
     private DigitalDealActionListener actionListener;
+    private boolean insideCheckoutPage;
     private DealProductViewModel element;
 
-    public DigitalDealViewHolder(View itemView, DigitalDealActionListener actionListener) {
+    public DigitalDealViewHolder(View itemView, DigitalDealActionListener actionListener, boolean insideCheckoutPage) {
         super(itemView);
         this.actionListener = actionListener;
+        this.insideCheckoutPage = insideCheckoutPage;
         setupView(itemView);
     }
 
@@ -105,7 +107,13 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
             slashedPriceTextView.setVisibility(View.GONE);
         }
 
-        if (element.isSelected()) {
+        if (insideCheckoutPage) {
+            closeImageView.setVisibility(View.VISIBLE);
+        } else {
+            closeImageView.setVisibility(View.GONE);
+        }
+
+        if (element.isSelected() || insideCheckoutPage) {
             buyButton.setVisibility(View.GONE);
         } else {
             buyButton.setVisibility(View.VISIBLE);
