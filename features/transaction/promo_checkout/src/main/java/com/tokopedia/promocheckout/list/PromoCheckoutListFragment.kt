@@ -1,26 +1,46 @@
 package com.tokopedia.promocheckout.list
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
+import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import javax.inject.Inject
 
-class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>() {
+class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(), PromoCheckoutListContract.View {
+
+    @Inject
+    lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
+
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return PromoCheckoutListAdapterFactory()
     }
 
     override fun onItemClicked(t: PromoCheckoutListModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        DaggerPromoCheckoutListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .promoCheckoutListModule(PromoCheckoutDetailModule())
+                .build()
+                .inject(this)
+        promoCheckoutListPresenter.attachView(this)
     }
 
     override fun loadData(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        promoCheckoutListPresenter.getListPromo(page)
+    }
+
+    companion object {
+        fun createInstance():PromoCheckoutListFragment{
+            return PromoCheckoutListFragment()
+        }
     }
 
 }
