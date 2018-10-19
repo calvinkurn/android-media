@@ -211,7 +211,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(R.string.home_header_tokocash_unable_to_load_label);
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label);
             tvActionTokocash.setVisibility(VISIBLE);
             tvTitleTokocash.setVisibility(GONE);
@@ -246,7 +245,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
