@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
+@SuppressLint("NewApi")
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
     private static final String VIEW_MODEL = "view_model";
@@ -157,13 +159,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         switch (requestCode) {
             case REQUEST_IMAGE_PICKER:
                 if (resultCode == Activity.RESULT_OK) {
-                    ArrayList<String> imageListResult
-                            = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
-
-                    viewModel.getImageList().clear();
-                    viewModel.getImageList().addAll(imageListResult);
+                    viewModel.setFileImageList(data.getStringArrayListExtra(PICKER_RESULT_PATHS));
                     setupViewPager();
-
                 }
                 break;
             case REQUEST_EXAMPLE:
@@ -194,15 +191,16 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onSuccessGetContentForm(FeedContentForm feedContentForm) {
         viewModel.setToken(feedContentForm.getToken());
+        viewModel.setMaxImage(feedContentForm.getMedia().getMaxMedia());
         if (!feedContentForm.getGuides().isEmpty()) {
             setupHeader(feedContentForm.getGuides().get(0));
         }
         if (!feedContentForm.getMedia().getMedia().isEmpty()) {
-            if (viewModel.getImageList().isEmpty()) {
-                viewModel.getImageList().clear();
+            if (viewModel.getUrlImageList().isEmpty()) {
+                viewModel.getUrlImageList().clear();
                 for (int i = 0; i < feedContentForm.getMedia().getMedia().size(); i++) {
                     Medium medium = feedContentForm.getMedia().getMedia().get(i);
-                    viewModel.getImageList().add(medium.getMediaUrl());
+                    viewModel.getUrlImageList().add(medium.getMediaUrl());
                 }
             }
             setupViewPager();
@@ -299,10 +297,20 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 goToImagePicker();
             }
         });
-        deleteImageLayout.setOnClickListener(v -> {
-            viewModel.getImageList().remove(tabLayout.getSelectedTabPosition());
-            adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
-            adapter.notifyDataSetChanged();
+        deleteImageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tabLayout.getSelectedTabPosition() < viewModel.getFileImageList().size()) {
+                    viewModel.getFileImageList().remove(tabLayout.getSelectedTabPosition());
+                } else {
+                    viewModel.getUrlImageList().remove(
+                            tabLayout.getSelectedTabPosition()
+                                    - viewModel.getFileImageList().size()
+                    );
+                }
+                adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
+                adapter.notifyDataSetChanged();
+            }
         });
         setMain.setOnClickListener(v -> {
             viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition());
@@ -322,7 +330,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void setupViewPager() {
-        adapter.setList(viewModel.getImageList());
+        adapter.setList(viewModel.getCompleteImageList());
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
         tabLayout.setupWithViewPager(imageViewPager);
@@ -394,7 +402,9 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         startActivityForResult(
                 CreatePostImagePickerActivity.getInstance(
                         Objects.requireNonNull(getActivity()),
-                        viewModel.getFileImageList()),
+                        viewModel.getFileImageList(),
+                        viewModel.getMaxImage() - viewModel.getUrlImageList().size()
+                ),
                 REQUEST_IMAGE_PICKER);
     }
 
@@ -412,7 +422,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 viewModel.getProductId(),
                 viewModel.getAdId(),
                 viewModel.getToken(),
-                viewModel.getImageList(),
+                viewModel.getCompleteImageList(),
                 viewModel.getMainImageIndex()
         );
     }
@@ -421,7 +431,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         presenter.editPost(
                 viewModel.getPostId(),
                 viewModel.getToken(),
-                viewModel.getImageList(),
+                viewModel.getCompleteImageList(),
                 viewModel.getMainImageIndex()
         );
     }

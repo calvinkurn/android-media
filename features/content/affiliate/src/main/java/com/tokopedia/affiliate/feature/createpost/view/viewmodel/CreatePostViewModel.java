@@ -14,8 +14,10 @@ public class CreatePostViewModel implements Parcelable {
     private String postId = "";
     private String token = "";
     private int mainImageIndex = 0;
+    private int maxImage = 5;
     private boolean isEdit = false;
-    private ArrayList<String> imageList = new ArrayList<>();
+    private ArrayList<String> fileImageList = new ArrayList<>();
+    private ArrayList<String> urlImageList = new ArrayList<>();
 
     public String getProductId() {
         return productId;
@@ -57,6 +59,14 @@ public class CreatePostViewModel implements Parcelable {
         this.mainImageIndex = mainImageIndex;
     }
 
+    public int getMaxImage() {
+        return maxImage;
+    }
+
+    public void setMaxImage(int maxImage) {
+        this.maxImage = maxImage;
+    }
+
     public boolean isEdit() {
         return isEdit;
     }
@@ -65,28 +75,27 @@ public class CreatePostViewModel implements Parcelable {
         isEdit = edit;
     }
 
-    public void setImageList(ArrayList<String> imageList) {
-        this.imageList = imageList;
-    }
-
-    /*
-    Get complete image list
-    */
-    public ArrayList<String> getImageList() {
-        return imageList;
-    }
-
-    /*
-    Get only locally stored image, not from server
-    */
     public ArrayList<String> getFileImageList() {
-        ArrayList<String> fileImageList = new ArrayList<>();
-        for (String image : imageList) {
-            if (urlIsFile(image)) {
-                fileImageList.add(image);
-            }
-        }
         return fileImageList;
+    }
+
+    public void setFileImageList(ArrayList<String> fileImageList) {
+        this.fileImageList = fileImageList;
+    }
+
+    public ArrayList<String> getUrlImageList() {
+        return urlImageList;
+    }
+
+    public void setUrlImageList(ArrayList<String> urlImageList) {
+        this.urlImageList = urlImageList;
+    }
+
+    public ArrayList<String> getCompleteImageList() {
+        ArrayList<String> completeImageList = new ArrayList<>();
+        completeImageList.addAll(fileImageList);
+        completeImageList.addAll(urlImageList);
+        return completeImageList;
     }
 
     public static boolean urlIsFile(String input) {
@@ -110,8 +119,10 @@ public class CreatePostViewModel implements Parcelable {
         dest.writeString(this.postId);
         dest.writeString(this.token);
         dest.writeInt(this.mainImageIndex);
+        dest.writeInt(this.maxImage);
         dest.writeByte(this.isEdit ? (byte) 1 : (byte) 0);
-        dest.writeStringList(this.imageList);
+        dest.writeStringList(this.fileImageList);
+        dest.writeStringList(this.urlImageList);
     }
 
     public CreatePostViewModel() {
@@ -123,8 +134,10 @@ public class CreatePostViewModel implements Parcelable {
         this.postId = in.readString();
         this.token = in.readString();
         this.mainImageIndex = in.readInt();
+        this.maxImage = in.readInt();
         this.isEdit = in.readByte() != 0;
-        this.imageList = in.createStringArrayList();
+        this.fileImageList = in.createStringArrayList();
+        this.urlImageList = in.createStringArrayList();
     }
 
     public static final Creator<CreatePostViewModel> CREATOR = new Creator<CreatePostViewModel>() {
