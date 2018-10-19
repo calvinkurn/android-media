@@ -4,7 +4,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
-import com.tokopedia.core.util.DataBindAdapter;
+
+import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 import com.tokopedia.topads.R;
 
 /**

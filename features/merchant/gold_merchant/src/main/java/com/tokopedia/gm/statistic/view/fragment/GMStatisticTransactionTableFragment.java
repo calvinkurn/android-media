@@ -17,9 +17,9 @@ import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickList
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.common.di.component.GMComponent;

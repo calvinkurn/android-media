@@ -10,13 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.view.listener.CategoryPickerView;
 import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.R;

@@ -9,9 +9,9 @@ import android.view.View;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.common.category.view.model.CategoryLevelViewModel;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
-import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
 import com.tokopedia.seller.product.manage.view.adapter.ProductManageCategoryPickerAdapter;

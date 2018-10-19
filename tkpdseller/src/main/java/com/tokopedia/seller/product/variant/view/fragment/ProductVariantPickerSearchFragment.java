@@ -13,7 +13,7 @@ import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.base.list.seller.view.fragment.BaseSearchListFragment;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;

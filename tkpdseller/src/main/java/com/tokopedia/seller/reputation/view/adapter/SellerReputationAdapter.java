@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.base.list.seller.common.util.ItemType;
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;

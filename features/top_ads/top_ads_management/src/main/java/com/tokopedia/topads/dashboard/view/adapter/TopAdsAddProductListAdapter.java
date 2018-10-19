@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.base.list.seller.common.util.ItemType;
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsAddProductListViewHolder;
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsEmptyRowViewHolder;

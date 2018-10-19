@@ -22,7 +22,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.text.SearchInputView;
