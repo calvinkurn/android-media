@@ -826,6 +826,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         filterAndSortBottomAction.setVisibility(View.GONE);
 
         flightSearchPresenter.attachView(this);
+        showLoading();
 
         if (!isReturning()) {
             flightSearchPresenter.fetchCombineData(passDataViewModel);
