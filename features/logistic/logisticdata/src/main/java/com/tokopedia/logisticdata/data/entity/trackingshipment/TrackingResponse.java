@@ -1,4 +1,4 @@
-package com.tokopedia.tracking.entity;
+package com.tokopedia.logisticdata.data.entity.trackingshipment;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

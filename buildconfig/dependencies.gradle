@@ -108,6 +108,7 @@ ext {
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
     artifactIdLogisticGeoLocation = 'logisticgeolocation'
+    artifactIdLogisticCommon = 'logisticcommon'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -411,6 +412,7 @@ ext {
             logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
             logisticlistaddress         : ":features:logistic:logisticlistaddress",
             logisticaddaddress          : ":features:logistic:logisticaddaddress",
+            logisticCommon              : ":features:logistic:logisticcommon",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
             tracking                    : ":features:logistic:tracking",

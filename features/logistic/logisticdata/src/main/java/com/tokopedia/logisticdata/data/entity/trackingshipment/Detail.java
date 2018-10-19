@@ -1,4 +1,4 @@
-package com.tokopedia.tracking.entity;
+package com.tokopedia.logisticdata.data.entity.trackingshipment;
 
 /**
  * Created by Alifa on 10/12/2016.

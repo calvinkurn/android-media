@@ -23,9 +23,9 @@ import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
-import com.tokopedia.logisticinputreceiptshipment.view.base.BaseActivity;
+import com.tokopedia.logisticcommon.base.BaseSimpleLogisticActivity;
 import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticinputreceiptshipment.view.base.TkpdProgressDialog;
+import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
 import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
@@ -46,7 +46,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ConfirmShippingActivity extends BaseActivity
+public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
         CourierSelectionFragment.OrderCourierFragmentListener,

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.view.base;
+package com.tokopedia.logisticcommon.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,8 +9,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.logisticinputreceiptshipment.R;
-
+import com.tokopedia.logisticcommon.R;
 
 public class TkpdProgressDialog {
 

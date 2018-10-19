@@ -1,16 +1,17 @@
-package com.tokopedia.logisticinputreceiptshipment.view.base;
+package com.tokopedia.logisticcommon.base;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.logisticcommon.R;
+
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.logisticinputreceiptshipment.R;
 
-public abstract class BaseActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent> {
+public abstract class BaseSimpleLogisticActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent> {
 
     protected boolean isAfterRotate;
 

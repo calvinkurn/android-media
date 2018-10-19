@@ -1,4 +1,4 @@
-package com.tokopedia.tracking.entity;
+package com.tokopedia.logisticdata.data.entity.trackingshipment;
 
 /**
  * Created by Alifa on 10/12/2016.
@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackOrder {
-
-    private static final String TAG = TrackOrder.class.getSimpleName();
 
     @SerializedName("change")
     @Expose
