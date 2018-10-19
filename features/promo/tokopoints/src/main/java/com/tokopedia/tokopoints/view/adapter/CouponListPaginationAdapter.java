@@ -292,8 +292,7 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                 //handling the catalog listing and tabs
                 TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
                 if (catalogListingOuter != null) {
-                    if (catalogListingOuter.getCoupon().getCoupons() != null &&
-                            catalogListingOuter.getCoupon().getCoupons().size() > 0) {
+                    if (catalogListingOuter.getCoupon().getCoupons() != null) {
                         loadCompleted(catalogListingOuter.getCoupon().getCoupons(), catalogListingOuter);
                         setLastPage(!catalogListingOuter.getCoupon().getPaging().isHasNext());
                     }
