@@ -48,6 +48,7 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresenter;
+import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +72,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
+    private static final int REQUEST_CODE_CHANGE_DATE = 3;
     private static final String SAVED_NEED_REFRESH_AIRLINE = "svd_need_refresh_airline";
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
     private static final String SAVED_SORT_OPTION = "svd_sort_option";
@@ -203,6 +205,14 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
                             onSelectedFromDetail(selectedId);
                         }
                     }
+                    break;
+                case REQUEST_CODE_CHANGE_DATE:
+                    flightSearchPresenter.attachView(this);
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Calendar calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    flightSearchPresenter.onSuccessDateChanged(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE));
                     break;
             }
         }
@@ -826,6 +836,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         filterAndSortBottomAction.setVisibility(View.GONE);
 
         flightSearchPresenter.attachView(this);
+        clearAllData();
         showLoading();
 
         if (!isReturning()) {
