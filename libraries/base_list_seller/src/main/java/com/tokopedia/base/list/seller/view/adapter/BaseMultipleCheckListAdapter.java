@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.base.list.seller.common.util.ItemIdType;
 import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.core.util.Pair;
+import com.tokopedia.base.list.seller.view.old.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;

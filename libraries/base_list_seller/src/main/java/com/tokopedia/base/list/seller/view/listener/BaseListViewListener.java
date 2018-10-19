@@ -2,7 +2,7 @@ package com.tokopedia.base.list.seller.view.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 import java.util.List;
 

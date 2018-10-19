@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.

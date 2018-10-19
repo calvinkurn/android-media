@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.

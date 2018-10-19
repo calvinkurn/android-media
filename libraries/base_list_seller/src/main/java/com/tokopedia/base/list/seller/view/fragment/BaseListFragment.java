@@ -11,18 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.base.list.seller.R;
 import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 
 import java.util.List;
 
