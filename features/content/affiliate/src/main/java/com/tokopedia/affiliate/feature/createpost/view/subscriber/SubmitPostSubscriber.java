@@ -31,7 +31,7 @@ public class SubmitPostSubscriber extends Subscriber<SubmitPostData> {
             e.printStackTrace();
         }
         view.hideLoading();
-        view.onErrorSubmitPost(ErrorHandler.getErrorMessage(view.getContext(), e));
+        showError(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override
@@ -42,9 +42,13 @@ public class SubmitPostSubscriber extends Subscriber<SubmitPostData> {
             onError(new RuntimeException());
             return;
         } else if (!TextUtils.isEmpty(submitPostData.getFeedContentSubmit().getError())) {
-            view.onErrorSubmitPost(submitPostData.getFeedContentSubmit().getError());
+            showError(submitPostData.getFeedContentSubmit().getError());
             return;
         }
         view.onSuccessSubmitPost();
+    }
+
+    protected void showError(String message) {
+        view.onErrorSubmitPost(message);
     }
 }

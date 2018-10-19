@@ -1,9 +1,11 @@
 package com.tokopedia.affiliate.feature.createpost.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.EditPostUseCase;
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase;
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
+import com.tokopedia.affiliate.feature.createpost.view.subscriber.EditPostSubscriber;
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber;
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.SubmitPostSubscriber;
 
@@ -19,12 +21,15 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
 
     private final GetContentFormUseCase getContentFormUseCase;
     private final SubmitPostUseCase submitPostUseCase;
+    private final EditPostUseCase editPostUseCase;
 
     @Inject
     public CreatePostPresenter(GetContentFormUseCase getContentFormUseCase,
-                               SubmitPostUseCase submitPostUseCase) {
+                               SubmitPostUseCase submitPostUseCase,
+                               EditPostUseCase editPostUseCase) {
         this.getContentFormUseCase = getContentFormUseCase;
         this.submitPostUseCase = submitPostUseCase;
+        this.editPostUseCase = editPostUseCase;
     }
 
     @Override
@@ -71,14 +76,14 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     @Override
     public void editPost(String postId, String token, List<String> imageList, int mainImageIndex) {
         getView().showLoading();
-        submitPostUseCase.execute(
-                SubmitPostUseCase.createEditRequestParams(
+        editPostUseCase.execute(
+                EditPostUseCase.createRequestParams(
                         postId,
                         token,
                         imageList,
                         mainImageIndex
                 ),
-                new SubmitPostSubscriber(getView())
+                new EditPostSubscriber(getView())
         );
     }
 }

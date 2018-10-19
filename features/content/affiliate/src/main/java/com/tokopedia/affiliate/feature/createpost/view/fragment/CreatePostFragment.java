@@ -252,6 +252,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         NetworkErrorHelper.showEmptyState(getContext(), mainView, message, this::submitPost);
     }
 
+    @Override
+    public void onErrorEditPost(String message) {
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, message, this::editPost);
+    }
+
     private void initVar(Bundle savedInstanceState) {
         if (viewModel == null) {
             viewModel = new CreatePostViewModel();
@@ -279,7 +284,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void initView() {
-        doneBtn.setOnClickListener(view -> submitPost());
+        doneBtn.setOnClickListener(view -> {
+            if (!viewModel.isEdit()) {
+                submitPost();
+            } else {
+                editPost();
+            }
+        });
         addImageBtn.setOnClickListener(view -> {
             if (shouldShowExample()) {
                 goToImageExample(true);
@@ -323,9 +334,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                                 ? View.GONE
                                 : View.VISIBLE
                 );
-                setMain.setVisibility(tab.getPosition() == adapter.getCount() - 1
-                        ? View.INVISIBLE
-                        : View.VISIBLE
+                setMain.setVisibility(
+                        tab.getPosition() == adapter.getCount() - 1
+                                ? View.INVISIBLE
+                                : View.VISIBLE
                 );
                 updateSetMainView();
             }
@@ -399,6 +411,15 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         presenter.submitPost(
                 viewModel.getProductId(),
                 viewModel.getAdId(),
+                viewModel.getToken(),
+                viewModel.getImageList(),
+                viewModel.getMainImageIndex()
+        );
+    }
+
+    private void editPost() {
+        presenter.editPost(
+                viewModel.getPostId(),
                 viewModel.getToken(),
                 viewModel.getImageList(),
                 viewModel.getMainImageIndex()

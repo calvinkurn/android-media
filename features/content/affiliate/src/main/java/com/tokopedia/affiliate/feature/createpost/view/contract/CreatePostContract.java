@@ -35,6 +35,8 @@ public interface CreatePostContract {
         void onSuccessSubmitPost();
 
         void onErrorSubmitPost(String message);
+
+        void onErrorEditPost(String message);
     }
     interface Presenter extends CustomerPresenter<View> {
         void fetchContentForm(String productId, String adId);
