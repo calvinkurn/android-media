@@ -30,6 +30,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
     private static final String GCM_ID = "gcm_id";
     private static final String ANDROID = "tkpd/mitra/android";
+    private static final String MOBILE = "mobile";
     private static final String X_REQUESTED_WITH = "X-Requested-With";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
@@ -63,13 +64,16 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
-        webView.getSettings().setUserAgentString(String.format("%s-%s", ANDROID, BuildConfig.VERSION_NAME));
+        webView.getSettings().setUserAgentString(String.format("%s-%s %s", ANDROID, BuildConfig.VERSION_NAME, MOBILE));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
                 WebView.setWebContentsDebuggingEnabled(true);
             }
         }
+
+        String userAgent = System.getProperty("http.agent");
+        webView.getSettings().setUserAgentString(userAgent);
 
         String fcmToken = Preference.getFcmToken(this);
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken));
