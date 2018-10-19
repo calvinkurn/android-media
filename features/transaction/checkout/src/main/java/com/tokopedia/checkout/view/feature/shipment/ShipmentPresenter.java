@@ -126,7 +126,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
-    private List<ShippingCourierViewModel> shippingCourierViewModelsState;
+    private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
 
@@ -1460,12 +1460,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShippingCourierViewModel> getShippingCourierViewModelsState() {
-        return shippingCourierViewModelsState;
+    public List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition) {
+        if (shippingCourierViewModelsState != null) {
+            return shippingCourierViewModelsState.get(itemPosition);
+        }
+        return null;
     }
 
     @Override
-    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState) {
-        this.shippingCourierViewModelsState = shippingCourierViewModelsState;
+    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+                                                  int itemPosition) {
+        if (this.shippingCourierViewModelsState == null) {
+            this.shippingCourierViewModelsState = new HashMap<>();
+        }
+        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierViewModelsState);
     }
 }

@@ -1463,12 +1463,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition) {
+    public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
+                                 int cartItemPosition, boolean isNeedPinpoint) {
         sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());
-        if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+        if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
                 recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
+                recipientAddressModel.getLongitude().equalsIgnoreCase("0")))) {
             setPinpoint(cartItemPosition);
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
@@ -1531,8 +1532,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         int cartPosition) {
         sendAnalyticsOnClickChangeCourierShipmentRecommendation();
         if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
-                shipmentPresenter.getShippingCourierViewModelsState() != null) {
-            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState();
+                shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
+            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
         }
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                 shippingCourierViewModels, recipientAddressModel, cartPosition);

@@ -62,7 +62,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                 view.renderCourierStateFailed(itemPosition);
                                 return;
                             } else {
-                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList());
+                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
                                 CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
                                 view.renderCourierStateSuccess(courierItemData, itemPosition);
                                 return;
