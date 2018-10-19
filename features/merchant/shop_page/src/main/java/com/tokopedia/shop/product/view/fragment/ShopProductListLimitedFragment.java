@@ -29,11 +29,10 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
@@ -590,6 +589,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         shopProductAdapter.setShopProductEtalaseHighlightViewModel(
                 new ShopProductEtalaseHighlightViewModel(etalaseHighlightCarouselViewModels));
+        shopProductAdapter.refreshSticky();
     }
 
     @Override
@@ -612,6 +612,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false,
                     ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
         }
+        shopProductAdapter.refreshSticky();
     }
 
     @Override
@@ -859,7 +860,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (getContext() == null) {
             return;
         }
-        if (!merchantVoucherListPresenter.isLogin()) {
+        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+        /*if (!merchantVoucherListPresenter.isLogin()) {
             if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
                 Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                 startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
@@ -868,6 +870,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             showUseMerchantVoucherLoading();
             merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                     merchantVoucherViewModel.getVoucherId());
+        }*/
+        //TOGGLE_MVC_OFF
+        onPromoWidgetCopied();
+    }
+
+    public void onPromoWidgetCopied() {
+        if (getActivity()!= null) {
+            ToasterNormal.showClose(getActivity(), getString(R.string.title_copied));
         }
     }
 
@@ -944,6 +954,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
         shopProductAdapter.setShopMerchantVoucherViewModel(new ShopMerchantVoucherViewModel(merchantVoucherViewModelList));
+        shopProductAdapter.refreshSticky();
     }
 
     @Override

@@ -478,8 +478,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopWebViewActivity.startIntent(this, url)
     }
 
-
     fun getShopInfoPosition() : Int {
-        return shopPageViewPagerAdapter.count
+        return shopPageViewPagerAdapter.count - 1
     }
 }

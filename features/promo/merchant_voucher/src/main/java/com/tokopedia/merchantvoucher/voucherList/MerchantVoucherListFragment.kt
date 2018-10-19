@@ -17,9 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -195,12 +192,21 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         if (context == null) {
             return
         }
-        if (presenter.isLogin() == false) {
+        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+        /*if (presenter.isLogin() == false) {
             val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
             startActivityForResult(intent, REQUEST_CODE_LOGIN)
         } else if (!presenter.isMyShop(voucherShopId)) {
             showUseMerchantVoucherLoading();
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
+        }*/
+        //TOGGLE_MVC_OFF
+        showCopiedToast()
+    }
+
+    private fun showCopiedToast() {
+        activity?.run {
+            ToasterNormal.showClose(this, getString(R.string.title_copied))
         }
     }
 

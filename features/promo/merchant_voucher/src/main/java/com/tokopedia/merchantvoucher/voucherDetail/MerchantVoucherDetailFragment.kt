@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -89,7 +90,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             }
         }
         btnUseVoucher.setOnClickListener { _ ->
-            if (presenter.isLogin() == false) {
+            //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+            /*if (!presenter.isLogin()) {
                 if (RouteManager.isSupportApplink(context!!, ApplinkConst.LOGIN)) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
                     startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_LOGIN)
@@ -99,7 +101,15 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 merchantVoucherViewModel?.let {
                     presenter.useMerchantVoucher(it.voucherCode, voucherId)
                 }
-            }
+            }*/
+            //TOGGLE_MVC_OFF
+            showCopiedToast()
+        }
+    }
+
+    private fun showCopiedToast() {
+        activity?.run {
+            ToasterNormal.showClose(this, getString(R.string.title_copied))
         }
     }
 

@@ -473,14 +473,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (getContext() == null) {
                     return;
                 }
-                if (!voucherListPresenter.isLogin()) {
+                //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+                /*if (!voucherListPresenter.isLogin()) {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
                 } else if (!isOwner()) {
                     showUseMerchantVoucherLoading();
                     voucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
                             merchantVoucherViewModel.getVoucherId());
-                }
+                }*/
+                //TOGGLE_MVC_OFF
+                onPromoWidgetCopied();
             }
 
             @Override
@@ -1713,16 +1716,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoWidgetCopied() {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, getActivity().getString(R.string.title_copied),
-                Snackbar.LENGTH_LONG);
-        snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.setActionTextColor(Color.WHITE);
-        snackbar.show();
+        if (getActivity()!= null) {
+            ToasterNormal.showClose(getActivity(), getString(R.string.title_copied));
+        }
     }
 
     @Override

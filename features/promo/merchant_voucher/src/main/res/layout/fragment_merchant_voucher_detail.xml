@@ -170,13 +170,23 @@
             android:visibility="gone"
             tools:visibility="visible">
 
+            <!-- //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release-->
+            <!--<Button
+                android:id="@+id/btnUseVoucher"
+                style="@style/Button.Submit.Green.Full"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/use_voucher" />-->
+
+            <!-- //TOGGLE_MVC_OFF -->
             <Button
                 android:id="@+id/btnUseVoucher"
                 style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:text="@string/use_voucher" />
+                android:text="@string/copy_voucher_code" />
         </LinearLayout>
 
     </LinearLayout>

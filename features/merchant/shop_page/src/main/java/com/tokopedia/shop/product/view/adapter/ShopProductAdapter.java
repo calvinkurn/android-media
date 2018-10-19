@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.adapter;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -53,6 +54,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
+    private RecyclerView recyclerView;
 
     // this view holder is to hold the state between the sticky and non-sticky etalase view holder.
     private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
@@ -372,8 +374,19 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     public void refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
-            onStickySingleHeaderViewListener.refreshSticky();
+            recyclerView.post(() -> onStickySingleHeaderViewListener.refreshSticky());
         }
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 }

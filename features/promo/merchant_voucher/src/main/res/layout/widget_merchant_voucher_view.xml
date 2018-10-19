@@ -69,8 +69,8 @@
             android:layout_height="wrap_content"
             style="@style/Button.Submit.White.Border"
             android:textSize="@dimen/sp_12"
-            android:text="@string/use_voucher"
-            android:minWidth="@dimen/dp_40"
+            tools:text="@string/use_voucher"
+            android:minWidth="@dimen/dp_60"
             android:minHeight="@dimen/dp_8"
             android:padding="@dimen/dp_8"/>
 
