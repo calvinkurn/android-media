@@ -14,10 +14,10 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
@@ -86,6 +87,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final int REQUEST_LOGIN = 111;
     private static final String NO_USER_ID = "anonymous";
+    private static final int KEYBOARD_TRESHOLD = 100;
 
     @Inject
     ChatroomPresenter presenter;
@@ -98,7 +100,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private RecyclerView chatRecyclerView;
     private RecyclerView quickReplyRecyclerView;
-    private EditText replyEditText;
+    private BackEditText replyEditText;
     private View sendButton;
     private View divider;
     private View main, loading;
@@ -282,7 +284,36 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
 
         setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+
+        replyEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPinnedMessage(null);
+                setQuickReply(null);
+                setSprintSaleIcon(null);
+            }
+        });
+
+        replyEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                setPinnedMessage(null);
+                setQuickReply(null);
+                setSprintSaleIcon(null);
+            }
+        });
+
+        replyEditText.setKeyImeChangeListener(new BackEditText.KeyImeChange(){
+            @Override
+            public void onKeyIme(int keyCode, KeyEvent event)
+            {
+                if (KeyEvent.KEYCODE_BACK == event.getKeyCode())
+                {
+                    onKeyboardDismiss();
+                }
+            }});
     }
+
 
     private void goToLogin() {
         ((GroupChatContract.View) getActivity()).logoutChannel(mChannel);
@@ -385,6 +416,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             if (list != null && !list.isEmpty() && userSession.isLoggedIn()) {
                 quickReplyRecyclerView.setVisibility(View.VISIBLE);
                 quickReplyAdapter.setList(list);
+                ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                        .getChannelInfoViewModel();
+                if(channelInfoViewModel != null){
+                    channelInfoViewModel.setQuickRepliesViewModel(list);
+                }
             } else {
                 quickReplyRecyclerView.setVisibility(View.GONE);
             }
@@ -393,6 +429,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        View view = createContentView(pinnedMessage);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -403,10 +440,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_EXPANDED);
+                    view.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
                 }
             }
         });
-        View view = createContentView(pinnedMessage);
         dialog.setContentView(view, "Pinned Chat");
         view.setOnClickListener(null);
         dialog.show();
@@ -420,7 +457,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-        ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
+        ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
         if (!TextUtils.isEmpty(pinnedMessage.getImageUrl())) {
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
@@ -431,6 +468,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             });
         }
+        view.findViewById(R.id.thumbnail).setVisibility(View.GONE);
         return view;
     }
 
@@ -728,6 +766,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
             setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+            ((GroupChatContract.View)getActivity()).initVideoFragment();
         }
 
         setSendButtonEnabled(true);
@@ -1004,6 +1043,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
+        }
+    }
+
+    public void onKeyboardDismiss() {
+        if(getActivity() != null
+                && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null) {
+            setPinnedMessage(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getPinnedMessageViewModel());
+            setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
+            setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
     }
 }

@@ -130,6 +130,13 @@ public class AccountAnalytics {
         );
     }
 
+    public void eventClickActivationOvoMyAccount() {
+        analyticTracker.sendEventTracking(
+                AccountConstants.Analytics.EVENT_SALDO_OVO,
+                AccountConstants.Analytics.MY_ACCOUNT,
+                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO, "");
+    }
+
     public void eventTrackingNotification() {
         if (analyticTracker == null)
             return;

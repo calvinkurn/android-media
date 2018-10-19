@@ -15,6 +15,13 @@
 /tkpdhome/          @tokopedia/minion-dave
 /customerapp/       @tokopedia/core-team
 
+/features/common/nps                               @tokopedia/core-team
+
+/features/home/account-home/                       @tokopedia/core-team
+/features/home/navigation/                         @tokopedia/core-team
+/features/home/navigation-common/                  @tokopedia/core-team
+/features/home/searchbar/                          @tokopedia/core-team
+
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
@@ -36,6 +43,10 @@
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
+/features/digital/digitalproduct        @tokopedia/minion-mark
+/featires/digital/common_travel         @tokopedia/minion-mark
+/features/fintech/tokocash              @nabillasab
+/libraries/travel_calendar              @nabillasab
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -45,6 +56,7 @@
 /features/transaction/transactiondata/          @tokopedia/minion-bob
 /features/logistic/district_recommendation/     @tokopedia/minion-bob
 /features/logistic/logisticdata/                @tokopedia/minion-bob
+/features/logistic/logisticaddaddress/          @tokopedia/minion-bob
 /features/logistic/logisticuploadawb/           @tokopedia/minion-bob
 /features/logistic/tracking/                    @tokopedia/minion-bob
 
@@ -92,3 +104,4 @@
 /features/user/updateinactivephone      @tokopedia/india-android-team
 /features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
+/features/im/challenges                 @ashwanitp

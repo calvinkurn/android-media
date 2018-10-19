@@ -16,7 +16,7 @@
         android:layout_height="@dimen/shop_image_size"
         app:cardUseCompatPadding="true">
 
-        <com.tokopedia.topads.sdk.view.SquareImageView
+        <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/shop_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

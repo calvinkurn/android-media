@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -28,7 +29,6 @@ import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 
 public abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
-
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -90,7 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         }
     }
 
-    private void sendScreenAnalytics() {
+    protected void sendScreenAnalytics() {
         if (getApplication() instanceof AbstractionRouter) {
             AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
             analyticTracker.sendScreen(this, getScreenName());
@@ -182,5 +182,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
+        return super.dispatchTouchEvent(ev);
     }
 }

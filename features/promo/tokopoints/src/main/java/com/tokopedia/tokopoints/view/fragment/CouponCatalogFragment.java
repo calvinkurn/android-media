@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -23,8 +24,8 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -33,8 +34,10 @@ import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
+import com.tokopedia.tokopoints.view.customview.SwipeCardView;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
@@ -57,6 +60,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static final int CONTAINER_SWIPE = 1;
     private ViewFlipper mContainerMain;
     private Subscription mSubscriptionCouponTimer;
     private Subscription mSubscriptionCatalogTimer;
@@ -64,6 +68,11 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private String mCouponRealCode;
     private String mCouponName;
     public CountDownTimer mTimer;
+    private SwipeCardView mSwipeCardView;
+    private TextView mBtnQrCode;
+    private TextView mBtnBarCode;
+    private View mViewCodeSeparator;
+    private TextView mTextSwipeNote;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -115,7 +124,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void onDestroy() {
         mPresenter.destroyView();
-        
+
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
@@ -347,8 +356,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter)getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -578,6 +586,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             imgTime.setVisibility(View.VISIBLE);
             timeLabel.setText(data.getExpiredLabel());
             timeValue.setText(data.getExpiredStr());
+            timeValue.setTextColor(ContextCompat.getColor(getAppContext(), R.color.black_70));
         }
 
         //Quota text handling
@@ -693,6 +702,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView textMinExchangeValue = getView().findViewById(R.id.text_min_exchange_value);
         ImageView imgMinExchange = getView().findViewById(R.id.img_min_exchange);
         ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
+        ViewFlipper actionContainer = getView().findViewById(R.id.lin_container_button);
 
         description.setText(data.getTitle());
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
@@ -706,8 +716,15 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             label.setText(data.getUsage().getText());
             value.setVisibility(View.VISIBLE);
             imgLabel.setVisibility(View.VISIBLE);
-            btnAction2.setVisibility(View.VISIBLE);
             value.setText(data.getUsage().getUsageStr());
+
+            if (data.getUsage().getBtnUsage() != null) {
+                if (data.getUsage().getBtnUsage().getType().equalsIgnoreCase("invisible")) {
+                    btnAction2.setVisibility(View.GONE);
+                } else {
+                    btnAction2.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         if (data.getMinimumUsage() != null && !data.getMinimumUsage().isEmpty()) {
@@ -717,7 +734,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
 
-        value.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.medium_green));
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
         btnAction2.setOnClickListener(v -> {
@@ -762,6 +778,43 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         addCountDownTimer(data, value, btnAction2);
+
+        if (data.getSwipe() != null && data.getSwipe().isNeedSwipe()) {
+            actionContainer.setDisplayedChild(CONTAINER_SWIPE);
+
+            mSwipeCardView = getView().findViewById(R.id.card_swipe);
+            mBtnBarCode = getView().findViewById(R.id.btn_barcode);
+            mBtnQrCode = getView().findViewById(R.id.btn_qrcode);
+            mViewCodeSeparator = getView().findViewById(R.id.view_code_separator);
+            mTextSwipeNote = getView().findViewById(R.id.text_swipe_note);
+            mSwipeCardView.setTitle(data.getSwipe().getText());
+            mSwipeCardView.setOnSwipeListener(new SwipeCardView.OnSwipeListener() {
+                @Override
+                public void onComplete() {
+                    if (data.getSwipe().getPin().isPinRequire()) {
+                        showPinPage(data.getRealCode(), data.getSwipe().getPin().getText());
+                    } else {
+                        mPresenter.swipeMyCoupon(data.getRealCode(), ""); //Empty for online partner
+                    }
+                }
+
+                @Override
+                public void onPartialSwipe() {
+
+                }
+            });
+
+            if (!data.getSwipe().getNote().isEmpty()) {
+                mTextSwipeNote.setText(data.getSwipe().getNote());
+                mTextSwipeNote.setVisibility(View.VISIBLE);
+                mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_70));
+            }
+
+            if (data.getSwipe().getPartnerCode() != null
+                    && !data.getSwipe().getPartnerCode().isEmpty()) {
+                mSwipeCardView.setCouponCode(data.getSwipe().getPartnerCode());
+            }
+        }
 
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -894,5 +947,48 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 btnContinue.setEnabled(true);
             }
         }
+    }
+
+    public void onSwipeResponse(CouponSwipeUpdate data, String qrCodeLink, String barCodeLink) {
+        mSwipeCardView.setCouponCode(data.getPartnerCode());
+
+        if (qrCodeLink != null && !qrCodeLink.isEmpty()) {
+            mBtnQrCode.setVisibility(View.VISIBLE);
+            mViewCodeSeparator.setVisibility(View.VISIBLE);
+        }
+
+        if (barCodeLink != null && !barCodeLink.isEmpty()) {
+            mBtnBarCode.setVisibility(View.VISIBLE);
+        }
+
+        if (data.getNote() != null && !data.getNote().isEmpty()) {
+            mTextSwipeNote.setVisibility(View.VISIBLE);
+            mTextSwipeNote.setText(data.getNote());
+            mTextSwipeNote.setTextColor(ContextCompat.getColor(getActivityContext(), R.color.black_38));
+        } else {
+            mTextSwipeNote.setVisibility(View.GONE);
+        }
+    }
+
+    public void onSwipeError(String errorMessage) {
+        mSwipeCardView.reset();
+        SnackbarManager.make(mSwipeCardView, errorMessage, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void showPinPage(String code, String pinInfo) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
+
+        Fragment fragment = new ValidateMerchantPinFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(CommonConstant.EXTRA_PIN_INFO, pinInfo);
+        bundle.putString(CommonConstant.EXTRA_COUPON_ID, code);
+        fragment.setArguments(bundle);
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, fragment, ValidateMerchantPinFragment.class.getCanonicalName())
+                .addToBackStack(ValidateMerchantPinFragment.class.getCanonicalName())
+                .commit();
     }
 }

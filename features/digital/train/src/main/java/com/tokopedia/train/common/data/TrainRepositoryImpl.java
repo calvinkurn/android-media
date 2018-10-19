@@ -5,6 +5,9 @@ import com.tokopedia.train.checkout.data.TrainCheckoutCloudDataStore;
 import com.tokopedia.train.checkout.data.entity.TrainCheckoutEntity;
 import com.tokopedia.train.checkout.data.specification.TrainCheckoutSpecification;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.homepage.data.TrainBannerSpecification;
+import com.tokopedia.train.homepage.data.TrainPromoCloudDataStore;
+import com.tokopedia.train.homepage.data.entity.BannerDetail;
 import com.tokopedia.train.passenger.data.TrainDoSoftBookingSpecification;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
@@ -52,19 +55,22 @@ public class TrainRepositoryImpl implements TrainRepository {
     private TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore;
     private TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore;
     private TrainCheckoutCloudDataStore trainCheckoutCloudDataStore;
+    private TrainPromoCloudDataStore trainPromoCloudDataStore;
 
     public TrainRepositoryImpl(TrainSeatCloudDataStore trainSeatCloudDataStore,
                                TrainStationDataStoreFactory trainStationDataStoreFactory,
                                TrainScheduleDataStoreFactory scheduleDataStoreFactory,
                                TrainSoftBookingCloudDataStore trainSoftBookingCloudDataStore,
                                TrainCheckVoucherCloudDataStore trainCheckVoucherCloudDataStore,
-                               TrainCheckoutCloudDataStore trainCheckoutCloudDataStore) {
+                               TrainCheckoutCloudDataStore trainCheckoutCloudDataStore,
+                               TrainPromoCloudDataStore trainPromoCloudDataStore) {
         this.trainSeatCloudDataStore = trainSeatCloudDataStore;
         this.trainStationDataStoreFactory = trainStationDataStoreFactory;
         this.trainScheduleDataStoreFactory = scheduleDataStoreFactory;
         this.trainSoftBookingCloudDataStore = trainSoftBookingCloudDataStore;
         this.trainCheckVoucherCloudDataStore = trainCheckVoucherCloudDataStore;
         this.trainCheckoutCloudDataStore = trainCheckoutCloudDataStore;
+        this.trainPromoCloudDataStore = trainPromoCloudDataStore;
     }
 
     @Override
@@ -141,6 +147,11 @@ public class TrainRepositoryImpl implements TrainRepository {
     @Override
     public Observable<TrainCheckoutEntity> checkout(HashMap<String, Object> parameters) {
         return trainCheckoutCloudDataStore.checkout(new TrainCheckoutSpecification(parameters));
+    }
+
+    @Override
+    public Observable<List<BannerDetail>> getBanners(HashMap<String, Object> parameters) {
+        return trainPromoCloudDataStore.getData(new TrainBannerSpecification(parameters));
     }
 
 }

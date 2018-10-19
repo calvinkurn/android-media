@@ -57,10 +57,14 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 int position = parent.getChildAdapterPosition(view);
                 int column = position % spanCount;
                 outRect.left = column * spacing / spanCount;
-                outRect.right = spacing - (column + 1) * spacing / spanCount;
                 if (position >= spanCount) {
                     outRect.top = spacing / spanCount;
                     outRect.bottom = spacing / spanCount;
+                }
+                if (parent.getLayoutManager() instanceof GridLayoutManager) {
+                    outRect.right = spacing - (column + 1) * spacing / spanCount;
+                } else {
+                    outRect.right = 0;
                 }
             }
         });
@@ -80,7 +84,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             data.setId(product.getId());
             data.setName(product.getName());
             data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_url());
+            data.setImgUri(product.getImage().getM_ecs());
             Bundle bundle = new Bundle();
             Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(activity);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
