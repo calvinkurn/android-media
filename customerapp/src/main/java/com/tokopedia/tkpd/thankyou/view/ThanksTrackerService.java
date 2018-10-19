@@ -37,22 +37,26 @@ public class ThanksTrackerService extends IntentService {
             if(isDataValid(data)) {
                 initInjection();
                 presenter.doAnalytics(data);
-                presenter.doAppsFlyerAnalytics(
-                        new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA),
-                        data
-                );
             }
         }
     }
 
     private boolean isDataValid(ThanksTrackerData data) {
-        return data != null
-                && data.getId() != null
-                && !data.getId().isEmpty()
-                && data.getPlatform() != null
-                && !data.getPlatform().isEmpty()
-                && data.getShopTypes() != null
-                && !data.getShopTypes().isEmpty();
+        if (data != null && data.getPlatform() != null && data.getPlatform().equals("marketplace")){
+            return data.getId() != null
+                    && !data.getId().isEmpty()
+                    && data.getPlatform() != null
+                    && !data.getPlatform().isEmpty()
+                    && data.getShopTypes() != null
+                    && !data.getShopTypes().isEmpty();
+        } else if (data != null && data.getPlatform() != null && data.getPlatform().equals("digital")){
+            return data.getId() != null
+                    && !data.getId().isEmpty()
+                    && data.getPlatform() != null
+                    && !data.getPlatform().isEmpty();
+        } else {
+            return false;
+        }
     }
 
     private void initInjection() {

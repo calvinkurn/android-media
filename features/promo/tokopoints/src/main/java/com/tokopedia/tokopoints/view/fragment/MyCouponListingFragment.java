@@ -29,6 +29,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -128,11 +129,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-
-        ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-        ((TextView) view.findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
-        ((TextView) view.findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
-        view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
     }
 
     private void initListener() {
@@ -169,8 +165,16 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     }
 
     @Override
-    public void emptyCoupons() {
-        mContainerMain.setDisplayedChild(CONTAINER_EMPTY);
+    public void emptyCoupons(Map<String,String> errors) {
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+
+        if(getView() == null || errors == null){
+            return;
+        }
+
+        ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
+        ((TextView) getView().findViewById(R.id.text_title_error)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
+        ((TextView) getView().findViewById(R.id.text_label_error)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {

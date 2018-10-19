@@ -7,18 +7,18 @@
     android:visibility="visible"
     tools:ignore="ObsoleteLayoutParam">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/layout_activation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
             android:layout_marginBottom="@dimen/dp_15"
-            android:padding="@dimen/padding_detail">
+            android:padding="@dimen/dp_15">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -36,13 +36,13 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:text="@string/tokocash_phone_number"
                 android:textColor="@color/font_black_disabled_38"
-                android:textSize="@dimen/fontvs"/>
+                android:textSize="@dimen/sp_12"/>
 
             <TextView
                 android:id="@+id/wallet_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/font_medium"
+                android:textSize="@dimen/sp_16"
                 android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_5" />
 
@@ -65,18 +65,27 @@
                 android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center_horizontal"
-                android:textSize="@dimen/fontvs"
-                android:textColor="@color/digital_voucher_notes"
+                android:textSize="@dimen/sp_12"
+                android:textColor="@color/font_black_disabled_38"
                 android:text="@string/syarat_ketentuan_tokocash" />
 
         </LinearLayout>
 
         <include
             layout="@layout/view_holder_benefit"
+            android:layout_below="@id/layout_activation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/layout_activation"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
 
 </android.support.v4.widget.NestedScrollView>

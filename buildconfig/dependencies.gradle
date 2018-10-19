@@ -88,6 +88,7 @@ ext {
     tkpdChallengesVersion = '2.22'
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
+    tkpdPaginationVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -198,7 +199,6 @@ ext {
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
-            trueCaller            : "true.caller.sdk:truecaller:0.5",
             bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
@@ -433,6 +433,7 @@ ext {
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
-            travelCalendar    : ":libraries:travel_calendar"
+            travelCalendar    : ":libraries:travel_calendar",
+            pagination        : ":libraries:pagination"
     ]
 }

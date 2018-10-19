@@ -38,6 +38,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  */
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
+    public static final String OVO = "OVO";
     private Context context;
 
     @Inject
@@ -63,16 +64,40 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
 
+        String cdnUrl = AccountHomeUrl.CDN_URL;
+        if (context.getApplicationContext() instanceof AccountHomeRouter) {
+            cdnUrl = ((AccountHomeRouter) context.getApplicationContext())
+                    .getStringRemoteConfig(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+        }
+
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
-        if (!accountModel.getWallet().isLinked()) {
-            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
-            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+        if (accountModel.getWallet().getWalletType().equals(OVO)) {
+            tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.OVO_IMG);
+            if (!accountModel.getWallet().isLinked()) {
+                if (accountModel.getWallet().getAmountPendingCashback() > 0) {
+                    tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
+                } else {
+                    tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                }
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+            } else {
+                tokopediaPayViewModel.setLabelLeft("Points " + accountModel.getWallet().getPointBalance());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getCashBalance());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            }
         } else {
-            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            tokopediaPayViewModel.setIconUrlLeft(cdnUrl+AccountHomeUrl.ImageUrl.TOKOCASH_IMG);
+            if (!accountModel.getWallet().isLinked()) {
+                tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+            } else {
+                tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            }
         }
 
         if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
@@ -80,6 +105,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 || accountModel.getVccUserStatus().getStatus() == null
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
+            tokopediaPayViewModel.setIconUrlRight(cdnUrl+AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
@@ -316,8 +342,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setMainText(context.getString(R.string.title_menu_challenge));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_challenge));
             infoCard.setApplink(ApplinkConst.CHALLENGE);
-            infoCard.setTitleTrack(CLICK_CHALLENGE);
-            infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(CLICK_CHALLENGE);
             infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
         }
