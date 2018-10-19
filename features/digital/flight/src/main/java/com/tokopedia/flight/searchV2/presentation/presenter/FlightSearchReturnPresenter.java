@@ -2,6 +2,7 @@ package com.tokopedia.flight.searchV2.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -31,11 +33,14 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
 
     private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
+    private FlightAnalytics flightAnalytics;
     private CompositeSubscription compositeSubscription;
 
     @Inject
-    public FlightSearchReturnPresenter(FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
+    public FlightSearchReturnPresenter(FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
+                                       FlightAnalytics flightAnalytics) {
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
+        this.flightAnalytics = flightAnalytics;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -75,7 +80,13 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
 
         compositeSubscription.add(Observable.zip(
                 flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(selectedFlightDeparture)),
-                flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(selectedFlightReturn)),
+                flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(selectedFlightReturn))
+                    .doOnNext(new Action1<FlightJourneyViewModel>() {
+                        @Override
+                        public void call(FlightJourneyViewModel journeyViewModel) {
+                            flightAnalytics.eventSearchProductClickFromDetail(getView().getFlightSearchPassData(), journeyViewModel);
+                        }
+                    }),
                 new Func2<FlightJourneyViewModel, FlightJourneyViewModel, Boolean>() {
                     @Override
                     public Boolean call(FlightJourneyViewModel departureJourneyViewModel, FlightJourneyViewModel returnJourneyViewModel) {
@@ -115,6 +126,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
 
     @Override
     public void onFlightSearchSelected(String selectedFlightDeparture, FlightJourneyViewModel returnJourneyModel, int adapterPosition) {
+        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), returnJourneyModel, adapterPosition);
         onFlightSearchSelected(selectedFlightDeparture, returnJourneyModel);
     }
 
