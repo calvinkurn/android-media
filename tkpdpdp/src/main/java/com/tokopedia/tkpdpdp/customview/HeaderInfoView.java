@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.entity.variant.Campaign;
@@ -34,6 +35,7 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -109,14 +111,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
-        if(data != null && data.getCampaign() != null && data.getCampaign().getActive()) {
-            renderProductCampaign(data.getCampaign());
-        } else {
-            linearDiscountTimerHolder.setVisibility(GONE);
-            textDiscount.setVisibility(GONE);
-            textOriginalPrice.setVisibility(GONE);
-            tvPriceFinal.setText(data.getInfo().getProductPrice());
-        }
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
@@ -178,7 +172,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(Campaign campaign) {
+    public void renderProductCampaign(ProductDetailData data, long pdpElapsedTime) {
+        Campaign campaign = data.getCampaign();
         if(campaign != null && campaign.getActive()) {
             textTimerTitle.setText(campaign.getCampaignShortName());
             tvPriceFinal.setText(campaign.getDiscountedPriceFmt());
@@ -196,7 +191,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            showCountdownTimer(campaign);
+            showCountdownTimer(data, pdpElapsedTime);
+        } else {
+            linearDiscountTimerHolder.setVisibility(GONE);
+            textDiscount.setVisibility(GONE);
+            textOriginalPrice.setVisibility(GONE);
+            tvPriceFinal.setText(data.getInfo().getProductPrice());
         }
     }
 
@@ -219,22 +219,37 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void showCountdownTimer(final Campaign campaign) {
+    private void showCountdownTimer(final ProductDetailData data, final long pdpElapsedTime) {
+        Campaign campaign = data.getCampaign();
         try {
             if (countDownTimer!=null) countDownTimer.cancel();
             linearDiscountTimerHolder.setVisibility(GONE);
             SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
-            Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            long delta = sf.parse(campaign.getEndDate()).getTime() - now.getTimeInMillis();
+
+            //*1000 to convert serverTime to millisecond since serverTime is unix
+            long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
+            serverTimeMillisecond += pdpElapsedTime;
+
+            long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
+
             if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
-                countDownView.setup(sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
+
+                Date serverDate = new Date();
+                serverDate.setTime(
+                        serverTimeMillisecond
+                );
+
+                countDownView.setup(
+                        serverDate,
+                        sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
                     @Override
                     public void onCountDownFinished() {
                         hideProductCampaign(campaign);
                         showAlerDialog();
                     }
                 });
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
