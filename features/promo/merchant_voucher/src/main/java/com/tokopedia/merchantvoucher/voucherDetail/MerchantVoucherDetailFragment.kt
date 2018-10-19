@@ -105,7 +105,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 }
             }*/
             //TOGGLE_MVC_OFF
-            activity?.run{
+            activity?.run {
                 val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                         Snackbar.LENGTH_LONG)
                 snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
@@ -185,7 +185,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 !presenter.isMyShop(voucherShopId)) {
             vgVoucherStatus.visibility = View.GONE
             btnContainer.visibility = View.VISIBLE
-        } else if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE){
+        } else if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) {
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
             /*vgVoucherStatus.visibility = View.VISIBLE
             tvSeeCart.visibility = View.VISIBLE
@@ -212,14 +212,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     }
 
     fun processWebViewHtmlStyle(html_string: String): String {
-        var returnString = ""
-        returnString = ("<html><head>"
-                + "<style type=\"text/css\">body{font-size:14px; padding:0; margin:0;color:#808080;} img{display: inline;max-width: 100% !important ;height:auto !important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}"
-                + "</style></head>"
-                + "<body>"
-                + html_string
-                + "</body></html>")
-        return returnString
+        return getString(R.string.html_process_web_view, html_string)
     }
 
     private fun showUseMerchantVoucherLoading() {
