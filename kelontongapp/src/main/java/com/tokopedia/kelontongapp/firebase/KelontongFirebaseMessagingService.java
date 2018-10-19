@@ -21,7 +21,7 @@ public class KelontongFirebaseMessagingService extends FirebaseMessagingService 
 
         Log.d("FCM ", data.toString());
 
-        NotificationFactory.showNotification(this, data);
+        NotificationFactory.show(this, data);
     }
 
     protected Bundle convertMap(RemoteMessage message){

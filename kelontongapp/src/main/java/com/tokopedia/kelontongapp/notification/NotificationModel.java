@@ -1,5 +1,7 @@
 package com.tokopedia.kelontongapp.notification;
 
+import android.os.Bundle;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +24,24 @@ public class NotificationModel {
     private Boolean loginRequired;
     private String createTime;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public static NotificationModel convertBundleToModel(Bundle data) {
+        NotificationModel model = new NotificationModel();
+        model.setApplinks(data.getString("applinks", ""));
+        model.setCounter(data.getString("counter", ""));
+        model.setCreateTime(data.getString("create_time", ""));
+        model.setDesc(data.getString("desc", ""));
+        model.setFullName(data.getString("full_name", ""));
+        model.setGId(data.getString("g_id", ""));
+        model.setLoginRequired(data.getString("login_required", "false").equals("true"));
+        model.setSenderId(data.getString("sender_id", ""));
+        model.setSummary(data.getString("summary", ""));
+        model.setThumbnail(data.getString("thumbnail", ""));
+        model.setTkpCode(Integer.parseInt(data.getString("tkp_code", "0")));
+        model.setToUserId(data.getString("to_user_id", ""));
+        model.setTitle(data.getString("title", ""));
+        return model;
+    }
 
     public String getDesc() {
         return desc;
