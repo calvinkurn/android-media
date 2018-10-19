@@ -7,8 +7,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -54,6 +54,7 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
             }
         });
 
+
         closeImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,13 +84,18 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
     @Override
     public void bind(DealProductViewModel element) {
         this.element = element;
-        ImageHandler imageHandler = new ImageHandler(itemView.getContext());
-        imageHandler.loadImage(dealImageView, element.getImageUrl());
+        ImageHandler.loadImageRounded2(itemView.getContext(), dealImageView, element.getImageUrl());
         brandTextView.setText(element.getBrandName());
         titleTextView.setText(element.getTitle());
         if (element.getSalesPriceNumeric() > 0) {
             priceTextView.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace((int) element.getSalesPriceNumeric()));
             if (element.getSavePriceNumeric() > 0) {
+                long slashedPrice = element.getSalesPriceNumeric() + element.getSavePriceNumeric();
+                slashedPriceTextView.setText(
+                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
+                                (int) slashedPrice
+                        )
+                );
                 slashedPriceTextView.setVisibility(View.VISIBLE);
             } else {
                 slashedPriceTextView.setVisibility(View.GONE);
@@ -97,6 +103,12 @@ public class DigitalDealViewHolder extends AbstractViewHolder<DealProductViewMod
         } else {
             priceTextView.setText(getString(R.string.digital_cart_deal_free_label));
             slashedPriceTextView.setVisibility(View.GONE);
+        }
+
+        if (element.isSelected()) {
+            buyButton.setVisibility(View.GONE);
+        } else {
+            buyButton.setVisibility(View.VISIBLE);
         }
 
     }

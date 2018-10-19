@@ -7,7 +7,7 @@ public class DealCategoryEntity {
     @SerializedName("id")
     @Expose
     private long id;
-    @SerializedName("name")
+    @SerializedName("title")
     @Expose
     private String name;
     @SerializedName("url")

@@ -13,10 +13,12 @@ import java.util.List;
 public class DigitalDealsPagerAdapter extends FragmentPagerAdapter {
 
     private final List<DealCategoryViewModel> dealCategoryViewModels;
+    private DigitalCartDealsListFragment.InteractionListener interactionListener;
 
-    public DigitalDealsPagerAdapter(List<DealCategoryViewModel> dealCategoryViewModels, FragmentManager fm) {
+    public DigitalDealsPagerAdapter(List<DealCategoryViewModel> dealCategoryViewModels, FragmentManager fm, DigitalCartDealsListFragment.InteractionListener interactionListener) {
         super(fm);
         this.dealCategoryViewModels = dealCategoryViewModels;
+        this.interactionListener = interactionListener;
     }
 
     @Nullable
@@ -27,7 +29,9 @@ public class DigitalDealsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return DigitalCartDealsListFragment.newInstance(dealCategoryViewModels.get(position).getUrl());
+        DigitalCartDealsListFragment fragment = DigitalCartDealsListFragment.newInstance(dealCategoryViewModels.get(position).getUrl());
+        fragment.setInteractionListener(interactionListener);
+        return fragment;
     }
 
     @Override

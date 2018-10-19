@@ -172,6 +172,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         } else {
             switch (cartDigitalInfoData.getAttributes().getCrossSellingType()) {
                 case 1:
+                    getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                     break;
                 default:
                     renderBaseCart(cartDigitalInfoData);
@@ -192,8 +193,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
 
-    private void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
-        getView().setToolbarTitle(R.string.digital_cart_default_toolbar_title);
+    protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
             getView().showHachikoCart();
             if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
@@ -453,10 +453,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     @Override
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = getView().getCheckoutDataParameter().build();
-        /*if (checkoutData.isNeedOtp()) {
-            startOTPProcess();
+        if (checkoutData.isNeedOtp()) {
+            getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
             return;
-        }*/
+        }
         getView().hideContent();
         getView().showLoading();
         RequestParams requestParams = digitalCheckoutUseCase.createRequestParams(getRequestBodyCheckout(checkoutData));

@@ -1,18 +1,23 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
@@ -20,10 +25,13 @@ import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
+import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsPagerAdapter;
+import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -31,18 +39,22 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DigitalCartDealsFragment extends BaseDaggerFragment implements DigitalCartDealsContract.View {
+public class DigitalCartDealsFragment extends BaseDaggerFragment implements DigitalCartDealsContract.View, DigitalCartDealsListFragment.InteractionListener {
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final String EXTRA_CART_DATA = "EXTRA_CART_DATA";
 
     private ProgressBar progressBar;
     private TabLayout dealTabLayout;
     private ViewPager dealViewPager;
+    private LinearLayout dealContainer;
+    private FrameLayout checkoutContainer;
+    private List<DealProductViewModel> selectedProducts;
 
     private CartDigitalInfoData cartInfoData;
     private DigitalCheckoutPassData cartPassData;
+    private DigitalDealsPagerAdapter pagerAdapter;
 
-    public DigitalCartDealsFragment newInstance(DigitalCheckoutPassData passData, CartDigitalInfoData cartDigitalInfoData) {
+    public static DigitalCartDealsFragment newInstance(DigitalCheckoutPassData passData, CartDigitalInfoData cartDigitalInfoData) {
         DigitalCartDealsFragment fragment = new DigitalCartDealsFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_CART_DATA, cartDigitalInfoData);
@@ -50,7 +62,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Inject
     DigitalCartDealsPresenter presenter;
@@ -64,6 +75,7 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     public void onCreate(Bundle savedInstanceState) {
         cartInfoData = getArguments().getParcelable(EXTRA_CART_DATA);
         cartPassData = getArguments().getParcelable(EXTRA_PASS_DATA);
+        selectedProducts = new ArrayList<>();
         super.onCreate(savedInstanceState);
     }
 
@@ -74,6 +86,8 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         progressBar = view.findViewById(R.id.progress_bar);
         dealTabLayout = view.findViewById(R.id.tab_deal);
         dealViewPager = view.findViewById(R.id.pager_deals);
+        dealContainer = view.findViewById(R.id.deal_container);
+        checkoutContainer = view.findViewById(R.id.checkout_fragment);
         return view;
     }
 
@@ -82,7 +96,6 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         presenter.onViewCreated();
-
     }
 
     @Override
@@ -101,34 +114,88 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
 
     @Override
     public void showGetCategoriesLoading() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideDealsPage() {
-
+        dealContainer.setVisibility(View.GONE);
     }
 
     @Override
     public void showGetCategoriesError(String message) {
-
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
     }
 
     @Override
     public void hideGetCategoriesLoading() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void renderDealsTab(List<DealCategoryViewModel> dealCategoryViewModels) {
+        pagerAdapter = new DigitalDealsPagerAdapter(
+                dealCategoryViewModels,
+                getChildFragmentManager(),
+                this);
         dealTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        dealTabLayout.setupWithViewPager(dealViewPager);
         dealViewPager.setOffscreenPageLimit(dealCategoryViewModels.size());
         dealViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(dealTabLayout));
-        dealViewPager.setAdapter(new DigitalDealsPagerAdapter(dealCategoryViewModels, getChildFragmentManager()));
+        dealViewPager.setAdapter(pagerAdapter);
+        pagerAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showDealsPage() {
+        dealContainer.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public List<DealProductViewModel> getSelectedDeals() {
+        return selectedProducts;
+    }
+
+    @Override
+    public void showErrorInRedSnackbar(int resId) {
+        NetworkErrorHelper.showRedSnackbar(getView(), getString(resId));
+    }
+
+    @Override
+    public void notifySelectedDeal() {
+        Object fragment = pagerAdapter.instantiateItem(dealViewPager, dealViewPager.getCurrentItem());
+        if (fragment instanceof DigitalDealListListener) {
+            ((DigitalDealListListener) fragment).notifySelectedDeal();
+        }
+    }
+
+    @Override
+    public DigitalCheckoutPassData getCartPassData() {
+        return cartPassData;
+    }
+
+    @Override
+    public CartDigitalInfoData getCartInfoData() {
+        return cartInfoData;
+    }
+
+    @Override
+    public void showCheckoutView(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData) {
+        checkoutContainer.setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            checkoutContainer.setElevation(40);
+            checkoutContainer.setBackgroundResource(android.R.color.white);
+        } else {
+            checkoutContainer.setBackgroundResource(R.drawable.digital_bg_drop_shadow);
+        }
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.checkout_fragment, DigitalDealCheckoutFragment.newInstance(cartPassData, cartInfoData), null)
+                .commit();
+    }
+
+
+    @Override
+    public void selectDeal(DealProductViewModel viewModel) {
+        presenter.onSelectDealProduct(viewModel);
     }
 }

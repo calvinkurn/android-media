@@ -24,6 +24,7 @@ public class DigitalDealsGetCategoriesUseCase extends UseCase<List<DealCategoryV
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("category_id", categoryId);
         requestParams.putString("vertical_id", "1");
+        requestParams.putString("product_id", categoryId);
         return requestParams;
     }
 }

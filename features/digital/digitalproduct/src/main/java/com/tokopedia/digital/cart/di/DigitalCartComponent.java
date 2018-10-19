@@ -4,6 +4,7 @@ import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.cart.presentation.fragment.CartDigitalFragment;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
+import com.tokopedia.digital.newcart.presentation.fragment.DigitalDealCheckoutFragment;
 
 import dagger.Component;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -21,4 +22,6 @@ public interface DigitalCartComponent {
     void inject(DigitalCartActivity digitalCartActivity);
 
     void inject(DigitalCartDefaultFragment digitalCartDefaultFragment);
+
+    void inject(DigitalDealCheckoutFragment digitalDealCheckoutFragment);
 }

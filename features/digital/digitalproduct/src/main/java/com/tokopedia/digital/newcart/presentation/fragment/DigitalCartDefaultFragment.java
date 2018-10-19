@@ -1,7 +1,10 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -26,6 +30,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     private ProgressBar progressBar;
     private RelativeLayout containerLayout;
     private AppCompatTextView categoryTextView;
+
+    private InteractionListener interactionListener;
+
+    public interface InteractionListener {
+        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData passData);
+    }
 
     @Inject
     DigitalCartDefaultPresenter presenter;
@@ -48,6 +58,12 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_digital_cart_default, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onViewCreated();
     }
 
     @Override
@@ -98,4 +114,15 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         progressBar.setVisibility(View.GONE);
     }
 
+    @Override
+    public void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
+        if (interactionListener != null)
+            interactionListener.inflateDealsPage(cartDigitalInfoData, cartPassData);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        interactionListener = (InteractionListener) context;
+    }
 }

@@ -2,7 +2,9 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsListContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
+import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsListPresenter;
 
 import javax.inject.Inject;
@@ -24,13 +27,22 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DigitalCartDealsListFragment extends BaseListFragment<DealProductViewModel, DigitalDealsAdapterTypeFactory> implements DigitalCartDealsListContract.View, DigitalDealActionListener {
+public class DigitalCartDealsListFragment extends BaseListFragment<DealProductViewModel, DigitalDealsAdapterTypeFactory>
+        implements DigitalCartDealsListContract.View, DigitalDealActionListener,
+        DigitalDealListListener {
     private static final String EXTRA_URL = "EXTRA_URL";
 
     private String nextUrl;
+    private AppCompatTextView taglineTextView;
 
     @Inject
     DigitalCartDealsListPresenter presenter;
+
+    private InteractionListener interactionListener;
+
+    public interface InteractionListener {
+        void selectDeal(DealProductViewModel viewModel);
+    }
 
     public static DigitalCartDealsListFragment newInstance(String url) {
         DigitalCartDealsListFragment fragment = new DigitalCartDealsListFragment();
@@ -55,6 +67,14 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
         presenter.getProducts(nextUrl);
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_digital_cart_deals_list, container, false);
+        taglineTextView = view.findViewById(R.id.tv_tagline);
+        return view;
+    }
+
     @Override
     protected DigitalDealsAdapterTypeFactory getAdapterTypeFactory() {
         return new DigitalDealsAdapterTypeFactory(this);
@@ -67,6 +87,7 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
                 .digitalCartComponent(digitalCartComponent)
                 .build();
         component.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
@@ -81,7 +102,9 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Override
     public void actionBuyButton(DealProductViewModel productViewModel) {
-
+        if (interactionListener != null) {
+            interactionListener.selectDeal(productViewModel);
+        }
     }
 
     @Override
@@ -97,5 +120,19 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     @Override
     public void setNextUrl(String nextUrl) {
         this.nextUrl = nextUrl;
+    }
+
+    @Override
+    public void showDealTagline() {
+        taglineTextView.setVisibility(View.VISIBLE);
+    }
+
+    public void setInteractionListener(InteractionListener interactionListener) {
+        this.interactionListener = interactionListener;
+    }
+
+    @Override
+    public void notifySelectedDeal() {
+        getAdapter().notifyDataSetChanged();
     }
 }

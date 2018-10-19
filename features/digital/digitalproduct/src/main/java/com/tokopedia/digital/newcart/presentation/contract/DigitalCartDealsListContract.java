@@ -9,6 +9,8 @@ public interface DigitalCartDealsListContract {
     interface View extends BaseListViewListener<DealProductViewModel> {
 
         void setNextUrl(String nextUrl);
+
+        void showDealTagline();
     }
 
     interface Presenter extends CustomerPresenter<View> {

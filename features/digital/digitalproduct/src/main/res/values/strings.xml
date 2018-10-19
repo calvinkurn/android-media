@@ -147,4 +147,6 @@
     <string name="digital_cart_type_service_label">Jenis Layanan</string>
     <string name="digital_deal_buy_label">Beli</string>
     <string name="digital_cart_deal_free_label">Gratis</string>
+    <string name="digital_deals_maximum_error_message">Anda hanya dapat menambahkan maksimum 5 penawaran spesial.</string>
+    <string name="digital_deal_special_deal_label">Penawaran Spesial</string>
 </resources>

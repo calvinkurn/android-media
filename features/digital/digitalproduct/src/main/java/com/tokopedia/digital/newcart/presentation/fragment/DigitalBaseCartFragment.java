@@ -70,7 +70,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         super.onViewCreated(view, savedInstanceState);
         setupView(view);
         presenter.attachView(this);
-        presenter.onViewCreated();
     }
 
     protected abstract void setupView(View view);

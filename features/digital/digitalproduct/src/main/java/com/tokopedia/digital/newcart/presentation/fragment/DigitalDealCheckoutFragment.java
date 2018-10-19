@@ -1,0 +1,160 @@
+package com.tokopedia.digital.newcart.presentation.fragment;
+
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
+import com.tokopedia.digital.newcart.presentation.presenter.DigitalDealCheckoutPresenter;
+
+import javax.inject.Inject;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter> implements DigitalDealCheckoutContract.View {
+    private LinearLayout containerLayout, containerDetail;
+    private AppCompatTextView categoryNameTextView;
+    private AppCompatImageView expandCollapseView;
+
+    @Inject
+    DigitalDealCheckoutPresenter presenter;
+
+    public DigitalDealCheckoutFragment() {
+        // Required empty public constructor
+    }
+
+    public static DigitalDealCheckoutFragment newInstance(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData) {
+        DigitalDealCheckoutFragment fragment = new DigitalDealCheckoutFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_PASS_DATA, cartPassData);
+        bundle.putParcelable(ARG_CART_INFO, cartInfoData);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        cartDigitalInfoData = getArguments().getParcelable(ARG_CART_INFO);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_digital_deal_checkout, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
+        presenter.onDealsCheckout();
+    }
+
+    @Override
+    protected void setupView(View view) {
+        containerLayout = view.findViewById(R.id.container);
+        containerDetail = view.findViewById(R.id.container_cart_detail);
+        detailHolderView = view.findViewById(R.id.view_cart_detail);
+        checkoutHolderView = view.findViewById(R.id.view_checkout_holder);
+        checkoutHolderView = view.findViewById(R.id.view_checkout_holder);
+        inputPriceContainer = view.findViewById(R.id.input_price_container);
+        inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
+        categoryNameTextView = view.findViewById(R.id.tv_category_name);
+        expandCollapseView = view.findViewById(R.id.iv_expand_collapse);
+        expandCollapseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.onExpandCollapseButtonView();
+            }
+        });
+    }
+
+    @Override
+    protected void initInjector() {
+        getComponent(DigitalCartComponent.class).inject(this);
+        super.presenter = presenter;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void renderCategory(String categoryName) {
+        categoryNameTextView.setText(categoryName);
+    }
+
+    @Override
+    public void hideContent() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showContent() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
+
+    }
+
+    @Override
+    public boolean isCartDetailViewVisible() {
+        return containerDetail.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public void hideCartDetailView() {
+        containerDetail.setVisibility(View.GONE);
+        containerLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    @Override
+    public void showCartDetailView() {
+        containerDetail.setVisibility(View.VISIBLE);
+        containerLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    @Override
+    public void renderIconToExpand() {
+        if (getContext() != null)
+            expandCollapseView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey));
+    }
+
+    @Override
+    public void renderIconToCollapse() {
+        if (getContext() != null)
+            expandCollapseView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey));
+    }
+}

@@ -1,8 +1,10 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.domain.DigitalDealsGetCategoriesUseCase;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
+import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsContract;
 
 import java.util.List;
@@ -23,7 +25,11 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
     public void onViewCreated() {
         getView().showGetCategoriesLoading();
         getView().hideDealsPage();
-        digitalDealsGetCategoriesUseCase.execute(new Subscriber<List<DealCategoryViewModel>>() {
+        digitalDealsGetCategoriesUseCase.execute(
+                digitalDealsGetCategoriesUseCase.createRequestParam(
+                        getView().getCartPassData().getCategoryId()
+                ),
+                new Subscriber<List<DealCategoryViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -43,7 +49,19 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                 getView().hideGetCategoriesLoading();
                 getView().showDealsPage();
                 getView().renderDealsTab(dealCategoryViewModels);
+                getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
             }
         });
+    }
+
+    @Override
+    public void onSelectDealProduct(DealProductViewModel viewModel) {
+        if (getView().getSelectedDeals().size() >= 5) {
+            getView().showErrorInRedSnackbar(R.string.digital_deals_maximum_error_message);
+        } else {
+            viewModel.setSelected(true);
+            getView().getSelectedDeals().add(viewModel);
+            getView().notifySelectedDeal();
+        }
     }
 }

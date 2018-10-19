@@ -102,6 +102,8 @@ public interface DigitalBaseContract {
         void expandAdditionalInfo();
 
         String getString(@StringRes int resId);
+
+        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{
