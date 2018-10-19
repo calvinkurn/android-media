@@ -121,9 +121,6 @@ public class EventDetailsViewModelMapper {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        packageViewModel.setInvoiceStatus(aPackage.getInvoiceStatus());
-                        packageViewModel.setInvoiceId(aPackage.getTkpInvoiceId());
-                        packageViewModel.setInvoiceItemId(aPackage.getTkpInvoiceItemId());
                         packageViewModel.setCategoryId(source.getCategoryId());
                         packageViewModel.setTitle(source.getTitle());
                         packageViewModels.add(packageViewModel);

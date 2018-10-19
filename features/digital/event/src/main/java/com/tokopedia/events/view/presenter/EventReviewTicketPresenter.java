@@ -246,9 +246,6 @@ public class EventReviewTicketPresenter
             packageItem.setActualSeatNos(new ArrayList<>());
         }
         packageItem.setDescription(packageViewModel.getDescription());
-        packageItem.setInvoiceStatus(packageViewModel.getInvoiceStatus());
-        packageItem.setInvoiceId(packageViewModel.getInvoiceId());
-        packageItem.setInvoiceItemId(packageViewModel.getInvoiceItemId());
 
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
