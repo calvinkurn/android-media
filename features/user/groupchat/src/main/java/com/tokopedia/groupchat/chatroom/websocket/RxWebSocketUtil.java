@@ -100,7 +100,7 @@ public class RxWebSocketUtil {
         if (webSocket != null) {
             webSocket.send(msg);
         } else {
-             throw new IllegalStateException("The WebSokcet not open");
+             throw new WebSocketException("The WebSokcet not open");
         }
     }
 

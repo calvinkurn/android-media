@@ -31,7 +31,7 @@ public abstract class WebSocketSubscriber extends Subscriber<WebSocketInfo> {
         }
 
         if (webSocketInfo.getItem() != null) {
-            onMessage(webSocketInfo.getItem());
+            onMessage(webSocketInfo.getItem(), webSocketInfo.shouldHideMessage(webSocketInfo.getItem()));
         }
     }
 
@@ -41,7 +41,7 @@ public abstract class WebSocketSubscriber extends Subscriber<WebSocketInfo> {
     protected void onMessage(@NonNull String text) {
     }
 
-    protected void onMessage(@NonNull Visitable item) {
+    protected void onMessage(@NonNull Visitable item, boolean b) {
     }
 
     protected void onMessage(@NonNull WebSocketResponse text) {

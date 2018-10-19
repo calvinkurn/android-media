@@ -20,9 +20,11 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.Fragment.SavedState;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,13 +35,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -47,9 +46,6 @@ import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.project.youtubeutils.common.YoutubePlayerConstant;
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.SendBird;
-import com.sendbird.android.User;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -67,10 +63,7 @@ import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.groupchat.chatroom.domain.ConnectionManager;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
-import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
-import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelVoteFragment;
@@ -109,6 +102,7 @@ import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.TimeUnit;
 
@@ -119,8 +113,7 @@ import javax.inject.Inject;
  */
 
 public class GroupChatActivity extends BaseSimpleActivity
-        implements GroupChatTabAdapter.TabListener, GroupChatContract.View,
-        LoginGroupChatUseCase.LoginGroupChatListener, ChannelHandlerUseCase.ChannelHandlerListener
+        implements GroupChatTabAdapter.TabListener, GroupChatContract.View
         , ToolTipUtils.ToolTipListener {
 
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
@@ -128,6 +121,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final float ELEVATION = 10;
     private static final int YOUTUBE_DELAY = 1500;
     private long onPlayTime, onPauseTime, onEndTime, onLeaveTime, onTrackingTime;
+    private Map<String, SavedState> fragmentSavedStates;
+
+    public GroupChatActivity() {
+    }
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -218,7 +215,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private GroupChatViewModel viewModel;
 
     private CallbackManager callbackManager;
-    private OpenChannel mChannel;
     private Snackbar snackbarError;
 
     @Inject
@@ -394,22 +390,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    private void initVideoSize() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
-
-        RelativeLayout videoContainer = findViewById(R.id.video_container_layout);
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) videoContainer
-                .getLayoutParams();
-        params.height = width / 16 * 9;
-        videoContainer.setLayoutParams(params);
-
-        videoContainer.setVisibility(View.VISIBLE);
-
-
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -431,7 +411,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initView() {
-
+        fragmentSavedStates = new ArrayMap<>();
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
@@ -470,13 +450,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void setSnackBarErrorLoading() {
         snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
-        ViewGroup contentLay = (ViewGroup) snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text).getParent();
-        ProgressBar item = new ProgressBar(this, null, android.R.attr.progressBarStyleSmall);
-        contentLay.addView(item, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
         snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
         snackbarError.show();
     }
-
 
     public void setSnackBarRetry() {
         snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
@@ -484,10 +460,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-                        userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken()
-                        , userSession.getDeviceId(), userSession.getAccessToken());
+//                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
+//                        userSession.getName(), userSession.getProfilePicture(),
+//                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getGroupChatToken()
+//                        , userSession.getDeviceId(), userSession.getAccessToken());
+                presenter.connectWebSocket(userSession, viewModel.getChannelUuid(), viewModel.getChannelInfoViewModel().getGroupChatToken());
                 setSnackBarErrorLoading();
             }
         });
@@ -639,9 +616,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
             isFirstTime = false;
             this.initialFragment = fragmentPosition;
+
+            saveStateChatFragment();
+
             switch (fragmentPosition) {
                 case CHATROOM_FRAGMENT:
-                    showChatroomFragment(mChannel);
+                    showChatroomFragment();
                     break;
                 case CHANNEL_VOTE_FRAGMENT:
                     if (checkPollValid()) {
@@ -663,29 +643,30 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     }
 
-    private void showChatroomFragment(OpenChannel mChannel) {
-
-        if (mChannel != null) {
-
-            Bundle bundle = new Bundle();
-            if (getIntent().getExtras() != null) {
-                bundle.putAll(getIntent().getExtras());
-            }
-
+    private void saveStateChatFragment() {
+        if(currentFragmentIsChat()){
             Fragment fragment = getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName());
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            if (fragment == null) {
-                fragment = GroupChatFragment.createInstance(bundle);
-                ((GroupChatFragment) fragment).setChannel(mChannel);
-            } else {
-                ((GroupChatFragment) fragment).setChannel(mChannel);
-                ((GroupChatFragment) fragment).refreshChat();
-            }
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.commitAllowingStateLoss();
-
+            saveStateFragment(fragment, GroupChatFragment.class.getSimpleName());
         }
+    }
+
+    private void showChatroomFragment() {
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if (fragment == null) {
+            fragment = GroupChatFragment.createInstance(bundle);
+        }
+        restoreStateFragment(fragment, GroupChatFragment.class.getSimpleName());
+
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     private void showChannelInfoFragment() {
@@ -929,19 +910,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onSuccessGetChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         try {
             setChannelInfoView(channelInfoViewModel);
-            setChannelConnectionHandler();
-
+            hideLoading();
             if (!TextUtils.isEmpty(channelInfoViewModel.getAdsImageUrl())) {
                 trackAdsEE(channelInfoViewModel);
             }
             if (getApplication() instanceof AbstractionRouter) {
                 userSession = ((AbstractionRouter) getApplication()).getSession();
             }
-
-            presenter.enterChannel(userSession.getUserId(), viewModel.getChannelInfoViewModel().getChannelUrl(),
-                    userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken(),
-                    userSession.getDeviceId(), userSession.getAccessToken());
-
+            onSuccessEnterChannel();
+            presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getGroupChatToken());
             Intent intent = new Intent();
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
             intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
@@ -1005,13 +982,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setGreenIndicator(voteInfoViewModel);
-    }
-
-    @Override
-    public void setChannelHandler() {
-        if (viewModel != null && !TextUtils.isEmpty(viewModel.getChannelUrl()))
-            presenter.setHandler(viewModel.getChannelUrl(), getChannelHandlerId(), this);
-
     }
 
     @Override
@@ -1186,7 +1156,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
-            setChannelConnectionHandler();
+            presenter.connectWebSocket(userSession, viewModel.getChannelUrl(), viewModel.getChannelInfoViewModel().getGroupChatToken());
         }
 
         if (notifReceiver == null) {
@@ -1227,15 +1197,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-
-        presenter.logoutChannel(mChannel);
-        presenter.enterChannelAfterRefresh(userSession.getUserId(),
-                viewModel.getChannelInfoViewModel().getChannelUrl(),
-                userSession.getName(), userSession.getProfilePicture(),
-                this, channelInfoViewModel.getSendBirdToken(),
-                userSession.getDeviceId(), userSession.getAccessToken());
-
-
+        presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getGroupChatToken());
     }
 
     private void refreshTab() {
@@ -1263,12 +1225,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void showPushNotif(GroupChatPointsViewModel model) {
         ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                 (GroupChatFragment.class.getSimpleName())).onPushNotifReceived(model);
-    }
-
-    private void refreshChat() {
-        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                (GroupChatFragment.class.getSimpleName())).refreshChat();
-
     }
 
     private void refreshVote(VoteInfoViewModel voteInfoViewModel) {
@@ -1307,8 +1263,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
         }
-        ConnectionManager.removeConnectionManagementHandler(getConnectionHandlerId());
-        SendBird.removeChannelHandler(getChannelHandlerId());
 
         if (notifReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
@@ -1317,21 +1271,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         presenter.destroyWebSocket();
     }
 
-    private String getChannelHandlerId() {
-        if (viewModel != null && viewModel.getChannelUuid() != null) {
-            return viewModel.getChannelUuid() + ConnectionManager.CHANNEL_HANDLER_ID;
-        } else {
-            return ConnectionManager.CHANNEL_HANDLER_ID;
-        }
-    }
-
-    private String getConnectionHandlerId() {
-        if (viewModel != null && viewModel.getChannelUuid() != null) {
-            return viewModel.getChannelUuid() + ConnectionManager.CONNECTION_HANDLER_ID;
-        } else {
-            return ConnectionManager.CONNECTION_HANDLER_ID;
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -1340,13 +1279,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             tooltipHandler.removeCallbacks(runnable);
         }
         presenter.detachView();
-        logoutChannel(mChannel);
-    }
-
-    @Override
-    public void logoutChannel(OpenChannel openChannel) {
-        this.mChannel = openChannel;
-        presenter.logoutChannel(mChannel);
     }
 
     private void kickIfIdleForTooLong() {
@@ -1386,19 +1318,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         dialog.show();
     }
 
+
     @Override
-    public void onSuccessEnterChannel(OpenChannel openChannel) {
+    public void onSuccessEnterChannel() {
         try {
-            hideLoading();
-            mChannel = openChannel;
-
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                    (GroupChatFragment.class.getSimpleName());
-            if (fragment != null) {
-                ((GroupChatFragment) fragment).setChannel(mChannel);
-                ((GroupChatFragment) fragment).refreshChat();
-            }
-
             setupViewPager();
             showFragment(initialFragment);
 
@@ -1416,64 +1339,61 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onSuccessEnterRefreshChannel(OpenChannel openChannel) {
-
-        hideLoading();
-        mChannel = openChannel;
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (GroupChatFragment.class.getSimpleName());
-        if (fragment != null) {
-            ((GroupChatFragment) fragment).setChannel(mChannel);
+    public void clearMessageEditText() {
+        if(currentFragmentIsChat()){
+            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                    (GroupChatFragment.class.getSimpleName())).clearMessageEditText();
         }
-
-        refreshTab();
-        setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-        setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-        tabAdapter.setActiveFragment(initialFragment);
-
-        if (currentFragmentIsChat()) {
-            refreshChat();
-        } else if (currentFragmentIsVote() && checkPollValid()) {
-            refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-        } else if (currentFragmentIsVote()) {
-            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-            showFragment(CHATROOM_FRAGMENT);
-        } else if (currentFragmentIsInfo()) {
-            populateChannelInfoFragment();
-        }
-    }
-
-    private void setChannelConnectionHandler() {
-        ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
-                ConnectionManager.ConnectionManagementHandler() {
-                    @Override
-                    public void onConnected(boolean reconnect) {
-                        if (viewModel != null && viewModel.getChannelInfoViewModel() != null
-                                && !isFirstTime) {
-                            presenter.refreshChannelInfo(viewModel.getChannelUuid());
-                        } else if (reconnect && viewModel != null) {
-                            presenter.getChannelInfo(viewModel.getChannelUuid());
-                        }
-                    }
-                });
     }
 
     @Override
+    public void afterSendMessage(PendingChatViewModel pendingChatViewModel, Exception errorSendIndicator) {
+        if(currentFragmentIsChat()){
+            ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+                    (GroupChatFragment.class.getSimpleName())).afterSendMessage(pendingChatViewModel, errorSendIndicator);
+        }
+    }
+
+//    public void onSuccessEnterRefreshChannel() {
+//
+//        hideLoading();
+//        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+//                (GroupChatFragment.class.getSimpleName());
+//        if (fragment != null) {
+//        }
+//
+//        refreshTab();
+//        setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+//        setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+//        tabAdapter.setActiveFragment(initialFragment);
+//
+//        if (currentFragmentIsChat()) {
+//
+//        } else if (currentFragmentIsVote() && checkPollValid()) {
+//            refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+//        } else if (currentFragmentIsVote()) {
+//            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
+//            showFragment(CHATROOM_FRAGMENT);
+//        } else if (currentFragmentIsInfo()) {
+//            populateChannelInfoFragment();
+//        }
+//    }
+
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
                 .RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-                        userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken()
-                        , userSession.getDeviceId(), userSession.getAccessToken());
+//                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
+//                        userSession.getName(), userSession.getProfilePicture(),
+//                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getGroupChatToken()
+//                        , userSession.getDeviceId(), userSession.getAccessToken());
+                presenter.connectWebSocket(userSession, viewModel.getChannelUuid(), viewModel.getChannelInfoViewModel().getGroupChatToken());
             }
         });
     }
 
-    @Override
     public void onUserBanned(String errorMessage) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.default_banned_title);
@@ -1502,7 +1422,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         dialog.show();
     }
 
-    @Override
     public void onChannelNotFound(String errorMessage) {
         hideLoading();
         setVisibilityHeader(View.VISIBLE);
@@ -1584,7 +1503,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
 
     @Override
-    public void onMessageReceived(Visitable map) {
+    public void onMessageReceived(Visitable map, boolean hideMessage) {
         if (map instanceof VoteAnnouncementViewModel) {
             VoteAnnouncementViewModel voteAnnouncementViewModel = ((VoteAnnouncementViewModel) map);
             handleVoteAnnouncement(voteAnnouncementViewModel, voteAnnouncementViewModel.getVoteType());
@@ -1604,7 +1523,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-                    (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
+                    (GroupChatFragment.class.getSimpleName())).onMessageReceived(map, hideMessage);
         }
     }
 
@@ -1641,7 +1560,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    @Override
     public void onMessageDeleted(long msgId) {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -1649,7 +1567,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    @Override
     public void onMessageUpdated(Visitable map) {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -1657,7 +1574,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    @Override
     public void onUserEntered(UserActionViewModel userActionViewModel, String participantCount) {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -1675,7 +1591,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    @Override
     public void onUserExited(UserActionViewModel userActionViewModel, String participantCount) {
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
@@ -1684,17 +1599,15 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    @Override
-    public void onUserBanned(User user) {
+    public void onUserBanned() {
         hideLoading();
-        if (user != null
-                && !TextUtils.isEmpty(user.getUserId())
-                && userSession.getUserId().equals(user.getUserId())) {
-            onUserBanned(getString(R.string.user_is_banned));
-        }
+//        if (user != null
+//                && !TextUtils.isEmpty(user.getUserId())
+//                && userSession.getUserId().equals(user.getUserId())) {
+//            onUserBanned(getString(R.string.user_is_banned));
+//        }
     }
 
-    @Override
     public void onChannelDeleted() {
         onChannelNotFound(getString(R.string.channel_has_been_deleted));
 
@@ -1935,6 +1848,19 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void testSendReply(PendingChatViewModel pendingChatViewModel) {
-        presenter.testSendReply(pendingChatViewModel, getChannelInfoViewModel().getChannelUrl(), userSession);
+        presenter.testSendReply(pendingChatViewModel);
+    }
+
+    public void saveStateFragment(Fragment fragment, String key) {
+        if(fragment!= null && fragment.isAdded()){
+            fragmentSavedStates.put(key,getSupportFragmentManager().saveFragmentInstanceState(fragment));
+        }
+    }
+
+    public void restoreStateFragment(Fragment fragment, String key) {
+        SavedState savedState = fragmentSavedStates.get(key);
+        if (!fragment.isAdded()) {
+            fragment.setInitialSavedState(savedState);
+        }
     }
 }

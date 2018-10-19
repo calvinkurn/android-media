@@ -22,8 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sendbird.android.OpenChannel;
-import com.sendbird.android.PreviousMessageListQuery;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -36,7 +34,6 @@ import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
-import com.tokopedia.groupchat.chatroom.domain.mapper.GroupChatMessagesMapper;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter;
@@ -59,6 +56,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
@@ -95,9 +93,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Inject
     GroupChatAnalytics analytics;
 
-    @Inject
-    GroupChatMessagesMapper groupChatMessagesMapper;
-
     private RecyclerView chatRecyclerView;
     private RecyclerView quickReplyRecyclerView;
     private BackEditText replyEditText;
@@ -112,8 +107,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private View sprintSaleIconLayout;
     private TextView sprintSaleText;
 
-    private OpenChannel mChannel;
-    private PreviousMessageListQuery mPrevMessageListQuery;
     private UserSession userSession;
 
     private Handler sprintSaleHandler;
@@ -214,10 +207,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (layoutManager.findLastVisibleItemPosition() == adapter.getItemCount() - 1
-                        && !adapter.isLoading()) {
-//                    presenter.loadPreviousMessages(mChannel, mPrevMessageListQuery);
-                }
 
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     resetNewMessageCounter();
@@ -316,7 +305,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
 
     private void goToLogin() {
-        ((GroupChatContract.View) getActivity()).logoutChannel(mChannel);
         startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
                 .getLoginIntent(getActivity()), REQUEST_LOGIN);
     }
@@ -334,8 +322,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getProfilePicture(),
                                         false);
                         ((GroupChatActivity)getActivity()).testSendReply(pendingChatViewModel);
-                        presenter.sendReply(pendingChatViewModel, mChannel);
-                        setSendButtonEnabled(false);
                     }
                 }
             });
@@ -352,18 +338,43 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void initData() {
         setSendButtonEnabled(false);
-        presenter.initMessageFirstTime(mChannel);
-        showLoading();
+        initView();
+    }
+
+    public void initView() {
+        try {
+            replyEditText.addTextChangedListener(replyTextWatcher);
+            scrollToBottom();
+
+            hideLoading();
+
+            if (getActivity() instanceof GroupChatContract.View) {
+                ((GroupChatContract.View) getActivity()).showInfoDialog();
+                autoAddSprintSaleAnnouncement(
+                        ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
+                        ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
+
+                setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
+                setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+                setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
+            }
+
+            if (getActivity() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
+                    .getGroupChatPointsViewModel() != null) {
+                autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
+            }
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void refreshChat() {
-        presenter.refreshDataAfterReconnect(mChannel);
     }
 
     private void setReplyTextHint() {
@@ -565,7 +576,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         userSession.getName(),
                         userSession.getProfilePicture(),
                         false);
-        presenter.sendQuickReply(pendingChatViewModel, mChannel);
+
+        ((GroupChatActivity)getActivity()).testSendReply(pendingChatViewModel);
     }
 
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {
@@ -620,19 +632,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         super.onDestroy();
     }
 
-    @Override
-    public void onSuccessGetPreviousMessage(List<Visitable> listChat) {
-
-        trackImpression(listChat);
-
-        try {
-            adapter.addListPrevious(listChat);
-            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void trackImpression(List<Visitable> listChat) {
         SprintSaleViewModel sprintSaleViewModel = ((GroupChatContract.View) getActivity())
                 .getSprintSaleViewModel();
@@ -642,46 +641,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 break;
             }
         }
-    }
-
-    @Override
-    public void onSuccessGetMessageFirstTime(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-        try {
-            this.mPrevMessageListQuery = previousMessageListQuery;
-//            adapter.setList(listChat);
-//            if (!listChat.isEmpty()) {
-//                adapter.setCursor(listChat.get(0));
-//            }
-//            adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-            setSendButtonEnabled(true);
-            replyEditText.addTextChangedListener(replyTextWatcher);
-            scrollToBottom();
-
-            hideLoading();
-
-            if (getActivity() instanceof GroupChatContract.View) {
-                ((GroupChatContract.View) getActivity()).setChannelHandler();
-                ((GroupChatContract.View) getActivity()).showInfoDialog();
-                autoAddSprintSaleAnnouncement(
-                        ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
-                        ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
-
-                setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-                setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
-                setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
-            }
-
-            if (getActivity() != null
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
-                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
-                    .getGroupChatPointsViewModel() != null) {
-                autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
-            }
-
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void scrollToBottom() {
@@ -698,82 +657,48 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onErrorSendMessage(PendingChatViewModel pendingChatViewModel, String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-        setSendButtonEnabled(true);
     }
 
     @Override
-    public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
+    public void onSuccessSendMessage(PendingChatViewModel pendingChatViewModel) {
+        ChatViewModel viewModel = new ChatViewModel(
+                pendingChatViewModel.getMessage(),
+                System.currentTimeMillis(),
+                System.currentTimeMillis(),
+                "",
+                userSession.getUserId(),
+                userSession.getName(),
+                userSession.getProfilePicture(),
+                false,
+                false);
         adapter.addReply(viewModel);
         adapter.notifyDataSetChanged();
-        replyEditText.setText("");
-        quickReplyRecyclerView.setVisibility(View.GONE);
+        ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                .getChannelInfoViewModel();
+        if(channelInfoViewModel != null){
+            channelInfoViewModel.setQuickRepliesViewModel(null);
+        }
+        setQuickReply(null);
         scrollToBottom();
-        setSendButtonEnabled(true);
     }
 
-    @Override
-    public void onSuccessSendQuickReply(PendingChatViewModel pendingChatViewModel, ChatViewModel viewModel) {
-        onSuccessSendMessage(pendingChatViewModel, viewModel);
-        quickReplyRecyclerView.setVisibility(View.GONE);
-    }
 
-    @Override
-    public void onErrorGetMessage(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
-    public void onErrorGetMessageFirstTime(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                initData();
-            }
-        });
-    }
-
-    @Override
-    public void showLoadingPreviousList() {
-        adapter.showLoadingPrevious();
-    }
-
-    @Override
-    public void dismissLoadingPreviousList() {
-        adapter.dismissLoadingPrevious();
-    }
-
-    @Override
-    public void showReconnectingMessage() {
-        showLoading();
-    }
-
-    @Override
-    public void dismissReconnectingMessage() {
-        hideLoading();
-    }
-
-    @Override
-    public void onSuccessRefreshReconnect(List<Visitable> listChat, PreviousMessageListQuery previousMessageListQuery) {
-        adapter.replaceData(listChat);
-        this.mPrevMessageListQuery = previousMessageListQuery;
-        adapter.setCanLoadMore(mPrevMessageListQuery.hasMore());
-        scrollToBottom();
-
-        if (getActivity() instanceof GroupChatActivity) {
-            ((GroupChatActivity) getActivity()).setChannelHandler();
-            autoAddSprintSaleAnnouncement(
-                    ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
-                    ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
-
-            setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
-            setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+    public void afterSendMessage(PendingChatViewModel pendingChatViewModel, Exception errorSendIndicator) {
+        if (errorSendIndicator == null){
+            onSuccessSendMessage(pendingChatViewModel);
+        } else if (errorSendIndicator != null && !(errorSendIndicator instanceof WebSocketException)){
+            onErrorSendMessage(pendingChatViewModel, errorSendIndicator.getMessage());
         }
 
-        setSendButtonEnabled(true);
+        if(errorSendIndicator != null && errorSendIndicator instanceof WebSocketException && getActivity()!=null && getActivity() instanceof GroupChatActivity){
+            ((GroupChatActivity) getActivity()).setSnackBarErrorLoading();
+        }
 
+        clearMessageEditText();
+        setSendButtonEnabled(true);
     }
 
-    public void onMessageReceived(Visitable messageItem) {
+    public void onMessageReceived(Visitable messageItem, boolean hideMessage) {
         if (messageItem instanceof SprintSaleAnnouncementViewModel) {
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
@@ -790,7 +715,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem);
         }
 
-        if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
+        if (!hideMessage) {
             addIncomingMessage(messageItem);
         }
 
@@ -896,10 +821,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             ((GroupChatActivity) getActivity()).moveToVoteFragment();
         }
         analytics.eventClickVoteComponent(GroupChatAnalytics.COMPONENT_VOTE, name);
-    }
-
-    public void setChannel(OpenChannel mChannel) {
-        this.mChannel = mChannel;
     }
 
     private void setForLoginUser(boolean isLoggedIn) {
@@ -1053,5 +974,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
+    }
+
+    public void clearMessageEditText() {
+        replyEditText.setText("");
     }
 }

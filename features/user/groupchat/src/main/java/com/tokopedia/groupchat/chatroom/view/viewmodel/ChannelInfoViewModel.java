@@ -29,7 +29,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String adsId;
     private String adsName;
     private String bannerName;
-    private String sendBirdToken;
+    private String groupChatToken;
     private String adminName;
     private String image;
     private String adminPicture;
@@ -62,7 +62,7 @@ public class ChannelInfoViewModel implements Parcelable {
     public ChannelInfoViewModel(String channelId, String title, String channelUrl, String bannerUrl,
                                 String blurredBannerUrl,
                                 String adsImageUrl, String adsLink, String adsName, String adsId,
-                                String bannerName, String sendBirdToken, String adminName, String image,
+                                String bannerName, String groupChatToken, String adminName, String image,
                                 String adminPicture, String description, String totalView,
                                 List<ChannelPartnerViewModel> channelPartnerViewModels,
                                 @Nullable VoteInfoViewModel voteInfoViewModel,
@@ -82,7 +82,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.adsName = adsName;
         this.adsId = adsId;
         this.bannerName = bannerName;
-        this.sendBirdToken = sendBirdToken;
+        this.groupChatToken = groupChatToken;
         this.adminName = adminName;
         this.image = image;
         this.adminPicture = adminPicture;
@@ -112,7 +112,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeString(this.adsId);
         dest.writeString(this.adsName);
         dest.writeString(this.bannerName);
-        dest.writeString(this.sendBirdToken);
+        dest.writeString(this.groupChatToken);
         dest.writeString(this.adminName);
         dest.writeString(this.image);
         dest.writeString(this.adminPicture);
@@ -142,7 +142,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.adsId = in.readString();
         this.adsName = in.readString();
         this.bannerName = in.readString();
-        this.sendBirdToken = in.readString();
+        this.groupChatToken = in.readString();
         this.adminName = in.readString();
         this.image = in.readString();
         this.adminPicture = in.readString();
@@ -213,8 +213,8 @@ public class ChannelInfoViewModel implements Parcelable {
         return bannerName;
     }
 
-    public String getSendBirdToken() {
-        return sendBirdToken;
+    public String getGroupChatToken() {
+        return groupChatToken;
     }
 
     public String getAdminName() {

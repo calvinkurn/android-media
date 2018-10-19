@@ -6,8 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 
 import java.util.List;
 
@@ -61,9 +59,9 @@ public class Channel {
     @SerializedName("flashsale")
     @Expose
     private Flashsale flashsale;
-    @SerializedName("sendbird_access_token")
+    @SerializedName("gc_token")
     @Expose
-    private String sendBirdToken;
+    private String gcToken;
     @SerializedName("banner_url")
     @Expose
     private String bannerBlurredUrl;
@@ -232,8 +230,8 @@ public class Channel {
         return bannerName;
     }
 
-    public String getSendBirdToken() {
-        return sendBirdToken;
+    public String getGcToken() {
+        return gcToken;
     }
 
     public Flashsale getFlashsale() {

@@ -37,7 +37,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
             getView().showHasVoted();
         } else {
             sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
-                    element.getOptionId()), new Subscriber<VoteStatisticDomainModel>() {
+                    element.getOptionId(),""), new Subscriber<VoteStatisticDomainModel>() {
                 @Override
                 public void onCompleted() {
 

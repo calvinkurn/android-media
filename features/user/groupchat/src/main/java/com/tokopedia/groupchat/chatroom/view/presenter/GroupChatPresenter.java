@@ -4,27 +4,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.sendbird.android.OpenChannel;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
-import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
-import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
+import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -42,28 +34,29 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         GroupChatContract.Presenter {
 
     private final GetChannelInfoUseCase getChannelInfoUseCase;
-    private final LoginGroupChatUseCase loginGroupChatUseCase;
-    private final LogoutGroupChatUseCase logoutGroupChatUseCase;
-    private final ChannelHandlerUseCase channelHandlerUseCase;
     private CompositeSubscription mSubscription;
+    private String urlWebSocket;
 
     @Inject
-    public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
-                              GetChannelInfoUseCase getChannelInfoUseCase,
-                              LogoutGroupChatUseCase logoutGroupChatUseCase,
-                              ChannelHandlerUseCase channelHandlerUseCase) {
+    public GroupChatPresenter(
+                              GetChannelInfoUseCase getChannelInfoUseCase) {
         this.getChannelInfoUseCase = getChannelInfoUseCase;
-        this.loginGroupChatUseCase = loginGroupChatUseCase;
-        this.logoutGroupChatUseCase = logoutGroupChatUseCase;
-        this.channelHandlerUseCase = channelHandlerUseCase;
     }
 
-    @Override
-    public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken, String deviceId, String accessToken) {
-        loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
-                userAvatar, loginGroupChatListener, sendBirdToken);
-        connect(userId, deviceId, accessToken, channelUrl);
+    public void connectWebSocket(UserSession userSession, String channelUrl, String groupChatToken) {
+        setUrlWebSocket(channelUrl);
+        String magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
+        magicString = "ws://172.31.4.23:8000/";
+
+        magicString = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
+        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=").concat(groupChatToken);
+        setUrlWebSocket(magicString);
+        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), urlWebSocket);
+    }
+
+    private void setUrlWebSocket(String channelUrl) {
+        urlWebSocket = channelUrl;
     }
 
     @Override
@@ -92,11 +85,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 }
             }
         });
-    }
-
-    @Override
-    public void logoutChannel(OpenChannel mChannel) {
-        logoutGroupChatUseCase.execute(mChannel);
     }
 
     @Override
@@ -140,103 +128,31 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         destroyWebSocket();
     }
 
-    public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
-        channelHandlerUseCase.execute(channelUrl, channelHandlerId, listener);
-    }
-
-    public void enterChannelAfterRefresh(String userId, String channelUrl, String userName, String
-            userAvatar, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken, String deviceId, String accessToken) {
-        loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
-                userAvatar, new LoginGroupChatUseCase.LoginGroupChatListener() {
-                    @Override
-                    public void onSuccessEnterChannel(OpenChannel openChannel) {
-                        getView().onSuccessEnterRefreshChannel(openChannel);
-
-                    }
-
-                    @Override
-                    public void onErrorEnterChannel(String errorMessage) {
-                        loginGroupChatListener.onErrorEnterChannel(errorMessage);
-                    }
-
-                    @Override
-                    public void onUserBanned(String errorMessage) {
-
-                    }
-
-                    @Override
-                    public void onChannelNotFound(String sendBirdErrorMessage) {
-
-                    }
-                }, sendBirdToken);
-        connect(userId, deviceId, accessToken, channelUrl);
-    }
 
     private void connect(String userId, String deviceId, String accessToken, String channelUrl) {
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
         }
         getView().setSnackBarErrorLoading();
-        String magicString = "wss://chat.tokopedia.com" +
-                "/connect" +
-                "?os_type=1" +
-                "&device_id=" + deviceId +
-                "&user_id=" + userId;
 
-        magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
-        magicString = "ws://172.31.4.23:8000/ws/groupchat?channel_id=96";
-
-        magicString = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
-        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=123");
-
-        boolean showLog = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
-        String finalMagicString = magicString;
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
-                if(showLog){
-                    ChatViewModel dummy = new ChatViewModel(
-                            "onOpened ".concat(finalMagicString),
-                            System.currentTimeMillis(),
-                            System.currentTimeMillis(),
-                            String.valueOf(1231),
-                            "123321",
-                            "logger open",
-                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                            false,
-                            false
-                    );
-                    getView().onMessageReceived(dummy);
-                }
+                showDummy("onOpened ".concat(channelUrl), "logger open");
                 getView().onOpenWebSocket();
                 Log.d("RxWebSocket Presenter", " on WebSocket open");
             }
 
             @Override
             protected void onMessage(@NonNull String text) {
-                if(showLog){
-                    ChatViewModel dummy = new ChatViewModel(
-                            text,
-                            System.currentTimeMillis(),
-                            System.currentTimeMillis(),
-                            String.valueOf(1231),
-                            "123321",
-                            "logger message",
-                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                            false,
-                            false
-                    );
-                    getView().onMessageReceived(dummy);
-                }
+                showDummy(text, "logger message");
                 Log.d("RxWebSocket Presenter", text);
             }
 
             @Override
-            protected void onMessage(@NonNull Visitable item) {
+            protected void onMessage(@NonNull Visitable item, boolean hideMessage) {
                 Log.d("RxWebSocket Presenter", "item");
-                getView().onMessageReceived(item);
+                getView().onMessageReceived(item, hideMessage);
             }
 
             @Override
@@ -247,41 +163,14 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             @Override
             protected void onReconnect() {
                 Log.d("RxWebSocket Presenter", "onReconnect");
-                if(showLog){
-                    ChatViewModel dummy = new ChatViewModel(
-                            "reconnecting ",
-                            System.currentTimeMillis(),
-                            System.currentTimeMillis(),
-                            String.valueOf(1231),
-                            "123321",
-                            "logger reconnect",
-                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                            false,
-                            false
-                    );
-                    getView().onMessageReceived(dummy);
-                }
-
+                showDummy("reconnecting", "logger reconnect");
                 getView().setSnackBarErrorLoading();
             }
 
             @Override
             protected void onClose() {
                 Log.d("RxWebSocket Presenter", "onClose");
-                if(showLog){
-                    ChatViewModel dummy = new ChatViewModel(
-                            "onClose",
-                            System.currentTimeMillis(),
-                            System.currentTimeMillis(),
-                            String.valueOf(1231),
-                            "123321",
-                            "logger close",
-                            "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                            false,
-                            false
-                    );
-                    getView().onMessageReceived(dummy);
-                }
+                showDummy("onClose", "logger close");
                 destroyWebSocket();
                 connect(userId, deviceId, accessToken, channelUrl);
             }
@@ -293,8 +182,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 getView().setSnackBarRetry();
             }
         };
-        Subscription subscription = RxWebSocket.get(magicString, accessToken)
-                .subscribe(subscriber);
+        Subscription subscription = RxWebSocket.get(channelUrl, accessToken).subscribe(subscriber);
 
 
         if (subscriber != null) {
@@ -302,64 +190,41 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         }
     }
 
-    public void testSendReply(PendingChatViewModel pendingChatViewModel, String channelUrl, UserSession userSession) {
-        String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        SimpleDateFormat date = new SimpleDateFormat(START_TIME_FORMAT, Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String startTime = date.format(Calendar.getInstance().getTime());
-
-        String magicString = "wss://chat.tokopedia.com" +
-                "/connect" +
-                "?os_type=1" +
-                "&device_id=" + userSession.getDeviceId() +
-                "&user_id=" + userSession.getUserId();
-        magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
-        magicString = "ws://172.31.4.23:8000";
-        magicString = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
-        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=123");
-        boolean showLog = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
-
-
+    public void testSendReply(PendingChatViewModel pendingChatViewModel) {
+        Exception errorSendIndicator = null;
         try {
-            RxWebSocket.send(magicString, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
-        }catch (Exception e){
-            if(showLog){
-                ChatViewModel dummy = new ChatViewModel(
-                        e.toString(),
-                        System.currentTimeMillis(),
-                        System.currentTimeMillis(),
-                        String.valueOf(1231),
-                        "123321",
-                        "error logger send",
-                        "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                        false,
-                        false
-                );
-                getView().onMessageReceived(dummy);
-            }
+            RxWebSocket.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+        } catch (WebSocketException e) {
+            errorSendIndicator = e;
+            showDummy(e.toString(), "error logger send");
         }
 
-        if(showLog){
-            ChatViewModel dummy = new ChatViewModel(
-                    pendingChatViewModel.getMessage(),
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis(),
-                    String.valueOf(1231),
-                    "123321",
-                    "logger send",
-                    "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
-                    false,
-                    false
-            );
-            getView().onMessageReceived(dummy);
-        }
+        getView().afterSendMessage(pendingChatViewModel, errorSendIndicator);
+        showDummy(pendingChatViewModel.getMessage(), "logger send");
     }
 
     public void destroyWebSocket() {
         if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
+        }
+    }
+
+    private void showDummy(String message, String senderName) {
+        boolean showLog = getView().getContext().getSharedPreferences
+                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
+        if (showLog) {
+            ChatViewModel dummy = new ChatViewModel(
+                    message,
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis(),
+                    String.valueOf(1231),
+                    "123321",
+                    senderName,
+                    "https://vignette.wikia.nocookie.net/supersentaibattlediceo/images/7/7a/Engine-O_G12.jpg/revision/latest?cb=20120718165720&format=original",
+                    false,
+                    false
+            );
+            getView().onMessageReceived(dummy, true);
         }
     }
 }

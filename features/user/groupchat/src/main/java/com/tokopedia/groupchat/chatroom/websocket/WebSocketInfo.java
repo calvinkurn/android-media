@@ -426,4 +426,32 @@ public class WebSocketInfo {
     public Visitable getItem() {
         return item;
     }
+
+    public boolean shouldHideMessage(Visitable mappedMessage) {
+        if (mappedMessage instanceof VoteAnnouncementViewModel
+                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals(
+                VoteAnnouncementViewModel.POLLING_CANCEL)) {
+            return true;
+        } else if (mappedMessage instanceof VoteAnnouncementViewModel
+                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
+                (VoteAnnouncementViewModel.POLLING_UPDATE)) {
+            return true;
+        } else if (mappedMessage instanceof VibrateViewModel) {
+            return true;
+        } else if (mappedMessage instanceof SprintSaleAnnouncementViewModel
+                && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equals
+                (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
+            return true;
+        } else if (mappedMessage instanceof PinnedMessageViewModel) {
+            return true;
+        } else if (mappedMessage instanceof AdsViewModel) {
+            return true;
+        } else if (mappedMessage instanceof GroupChatQuickReplyViewModel) {
+            return true;
+        } else if (mappedMessage instanceof VideoViewModel) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
