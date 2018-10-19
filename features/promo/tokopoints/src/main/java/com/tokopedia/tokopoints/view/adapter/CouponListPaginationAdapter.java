@@ -264,7 +264,7 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
         graphqlUseCase.clearRequest();
         //Adding request for main query
         Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1); // start with first page
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
