@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.BaseChatViewHolder;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
@@ -34,18 +36,36 @@ public class ImageDualAnnouncementViewHolder extends BaseChatViewHolder<ImageDua
     public void bind(ImageDualAnnouncementViewModel viewModel) {
         super.bind(viewModel);
 
-        ImageHandler.loadImageChat(top, viewModel.getImageUrlTop(),new ChatGlideImageRequestListener());
+        ImageHandler.loadImageChat(top, viewModel.getImageUrlTop(), new ChatGlideImageRequestListener());
         top.setOnClickListener((View v) -> {
+            TrackingUtils.sendGTMEvent(
+                    new EventTracking(
+                            "clickInboxChat",
+                            "inbox-chat",
+                            "click on thumbnail",
+                            viewModel.getBlastId() + " - " + viewModel.getAttachmentId()
+                    ).getEvent()
+            );
             if (!TextUtils.isEmpty(viewModel.getRedirectUrlTop())) {
                 viewListener.onGoToWebView(viewModel.getRedirectUrlTop(),
                         viewModel.getAttachmentId());
-            } });
+            }
+        });
         ImageHandler.loadImageChat(bottom, viewModel.getImageUrlBottom(), new ChatGlideImageRequestListener());
         bottom.setOnClickListener((View v) -> {
+            TrackingUtils.sendGTMEvent(
+                    new EventTracking(
+                            "clickInboxChat",
+                            "inbox-chat",
+                            "click on thumbnail",
+                            viewModel.getBlastId() + " - " + viewModel.getAttachmentId()
+                    ).getEvent()
+            );
             if (!TextUtils.isEmpty(viewModel.getRedirectUrlBottom())) {
                 viewListener.onGoToWebView(viewModel.getRedirectUrlBottom(),
                         viewModel.getAttachmentId());
-            } });
+            }
+        });
     }
 
     @Override
