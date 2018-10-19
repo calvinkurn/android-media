@@ -50,7 +50,7 @@ class FlightSearchCombinedDataDbSourceTest {
 
         val testSubscriber: TestSubscriber<List<FlightComboTable>> = TestSubscriber()
 
-        flightSearchCombinedDataDbSource.getSearchReturnCombined("1").subscribe(testSubscriber)
+        flightSearchCombinedDataDbSource.getSearchReturnCombined("2").subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(1))
         assertThat(testSubscriber.onNextEvents[0][0].returnJourneyId, `is`("2"))
