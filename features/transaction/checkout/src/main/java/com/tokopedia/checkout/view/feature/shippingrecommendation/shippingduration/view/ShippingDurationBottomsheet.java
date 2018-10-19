@@ -221,16 +221,26 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                           int cartPosition, String serviceName, boolean hasCourierPromo) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
-        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-            if (shippingCourierViewModel.getProductData().getError() != null &&
-                    shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
-                    shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                    shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+        if (isToogleYearEndPromotionOn()) {
+            if (shippingCourierViewModels.size() > 0 && shippingCourierViewModels.get(0).getServiceData().getError() != null &&
+                    shippingCourierViewModels.get(0).getProductData().getError().getErrorMessage() != null &&
+                    shippingCourierViewModels.get(0).getProductData().getError().getErrorId() != null &&
+                    shippingCourierViewModels.get(0).getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 flagNeedToSetPinpoint = true;
-                selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
-                shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
-                        shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                selectedServiceId = shippingCourierViewModels.get(0).getServiceData().getServiceId();
+            }
+        } else {
+            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+                shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
+                if (shippingCourierViewModel.getProductData().getError() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                    flagNeedToSetPinpoint = true;
+                    selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
+                    shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
+                            shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                }
             }
         }
         if (shippingDurationBottomsheetListener != null) {
