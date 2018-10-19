@@ -20,8 +20,8 @@ public class EditPostUseCase extends SubmitPostUseCase {
 
     @Inject
     EditPostUseCase(@ApplicationContext Context context,
-                           UploadMultipleImageUseCase uploadMultipleImageUseCase,
-                           GraphqlUseCase graphqlUseCase) {
+                    UploadMultipleImageUseCase uploadMultipleImageUseCase,
+                    GraphqlUseCase graphqlUseCase) {
         super(context, uploadMultipleImageUseCase, graphqlUseCase);
     }
 
