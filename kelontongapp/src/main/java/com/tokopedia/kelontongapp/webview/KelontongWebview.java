@@ -9,9 +9,6 @@ import android.webkit.WebView;
  */
 public class KelontongWebview extends WebView {
 
-    private static final String PARAM_URL = "url";
-    private static final String FORMAT_UTF_8 = "UTF-8";
-
     public KelontongWebview(Context context) {
         super(context);
     }
