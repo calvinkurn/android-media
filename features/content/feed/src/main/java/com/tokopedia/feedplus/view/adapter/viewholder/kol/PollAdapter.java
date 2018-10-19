@@ -3,7 +3,6 @@ package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
@@ -108,45 +105,18 @@ public class PollAdapter extends RecyclerView.Adapter<PollAdapter.ViewHolder> {
                     }
                 });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String trackingPromoCode;
-                if (pollViewModel.isVoted()) {
-                    viewListener.onGoToLink(element.getRedirectLink());
-                    trackingPromoCode = pollViewModel.getKolProfileUrl();
-                } else {
-                    viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
-                    trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
-                }
-                doEnhancedTracking(element, trackingPromoCode);
+        holder.itemView.setOnClickListener(view -> {
+            String trackingPromoCode;
+            if (pollViewModel.isVoted()) {
+                viewListener.onGoToLink(element.getRedirectLink());
+                trackingPromoCode = pollViewModel.getKolProfileUrl();
+            } else {
+                viewListener.onVoteOptionClicked(rowNumber, pollViewModel.getPollId(), element);
+                trackingPromoCode = FeedEnhancedTracking.Promotion.TRACKING_EMPTY;
             }
+
+            viewListener.trackEEPoll(element, trackingPromoCode, rowNumber, pollViewModel);
         });
-    }
-
-    private void doEnhancedTracking(PollOptionViewModel element,
-                                    String trackingPromoCode) {
-        UserSession userSession = viewListener.getUserSession();
-        int loginId = Integer.valueOf(
-                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
-        );
-
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(element.getOptionId()),
-                FeedEnhancedTracking.Promotion.createContentNameVote(),
-                element.getOption(),
-                rowNumber,
-                pollViewModel.getReview(),
-                Integer.valueOf(pollViewModel.getPollId()),
-                trackingPromoCode
-        ));
-        TrackingUtils.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(
-                        list,
-                        loginId
-                )
-        );
     }
 
     @Override
