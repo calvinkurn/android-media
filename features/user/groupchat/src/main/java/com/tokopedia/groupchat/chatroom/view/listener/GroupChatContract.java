@@ -57,8 +57,6 @@ public interface GroupChatContract {
 
         void vibratePhone();
 
-        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
-
         String getAttributionTracking(String attributePartnerLogo);
 
         void removeGroupChatPoints();
@@ -93,7 +91,5 @@ public interface GroupChatContract {
         void getChannelInfo(String channelUuid);
 
         void getChannelInfo(String channelUuid, boolean reInit);
-
-        void refreshChannelInfo(String channelUuid);
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.groupchat.common.network.ErrorNetworkException;
 import com.tokopedia.vote.network.VoteErrorException;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -128,9 +129,13 @@ public class GroupChatErrorHandler {
                 && !TextUtils.isEmpty(e.getMessage())) {
             return formattedString(e.getMessage(),
                     GroupChatErrorCode.WS_ERROR, withCode);
+        } else if (e instanceof ConnectException){
+            return formattedString(context.getString(R.string.msg_no_connection_trouble)
+                    , getErrorCode(e), withCode);
         } else {
             return formattedString(ErrorHandler.getErrorMessage(context, e), getErrorCode(e),
                     withCode);
+
         }
     }
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
@@ -60,34 +61,6 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     @Override
-    public void refreshChannelInfo(String channelUuid) {
-        getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid, true), new Subscriber<ChannelInfoViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null) {
-                    getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
-                            getView().getContext(), e, false
-                    ));
-                }
-            }
-
-            @Override
-            public void onNext(ChannelInfoViewModel channelInfoViewModel) {
-                if (getView() != null && channelInfoViewModel.isFreeze()) {
-                    getView().onChannelFrozen();
-                } else {
-                    getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
-                }
-            }
-        });
-    }
-
-    @Override
     public void getChannelInfo(String channelUuid) {
         getChannelInfo(channelUuid, false);
     }
@@ -104,9 +77,13 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     @Override
                     public void onError(Throwable e) {
                         if (getView() != null) {
-                            getView().onErrorGetChannelInfo(GroupChatErrorHandler.getErrorMessage(
-                                    getView().getContext(), e, false
-                            ));
+                            String errorMessage = GroupChatErrorHandler.getErrorMessage(getView().getContext(), e, false);
+                            String defaultMessage = getView().getContext().getString(R.string.default_request_error_unknown);
+                            if(errorMessage.equals(defaultMessage)) {
+                                getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel);
+                            }else {
+                                getView().onErrorGetChannelInfo(errorMessage);
+                            }
                         }
                     }
 

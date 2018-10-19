@@ -1194,12 +1194,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         analytics.sendScreen(this, getScreenName());
     }
 
-    @Override
-    public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
-        setChannelInfoView(channelInfoViewModel);
-        presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getGroupChatToken());
-    }
-
     private void refreshTab() {
         tabAdapter.replace(createListFragment());
     }
