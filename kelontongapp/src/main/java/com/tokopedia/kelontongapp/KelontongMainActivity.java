@@ -64,7 +64,6 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
         webView.setWebViewClient(new KelontongWebviewClient());
-        webView.getSettings().setUserAgentString(String.format("%s-%s %s", ANDROID, BuildConfig.VERSION_NAME, MOBILE));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
@@ -73,6 +72,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         }
 
         String userAgent = System.getProperty("http.agent");
+        userAgent += String.format(" %s-%s %s", ANDROID, BuildConfig.VERSION_NAME, MOBILE);
         webView.getSettings().setUserAgentString(userAgent);
 
         String fcmToken = Preference.getFcmToken(this);

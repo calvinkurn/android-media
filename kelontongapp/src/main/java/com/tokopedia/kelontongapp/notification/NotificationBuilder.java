@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.kelontongapp.KelontongConstant;
 import com.tokopedia.kelontongapp.KelontongMainActivity;
+import com.tokopedia.kelontongapp.KelontongMainApplication;
 import com.tokopedia.kelontongapp.R;
 
 /**
@@ -32,6 +33,7 @@ public class NotificationBuilder {
         builder.setContentTitle(TextUtils.isEmpty(notificationModel.getTitle()) ? context.getResources().getString(R.string.title_general_push_notification) : notificationModel.getTitle());
         builder.setContentText(notificationModel.getDesc());
         builder.setSmallIcon(setIcon());
+        builder.setChannelId(KelontongMainApplication.NOTIFICATION_CHANNEL_ID);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), setBigIcon()));
         if (allowGroup())
             builder.setGroup(KelontongConstant.NotificationConstant.GROUP_GENERAL);

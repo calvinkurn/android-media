@@ -18,9 +18,7 @@ public class KelontongFirebaseMessagingService extends FirebaseMessagingService 
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
-
         Log.d("FCM ", data.toString());
-
         NotificationFactory.show(this, data);
     }
 

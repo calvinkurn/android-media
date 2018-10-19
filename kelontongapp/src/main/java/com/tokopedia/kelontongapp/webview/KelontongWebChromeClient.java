@@ -78,7 +78,6 @@ public class KelontongWebChromeClient extends WebChromeClient {
     public void showFileChooser(ValueCallback<String[]> filePathCallback,
                                 String acceptType, boolean paramBoolean){
         // TODO Auto-generated method stub
-//        callbackBeforeL = uploadMsg;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType("*/*");
@@ -87,7 +86,6 @@ public class KelontongWebChromeClient extends WebChromeClient {
 
     public void showFileChooser(ValueCallback<String[]> uploadFileCallback,
                                 FileChooserParams fileChooserParams) {
-//        callbackBeforeL = uploadMsg;
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType("*/*");
