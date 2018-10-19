@@ -22,7 +22,7 @@
     <string name="voucher_use_in_cart">Voucher otomatis diterapkan pada keranjang</string>
     <string name="no_voucher">Voucher tidak tersedia atau habis</string>
     <string name="copy_to_clipboard">Salin</string>
-    <string name="title_copied">Kode Promo berhasil disalin</string>
+    <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="copy_voucher_code">Salin Kode Voucher</string>
 
 </resources>

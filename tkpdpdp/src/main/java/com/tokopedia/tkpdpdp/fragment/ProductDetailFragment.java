@@ -483,7 +483,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             merchantVoucherViewModel.getVoucherId());
                 }*/
                 //TOGGLE_MVC_OFF
-                onPromoWidgetCopied();
+                if (getActivity()!= null) {
+                    ToasterNormal.showClose(getActivity(), getString(R.string.title_voucher_code_copied));
+                }
             }
 
             @Override
@@ -1716,9 +1718,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoWidgetCopied() {
-        if (getActivity()!= null) {
-            ToasterNormal.showClose(getActivity(), getString(R.string.title_copied));
-        }
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, getActivity().getString(R.string.title_copied),
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.setActionTextColor(Color.WHITE);
+        snackbar.show();
     }
 
     @Override

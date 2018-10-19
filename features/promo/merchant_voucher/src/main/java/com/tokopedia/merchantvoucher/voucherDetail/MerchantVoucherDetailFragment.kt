@@ -109,7 +109,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
 
     private fun showCopiedToast() {
         activity?.run {
-            ToasterNormal.showClose(this, getString(R.string.title_copied))
+            ToasterNormal.showClose(this, getString(R.string.title_voucher_code_copied))
         }
     }
 
@@ -183,13 +183,19 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 !presenter.isMyShop(voucherShopId)) {
             vgVoucherStatus.visibility = View.GONE
             btnContainer.visibility = View.VISIBLE
+        } else if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE){
+            //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+            /*vgVoucherStatus.visibility = View.VISIBLE
+            tvSeeCart.visibility = View.VISIBLE
+            tvVoucherStatus.text = merchantVoucherViewModel.getStatusString(context!!)
+            btnContainer.visibility = View.GONE*/
+
+            //TOGGLE_MVC_OFF
+            vgVoucherStatus.visibility = View.GONE
+            btnContainer.visibility = View.VISIBLE
         } else {
             vgVoucherStatus.visibility = View.VISIBLE
-            if (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) {
-                tvSeeCart.visibility = View.VISIBLE
-            } else {
-                tvSeeCart.visibility = View.GONE
-            }
+            tvSeeCart.visibility = View.GONE
             tvVoucherStatus.text = merchantVoucherViewModel.getStatusString(context!!)
             btnContainer.visibility = View.GONE
         }

@@ -206,7 +206,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
     private fun showCopiedToast() {
         activity?.run {
-            ToasterNormal.showClose(this, getString(R.string.title_copied))
+            ToasterNormal.showClose(this, getString(R.string.title_voucher_code_copied))
         }
     }
 

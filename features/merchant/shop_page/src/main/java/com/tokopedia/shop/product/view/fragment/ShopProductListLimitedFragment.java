@@ -872,12 +872,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     merchantVoucherViewModel.getVoucherId());
         }*/
         //TOGGLE_MVC_OFF
-        onPromoWidgetCopied();
-    }
-
-    public void onPromoWidgetCopied() {
         if (getActivity()!= null) {
-            ToasterNormal.showClose(getActivity(), getString(R.string.title_copied));
+            ToasterNormal.showClose(getActivity(), getString(R.string.title_voucher_code_copied));
         }
     }
 
