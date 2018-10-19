@@ -37,7 +37,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -52,7 +51,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
     private static final int REQUEST_LOGIN = 83;
-
+    @Inject
+    CreatePostContract.Presenter presenter;
+    @Inject
+    CreatePostPreference createPostPreference;
     private View mainView;
     private TextView title;
     private TextView seeExample;
@@ -63,15 +65,9 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private ButtonCompat doneBtn;
     private ButtonCompat addImageBtn;
     private View loadingView;
-
     private CreatePostViewModel viewModel;
     private PostImageAdapter adapter;
     private Guide guide;
-
-    @Inject
-    CreatePostContract.Presenter presenter;
-    @Inject
-    CreatePostPreference createPostPreference;
 
     public static CreatePostFragment createInstance(@NonNull Bundle bundle) {
         CreatePostFragment fragment = new CreatePostFragment();
@@ -297,25 +293,25 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 goToImagePicker();
             }
         });
-        deleteImageLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (tabLayout.getSelectedTabPosition() < viewModel.getFileImageList().size()) {
-                    viewModel.getFileImageList().remove(tabLayout.getSelectedTabPosition());
-                } else {
-                    viewModel.getUrlImageList().remove(
-                            tabLayout.getSelectedTabPosition()
-                                    - viewModel.getFileImageList().size()
-                    );
-                }
-                adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
-                adapter.notifyDataSetChanged();
+        deleteImageLayout.setVisibility(adapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+        deleteImageLayout.setOnClickListener(v -> {
+            if (tabLayout.getSelectedTabPosition() < viewModel.getFileImageList().size()) {
+                viewModel.getFileImageList().remove(tabLayout.getSelectedTabPosition());
+            } else {
+                viewModel.getUrlImageList().remove(
+                        tabLayout.getSelectedTabPosition()
+                                - viewModel.getFileImageList().size()
+                );
             }
+            adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
+            adapter.notifyDataSetChanged();
         });
+        setMain.setVisibility(adapter.getCount() > 0 ? View.INVISIBLE : View.VISIBLE);
         setMain.setOnClickListener(v -> {
             viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition());
             updateSetMainView();
         });
+        updateSetMainView();
     }
 
     private boolean shouldShowExample() {
