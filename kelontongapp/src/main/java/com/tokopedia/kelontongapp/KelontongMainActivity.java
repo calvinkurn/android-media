@@ -1,5 +1,6 @@
 package com.tokopedia.kelontongapp;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         webView = findViewById(R.id.webview);
         ProgressBar progressBar = findViewById(R.id.progress);
 
-        webViewClient = new KelontongWebChromeClient(progressBar);
+        webViewClient = new KelontongWebChromeClient(this, progressBar);
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
@@ -78,6 +79,14 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewClient != null) {
+            webViewClient.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
