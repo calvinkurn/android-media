@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +28,9 @@ import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -193,61 +196,66 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
     }
 
 
-    //    @Override
-//    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
-//        super.onViewAttachedToWindow(holder);
-//
-//        CouponValueEntity data = mItems.get(holder.getAdapterPosition());
-//        if (data == null) {
-//            return;
-//        }
-//
-//        if (!holder.isVisited) {
-//            Map<String, String> item = new HashMap<>();
-//            item.put("id", String.valueOf(data.getCatalogId()));
-//            item.put("name", data.getTitle());
-//            item.put("position", String.valueOf(holder.getAdapterPosition()));
-//            item.put("creative", data.getTitle());
-//            item.put("creative_url", data.getImageUrlMobile());
-//            item.put("promo_code", data.getCode());
-//
-//            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-//            promotions.put("promotions", Arrays.asList(item));
-//
-//            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
-//            promoView.put("promoView", promotions);
-//
-//            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
-//                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-//                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-//                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-//                    data.getTitle(), promoView);
-//
-//            holder.isVisited = true;
-//        }
-//    }
-//
-//    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
-//        Map<String, String> item = new HashMap<>();
-//        item.put("id", String.valueOf(data.getCatalogId()));
-//        item.put("name", data.getTitle());
-//        item.put("position", String.valueOf(position));
-//        item.put("creative", data.getTitle());
-//        item.put("creative_url", data.getImageUrlMobile());
-//        item.put("promo_code", data.getCode());
-//
-//        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-//        promotions.put("promotions", Arrays.asList(item));
-//
-//        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-//        promoClick.put("promoClick", promotions);
-//
-//        AnalyticsTrackerUtil.sendECommerceEvent(context,
-//                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-//                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-//                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-//                data.getTitle(), promoClick);
-//    }
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder vh) {
+        super.onViewAttachedToWindow(vh);
+
+        if (vh instanceof ViewHolder) {
+            ViewHolder holder = (ViewHolder) vh;
+
+            CouponValueEntity data = getItems().get(holder.getAdapterPosition());
+            if (data == null) {
+                return;
+            }
+
+            if (!holder.isVisited) {
+                Map<String, String> item = new HashMap<>();
+                item.put("id", String.valueOf(data.getCatalogId()));
+                item.put("name", data.getTitle());
+                item.put("position", String.valueOf(holder.getAdapterPosition()));
+                item.put("creative", data.getTitle());
+                item.put("creative_url", data.getImageUrlMobile());
+                item.put("promo_code", data.getCode());
+
+                Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+                promotions.put("promotions", Arrays.asList(item));
+
+                Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+                promoView.put("promoView", promotions);
+
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                        data.getTitle(), promoView);
+
+                holder.isVisited = true;
+            }
+        }
+    }
+
+    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getCatalogId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), promoClick);
+    }
+
     @Override
     public void loadMore(int pageNumber) {
         super.loadMore(pageNumber);

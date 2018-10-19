@@ -16,6 +16,7 @@ import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointSumCouponOuter;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
@@ -139,7 +140,12 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                 TokoPointPromosEntity.class,
                 variables);
         mGetTokoPointPromoUseCase.clearRequest();
+
         mGetTokoPointPromoUseCase.addRequest(graphqlRequest);
+
+        GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_sum_coupon),
+                TokoPointSumCouponOuter.class);
+        mGetTokoPointPromoUseCase.addRequest(sumTokenRequest);
         mGetTokoPointPromoUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -154,6 +160,13 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             @Override
             public void onNext(GraphqlResponse response) {
                 getView().onSuccessPromos(response.getData(TokoPointPromosEntity.class));
+
+                //Handling sum token
+                TokoPointSumCouponOuter couponOuter = response.getData(TokoPointSumCouponOuter.class);
+
+                if (couponOuter != null && couponOuter.getTokopointsSumCoupon() != null) {
+                    getView().showTokoPointCoupon(couponOuter.getTokopointsSumCoupon());
+                }
             }
         });
     }
