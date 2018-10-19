@@ -14,7 +14,7 @@
     <string name="discount">Diskon</string>
     <string name="free_ongkir">Gratis Ongkir</string>
     <string name="min_spend_x">*Min. Pembelian %1$s</string>
-    <string name="out_of_stock">Habis</string>
+    <string name="run_out">Habis</string>
     <string name="in_use">Diterapkan</string>
     <string name="no_min_spend" tools:ignore="ExtraTranslation">Tidak ada minimum pembelian</string>
     <string name="available">Tersedia</string>

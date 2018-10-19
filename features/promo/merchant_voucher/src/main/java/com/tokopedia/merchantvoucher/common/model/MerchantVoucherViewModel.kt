@@ -154,7 +154,7 @@ fun MerchantVoucherViewModel.getStatusString(context: Context): String {
     return when (status) {
         MerchantVoucherStatusTypeDef.TYPE_AVAILABLE -> context.getString(R.string.available)
         MerchantVoucherStatusTypeDef.TYPE_IN_USE -> context.getString(R.string.in_use)
-        MerchantVoucherStatusTypeDef.TYPE_OUT_OF_STOCK -> context.getString(R.string.out_of_stock)
+        MerchantVoucherStatusTypeDef.TYPE_RUN_OUT -> context.getString(R.string.run_out)
         else -> ""
     }
 }
