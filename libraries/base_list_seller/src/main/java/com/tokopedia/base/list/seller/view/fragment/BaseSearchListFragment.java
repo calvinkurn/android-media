@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author normansyahputa on 5/17/17.
  */
-
+@Deprecated
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);

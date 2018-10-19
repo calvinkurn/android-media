@@ -6,6 +6,7 @@ import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public class EmptyDataBinder extends BaseEmptyDataBinder {
 
     public EmptyDataBinder(DataBindAdapter dataBindAdapter) {

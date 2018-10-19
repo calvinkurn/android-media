@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
+@Deprecated
 public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
 

@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 5/17/17.
  */
-
+@Deprecated
 public abstract class BaseListFragment<P, T extends ItemType> extends BasePresenterFragment<P> implements
         BaseListViewListener<T>, BaseListAdapter.Callback<T> {
 

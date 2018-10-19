@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * Created by nathan on 6/23/17.
  */
-
+@Deprecated
 public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
 
     public abstract void bindObject(T t);

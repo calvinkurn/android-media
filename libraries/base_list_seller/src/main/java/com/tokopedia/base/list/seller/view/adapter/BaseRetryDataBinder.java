@@ -13,6 +13,7 @@ import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public class BaseRetryDataBinder extends RetryDataBinder {
 
     private int errorDrawableRes;

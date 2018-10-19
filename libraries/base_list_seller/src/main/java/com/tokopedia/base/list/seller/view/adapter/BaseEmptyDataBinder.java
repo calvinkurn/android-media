@@ -16,6 +16,7 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
 
     protected String emptyTitleText;

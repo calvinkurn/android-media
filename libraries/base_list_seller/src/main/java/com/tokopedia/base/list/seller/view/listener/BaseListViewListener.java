@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
+@Deprecated
 public interface BaseListViewListener<T> extends CustomerView {
 
     void onSearchLoaded(@NonNull List<T> list, int totalItem);

@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
+@Deprecated
 public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends BaseListAdapter<T> {
 
     protected HashSet<String> hashSet;
