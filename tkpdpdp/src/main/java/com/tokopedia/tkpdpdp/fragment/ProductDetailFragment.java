@@ -484,7 +484,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 }*/
                 //TOGGLE_MVC_OFF
                 if (getActivity()!= null) {
-                    ToasterNormal.showClose(getActivity(), getString(R.string.title_voucher_code_copied));
+                    showSnackBarClose(getActivity().getString(R.string.title_voucher_code_copied));
                 }
             }
 
@@ -1718,7 +1718,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onPromoWidgetCopied() {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, getActivity().getString(R.string.title_copied),
+        showSnackBarClose(getActivity().getString(R.string.title_copied));
+    }
+
+    public void showSnackBarClose(String stringToShow) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, stringToShow,
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
             @Override

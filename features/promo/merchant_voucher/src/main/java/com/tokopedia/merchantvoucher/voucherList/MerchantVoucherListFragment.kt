@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -201,12 +203,12 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
             presenter.useMerchantVoucher(merchantVoucherViewModel.voucherCode, merchantVoucherViewModel.voucherId)
         }*/
         //TOGGLE_MVC_OFF
-        showCopiedToast()
-    }
-
-    private fun showCopiedToast() {
-        activity?.run {
-            ToasterNormal.showClose(this, getString(R.string.title_voucher_code_copied))
+        activity?.run{
+            val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
+                    Snackbar.LENGTH_LONG)
+            snackbar.setAction(activity!!.getString(R.string.close), View.OnClickListener { snackbar.dismiss() })
+            snackbar.setActionTextColor(Color.WHITE)
+            snackbar.show()
         }
     }
 

@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -872,8 +874,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     merchantVoucherViewModel.getVoucherId());
         }*/
         //TOGGLE_MVC_OFF
+        showSnackBarClose(getString(R.string.title_voucher_code_copied));
+    }
+
+    public void showSnackBarClose(String stringToShow) {
         if (getActivity()!= null) {
-            ToasterNormal.showClose(getActivity(), getString(R.string.title_voucher_code_copied));
+            final Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), stringToShow,
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.setActionTextColor(Color.WHITE);
+            snackbar.show();
         }
     }
 
