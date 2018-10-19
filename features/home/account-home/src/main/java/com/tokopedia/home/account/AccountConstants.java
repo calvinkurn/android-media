@@ -75,6 +75,9 @@ public class AccountConstants {
         public static final String EVENT_LABEL = "eventLabel";
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_ACCOUNT = "/account";
+        public static final String MY_ACCOUNT = "my account page";
+        public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
+        public static final String EVENT_SALDO_OVO = "clickSaldo";
     }
 
     public class ImageUrl {
