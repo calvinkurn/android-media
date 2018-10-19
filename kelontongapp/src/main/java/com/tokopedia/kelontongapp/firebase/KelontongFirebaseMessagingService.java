@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.tokopedia.kelontongapp.notification.NotificationFactory;
 
 import java.util.Map;
 
@@ -17,7 +18,10 @@ public class KelontongFirebaseMessagingService extends FirebaseMessagingService 
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
+
         Log.d("FCM ", data.toString());
+
+        NotificationFactory.showNotification(this, data);
     }
 
     protected Bundle convertMap(RemoteMessage message){

@@ -1,5 +1,6 @@
 package com.tokopedia.kelontongapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
@@ -19,6 +20,9 @@ import com.tokopedia.kelontongapp.webview.FilePickerInterface;
 import com.tokopedia.kelontongapp.webview.KelontongWebview;
 import com.tokopedia.kelontongapp.webview.KelontongWebviewClient;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by meta on 02/10/18.
  */
@@ -26,12 +30,19 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
     private static final String GCM_ID = "gcm_id";
     private static final String ANDROID = "tkpd/mitra/android";
+    private static final String X_REQUESTED_WITH = "X-Requested-With";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
     private KelontongWebChromeClient webViewClient;
     private KelontongWebview webView;
 
     private boolean doubleTapExit = false;
+
+    private Map<String, String> headers = new HashMap<>();
+
+    public static Intent start(Context context) {
+        return new Intent(context, KelontongMainActivity.class);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
         webViewClient = new KelontongWebChromeClient(this, progressBar);
 
+        headers.put(X_REQUESTED_WITH, "");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(webViewClient);
@@ -61,7 +73,7 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
 
         String fcmToken = Preference.getFcmToken(this);
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken));
-        webView.loadUrl(KelontongBaseUrl.BASE_URL);
+        webView.loadUrl(KelontongBaseUrl.BASE_URL, headers);
     }
 
     @Override

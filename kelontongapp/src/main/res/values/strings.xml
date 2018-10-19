@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">Kelontong App</string>
+    <string name="app_name">Kelontong</string>
     <string name="msg_exit">Tekan sekali lagi untuk keluar</string>
+
+    <string name="title_general_push_notification">Notifikasi Baru dari Kelontong Tokopedia</string>
 </resources>
