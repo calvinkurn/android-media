@@ -37,11 +37,11 @@ public interface ConstantTransactionAnalytics {
     }
 
     interface EventCategory {
-        String CART = "Cart";
-        String COURIER_SELECTION = "Courier Selection";
+        String CART = "cart";
+        String COURIER_SELECTION = "courier selection";
         String ADD_TO_CART = "add to cart";
-        String CART_CHANGE_ADDRESS = "Cart Change Address";
-        String CART_MULTIPLE_ADDRESS = "Cart Multiple Address";
+        String CART_CHANGE_ADDRESS = "cart change address";
+        String CART_MULTIPLE_ADDRESS = "cart multiple address";
         String ORDER_TRACKING = "order tracking";
     }
 

@@ -996,9 +996,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         float weight = 0f;
         try {
-            weight = Float.parseFloat(successResult.getInfo().getProductWeight());
-        } catch (Exception e) {
-        }
+            weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
+        } catch (Exception e){}
 
         if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())) {
             weight /= 1000;
@@ -1035,6 +1034,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             startShowCase();
         }
         renderTopAds(15);
+    }
+
+    private float getUnformattedWeight(String productWeight) {
+        String unformatted = productWeight.replace(".", "");
+        return Float.parseFloat(unformatted);
     }
 
     private boolean isAllowShowCaseNcf() {
@@ -2165,6 +2169,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         String categoryLevelStr = generateCategoryStringLevel(productData.getBreadcrumb());
         enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
+        enhancedECommerceProductCartMapData.setDimension45(addToCartResult.getCartId());
         enhancedECommerceProductCartMapData.setCategory(TextUtils.isEmpty(categoryLevelStr)
                 ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                 : categoryLevelStr);
@@ -2179,7 +2184,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerAttribution()
         );
+        enhancedECommerceProductCartMapData.setDimension38(
+                TextUtils.isEmpty(productPass.getTrackerAttribution())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerAttribution()
+        );
         enhancedECommerceProductCartMapData.setListName(
+                TextUtils.isEmpty(productPass.getTrackerListName())
+                        ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        : productPass.getTrackerListName()
+        );
+        enhancedECommerceProductCartMapData.setDimension40(
                 TextUtils.isEmpty(productPass.getTrackerListName())
                         ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         : productPass.getTrackerListName()
@@ -2324,8 +2339,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void moveToEstimationDetail() {
-        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
-                Float.parseFloat(productData.getInfo().getProductWeight()), productData.getInfo().getProductWeightUnit()));
+        startActivity(RatesEstimationDetailActivity.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
+                productData.getInfo().getProductWeight(), productData.getInfo().getProductWeightUnit()));
     }
 
     private void renderTopAds(int itemSize) {

@@ -333,9 +333,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.fingerprint)
 
-    implementation(rootProject.ext.miscDependencies.trueCaller) {
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.miscDependencies.imagecropper) {
         exclude group: "com.android.support"
     }

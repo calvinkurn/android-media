@@ -1,0 +1,4 @@
+<resources>
+    <string name="pg_error_info">Mohon maaf terjadi kendala, silakan coba lagi.</string>
+    <string name="pg_label_retry">Coba lagi</string>
+</resources>
