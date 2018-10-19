@@ -89,6 +89,7 @@ ext {
     tkpdChallengesVersion = '2.22'
     tkpdTalkVersion = '2.22'
     tkpdAttachProductVersion = '2.22'
+    tkpdPaginationVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -434,6 +435,7 @@ ext {
             commonNetwork     : ":libraries:common_network",
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
-            travelCalendar    : ":libraries:travel_calendar"
+            travelCalendar    : ":libraries:travel_calendar",
+            pagination        : ":libraries:pagination"
     ]
 }
