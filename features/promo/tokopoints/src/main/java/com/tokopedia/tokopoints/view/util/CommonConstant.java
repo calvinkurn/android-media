@@ -31,6 +31,7 @@ public interface CommonConstant {
     int MAX_COUPON_RE_FETCH_COUNT = 3;
     int COUPON_RE_FETCH_DELAY_S = 5;
     long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
+    int UI_SETTLING_DELAY_MS = 250;
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

@@ -65,7 +65,9 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        mPresenter.getCoupons();
+        mAdapter = new CouponListPaginationAdapter(mPresenter, this, getAppContext());
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -124,7 +126,8 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         if (source.getId() == R.id.text_see_membership_status) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
         } else if (source.getId() == R.id.text_failed_action) {
-            mPresenter.getCoupons();
+            showLoader();
+            mAdapter.loadMore(mAdapter.getCurrentPageIndex());
         }
     }
 
@@ -156,9 +159,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     @Override
     public void populateCoupons(List<CouponValueEntity> coupons) {
         hideLoader();
-        mAdapter = new CouponListPaginationAdapter(mPresenter, this, getAppContext());
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -245,7 +245,12 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void onFinishFirstPageLoad(int count, @Nullable Object rawObject) {
-        hideLoader();
+        getView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoader();
+            }
+        }, CommonConstant.UI_SETTLING_DELAY_MS);
     }
 
     @Override
