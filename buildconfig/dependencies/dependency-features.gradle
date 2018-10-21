@@ -65,7 +65,6 @@ ext {
             events                      : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                        : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             flight                      : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
-            flightNoOp                  : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
             gamification                : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             goldMerchantCommon          : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
             goldMerchant                : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
@@ -120,7 +119,7 @@ ext {
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
             flight                      : ":features:digital:flight",
-            flightNoOp                  : ":features:digital:flight_no_op",
+//            flight_no_op                : ":features:digital:flight_no_op",
             train                       : ":features:digital:train",
 
             home                        : ":features:discovery:home",
