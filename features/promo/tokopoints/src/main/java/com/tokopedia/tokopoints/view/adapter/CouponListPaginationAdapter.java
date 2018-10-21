@@ -88,7 +88,13 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                 } else {
                     holder.btnContinue.setVisibility(View.VISIBLE);
                 }
+            } else {
+                holder.btnContinue.setVisibility(View.VISIBLE);
             }
+        } else {
+            holder.label.setVisibility(View.GONE);
+            holder.value.setVisibility(View.GONE);
+            holder.imgLabel.setVisibility(View.GONE);
         }
 
         holder.btnContinue.setBackgroundResource(R.drawable.bg_button_green);
