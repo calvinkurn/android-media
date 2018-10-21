@@ -89,7 +89,7 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                     holder.btnContinue.setVisibility(View.VISIBLE);
                 }
             } else {
-                holder.btnContinue.setVisibility(View.VISIBLE);
+                holder.btnContinue.setVisibility(View.GONE);
             }
         } else {
             holder.label.setVisibility(View.GONE);
@@ -163,6 +163,7 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
                 holder.btnContinue.setEnabled(true);
                 holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+                holder.value.setPadding(0, 0, 0, 0);
             }
         } else {
             if (item.getUsage().getActiveCountDown() > 0) {
@@ -189,6 +190,7 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                 holder.btnContinue.setText(item.getUsage().getUsageStr());
                 holder.btnContinue.setEnabled(true);
                 holder.progressTimer.setVisibility(View.GONE);
+                holder.value.setPadding(0, 0, 0, 0);
             }
         }
     }

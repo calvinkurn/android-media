@@ -163,6 +163,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
                 holder.btnContinue.setEnabled(true);
                 holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+                holder.value.setPadding(0, 0, 0, 0);
             }
         } else {
             if (item.getUsage().getActiveCountDown() > 0) {
@@ -189,6 +190,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.btnContinue.setText(item.getUsage().getUsageStr());
                 holder.btnContinue.setEnabled(true);
                 holder.progressTimer.setVisibility(View.GONE);
+                holder.value.setPadding(0, 0, 0, 0);
             }
         }
     }
