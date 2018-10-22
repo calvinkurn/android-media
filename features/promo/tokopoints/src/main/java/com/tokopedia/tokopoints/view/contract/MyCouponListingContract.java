@@ -5,6 +5,9 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.tokopoints.view.model.CatalogBanner;
+import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
+import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 
 import java.util.List;
@@ -23,7 +26,7 @@ public interface MyCouponListingContract {
 
         void populateCoupons(List<CouponValueEntity> coupons);
 
-        void emptyCoupons(Map<String,String> errors);
+        void emptyCoupons(Map<String, String> errors);
 
         void onErrorCoupons(String errorMessage);
 

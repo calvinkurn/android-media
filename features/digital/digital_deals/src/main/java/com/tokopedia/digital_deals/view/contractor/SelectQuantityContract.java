@@ -36,6 +36,7 @@ public class SelectQuantityContract {
 
         int getRequestCode();
 
+        void showFailureMessage(String error);
     }
 
     public interface Presenter extends CustomerPresenter<SelectQuantityContract.View> {
