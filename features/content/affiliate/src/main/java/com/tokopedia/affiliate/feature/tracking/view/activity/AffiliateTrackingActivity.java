@@ -8,7 +8,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.affiliate.feature.tracking.view.presenter.AffTrackingPresenter;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingModule;
@@ -25,7 +24,7 @@ import javax.inject.Inject;
 public class AffiliateTrackingActivity extends BaseActivity implements AffContract.View {
 
     @Inject
-    AffTrackingPresenter presenter;
+    AffContract.Presenter presenter;
 
     private ProgressBar progressBar;
 
@@ -49,7 +48,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
                 }
                 presenter.getTrackingUrl(affName, TextUtils.join("/", path));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             handleError();
         }
@@ -61,7 +60,6 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
                 .affTrackingModule(new AffTrackingModule())
                 .build();
         component.inject(this);
-        component.inject(presenter);
     }
 
     @Override

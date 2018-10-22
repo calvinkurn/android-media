@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 public interface AffContract {
 
-    public interface View extends CustomerView {
+    interface View extends CustomerView {
 
         void handleLink(String url);
 
@@ -14,7 +14,7 @@ public interface AffContract {
         void handleError();
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
 
         void getTrackingUrl(String affName, String urlKey);
 

@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.tracking.domain.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.tracking.domain.model.Data;
@@ -13,19 +14,22 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 public class GetByMeUseCase {
 
-    public static final String AFFILIATE_NAME = "name";
-    public static final String URL_KEY = "key";
+    private static final String AFFILIATE_NAME = "name";
+    private static final String URL_KEY = "key";
     private GraphqlUseCase graphqlUseCase;
     private Context context;
 
-    public GetByMeUseCase(Context context) {
+    @Inject
+    public GetByMeUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase) {
         GraphqlClient.init(context);
-        graphqlUseCase = new GraphqlUseCase();
         this.context = context;
+        this.graphqlUseCase = graphqlUseCase;
     }
 
     public void createObservable(String affiliateName, String urlKey, Subscriber<GraphqlResponse> subscriber) {
@@ -40,6 +44,7 @@ public class GetByMeUseCase {
                 Data.class,
                 variables);
 
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
     }
