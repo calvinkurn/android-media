@@ -12,8 +12,8 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.bank.ManagePeopleBankConstant;
 import com.tokopedia.core.manage.people.bank.adapter.BankAdapter;

@@ -9,7 +9,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 public class TkpdProgressDialog {
 

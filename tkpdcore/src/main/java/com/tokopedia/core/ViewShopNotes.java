@@ -29,6 +29,7 @@ import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.tokopedia.core2.R;
 
 public class ViewShopNotes extends TActivity {
     public static final String STUART = "STUART";

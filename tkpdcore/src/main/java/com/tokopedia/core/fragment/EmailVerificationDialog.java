@@ -18,7 +18,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractor;
 import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractorImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;

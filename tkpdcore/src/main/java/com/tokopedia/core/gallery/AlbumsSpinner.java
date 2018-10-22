@@ -9,7 +9,7 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by hangnadi on 5/26/17.

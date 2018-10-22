@@ -14,7 +14,7 @@ import android.view.Window;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractor;
 import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;

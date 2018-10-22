@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.talk.talkproduct.model.Talk;
 import com.tokopedia.core.talkview.adapter.ProductTalkViewAdapter;

@@ -10,7 +10,7 @@ import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractor;

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.password.model.ChangePasswordParam;
 import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;

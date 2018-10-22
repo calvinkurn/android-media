@@ -6,7 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by hangnadi on 5/22/17.

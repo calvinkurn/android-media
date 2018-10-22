@@ -22,8 +22,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.core.R.id.response;
-
 
 /**
  * Created by Nisie on 6/13/16.

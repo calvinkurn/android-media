@@ -3,7 +3,7 @@ package com.tokopedia.core.gcm.notification.dedicated;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 

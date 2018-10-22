@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by hangnadi on 5/29/17.

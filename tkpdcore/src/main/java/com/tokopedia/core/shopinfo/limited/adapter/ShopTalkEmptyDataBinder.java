@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 

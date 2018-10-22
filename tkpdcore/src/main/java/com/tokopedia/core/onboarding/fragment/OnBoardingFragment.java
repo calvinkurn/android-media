@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
 import com.tokopedia.core.router.home.HomeRouter;

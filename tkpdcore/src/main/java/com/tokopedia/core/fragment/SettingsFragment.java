@@ -13,7 +13,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;

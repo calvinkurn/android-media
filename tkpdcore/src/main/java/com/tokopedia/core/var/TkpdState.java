@@ -1,6 +1,6 @@
 package com.tokopedia.core.var;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 
 public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {

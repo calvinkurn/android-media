@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.ArrayList;
 import java.util.List;

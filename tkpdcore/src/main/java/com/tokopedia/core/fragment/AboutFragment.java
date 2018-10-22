@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;

@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import com.tokopedia.core2.R;
 
 public class UserAddress extends TActivity {
 	private JSONHandler JsonSender;

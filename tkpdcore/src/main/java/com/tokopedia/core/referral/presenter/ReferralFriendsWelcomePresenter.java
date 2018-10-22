@@ -6,7 +6,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.referral.ReferralActivity;

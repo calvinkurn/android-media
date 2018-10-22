@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.io.File;
 

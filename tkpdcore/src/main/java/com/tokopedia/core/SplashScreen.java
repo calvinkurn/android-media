@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import com.tokopedia.core2.R;
 
 
 /**

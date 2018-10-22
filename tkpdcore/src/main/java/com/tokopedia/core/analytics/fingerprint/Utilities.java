@@ -13,7 +13,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.io.BufferedReader;
 import java.io.File;

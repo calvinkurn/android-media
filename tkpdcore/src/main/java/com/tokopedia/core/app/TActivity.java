@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -131,11 +131,11 @@ public abstract class TActivity extends BaseActivity {
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
             );
 
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core2.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core2.R.style
                 .WebViewToolbarSubtitleText);
     }
 

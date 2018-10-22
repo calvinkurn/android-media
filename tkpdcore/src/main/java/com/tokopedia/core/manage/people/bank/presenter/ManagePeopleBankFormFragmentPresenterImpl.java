@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.Bank_Table;
 import com.tokopedia.core.manage.people.bank.ManagePeopleBankConstant;
