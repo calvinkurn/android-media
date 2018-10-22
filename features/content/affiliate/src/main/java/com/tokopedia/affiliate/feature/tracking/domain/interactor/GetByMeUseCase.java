@@ -32,8 +32,8 @@ public class GetByMeUseCase {
         this.graphqlUseCase = graphqlUseCase;
     }
 
-    public void createObservable(String affiliateName, String urlKey, Subscriber<GraphqlResponse> subscriber) {
-        graphqlUseCase.clearRequest();
+    public void createObservable(String affiliateName, String urlKey,
+                                 Subscriber<GraphqlResponse> subscriber) {
         Map<String, Object> variables = new HashMap<>();
 
         variables.put(AFFILIATE_NAME, affiliateName);
