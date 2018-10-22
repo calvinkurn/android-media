@@ -199,6 +199,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 }
             }
             setupViewPager();
+            setMain.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.INVISIBLE);
+            deleteImageLayout.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -292,7 +294,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 goToImagePicker();
             }
         });
-        deleteImageLayout.setVisibility(adapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         deleteImageLayout.setOnClickListener(v -> {
             if (tabLayout.getSelectedTabPosition() < viewModel.getFileImageList().size()) {
                 viewModel.getFileImageList().remove(tabLayout.getSelectedTabPosition());
@@ -305,7 +306,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
             adapter.notifyDataSetChanged();
         });
-        setMain.setVisibility(adapter.getCount() > 0 ? View.INVISIBLE : View.VISIBLE);
         setMain.setOnClickListener(v -> {
             viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition());
             updateSetMainView();
