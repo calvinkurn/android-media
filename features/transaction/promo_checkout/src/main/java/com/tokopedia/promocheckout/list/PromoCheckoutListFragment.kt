@@ -15,7 +15,8 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.detail.PromoCheckoutDetailActivity
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
@@ -50,7 +51,7 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        startActivityForResult(PromoCheckoutDetailActivity.createIntent(activity, promoCheckoutListModel?.id), REQUEST_CODE_DETAIL_PROMO)
+        startActivityForResult(PromoCheckoutDetailActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -58,6 +59,14 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
 
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun showGetListLastSeenError(e: Throwable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun renderListLastSeen(arrayList: List<PromoCheckoutLastSeenModel>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getScreenName(): String {
@@ -74,8 +83,8 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
     }
 
     override fun loadData(page: Int) {
-        promoCheckoutListPresenter.getListPromo(page)
-        promoCheckoutListPresenter.getListLastSeen()
+        promoCheckoutListPresenter.getListPromo(page, resources)
+        promoCheckoutListPresenter.getListLastSeen(resources)
     }
 
     companion object {

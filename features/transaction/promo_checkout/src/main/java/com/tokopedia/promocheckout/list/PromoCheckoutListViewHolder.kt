@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import kotlinx.android.synthetic.main.item_list_promo_checkout.view.*
 
 class PromoCheckoutListViewHolder(val view: View?) : AbstractViewHolder<PromoCheckoutListModel>(view) {

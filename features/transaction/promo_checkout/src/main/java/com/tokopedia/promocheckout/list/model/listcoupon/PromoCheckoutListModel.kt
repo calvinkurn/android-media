@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list.model
+package com.tokopedia.promocheckout.list.model.listcoupon
 
 import android.os.Parcel
 import android.os.Parcelable

@@ -7,6 +7,6 @@ class ResponseDetailCoupon {
 
     @SerializedName("data")
     @Expose
-    var data: Data? = null
+    var dataPromoCheckoutDetail: DataPromoCheckoutDetail? = null
 
 }

@@ -3,10 +3,10 @@ package com.tokopedia.promocheckout.detail.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class Data {
+class DataPromoCheckoutDetail {
 
     @SerializedName("hachikoCouponDetail")
     @Expose
-    var hachikoCouponDetail: HachikoCouponDetail? = null
+    var promoCheckoutDetailModel: PromoCheckoutDetailModel? = null
 
 }

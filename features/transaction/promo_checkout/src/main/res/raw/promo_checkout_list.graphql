@@ -1,58 +1,53 @@
 {
-tokopointsCouponList(input: {
-            serviceID: "marketplace",
-            categoryID: 0,
-            categoryIDCoupon: 0,
-            page: 1,
-            limit: 10,
-            includeExtraInfo: 0
-    }){
-      tokopointsCouponData{
-              id
-              promoID
-              code
-              expired
-              title
-              catalogTitle
-              subTitle
-              catalogSubTitle
-              description
-              icon
-              imageUrl
-              imageUrlMobile
-              thumbnailUrl
-              thumbnailUrlMobile
-              imageV2Url
-              imageV2UrlMobile
-              thumbnailV2Url
-              thumbnailV2UrlMobile
-              cta
-              ctaDesktop
-              slug
-              usage {
-                  activeCountdown
-                  expiredCountdown
-                  text
-                  usageStr
-                  buttonUsage {
+getCouponList($input : CouponListRequest!){
+    tokopointsCouponList(input: $input){
+          tokopointsCouponData{
+                  id
+                  promoID
+                  code
+                  expired
+                  title
+                  catalogTitle
+                  subTitle
+                  catalogSubTitle
+                  description
+                  icon
+                  imageUrl
+                  imageUrlMobile
+                  thumbnailUrl
+                  thumbnailUrlMobile
+                  imageV2Url
+                  imageV2UrlMobile
+                  thumbnailV2Url
+                  thumbnailV2UrlMobile
+                  cta
+                  ctaDesktop
+                  slug
+                  usage {
+                      activeCountdown
+                      expiredCountdown
                       text
-                      url
-                      appLink
-                      type
+                      usageStr
+                      buttonUsage {
+                          text
+                          url
+                          appLink
+                          type
+                      }
                   }
               }
+              tokopointsPaging{
+                  hasNext
+              }
+              tokopointsExtraInfo{
+                  infoHTML
+                  linkText
+                  linkUrl
+              }
+              tokopointsEmptyMessage{
+                  title
+                  subTitle
+              }
           }
-          tokopointsPaging{
-              hasNext
-          }
-          tokopointsExtraInfo{
-              infoHTML
-              linkText
-              linkUrl
-          }
-          tokopointsEmptyMessage{
-              title
-              subTitle
-          }
-        }
-  }
+    }
+}

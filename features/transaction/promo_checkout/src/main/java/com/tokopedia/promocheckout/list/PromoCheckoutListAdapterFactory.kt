@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 
 class PromoCheckoutListAdapterFactory : BaseAdapterTypeFactory() {
 

@@ -1,17 +1,20 @@
 package com.tokopedia.promocheckout.list
 
+import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 
 interface PromoCheckoutListContract {
 
     interface View : BaseListViewListener<PromoCheckoutListModel>{
-
+        fun renderListLastSeen(arrayList: List<PromoCheckoutLastSeenModel>)
+        fun showGetListLastSeenError(e: Throwable)
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun getListPromo(page: Int)
-        fun getListLastSeen()
+        fun getListPromo(page: Int, resources: Resources)
+        fun getListLastSeen(resources: Resources)
     }
 }
