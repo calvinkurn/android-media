@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by normansyahputa on 2/13/18.
  */
 
-public interface ShopModuleRouter {
+public interface ShopModuleRouter extends ShopTrackingRouter {
 
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 
@@ -46,10 +46,6 @@ public interface ShopModuleRouter {
     void goToShopDiscussion(Context context, String shopId);
 
     Intent getLoginIntent(Context context);
-
-    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
-
-    void sendScreenName(String screenName);
 
     Intent getTopProfileIntent(Context context, String userId);
 
