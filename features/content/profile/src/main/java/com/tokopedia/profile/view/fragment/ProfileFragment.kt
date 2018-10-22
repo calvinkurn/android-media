@@ -164,6 +164,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         return ProfileTypeFactoryImpl(this, this)
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            hideLoadingLayout()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        hideLoadingLayout()
+    }
+
     override fun onItemClicked(t: Visitable<*>?) {
     }
 
@@ -446,6 +458,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         showError(errorMessage, View.OnClickListener {
             presenter.trackPostClick(uniqueTrackingId, redirectLink)
         })
+    }
+
+    override fun showLoadingLayout() {
+        loadingLayout.visibility = View.VISIBLE
+    }
+
+    override fun hideLoadingLayout() {
+        loadingLayout.visibility = View.GONE
     }
 
     private fun initVar() {

@@ -40,6 +40,10 @@ interface ProfileContract {
 
         fun onErrorTrackPostClick(errorMessage: String, uniqueTrackingId: String,
                                   redirectLink: String)
+
+        fun showLoadingLayout()
+
+        fun hideLoadingLayout()
     }
     interface Presenter : CustomerPresenter<View> {
         var cursor: String

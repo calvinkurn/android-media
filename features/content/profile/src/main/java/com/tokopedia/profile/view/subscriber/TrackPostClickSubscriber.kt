@@ -22,6 +22,7 @@ class TrackPostClickSubscriber(private val view: ProfileContract.View,
     }
 
     override fun onError(e: Throwable?) {
+        view.hideLoadingLayout()
         view.onErrorTrackPostClick(
                 ErrorHandler.getErrorMessage(view.context, e),
                 uniqueTrackingId,
