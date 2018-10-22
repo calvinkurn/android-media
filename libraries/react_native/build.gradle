@@ -33,13 +33,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.design)
-
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.reactNative
-    implementation rootProject.ext.miscDependencies.codePushReactNative
-
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation "com.tokopedia.youtube:player:0.0.1@jar"
 }
 
 apply from: '../../publish_local.gradle'
