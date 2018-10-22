@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
@@ -21,7 +18,7 @@ import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment;
 
 @DeepLink(ApplinkConst.DEPOSIT)
 public class SaldoDepositActivity extends BaseSimpleActivity implements
-        HasComponent<SaldoDetailsComponent>, SaldoDepositFragment.DepositScreenListener {
+        HasComponent<SaldoDetailsComponent> {
 
     private static final String TAG = "DEPOSIT_FRAGMENT";
 
@@ -48,7 +45,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
         return SaldoDepositFragment.createInstance();
     }
 
-    @Override
+    /*@Override
     public void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("seller_details", sellerDetails);
@@ -56,6 +53,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
                 .beginTransaction()
                 .replace(resId, MerchantSaldoPriorityFragment.newInstance(bundle))
                 .commit();
-    }
+    }*/
 
 }

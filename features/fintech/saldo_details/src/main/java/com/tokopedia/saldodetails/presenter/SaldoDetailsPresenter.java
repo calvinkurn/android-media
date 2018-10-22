@@ -13,12 +13,16 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
+import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractor;
 import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractorImpl;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.response.model.SummaryWithdraw;
+import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
+import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 import com.tokopedia.saldodetails.usecase.GetSaldoSummaryUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
@@ -34,7 +38,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContract.View>
-        implements SaldoDetailContract.Presenter {
+        implements SaldoDetailContract.Presenter, MerchantSaldoDetailsActionListener {
 
     private SetMerchantSaldoStatus setMerchantSaldoStatusUseCase;
     private static final java.lang.String DATE_FORMAT_VIEW = "dd/MM/yyyy";
@@ -100,6 +104,18 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 getSummaryDeposit();
             }
         });
+    }
+
+    @Override
+    public void getMerchantSaldoDetails() {
+        getView().setLoading();
+        GetMerchantSaldoDetails getMerchantSaldoDetails =
+                new GetMerchantSaldoDetails(getView().getContext());
+
+        GetMerchantSaldoDetailsSubscriber getMerchantSaldoDetailsSubscriber =
+                new GetMerchantSaldoDetailsSubscriber(this);
+
+        getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
 
     @Override
@@ -365,5 +381,20 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
     private int getDay(String date) {
         String day = date.substring(0, 2);
         return Integer.parseInt(day);
+    }
+
+    @Override
+    public void hideSaldoPrioritasFragment() {
+        getView().hideSaldoPrioritasFragment();
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+        getView().showSaldoPrioritasFragment(sellerDetails);
+    }
+
+    @Override
+    public void finishLoading() {
+        getView().finishLoading();
     }
 }

@@ -9,6 +9,6 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 public interface SaldoDetailsRouter {
     Intent getWithdrawIntent(Context context);
     Intent getAddPasswordIntent(Context context);
+    boolean isSaldoNativeEnabled();
     CacheManager getGlobalCacheManager();
-    UserSession getSession();
 }

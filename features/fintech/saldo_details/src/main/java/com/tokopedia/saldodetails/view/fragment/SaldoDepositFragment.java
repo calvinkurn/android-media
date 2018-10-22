@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -46,6 +47,7 @@ import com.tokopedia.saldodetails.response.model.Deposit;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -56,6 +58,9 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
+
+    @Inject
+    UserSession userSession;
 
     TextView totalBalance;
     EditText startDate;
@@ -70,7 +75,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     TextView topupButton;
     FrameLayout saldoFrameLayout;
 
-    DepositScreenListener depositScreenListener;
+//    DepositScreenListener depositScreenListener;
 
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
@@ -160,7 +165,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
 
         this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
-        snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
+        snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_SHORT);
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefresh() {
@@ -182,10 +187,13 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
-                saldoDetailsPresenter.onDrawClicked(intent);
-                /*TkpdCoreRouter router = (TkpdCoreRouter) getActivity().getApplication();
-                presenter.onDrawClicked(router.getWithdrawIntent(context));*/
+
+                try {
+                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplication()).getWithdrawIntent(context);
+                    saldoDetailsPresenter.onDrawClicked(intent);
+                } catch (Exception e) {
+
+                }
 
             }
         });
@@ -204,14 +212,15 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
-        /*RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
-                true)) {
-            presenter.getMerchantSaldoDetails();
-        } else {
-            hideSaldoPrioritasFragment();
-        }*/
+        if (getActivity() != null && getActivity().getApplication() instanceof SaldoDetailsRouter) {
 
+            if (((SaldoDetailsRouter) getActivity().getApplication())
+                    .isSaldoNativeEnabled()) {
+                saldoDetailsPresenter.getMerchantSaldoDetails();
+            } else {
+//                hideSaldoPrioritasFragment();
+            }
+        }
     }
 
     private RecyclerView.OnScrollListener onScroll() {
@@ -231,9 +240,9 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
             @Override
             public void onClick(View v) {
 //                UnifyTracking.eventDepositTopUp();
-                /*Bundle bundle = new Bundle();
+                Bundle bundle = new Bundle();
                 bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
-                Intent intent = new Intent(context, LoyaltyDetail.class);
+                /*Intent intent = new Intent(context, LoyaltyDetail.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);*/
             }
@@ -424,6 +433,31 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     }
 
     @Override
+    public void hideSaldoPrioritasFragment() {
+        saldoFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+        if (sellerDetails != null &&
+                sellerDetails.isIsEligible()) {
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("seller_details", sellerDetails);
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
+                    .commit();
+
+            /*if (depositScreenListener != null) {
+                depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);
+            }*/
+        } else {
+            hideSaldoPrioritasFragment();
+        }
+    }
+
+    @Override
     public void removeError() {
         snackbar.dismiss();
         adapter.removeErrorNetwork();
@@ -568,7 +602,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     }
 
 
-    public interface DepositScreenListener {
+    /*public interface DepositScreenListener {
         void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails);
-    }
+    }*/
 }

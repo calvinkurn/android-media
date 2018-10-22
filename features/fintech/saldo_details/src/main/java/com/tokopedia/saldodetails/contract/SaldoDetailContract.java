@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
 public interface SaldoDetailContract {
@@ -64,6 +65,9 @@ public interface SaldoDetailContract {
 
         void showHoldWarning(String warningText);
 
+        void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails);
+
+        void hideSaldoPrioritasFragment();
     }
 
     interface Presenter extends CustomerPresenter<SaldoDetailContract.View> {
@@ -72,6 +76,8 @@ public interface SaldoDetailContract {
         void setFirstDateParameter();
 
         void setCache();
+
+        void getMerchantSaldoDetails();
 
         void onSearchClicked();
 

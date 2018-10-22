@@ -6,19 +6,20 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.MapNulRemover;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.saldodetails.response.model.SummaryWithdraw;
-import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.saldodetails.usecase.GetSaldoSummaryUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -34,8 +35,9 @@ public class DepositRetrofitInteractorImpl implements DepositRetrofitInteractor 
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
     private static final String PARAM_BEARER = "Bearer ";
-    private UserSession userSession;
+//    private UserSession userSession;
 
+    public UserSession userSession;
 
     private boolean isRequesting = false;
     private GetSaldoSummaryUseCase getSaldoSummaryUseCase;
@@ -43,7 +45,8 @@ public class DepositRetrofitInteractorImpl implements DepositRetrofitInteractor 
     public DepositRetrofitInteractorImpl(Context context,
                                          GetSaldoSummaryUseCase getSaldoSummaryUseCase) {
         this.getSaldoSummaryUseCase = getSaldoSummaryUseCase;
-        userSession = ((SaldoDetailsRouter) context.getApplicationContext()).getSession();
+        userSession = new UserSession(context);
+//        userSession = ((SaldoDetailsRouter) context.getApplicationContext()).getSession();
     }
 
     @Override
