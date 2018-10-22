@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
@@ -37,7 +40,10 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter> implements DigitalDealCheckoutContract.View, DigitalDealActionListener {
-    private LinearLayout containerLayout, containerDetail, containerSelectedDeals;
+    private LinearLayout containerLayout;
+    private LinearLayout containerSelectedDeals;
+    private LinearLayout containerDetail;
+    private NestedScrollView containerScroll;
     private AppCompatTextView categoryNameTextView;
     private AppCompatImageView expandCollapseView;
     private RecyclerView selectedDealsRecyclerView;
@@ -90,6 +96,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     protected void setupView(View view) {
+        containerScroll = view.findViewById(R.id.container_scroll);
         containerLayout = view.findViewById(R.id.container);
         containerDetail = view.findViewById(R.id.container_cart_detail);
         containerSelectedDeals = view.findViewById(R.id.container_selected_deals);
@@ -163,12 +170,14 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void hideCartDetailView() {
+        containerScroll.setVisibility(View.GONE);
         containerDetail.setVisibility(View.GONE);
         containerLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @Override
     public void showCartDetailView() {
+        containerScroll.setVisibility(View.VISIBLE);
         containerDetail.setVisibility(View.VISIBLE);
         containerLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }

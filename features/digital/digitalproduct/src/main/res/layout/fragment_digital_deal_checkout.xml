@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_0"
+        android:layout_weight="0.1"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
@@ -34,71 +36,92 @@
             app:srcCompat="@drawable/ic_arrow_up_grey" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/container_cart_detail"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/container_scroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16">
-
-        <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView
-            android:id="@+id/view_cart_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:fillViewport="true"
+        android:visibility="gone"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
-            android:id="@+id/input_price_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
-            <View
+            <LinearLayout
+                android:id="@+id/container_cart_detail"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/bg_line_separator" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16">
 
-            <com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView
-                android:id="@+id/input_price_holder_view"
+                <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView
+                    android:id="@+id/view_cart_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/input_price_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_1"
+                        android:background="@drawable/bg_line_separator" />
+
+                    <com.tokopedia.digital.cart.presentation.compoundview.InputPriceHolderView
+                        android:id="@+id/input_price_holder_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/container_selected_deals"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp_16"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_1"
+                    android:background="@drawable/bg_line_separator" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:text="@string/digital_cart_deal_selected_label" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_selected_deals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/container_selected_deals"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16"
-        android:visibility="gone">
+    </android.support.v4.widget.NestedScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@drawable/bg_line_separator" />
-
-        <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Title.Bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/digital_cart_deal_selected_label" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_selected_deals"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView
         android:id="@+id/view_checkout_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/dp_0"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.3" />
 
 </LinearLayout>

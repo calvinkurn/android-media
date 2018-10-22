@@ -10,7 +10,14 @@ import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<DigitalDealCheckoutContract.View>
         implements DigitalDealCheckoutContract.Presenter {
@@ -24,6 +31,36 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public void onDealsCheckout() {
         renderBaseCart(getView().getCartInfoData());
         getView().renderCategory(getView().getCartInfoData().getAttributes().getCategoryName());
+        collapseCartDetailAfter5Seconds();
+    }
+
+    private void collapseCartDetailAfter5Seconds() {
+        Observable.timer(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (isViewAttached()) {
+                            if (getView().isCartDetailViewVisible()) {
+                                getView().hideCartDetailView();
+                                getView().hideDealsContainerView();
+                                getView().renderIconToExpand();
+                            }
+                        }
+                    }
+                });
     }
 
     @Override
@@ -43,6 +80,9 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     public void onNewSelectedDeal(DealProductViewModel viewModel) {
         getView().addSelectedDeal(viewModel);
         getView().renderCartDealListView(viewModel);
+        getView().renderCategory(
+                String.format("%s & %d Deals", getView().getCartInfoData().getAttributes().getCategoryName(), getView().getSelectedDeals().size())
+        );
     }
 
     @Override
@@ -54,5 +94,8 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         }
 
         getView().updateDealListView(viewModel);
+        if (getView().getSelectedDeals().size() == 0) {
+            getView().hideDealsContainerView();
+        }
     }
 }
