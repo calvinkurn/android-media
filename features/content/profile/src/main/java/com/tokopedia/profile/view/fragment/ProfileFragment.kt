@@ -75,6 +75,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     companion object {
         private const val POST_ID = "{post_id}"
+        private const val PARAM_TAB_NAME = "{tab_name}"
+        private const val PARAM_CATEGORY_ID = "{category_id}"
+        private const val TAB_INSPIRASI = "inspirasi"
+        private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
         private const val SETTING_PROFILE_CODE = 83
@@ -656,7 +660,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToExplore() {
-        RouteManager.route(context, ApplinkConst.CONTENT_EXPLORE)
+        RouteManager.route(
+                context,
+                ApplinkConst.CONTENT_EXPLORE
+                        .replace(PARAM_TAB_NAME, TAB_INSPIRASI)
+                        .replace(PARAM_CATEGORY_ID, CATEGORY_0)
+        )
     }
 
     private fun goToDashboard() {
