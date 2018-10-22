@@ -1,23 +1,26 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.fabric'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'io.hansel.preprocessor.module'
 
-//buildscript {
-//    repositories {
-//        maven { url 'https://maven.fabric.io/public' }
-//        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-//        mavenCentral()
-//        jcenter()
-//        maven { url 'https://hansel.io/maven' }
-//    }
-//    dependencies {
-//        classpath 'io.fabric.tools:gradle:1.+'
-//        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-//            exclude group: 'com.android.tools.build', module: 'gradle'
-//        }
-//        classpath 'com.google.gms:google-services:3.0.0'
-//        classpath rootProject.ext.miscDependencies.hansel
-//    }
-//}
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
+            exclude group: 'com.android.tools.build', module: 'gradle'
+        }
+        classpath 'com.google.gms:google-services:3.0.0'
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
 
 android {
     defaultConfig {
@@ -29,8 +32,18 @@ android {
     }
 }
 
+project.ext {
+    artifactId = 'core'
+    groupId = 'com.tokopedia.core'
+    versionName = "2.23"
+    artifactName ="tkpdcore-release"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
@@ -69,12 +82,9 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
-
     implementation rootProject.ext.networkDependencies.glide
 
 }
 
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
+apply from: '../../publish_local.gradle'
