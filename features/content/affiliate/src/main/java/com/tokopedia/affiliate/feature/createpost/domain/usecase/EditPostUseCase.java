@@ -17,6 +17,8 @@ import javax.inject.Inject;
  */
 public class EditPostUseCase extends SubmitPostUseCase {
     private static final String PARAM_POST_ID = "ID";
+    private static final String PARAM_ACTION = "action";
+    private static final String ACTION_UPDATE = "update";
 
     @Inject
     EditPostUseCase(@ApplicationContext Context context,
@@ -32,6 +34,7 @@ public class EditPostUseCase extends SubmitPostUseCase {
         input.setType(requestParams.getString(PARAM_TYPE, ""));
         input.setToken(requestParams.getString(PARAM_TOKEN, ""));
         input.setActivityId(requestParams.getString(PARAM_POST_ID, ""));
+        input.setAction(requestParams.getString(PARAM_ACTION, ""));
         input.setMedia(mediumList);
         return input;
     }
@@ -42,6 +45,7 @@ public class EditPostUseCase extends SubmitPostUseCase {
         requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE);
         requestParams.putString(PARAM_POST_ID, postId);
         requestParams.putString(PARAM_TOKEN, token);
+        requestParams.putString(PARAM_ACTION, ACTION_UPDATE);
         requestParams.putObject(PARAM_IMAGE_LIST, imageList);
         requestParams.putInt(PARAM_MAIN_IMAGE_INDEX, mainImageIndex);
         return requestParams;
