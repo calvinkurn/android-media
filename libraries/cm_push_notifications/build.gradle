@@ -30,6 +30,14 @@ project.ext {
 }
 dependencies {
 
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.config)
+
+    implementation rootProject.ext.playServicesDependencies.firebase
+
+    implementation rootProject.ext.networkDependencies.glide
 }
 
 apply from: '../../publish_local.gradle'

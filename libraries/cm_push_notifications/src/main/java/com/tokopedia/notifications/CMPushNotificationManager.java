@@ -1,0 +1,149 @@
+package com.tokopedia.notifications;
+
+import android.app.Notification;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.notifications.factory.GeneralNotificationFactory;
+import com.tokopedia.notifications.model.ActionButton;
+import com.tokopedia.notifications.model.BaseNotificationModel;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+/**
+ * Created by Ashwani Tyagi on 18/10/18.
+ */
+public class CMPushNotificationManager {
+
+    private final String LOG = CMPushNotificationManager.class.getCanonicalName();
+
+    private static final CMPushNotificationManager _INSTANCE = new CMPushNotificationManager();
+
+    public static CMPushNotificationManager getInstance() {
+        return _INSTANCE;
+    }
+
+    public boolean isFromCMNotificationPlatform(Map<String, String> extras) {
+        try {
+            if (null == extras) {
+                Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
+            } else if (extras.containsKey(CMConstant.FCM_EXTRA_CONFIRMATION_KEY)) {
+                String confirmationValue =
+                        extras.get(CMConstant.FCM_EXTRA_CONFIRMATION_KEY);
+                return confirmationValue.equals(CMConstant.FCM_EXTRA_CONFIRMATION_VALUE);
+            }
+        } catch (Exception e) {
+            Log.e(LOG, "CMPushNotificationManager: isFromMoEngagePlatform ", e);
+        }
+        return false;
+    }
+
+    public void handlePushPayload(Context context, RemoteMessage remoteMessage) {
+        if (isFromCMNotificationPlatform(remoteMessage.getData())) {
+            Bundle bundle = convertMapToBundle(remoteMessage.getData());
+            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+            generateNotification(context, bundle, notificationManagerCompat);
+        }
+    }
+
+    private BaseNotificationModel convertToBaseModel(Bundle data) {
+        BaseNotificationModel model = new BaseNotificationModel();
+        model.setApplink(data.getString("applinks", ApplinkConst.HOME));
+        model.setTitle(data.getString("title", ""));
+        model.setDesc(data.getString("desc", ""));
+        model.setMessage(data.getString("message", ""));
+        model.setType(data.getString("type", ""));
+        model.setCustomValues(getCustomValues(data));
+        model.setActionButton(getActionButtons(data));
+        return model;
+    }
+
+    private void notifyGeneral(Context context, BaseNotificationModel baseNotificationModel,
+                               int notificationId, NotificationManagerCompat notificationManagerCompat) {
+        Notification generalNotif = new GeneralNotificationFactory(context)
+                .createNotification(baseNotificationModel, notificationId);
+
+        notificationManagerCompat.notify(notificationId, generalNotif);
+
+    }
+
+    private Bundle convertMapToBundle(Map<String, String> map) {
+        Bundle bundle = new Bundle(map != null ? map.size() : 0);
+        if (map != null) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                bundle.putString(entry.getKey(), entry.getValue());
+            }
+        }
+        return bundle;
+    }
+
+    private void generateNotification(Context context, Bundle bundle, NotificationManagerCompat notificationManagerCompat) {
+        String notificationType = getNotificationType(bundle);
+        BaseNotificationModel model = convertToBaseModel(bundle);
+
+        if (CMConstant.NotificationType.GENERAL.equals(notificationType)) {
+            notifyGeneral(context, model, CMConstant.NotificationId.GENERAL, notificationManagerCompat);
+        } else if (CMConstant.NotificationType.BIG_IMAGE.equals(notificationType)) {
+
+        } else {
+
+        }
+    }
+
+    public String getNotificationType(Bundle extras) {
+        try {
+            if (null == extras) {
+                Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
+            } else if (extras.containsKey(CMConstant.EXTRA_NOTIFICATION_TYPE)) {
+                return extras.getString(CMConstant.EXTRA_NOTIFICATION_TYPE);
+            }
+        } catch (Exception e) {
+            Log.e(LOG, "CMPushNotificationManager: ", e);
+        }
+        return "";
+    }
+
+    private JSONObject getCustomValues(Bundle extras) {
+        String values = extras.getString(CMConstant.NOTIFICATION_CUSTOM_VALUES);
+        if (TextUtils.isEmpty(values)) {
+            return null;
+        }
+        try {
+            return new JSONObject(values);
+        } catch (Exception e) {
+            Log.e("getCustomValues", e.getMessage());
+        }
+        return null;
+    }
+
+    private List<ActionButton> getActionButtons(Bundle extras) {
+        String actions = extras.getString(CMConstant.NOTIFICATION_ACTION_BUTTONS);
+        if (TextUtils.isEmpty(actions)) {
+            return null;
+        }
+        try {
+            Type listType = new TypeToken<ArrayList<ActionButton>>() {
+            }.getType();
+            List<ActionButton> actionButtonList = new Gson().fromJson(actions, listType);
+            return actionButtonList;
+        } catch (Exception e) {
+            Log.e("getActions", e.getMessage());
+        }
+        return null;
+    }
+}
