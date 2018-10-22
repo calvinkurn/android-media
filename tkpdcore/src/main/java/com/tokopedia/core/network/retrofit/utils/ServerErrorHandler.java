@@ -1,11 +1,14 @@
 package com.tokopedia.core.network.retrofit.utils;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.GCMHandler;
 
 /**
  * @author anggaprasetiyo on 5/23/17.
@@ -59,6 +62,9 @@ public class ServerErrorHandler {
     }
 
     public static void sendForceLogoutTokenAnalytics(String url) {
-        AnalyticsLog.logForceLogoutToken(url);
+        Context appContext = MainApplication.getAppContext();
+        GCMHandler gcmHandler = new GCMHandler(appContext);
+        SessionHandler sessionHandler = new SessionHandler(appContext);
+        AnalyticsLog.logForceLogoutToken(appContext, gcmHandler, sessionHandler, url);
     }
 }

@@ -41,7 +41,7 @@ import java.util.List;
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends BaseMainApplication{
+public abstract class MainApplication extends MainRouterApplication{
 
 	public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
@@ -292,14 +292,6 @@ public abstract class MainApplication extends BaseMainApplication{
      * Intialize the request manager and the image cache
      */
     private void init() {
-    }
-
-    /**
-     * Create the image cache. Uses Memory Cache by default. Change to Disk for a Disk based LRU implementation.
-     */
-
-    private void initFacebook() {
-
     }
 
     protected void initializeAnalytics() {

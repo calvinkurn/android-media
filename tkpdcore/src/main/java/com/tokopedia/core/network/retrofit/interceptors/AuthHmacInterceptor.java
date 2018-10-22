@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.util.Log;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import org.json.JSONArray;
@@ -228,7 +231,10 @@ abstract class AuthHmacInterceptor implements Interceptor {
     }
 
     private void sendForceLogoutAnalytics(Response response) {
-        AnalyticsLog.logForceLogout(response.request().url().toString());
+        Context appContext = MainApplication.getAppContext();
+        GCMHandler gcmHandler = new GCMHandler(appContext);
+        SessionHandler sessionHandler = new SessionHandler(appContext);
+        AnalyticsLog.logForceLogout(appContext, gcmHandler, sessionHandler, response.request().url().toString());
     }
 
     private void showServerErrorSnackbar() {
@@ -238,6 +244,9 @@ abstract class AuthHmacInterceptor implements Interceptor {
     }
 
     private void sendErrorNetworkAnalytics(Response response) {
-        AnalyticsLog.logNetworkError(response.request().url().toString(), response.code());
+        Context appContext = MainApplication.getAppContext();
+        GCMHandler gcmHandler = new GCMHandler(appContext);
+        SessionHandler sessionHandler = new SessionHandler(appContext);
+        AnalyticsLog.logNetworkError(appContext, gcmHandler, sessionHandler, response.request().url().toString(), response.code());
     }
 }

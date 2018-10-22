@@ -11,21 +11,17 @@ import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.R;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Subscriber;
 
@@ -52,17 +48,15 @@ public class NotificationModHandler {
                 NotificationManager notificationManager =
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.cancel(100);
-                LocalCacheHandler.clearCache(context, TkpdCache.GCM_NOTIFICATION);
+                new LocalCacheHandler(context, TkpdCache.GCM_NOTIFICATION).clearCache(context, TkpdCache.GCM_NOTIFICATION);
             }
         }
     }
 
     public static void clearCacheAllNotification(Context activity) {
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository(activity);
         DeleteSavedPushNotificationUseCase deleteUseCase =
                 new DeleteSavedPushNotificationUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
                         pushNotificationRepository
                 );
         deleteUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
@@ -92,12 +86,10 @@ public class NotificationModHandler {
         notificationManager.cancelAll();
     }
 
-    public static void clearCacheIfFromNotification(String category) {
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+    public static void clearCacheIfFromNotification(Context context, String category) {
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository(context);
         DeleteSavedPushNotificationByCategoryUseCase deleteUseCase =
                 new DeleteSavedPushNotificationByCategoryUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
                         pushNotificationRepository
                 );
         RequestParams requestParams = RequestParams.create();
@@ -124,12 +116,10 @@ public class NotificationModHandler {
         });
     }
 
-    public static void clearCacheIfFromNotification(String category, String serverId) {
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+    public static void clearCacheIfFromNotification(Context context, String category, String serverId) {
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository(context);
         DeleteSavedPushNotificationByCategoryAndServerIdUseCase deleteUseCase =
                 new DeleteSavedPushNotificationByCategoryAndServerIdUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
                         pushNotificationRepository
                 );
         RequestParams requestParams = RequestParams.create();
@@ -166,7 +156,7 @@ public class NotificationModHandler {
                 break;
         }
 
-        NotificationManager notificationManager = (NotificationManager) MainApplication.getAppContext()
+        NotificationManager notificationManager = (NotificationManager) context.getApplicationContext()
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             boolean isActive = false;
@@ -182,7 +172,7 @@ public class NotificationModHandler {
                 intent.setAction(Constants.ACTION_BC_RESET_APPLINK);
                 intent.putExtra(Constants.EXTRA_APPLINK_CATEGORY, category);
                 intent.putExtra(Constants.EXTRA_APPLINK_RESET, true);
-                LocalBroadcastManager.getInstance(MainApplication.getAppContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
             }
         } else {
             notificationManager.cancel(notificationId);
@@ -202,8 +192,8 @@ public class NotificationModHandler {
         notificationManager.cancel(notificationId);
     }
 
-    public static void showDialogNotificationIfNotShowing(final Activity context) {
-        if (!FCMCacheManager.isDialogNotificationSettingShowed(context) && SessionHandler.isV4Login(context)) {
+    public static void showDialogNotificationIfNotShowing(final Activity context, Intent intent) {
+        if (!FCMCacheManager.isDialogNotificationSettingShowed(context) && new SessionHandler(context).isV4Login()) {
             if (GlobalConfig.isSellerApp()) {
                 if (appInstalledOrNot(PACKAGE_CONSUMER_APP, context)) {
                     new AlertDialog.Builder(context)
@@ -212,7 +202,7 @@ public class NotificationModHandler {
                             .setPositiveButton(context.getString(R.string.notification_dialog_positive_button), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     FCMCacheManager.setDialogNotificationSetting(context);
-                                    context.startActivity(ManageGeneral.getCallingIntent(context, ManageGeneral.TAB_POSITION_MANAGE_APP));
+                                    context.startActivity(intent);
                                     dialog.dismiss();
                                 }
                             })
@@ -240,7 +230,7 @@ public class NotificationModHandler {
                             .setPositiveButton(context.getString(R.string.notification_dialog_positive_button), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     FCMCacheManager.setDialogNotificationSetting(context);
-                                    context.startActivity(ManageGeneral.getCallingIntent(context, ManageGeneral.TAB_POSITION_MANAGE_APP));
+                                    context.startActivity(intent);
                                     dialog.dismiss();
                                 }
                             })
