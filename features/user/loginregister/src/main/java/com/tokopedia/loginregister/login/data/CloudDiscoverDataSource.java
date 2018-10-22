@@ -4,8 +4,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
-import com.tokopedia.loginregister.login.domain.DiscoverUseCase;
-import com.tokopedia.loginregister.login.domain.mapper.DiscoverMapper;
+import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
+import com.tokopedia.loginregister.discover.mapper.DiscoverMapper;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 
 import javax.inject.Inject;

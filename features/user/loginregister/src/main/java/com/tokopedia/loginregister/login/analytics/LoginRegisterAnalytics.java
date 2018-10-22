@@ -14,23 +14,30 @@ import java.util.Map;
 /**
  * @author by nisie on 10/2/18.
  */
-public class LoginAnalytics {
+public class LoginRegisterAnalytics {
 
     public static final String SCREEN_LOGIN = "Login page";
+    public static final String SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page";
 
     private static final String EVENT_CLICK_LOGIN = "clickLogin";
     private static final String EVENT_REGISTER_LOGIN = "registerLogin";
     private static final String EVENT_LOGIN_ERROR = "loginError";
     private static final String EVENT_LOGIN_SUCCESS = "loginSuccess";
     private static final String EVENT_LOGIN_CLICK = "clickLogin";
+    private static final String EVENT_SUCCESS_SMART_LOCK = "eventSuccessSmartLock";
+    private static final String EVENT_CLICK_BACK = "clickBack";
+    public static final String EVENT_CLICK_CONFIRM = "clickConfirm";
+    public static final String EVENT_CLICK_REGISTER = "clickRegister";
 
     private static final String CATEGORY_LOGIN = "Login";
+    private static final String CATEGORY_SMART_LOCK = "Smart Lock";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";
     private static final String ACTION_LOGIN_ERROR = "Login Error";
     private static final String ACTION_LOGIN_SUCCESS = "Login Success";
-
+    private static final String ACTION_SUCCESS = "Success";
+    private static final String ACTION_ACTIVATION_PAGE = "activation page";
 
     private static final String LABEL_CTA = "CTA";
     private static final String LABEL_REGISTER = "Register";
@@ -39,11 +46,17 @@ public class LoginAnalytics {
     private static final String LABEL_PHONE_NUMBER = "Phone Number";
     private static final String LABEL_GPLUS = "Google Plus";
     private static final String LABEL_FACEBOOK = "Facebook";
+    private static final String LABEL_SAVE_PASSWORD = "Save Password";
+    private static final String LABEL_NEVER_SAVE_PASSWORD = "Never";
+
+    public static final String WEBVIEW = "webview";
+    public static final String GOOGLE = "google";
+    public static final String FACEBOOK = "facebook";
 
 
-    AnalyticTracker analyticTracker;
+    private AnalyticTracker analyticTracker;
 
-    public LoginAnalytics(AnalyticTracker analyticTracker) {
+    public LoginRegisterAnalytics(AnalyticTracker analyticTracker) {
         this.analyticTracker = analyticTracker;
     }
 
@@ -167,5 +180,50 @@ public class LoginAnalytics {
         TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_FORGOT_PASSWORD,
                 map, applicationContext);
 
+    }
+
+    public void eventSmartLockSaveCredential() {
+        analyticTracker.sendEventTracking(
+                EVENT_SUCCESS_SMART_LOCK,
+                CATEGORY_SMART_LOCK,
+                ACTION_SUCCESS,
+                LABEL_SAVE_PASSWORD
+        );
+    }
+
+    public void eventSmartLockNeverSaveCredential() {
+        analyticTracker.sendEventTracking(
+                EVENT_SUCCESS_SMART_LOCK,
+                CATEGORY_SMART_LOCK,
+                ACTION_SUCCESS,
+                LABEL_NEVER_SAVE_PASSWORD
+        );
+    }
+
+    public void eventClickBackEmailActivation() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_BACK,
+                ACTION_ACTIVATION_PAGE,
+                "click back button",
+                ""
+        );
+    }
+
+    public void eventClickActivateEmail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_CONFIRM,
+                ACTION_ACTIVATION_PAGE,
+                "click on aktivasi",
+                ""
+        );
+    }
+
+    public void eventClickResendActivationEmail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                ACTION_ACTIVATION_PAGE,
+                "click on kirim ulang",
+                ""
+        );
     }
 }

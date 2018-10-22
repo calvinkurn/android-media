@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.login.view.model;
 
 
-import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 
 import java.util.ArrayList;
 

@@ -19,5 +19,41 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name=".loginthirdparty.google.SmartLockActivity"
+            android:theme="@style/AppTheme.Dialog"/>
+
+        <activity
+            android:name=".loginthirdparty.google.GoogleSignInActivity"
+            android:theme="@style/AppTheme.Dialog"/>
+
+        <activity
+            android:name=".activation.view.activity.ChangeEmailActivity"
+            android:label="@string/button_change_email"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity
+            android:name=".activation.view.activity.ActivationActivity"
+            android:label="@string/title_activity_activation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+
+        <activity
+            android:name=".forbidden.activity.ForbiddenActivity"
+            android:label="@string/title_activity_forbidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+
+        <activity
+            android:name=".forbidden.activity.ServiceActivity"
+            android:label="@string/title_activity_service"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
     </application>
 </manifest>

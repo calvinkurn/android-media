@@ -6,11 +6,11 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
+import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
-import com.tokopedia.sessioncommon.di.SessionComponent;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -59,5 +59,7 @@ public interface LoginRegisterComponent {
     GetProfileApi provideGetProfileApi();
 
     TokenApi provideTokenApi();
+
+    LoginRegisterAnalytics provideAnalytics();
 
 }

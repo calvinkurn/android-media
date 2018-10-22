@@ -8,6 +8,7 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
+import com.tokopedia.sessioncommon.network.TokenErrorException;
 
 import rx.Subscriber;
 
@@ -19,7 +20,7 @@ public class LoginCommonSubscriber<T> extends Subscriber<LoginEmailDomain> {
     private static final String NOT_ACTIVATED = "belum diaktivasi";
     protected final LoginSuccessRouter router;
     protected final String email;
-    private final Context context;
+    protected final Context context;
 
     public LoginCommonSubscriber(Context context,
                                  LoginSuccessRouter router,
@@ -36,10 +37,11 @@ public class LoginCommonSubscriber<T> extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
-        if (e.getLocalizedMessage() != null
-                && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
-                && !TextUtils.isEmpty(email)) {
+        if (isEmailNotActive(e, email)) {
             router.onGoToActivationPage(email);
+        } else if (e instanceof TokenErrorException
+                && !((TokenErrorException) e).getErrorDescription().isEmpty()) {
+            router.onErrorLogin(((TokenErrorException) e).getErrorDescription());
         } else {
             ErrorHandlerSession.getErrorMessage(new ErrorHandlerSession.ErrorForbiddenListener() {
                 @Override
@@ -49,47 +51,71 @@ public class LoginCommonSubscriber<T> extends Subscriber<LoginEmailDomain> {
 
                 @Override
                 public void onError(String errorMessage) {
-                    router.onErrorLogin(errorMessage);
+                    onErrorLogin(errorMessage);
                 }
             }, e, context);
         }
     }
 
+    protected boolean isEmailNotActive(Throwable e, String email) {
+        return e instanceof TokenErrorException
+                && !((TokenErrorException) e).getErrorDescription().isEmpty()
+                && ((TokenErrorException) e).getErrorDescription()
+                .toLowerCase().contains(NOT_ACTIVATED)
+                && !TextUtils.isEmpty(email);
+    }
+
+    protected void onErrorLogin(String errorMessage) {
+        router.onErrorLogin(errorMessage);
+    }
+
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
-        if (!loginEmailDomain.getInfo().isCreatedPassword()
-                && GlobalConfig.isSellerApp()) {
-            router.onGoToCreatePasswordPage(loginEmailDomain.getInfo());
-        } else if (loginEmailDomain.getLoginResult() != null
-                && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (!router.isFromRegister() || GlobalConfig.isSellerApp())) {
-            router.setSmartLock();
-            router.onSuccessLoginEmail();
-        } else if (loginEmailDomain.getLoginResult() != null
-                && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && !isMsisdnVerified(loginEmailDomain.getInfo())
-                && router.isFromRegister()) {
-            router.setSmartLock();
-            router.onGoToPhoneVerification();
-        } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-            router.setSmartLock();
-            router.onGoToSecurityQuestion(
-                    loginEmailDomain.getLoginResult().getSecurityPojo(),
-                    loginEmailDomain.getLoginResult().getFullName(),
-                    loginEmailDomain.getInfo().getEmail(),
-                    loginEmailDomain.getInfo().getPhone());
-        } else {
-            router.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
-                    .UNSUPPORTED_FLOW, context));
+        if (isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
+            goToSecurityQuestion(loginEmailDomain);
+        } else if (isGoToCreatePassword(loginEmailDomain)) {
+            goToCreatePassword(loginEmailDomain);
+        } else if (isGoToPhoneVerification(loginEmailDomain)) {
+            goToPhoneVerification();
         }
     }
 
-    private boolean isMsisdnVerified(GetUserInfoData info) {
-        return info.isPhoneVerified();
+    protected boolean isGoToCreatePassword(LoginEmailDomain loginEmailDomain) {
+        return !loginEmailDomain.getInfo().isCreatedPassword()
+                && GlobalConfig.isSellerApp();
     }
 
-    private boolean goToSecurityQuestion(MakeLoginPojo makeLoginPojo) {
+
+    protected boolean isGoToPhoneVerification(LoginEmailDomain loginEmailDomain) {
+        return loginEmailDomain.getLoginResult() != null
+                && !isMsisdnVerified(loginEmailDomain.getInfo());
+    }
+
+    protected boolean isGoToSecurityQuestion(MakeLoginPojo makeLoginPojo) {
         return makeLoginPojo.getSecurityPojo().getAllowLogin() == 0
                 && !makeLoginPojo.getIsLogin().equals("1");
     }
+
+
+    protected void goToSecurityQuestion(LoginEmailDomain loginEmailDomain) {
+        router.onGoToSecurityQuestion(
+                loginEmailDomain.getLoginResult().getSecurityPojo(),
+                loginEmailDomain.getLoginResult().getFullName(),
+                loginEmailDomain.getInfo().getEmail(),
+                loginEmailDomain.getInfo().getPhone());
+    }
+
+    protected void goToPhoneVerification() {
+        router.onGoToPhoneVerification();
+    }
+
+
+    protected void goToCreatePassword(LoginEmailDomain loginEmailDomain) {
+        router.onGoToCreatePasswordPage(loginEmailDomain.getInfo());
+    }
+
+    protected boolean isMsisdnVerified(GetUserInfoData info) {
+        return info.isPhoneVerified();
+    }
 }
+

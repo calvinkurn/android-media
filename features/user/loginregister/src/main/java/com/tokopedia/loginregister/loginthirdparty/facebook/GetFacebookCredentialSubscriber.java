@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.common.view;
+package com.tokopedia.loginregister.loginthirdparty.facebook;
 
 import com.facebook.AccessToken;
 

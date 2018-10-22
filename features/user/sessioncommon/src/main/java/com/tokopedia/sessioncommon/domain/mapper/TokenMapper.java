@@ -1,6 +1,5 @@
 package com.tokopedia.sessioncommon.domain.mapper;
 
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 
 import javax.inject.Inject;
@@ -20,7 +19,8 @@ public class TokenMapper implements Func1<Response<TokenViewModel>, TokenViewMod
 
     @Override
     public TokenViewModel call(Response<TokenViewModel> response) {
-        if (response.isSuccessful()) {
+        if (response.isSuccessful()
+                && !response.body().getAccessToken().isEmpty()) {
             return response.body();
         } else {
             throw new RuntimeException(String.valueOf(response.code()));

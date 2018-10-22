@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login.domain;
+package com.tokopedia.loginregister.discover.usecase;
 
 import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource;
 import com.tokopedia.loginregister.login.data.LocalDiscoverDataSource;

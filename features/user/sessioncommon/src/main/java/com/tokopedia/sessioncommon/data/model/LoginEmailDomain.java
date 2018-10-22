@@ -5,9 +5,9 @@ package com.tokopedia.sessioncommon.data.model;
  */
 
 public class LoginEmailDomain {
-    private TokenViewModel token;
-    private GetUserInfoData info;
-    private MakeLoginPojo loginResult;
+    protected TokenViewModel token;
+    protected GetUserInfoData info;
+    protected MakeLoginPojo loginResult;
 
     public void setToken(TokenViewModel token) {
         this.token = token;

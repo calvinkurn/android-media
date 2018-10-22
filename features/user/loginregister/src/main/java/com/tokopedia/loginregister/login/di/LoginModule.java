@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.loginregister.login.analytics.LoginAnalytics;
+import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
 
 import javax.inject.Named;
 
@@ -24,11 +24,5 @@ public class LoginModule {
     @Named(LOGIN_CACHE)
     LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, LOGIN_CACHE);
-    }
-
-    @LoginScope
-    @Provides
-    LoginAnalytics provideLoginAnalytics(@ApplicationContext Context context) {
-        return new LoginAnalytics(((AbstractionRouter) context).getAnalyticTracker());
     }
 }

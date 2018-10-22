@@ -5,6 +5,7 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
@@ -17,6 +18,7 @@ import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.network.AccountsBearerInterceptor;
 import com.tokopedia.sessioncommon.network.BasicInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
+import com.tokopedia.sessioncommon.network.TokenErrorResponse;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -130,7 +132,7 @@ public class SessionModule {
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(basicInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
-//        builder.addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class));
+        builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
 
         return builder.build();
     }

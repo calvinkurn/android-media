@@ -38,7 +38,6 @@ public class TokenViewModel {
     @Expose
     private String scope;
 
-
     public String getAccessToken() {
         return accessToken;
     }

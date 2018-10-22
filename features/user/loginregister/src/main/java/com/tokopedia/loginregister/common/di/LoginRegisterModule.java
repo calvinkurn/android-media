@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -10,12 +11,11 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
-import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,6 +28,12 @@ import retrofit2.Retrofit;
  */
 @Module
 public class LoginRegisterModule {
+
+    @LoginRegisterScope
+    @Provides
+    LoginRegisterAnalytics provideLoginAnalytics(@ApplicationContext Context context) {
+        return new LoginRegisterAnalytics(((AbstractionRouter) context).getAnalyticTracker());
+    }
 
     @LoginRegisterScope
     @Provides

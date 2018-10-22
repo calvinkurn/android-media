@@ -8,10 +8,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
-import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
-import com.tokopedia.loginregister.common.data.SecurityDomain;
-import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import java.util.ArrayList;
@@ -50,8 +48,6 @@ public interface LoginContract {
 
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
 
-        void onErrorLogin(String errorMessage, int codeError);
-
         void onSuccessLoginSosmed(String loginMethod);
 
         Context getContext();
@@ -60,13 +56,17 @@ public interface LoginContract {
 
         void enableArrow();
 
-        void onForbidden();
-
-        void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
+        void onGoToAddName();
 
         boolean isFromRegister();
 
         LoginSuccessRouter getLoginRouter();
+
+        void setSmartLock();
+
+        void onErrorLoginSosmed(String loginMethodName, String errorCodeMessage);
+
+        void onSuccessLoginEmail();
     }
 
     interface Presenter extends CustomerPresenter<View> {

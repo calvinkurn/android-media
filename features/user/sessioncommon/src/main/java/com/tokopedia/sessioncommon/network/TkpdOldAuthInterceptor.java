@@ -33,6 +33,8 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_OS_VERSION = "os_version";
     private static final String HEADER_HMAC_SIGNATURE_KEY = "TKPD Tokopedia:";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
+    private static final String HEADER_PATH = "x-tkpd-path";
+
 
     public TkpdOldAuthInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
         super(context, networkRouter, userSession);
@@ -68,7 +70,8 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
                 + "\n" + contentType
                 + "\n" + date
                 + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
-                + "\n" + path; String signature = AuthUtil.calculateRFC2104HMAC(authString, authKey);
+                + "\n" + path; String signature = AuthUtil.calculateRFC2104HMAC(authString,
+                AuthUtil.Key.KEY_WSV4);
 
         Map<String, String> headerMap = new ArrayMap<>();
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
@@ -84,6 +87,8 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_PATH, path);
+
         return headerMap;
     }
 

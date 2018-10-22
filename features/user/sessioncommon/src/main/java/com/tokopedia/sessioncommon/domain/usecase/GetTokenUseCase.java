@@ -15,8 +15,11 @@ import rx.functions.Action1;
 
 /**
  * Created by stevenfredian on 3/8/17.
+ * Please don't forget to handle
+ * {@link com.tokopedia.sessioncommon.network.TokenErrorException
+ * from @link {@link com.tokopedia.sessioncommon.network.TokenErrorResponse}}
+ * in onError
  */
-
 public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String GRANT_TYPE = "grant_type";

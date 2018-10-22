@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -32,6 +34,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -41,16 +44,20 @@ import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
-import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
+import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.common.view.LoginTextView;
-import com.tokopedia.loginregister.login.analytics.LoginAnalytics;
+import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
+import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity;
+import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.register.RegisterInitialActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -62,6 +69,10 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
+import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author by nisie on 12/18/17.
@@ -124,7 +135,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     UserSessionInterface userSession;
 
     @Inject
-    LoginAnalytics analytics;
+    LoginRegisterAnalytics analytics;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new LoginFragment();
@@ -134,7 +145,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     protected String getScreenName() {
-        return LoginAnalytics.SCREEN_LOGIN;
+        return LoginRegisterAnalytics.SCREEN_LOGIN;
     }
 
     @Override
@@ -338,11 +349,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void showSmartLock() {
-//        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ);
-//        intent.putExtras(bundle);
-//        startActivityForResult(intent, REQUEST_SMART_LOCK);
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SMART_LOCK);
     }
 
     private void goToRegisterInitial() {
@@ -416,15 +427,15 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void saveSmartLock(int state, String email, String password) {
-//        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(SmartLockActivity.STATE, state);
-//        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
-//            bundle.putString(SmartLockActivity.USERNAME, email);
-//            bundle.putString(SmartLockActivity.PASSWORD, password);
-//        }
-//        intent.putExtras(bundle);
-//        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK);
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
+            bundle.putString(SmartLockActivity.USERNAME, email);
+            bundle.putString(SmartLockActivity.PASSWORD, password);
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK);
     }
 
     @Override
@@ -440,7 +451,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onErrorLogin(String errorMessage) {
-        getLoginRouter().onErrorLogin(errorMessage);
+        dismissLoadingLogin();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
@@ -522,7 +534,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     @Override
-    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+    public void onGoToAddName() {
 //        Intent intent = AddNameActivity.newInstance(getActivity());
 //        startActivityForResult(intent, REQUEST_ADD_NAME);
     }
@@ -545,12 +557,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 loadMoreFab.setVisibility(View.GONE);
             }
         });
-    }
-
-    @Override
-    public void onForbidden() {
-        dismissLoadingLogin();
-//        ForbiddenActivity.startActivity(getActivity());
     }
 
     private boolean isLastItem() {
@@ -576,15 +582,15 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         analytics.eventClickLoginWebview(name);
 
         if (getFragmentManager() != null && getActivity() != null) {
-//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//            WebViewLoginFragment newFragment = WebViewLoginFragment
-//                    .createInstance(url, name);
-//            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
-//            newFragment.show(fragmentTransaction, "dialog");
-//            getActivity().getWindow().setSoftInputMode(
-//                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//
-//            fragmentTransaction.commitAllowingStateLoss();
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            WebViewLoginFragment newFragment = WebViewLoginFragment
+                    .createInstance(url, name);
+            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
+            newFragment.show(fragmentTransaction, "dialog");
+            getActivity().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+            fragmentTransaction.commitAllowingStateLoss();
 
         }
     }
@@ -601,8 +607,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private void onLoginGoogleClick() {
         if (getActivity() != null) {
             analytics.eventClickLoginGoogle(getActivity().getApplicationContext());
-//        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-//        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+            Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+            startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
         }
 
     }
@@ -663,55 +669,55 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (getActivity() != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
-//            if (requestCode == REQUEST_SMART_LOCK
-//                    && resultCode == Activity.RESULT_OK
-//                    && data != null
-//                    && data.getExtras() != null
-//                    && data.getExtras().getString(SmartLockActivity.USERNAME) != null
-//                    && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
-//                emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
-//                passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
-//                presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
-//                        data.getExtras().getString(SmartLockActivity.PASSWORD));
-//            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
-//                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-//                String email = googleSignInAccount.getEmail();
-//                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-//                presenter.loginGoogle(accessToken, email);
-//            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
-//                presenter.loginWebview(data);
-//            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
-//                dismissLoadingLogin();
-//                getActivity().setResult(Activity.RESULT_CANCELED);
-//            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
-//                dismissLoadingLogin();
-//                getActivity().setResult(Activity.RESULT_CANCELED);
-//            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
-//                dismissLoadingLogin();
-//                getActivity().setResult(Activity.RESULT_CANCELED);
-//            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
-//                dismissLoadingLogin();
-//                getActivity().setResult(Activity.RESULT_CANCELED);
-//            } else if (requestCode == REQUEST_VERIFY_PHONE) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-//                onSuccessLogin();
-//            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
-//                userSession.logoutSession();
-//                dismissLoadingLogin();
-//                getActivity().setResult(Activity.RESULT_CANCELED);
-//                getActivity().finish();
-//            } else {
-//                super.onActivityResult(requestCode, resultCode, data);
-//            }
+            if (requestCode == REQUEST_SMART_LOCK
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getExtras() != null
+                    && data.getExtras().getString(SmartLockActivity.USERNAME) != null
+                    && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
+                emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+                passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+                presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+                        data.getExtras().getString(SmartLockActivity.PASSWORD));
+            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                String email = googleSignInAccount.getEmail();
+                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+                presenter.loginGoogle(accessToken, email);
+            } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
+                presenter.loginWebview(data);
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin();
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin();
+            } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin();
+            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin();
+            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+                dismissLoadingLogin();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+            } else if (requestCode == REQUEST_VERIFY_PHONE) {
+                onSuccessLogin();
+            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+                onSuccessLogin();
+            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+                userSession.logoutSession();
+                dismissLoadingLogin();
+                getActivity().setResult(Activity.RESULT_CANCELED);
+                getActivity().finish();
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 
@@ -751,66 +757,61 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
             @Override
             public void onForbidden() {
-
-            }
-
-            @Override
-            public void onErrorLogin(String errorMessage) {
                 dismissLoadingLogin();
-                NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-            }
-
-            @Override
-            public boolean isFromRegister() {
-                return false;
-            }
-
-            @Override
-            public void setSmartLock() {
-//        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-//                emailEditText.getText().toString(),
-//                passwordEditText.getText().toString());
+                ForbiddenActivity.startActivity(getActivity());
             }
 
             @Override
             public void onGoToActivationPage(String email) {
-//        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-//                email, passwordEditText.getText().toString());
-//        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
+                Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+                        email, passwordEditText.getText().toString());
+                startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
             }
 
             @Override
-            public void onSuccessLoginEmail() {
-                dismissLoadingLogin();
-                analytics.eventSuccessLoginEmail();
-                if (getActivity() != null) {
-                    ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                            (userSession.getUserId(),
-                                    userSession.getName(),
-                                    userSession.getEmail(),
-                                    userSession.getPhoneNumber(),
-                                    userSession.isGoldMerchant(),
-                                    userSession.getShopName(),
-                                    userSession.getShopId(),
-                                    userSession.hasShop(),
-                                    LoginAnalytics.LABEL_EMAIL
-                            );
-                }
-
-                onSuccessLogin();
+            public void onErrorLogin(String errorMessage) {
+                LoginFragment.this.onErrorLogin(errorMessage);
             }
-
-
         };
     }
 
     @Override
-    public void onErrorLogin(String errorMessage, int codeError) {
-        onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
+    public void onSuccessLoginEmail() {
+        dismissLoadingLogin();
+        analytics.eventSuccessLoginEmail();
+        if (getActivity() != null) {
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
+                    (userSession.getUserId(),
+                            userSession.getName(),
+                            userSession.getEmail(),
+                            userSession.getPhoneNumber(),
+                            userSession.isGoldMerchant(),
+                            userSession.getShopName(),
+                            userSession.getShopId(),
+                            userSession.hasShop(),
+                            LoginRegisterAnalytics.LABEL_EMAIL
+                    );
+        }
+
+        onSuccessLogin();
+    }
+
+    @Override
+    public void setSmartLock() {
+        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                emailEditText.getText().toString(),
+                passwordEditText.getText().toString());
+    }
+
+    @Override
+    public void onErrorLoginSosmed(String loginMethodName, String errorMessage) {
+        onErrorLogin(errorMessage);
     }
 
     @Override
     public void onSuccessLoginSosmed(String loginMethod) {
+        dismissLoadingLogin();
+
         analytics.eventSuccessLoginSosmed(loginMethod);
         if (getActivity() != null) {
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
@@ -822,7 +823,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                             userSession.getShopName(),
                             userSession.getShopId(),
                             userSession.hasShop(),
-                            LoginAnalytics.LABEL_EMAIL
+                            LoginRegisterAnalytics.LABEL_EMAIL
                     );
         }
         onSuccessLogin();

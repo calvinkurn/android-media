@@ -90,6 +90,7 @@ ext {
     tkpdAttachProductVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
     tkpdSessionCommonVersion = '2.22'
+    tkpdLoginThirdVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -312,7 +313,6 @@ ext {
                     ".loginregister:loginregister:${tkpdLoginRegisterVersion}",
             sessioncommon         : "com.tokopedia" +
                     ".loginregistercommon:loginregistercommon:${tkpdSessionCommonVersion}"
-
     ]
 
     tkpdLibDependencies = [

@@ -1,8 +1,8 @@
-package com.tokopedia.loginregister.login.domain.mapper;
+package com.tokopedia.loginregister.discover.mapper;
 
-import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
-import com.tokopedia.loginregister.login.domain.pojo.DiscoverItemPojo;
-import com.tokopedia.loginregister.login.domain.pojo.DiscoverPojo;
+import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.discover.pojo.DiscoverItemPojo;
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 import com.tokopedia.network.data.model.response.DataResponse;
 

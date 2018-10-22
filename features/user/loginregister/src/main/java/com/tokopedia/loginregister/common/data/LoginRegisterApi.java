@@ -1,13 +1,18 @@
 package com.tokopedia.loginregister.common.data;
 
 
-import com.tokopedia.loginregister.login.domain.pojo.DiscoverPojo;
+import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
+import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo;
 import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -20,4 +25,17 @@ public interface LoginRegisterApi {
     Observable<Response<DataResponse<DiscoverPojo>>> discoverLogin(@QueryMap Map<String, Object>
                                                                            parameters);
 
+    @FormUrlEncoded
+    @POST(LoginRegisterUrl.RESEND_ACTIVATION)
+    Observable<Response<DataResponse<ActionPojo>>> resendActivation(@FieldMap Map<String, Object>
+                                                                            params);
+
+    @FormUrlEncoded
+    @POST(LoginRegisterUrl.ACTIVATE_UNICODE)
+    Observable<Response<ActivateUnicodePojo>> activateWithUnicode(@FieldMap Map<String, Object>
+                                                                          params);
+
+    @FormUrlEncoded
+    @POST(LoginRegisterUrl.CHANGE_EMAIL)
+    Observable<Response<DataResponse<ActionPojo>>> changeEmail(@FieldMap Map<String, Object> params);
 }

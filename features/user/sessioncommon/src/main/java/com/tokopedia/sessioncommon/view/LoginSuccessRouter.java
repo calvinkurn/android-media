@@ -13,12 +13,6 @@ public interface LoginSuccessRouter {
 
     void onGoToCreatePasswordPage(GetUserInfoData info);
 
-    boolean isFromRegister();
-
-    void setSmartLock();
-
-    void onSuccessLoginEmail();
-
     void onGoToPhoneVerification();
 
     void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone);

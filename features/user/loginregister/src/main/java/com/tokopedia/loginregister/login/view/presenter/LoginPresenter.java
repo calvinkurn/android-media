@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.view.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
@@ -9,11 +10,17 @@ import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
+import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.LoginModule;
-import com.tokopedia.loginregister.login.domain.DiscoverUseCase;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber;
+import com.tokopedia.loginregister.loginthirdparty.LoginThirdPartySubscriber;
+import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase;
+import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase;
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -43,27 +50,26 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
 
     private final LocalCacheHandler loginCache;
     private final DiscoverUseCase discoverUseCase;
-    //    private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
-//    private final LoginWithSosmedUseCase loginWithSosmedUseCase;
-//    private final LoginWebviewUseCase loginWebviewUseCase;
+    private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
+    private final LoginWithSosmedUseCase loginWithSosmedUseCase;
+    private final LoginWebviewUseCase loginWebviewUseCase;
     private final LoginEmailUseCase loginEmailUseCase;
 
     @Inject
     public LoginPresenter(
             @Named(LoginModule.LOGIN_CACHE) LocalCacheHandler loginCache,
-//                          SessionHandler sessionHandler,
             LoginEmailUseCase loginEmailUseCase,
-            DiscoverUseCase discoverUseCase
-//                          GetFacebookCredentialUseCase getFacebookCredentialUseCase,
-//                          LoginWithSosmedUseCase loginWithSosmedUseCase,
-//                          LoginWebviewUseCase loginWebviewUseCase
+            DiscoverUseCase discoverUseCase,
+            GetFacebookCredentialUseCase getFacebookCredentialUseCase,
+            LoginWithSosmedUseCase loginWithSosmedUseCase,
+            LoginWebviewUseCase loginWebviewUseCase
     ) {
         this.loginCache = loginCache;
         this.loginEmailUseCase = loginEmailUseCase;
         this.discoverUseCase = discoverUseCase;
-//        this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
-//        this.loginWithSosmedUseCase = loginWithSosmedUseCase;
-//        this.loginWebviewUseCase = loginWebviewUseCase;
+        this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
+        this.loginWithSosmedUseCase = loginWithSosmedUseCase;
+        this.loginWebviewUseCase = loginWebviewUseCase;
     }
 
     @Override
@@ -71,8 +77,8 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
         super.detachView();
         discoverUseCase.unsubscribe();
         loginEmailUseCase.unsubscribe();
-//        loginWithSosmedUseCase.unsubscribe();
-//        loginWebviewUseCase.unsubscribe();
+        loginWithSosmedUseCase.unsubscribe();
+        loginWebviewUseCase.unsubscribe();
     }
 
     @Override
@@ -141,7 +147,7 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
                         () {
                     @Override
                     public void onForbidden() {
-                        getView().onForbidden();
+                        getView().getLoginRouter().onForbidden();
                     }
 
                     @Override
@@ -167,21 +173,55 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
 
     @Override
     public void loginWebview(Intent data) {
-
+        if (data.getBundleExtra(BUNDLE) != null
+                && data.getBundleExtra(BUNDLE).getString(PATH) != null) {
+            Bundle bundle = data.getBundleExtra(BUNDLE);
+            if (bundle.getString(PATH, "").contains(ERROR)) {
+                getView().onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
+                        bundle.getString(MESSAGE, "")
+                        + getView().getContext().getString(R.string.code_error) + " " +
+                        ErrorHandlerSession.ErrorCode.WS_ERROR);
+            } else if (bundle.getString(PATH, "").contains(CODE)) {
+                getView().showLoadingLogin();
+                loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString
+                                (CODE, ""), HTTPS + bundle.getString(SERVER) + bundle.getString
+                                (PATH)),
+                        new LoginThirdPartySubscriber(getView().getContext(),
+                                getView().getLoginRouter(),
+                                "", getView(), LoginRegisterAnalytics.WEBVIEW));
+            } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
+                getView().onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                        getView().getContext()));
+            }
+        } else {
+            getView().onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+                    getView().getContext()));
+        }
     }
 
     @Override
     public void loginGoogle(String accessToken, String email) {
-
+        getView().showLoadingLogin();
+        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamGoogle(accessToken),
+                new LoginThirdPartySubscriber(getView().getContext(), getView().getLoginRouter(),
+                        email, getView(), LoginRegisterAnalytics.GOOGLE));
     }
 
     @Override
     public void getFacebookCredential(Fragment fragment, CallbackManager callbackManager) {
-
+        getFacebookCredentialUseCase.execute(GetFacebookCredentialUseCase.getParam(
+                fragment,
+                callbackManager),
+                new GetFacebookCredentialSubscriber(getView().getFacebookCredentialListener()));
     }
 
     @Override
     public void loginFacebook(AccessToken accessToken, String email) {
-
+        getView().showLoadingLogin();
+        loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
+                new LoginThirdPartySubscriber(getView().getContext(), getView().getLoginRouter(),
+                        LoginRegisterAnalytics.FACEBOOK, getView(), email));
     }
 }

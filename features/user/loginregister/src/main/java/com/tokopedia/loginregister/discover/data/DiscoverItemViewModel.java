@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.common.data;
+package com.tokopedia.loginregister.discover.data;
 
 /**
  * @author by nisie on 10/10/17.

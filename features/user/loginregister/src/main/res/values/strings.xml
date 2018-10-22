@@ -274,5 +274,13 @@
     <!--REGISTER PAGE -->
     <string name="title_register">Daftar Sekarang di Tokopedia</string>
 
+    <!-- ACTIVATION PAGE -->
+    <string name="title_activity_activation">Aktivasi Akun</string>
+    <string name="title_activation_otp">Aktivasi</string>
+    <string name="success_resend_activation">Kode aktivasi telah dikirim ulang</string>
+
+    <!-- CHANGE EMAIL PAGE -->
+    <string name="title_old_email">Email Terdaftar</string>
+
 
 </resources>
