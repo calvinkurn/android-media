@@ -1,6 +1,5 @@
-package com.tokopedia.affiliate.feature.tracking.view;
+package com.tokopedia.affiliate.feature.tracking.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,11 +8,13 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.affiliate.feature.tracking.AffTrackingPresenter;
+import com.tokopedia.affiliate.feature.tracking.view.presenter.AffTrackingPresenter;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.di.AffTrackingModule;
 import com.tokopedia.affiliate.feature.tracking.di.DaggerAffTrackingComponent;
+import com.tokopedia.affiliate.feature.tracking.view.contract.AffContract;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 
 import java.util.ArrayList;
@@ -21,12 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.hansel.pebbletracesdk.presets.UIPresets;
-
 public class AffiliateTrackingActivity extends BaseActivity implements AffContract.View {
 
-
-    public static final String TOKOPEDIA_HOME = "tokopedia://home";
     @Inject
     AffTrackingPresenter presenter;
 
@@ -76,6 +73,11 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         presenter.detachView();
     }
 
@@ -101,7 +103,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Override
     public void handleError() {
         ApplinkRouter router = ((ApplinkRouter) getApplicationContext());
-        router.goToApplinkActivity(this, TOKOPEDIA_HOME);
+        router.goToApplinkActivity(this, ApplinkConst.HOME);
         finishActivity();
     }
 }

@@ -1,9 +1,9 @@
-package com.tokopedia.affiliate.feature.tracking.view;
+package com.tokopedia.affiliate.feature.tracking.view.contract;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
-public class AffContract {
+public interface AffContract {
 
     public interface View extends CustomerView {
 
