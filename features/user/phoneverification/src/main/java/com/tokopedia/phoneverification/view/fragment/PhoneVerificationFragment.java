@@ -43,7 +43,6 @@ import com.tokopedia.phoneverification.di.PhoneVerificationQualifier;
 import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.phoneverification.view.presenter.PhoneVerificationPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -66,8 +65,6 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class PhoneVerificationFragment extends BaseDaggerFragment
         implements PhoneVerification.View, IncomingSmsReceiver.ReceiveSMSListener {
-
-    private static final String TOKOCASH = "TokoCash";
 
     @Override
     protected String getScreenName() {
@@ -110,7 +107,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     protected TextView requestOtpCallButton;
     protected View inputOtpView;
     protected EditText otpEditText;
-    protected TextView tokocashText;
 
     protected CountDownTimer countDownTimer;
     protected IncomingSmsReceiver smsReceiver;
@@ -206,7 +202,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         countdownText = (TextView) view.findViewById(R.id.countdown_text);
         inputOtpView = view.findViewById(R.id.input_otp_view);
         otpEditText = (EditText) view.findViewById(R.id.input_otp);
-        tokocashText = (TextView) view.findViewById(R.id.tokocash_text);
     }
 
     @Override
@@ -299,26 +294,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                 , 0);
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
-
-        Spannable tokoCashSpannable = new SpannableString(getString(R.string.tokocash_phone_verification));
-
-        tokoCashSpannable.setSpan(new ClickableSpan() {
-                                      @Override
-                                      public void onClick(View view) {
-
-                                      }
-
-                                      @Override
-                                      public void updateDrawState(TextPaint ds) {
-                                          ds.setColor(MethodChecker.getColor(getActivity(),
-                                                  com.tokopedia.core.R.color.tkpd_main_green));
-                                      }
-                                  }
-                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH)
-                , getString(R.string.tokocash_phone_verification).indexOf(TOKOCASH) + TOKOCASH.length()
-                , 0);
-
-        tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -425,14 +400,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         } else {
             skipButton.setVisibility(View.VISIBLE);
         }
-
-        tokocashText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(TokoCashWebViewActivity.getIntentCall(getActivity()));
-            }
-        });
-
     }
 
     @Override

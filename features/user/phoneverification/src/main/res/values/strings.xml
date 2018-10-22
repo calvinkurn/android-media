@@ -12,5 +12,7 @@
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
     <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
+    <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
+    <string name="title_activity_change_phone_number">Ubah Nomor Ponsel</string>
 
 </resources>

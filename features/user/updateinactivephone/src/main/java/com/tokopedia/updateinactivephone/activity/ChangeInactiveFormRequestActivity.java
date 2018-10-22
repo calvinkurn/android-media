@@ -55,6 +55,12 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         return intent;
     }
 
+    public static Intent createIntentWithUserId(Context context, String userId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(USER_ID, userId);
+        return createIntent(context, bundle);
+    }
+
     @Override
     protected Fragment getNewFragment() {
         return SelectImageNewPhoneFragment.getInstance();

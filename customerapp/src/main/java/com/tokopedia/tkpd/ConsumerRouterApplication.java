@@ -235,9 +235,6 @@ import com.tokopedia.notifcenter.NotifCenterRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
-import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
-import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -245,6 +242,9 @@ import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivi
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
+import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
+import com.tokopedia.phoneverification.view.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -290,7 +290,6 @@ import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
@@ -370,6 +369,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
+import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -2593,8 +2593,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context) {
-        return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    public Intent getChangePhoneNumberRequestIntent(Context context, String userId) {
+        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId);
     }
 
     /**
