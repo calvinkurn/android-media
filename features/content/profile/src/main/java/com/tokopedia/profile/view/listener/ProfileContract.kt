@@ -11,18 +11,10 @@ import com.tokopedia.user.session.UserSession
  * @author by milhamj on 9/17/18.
  */
 interface ProfileContract {
-    interface View : BaseListViewListener<Visitable<*>> {
-        fun getUserSession(): UserSession
-
+    interface View : BaseListViewListener<Visitable<*>>, ProfileEmptyContract.View {
         fun onSuccessGetProfileFirstPage(firstPageViewModel: ProfileFirstPageViewModel)
 
         fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String)
-
-        fun goToFollowing()
-
-        fun followUnfollowUser(userId: Int, follow: Boolean)
-
-        fun addImages(productId: Int)
 
         fun updateCursor(cursor: String)
 
@@ -33,8 +25,6 @@ interface ProfileContract {
         fun onSuccessDeletePost(rowNumber: Int)
 
         fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int)
-
-        fun onChangeAvatarClicked()
 
         fun onSuccessTrackPostClick(redirectLink: String)
 

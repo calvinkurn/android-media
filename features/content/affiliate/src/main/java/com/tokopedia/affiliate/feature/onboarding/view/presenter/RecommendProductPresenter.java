@@ -19,7 +19,7 @@ public class RecommendProductPresenter extends BaseDaggerPresenter<RecommendProd
     private final GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase;
 
     @Inject
-    public RecommendProductPresenter(GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase) {
+    RecommendProductPresenter(GetProductAffiliateGqlUseCase getProductAffiliateGqlUseCase) {
         this.getProductAffiliateGqlUseCase = getProductAffiliateGqlUseCase;
     }
 
@@ -34,7 +34,6 @@ public class RecommendProductPresenter extends BaseDaggerPresenter<RecommendProd
         getView().showLoading();
         List<Integer> productList = new ArrayList<>();
         productList.add(Integer.valueOf(productId));
-        //TODO milhamj add shopId
         getProductAffiliateGqlUseCase.execute(
                 GetProductAffiliateGqlUseCase.Companion.createRequestParams(productList),
                 new GetProductInfoSubscriber(getView())

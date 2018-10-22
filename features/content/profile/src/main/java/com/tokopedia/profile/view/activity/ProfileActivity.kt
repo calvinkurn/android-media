@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 
 /**
@@ -52,6 +54,10 @@ class ProfileActivity : BaseSimpleActivity() {
         intent.extras.let {
             bundle.putAll(it)
         }
-        return ProfileFragment.createInstance(bundle)
+        return if (GlobalConfig.isCustomerApp()) {
+            ProfileFragment.createInstance(bundle)
+        } else {
+            ProfileEmptyFragment.createInstance(bundle)
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -17,13 +18,14 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder.PAYLOAD_FOLLOW
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import kotlinx.android.synthetic.main.item_profile_header.view.*
 
 /**
  * @author by milhamj on 9/20/18.
  */
-class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.View)
+class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContract.View)
     : AbstractViewHolder<ProfileHeaderViewModel>(v) {
 
     companion object {
@@ -45,7 +47,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             itemView.followers.text = getFollowersText(element)
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (!element.isOwner) {
+            if (!element.isOwner && GlobalConfig.isCustomerApp()) {
                 itemView.followBtn.visibility = View.VISIBLE
                 itemView.followBtn.setOnClickListener {
                     viewListener.followUnfollowUser(element.userId, !element.isFollowed)

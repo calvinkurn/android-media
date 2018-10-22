@@ -16,13 +16,14 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 
 /**
  * @author by milhamj on 9/20/18.
  */
-class ProfileTypeFactoryImpl(val viewListener : ProfileContract.View,
-                             val kolPostViewListener : KolPostListener.View.ViewHolder)
+class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
+                             val kolPostViewListener : KolPostListener.View.ViewHolder?)
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory {
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {

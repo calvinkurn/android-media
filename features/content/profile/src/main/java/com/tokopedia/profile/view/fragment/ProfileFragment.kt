@@ -74,11 +74,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
-        const val POST_ID = "{post_id}"
-        const val TEXT_PLAIN = "text/plain"
-        const val KOL_COMMENT_CODE = 13
-        const val SETTING_PROFILE_CODE = 83
-        const val EDIT_POST_CODE = 1310
+        private const val POST_ID = "{post_id}"
+        private const val TEXT_PLAIN = "text/plain"
+        private const val KOL_COMMENT_CODE = 13
+        private const val SETTING_PROFILE_CODE = 83
+        private const val EDIT_POST_CODE = 1310
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -96,7 +96,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        initView(view)
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -187,9 +186,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun getUserSession(): UserSession {
-        return UserSession(context)
-    }
+    override fun getUserSession(): UserSession = UserSession(context)
 
     override fun getAbstractionRouter(): AbstractionRouter {
         if (context!!.applicationContext is AbstractionRouter) {
@@ -260,11 +257,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         } else {
             startActivity(profileRouter.getLoginIntent(context!!))
         }
-    }
-
-    override fun addImages(productId: Int) {
-        //TODO milhamj
-        Toast.makeText(context, "Adding more images", Toast.LENGTH_SHORT).show()
     }
 
     override fun updateCursor(cursor: String) {
@@ -367,7 +359,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         menus.setItemMenuList(menuList.toTypedArray())
         menus.setActionText(getString(R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
-        menus.setOnItemMenuClickListener { itemMenus, pos ->
+        menus.setOnItemMenuClickListener { itemMenus, _ ->
             when (itemMenus.title) {
                 getString(R.string.profile_delete_post) ->
                     createDeleteDialog(rowNumber, element.contentId).show()
@@ -482,9 +474,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             throw IllegalStateException("Application must implement "
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
-    }
-
-    private fun initView(view: View) {
     }
 
     private fun setToolbarTitle(title: String) {
