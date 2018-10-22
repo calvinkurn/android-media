@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -11,6 +12,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
@@ -37,7 +39,7 @@ public class SelectQuantityPresenter
         implements SelectQuantityContract.Presenter {
 
     private PostVerifyCartUseCase postVerifyCartUseCase;
-    private String promocode="";
+    private String promocode = "";
     private PackageViewModel checkoutData;
     private DealsDetailsResponse dealDetails;
     private UserSession userSession;
@@ -49,8 +51,8 @@ public class SelectQuantityPresenter
 
     @Override
     public void initialize(DealsDetailsResponse detailsViewModel) {
-       userSession =((AbstractionRouter) getView().getActivity().getApplication()).getSession();
-        this.dealDetails=detailsViewModel;
+        userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        this.dealDetails = detailsViewModel;
         getView().renderFromDetails(dealDetails);
     }
 
@@ -107,12 +109,12 @@ public class SelectQuantityPresenter
     }
 
     public void verifyCart(PackageViewModel checkoutData) {
-        this.checkoutData=checkoutData;
+        this.checkoutData = checkoutData;
         getProfile();
 
     }
 
-    public void verifyMyCart(){
+    public void verifyMyCart() {
         getView().showProgressBar();
         final RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
@@ -137,18 +139,29 @@ public class SelectQuantityPresenter
 
             @Override
             public void onNext(VerifyMyCartResponse verifyCartResponse) {
-                Intent intent=new Intent(getView().getActivity(), CheckoutActivity.class);
-                intent.putExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL, checkoutData);
-                intent.putExtra(CheckoutDealPresenter.EXTRA_CART, verifyCartResponse.getCart().toString());
-                intent.putExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL, dealDetails);
-                getView().navigateToActivity(intent);
                 getView().hideProgressBar();
+                try {
+                    if (verifyCartResponse.getStatus().getResult().equalsIgnoreCase("failure")) {
 
+                        for (JsonElement jsonElement : verifyCartResponse.getCart().get("cart_items").getAsJsonArray()) {
+                            if (!TextUtils.isEmpty(jsonElement.getAsJsonObject().get("error").getAsString())) {
+                                getView().showFailureMessage(jsonElement.getAsJsonObject().get("error").getAsString());
+                            }
+                        }
+                    } else {
+                        Intent intent = new Intent(getView().getActivity(), CheckoutActivity.class);
+                        intent.putExtra(CheckoutDealPresenter.EXTRA_PACKAGEVIEWMODEL, checkoutData);
+                        intent.putExtra(CheckoutDealPresenter.EXTRA_CART, verifyCartResponse.getCart().toString());
+                        intent.putExtra(CheckoutDealPresenter.EXTRA_DEALDETAIL, dealDetails);
+                        getView().navigateToActivity(intent);
+                    }
+                } catch (Exception e) {
+
+                }
 
             }
         });
     }
-
 
 
 }

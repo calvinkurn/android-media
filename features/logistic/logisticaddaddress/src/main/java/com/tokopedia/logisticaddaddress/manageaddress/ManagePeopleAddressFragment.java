@@ -42,6 +42,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     private String querySearch;
     private int sortID;
+    private boolean IS_EMPTY = true;
 
     private View rootView;
     private LinearLayoutManager layoutManager;
@@ -224,6 +225,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void setNoResultView(boolean isAble) {
+        IS_EMPTY = isAble;
         this.adapter.showEmpty(isAble);
     }
 
@@ -324,7 +326,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void openFormAddressView(AddressModel data) {
         if (data == null) {
-            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token),
+            startActivityForResult(AddAddressActivity.createInstance(getActivity(), this.token, IS_EMPTY),
                     ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
         } else {
             startActivityForResult(AddAddressActivity.createInstance(getActivity(), data, this.token),

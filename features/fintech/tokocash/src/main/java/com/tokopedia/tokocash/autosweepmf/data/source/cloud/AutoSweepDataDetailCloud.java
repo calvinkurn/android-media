@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepDetailMapperEntity;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepDetail;

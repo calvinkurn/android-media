@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -357,8 +356,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter)getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,

@@ -20,6 +20,8 @@ public interface SetAutoSweepLimitContract {
         Context getAppContext();
 
         Context getActivityContext();
+
+        Long getLongRemoteConfig(String key);
     }
 
     interface Presenter extends CustomerPresenter<View> {

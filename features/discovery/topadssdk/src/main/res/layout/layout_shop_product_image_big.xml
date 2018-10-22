@@ -7,7 +7,7 @@
     android:padding="@dimen/dp_5"
     app:cardUseCompatPadding="true">
 
-    <com.tokopedia.topads.sdk.view.SquareImageView
+    <com.tokopedia.topads.sdk.view.ImpressedImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

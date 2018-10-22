@@ -8,6 +8,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -49,7 +50,7 @@ public class SellerInfoWebViewActivity extends BaseSimpleActivity{
 
     public static Intent getCallingIntent(Context context, String url) {
         Bundle bundle = new Bundle();
-        bundle.putString(SellerInfoWebViewFragment.EXTRA_URL, url);
+        bundle.putString(BaseSessionWebViewFragment.ARGS_URL, url);
         Intent intent = new Intent(context, SellerInfoWebViewActivity.class);
         intent.putExtras(bundle);
         return intent;
@@ -59,7 +60,7 @@ public class SellerInfoWebViewActivity extends BaseSimpleActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        extraUrl = getIntent().getStringExtra(SellerInfoWebViewFragment.EXTRA_URL);
+        extraUrl = getIntent().getStringExtra(BaseSessionWebViewFragment.ARGS_URL);
         super.onCreate(savedInstanceState);
     }
 

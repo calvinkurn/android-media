@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+
+import rx.Observable;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -27,4 +30,12 @@ public interface IHomeRouter {
     Intent getInstantLoanIntent(Context context);
 
     void goToManageShop(Context context);
+
+    void sendIndexScreen(Activity activity, String screeName);
+
+    Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
+
+    String getExtraBroadcastReceiverWallet();
+
+    AnalyticTracker getAnalyticTracker();
 }
