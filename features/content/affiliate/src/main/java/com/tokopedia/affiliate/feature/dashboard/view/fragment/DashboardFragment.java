@@ -250,7 +250,7 @@ public class DashboardFragment
 
     @Override
     public void goToAffiliateExplore() {
-        RouteManager.route(Objects.requireNonNull(getContext()), ApplinkConst.AFFILIATE_EXPLORE);
+        RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
     }
 
     @Override

@@ -117,7 +117,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         BaseAppComponent baseAppComponent
-                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                = ((BaseMainApplication) getActivity().getApplication())
                 .getBaseAppComponent();
         DaggerOnboardingComponent.builder()
                 .baseAppComponent(baseAppComponent)
@@ -168,7 +168,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
-        Objects.requireNonNull(getActivity()).finish();
+        getActivity().finish();
     }
 
     @Override

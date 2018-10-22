@@ -43,7 +43,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
-@SuppressLint("NewApi")
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
     private static final String VIEW_MODEL = "view_model";
@@ -78,7 +77,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     protected void initInjector() {
         BaseAppComponent baseAppComponent
-                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                = ((BaseMainApplication) getActivity().getApplication())
                 .getBaseAppComponent();
         DaggerCreatePostComponent.builder()
                 .baseAppComponent(baseAppComponent)
@@ -129,7 +128,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         } else {
             startActivityForResult(
                     RouteManager.getIntent(
-                            Objects.requireNonNull(getContext()),
+                            getContext(),
                             ApplinkConst.LOGIN
                     ),
                     REQUEST_LOGIN
@@ -238,7 +237,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onSuccessSubmitPost() {
         goToProfile();
-        Objects.requireNonNull(getActivity()).finish();
+        getActivity().finish();
     }
 
     @Override
@@ -397,7 +396,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private void goToImagePicker() {
         startActivityForResult(
                 CreatePostImagePickerActivity.getInstance(
-                        Objects.requireNonNull(getActivity()),
+                        getActivity(),
                         viewModel.getFileImageList(),
                         viewModel.getMaxImage() - viewModel.getUrlImageList().size()
                 ),
@@ -406,7 +405,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void goToProfile() {
         Intent intent = RouteManager.getIntent(
-                Objects.requireNonNull(getContext()),
+                getContext(),
                 ApplinkConst.PROFILE_AFTER_POST.replace(PARAM_USER_ID, getUserSession().getUserId())
         );
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

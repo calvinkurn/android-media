@@ -146,16 +146,15 @@ public class ExploreFragment
         emptyResultModel = new EmptyModel();
         emptyResultModel.setIconRes(R.drawable.ic_empty_search);
         emptyResultModel.setTitle(
-                Objects.requireNonNull(getActivity()).getResources()
-                        .getString(R.string.text_product_not_found)
+                getActivity().getResources().getString(R.string.text_product_not_found)
         );
     }
 
     private void initListener() {
-        ivBack.setOnClickListener(view -> Objects.requireNonNull(getActivity()).onBackPressed());
+        ivBack.setOnClickListener(view -> getActivity().onBackPressed());
         ivBantuan.setOnClickListener(view ->
                 RouteManager.route(
-                        Objects.requireNonNull(getContext()),
+                        getContext(),
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
                 )
         );
@@ -248,7 +247,7 @@ public class ExploreFragment
         } else {
             startActivityForResult(
                     RouteManager.getIntent(
-                            Objects.requireNonNull(getContext()),
+                            getContext(),
                             ApplinkConst.LOGIN
                     ),
                     LOGIN_CODE);
@@ -258,7 +257,7 @@ public class ExploreFragment
     @Override
     public void onProductClicked(ExploreViewModel model) {
         RouteManager.route(
-                Objects.requireNonNull(getContext()),
+                getContext(),
                 ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
         );
     }
@@ -326,7 +325,7 @@ public class ExploreFragment
             presenter.checkAffiliateQuota(productId, adId);
         } else {
             RouteManager.route(
-                    Objects.requireNonNull(getContext()),
+                    getContext(),
                     ApplinkConst.AFFILIATE_ONBOARDING
                             .concat(PRODUCT_ID_QUERY_PARAM)
                             .concat(productId)
@@ -342,7 +341,7 @@ public class ExploreFragment
     @Override
     public void onSuccessCheckQuota(String productId, String adId) {
         RouteManager.route(
-                Objects.requireNonNull(getActivity()),
+                getActivity(),
                 ApplinkConst.AFFILIATE_CREATE_POST
                         .replace(PRODUCT_ID_PARAM, productId)
                         .replace(AD_ID_PARAM, adId)
@@ -354,7 +353,7 @@ public class ExploreFragment
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
             RouteManager.route(
-                    Objects.requireNonNull(getActivity()),
+                    getActivity(),
                     ApplinkConst.PROFILE.replace(USER_ID_USER_ID, userSession.getUserId()));
             dialog.dismiss();
         });

@@ -120,7 +120,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         BaseAppComponent baseAppComponent
-                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                = ((BaseMainApplication) getActivity().getApplication())
                 .getBaseAppComponent();
         DaggerOnboardingComponent.builder()
                 .baseAppComponent(baseAppComponent)

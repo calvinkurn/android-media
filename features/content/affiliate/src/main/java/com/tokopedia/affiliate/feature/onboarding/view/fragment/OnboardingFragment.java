@@ -70,7 +70,7 @@ public class OnboardingFragment extends Fragment {
         if (!userSession.isLoggedIn()) {
             startActivityForResult(
                     RouteManager.getIntent(
-                            Objects.requireNonNull(getContext()),
+                            getContext(),
                             ApplinkConst.LOGIN
                     ),
                     LOGIN_CODE);
@@ -116,7 +116,7 @@ public class OnboardingFragment extends Fragment {
                 PATH_FORMAT,
                 ANDROID_IMAGE_URL,
                 START_IMAGE_NAME,
-                DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(getContext())),
+                DisplayMetricUtils.getScreenDensity(getContext()),
                 START_IMAGE_NAME
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
@@ -137,7 +137,7 @@ public class OnboardingFragment extends Fragment {
                 PATH_FORMAT,
                 ANDROID_IMAGE_URL,
                 FINISH_IMAGE_NAME,
-                DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(getContext())),
+                DisplayMetricUtils.getScreenDensity(getContext()),
                 FINISH_IMAGE_NAME
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
