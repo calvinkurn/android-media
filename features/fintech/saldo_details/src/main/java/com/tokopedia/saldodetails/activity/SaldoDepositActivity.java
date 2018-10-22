@@ -2,7 +2,6 @@ package com.tokopedia.saldodetails.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -12,8 +11,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
-import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
-import com.tokopedia.saldodetails.view.fragment.MerchantSaldoPriorityFragment;
 import com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment;
 
 @DeepLink(ApplinkConst.DEPOSIT)
@@ -44,15 +41,5 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
     protected Fragment getNewFragment() {
         return SaldoDepositFragment.createInstance();
     }
-
-    /*@Override
-    public void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("seller_details", sellerDetails);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(resId, MerchantSaldoPriorityFragment.newInstance(bundle))
-                .commit();
-    }*/
 
 }

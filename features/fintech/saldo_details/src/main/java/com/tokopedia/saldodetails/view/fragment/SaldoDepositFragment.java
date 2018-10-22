@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
+import com.tokopedia.saldodetails.analytics.SaldoEventAnalytics;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
@@ -61,6 +62,8 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     @Inject
     UserSession userSession;
+    @Inject
+    SaldoEventAnalytics saldoEventAnalytics;
 
     TextView totalBalance;
     EditText startDate;
@@ -74,9 +77,6 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     TextView amountBeingReviewed;
     TextView topupButton;
     FrameLayout saldoFrameLayout;
-
-//    DepositScreenListener depositScreenListener;
-
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
     RefreshHandler refreshHandler;
@@ -207,7 +207,6 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     protected void initialVar() {
         datePicker = new SaldoDatePickerUtil(getActivity());
         adapter = new SaldoDepositAdapter(new SaldoDetailTransactionFactory(this));
-//        adapter.setOnRetryListenerRV(saldoDetailsPresenter.onRetry());
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -218,7 +217,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
                     .isSaldoNativeEnabled()) {
                 saldoDetailsPresenter.getMerchantSaldoDetails();
             } else {
-//                hideSaldoPrioritasFragment();
+                hideSaldoPrioritasFragment();
             }
         }
     }
@@ -239,7 +238,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                UnifyTracking.eventDepositTopUp();
+                saldoEventAnalytics.eventDepositTopUp();
                 Bundle bundle = new Bundle();
                 bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 /*Intent intent = new Intent(context, LoyaltyDetail.class);
@@ -448,10 +447,6 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
                     .beginTransaction()
                     .replace(R.id.saldo_prioritas_widget, MerchantSaldoPriorityFragment.newInstance(bundle))
                     .commit();
-
-            /*if (depositScreenListener != null) {
-                depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);
-            }*/
         } else {
             hideSaldoPrioritasFragment();
         }
@@ -601,8 +596,4 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     }
 
-
-    /*public interface DepositScreenListener {
-        void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails);
-    }*/
 }
