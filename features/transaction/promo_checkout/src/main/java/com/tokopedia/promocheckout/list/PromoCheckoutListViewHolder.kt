@@ -2,13 +2,16 @@ package com.tokopedia.promocheckout.list
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.PromoCheckoutListModel
+import kotlinx.android.synthetic.main.item_list_promo_checkout.view.*
 
-class PromoCheckoutListViewHolder(view: View?) : AbstractViewHolder<PromoCheckoutListModel>(view) {
+class PromoCheckoutListViewHolder(val view: View?) : AbstractViewHolder<PromoCheckoutListModel>(view) {
 
     override fun bind(element: PromoCheckoutListModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ImageHandler.loadImageRounded2(view?.context, view?.imageBannerPromo, element?.imageUrlMobile)
+        view?.textMinTrans?.text = element?.catalogTitle
     }
 
     companion object {

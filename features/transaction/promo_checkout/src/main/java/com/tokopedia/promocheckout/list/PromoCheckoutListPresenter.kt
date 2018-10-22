@@ -7,4 +7,8 @@ class PromoCheckoutListPresenter : BaseDaggerPresenter<PromoCheckoutListContract
     override fun getListPromo(page: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun getListLastSeen() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
