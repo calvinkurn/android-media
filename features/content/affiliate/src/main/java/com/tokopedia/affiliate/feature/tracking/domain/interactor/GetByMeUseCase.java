@@ -26,7 +26,7 @@ public class GetByMeUseCase {
     private Context context;
 
     @Inject
-    public GetByMeUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase) {
+    GetByMeUseCase(@ApplicationContext Context context, GraphqlUseCase graphqlUseCase) {
         GraphqlClient.init(context);
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
