@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.router;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -12,6 +13,8 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 public interface DigitalModuleRouter {
 
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
+
+    Intent getLoginIntent(Context activity);
 
     String getBranchAutoApply(Activity activity);
 

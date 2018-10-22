@@ -40,6 +40,7 @@ import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
@@ -62,6 +63,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     private static final String TAG = CartDigitalPresenter.class.getSimpleName();
     private DigitalAnalytics digitalAnalytics;
+    private UserSession userSession;
     private final ICartDigitalInteractor cartDigitalInteractor;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
@@ -70,6 +72,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
 
     @Inject
     public CartDigitalPresenter(
+                UserSession userSession,
             ICartDigitalInteractor iCartDigitalInteractor,
             DigitalAddToCartUseCase digitalAddToCartUseCase,
             DigitalCheckoutUseCase digitalCheckoutUseCase,
@@ -218,6 +221,24 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         if (!TextUtils.isEmpty(categoryId)) {
             GlobalCacheManager globalCacheManager = new GlobalCacheManager();
             globalCacheManager.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId);
+        }
+    }
+
+    @Override
+    public void onFirstTimeLaunched() {
+        if (userSession.isLoggedIn()) {
+            processAddToCart();
+        } else {
+            view.navigateToLoggedInPage();
+        }
+    }
+
+    @Override
+    public void onLoginResultReceived() {
+        if (userSession.isLoggedIn()) {
+            processAddToCart();
+        } else {
+            view.closeView();
         }
     }
 

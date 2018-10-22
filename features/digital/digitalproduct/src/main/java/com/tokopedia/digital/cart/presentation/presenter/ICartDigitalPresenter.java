@@ -33,4 +33,8 @@ public interface ICartDigitalPresenter {
     void onClearVoucher();
 
     void onPaymentSuccess(String categoryId);
+
+    void onFirstTimeLaunched();
+
+    void onLoginResultReceived();
 }

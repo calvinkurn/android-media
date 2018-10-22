@@ -1,7 +1,5 @@
 package com.tokopedia.digital.common.util;
 
-import android.app.Activity;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;

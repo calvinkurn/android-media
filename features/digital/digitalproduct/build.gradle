@@ -58,7 +58,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.android.support:support-v4:28.0.0'
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow

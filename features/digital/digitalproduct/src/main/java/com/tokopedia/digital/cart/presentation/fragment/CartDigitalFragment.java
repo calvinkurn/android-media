@@ -41,6 +41,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.cart.di.DigitalCartComponentInstance;
 import com.tokopedia.digital.cart.presentation.compoundview.CheckoutHolderView;
@@ -60,6 +61,7 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -74,10 +76,10 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
-        CheckoutHolderView.IAction, InputPriceHolderView.ActionListener,
-        VoucherCartHachikoView.ActionListener, CartDigitalContract.View {
-
-
+        IDigitalCartView, CheckoutHolderView.IAction,
+        InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener,
+        CartDigitalContract.View {
+    private static final int REQUEST_CODE_LOGIN = 1000;
     private static final int REQUEST_CODE_OTP = 1001;
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
@@ -139,7 +141,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processAddToCart();
+        presenter.onFirstTimeLaunched();
     }
 
     @Override
@@ -275,6 +277,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public CartDigitalInfoData getCartDataInfo() {
         return cartDigitalInfoDataState;
+    }
+
+    @Override
+    public void navigateToLoggedInPage() {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getLoginIntent(getActivity());
+            if (intent != null) {
+                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+            }
+        }
     }
 
     @Override
@@ -853,6 +866,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     }
                 }
             }
+        } else if (requestCode == REQUEST_CODE_LOGIN) {
+            presenter.onLoginResultReceived();
         }
     }
 

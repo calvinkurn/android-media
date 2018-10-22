@@ -26,7 +26,7 @@ public interface MyCouponListingContract {
 
         void populateCoupons(List<CouponValueEntity> coupons);
 
-        void emptyCoupons(Map<String,String> errors);
+        void emptyCoupons(Map<String, String> errors);
 
         void onErrorCoupons(String errorMessage);
 

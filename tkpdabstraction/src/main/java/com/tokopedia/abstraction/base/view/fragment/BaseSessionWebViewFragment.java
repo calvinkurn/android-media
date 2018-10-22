@@ -13,6 +13,8 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
 
     private UserSession userSession;
     private String url;
+    public static final String TOKOPEDIA_STRING = "tokopedia";
+    private boolean isTokopediaUrl;
 
     public static BaseSessionWebViewFragment newInstance(String url) {
         BaseSessionWebViewFragment fragment = new BaseSessionWebViewFragment();
@@ -26,32 +28,42 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         url = getArguments().getString(ARGS_URL);
-
+        isTokopediaUrl = Uri.parse(url).getHost().contains(TOKOPEDIA_STRING);
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
     @Override
     protected String getUrl() {
-        String gcmId = userSession.getDeviceId();
-        String userId = userSession.getUserId();
-        return URLGenerator.generateURLSessionLogin(
-                Uri.encode(getMitraToppersUrl()),
-                gcmId,
-                userId);
+        if (isTokopediaUrl) {
+            String gcmId = userSession.getDeviceId();
+            String userId = userSession.getUserId();
+            return URLGenerator.generateURLSessionLogin(
+                    Uri.encode(getPlainUrl()),
+                    gcmId,
+                    userId);
+        } else {
+            return url;
+        }
     }
 
     @Override
     protected String getUserIdForHeader() {
-        return userSession.getUserId();
+        if (isTokopediaUrl) {
+            return userSession.getUserId();
+        }
+        return null;
     }
 
     @Nullable
     @Override
     protected String getAccessToken() {
-        return userSession.getAccessToken();
+        if (isTokopediaUrl) {
+            return userSession.getAccessToken();
+        }
+        return null;
     }
 
-    protected String getMitraToppersUrl() {
+    protected String getPlainUrl() {
         return url;
     }
 }

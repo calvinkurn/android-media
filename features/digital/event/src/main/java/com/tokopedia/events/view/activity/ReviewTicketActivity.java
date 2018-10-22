@@ -510,6 +510,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 RouteManager.route(this, url);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
                 manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
+                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                 this.finish();
             }
         }
