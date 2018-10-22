@@ -20,8 +20,8 @@ import java.util.Map;
 
 @SuppressLint("NewApi")
 public class ActivityFrameMetrics implements Application.ActivityLifecycleCallbacks {
-    private static final float DEFAULT_WARNING_LEVEL_MS = 17.f;
-    private static final float DEFAULT_ERROR_LEVEL_MS = 34.f;
+    private static final float DEFAULT_WARNING_LEVEL_MS = 17f;
+    private static final float DEFAULT_ERROR_LEVEL_MS = 34f;
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
