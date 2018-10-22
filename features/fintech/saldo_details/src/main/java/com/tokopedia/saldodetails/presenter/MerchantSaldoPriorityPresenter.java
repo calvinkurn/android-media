@@ -61,7 +61,7 @@ public class MerchantSaldoPriorityPresenter extends BaseDaggerPresenter<Merchant
                             graphqlResponse.getData(GqlSetMerchantSaldoStatus.class);
 
                     if (gqlSetMerchantSaldoStatus.getMerchantSaldoStatus().isSuccess()) {
-                        getView().onSaldoStatusUpdateSuccess();
+                        getView().onSaldoStatusUpdateSuccess(isChecked);
                     } else {
                         getView().onSaldoStatusUpdateError("");
                     }
