@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
@@ -30,6 +29,7 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -63,7 +63,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
     protected KolPostTypeFactory typeFactory;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
+
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
 
@@ -95,7 +96,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(
@@ -107,7 +108,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initView(parentView);
         setViewListener();
 
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof
+                KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
         } else {
             throw new IllegalStateException("Application must be an instance of KolRouter!");
@@ -185,11 +189,13 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-        DaggerKolProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule())
-                .build()
-                .inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            DaggerKolProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                    .kolProfileModule(new KolProfileModule())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override
@@ -203,7 +209,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public UserSession getUserSession() {
+    public UserSessionInterface getUserSession() {
         return userSession;
     }
 
@@ -233,12 +239,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorGetProfileData(String message) {
-        adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
-            @Override
-            public void onRetryClicked() {
-                fetchData();
-            }
-        });
+        adapter.showErrorNetwork(message, this::fetchData);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,11 +15,8 @@ import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.ViewHolder> {
     private List<CatalogCategory> mItems;
