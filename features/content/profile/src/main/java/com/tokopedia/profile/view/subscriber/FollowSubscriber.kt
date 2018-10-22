@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.subscriber
 
 import android.text.TextUtils
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery
@@ -22,7 +23,10 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
 
     }
 
-    override fun onError(throwable: Throwable) {
+    override fun onError(throwable: Throwable?) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            throwable?.printStackTrace()
+        }
         view.onErrorFollowKol(
                 ErrorHandler.getErrorMessage(view.context, throwable)
         )

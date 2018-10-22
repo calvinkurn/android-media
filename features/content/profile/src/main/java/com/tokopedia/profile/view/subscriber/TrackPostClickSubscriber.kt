@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.subscriber
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.profile.view.listener.ProfileContract
 import rx.Subscriber
@@ -22,6 +23,9 @@ class TrackPostClickSubscriber(private val view: ProfileContract.View,
     }
 
     override fun onError(e: Throwable?) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e?.printStackTrace()
+        }
         view.hideLoadingLayout()
         view.onErrorTrackPostClick(
                 ErrorHandler.getErrorMessage(view.context, e),

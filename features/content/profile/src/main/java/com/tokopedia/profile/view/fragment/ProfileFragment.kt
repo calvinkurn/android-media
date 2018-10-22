@@ -374,7 +374,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onSuccessFollowKol() {
-        if (adapter.isContainData && adapter.data.first() is ProfileHeaderViewModel) {
+        if (adapter.dataSize > 0 && adapter.data.first() is ProfileHeaderViewModel) {
             val profileHeaderViewModel = adapter.data.first() as ProfileHeaderViewModel
             profileHeaderViewModel.isFollowed = !profileHeaderViewModel.isFollowed
 
