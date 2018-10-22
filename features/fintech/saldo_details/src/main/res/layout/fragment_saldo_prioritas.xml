@@ -49,6 +49,7 @@
             <Switch
                 android:id="@+id/sp_enable_switch"
                 style="@style/Switch"
+                android:padding="@dimen/dp_4"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true" />
 
@@ -70,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/sp_description"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_12"
                 android:orientation="horizontal"
                 android:padding="@dimen/dp_9"
                 android:visibility="visible">
