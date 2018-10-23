@@ -31,7 +31,7 @@ public interface TrainRouter {
 
     RecyclerView.ItemDecoration getSpacingItemDecorationHome(int spacing, int displayMode);
 
-    Intent getPromoListIntent(Activity activity);
+    Intent getPromoListIntent(Activity activity, String menuId, String subMenuId);
 
     boolean isPromoNativeEnable();
 

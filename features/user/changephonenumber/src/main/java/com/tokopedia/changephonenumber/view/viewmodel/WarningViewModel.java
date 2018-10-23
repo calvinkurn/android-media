@@ -96,12 +96,14 @@ public class WarningViewModel implements Parcelable {
     public boolean isOvoEligible() {
         return isOvoEligible;
     }
+
     public void setOvoEligible(boolean ovoEligible) {
         isOvoEligible = ovoEligible;
     }
     public String getUrlOvo() {
         return urlOvo;
     }
+
     public void setUrlOvo(String urlOvo) {
         this.urlOvo = urlOvo;
     }

@@ -77,9 +77,9 @@ public class HomepagePagerAdapter extends PagerAdapter {
         } else {
             if (mCoupons == null || mCoupons.isEmpty()) {
                 containerInner.setDisplayedChild(1);
-                ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-                ((TextView) view.findViewById(R.id.text_title_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
-                ((TextView) view.findViewById(R.id.text_label_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+                ((ImageView) view.findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
+                ((TextView) view.findViewById(R.id.text_title_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.TITLE));
+                ((TextView) view.findViewById(R.id.text_label_error2)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
                 view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
                 view.findViewById(R.id.text_empty_action).setOnClickListener(v ->

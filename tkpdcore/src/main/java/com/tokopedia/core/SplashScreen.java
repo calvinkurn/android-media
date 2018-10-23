@@ -226,11 +226,21 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                                 BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
 
                                 String deeplink = referringParams.getString("$android_deeplink_path");
-                                Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(uri);
-                                startActivity(intent);
-                                finish();
+                                if (deeplink == null) {
+                                    moveToHome();
+                                } else {
+                                    Uri uri;
+                                    if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
+                                        uri = Uri.parse(deeplink);
+                                    } else {
+                                        uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                                    }
+                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                    intent.setData(uri);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
 
                             } catch (JSONException e) {
                                 moveToHome();

@@ -12,6 +12,7 @@ include "libraries:bottom_sheet_builder"
 include "libraries:williamchart"
 include "libraries:camera_view"
 include "libraries:image_picker"
+include 'libraries:date_picker_range'
 include 'libraries:imageuploader'
 include "libraries:YouTubeAndroidPlayerApi"
 include "libraries:graphql"
@@ -19,3 +20,4 @@ include "libraries:common_network"
 include "libraries:youtubeutil"
 include "libraries:oms"
 include "libraries:travel_calendar"
+include "libraries:pagination"

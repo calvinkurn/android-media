@@ -1,9 +1,11 @@
 package com.tokopedia.core.analytics.appsflyer;
 
 import android.app.Application;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.tkpd.library.utils.CommonUtils;
@@ -14,41 +16,56 @@ import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
+import com.tokopedia.core.app.TkpdCoreRouter;
 
 import java.util.Map;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
- *
+ * <p>
  * This class is a library wrapper for AppsFlyer Analytics
  * Name taken from this https://en.wikipedia.org/wiki/Jordan
- *
  */
 public class Jordan {
 
     private Context context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
+    private static boolean isAppsflyerCallbackHandled;
 
-    private Jordan(Context ctx){
+    private Jordan(Context ctx) {
         context = ctx;
     }
 
-    public static Jordan init(Context context){
+    public static Jordan init(Context context) {
         return new Jordan(context);
     }
 
-    public static Jordan init(Application application){
+    public static Jordan init(Application application) {
         return new Jordan(application.getApplicationContext());
     }
 
-    public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
+    public AppsflyerContainer runFirstTimeAppsFlyer(String userID) {
         AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
             @Override
-            public void onInstallConversionDataLoaded(Map<String, String> map) {
-                // @TODO
+            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
+                if (isAppsflyerCallbackHandled) return;
+                isAppsflyerCallbackHandled = true;
+
+                try {
+                    //get first launch and deeplink
+                    String isFirstLaunch = conversionData.get("is_first_launch");
+                    String deeplink = conversionData.get("af_dp");
+
+                    if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink)) {
+                        //open deeplink
+                        AppsflyerContainer.setDefferedDeeplinkPathIfExists(deeplink);
+                    }
+                } catch (ActivityNotFoundException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override
@@ -58,7 +75,7 @@ public class Jordan {
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
-                // @TODO
+
             }
 
             @Override
@@ -71,6 +88,8 @@ public class Jordan {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(),
                     PackageManager.GET_META_DATA).metaData;
             appsflyerContainer.initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
+            ((TkpdCoreRouter)(context.getApplicationContext())).onAppsFlyerInit();
+
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             CommonUtils.dumper("Error key Appsflyer");
@@ -79,7 +98,7 @@ public class Jordan {
         return appsflyerContainer;
     }
 
-    public IAppsflyerContainer getAFContainer(){
+    public IAppsflyerContainer getAFContainer() {
         return AppsflyerContainer.newInstance(context);
     }
 
@@ -94,14 +113,18 @@ public class Jordan {
     public static final String AF_SCREEN_HOME_HOTLIST = "home_hotlist";
     public static final String AF_SCREEN_HOME_MAIN = "home_beranda";
     public static final String AF_SCREEN_PRODUCT_FEED = "home_productfeed";
-    public static final String AF_SCREEN_FAVORIT = "home_favorit";
+    public static final String AF_SCREEN_FAVORIT_CACHE_AF_KEY_ALL_PRODUCTS= "home_favorit";
     public static final String AF_SCREEN_CAT = "productCategory";
     public static final String AF_SCREEN_PRODUCT = "productView";
     public static final String AF_SCREEN_WISHLIST = "wishList";
     public static final String AF_SCREEN_CART = "cart";
+    public static final String AF_SHIPPING_PRICE = "af_shipping_price";
+    public static final String AF_PAYMENT_ID = "af_payment_id";
+    public static final String AF_PURCHASE_SITE = "af_purchase_site";
+    public static final String AF_SHOP_ID = "af_shop_id";
 
     public static final String AF_KEY_CATEGORY_ID = "c";
-    public static final String AF_KEY_CATEGORY_NAME = "cn";
+    public static final String AF_KEY_CATEGORY_NAME = "category";
     public static final String AF_KEY_PRODUCT_ID = "id";
     public static final String AF_KEY_OS_TYPE = "os";
     public static final String AF_KEY_FINALPRICE = "sprc";
@@ -118,5 +141,9 @@ public class Jordan {
     public static final String CACHE_KEY_DATA_CHECKOUT = "cc_checkout";
 
     public static final String AF_VALUE_PRODUCTTYPE = "product";
+    public static final String AF_VALUE_PRODUCT_TYPE = "productType";
+    public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
+    public static final String VALUE_ANDROID ="Android" ;
+    public static final String VALUE_IDR ="IDR" ;
 
 }

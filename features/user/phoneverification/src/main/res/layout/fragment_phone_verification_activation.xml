@@ -12,7 +12,7 @@
         android:layout_marginTop="@dimen/dp_30"
         android:text="@string/title_success_activate_account"
         android:textColor="@color/grey_800"
-        android:textSize="@dimen/font_medium"
+        android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
     <TextView

@@ -204,6 +204,13 @@
                         android:textSize="@dimen/text_size_large"
                         android:text="@string/title_official_store" />
 
+                    <TextView
+                        android:id="@id/see_all_official_brand_button"
+                        style="@style/TextView.Small.Green"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/see_all" />
+
                 </RelativeLayout>
 
 

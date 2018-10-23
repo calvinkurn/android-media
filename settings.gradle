@@ -1,3 +1,4 @@
+include ':logisticanalytics'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -33,13 +34,7 @@ include 'sellerapp'
 include 'tkpdseller'
 include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdflight'
 include 'tkpdcontent'
 include 'tkpdstream'
-include 'tkpdshop'
-include 'tkpdshop-common'
-include 'tkpdgm-common'
-include 'tkpdreputation-common'
-include 'tkpdwishlist-common'
 include 'tkpdtransaction-common'
 include 'posapp'

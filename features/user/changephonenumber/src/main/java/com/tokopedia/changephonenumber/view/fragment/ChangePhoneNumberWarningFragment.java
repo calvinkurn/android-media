@@ -39,7 +39,6 @@ import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.AC
 import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel
         .BALANCE_THRESHOLD_FOR_WARNING;
 
-
 /**
  * Created by milhamj on 18/12/17.
  */
@@ -367,7 +366,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
             getActivity().finish();
         }
     }
-
 
     public Integer getUserId() {
         return Integer.parseInt(userSession.getUserId());

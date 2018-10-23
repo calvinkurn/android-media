@@ -2,13 +2,10 @@ package com.tokopedia.feedplus.data.factory;
 
 import android.content.Context;
 
-import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.feedplus.data.api.FeedApi;
-import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.source.CloudCheckNewFeedDataSource;
 import com.tokopedia.feedplus.data.source.CloudFirstFeedDataSource;
 import com.tokopedia.feedplus.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
@@ -21,26 +18,21 @@ public class FeedFactory {
 
     private final Context context;
     private final FeedApi feedApi;
-    private final ApolloClient apolloClient;
     private final FeedListMapper feedListMapper;
     private final FeedResultMapper feedResultMapperLocal;
     private final FeedResultMapper feedResultMapperCloud;
-    private final GlobalCacheManager globalCacheManager;
-    private final CheckNewFeedMapper checkNewFeedMapper;
+    private final CacheManager globalCacheManager;
 
-    public FeedFactory(Context context, FeedApi feedApi, ApolloClient apolloClient,
+    public FeedFactory(Context context, FeedApi feedApi,
                        FeedListMapper feedListMapper, FeedResultMapper feedResultMapperLocal,
                        FeedResultMapper feedResultMapperCloud,
-                       GlobalCacheManager globalCacheManager,
-                       CheckNewFeedMapper checkNewFeedMapper) {
+                       CacheManager globalCacheManager) {
         this.context = context;
         this.feedApi = feedApi;
-        this.apolloClient = apolloClient;
         this.feedListMapper = feedListMapper;
         this.feedResultMapperLocal = feedResultMapperLocal;
         this.feedResultMapperCloud = feedResultMapperCloud;
         this.globalCacheManager = globalCacheManager;
-        this.checkNewFeedMapper = checkNewFeedMapper;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
@@ -57,8 +49,4 @@ public class FeedFactory {
                 globalCacheManager);
     }
 
-    public CloudCheckNewFeedDataSource createCloudCheckNewFeedDataSource() {
-        return new CloudCheckNewFeedDataSource(apolloClient,
-                checkNewFeedMapper);
-    }
 }

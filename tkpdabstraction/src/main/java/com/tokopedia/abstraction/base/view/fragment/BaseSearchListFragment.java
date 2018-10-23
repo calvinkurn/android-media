@@ -3,6 +3,8 @@ package com.tokopedia.abstraction.base.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,12 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
         return (SearchInputView) view.findViewById(R.id.search_input_view);
     }
 
+    @Nullable
+    @Override
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
+    }
+
     @Override
     public void renderList(@NonNull List<T> list) {
         getAdapter().clearAllElements();
@@ -57,7 +65,12 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     @Override
     public void showGetListError(Throwable throwable) {
         super.showGetListError(throwable);
-        if (getAdapter().getItemCount() > 0) {
+        showSearchViewWithDataSizeCheck();
+    }
+
+    protected void showSearchViewWithDataSizeCheck() {
+        if (getAdapter().getDataSize() > 0 ||
+                !TextUtils.isEmpty(searchInputView.getSearchText())) {
             showSearchView(true);
         } else {
             showSearchView(false);
@@ -66,9 +79,17 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
 
     private void showSearchView(boolean isVisible) {
         if (isVisible) {
-            searchInputView.setVisibility(View.VISIBLE);
+            showSearchInputView();
         } else {
-            searchInputView.setVisibility(View.GONE);
+            hideSearchInputView();
         }
+    }
+
+    protected void hideSearchInputView(){
+        searchInputView.setVisibility(View.GONE);
+    }
+
+    protected void showSearchInputView(){
+        searchInputView.setVisibility(View.VISIBLE);
     }
 }

@@ -20,6 +20,7 @@ import com.tokopedia.design.R;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -57,6 +58,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
         rootView = inflate(context, R.layout.widget_count_down_view, this);
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);

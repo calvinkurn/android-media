@@ -140,6 +140,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
             @Override
             public void onClick(View v) {
                 viewListener.onGoToProductDetail(String.valueOf(element.getProductId()));
+                viewListener.sendRecentViewClickTracking(element);
             }
         });
     }

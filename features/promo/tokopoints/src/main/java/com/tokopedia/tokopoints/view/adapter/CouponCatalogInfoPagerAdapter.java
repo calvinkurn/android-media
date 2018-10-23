@@ -3,24 +3,13 @@ package com.tokopedia.tokopoints.view.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.ViewFlipper;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
-import com.tokopedia.tokopoints.view.model.CouponValueEntity;
-import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-
-import java.util.List;
-import java.util.Map;
 
 public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
     private LayoutInflater mLayoutInflater;
