@@ -486,7 +486,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter,TkpdAppsFlyerRouter,
+        TalkRouter, TkpdAppsFlyerRouter,
         ScanQrCodeRouter {
 
 
@@ -902,7 +902,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
-       
+
     @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
@@ -987,9 +987,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
-                                                          String reservationId, String reservationCode) {
-        return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
+    public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
+                                                       String reservationId, String reservationCode) {
+        return LoyaltyActivity.newInstanceTrainCouponActive(activity, platform, "11",
                 reservationId, reservationCode);
     }
 
@@ -1644,7 +1644,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
                 }
             }
@@ -2666,29 +2666,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopNotesIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopBasicDataIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
     @Override
-    public @NonNull Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
+    public @NonNull
+    Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
+
     /**
      * Global Nav Router
      */
@@ -3164,18 +3170,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getSession().getUserId();
     }
 
-    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
     }
 
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
+
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
-    public String getDefferedDeeplinkPathIfExists(){
+    public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
+import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.exception.LoyaltyErrorException;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -48,30 +49,32 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     private final IPromoCouponInteractor promoCouponInteractor;
     private final IPromoCouponView view;
     private FlightCheckVoucherUseCase flightCheckVoucherUseCase;
+    private TrainCheckVoucherUseCase trainCheckVoucherUseCase;
 
     @Inject
-    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
+    public PromoCouponPresenter(IPromoCouponView view, IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+                                TrainCheckVoucherUseCase trainCheckVoucherUseCase) {
         this.view = view;
         this.promoCouponInteractor = promoCouponInteractor;
         this.flightCheckVoucherUseCase = flightCheckVoucherUseCase;
+        this.trainCheckVoucherUseCase = trainCheckVoucherUseCase;
     }
 
     @Override
     public void processGetCouponList(String platform) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        //param.put("user_id", SessionHandler.getLoginID(view.getContext()));
         if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
             param.put("category_id", view.getCategoryId());
+        } else if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
+            platform = "kai";
+            param.put("category_id", view.getCategoryId());
         }
-        ;
         param.put("type", platform);
 
-        //TODO Revert Later
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
-                //AuthUtil.generateDummyParamsNetwork(view.getContext(), param),
                 new Subscriber<CouponsDataWrapper>() {
                     @Override
                     public void onCompleted() {
@@ -236,6 +239,14 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
                 ), makeDigitalCouponSubscriber(couponData));
+    }
+
+    @Override
+    public void submitTrainVoucher(CouponData couponData, String reservationId, String reservationCode) {
+        view.showProgressLoading();
+        trainCheckVoucherUseCase.execute(
+                trainCheckVoucherUseCase.createVoucherRequest(reservationId, reservationCode, couponData.getCode()),
+                checkTrainVoucherSubscriber(couponData));
     }
 
     @Override
@@ -453,6 +464,43 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             public void onNext(CouponViewModel couponViewModel) {
                 view.receiveDigitalResult(couponViewModel);
                 view.hideProgressLoading();
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<VoucherViewModel> checkTrainVoucherSubscriber(CouponData couponData) {
+        return new Subscriber<VoucherViewModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.sendTrackingOnCheckTrainVoucherError(e.getMessage());
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof LoyaltyErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
+                    couponData.setErrorMessage(e.getMessage());
+                    view.couponError();
+                } else {
+                    view.showSnackbarError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(VoucherViewModel voucherViewModel) {
+                view.hideProgressLoading();
+                CouponViewModel couponViewModel = new CouponViewModel();
+                couponViewModel.setAmount(voucherViewModel.getAmount());
+                couponViewModel.setCode(voucherViewModel.getCode());
+                couponViewModel.setMessage(voucherViewModel.getMessage());
+                couponViewModel.setRawCashback(voucherViewModel.getRawCashback());
+                couponViewModel.setRawDiscount(voucherViewModel.getRawDiscount());
+                couponViewModel.setSuccess(voucherViewModel.isSuccess());
+                couponViewModel.setTitle(couponData.getTitle());
+                view.receiveDigitalResult(couponViewModel);
             }
         };
     }
