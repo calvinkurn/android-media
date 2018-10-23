@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class ErrorData implements Parcelable {
+public class ErrorProductData implements Parcelable {
 
     public static final String ERROR_PINPOINT_NEEDED = "501";
     public static final String ERROR_DISTANCE_LIMIT_EXCEEDED = "502";
@@ -24,10 +24,10 @@ public class ErrorData implements Parcelable {
     @Expose
     private String errorMessage;
 
-    public ErrorData() {
+    public ErrorProductData() {
     }
 
-    protected ErrorData(Parcel in) {
+    protected ErrorProductData(Parcel in) {
         errorId = in.readString();
         errorMessage = in.readString();
     }
@@ -43,15 +43,15 @@ public class ErrorData implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ErrorData> CREATOR = new Creator<ErrorData>() {
+    public static final Creator<ErrorProductData> CREATOR = new Creator<ErrorProductData>() {
         @Override
-        public ErrorData createFromParcel(Parcel in) {
-            return new ErrorData(in);
+        public ErrorProductData createFromParcel(Parcel in) {
+            return new ErrorProductData(in);
         }
 
         @Override
-        public ErrorData[] newArray(int size) {
-            return new ErrorData[size];
+        public ErrorProductData[] newArray(int size) {
+            return new ErrorProductData[size];
         }
     };
 
