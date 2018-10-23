@@ -11,11 +11,13 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
 
 /**
  * this code is bridging for old code and latest codes.
  */
-public class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
+public abstract class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
     GCMHandler gcmHandler;
     SessionHandler sessionHandler;
 
@@ -25,68 +27,43 @@ public class MainRouterApplication extends BaseMainApplication implements TkpdCo
     }
 
     @Override
-    public Intent getSellerHomeActivity() {
-        return null;
+    public Intent getSellerHomeActivityReal(Context context) {
+        return SellerAppRouter.getSellerHomeActivity(context);
     }
 
     @Override
-    public Intent getInboxTalkActivityIntent() {
-        return null;
+    public Intent getInboxTalkActivityIntentReal(Context context) {
+        return InboxRouter.getInboxTalkActivityIntent(context);
     }
 
     @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
-        return null;
+        return SellerAppRouter.getAppNotificationReceiver();
     }
 
     @Override
     public Class<?> getInboxMessageActivityClass() {
-        return null;
+        return InboxRouter.getInboxMessageActivityClass();
     }
 
     @Override
     public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
+        return InboxRouter.getInboxResCenterActivityClass();
     }
 
     @Override
     public Intent getActivitySellingTransactionShippingStatusReal(Context mContext) {
-        return null;
+        return SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
     }
 
     @Override
     public Class getSellingActivityClassReal() {
-        return null;
+        return SellerRouter.getSellingActivityClass();
     }
 
     @Override
     public Intent getActivitySellingTransactionListReal(Context mContext) {
-        return null;
-    }
-
-    @Override
-    public String getDesktopLinkGroupChat() {
-        return null;
-    }
-
-    @Override
-    public Intent getHomeIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
-        return null;
-    }
-
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
+        return SellerRouter.getActivitySellingTransactionList(mContext);
     }
 
     @Override

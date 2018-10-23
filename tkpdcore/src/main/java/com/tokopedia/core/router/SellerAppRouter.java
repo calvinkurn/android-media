@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Created by stevenfredian on 12/1/16.
  */
-
+@Deprecated
 public class SellerAppRouter {
 
     private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.sellerapp.fcm.AppNotificationReceiver";
