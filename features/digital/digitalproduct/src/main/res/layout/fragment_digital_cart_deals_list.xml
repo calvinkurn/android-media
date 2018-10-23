@@ -17,16 +17,6 @@
         android:paddingEnd="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_tagline"
-            style="@style/TextView.Title.Bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="@string/digital_deal_special_deal_label"
-            android:visibility="gone" />
-
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

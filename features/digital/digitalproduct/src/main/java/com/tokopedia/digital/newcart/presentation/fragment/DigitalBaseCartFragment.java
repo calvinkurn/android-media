@@ -147,9 +147,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderCheckoutView(String price, String totalPrice, long pricePlain) {
+    public void renderCheckoutView(long pricePlain) {
         checkoutHolderView.setActionListener(this);
-        checkoutHolderView.renderCheckout(cartDigitalInfoData.getAttributes().getPricePlain());
+        checkoutHolderView.renderCheckout(pricePlain);
     }
 
     @Override
@@ -362,9 +362,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
+    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
         this.cartDigitalInfoData = cartDigitalInfoData;
-        buildCheckoutData(cartDigitalInfoData, accessToken);
     }
 
     @Override
@@ -402,16 +401,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         detailHolderView.expandAdditional();
     }
 
-    private void buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
-        checkoutDataParameterBuilder = new CheckoutDataParameter.Builder();
-        checkoutDataParameterBuilder.cartId(cartDigitalInfoData.getId());
-        checkoutDataParameterBuilder.accessToken(accessToken);
-        checkoutDataParameterBuilder.walletRefreshToken("");
-        checkoutDataParameterBuilder.ipAddress(DeviceUtil.getLocalIpAddress());
-        checkoutDataParameterBuilder.relationId(cartDigitalInfoData.getId());
-        checkoutDataParameterBuilder.relationType(cartDigitalInfoData.getType());
-        checkoutDataParameterBuilder.transactionAmount(cartDigitalInfoData.getAttributes().getPricePlain());
-        checkoutDataParameterBuilder.userAgent(DeviceUtil.getUserAgentForApiCall());
-        checkoutDataParameterBuilder.needOtp(cartDigitalInfoData.isNeedOtp());
+    @Override
+    public void setCheckoutParameter(CheckoutDataParameter.Builder builder) {
+        checkoutDataParameterBuilder = builder;
     }
 }

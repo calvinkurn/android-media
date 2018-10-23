@@ -150,4 +150,6 @@
     <string name="digital_deals_maximum_error_message">Anda hanya dapat menambahkan maksimum 5 penawaran spesial.</string>
     <string name="digital_deal_special_deal_label">Penawaran Spesial</string>
     <string name="digital_cart_deal_selected_label">Deals Pilihan Saya</string>
+    <string name="digital_deal_toolbar_title">Penawaran Spesial</string>
+    <string name="digital_cart_checkout_skip_menu_label">Lewati</string>
 </resources>

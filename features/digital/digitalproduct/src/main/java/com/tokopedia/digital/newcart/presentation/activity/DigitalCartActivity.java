@@ -24,7 +24,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFra
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
-public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>, DigitalCartDefaultFragment.InteractionListener {
+public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>, DigitalCartDefaultFragment.InteractionListener, DigitalCartDealsFragment.InteractionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData cartPassData;
     private DigitalCartComponent component;
@@ -112,5 +112,10 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, getTagFragment())
                 .commit();
+    }
+
+    @Override
+    public void updateToolbarTitle(String title) {
+        updateTitle(title);
     }
 }

@@ -38,7 +38,6 @@ public class DigitalCartDealsListPresenter extends BaseDaggerPresenter<DigitalCa
 
                     @Override
                     public void onNext(DealProductsViewModel dealProductsViewModel) {
-                        getView().showDealTagline();
                         if (dealProductsViewModel.getNextUrl() == null || dealProductsViewModel.getNextUrl().length() == 0) {
                             getView().renderList(dealProductsViewModel.getProducts());
                         } else {

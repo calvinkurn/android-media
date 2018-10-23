@@ -155,7 +155,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 getView().showContent();
                 getView().hideLoading();
-                getView().setCartDigitalInfo(cartDigitalInfoData, userSession.getAccessToken());
+                getView().setCartDigitalInfo(cartDigitalInfoData);
+                getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
                 } else {
@@ -220,8 +221,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
                 cartDigitalInfoData.getAttributes().getUserInputPrice());
 
-        getView().renderCheckoutView(cartDigitalInfoData.getAttributes().getPrice(),
-                cartDigitalInfoData.getAttributes().getPrice(),
+        getView().renderCheckoutView(
                 cartDigitalInfoData.getAttributes().getPricePlain());
 
         if (cartDigitalInfoData.getAttributes().isEnableVoucher() &&
@@ -337,7 +337,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         renderIfHasDiscount(voucherDigital);
     }
 
-    private void renderIfHasDiscount(VoucherDigital voucherDigital) {
+    protected void renderIfHasDiscount(VoucherDigital voucherDigital) {
         if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
             List<CartAdditionalInfo> additionals = new ArrayList<>(getView().getCartInfoData().getAdditionalInfos());
             List<CartItemDigital> items = new ArrayList<>();
@@ -355,7 +355,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
     }
 
-    private String getStringIdrFormat(Double value) {
+    protected String getStringIdrFormat(Double value) {
         DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
         kursIndonesia.setMaximumFractionDigits(0);
         DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
@@ -575,7 +575,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().showContent();
                 getView().hideLoading();
                 cartDigitalInfoData.setForceRenderCart(true);
-                getView().setCartDigitalInfo(cartDigitalInfoData, userSession.getAccessToken());
+                getView().setCartDigitalInfo(cartDigitalInfoData);
+                getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
                 renderCart(cartDigitalInfoData);
             }
         };
@@ -613,7 +614,8 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
-                getView().setCartDigitalInfo(cartDigitalInfoData, userSession.getAccessToken());
+                getView().setCartDigitalInfo(cartDigitalInfoData);
+                getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
                 renderCart(cartDigitalInfoData);
             }
         };
@@ -663,5 +665,20 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().renderToInstantCheckoutPage(instantCheckoutData);
             }
         };
+    }
+
+
+    protected CheckoutDataParameter.Builder buildCheckoutData(CartDigitalInfoData cartDigitalInfoData, String accessToken) {
+        CheckoutDataParameter.Builder builder = new CheckoutDataParameter.Builder();
+        builder.cartId(cartDigitalInfoData.getId());
+        builder.accessToken(accessToken);
+        builder.walletRefreshToken("");
+        builder.ipAddress(DeviceUtil.getLocalIpAddress());
+        builder.relationId(cartDigitalInfoData.getId());
+        builder.relationType(cartDigitalInfoData.getType());
+        builder.transactionAmount(cartDigitalInfoData.getAttributes().getPricePlain());
+        builder.userAgent(DeviceUtil.getUserAgentForApiCall());
+        builder.needOtp(cartDigitalInfoData.isNeedOtp());
+        return builder;
     }
 }

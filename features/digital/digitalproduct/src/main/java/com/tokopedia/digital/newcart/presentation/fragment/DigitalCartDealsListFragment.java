@@ -34,7 +34,6 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     private static final String EXTRA_URL = "EXTRA_URL";
 
     private String nextUrl;
-    private AppCompatTextView taglineTextView;
 
     @Inject
     DigitalCartDealsListPresenter presenter;
@@ -72,7 +71,6 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_digital_cart_deals_list, container, false);
-        taglineTextView = view.findViewById(R.id.tv_tagline);
         return view;
     }
 
@@ -121,11 +119,6 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     @Override
     public void setNextUrl(String nextUrl) {
         this.nextUrl = nextUrl;
-    }
-
-    @Override
-    public void showDealTagline() {
-        taglineTextView.setVisibility(View.VISIBLE);
     }
 
     public void setInteractionListener(InteractionListener interactionListener) {

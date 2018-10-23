@@ -49,7 +49,7 @@ public interface DigitalBaseContract {
 
         void renderInputPrice(String total, UserInputPriceDigital userInputPriceDigital);
 
-        void renderCheckoutView(String price, String totalPrice, long pricePlain);
+        void renderCheckoutView(long pricePlain);
 
         Activity getActivity();
 
@@ -89,7 +89,7 @@ public interface DigitalBaseContract {
 
         void closeViewWithMessageAlert(String message);
 
-        void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData, String accessToken);
+        void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData);
 
         void interruptRequestTokenVerification(String phoneNumber);
 
@@ -104,6 +104,8 @@ public interface DigitalBaseContract {
         String getString(@StringRes int resId);
 
         void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
+
+        void setCheckoutParameter(CheckoutDataParameter.Builder builder);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

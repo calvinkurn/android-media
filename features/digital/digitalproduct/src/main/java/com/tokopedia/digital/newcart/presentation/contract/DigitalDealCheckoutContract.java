@@ -1,5 +1,8 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
+import android.support.annotation.StringRes;
+
+import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 
 import java.util.List;
@@ -30,6 +33,12 @@ public interface DigitalDealCheckoutContract {
         void hideDealsContainerView();
 
         void showDealsContainerView();
+
+        void updateToolbarTitle(@StringRes int resId);
+
+        void setCheckoutParameter(CheckoutDataParameter.Builder builder);
+
+        long getCheckoutDiscountPricePlain();
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View>{
@@ -41,5 +50,7 @@ public interface DigitalDealCheckoutContract {
         void onNewSelectedDeal(DealProductViewModel viewModel);
 
         void onDealRemoved(DealProductViewModel viewModel);
+
+        void onSkipMenuClicked();
     }
 }

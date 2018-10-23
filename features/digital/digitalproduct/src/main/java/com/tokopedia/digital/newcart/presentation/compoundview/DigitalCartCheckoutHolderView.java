@@ -148,6 +148,10 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         return voucherCartHachikoView.getVoucherCode();
     }
 
+    public long getDiscountPricePlain() {
+        return voucherDiscount;
+    }
+
     public interface ActionListener {
 
         void onCheckoutButtonClicked();

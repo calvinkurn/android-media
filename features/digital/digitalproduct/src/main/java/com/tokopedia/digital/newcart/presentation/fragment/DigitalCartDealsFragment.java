@@ -1,6 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,6 +59,11 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private CartDigitalInfoData cartInfoData;
     private DigitalCheckoutPassData cartPassData;
     private DigitalDealsPagerAdapter pagerAdapter;
+    private InteractionListener interactionListener;
+
+    public interface InteractionListener{
+        void updateToolbarTitle(String title);
+    }
 
     public static DigitalCartDealsFragment newInstance(DigitalCheckoutPassData passData, CartDigitalInfoData cartDigitalInfoData) {
         DigitalCartDealsFragment fragment = new DigitalCartDealsFragment();
@@ -238,4 +244,36 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
         presenter.unSelectDealFromCheckoutView(viewModel);
     }
 
+    @Override
+    public void updateToolbarTitle(String title) {
+        interactionListener.updateToolbarTitle(title);
+    }
+
+    @Override
+    public void hideCartPage() {
+        dealContainer.setVisibility(View.GONE);
+        checkoutContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showFullpageLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCartPage() {
+        dealContainer.setVisibility(View.VISIBLE);
+        checkoutContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideFullpageLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        interactionListener = (InteractionListener) context;
+    }
 }
