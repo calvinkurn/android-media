@@ -401,6 +401,7 @@ import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.io.File;
 import java.io.IOException;
@@ -492,8 +493,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter, TkpdAppsFlyerRouter,
+        TalkRouter,TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
+        MerchantVoucherModuleRouter,
         SaldoDetailsRouter {
 
 
