@@ -66,13 +66,8 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
         String date = AuthUtil.generateDate(dateFormat);
         String contentMD5 = AuthUtil.generateContentMd5(strParam);
 
-        String authString = method
-                + "\n" + contentMD5
-                + "\n" + contentType
-                + "\n" + date
-                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
-                + "\n" + path; String signature = AuthUtil.calculateRFC2104HMAC(authString,
-                AuthUtil.KEY.KEY_WSV4);
+        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
+        String signature = AuthUtil.calculateRFC2104HMAC(authString, AuthUtil.KEY.KEY_WSV4);
 
         Map<String, String> headerMap = new ArrayMap<>();
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
