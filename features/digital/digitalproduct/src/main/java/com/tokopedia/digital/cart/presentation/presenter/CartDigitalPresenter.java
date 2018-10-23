@@ -229,7 +229,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         if (userSession.isLoggedIn()) {
             processAddToCart();
         } else {
-            view.navigateToLoggedInPage();
+            getView().navigateToLoggedInPage();
         }
     }
 
@@ -238,7 +238,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         if (userSession.isLoggedIn()) {
             processAddToCart();
         } else {
-            view.closeView();
+            getView().closeView();
         }
     }
 

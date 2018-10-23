@@ -6,14 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical"
-    >
-
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
-        android:layout_weight="0.1"
+        android:layout_height="@dimen/dp_56"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16">
 
@@ -40,9 +37,8 @@
         android:id="@+id/container_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6"
+        android:layout_weight="1"
         android:fillViewport="true"
-        android:visibility="gone"
         android:fitsSystemWindows="true">
 
         <LinearLayout
@@ -120,8 +116,8 @@
     <com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView
         android:id="@+id/view_checkout_holder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_weight="0.3" />
+        android:minHeight="@dimen/dp_150" />
 
 </LinearLayout>

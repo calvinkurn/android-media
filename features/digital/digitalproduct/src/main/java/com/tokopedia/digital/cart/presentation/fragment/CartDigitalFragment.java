@@ -76,7 +76,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
-        IDigitalCartView, CheckoutHolderView.IAction,
+        CheckoutHolderView.IAction,
         InputPriceHolderView.ActionListener, VoucherCartHachikoView.ActionListener,
         CartDigitalContract.View {
     private static final int REQUEST_CODE_LOGIN = 1000;
@@ -144,6 +144,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         presenter.onFirstTimeLaunched();
     }
 
+
+    @Override
+    public void navigateToLoggedInPage() {
+        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
+            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
+                    .getLoginIntent(getActivity());
+            if (intent != null) {
+                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
+            }
+        }
+    }
+
     @Override
     public void onSaveState(Bundle state) {
         state.putParcelable(EXTRA_STATE_CART_DIGITAL_INFO_DATA, cartDigitalInfoDataState);
@@ -201,8 +213,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initialPresenter() {
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        ICartMapperData cartMapperData = new CartMapperData();
         presenter.attachView(this);
     }
 
@@ -280,17 +290,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void navigateToLoggedInPage() {
-        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
-            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
-                    .getLoginIntent(getActivity());
-            if (intent != null) {
-                navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
-            }
-        }
-    }
-
-    @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
     }
@@ -327,11 +326,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void closeView() {
         getActivity().finish();
     }
-
-//    @OnClick(R2.id.btn_next)
-//    void actionNext() {
-//        presenter.processGetCartData(passData.getCategoryId());
-//    }
 
     @Override
     public void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData) {
@@ -880,9 +874,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-//        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-//            compositeSubscription.unsubscribe();
+        presenter.detachView();
     }
 
     @Override

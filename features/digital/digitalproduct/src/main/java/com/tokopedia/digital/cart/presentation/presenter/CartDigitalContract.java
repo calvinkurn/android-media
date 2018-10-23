@@ -99,8 +99,9 @@ public class CartDigitalContract {
 
         void showProgressLoading(String title,String message);
 
-
         CartDigitalInfoData getCartDataInfo();
+
+        void navigateToLoggedInPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -131,6 +132,9 @@ public class CartDigitalContract {
 
         void onPaymentSuccess(String categoryId);
 
+        void onLoginResultReceived();
+
+        void onFirstTimeLaunched();
     }
 
 

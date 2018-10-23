@@ -35,7 +35,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     }
 
     private void collapseCartDetailAfter5Seconds() {
-        Observable.timer(5, TimeUnit.SECONDS)
+        Observable.timer(10, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

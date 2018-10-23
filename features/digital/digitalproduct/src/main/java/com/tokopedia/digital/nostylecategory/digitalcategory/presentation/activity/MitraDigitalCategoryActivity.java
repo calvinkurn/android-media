@@ -26,7 +26,6 @@ public class MitraDigitalCategoryActivity extends BaseSimpleActivity
     private String categoryId;
 
     @SuppressWarnings("unused")
-    @DeepLink({DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         Intent intent = new Intent(context, MitraDigitalCategoryActivity.class);
