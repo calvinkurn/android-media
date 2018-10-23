@@ -20,18 +20,16 @@ public class URLGenerator {
                 + "&url=" + url;
     }
 
-    public static String generateURLSessionLoginV4(String url, Context context) {
-        /*Uri uri = Uri.parse(url);
+    public static String generateURLSessionLoginV4(String userId, String fcmId,  String url) {
+        Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
-                + "token=" + GCMHandler.getRegistrationId(context)
+                + "token=" + fcmId
                 + "&os_type=1"
-                + "&uid=" + SessionHandler.getLoginID(context)
+                + "&uid=" + userId
                 + "&url=" + url;
-        return urlFinal;*/
-        return "";
-
+        return urlFinal;
     }
 
     public static String getBaseUrl() {

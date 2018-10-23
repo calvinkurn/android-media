@@ -1,5 +1,7 @@
 package com.tokopedia.saldodetails.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
@@ -13,6 +15,12 @@ public class SaldoLoyaltyDetailActivity extends BaseSimpleActivity {
 
     public static int FRAGMENT_VIEW = R.id.main_view;
     private String url;
+
+    public static Intent createInstance(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, SaldoLoyaltyDetailActivity.class);
+        intent.putExtras(bundle);
+        return intent;
+    }
 
     @Override
     public String getScreenName() {

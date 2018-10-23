@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.activity.SaldoLoyaltyDetailActivity;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.analytics.SaldoEventAnalytics;
@@ -150,6 +151,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     }
 
+    @SuppressLint("Range")
     private void initViews(View view) {
 
         totalBalance = view.findViewById(R.id.total_balance);
@@ -240,10 +242,9 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
             public void onClick(View v) {
                 saldoEventAnalytics.eventDepositTopUp();
                 Bundle bundle = new Bundle();
-                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
-                /*Intent intent = new Intent(context, LoyaltyDetail.class);
-                intent.putExtras(bundle);
-                context.startActivity(intent);*/
+                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(
+                        userSession.getUserId(), url, userSession.getDeviceId()));
+                context.startActivity(SaldoLoyaltyDetailActivity.createInstance(context, bundle));
             }
         };
     }
