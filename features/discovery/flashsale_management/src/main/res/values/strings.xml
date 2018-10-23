@@ -12,5 +12,9 @@
     <string name="fm_campaign_list_upcoming_empty_content">Pelajari lebih lanjut</string>
     <string name="flashsale_search_hint">Cari flash sale</string>
     <string name="label_flash_sale_info">Info Flash Sale</string>
-    <string name="label_product_list">Daftar Product</string>
+    <string name="label_product_list">Daftar Produk</string>
+    <string name="label_period">Periode Berlangsung</string>
+    <string name="title_campaign_product_selection_end">Proses seleksi produk selesai</string>
+    <string name="desc_campaign_product_selection_end">Lihat status produk Anda pada Daftar Produk</string>
+    <string name="label_discount_range">Kisaran Harga Diskon</string>
 </resources>

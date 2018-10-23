@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <LinearLayout android:id="@+id/base_title_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/light_grey"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp_16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <TextView android:id="@+id/cat_title"
+                style="@style/TextView.Micro.Bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                tools:text="1. Gaming"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_arrow_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_arrow_down_grey"/>
+
+        </LinearLayout>
+
+        <com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout
+            android:id="@+id/base_expand_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_16"
+            android:orientation="vertical"
+            app:el_duration="400"
+            app:el_expanded="false">
+
+            <TextView style="@style/TextView.Micro.BlackDisabled"
+                android:text="@string/label_discount_range"/>
+
+        </com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout>
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
