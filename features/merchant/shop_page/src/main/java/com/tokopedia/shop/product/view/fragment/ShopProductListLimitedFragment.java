@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -29,6 +32,19 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent;
+import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent;
+import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException;
+import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult;
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity;
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
+import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
+import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
@@ -37,6 +53,7 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
@@ -55,6 +72,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
+import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
@@ -63,6 +81,8 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,11 +99,14 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHO
 public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
         ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
-        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopCarouselSeeAllClickedListener {
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener, MerchantVoucherListView {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
     private static final int REQUEST_CODE_ETALASE = 205;
+    private static final int REQUEST_CODE_LOGIN_USE_VOUCHER = 206;
+    private static final int REQUEST_CODE_MERCHANT_VOUCHER = 207;
+    private static final int REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208;
 
     private static final int REQUEST_CODE_SORT = 300;
     private static final int LIST_SPAN_COUNT = 1;
@@ -93,6 +116,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     public static final String SAVED_SELECTED_ETALASE_ID = "saved_etalase_id";
     public static final String SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name";
+    public static final int NUM_VOUCHER_DISPLAY = 3;
 
     @Inject
     ShopProductLimitedListPresenter shopProductLimitedListPresenter;
@@ -100,6 +124,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     ShopPageTracking shopPageTracking;
     @Inject
     UserSession userSession;
+
+    MerchantVoucherListPresenter merchantVoucherListPresenter;
 
     private ProgressDialog progressDialog;
     private String urlNeedTobBeProceed;
@@ -119,6 +145,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private boolean needReloadData;
     private List<ShopEtalaseViewModel> highlightEtalaseViewModelList;
     private List<ShopEtalaseViewModel> shopEtalaseViewModelList;
+    private boolean needLoadVoucher;
 
     public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -146,6 +173,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
         }
         super.onCreate(savedInstanceState);
+        MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
+                .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
+                .shopCommonModule(new ShopCommonModule())
+                .build();
+        merchantVoucherListPresenter = merchantVoucherComponent.merchantVoucherListPresenter();
+        merchantVoucherListPresenter.attachView(this);
+
         attribution = getArguments().getString(SHOP_ATTRIBUTION, "");
         shopProductLimitedListPresenter.attachView(this, this);
     }
@@ -218,6 +252,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         this.shopInfo = shopInfo;
     }
 
+    public void clearCache() {
+        merchantVoucherListPresenter.clearCache();
+        shopProductLimitedListPresenter.clearCache();
+    }
+
     // load data promo/featured/etalase
     protected void loadInitialData() {
         shopProductAdapter.clearAllNonDataElement();
@@ -253,9 +292,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     protected void loadTopData() {
         if (shopInfo != null) {
             shopProductAdapter.clearPromoData();
+            shopProductAdapter.clearMerchantVoucherData();
             shopProductAdapter.clearFeaturedData();
 
             shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo));
+
+            loadVoucherList();
 
             shopProductLimitedListPresenter.getProductFeatureListWithAttributes(
                     shopInfo.getInfo().getShopId(),
@@ -365,8 +407,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int deviceWidth = displaymetrics.widthPixels;
         return new ShopProductAdapterTypeFactory(this,
-                this,this, this,
-                this,
+                this, this, this,
+                this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         );
     }
@@ -429,6 +471,27 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (shopProductLimitedListPresenter != null) {
             shopProductLimitedListPresenter.detachView();
         }
+        if (merchantVoucherListPresenter != null) {
+            merchantVoucherListPresenter.detachView();
+        }
+    }
+
+    private void showUseMerchantVoucherLoading() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog.show();
+    }
+
+    private void hideUseMerchantVoucherLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -463,7 +526,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId,false);
+        shopProductAdapter.updateWishListStatus(productId, false);
     }
 
     @Override
@@ -528,6 +591,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         shopProductAdapter.setShopProductEtalaseHighlightViewModel(
                 new ShopProductEtalaseHighlightViewModel(etalaseHighlightCarouselViewModels));
+        shopProductAdapter.refreshSticky();
     }
 
     @Override
@@ -550,6 +614,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     ShopPageTracking.getShopType(shopInfo.getInfo()), false,
                     ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
         }
+        shopProductAdapter.refreshSticky();
     }
 
     @Override
@@ -778,10 +843,134 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                             "", selectedEtalaseId, "", sortName));
                 }
                 break;
+            case REQUEST_CODE_LOGIN_USE_VOUCHER:
+            case REQUEST_CODE_MERCHANT_VOUCHER:
+            case REQUEST_CODE_MERCHANT_VOUCHER_DETAIL: {
+                if (resultCode == Activity.RESULT_OK) {
+                    needLoadVoucher = true;
+                }
+            }
+            break;
             default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+        if (getContext() == null) {
+            return;
+        }
+        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+        /*if (!merchantVoucherListPresenter.isLogin()) {
+            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+            }
+        } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
+            showUseMerchantVoucherLoading();
+            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                    merchantVoucherViewModel.getVoucherId());
+        }*/
+        //TOGGLE_MVC_OFF
+        showSnackBarClose(getString(R.string.title_voucher_code_copied));
+    }
+
+    public void showSnackBarClose(String stringToShow) {
+        if (getActivity()!= null) {
+            final Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), stringToShow,
+                    Snackbar.LENGTH_LONG);
+            snackbar.setAction(getActivity().getString(R.string.close), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snackbar.dismiss();
+                }
+            });
+            snackbar.setActionTextColor(Color.WHITE);
+            snackbar.show();
+        }
+    }
+
+    @Override
+    public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+        Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
+                merchantVoucherViewModel, shopInfo.getInfo().getShopId());
+        startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
+    }
+
+    @Override
+    public void onSeeAllClicked() {
+        Intent intent = MerchantVoucherListActivity.createIntent(getContext(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
+        startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
+    }
+
+    @Override
+    public boolean isOwner() {
+        if (shopInfo != null) {
+            return merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId());
+        }
+        return false;
+    }
+
+    @Override
+    public void onSuccessGetShopInfo(@NotNull ShopInfo shopInfo) {
+        // no op, shop info is got from activity
+    }
+
+    @Override
+    public void onErrorGetShopInfo(@NotNull Throwable e) {
+        // no op, shop info is got from activity
+    }
+
+    @Override
+    public void onSuccessUseVoucher(@NonNull UseMerchantVoucherQueryResult useMerchantVoucherQueryResult) {
+        hideUseMerchantVoucherLoading();
+        if (getActivity() != null) {
+            Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+            dialog.setTitle(useMerchantVoucherQueryResult.getErrorMessageTitle());
+            dialog.setDesc(useMerchantVoucherQueryResult.getErrorMessage());
+            dialog.setBtnOk(getString(R.string.label_close));
+            dialog.setOnOkClickListener(v -> dialog.dismiss());
+            dialog.show();
+
+            merchantVoucherListPresenter.clearCache();
+            loadVoucherList();
+        }
+    }
+
+    @Override
+    public void onErrorUseVoucher(@NotNull Throwable e) {
+        hideUseMerchantVoucherLoading();
+        if (getActivity() != null) {
+            if (e instanceof MessageTitleErrorException) {
+
+                Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+                dialog.setTitle(((MessageTitleErrorException) e).getErrorMessageTitle());
+                dialog.setDesc(e.getMessage());
+                dialog.setBtnOk(getString(R.string.label_close));
+                dialog.setOnOkClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            } else {
+                ToasterError.showClose(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+            }
+        }
+    }
+
+    @Override
+    public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        shopProductAdapter.setShopMerchantVoucherViewModel(new ShopMerchantVoucherViewModel(merchantVoucherViewModelList));
+        shopProductAdapter.refreshSticky();
+    }
+
+    @Override
+    public void onErrorGetMerchantVoucherList(@NotNull Throwable e) {
+        shopProductAdapter.setShopMerchantVoucherViewModel(null);
     }
 
     @Override
@@ -790,6 +979,17 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (needReloadData) {
             reloadProductData(false);
             needReloadData = false;
+        }
+        if (needLoadVoucher) {
+            merchantVoucherListPresenter.clearCache();
+            loadVoucherList();
+            needLoadVoucher = false;
+        }
+    }
+
+    private void loadVoucherList() {
+        if (shopInfo != null) {
+            merchantVoucherListPresenter.getVoucherList(shopInfo.getInfo().getShopId(), NUM_VOUCHER_DISPLAY);
         }
     }
 
@@ -820,6 +1020,5 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
-
 
 }

@@ -31,13 +31,17 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
     }
 
     public static RequestParams createParams(String url) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CacheApiConstant.PARAM_HOST, CacheApiUtils.getHost(url));
-        requestParams.putObject(CacheApiConstant.PARAM_PATH, CacheApiUtils.getPath(url));
-        return requestParams;
+        return createParams(CacheApiUtils.getHost(url), CacheApiUtils.getPath(url));
     }
 
     public static RequestParams createParams(String host, String path) {
+        return createParams(host, path, false);
+    }
+
+    public static RequestParams createParams(String host, String path, boolean dynamicLink) {
+        if (dynamicLink) {
+            path = CacheApiUtils.getConvertedRegexBracePath(path);
+        }
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiConstant.PARAM_HOST, host);
         requestParams.putObject(CacheApiConstant.PARAM_PATH, path);

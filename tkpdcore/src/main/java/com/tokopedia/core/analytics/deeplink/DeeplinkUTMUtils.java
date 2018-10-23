@@ -6,7 +6,6 @@ import android.net.ParseException;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.google.firebase.appindexing.AndroidAppUri;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -26,6 +25,7 @@ public class DeeplinkUTMUtils {
     private static final String REFERRER_NAME = "android.intent.extra.REFERRER_NAME";
     private static final String QUICK_SEARCH_BOX = "com.google.android.googlequicksearchbox";
     private static final String APP_CRAWLER = "com.google.appcrawler";
+
     private DeeplinkUTMUtils() {
 
     }
@@ -150,7 +150,8 @@ public class DeeplinkUTMUtils {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
-                    campaign.setUtmMedium("referral");
+                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
 
@@ -188,10 +189,12 @@ public class DeeplinkUTMUtils {
 //
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "android-app");
-                    campaign.setUtmMedium("referral");
+
+                    campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                            maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "referral");
+
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
-
 
                     campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");

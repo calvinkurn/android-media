@@ -26,6 +26,7 @@ ext {
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
+    roomVersion = '1.1.1'
 
     tkpdUseCaseVersion = '2.23'
     tkpdAbstractionVersion = '2.22'
@@ -60,6 +61,7 @@ ext {
     tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
+    tkpdMerchantVoucherVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdTokocashVersion = '2.22'
@@ -93,7 +95,6 @@ ext {
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
 
-
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             converterGson     : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
@@ -107,7 +108,10 @@ ext {
     dbDependencies = [
             dbFlow         : "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}",
             dbFlowCore     : "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}",
-            dbFlowProcessor: "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}"
+            dbFlowProcessor: "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}",
+            dbRoomRuntime  : "android.arch.persistence.room:runtime:${roomVersion}",
+            dbRoomCompiler : "android.arch.persistence.room:compiler:${roomVersion}",
+            dbRoomTesting  : "android.arch.persistence.room:testing:${roomVersion}"
     ]
 
     supportLibDependencies = [
@@ -182,7 +186,6 @@ ext {
             apolloRuntime       : "com.apollographql.apollo:apollo-runtime:$apolloVersion",
             apolloRxSupport     : "com.apollographql.apollo:apollo-rx-support:$apolloVersion",
             apolloRx2Support    : "com.apollographql.apollo:apollo-rx2-support:$apolloVersion",
-
     ]
 
     miscDependencies = [
@@ -291,6 +294,7 @@ ext {
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
+            merchantVoucher       : "com.tokopedia.merchantvoucher:merchant-voucher:${tkpdMerchantVoucherVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
@@ -370,6 +374,7 @@ ext {
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             gamification          : ":features:promo:gamification",
+            merchantVoucher       : ":features:promo:merchant_voucher",
             groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
             settingbank           : ":features:user:settingbank",

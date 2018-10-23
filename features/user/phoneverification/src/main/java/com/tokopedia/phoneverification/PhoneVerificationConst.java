@@ -17,4 +17,6 @@ public class PhoneVerificationConst {
     public static final String CHANGE_PHONE_NUMBER = "/api/msisdn/change-msisdn";
     public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
 
+    public static final String URL_TOKOCASH_SHARE = "https://ecs7.tokopedia.net/img/android/others/ic_referral_tokocash.png";
+
 }

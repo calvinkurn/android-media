@@ -224,7 +224,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                             RequestPermissionUtil
                                     .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
                     )
-                    .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             PhoneVerificationFragmentPermissionsDispatcher
@@ -232,7 +232,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
                         }
                     })
-                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -274,7 +274,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
         KeyboardHandler.DropKeyboard(getActivity(), getView());
 
-        Spannable spannable = new SpannableString(getString(com.tokopedia.core.R.string.action_send_otp_with_call_2));
+        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -286,11 +286,11 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                               public void updateDrawState(TextPaint ds) {
                                   ds.setUnderlineText(true);
                                   ds.setColor(MethodChecker.getColor(getActivity(),
-                                          com.tokopedia.core.R.color.tkpd_main_green));
+                                          R.color.tkpd_main_green));
                               }
                           }
-                , getString(com.tokopedia.core.R.string.action_send_otp_with_call_2).indexOf("lewat")
-                , getString(com.tokopedia.core.R.string.action_send_otp_with_call_2).length()
+                , getString(R.string.action_send_otp_with_call_2).indexOf("lewat")
+                , getString(R.string.action_send_otp_with_call_2).length()
                 , 0);
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
@@ -366,7 +366,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                 if (s.length() == 6) {
                     verifyButton.setEnabled(true);
                     MethodChecker.setBackground(verifyButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.bg_button_green_enabled));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
 
                 } else {
@@ -523,7 +523,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         countdownText.setVisibility(View.GONE);
         MethodChecker.setBackground(requestOtpButton,
                 MethodChecker.getDrawable(getActivity(),
-                        com.tokopedia.core.R.drawable.cards_ui));
+                        R.drawable.cards_ui));
         requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
         requestOtpButton.setText(R.string.title_resend_otp_sms);
         requestOtpCallButton.setVisibility(View.VISIBLE);

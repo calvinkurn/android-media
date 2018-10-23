@@ -96,7 +96,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             if (inbox == null)
                 return;
 
-            globalNavAnalytics.eventInboxPage(inbox.getTitle().toString().toLowerCase());
+            globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
         });
 

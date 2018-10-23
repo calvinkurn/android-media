@@ -403,6 +403,7 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.io.File;
 import java.io.IOException;
@@ -499,7 +500,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PhoneVerificationRouter,
         TalkRouter,
         TkpdAppsFlyerRouter,
-        ScanQrCodeRouter {
+        ScanQrCodeRouter,
+        MerchantVoucherModuleRouter {
 
     private static final String EXTRA = "extra";
 

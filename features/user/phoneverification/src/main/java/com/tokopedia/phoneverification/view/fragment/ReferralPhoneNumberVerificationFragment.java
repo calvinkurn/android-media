@@ -9,15 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.phoneverification.PhoneVerificationConst.URL_TOKOCASH_SHARE;
 
 /**
  * Created by ashwanityagi on 12/12/17.
@@ -34,6 +39,8 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
 
     EditText tvPhoneNumber;
     TextView btnActivation;
+    ImageView ivTokocash;
+    PhoneVerificationAnalytics analytics;
     private ReferralPhoneNumberVerificationFragmentListener listener;
     @Inject
     UserSession userSession;
@@ -55,6 +62,13 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
     public void setReferralPhoneVerificationListener
             (ReferralPhoneNumberVerificationFragmentListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = PhoneVerificationAnalytics.createInstance(getActivity().
+                getApplicationContext());
     }
 
     public ReferralPhoneNumberVerificationFragmentListener getListener() {
@@ -81,6 +95,8 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
         tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
                 userSession.getPhoneNumber()));
         btnActivation = (TextView) view.findViewById(R.id.btn_activation);
+        ivTokocash = (ImageView) view.findViewById(R.id.img_app_share);
+        ImageHandler.loadImage2(ivTokocash, URL_TOKOCASH_SHARE, R.drawable.loading_page);
         setViewListener();
         tvPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,11 +115,9 @@ public class ReferralPhoneNumberVerificationFragment extends TkpdBaseV4Fragment 
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    //TODO alvinatin check this
-//                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action
-// .CLICK_VERIFY_NUMBER,
-//                            tvPhoneNumber.getText().toString().replace("-", ""));
-
+                    analytics.eventReferralAndShare(
+                            PhoneVerificationAnalytics.Action.CLICK_VERIFY_NUMBER,
+                            tvPhoneNumber.getText().toString().replace("-", ""));
                     listener.onClickVerification(tvPhoneNumber.getText().toString());
                 }
             }

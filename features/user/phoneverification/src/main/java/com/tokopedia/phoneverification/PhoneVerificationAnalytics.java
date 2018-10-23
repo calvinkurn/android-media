@@ -12,13 +12,21 @@ public class PhoneVerificationAnalytics {
 
     AnalyticTracker analyticTracker;
 
+    public static class Action{
+        public static final String CLICK_VERIFY_NUMBER = "click verify number";
+
+    }
+
     public static class Event {
         public static final String CLICK_REGISTER = "clickRegister";
+        public static final String CLICK_APP_SHARE_REFERRAL = "clickReferral";;
     }
 
     public static class Category {
         public static final String REGISTER_VERIFICATION_NUMBER = "register - verification phone " +
                 "number";
+        public static final String REFERRAL = "Referral";
+
     }
 
 
@@ -74,6 +82,15 @@ public class PhoneVerificationAnalytics {
                 Category.REGISTER_VERIFICATION_NUMBER,
                 "click on kirim sms verifikasi",
                 ""
+        );
+    }
+
+    public void eventReferralAndShare(String action, String label) {
+        analyticTracker.sendEventTracking(
+                Event.CLICK_APP_SHARE_REFERRAL,
+                Category.REFERRAL,
+                action,
+                label
         );
     }
 }
