@@ -6,12 +6,15 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.kelontongapp.firebase.Preference;
@@ -26,7 +29,8 @@ import java.util.Map;
 /**
  * Created by meta on 02/10/18.
  */
-public class KelontongMainActivity extends AppCompatActivity implements FilePickerInterface {
+public class KelontongMainActivity extends AppCompatActivity
+        implements FilePickerInterface {
 
     private static final String GCM_ID = "gcm_id";
     private static final String ANDROID = "tkpd/mitra/android";
@@ -34,7 +38,8 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
     private static final String X_REQUESTED_WITH = "X-Requested-With";
     private static final int EXIT_DELAY_MILLIS = 2000;
 
-    private KelontongWebChromeClient webViewClient;
+    private KelontongWebChromeClient webViewChromeClient;
+    private KelontongWebviewClient webviewClient;
     private KelontongWebview webView;
 
     private boolean doubleTapExit = false;
@@ -50,20 +55,36 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_kelontong);
 
-        initialize();
+        initializeWebview();
+
+        if (Preference.isFirstTime(this)) {
+            requestPermission();
+            Preference.saveFirstTime(this);
+        }
     }
 
-    private void initialize() {
+    private void initializeWebview() {
         webView = findViewById(R.id.webview);
-        ProgressBar progressBar = findViewById(R.id.progress);
 
-        webViewClient = new KelontongWebChromeClient(this, progressBar);
+        webViewChromeClient = new KelontongWebChromeClient(this, this);
+        webviewClient = new KelontongWebviewClient(this);
 
         headers.put(X_REQUESTED_WITH, "");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.setWebChromeClient(webViewClient);
-        webView.setWebViewClient(new KelontongWebviewClient());
+        webView.setWebChromeClient(webViewChromeClient);
+        webView.setWebViewClient(webviewClient);
+
+        webView.getSettings().setAllowFileAccess(true);
+
+        if(Build.VERSION.SDK_INT >= 21){
+            webView.getSettings().setMixedContentMode(0);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }else if(Build.VERSION.SDK_INT >= 19){
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }else {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
@@ -78,6 +99,14 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         String fcmToken = Preference.getFcmToken(this);
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken));
         webView.loadUrl(KelontongBaseUrl.BASE_URL, headers);
+    }
+
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!webviewClient.checkPermission()) {
+                webviewClient.requestPermission();
+            }
+        }
     }
 
     @Override
@@ -102,10 +131,16 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        webviewClient.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewClient != null) {
-            webViewClient.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewChromeClient != null) {
+            webViewChromeClient.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -5,6 +5,8 @@ package com.tokopedia.kelontongapp;
  */
 public class KelontongConstant {
 
+    public static final String VERIFIKASI = "verifikasi";
+
     public static class NotificationConstant {
 
         public static final String CHANNEL_GENERAL = "ANDROID_KELONTONG_GENERAL_CHANNEL_v" + BuildConfig.VERSION_NAME;

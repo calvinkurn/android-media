@@ -1,16 +1,23 @@
 package com.tokopedia.kelontongapp.webview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.ProgressBar;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -22,16 +29,16 @@ public class KelontongWebChromeClient extends WebChromeClient {
     private ValueCallback callbackBeforeL;
     private ValueCallback<Uri[]> callbackAfterL;
 
+    private String mCM;
+
     private Context context;
 
     private FilePickerInterface filePickerInterface;
 
-    private ProgressBar progressBar;
-
-    public KelontongWebChromeClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
+    public KelontongWebChromeClient(Context context, FilePickerInterface filePickerInterface) {
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
+            this.context = context;
             this.filePickerInterface = filePickerInterface;
-            this.progressBar = progressBar;
         } else {
             throw new RuntimeException("Should be instance of Activity or Fragment");
         }
@@ -39,60 +46,13 @@ public class KelontongWebChromeClient extends WebChromeClient {
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-        if (newProgress == PROGRESS_COMPLETED && progressBar != null) {
+        if (newProgress == PROGRESS_COMPLETED) {
             view.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
         }
         super.onProgressChanged(view, newProgress);
     }
 
-    //For Android 3.0+
-    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        callbackBeforeL = uploadMsg;
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        filePickerInterface.startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-    }
-
-    // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
-    public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-        callbackBeforeL = uploadMsg;
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        filePickerInterface.startActivityForResult(
-                Intent.createChooser(i, "File Browser"), ATTACH_FILE_REQUEST);
-    }
-
-    //For Android 4.1+
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        callbackBeforeL = uploadMsg;
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        filePickerInterface.startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-    }
-
-    // Work on Android 4.4.2 Zenfone 5
-    public void showFileChooser(ValueCallback<String[]> filePathCallback,
-                                String acceptType, boolean paramBoolean){
-        // TODO Auto-generated method stub
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        filePickerInterface.startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-    }
-
-    public void showFileChooser(ValueCallback<String[]> uploadFileCallback,
-                                FileChooserParams fileChooserParams) {
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        filePickerInterface.startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-    }
-
-    //For Android 5.0+
+    @Override
     public boolean onShowFileChooser(
             WebView webView, ValueCallback<Uri[]> filePathCallback,
             FileChooserParams fileChooserParams) {
@@ -101,14 +61,36 @@ public class KelontongWebChromeClient extends WebChromeClient {
         }
         callbackAfterL = filePathCallback;
 
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(takePictureIntent.resolveActivity(context.getPackageManager()) != null){
+            File photoFile = null;
+            try{
+                photoFile = createImageFile();
+                takePictureIntent.putExtra("PhotoPath", mCM);
+            }catch(IOException ex){
+                ex.printStackTrace();
+            }
+            if(photoFile != null){
+                mCM = "file:" + photoFile.getAbsolutePath();
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            }else{
+                takePictureIntent = null;
+            }
+        }
         Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
         contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
         contentSelectionIntent.setType("*/*");
-        Intent[] intentArray = new Intent[0];
+
+        Intent[] intentArray;
+        if(takePictureIntent != null){
+            intentArray = new Intent[]{takePictureIntent};
+        }else{
+            intentArray = new Intent[0];
+        }
 
         Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
         chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-        chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
+        chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
         filePickerInterface.startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
         return true;
@@ -125,9 +107,24 @@ public class KelontongWebChromeClient extends WebChromeClient {
                         return;
                     }
 
-                    String dataString = intent.getDataString();
-                    if (dataString != null) {
-                        results = new Uri[]{Uri.parse(dataString)};
+                    if(intent == null || intent.getData() == null){
+                        //Capture Photo if no image available
+                        if(mCM != null){
+                            results = new Uri[]{Uri.parse(mCM)};
+                        }
+                    }else{
+                        String dataString = intent.getDataString();
+                        if(dataString != null){
+                            results = new Uri[]{Uri.parse(dataString)};
+                        } else {
+                            if (intent.getClipData() != null) {
+                                final int numSelectedFiles = intent.getClipData().getItemCount();
+                                results = new Uri[numSelectedFiles];
+                                for (int i = 0; i < numSelectedFiles; i++) {
+                                    results[i] = intent.getClipData().getItemAt(i).getUri();
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -141,5 +138,12 @@ public class KelontongWebChromeClient extends WebChromeClient {
                 callbackBeforeL = null;
             }
         }
+    }
+
+    private File createImageFile() throws IOException {
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "img_"+timeStamp+"_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        return File.createTempFile(imageFileName,".jpg",storageDir);
     }
 }
