@@ -19,6 +19,8 @@ public interface ShippingDurationBottomsheetListener {
                                    int selectedServiceId,
                                    String selectedServiceName, boolean flagNeedToSetPinpoint);
 
+    void onNoCourierAvailable(String message);
+
     void onShippingDurationButtonCloseClicked();
 
     void onShippingDurationButtonShowCaseDoneClicked();

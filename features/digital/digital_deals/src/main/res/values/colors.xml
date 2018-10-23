@@ -11,4 +11,5 @@
     <color name="green_toast_color">#f3fef3</color>
     <color name="color_search_icon">#BDBDBD</color>
     <color name="black_70">#b3000000</color>
+    <color name="red_error">#f13700</color>
 </resources>

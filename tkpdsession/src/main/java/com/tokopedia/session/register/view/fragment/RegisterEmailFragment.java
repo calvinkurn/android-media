@@ -19,7 +19,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +40,7 @@ import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -49,7 +49,6 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -344,6 +343,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     /**
      * This textwatcher cause lag on UI.
      * the owner of this code should fix this.
+     *
      * @param editText
      * @return
      */
@@ -401,7 +401,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             private void formatPhoneNumber(String formattedText, int cursorPosition) {
                 editText.removeTextChangedListener(this);
                 editText.setText(formattedText);
-                if(cursorPosition<0)
+                if (cursorPosition < 0)
                     cursorPosition = 0;
                 editText.setSelection(cursorPosition);
                 editText.addTextChangedListener(this);
@@ -641,8 +641,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void goToAutomaticResetPassword() {
         dismissLoadingProgress();
-        startActivity(ForgotPasswordActivity.getAutomaticResetPasswordIntent(getActivity(),
-                email.getText().toString()));
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getAutomaticResetPasswordIntent(
+                        getActivity(), email.getText().toString()
+                );
+        startActivity(intent);
     }
 
     @Override
@@ -729,7 +732,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
+                Intent intent = ((TkpdCoreRouter) getActivity().getApplicationContext()).getForgotPasswordIntent(
+                        getActivity(), emailString
+                );
+                startActivity(intent);
             }
         });
         redirectView.setVisibility(View.VISIBLE);
@@ -798,7 +804,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 }
                 break;
             case REQUEST_AUTO_LOGIN:
-                if (getActivity()!= null && resultCode == Activity.RESULT_OK) {
+                if (getActivity() != null && resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {

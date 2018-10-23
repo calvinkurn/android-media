@@ -103,7 +103,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         account_list_rv.layoutManager = linearLayoutManager
         account_list_rv.adapter = adapter
 
-        add_account_button.setOnClickListener({ addNewAccount() })
+        add_account_button.setOnClickListener { addNewAccount() }
         account_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -173,15 +173,15 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
             alertDialog.setTitle(getString(R.string.make_main_account_prompt_title))
             alertDialog.setDesc(composeMakeMainDescription(element))
-            alertDialog.setBtnCancel(getString(R.string.No))
+            alertDialog.setBtnCancel(getString(R.string.cancel))
             alertDialog.setBtnOk(getString(R.string.yes))
-            alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
-            alertDialog.setOnOkClickListener({
+            alertDialog.setOnCancelClickListener { alertDialog.dismiss() }
+            alertDialog.setOnOkClickListener {
                 analyticTracker.trackConfirmYesSetDefaultAccount()
 
                 presenter.setMainAccount(adapterPosition, element)
                 alertDialog.dismiss()
-            })
+            }
 
             alertDialog.show()
         }
@@ -259,14 +259,14 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
             alertDialog.setTitle(getString(R.string.delete_bank_account_prompt_title))
             alertDialog.setDesc(composeDeleteDescription(element))
-            alertDialog.setBtnCancel(getString(R.string.No))
+            alertDialog.setBtnCancel(getString(R.string.cancel))
             alertDialog.setBtnOk(getString(R.string.yes_delete))
-            alertDialog.setOnCancelClickListener({ alertDialog.dismiss() })
-            alertDialog.setOnOkClickListener({
+            alertDialog.setOnCancelClickListener { alertDialog.dismiss() }
+            alertDialog.setOnOkClickListener {
                 analyticTracker.trackConfirmYesDeleteBankAccount()
                 presenter.deleteAccount(adapterPosition, element)
                 alertDialog.dismiss()
-            })
+            }
 
             alertDialog.show()
         }
