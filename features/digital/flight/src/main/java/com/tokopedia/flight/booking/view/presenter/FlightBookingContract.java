@@ -12,6 +12,7 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,8 @@ public interface FlightBookingContract {
         void showContactPhoneNumberInvalidError(@StringRes int resId);
 
         FlightBookingParamViewModel getCurrentBookingParamViewModel();
+
+        FlightPriceViewModel getPriceViewModel();
 
         void showAndRenderReturnTripCardDetail(FlightSearchPassDataViewModel searchParam, FlightDetailViewModel returnTrip);
 

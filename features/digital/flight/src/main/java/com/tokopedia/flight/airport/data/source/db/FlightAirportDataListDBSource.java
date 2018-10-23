@@ -305,15 +305,25 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
 
     public Observable<FlightAirportDB> getAirport(String airportCode) {
         final String queryLike = "%" + airportCode + "%";
-        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
-            @Override
-            public void call(Subscriber<? super FlightAirportDB> subscriber) {
-                FlightAirportDB flightAirportDBList = new Select()
-                        .from(FlightAirportDB.class)
-                        .where(FlightAirportDB_Table.airport_id.like(queryLike))
-                        .querySingle();
-                subscriber.onNext(flightAirportDBList);
+        return Observable.unsafeCreate(subscriber -> {
+            FlightAirportDB flightAirportDBList = new Select()
+                    .from(FlightAirportDB.class)
+                    .where(FlightAirportDB_Table.airport_id.like(queryLike))
+                    .querySingle();
+            if (flightAirportDBList == null) {
+                flightAirportDBList = new FlightAirportDB();
+                flightAirportDBList.setAirportId(airportCode);
+                flightAirportDBList.setAirportIds("");
+                flightAirportDBList.setAirportName("");
+                flightAirportDBList.setAliases("");
+                flightAirportDBList.setCityCode("");
+                flightAirportDBList.setCityId("");
+                flightAirportDBList.setCityName("");
+                flightAirportDBList.setCountryId("");
+                flightAirportDBList.setCountryName("");
+                flightAirportDBList.setPhoneCode(0);
             }
+            subscriber.onNext(flightAirportDBList);
         });
     }
 
