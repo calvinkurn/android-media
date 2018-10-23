@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -24,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.util.MoEngageConstants;
 
 
 import java.util.ArrayList;
@@ -51,6 +53,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private ProductFragment productFragment;
     private CategoryCatalogFragment catalogFragment;
+    private static boolean isSubCtaegory = true;
+    MoEngageConstants moEngageConstants;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -63,6 +67,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+            isSubCtaegory = false;
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -74,6 +79,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent(activity, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+            isSubCtaegory = true;
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
         }
@@ -107,8 +113,18 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);
         categoryPresenter.setDiscoveryView(this);
+        moEngageConstants = new MoEngageConstants(this);
         categoryName = "";
         loadInitialData();
+        trackMoEngageCategory();
+    }
+
+    private void trackMoEngageCategory() {
+        if (isSubCtaegory) {
+            moEngageConstants.sendSubCategory(departmentId, categoryName);
+        } else {
+            moEngageConstants.sendProductCategory(departmentId, categoryName);
+        }
     }
 
     @Override

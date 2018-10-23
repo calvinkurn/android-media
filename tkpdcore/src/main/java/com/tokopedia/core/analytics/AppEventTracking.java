@@ -958,6 +958,7 @@ public interface AppEventTracking {
         String IS_SELLER = "is_seller";
         String SHOP_ID = "shop_id";
         String SHOP_NAME = "shop_name";
+        String ADDRESS_ADDED = "Address_Added";
         String SHOP_URL_SLUG = "url_slug";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
@@ -985,6 +986,9 @@ public interface AppEventTracking {
         String IS_FAVORITE_EMPTY = "is_favorite_empty";
         String KEYWORD = "keyword";
         String IS_RESULT_FOUND = "is_result_found";
+        String CATEGORY_NAME_MAPPING = "category_name_mapping";
+        String CATEGORY_ID_MAPPING = "category_id_mapping";
+        String REFINED_SEARCH = "refined_search";
         String IS_RECEIVED = "is_received";
         String PAYMENT_TYPE = "payment_type";
         String PURCHASE_SITE = "purchase_site";

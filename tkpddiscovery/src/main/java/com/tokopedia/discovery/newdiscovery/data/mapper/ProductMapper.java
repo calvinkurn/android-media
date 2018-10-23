@@ -100,6 +100,8 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
             model.setFeatured(data.getIsFeatured() == 1);
             model.setTopLabel(isContainItems(data.getTopLabel()) ? data.getTopLabel().get(0) : "");
             model.setBottomLabel(isContainItems(data.getBottomLabel()) ? data.getBottomLabel().get(0) : "");
+            model.setCategoryId(data.getCategoryId());
+            model.setCategoryName(data.getCategoryName());
             list.add(model);
         }
         return list;

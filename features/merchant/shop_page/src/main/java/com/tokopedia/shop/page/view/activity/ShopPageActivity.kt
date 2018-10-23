@@ -367,6 +367,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             updateFavouriteResult()
         }
         shopPageViewHolder.updateFavoriteButton(shopInfo)
+        application as ShopModuleRouter
     }
 
     private fun updateFavouriteResult() {
@@ -439,6 +440,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.eventClickFavouriteShop(titles[viewPager.currentItem], shopId, isFavourite,
                     presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
         }
+        shopInfo?.info?.isShopOfficial?.let { ( application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopLocation, it, isFavourite) }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
     }

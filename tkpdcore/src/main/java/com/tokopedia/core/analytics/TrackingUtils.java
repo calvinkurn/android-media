@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
+import com.google.gson.JsonArray;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
@@ -34,8 +35,10 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -392,6 +395,15 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
+    public static void sendMoEngageAddressEvent(String address) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.ADDRESS_ADDED, address);
+        getMoEngine().sendEvent(
+                builder.build(), AppEventTracking.MOENGAGE.ADDRESS_ADDED
+        );
+    }
+
+
     public static void sendMoEngageShippingReceivedEvent(boolean success) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RECEIVED, success);
@@ -429,6 +441,21 @@ public class TrackingUtils extends TrackingConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendMoEngageCategoryEvent(String categoryId, String categoryName, String subCategoryId, String subCategoryName, String productId, String productName) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, categoryId);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, productId);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, subCategoryId);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, subCategoryName);
+        getMoEngine().sendEvent(
+                builder.build(),
+                AppEventTracking.EventMoEngage.CAT_SCREEN_OPEN
+        );
+
     }
 
     public static void sendMoEngageRemoveProductFromCart(@NonNull Product product) {
@@ -551,10 +578,14 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound) {
+    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<Integer, String> category) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.KEYWORD, keyword);
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound);
+        if (category != null) {
+            builder.putAttrJSONArray(AppEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
+            builder.putAttrJSONArray(AppEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
+        }
         getMoEngine().sendEvent(
                 builder.build(),
                 AppEventTracking.EventMoEngage.SEARCH_ATTEMPT

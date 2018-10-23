@@ -33,6 +33,8 @@ public class ProductModel {
     private boolean isOfficial;
     private String topLabel;
     private String bottomLabel;
+    private int categoryId;
+    private String categoryName;
 
     public String getProductUrl() {
         return productUrl;
@@ -216,5 +218,21 @@ public class ProductModel {
 
     public void setBottomLabel(String bottomLabel) {
         this.bottomLabel = bottomLabel;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

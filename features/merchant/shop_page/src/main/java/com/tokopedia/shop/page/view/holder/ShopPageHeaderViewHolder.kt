@@ -169,7 +169,6 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             view.buttonFollowed.setOnClickListener{
                 view.buttonFollowed.isEnabled = false
                 listener.toggleFavorite(true)}
-            shopInfo?.info?.isShopOfficial?.let { (this as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopLocation, it, true) }
         } else {
             view.buttonFollowed.visibility = View.GONE
             view.buttonFollow.visibility = View.VISIBLE
@@ -177,7 +176,6 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             view.buttonFollow.setOnClickListener{
                 view.buttonFollow.isEnabled = false
                 listener.toggleFavorite(false)}
-            shopInfo?.info?.isShopOfficial?.let { (this as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopLocation, it, false) }
         }
     }
 
