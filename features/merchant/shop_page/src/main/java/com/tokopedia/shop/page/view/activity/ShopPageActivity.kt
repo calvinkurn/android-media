@@ -202,7 +202,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
-            if(shopDomain!=null)
+            if (shopDomain != null)
                 presenter.getShopInfoByDomain(shopDomain!!)
         }
     }
@@ -413,6 +413,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    private fun refreshData() {
+        presenter.clearCache()
+        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+        if (f != null && f is ShopProductListLimitedFragment) {
+            f.clearCache()
+        }
+        getShopInfo()
+        swipeToRefresh.isRefreshing = true
+    }
+
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
     override fun onFollowerTextClicked() {
@@ -473,12 +483,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun goToHelpCenter(url: String) {
         ShopWebViewActivity.startIntent(this, url)
-    }
-
-    private fun refreshData() {
-        presenter.clearCache()
-        getShopInfo()
-        swipeToRefresh.isRefreshing = true
     }
 
     fun getShopInfoPosition() : Int {

@@ -12,6 +12,7 @@ import com.tokopedia.home.account.domain.GetBuyerAccountUseCase;
 import com.tokopedia.home.account.presentation.BuyerAccount;
 import com.tokopedia.home.account.presentation.presenter.BuyerAccountPresenter;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -36,12 +37,19 @@ public class BuyerAccountModule {
     GetBuyerAccountUseCase provideGetBuyerAccountUseCase(@ApplicationContext Context context,
                                                          GraphqlUseCase graphqlUseCase,
                                                          BuyerAccountMapper buyerAccountMapper,
-                                                         WalletPref walletPref) {
+                                                         WalletPref walletPref,
+                                                         UserSession userSession) {
         return new GetBuyerAccountUseCase(
                 graphqlUseCase,
                 ((AccountHomeRouter) context).getTokoCashAccountBalance(),
                 buyerAccountMapper,
-                walletPref
+                walletPref,
+                userSession
         );
+    }
+
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

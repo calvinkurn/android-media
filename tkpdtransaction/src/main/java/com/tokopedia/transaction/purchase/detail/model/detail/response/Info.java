@@ -14,6 +14,9 @@ public class Info {
     @SerializedName("pickup_info")
     @Expose
     private PickupInfo pickupInfo;
+    @SerializedName("online_booking")
+    @Expose
+    private OnlineBooking onlineBooking;
 
     public Info() {
     }
@@ -32,5 +35,13 @@ public class Info {
 
     public void setPickupInfo(PickupInfo pickupInfo) {
         this.pickupInfo = pickupInfo;
+    }
+
+    public OnlineBooking getOnlineBooking() {
+        return onlineBooking;
+    }
+
+    public void setOnlineBooking(OnlineBooking onlineBooking) {
+        this.onlineBooking = onlineBooking;
     }
 }

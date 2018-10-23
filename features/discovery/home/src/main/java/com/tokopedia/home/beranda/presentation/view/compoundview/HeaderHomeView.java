@@ -16,13 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -54,6 +57,7 @@ public class HeaderHomeView extends BaseCustomView {
     private ImageView ivLogoTokoPoint;
     private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
+    private WalletAnalytics walletAnalytics;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
@@ -77,6 +81,11 @@ public class HeaderHomeView extends BaseCustomView {
             return;
         if (listener == null)
             return;
+
+        if (getContext().getApplicationContext() instanceof IHomeRouter) {
+            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
+            walletAnalytics = new WalletAnalytics(analyticTracker);
+        }
 
         if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
             renderHeaderOnlyTokocash();
@@ -202,7 +211,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(R.string.home_header_tokocash_unable_to_load_label);
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label);
             tvActionTokocash.setVisibility(VISIBLE);
             tvTitleTokocash.setVisibility(GONE);
@@ -231,13 +239,13 @@ public class HeaderHomeView extends BaseCustomView {
         tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
         tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
         ivLogoTokocash.setImageResource(R.drawable.ic_tokocash);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
 
         if (homeHeaderWalletAction.isLinked()) {
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
@@ -278,6 +286,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvActionTokocash.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkActionButton()));
         tokoCashHolder.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkBalance()));
         ivLogoTokocash.setImageResource(R.drawable.wallet_ic_ovo_home);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
 
         if (homeHeaderWalletAction.isLinked()) {
             pointsOvo.setVisibility(VISIBLE);
@@ -367,6 +376,7 @@ public class HeaderHomeView extends BaseCustomView {
                     getContext().startActivity(intentBalanceWalet);
                     if (!linkedOvo) {
                         showAnimationBottomSheetActivation();
+                        walletAnalytics.eventClickActivationOvoHomepage();
                     }
                 }
             }
