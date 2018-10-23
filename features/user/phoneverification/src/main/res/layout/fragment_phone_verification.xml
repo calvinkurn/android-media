@@ -93,7 +93,7 @@
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 tools:text="Verifikasi sudah dikirim\nharap menunggu selama 50 detik."
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/send_otp_call"
@@ -106,7 +106,7 @@
                 android:textColor="@color/grey_500"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/input_otp_view"
@@ -162,6 +162,7 @@
         android:gravity="center"
         android:text="@string/title_confirm_otp"
         android:textColor="@color/grey_600"
+        android:visibility="gone"
         android:textStyle="bold" />
 
 
