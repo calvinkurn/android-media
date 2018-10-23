@@ -135,8 +135,9 @@ public class BranchSdkUtils {
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter("$og_url", data.getOgUrl());
-        linkProperties.addControlParameter("$og_title", data.getOgTitle());
-        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+        linkProperties.addControlParameter("$og_title", getOgTitle(data));
+        linkProperties.addControlParameter("$og_image_url", getOgImage(data));
+        linkProperties.addControlParameter("$og_description", getOgDesc(data));
 
         return linkProperties;
     }
@@ -350,6 +351,30 @@ public class BranchSdkUtils {
 
         } catch (Exception e) {
 
+        }
+    }
+
+    private static String getOgTitle(ShareData data){
+        if(TextUtils.isEmpty(data.getOgTitle())){
+            return data.getName();
+        }else {
+           return data.getOgTitle();
+        }
+    }
+
+    private static String getOgDesc(ShareData data){
+        if(TextUtils.isEmpty(data.getOgDescription())){
+            return data.getDescription();
+        }else {
+            return data.getOgDescription();
+        }
+    }
+
+    private static String getOgImage(ShareData data){
+        if(TextUtils.isEmpty(data.getOgImageUrl())){
+            return data.getImgUri();
+        }else {
+            return data.getOgImageUrl();
         }
     }
 
