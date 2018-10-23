@@ -24,6 +24,7 @@ ext {
     tkpdKolCommonVersion = '2.22'
     tkpdKolVersion = '2.22'
     tkpdLoyaltyVersion = '2.22'
+    tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdNotifCenterVersion = '2.22'
     tkpdPaymentVersion = '2.22'
@@ -170,6 +171,7 @@ ext {
             withdraw                    : ":features:payment:withdraw",
 
             gamification                : ":features:promo:gamification",
+            merchantVoucher             : ":features:promo:merchant_voucher",
             tokopoints                  : ":features:promo:tokopoints",
 
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",

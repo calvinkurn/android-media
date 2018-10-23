@@ -1,3 +1,4 @@
+// Sort alphabetically by name
 include "features:common:nps"
 
 include "features:content:kol"
@@ -63,6 +64,7 @@ include "features:payment:withdraw"
 include "features:payment:payment_setting"
 
 include "features:promo:gamification"
+include "features:promo:merchant_voucher"
 include "features:promo:tokopoints"
 
 include "features:top_ads:top_ads_free_claim"
