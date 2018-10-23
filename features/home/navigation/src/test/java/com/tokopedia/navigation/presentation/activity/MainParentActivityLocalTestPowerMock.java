@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.tokopedia.home.HomeApp;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,7 +34,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(RobolectricTestRunner.class)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
-@PrepareForTest(MainParentActivity.UserSession.class)
 public class MainParentActivityLocalTestPowerMock {
 
     @Rule
@@ -42,23 +42,17 @@ public class MainParentActivityLocalTestPowerMock {
     private MainParentActivity mActivity;
     private ActivityController<MainParentActivity> mActivityController;
 
-    @Test
-    public void testStaticMocking() {
-
-
-        assertFalse(MainParentActivity.UserSession.isFirstTimeUser(mActivity));
-    }
-
     @Before
     public void setup() throws Exception{
 
         /**
          * powermockito can only test "class within this module" not outside.
          */
-        PowerMockito.mockStatic(MainParentActivity.UserSession.class);
-        when(MainParentActivity.UserSession.isFirstTimeUser(any())).thenReturn(false);
+        UserSessionInterface userSession = PowerMockito.mock(UserSessionInterface.class);
+        when(userSession.isFirstTimeUser()).thenReturn(false);
 
         mActivity = (mActivityController = Robolectric.buildActivity(MainParentActivity.class)).get();
+        mActivity.setUserSession(userSession);
     }
 
 
