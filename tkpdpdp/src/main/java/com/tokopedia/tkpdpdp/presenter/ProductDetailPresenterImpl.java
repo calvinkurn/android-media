@@ -1107,7 +1107,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
-        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {
