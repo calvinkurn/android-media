@@ -1123,6 +1123,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 } else {
                     if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
                         dPresenter.processInitialGetCartData(false);
+                    } else {
+                        CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
+                        dPresenter.setCartListData(cartListData);
+                        renderLoadGetCartDataFinish();
+                        renderInitialGetCartListDataSuccess(cartListData);
                     }
                 }
             }

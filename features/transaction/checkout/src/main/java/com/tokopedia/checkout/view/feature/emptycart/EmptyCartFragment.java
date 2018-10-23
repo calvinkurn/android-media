@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -221,7 +222,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         });
 
         rvWishList.setNestedScrollingEnabled(false);
+        ((SimpleItemAnimator) rvWishList.getItemAnimator()).setSupportsChangeAnimations(false);
         rvLastSeen.setNestedScrollingEnabled(false);
+        ((SimpleItemAnimator) rvLastSeen.getItemAnimator()).setSupportsChangeAnimations(false);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
         tvWishListSeeAll.setOnClickListener(v -> {
@@ -383,6 +386,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void showLoading() {
+        nestedScrollView.scrollTo(0, 0);
         swipeRefreshLayout.setRefreshing(true);
     }
 
