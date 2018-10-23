@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class FlightSearchData {
-
     @SerializedName("type")
     @Expose
     private String type;
@@ -29,5 +28,17 @@ public class FlightSearchData {
 
     public Attributes getAttributes() {
         return attributes;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
     }
 }

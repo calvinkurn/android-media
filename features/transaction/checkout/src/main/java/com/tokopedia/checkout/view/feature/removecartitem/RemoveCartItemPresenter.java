@@ -180,6 +180,7 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                     new EnhancedECommerceProductCartMapData();
             enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+            enhancedECommerceProductCartMapData.setDimension45(String.valueOf(cartItemData.getOriginData().getCartId()));
             enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
             enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
             enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
@@ -198,7 +199,17 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
                             ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerAttribution()
             );
+            enhancedECommerceProductCartMapData.setDimension38(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerAttribution()
+            );
             enhancedECommerceProductCartMapData.setListName(
+                    TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
+                            ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                            : cartItemData.getOriginData().getTrackerListName()
+            );
+            enhancedECommerceProductCartMapData.setDimension40(
                     TextUtils.isEmpty(cartItemData.getOriginData().getTrackerListName())
                             ? EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                             : cartItemData.getOriginData().getTrackerListName()

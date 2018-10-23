@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.merchantvoucher" >
+    <application>
+
+        <activity
+            android:name=".voucherList.MerchantVoucherListActivity"
+            android:label="@string/merchant_voucher"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".voucherDetail.MerchantVoucherDetailActivity"
+            android:label="@string/merchant_voucher_detail"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+    </application>
+</manifest>

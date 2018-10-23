@@ -63,8 +63,8 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
             ShopStatusDef.MODERATED_PERMANENTLY -> showShopModerated(isMyShop,true)
             ShopStatusDef.NOT_ACTIVE -> showShopNotActive(isMyShop)
             else -> {
-                view.shopWarningTickerView.visibility = View.GONE
                 view.buttonActionAbnormal.visibility = View.GONE
+                hideShopStatusTicker()
             }
         }
     }
@@ -149,6 +149,12 @@ class ShopPageHeaderViewHolder(private val view: View, private val listener: Sho
         }
 
         view.shopStatusImageView.setImageDrawable(AppCompatResources.getDrawable(view.context, iconRes))
+    }
+
+    private fun hideShopStatusTicker(){
+        view.shopWarningTickerView.visibility = View.GONE
+        view.shopStatusImageView.background = null
+        view.shopStatusImageView.setImageDrawable(null)
     }
 
     private fun displayAsBuyer(shopInfo: ShopInfo) {

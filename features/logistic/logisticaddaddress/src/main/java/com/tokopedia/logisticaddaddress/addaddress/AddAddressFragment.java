@@ -82,7 +82,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private static final int ADDRESS_MIN_CHARACTER = 20;
 
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
-    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;

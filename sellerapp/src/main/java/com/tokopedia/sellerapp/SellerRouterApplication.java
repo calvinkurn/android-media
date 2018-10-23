@@ -207,11 +207,13 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
+import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -241,7 +243,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
-        KolRouter, PaymentSettingRouter, TalkRouter {
+        KolRouter, PaymentSettingRouter, TalkRouter,
+        MerchantVoucherModuleRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1727,5 +1730,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAutomaticResetPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
+    }
+
+    @Override
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
     }
 }
