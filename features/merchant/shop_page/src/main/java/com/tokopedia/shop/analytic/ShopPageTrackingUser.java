@@ -9,6 +9,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 
 import java.util.HashMap;
 
+import javax.annotation.Nullable;
+
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
@@ -38,14 +40,18 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OP
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.INFO;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MANAGE_SHOP;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MERCHANT_VOUCHER_CODE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.MVC_DETAIL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NO_SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_NAVIGATION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.USE_VOUCHER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
@@ -68,20 +74,22 @@ public class ShopPageTrackingUser {
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label,
-                                                CustomDimensionShopPage customDimensionShopPage) {
+                                                @Nullable CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put(ShopPageTrackingConstant.EVENT, event);
         eventMap.put(ShopPageTrackingConstant.EVENT_CATEGORY, category);
         eventMap.put(ShopPageTrackingConstant.EVENT_ACTION, action);
         eventMap.put(ShopPageTrackingConstant.EVENT_LABEL, label);
-        addCustomDimension(eventMap, customDimensionShopPage);
-        if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
-            eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
-                    ((CustomDimensionShopPageProduct) customDimensionShopPage).productId);
-        }
-        if (customDimensionShopPage instanceof CustomDimensionShopPageAttribution) {
-            eventMap.put(ShopPageTrackingConstant.ATTRIBUTION,
-                    ((CustomDimensionShopPageAttribution) customDimensionShopPage).attribution);
+        if (customDimensionShopPage!= null) {
+            addCustomDimension(eventMap, customDimensionShopPage);
+            if (customDimensionShopPage instanceof CustomDimensionShopPageProduct) {
+                eventMap.put(ShopPageTrackingConstant.PRODUCT_ID,
+                        ((CustomDimensionShopPageProduct) customDimensionShopPage).productId);
+            }
+            if (customDimensionShopPage instanceof CustomDimensionShopPageAttribution) {
+                eventMap.put(ShopPageTrackingConstant.ATTRIBUTION,
+                        ((CustomDimensionShopPageAttribution) customDimensionShopPage).attribution);
+            }
         }
         return eventMap;
     }
@@ -338,6 +346,38 @@ public class ShopPageTrackingUser {
                 joinDash(INFO, CLICK),
                 CLICK_ADD_NOTE,
                 customDimensionShopPage);
+    }
+
+    public void clickSeeAllMerchantVoucher(boolean isOwner) {
+        sendEvent(CLICK_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
+                SEE_ALL,
+                null);
+    }
+
+    public void clickDetailMerchantVoucher(boolean isOwner) {
+        sendEvent(CLICK_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
+                MVC_DETAIL,
+                null);
+    }
+
+    public void clickUseMerchantVoucher(boolean isOwner) {
+        sendEvent(CLICK_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(MERCHANT_VOUCHER_CODE, CLICK),
+                USE_VOUCHER,
+                null);
+    }
+
+    public void impressionUseMerchantVoucher(boolean isOwner) {
+        sendEvent(VIEW_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(MERCHANT_VOUCHER_CODE, IMPRESSION),
+                USE_VOUCHER,
+                null);
     }
 
 }

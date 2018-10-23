@@ -583,12 +583,12 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onSuccessGetEtalaseHighlight(@NonNull List<List<ShopProductViewModel>> list) {
         ArrayList<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModels = new ArrayList<>();
-        CustomDimensionShopPageAttribution customDimensionShopPageAttribution = CustomDimensionShopPageAttribution.create(shopInfo,null, attribution);
+        CustomDimensionShopPageAttribution customDimensionShopPageAttribution = CustomDimensionShopPageAttribution.create(shopInfo, null, attribution);
         for (int i = 0, sizei = list.size(); i < sizei; i++) {
             List<ShopProductViewModel> shopProductViewModelList = list.get(i);
             etalaseHighlightCarouselViewModels.add(
                     new EtalaseHighlightCarouselViewModel(shopProductViewModelList, highlightEtalaseViewModelList.get(i)));
-            if (shopInfo!= null) {
+            if (shopInfo != null) {
                 shopPageTracking.impressionProductList(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
                         highlightEtalaseViewModelList.get(i).getEtalaseName(),
@@ -783,7 +783,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSeeAllClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
-        if (shopInfo!=null) {
+        if (shopInfo != null) {
             shopPageTracking.clickHighLightSeeAll(isOwner(), shopEtalaseViewModel.getEtalaseName(),
                     CustomDimensionShopPage.create(shopInfo));
         }
@@ -889,6 +889,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         if (getContext() == null) {
             return;
         }
+        shopPageTracking.clickUseMerchantVoucher(isOwner());
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
         /*if (!merchantVoucherListPresenter.isLogin()) {
             if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
@@ -921,6 +922,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+        shopPageTracking.clickDetailMerchantVoucher(isOwner());
+
         Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
                 merchantVoucherViewModel, shopInfo.getInfo().getShopId());
         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
@@ -928,6 +931,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSeeAllClicked() {
+        shopPageTracking.clickSeeAllMerchantVoucher(isOwner());
+
         Intent intent = MerchantVoucherListActivity.createIntent(getContext(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
         startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
     }
@@ -991,6 +996,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        shopPageTracking.impressionUseMerchantVoucher(isOwner());
+
         shopProductAdapter.setShopMerchantVoucherViewModel(new ShopMerchantVoucherViewModel(merchantVoucherViewModelList));
         shopProductAdapter.refreshSticky();
     }

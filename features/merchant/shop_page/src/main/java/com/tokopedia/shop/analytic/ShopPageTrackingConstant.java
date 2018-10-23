@@ -19,6 +19,7 @@ public class ShopPageTrackingConstant {
     //ACTION
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
+    public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
@@ -52,6 +53,9 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_ADD_PRODUCT = "click add product";
     public static final String CLICK_FOLLOWER_LIST = "click follower list";
     public static final String CLICK_ADD_NOTE = "click add note";
+    public static final String SEE_ALL = "see all";
+    public static final String MVC_DETAIL = "mvc detail";
+    public static final String USE_VOUCHER = "use voucher";
     public static final String CLICK_PRODUCT_PICTURE = "click product picture";
     public static final String IMPRESSION_OF_PRODUCT_LIST = "impression of product list";
     public static final String CLICK_VIEW_ALL = "click view all";
