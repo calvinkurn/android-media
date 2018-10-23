@@ -1,10 +1,12 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -37,17 +39,11 @@ public class ShippingDurationConverter {
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
             }
-            if (serviceData.getProducts() != null && serviceData.getProducts().size() > 0) {
-                for (ProductData product : serviceData.getProducts()) {
-                    if (product.getError() != null &&
-                            product.getError().getErrorMessage() != null &&
-                            product.getError().getErrorId() != null) {
-                        if (product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                            serviceData.getTexts().setTextRangePrice(product.getError().getErrorMessage());
-                        } else {
-                            shippingDurationViewModel.setErrorMessage(product.getError().getErrorMessage());
-                        }
-                    }
+            if (serviceData.getError() != null && !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
+                if (serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                    serviceData.getTexts().setTextRangePrice(serviceData.getError().getErrorMessage());
+                } else {
+                    shippingDurationViewModel.setErrorMessage(serviceData.getError().getErrorMessage());
                 }
             }
         }
@@ -85,7 +81,9 @@ public class ShippingDurationConverter {
                 shippingDurationViewModel.setSelected(true);
             }
         } else if (selectedServiceId != 0) {
-            if (selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
+            if (!(shippingDurationViewModel.getServiceData().getError() != null &&
+                    !TextUtils.isEmpty(shippingDurationViewModel.getServiceData().getError().getErrorId())) &&
+                    selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
                 shippingDurationViewModel.setSelected(true);
             }
         } else {
