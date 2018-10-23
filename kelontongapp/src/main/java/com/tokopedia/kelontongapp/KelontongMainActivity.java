@@ -85,16 +85,20 @@ public class KelontongMainActivity extends AppCompatActivity implements FilePick
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
+                    if (isHome()) {
                         onBackPressed();
+                    } else if (webView.canGoBack()) {
+                        webView.goBack();
                     }
                     return true;
             }
 
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean isHome() {
+        return webView.getUrl().equalsIgnoreCase(KelontongBaseUrl.BASE_URL);
     }
 
     @Override
