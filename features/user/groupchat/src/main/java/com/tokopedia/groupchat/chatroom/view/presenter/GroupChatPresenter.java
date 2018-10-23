@@ -15,6 +15,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
+import com.tokopedia.groupchat.chatroom.websocket.RxWebSocketUtil;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
@@ -80,7 +81,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                             String errorMessage = GroupChatErrorHandler.getErrorMessage(getView().getContext(), e, false);
                             String defaultMessage = getView().getContext().getString(R.string.default_request_error_unknown);
                             if(errorMessage.equals(defaultMessage)) {
-                                getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel);
+                                getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel));
                             }else {
                                 getView().onErrorGetChannelInfo(errorMessage);
                             }
@@ -156,10 +157,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             public void onError(Throwable e) {
                 super.onError(e);
                 Log.d("RxWebSocket Presenter", "onError " + e.toString());
+                showDummy("onError", e.toString());
                 getView().setSnackBarRetry();
             }
         };
-        Subscription subscription = RxWebSocket.get(channelUrl, accessToken).subscribe(subscriber);
+        Subscription subscription = RxWebSocketUtil.get(channelUrl, accessToken).subscribe(subscriber);
 
 
         if (subscriber != null) {
@@ -170,7 +172,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     public void testSendReply(PendingChatViewModel pendingChatViewModel) {
         Exception errorSendIndicator = null;
         try {
-            RxWebSocket.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+            RxWebSocketUtil.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
         } catch (WebSocketException e) {
             errorSendIndicator = e;
             showDummy(e.toString(), "error logger send");
@@ -201,7 +203,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     false,
                     false
             );
-            getView().onMessageReceived(dummy, true);
+            getView().onMessageReceived(dummy, !showLog);
         }
     }
 }

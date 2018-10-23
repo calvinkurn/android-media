@@ -81,6 +81,7 @@ public final class WebSocketOnSubscribe implements Observable.OnSubscribe<WebSoc
                     Log.e(logTag, t.toString() + webSocket.request().url().uri().getPath());
                 }
                 if (!subscriber.isUnsubscribed()) {
+                    subscriber.onNext(WebSocketInfo.createReconnect());
                     subscriber.onError(t);
                 }
             }

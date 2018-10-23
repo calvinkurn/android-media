@@ -8,4 +8,5 @@ public class WebSocketException extends IllegalStateException{
     public WebSocketException(String message) {
         super(message);
     }
+
 }

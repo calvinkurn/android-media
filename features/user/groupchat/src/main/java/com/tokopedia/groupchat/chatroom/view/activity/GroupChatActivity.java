@@ -77,6 +77,7 @@ import com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.EventGroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
@@ -122,6 +123,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final int YOUTUBE_DELAY = 1500;
     private long onPlayTime, onPauseTime, onEndTime, onLeaveTime, onTrackingTime;
     private Map<String, SavedState> fragmentSavedStates;
+    private List<Visitable> listMessage;
 
     public GroupChatActivity() {
     }
@@ -479,6 +481,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initData() {
+        listMessage = new ArrayList<>();
         presenter.getChannelInfo(viewModel.getChannelUuid());
         showLoading();
     }
@@ -614,10 +617,11 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (fragmentPosition == initialFragment && !isFirstTime) {
                 return;
             }
-            isFirstTime = false;
-            this.initialFragment = fragmentPosition;
 
             saveStateChatFragment();
+
+            isFirstTime = false;
+            this.initialFragment = fragmentPosition;
 
             switch (fragmentPosition) {
                 case CHATROOM_FRAGMENT:
@@ -647,7 +651,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if(currentFragmentIsChat()){
             Fragment fragment = getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName());
-            saveStateFragment(fragment, GroupChatFragment.class.getSimpleName());
+            saveStateFragment((GroupChatFragment)fragment, GroupChatFragment.class.getSimpleName());
         }
     }
 
@@ -1513,11 +1517,23 @@ public class GroupChatActivity extends BaseSimpleActivity
             updatePinnedMessage((PinnedMessageViewModel) map);
         } else if (map instanceof VideoViewModel) {
             updateVideo((VideoViewModel) map);
+        } else if (map instanceof EventGroupChatViewModel) {
+            handleEvent((EventGroupChatViewModel) map);
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map, hideMessage);
+        } else {
+            listMessage.add(map);
+        }
+    }
+
+    private void handleEvent(EventGroupChatViewModel event) {
+        if(event.isBanned()){
+            onUserBanned();
+        }else if(event.isFreeze()){
+            onChannelFrozen();
         }
     }
 
@@ -1845,10 +1861,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         presenter.testSendReply(pendingChatViewModel);
     }
 
-    public void saveStateFragment(Fragment fragment, String key) {
+    public void saveStateFragment(GroupChatFragment fragment, String key) {
         if(fragment!= null && fragment.isAdded()){
             fragmentSavedStates.put(key,getSupportFragmentManager().saveFragmentInstanceState(fragment));
         }
+        listMessage = fragment.getList();
     }
 
     public void restoreStateFragment(Fragment fragment, String key) {
@@ -1856,5 +1873,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!fragment.isAdded()) {
             fragment.setInitialSavedState(savedState);
         }
+    }
+    public List<Visitable> getList() {
+        return listMessage;
     }
 }

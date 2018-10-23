@@ -1,8 +1,7 @@
-package com.tokopedia.groupchat.chatroom.websocket;
+package com.tokopedia.groupchat.chatroom.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo;
 
 /**
  * @author : Steven 08/10/18

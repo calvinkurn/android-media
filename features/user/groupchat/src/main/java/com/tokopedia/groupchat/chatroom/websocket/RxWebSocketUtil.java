@@ -20,7 +20,6 @@ import rx.schedulers.Schedulers;
  * Created by dhh on 2017/9/21.
  * WebSocketUtil based on okhttp and RxJava
  * Core Feature : WebSocket will be auto reconnection onFailed.
- * please use {@link RxWebSocket} to instead of it
  */
 public class RxWebSocketUtil {
     private static RxWebSocketUtil instance;
@@ -38,7 +37,7 @@ public class RxWebSocketUtil {
         client = new OkHttpClient.Builder().pingInterval(10, TimeUnit.SECONDS).build();
     }
 
-    public static RxWebSocketUtil getInstance() {
+    private static RxWebSocketUtil getInstance() {
         if (instance == null) {
             synchronized (RxWebSocketUtil.class) {
                 if (instance == null) {
@@ -52,8 +51,9 @@ public class RxWebSocketUtil {
     public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken) {
         Observable<WebSocketInfo> observable = observableMap.get(url);
         if (observable == null) {
+            RetryObservable retryObservable = new RetryObservable(3, 5);
             observable = Observable.create(new WebSocketOnSubscribe(client, url, accessToken, webSocketMap))
-                    .retryWhen(new RetryObservable(4,5))
+                    .retryWhen(retryObservable)
                     .doOnUnsubscribe(new Action0() {
                         @Override
                         public void call() {
@@ -68,6 +68,7 @@ public class RxWebSocketUtil {
                         @Override
                         public void call(WebSocketInfo webSocketInfo) {
                             if (webSocketInfo.isOnOpen()) {
+                                retryObservable.resetMaxRetries();
                                 webSocketMap.put(url, webSocketInfo.getWebSocket());
                             }
                         }

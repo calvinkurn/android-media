@@ -14,26 +14,30 @@ import rx.functions.Func1;
 
 public final class RetryObservable implements Func1<Observable<? extends Throwable>, Observable<?>> {
     private int retryCount;
-    private final int maxRetries;
+    private int maxRetries;
     private long delay;
     private String logTag = "MainActivity RxWebSocket";
 
 
-    RetryObservable(int maxRetries, long delay) {
+    RetryObservable(int maxRetries, long delayInSecond) {
         this.retryCount = 0;
         this.maxRetries = maxRetries;
-        this.delay = delay;
+        this.delay = delayInSecond;
     }
 
     @Override
     public Observable<?> call(Observable<? extends Throwable> attempts) {
         return attempts.flatMap((Func1<Throwable, Observable<?>>) throwable -> {
-            if (++retryCount < maxRetries) {
+            if (++retryCount <= maxRetries) {
                 Log.d(logTag, "retry " + retryCount + " " + delay * retryCount);
                 return Observable.timer(delay * retryCount, TimeUnit.SECONDS);
             } else {
                 return Observable.error(throwable);
             }
         });
+    }
+
+    public void resetMaxRetries() {
+        this.maxRetries = 0;
     }
 }

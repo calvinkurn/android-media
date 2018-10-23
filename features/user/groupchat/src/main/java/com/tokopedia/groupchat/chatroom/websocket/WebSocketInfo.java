@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
+import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.UserMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
@@ -18,6 +21,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.FlashSalePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.EventGroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
@@ -112,11 +116,18 @@ public class WebSocketInfo {
                 return mapToVideo(data);
             case ChatViewModel.USER_MESSAGE:
                 return mapToUserChat(data);
-            case EventHandler.BANNED:
-            case EventHandler.FREEZE:
+            case EventHandlerPojo.BANNED:
+            case EventHandlerPojo.FREEZE:
+                return mapToEventHandler(data);
             default:
                 return null;
         }
+    }
+
+    private Visitable mapToEventHandler(JsonObject data) {
+        Gson gson = new Gson();
+        EventHandlerPojo pojo = gson.fromJson(data, EventHandlerPojo.class);
+        return new EventGroupChatViewModel(pojo.isFreeze(), pojo.isBanned());
     }
 
     private Visitable mapToGeneratedMessage(JsonObject data) {

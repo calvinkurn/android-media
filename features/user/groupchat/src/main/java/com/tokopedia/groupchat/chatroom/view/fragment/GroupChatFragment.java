@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
@@ -187,7 +188,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void prepareView() {
         GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
-        adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
+        adapter = GroupChatAdapter.createInstance(groupChatTypeFactory, ((GroupChatActivity) getActivity()).getList());
         QuickReplyTypeFactory quickReplyTypeFactory = new QuickReplyTypeFactoryImpl(this);
         quickReplyAdapter = new QuickReplyAdapter(quickReplyTypeFactory);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -693,7 +694,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if(errorSendIndicator != null && errorSendIndicator instanceof WebSocketException && getActivity()!=null && getActivity() instanceof GroupChatActivity){
             ((GroupChatActivity) getActivity()).setSnackBarErrorLoading();
         }
-
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         clearMessageEditText();
         setSendButtonEnabled(true);
     }
@@ -978,5 +979,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void clearMessageEditText() {
         replyEditText.setText("");
+    }
+
+    public List<Visitable> getList() {
+        return adapter.getList();
     }
 }

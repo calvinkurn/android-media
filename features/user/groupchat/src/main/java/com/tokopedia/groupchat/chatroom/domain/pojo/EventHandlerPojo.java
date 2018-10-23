@@ -1,4 +1,4 @@
-package com.tokopedia.groupchat.chatroom.websocket;
+package com.tokopedia.groupchat.chatroom.domain.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * @author : Steven 09/10/18
  */
-public class EventHandler {
+public class EventHandlerPojo {
 
     public static final String FREEZE = "freeze";
     public static final String BANNED = "banned";
