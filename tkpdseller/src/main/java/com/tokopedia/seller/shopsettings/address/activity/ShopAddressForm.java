@@ -388,6 +388,10 @@ public class ShopAddressForm extends TActivity {
             String post_code = data.getString("post_code");
             String fullAddress = data.getString("address_detail");
 
+            this.provinceId = provinceId;
+            this.cityId = cityId;
+            this.districtId = districtId;
+
             AddressName.setText(location_name);
             Address.setText(location_address);
             etCompositeAddress.setText(fullAddress);

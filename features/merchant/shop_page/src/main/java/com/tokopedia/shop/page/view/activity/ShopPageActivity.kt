@@ -172,7 +172,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfo?.run {
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
+
+                    val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(tab.position)
+                    if (shopInfoFragment != null && shopInfoFragment is ShopInfoFragment) {
+                        shopInfoFragment.updateShopInfo(this)
+                    }
                 }
+
+
                 isShowFeed.run {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
                         R.color.tkpd_main_green else
@@ -195,7 +202,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
-            if(shopDomain!=null)
+            if (shopDomain != null)
                 presenter.getShopInfoByDomain(shopDomain!!)
         }
     }
@@ -406,6 +413,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
     }
 
+    private fun refreshData() {
+        presenter.clearCache()
+        val f: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+        if (f != null && f is ShopProductListLimitedFragment) {
+            f.clearCache()
+        }
+        getShopInfo()
+        swipeToRefresh.isRefreshing = true
+    }
+
     override fun getComponent() = ShopComponentInstance.getComponent(application)
 
     override fun onFollowerTextClicked() {
@@ -468,13 +485,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopWebViewActivity.startIntent(this, url)
     }
 
-    private fun refreshData() {
-        presenter.clearCache()
-        getShopInfo()
-        swipeToRefresh.isRefreshing = true
-    }
-
     fun getShopInfoPosition() : Int {
-        return shopPageViewPagerAdapter.count
+        return shopPageViewPagerAdapter.count - 1
     }
 }

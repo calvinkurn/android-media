@@ -440,12 +440,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                flightSearchPresenter.getFlightStatistic(isReturning());
-                FlightSearchFragment.this.addToolbarElevation();
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);

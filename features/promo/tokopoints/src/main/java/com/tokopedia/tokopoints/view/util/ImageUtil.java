@@ -5,7 +5,6 @@ import android.graphics.ColorMatrixColorFilter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
 
 public class ImageUtil {

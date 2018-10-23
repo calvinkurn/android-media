@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.SuccessQrPaymentContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.SuccessQrPaymentPresenter;
