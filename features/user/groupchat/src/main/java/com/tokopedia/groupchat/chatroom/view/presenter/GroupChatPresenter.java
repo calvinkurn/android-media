@@ -15,7 +15,6 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.GroupChatWebSocketParam;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
-import com.tokopedia.groupchat.chatroom.websocket.RxWebSocketUtil;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
@@ -161,7 +160,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 getView().setSnackBarRetry();
             }
         };
-        Subscription subscription = RxWebSocketUtil.get(channelUrl, accessToken).subscribe(subscriber);
+        Subscription subscription = RxWebSocket.get(channelUrl, accessToken).subscribe(subscriber);
 
 
         if (subscriber != null) {
@@ -172,7 +171,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     public void testSendReply(PendingChatViewModel pendingChatViewModel) {
         Exception errorSendIndicator = null;
         try {
-            RxWebSocketUtil.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+            RxWebSocket.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
         } catch (WebSocketException e) {
             errorSendIndicator = e;
             showDummy(e.toString(), "error logger send");
