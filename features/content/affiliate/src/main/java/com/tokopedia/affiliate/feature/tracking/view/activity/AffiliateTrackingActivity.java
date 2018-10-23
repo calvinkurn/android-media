@@ -26,14 +26,12 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Inject
     AffContract.Presenter presenter;
 
-    private ProgressBar progressBar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_affiliate_tracking);
-        progressBar = findViewById(R.id.loading);
         initInjector();
+        presenter.attachView(this);
         handleIntent();
     }
 
@@ -60,17 +58,6 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
                 .affTrackingModule(new AffTrackingModule())
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.attachView(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
