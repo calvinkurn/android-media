@@ -275,7 +275,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventUserClickedPoints();
+                    UnifyTracking.eventUserClickedPoints(view.getContext());
                     listener.onTokoPointActionClicked(
                             data.getTokoPointDrawerData().getMainPageUrl(),
                             TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
@@ -313,14 +313,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
-                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(v.getContext(), data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
 
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
-                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick(v.getContext());
 
                     }
                 } else {

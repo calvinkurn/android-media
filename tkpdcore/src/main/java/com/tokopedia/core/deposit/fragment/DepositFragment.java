@@ -193,7 +193,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventDepositTopUp();
+                UnifyTracking.eventDepositTopUp(getActivity());
                 Bundle bundle = new Bundle();
                 bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);

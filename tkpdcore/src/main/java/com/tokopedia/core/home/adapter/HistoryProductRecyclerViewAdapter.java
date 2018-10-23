@@ -94,7 +94,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             @Override
             public void onClick(View view) {
                 if(position < data.size()) {
-                    UnifyTracking.eventFeedRecent(data.get(position).getName());
+                    UnifyTracking.eventFeedRecent(view.getContext(), data.get(position).getName());
                     ((PdpRouter) ((BaseActivity) context)
                             .getApplication())
                             .goToProductDetail(context, getProductDataToPass(data.get(position)));

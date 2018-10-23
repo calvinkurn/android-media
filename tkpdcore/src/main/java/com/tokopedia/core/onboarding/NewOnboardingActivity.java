@@ -118,7 +118,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
 
     @Override
     public void onDonePressed() {
-        UnifyTracking.eventOnboardingSkip(pager.getCurrentItem() + 1);
+        UnifyTracking.eventOnboardingSkip(this, pager.getCurrentItem() + 1);
         SessionHandler.setFirstTimeUserNewOnboard(this, false);
         Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
         startActivity(intent);
@@ -137,7 +137,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
             setButtonVisibility(indicator, VISIBLE);
         }
         int pageNumber = pager.getCurrentItem() + 1;
-        ScreenTracking.screen(SCREEN_NAME + pageNumber);
+        ScreenTracking.screen(this, SCREEN_NAME + pageNumber);
     }
 
     private void setButtonVisibility(View view, int visible) {

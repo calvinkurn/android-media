@@ -232,9 +232,10 @@ abstract class AuthHmacInterceptor implements Interceptor {
 
     private void sendForceLogoutAnalytics(Response response) {
         Context appContext = MainApplication.getAppContext();
-        GCMHandler gcmHandler = new GCMHandler(appContext);
-        SessionHandler sessionHandler = new SessionHandler(appContext);
-        AnalyticsLog.logForceLogout(appContext, gcmHandler, sessionHandler, response.request().url().toString());
+        AnalyticsLog.logForceLogout(appContext,
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                response.request().url().toString());
     }
 
     private void showServerErrorSnackbar() {
@@ -245,8 +246,9 @@ abstract class AuthHmacInterceptor implements Interceptor {
 
     private void sendErrorNetworkAnalytics(Response response) {
         Context appContext = MainApplication.getAppContext();
-        GCMHandler gcmHandler = new GCMHandler(appContext);
-        SessionHandler sessionHandler = new SessionHandler(appContext);
-        AnalyticsLog.logNetworkError(appContext, gcmHandler, sessionHandler, response.request().url().toString(), response.code());
+        AnalyticsLog.logNetworkError(appContext,
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                response.request().url().toString(), response.code());
     }
 }

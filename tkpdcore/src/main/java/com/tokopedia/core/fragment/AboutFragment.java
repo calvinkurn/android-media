@@ -146,7 +146,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(getActivity(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

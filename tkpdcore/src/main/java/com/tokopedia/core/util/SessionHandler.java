@@ -115,7 +115,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -574,7 +574,7 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         BranchSdkUtils.sendIdentityEvent(u_id);
@@ -601,7 +601,7 @@ public class SessionHandler {
 
     public void forceLogout() {
         PasswordGenerator.clearTokenStorage(context);
-        TrackingUtils.eventMoEngageLogoutUser();
+        TrackingUtils.eventMoEngageLogoutUser(context);
         clearUserData();
     }
 

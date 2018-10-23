@@ -67,11 +67,11 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
+                UnifyTracking.eventReferralAndShare(view.getContext(), AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
             });
 
             tvHelpLink.setOnClickListener(view1 -> {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
+                UnifyTracking.eventReferralAndShare(view.getContext(),AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
                 showOnBoardingTooltip(context.getString(R.string.acquisition_referral) ,context.getString(R.string.what_is_referral_tokocash) );
             });
 

@@ -96,7 +96,7 @@ public class HotListImpl implements HotList {
 
     @Override
     public void sendAppsFlyerData(Context context) {
-        ScreenTracking.sendAFGeneralScreenEvent(Jordan.AF_SCREEN_HOME_HOTLIST);
+        ScreenTracking.sendAFGeneralScreenEvent(hotListView.getContext(), Jordan.AF_SCREEN_HOME_HOTLIST);
     }
 
     @Override
@@ -648,7 +648,7 @@ public class HotListImpl implements HotList {
             cache.putInt(LAST_POSITION_ENHANCE_HOTLIST_HOME, positionHotlist);
             cache.applyEditor();
         }
-        UnifyTracking.eventTrackingEnhancedEcommerce(
+        UnifyTracking.eventTrackingEnhancedEcommerce(hotListView.getContext(),
                 DataLayer.mapOf(
                         "event", "promoView",
                         "eventCategory", "homepage",

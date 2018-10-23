@@ -134,7 +134,7 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     private void exit() {
         new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
-        TrackingUtils.eventMoEngageLogoutUser();
+        TrackingUtils.eventMoEngageLogoutUser(this);
 
         Intent intent;
         if (GlobalConfig.isSellerApp()) {

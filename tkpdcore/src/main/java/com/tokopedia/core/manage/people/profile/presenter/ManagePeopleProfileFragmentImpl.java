@@ -152,7 +152,7 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
 
     @Override
     public void setOnChangePhoneButtonClick(Context context, String userPhone) {
-        UnifyTracking.eventClickChangePhoneNumber();
+        UnifyTracking.eventClickChangePhoneNumber(context);
         view.startChangePhoneNumber();
     }
 

@@ -182,7 +182,7 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
             @Override
             public void onClick(View v) {
                 SessionHandler.setFirstTimeUserNewOnboard(getActivity(), false);
-                UnifyTracking.eventOnboardingStartNow();
+                UnifyTracking.eventOnboardingStartNow(getActivity());
                 Intent intent = new Intent(getActivity(), HomeRouter.getHomeActivityClass());
                 startActivity(intent);
                 getActivity().finish();

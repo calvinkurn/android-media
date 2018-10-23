@@ -193,6 +193,6 @@ public class ProductInfoIntentService extends IntentService {
     }
 
     private void sendGTMSuccessReport(){
-        UnifyTracking.eventSuccessReport();
+        UnifyTracking.eventSuccessReport(getApplicationContext());
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.core.share.presenter;
 
-import com.tokopedia.core.product.model.share.ShareData;
+
+import com.tokopedia.core.model.share.ShareData;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.

@@ -340,7 +340,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                 getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
                 renderData();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
-                UnifyTracking.eventSuccessChangePhoneNumber();
+                UnifyTracking.eventSuccessChangePhoneNumber(getActivity());
             }
 
             if (resultCode == RESULT_EMAIL_SENT) {

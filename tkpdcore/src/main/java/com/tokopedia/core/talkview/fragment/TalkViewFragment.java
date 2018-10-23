@@ -380,7 +380,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void successReply(String string) {
-        UnifyTracking.eventDiscussionSendSuccess(from);
+        UnifyTracking.eventDiscussionSendSuccess(getActivity(), from);
         SnackbarManager.make(getActivity(), string
                 , Snackbar.LENGTH_SHORT).show();
         sendBut.setEnabled(true);
@@ -410,7 +410,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void errorReply(String error) {
-        UnifyTracking.eventDiscussionSendError(from);
+        UnifyTracking.eventDiscussionSendError(getActivity(), from);
         revertTalk();
         comment.setText(content);
         SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();

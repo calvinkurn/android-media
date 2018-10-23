@@ -92,7 +92,7 @@ public class TalkViewActivity extends TActivity
             fragmentTransaction.add(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
             fragmentTransaction.commit();
         }
-        UnifyTracking.eventDiscussionProductDetail(bundle.getString("from", "N/A"));
+        UnifyTracking.eventDiscussionProductDetail(this, bundle.getString("from", "N/A"));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class TalkViewActivity extends TActivity
                 case TalkViewIntentService.STATUS_SUCCESS:
                     ((TalkViewFragment) fragment).successReply(resultData.getString(TalkViewIntentService.EXTRA_RESULT));
 
-                    UnifyTracking.eventDiscussionProductSend(getIntent().getExtras() != null ?
+                    UnifyTracking.eventDiscussionProductSend(this, getIntent().getExtras() != null ?
                             getIntent().getExtras().getString("from", "N/A") : "N/A");
                     break;
                 case TalkViewIntentService.STATUS_ERROR:

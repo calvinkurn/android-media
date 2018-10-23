@@ -111,7 +111,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
-                                        TrackingUtils.eventMoEngageLogoutUser();
+                                        TrackingUtils.eventMoEngageLogoutUser(getActivity());
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();

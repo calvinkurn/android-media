@@ -60,7 +60,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
         showStatusBar(false);
         setProgressButtonEnabled(true);
         showSkipButton(false);
-        ScreenTracking.screen(AppScreen.SCREEN_ONBOARDING+1);
+        ScreenTracking.screen(this, AppScreen.SCREEN_ONBOARDING+1);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class OnboardingActivity extends BaseOnboardingActivity {
 //            this.setProgressButtonEnabled(true);
 //
 //        }
-        ScreenTracking.screen(AppScreen.SCREEN_ONBOARDING+(pager.getCurrentItem()+1));
+        ScreenTracking.screen(this, AppScreen.SCREEN_ONBOARDING+(pager.getCurrentItem()+1));
     }
 
     @Override

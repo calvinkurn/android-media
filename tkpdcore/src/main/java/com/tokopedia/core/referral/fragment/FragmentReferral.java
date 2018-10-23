@@ -159,7 +159,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             TextViewHelpLink.setVisibility(View.VISIBLE);
             TextViewHelpLink.setOnClickListener(view1 -> {
                 focusOnView();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
+                UnifyTracking.eventReferralAndShare(getActivity(), AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
 
             });
         } else {

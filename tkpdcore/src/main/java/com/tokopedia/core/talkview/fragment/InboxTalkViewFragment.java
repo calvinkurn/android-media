@@ -81,6 +81,7 @@ public class InboxTalkViewFragment extends TalkViewFragment{
             readStatus = bundle.getTalkReadStatus();
 
             NotificationModHandler.clearCacheIfFromNotification(
+                    getActivity(),
                     Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
                     talkID
             );

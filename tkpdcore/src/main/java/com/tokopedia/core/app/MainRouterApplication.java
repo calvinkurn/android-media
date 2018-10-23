@@ -10,13 +10,18 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.router.InboxRouter;
 
+/**
+ * this code is bridging for old code and latest codes.
+ */
 public class MainRouterApplication extends BaseMainApplication implements TkpdCoreRouter {
     GCMHandler gcmHandler;
+    SessionHandler sessionHandler;
 
     @Override
     public Class<?> getInboxTalkActivityClass() {
-        return null;
+        return InboxRouter.getInboxTalkActivityClass();
     }
 
     @Override
@@ -86,12 +91,13 @@ public class MainRouterApplication extends BaseMainApplication implements TkpdCo
 
     @Override
     public SessionHandler legacySessionHandler() {
-        return new SessionHandler(this){
+        if(sessionHandler == null)
+        return sessionHandler = new SessionHandler(this){
             com.tokopedia.core.util.SessionHandler sessionHandler
                     = new com.tokopedia.core.util.SessionHandler(MainRouterApplication.this);
             @Override
             public String getAccessToken() {
-                return sessionHandler.getAccessToken();
+                return sessionHandler.getAccessToken(context);
             }
 
             @Override
@@ -101,10 +107,62 @@ public class MainRouterApplication extends BaseMainApplication implements TkpdCo
 
             @Override
             public String getGTMLoginID() {
-                return sessionHandler.getGTMLoginID(MainRouterApplication.this);
+                return sessionHandler.getGTMLoginID(context);
             }
 
+            @Override
+            public String getShopID() {
+                return sessionHandler.getShopID();
+            }
+
+            @Override
+            public String getLoginID() {
+                return sessionHandler.getLoginID();
+            }
+
+            @Override
+            public boolean isUserHasShop() {
+                return sessionHandler.isUserHasShop();
+            }
+
+            @Override
+            public boolean isV4Login() {
+                return sessionHandler.isV4Login();
+            }
+
+            @Override
+            public String getPhoneNumber() {
+                return sessionHandler.getPhoneNumber();
+            }
+
+            @Override
+            public String getEmail() {
+                return sessionHandler.getEmail();
+            }
+
+            @Override
+            public String getDeviceId() {
+                return legacyGCMHandler().getRegistrationId();
+            }
+
+            @Override
+            public String getProfilePicture() {
+                return sessionHandler.getProfilePicture();
+            }
+
+            @Override
+            public boolean isMsisdnVerified() {
+                return sessionHandler.isMsisdnVerified();
+            }
+
+            @Override
+            public boolean isHasPassword() {
+                return sessionHandler.isHasPassword();
+            }
         };
+        else{
+            return sessionHandler;
+        }
     }
 
     @Override
@@ -116,7 +174,7 @@ public class MainRouterApplication extends BaseMainApplication implements TkpdCo
         }
     }
 
-    public synchronized TkpdCoreRouter getTkpdCoreRouter(){
-        return this;
+    public static synchronized TkpdCoreRouter getTkpdCoreRouter(){
+        return MainApplication.getInstance();
     }
 }

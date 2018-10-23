@@ -64,7 +64,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
             getFragmentManager().beginTransaction().replace(R.id.container,
                     FragmentReferralFriendsWelcome.newInstance()).commit();
 
-        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_friend_welcome_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(this, getString(R.string.referral_friend_welcome_screen_name));
 
     }
 

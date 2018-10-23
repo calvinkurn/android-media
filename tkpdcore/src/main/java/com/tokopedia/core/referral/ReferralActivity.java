@@ -54,11 +54,11 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(this, getString(R.string.referral_screen_name));
 
         if (getIntent() != null &&
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventReferralLongClick();
+            UnifyTracking.eventReferralLongClick(this);
         }
 
     }

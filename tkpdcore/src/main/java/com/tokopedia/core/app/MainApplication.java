@@ -255,7 +255,6 @@ public abstract class MainApplication extends MainRouterApplication{
         //CommonUtils.dumper("asdasas");
         MainApplication.context = getApplicationContext();
         init();
-        initFacebook();
         initCrashlytics();
         initStetho();
         initializeAnalytics();
@@ -295,11 +294,11 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initializeAnalytics() {
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
-        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
-        TrackingUtils.setMoEngageExistingUser();
-        TrackingUtils.enableDebugging(isDebug());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.GTM, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.APPSFLYER, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.runFirstTime(this, TrackingUtils.AnalyticsKind.MOENGAGE, getTkpdCoreRouter().legacySessionHandler());
+        TrackingUtils.setMoEngageExistingUser(this, getTkpdCoreRouter().legacySessionHandler().isLoggedIn());
+        TrackingUtils.enableDebugging(this, isDebug());
     }
 
     public void initCrashlytics() {

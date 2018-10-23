@@ -170,8 +170,10 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean b) {
-                        TrackingUtils.eventPushUserID();
-                        TrackingUtils.eventOnline();
+                        TrackingUtils.eventPushUserID(BaseActivity.this,
+                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                        TrackingUtils.eventOnline(BaseActivity.this,
+                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
                         return true;
                     }
                 })

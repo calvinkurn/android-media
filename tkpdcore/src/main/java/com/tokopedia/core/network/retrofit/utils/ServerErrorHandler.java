@@ -36,11 +36,19 @@ public class ServerErrorHandler {
     }
 
     public static void sendForceLogoutAnalytics(String url) {
-        AnalyticsLog.logForceLogout(url);
+        AnalyticsLog.logForceLogout(
+                MainApplication.getAppContext(),
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url);
     }
 
     public static void sendErrorNetworkAnalytics(String url, int errorCode) {
-        AnalyticsLog.logNetworkError(url, errorCode);
+        AnalyticsLog.logNetworkError(
+                MainApplication.getAppContext(),
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url, errorCode);
     }
 
     public static void showServerErrorSnackbar() {
@@ -63,8 +71,9 @@ public class ServerErrorHandler {
 
     public static void sendForceLogoutTokenAnalytics(String url) {
         Context appContext = MainApplication.getAppContext();
-        GCMHandler gcmHandler = new GCMHandler(appContext);
-        SessionHandler sessionHandler = new SessionHandler(appContext);
-        AnalyticsLog.logForceLogoutToken(appContext, gcmHandler, sessionHandler, url);
+        AnalyticsLog.logForceLogoutToken(appContext,
+                MainApplication.getTkpdCoreRouter().legacyGCMHandler(),
+                MainApplication.getTkpdCoreRouter().legacySessionHandler(),
+                url);
     }
 }

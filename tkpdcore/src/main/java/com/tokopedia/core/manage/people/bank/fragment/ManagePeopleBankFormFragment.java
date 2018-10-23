@@ -491,7 +491,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(getActivity(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

@@ -5,6 +5,8 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
     public static final String ALLOW_REFRESH = "ALLOW_REFRESH";
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String ANDROID_ID = "ANDROID_ID";
 
     public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
 

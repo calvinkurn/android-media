@@ -184,7 +184,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
         getActivity().setResult(TalkProductFragment.RESULT_ADD, new Intent().putExtras(bundle));
         send.setEnabled(true);
         mProgressDialog.dismiss();
-        UnifyTracking.eventTalkSuccessSend();
+        UnifyTracking.eventTalkSuccessSend(getActivity());
         getActivity().finish();
     }
 

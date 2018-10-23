@@ -247,7 +247,7 @@ public class WithdrawFragmentPresenterImpl implements WithdrawFragmentPresenter 
             public void onSuccess() {
                 if (viewListener != null && viewListener.getActivity() != null) {
 
-                    UnifyTracking.eventDepositWithdraw();
+                    UnifyTracking.eventDepositWithdraw(viewListener.getActivity());
                     viewListener.finishLoading();
                     viewListener.enableView();
                     Intent intent = new Intent();

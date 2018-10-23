@@ -17,7 +17,7 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.Constants;
 import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.deprecated.ShareData;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
