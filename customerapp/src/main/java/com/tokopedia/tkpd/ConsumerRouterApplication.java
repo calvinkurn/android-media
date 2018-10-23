@@ -1299,11 +1299,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getRidePhoneNumberActivityIntent(Activity activity) {
-        return RidePhoneNumberVerificationActivity.getCallingIntent(activity);
-    }
-
-    @Override
     public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
         return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
     }
