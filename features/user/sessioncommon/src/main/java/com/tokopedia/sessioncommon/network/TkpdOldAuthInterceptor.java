@@ -72,7 +72,7 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
                 + "\n" + date
                 + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
                 + "\n" + path; String signature = AuthUtil.calculateRFC2104HMAC(authString,
-                AuthUtil.Key.KEY_WSV4);
+                AuthUtil.KEY.KEY_WSV4);
 
         Map<String, String> headerMap = new ArrayMap<>();
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
