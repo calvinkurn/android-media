@@ -260,7 +260,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
         seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.getShopId()));
 
-        pagingHandler.setHasNext(listDetail.size() !=1 && hasNextPage);
+        pagingHandler.setHasNext(listDetail.size() > 1 && hasNextPage);
 
         adapter.notifyDataSetChanged();
     }
