@@ -8,19 +8,11 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.view.Window;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractor;
-import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
 import com.tokopedia.core.invoice.activity.InvoiceRendererActivity;
 import com.tokopedia.core.invoice.model.InvoiceRenderParam;
-
-import java.util.HashMap;
 
 public class AppUtils {
 
@@ -102,46 +94,4 @@ public class AppUtils {
             ((Activity) context).finish();
         }
     }
-
-    public static void sendOTP(final Context context) {
-        final TkpdProgressDialog loading = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
-        loading.showDialog();
-        WithdrawRetrofitInteractor networkInteractor = new WithdrawRetrofitInteractorImpl();
-        networkInteractor.sendOTP(context, new HashMap<String, String>(), new WithdrawRetrofitInteractor.SendOTPListener() {
-            @Override
-            public void onSuccess(String message) {
-                CommonUtils.UniversalToast(context, message);
-                loading.dismiss();
-
-            }
-
-            @Override
-            public void onTimeout(String message) {
-                CommonUtils.UniversalToast(context, message);
-                loading.dismiss();
-
-            }
-
-            @Override
-            public void onError(String error) {
-                CommonUtils.UniversalToast(context, error);
-                loading.dismiss();
-            }
-
-            @Override
-            public void onNullData() {
-
-            }
-
-            @Override
-            public void onNoNetworkConnection() {
-                SnackbarManager.make((Activity) context,
-                        context.getString(R.string.msg_no_connection),
-                        Snackbar.LENGTH_LONG).show();
-                loading.dismiss();
-
-            }
-        });
-    }
-
 }

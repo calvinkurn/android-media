@@ -76,7 +76,7 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
                             catalogListingOuter.getCoupon().getCoupons().size() > 0) {
                         getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
                     } else {
-                        if(catalogListingOuter.getCoupon().getCoupons() != null) {
+                        if (catalogListingOuter.getCoupon() != null) {
                             getView().emptyCoupons(catalogListingOuter.getCoupon().getEmptyMessage());
                         }
                     }

@@ -342,8 +342,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setMainText(context.getString(R.string.title_menu_challenge));
             infoCard.setSecondaryText(context.getString(R.string.label_menu_challenge));
             infoCard.setApplink(ApplinkConst.CHALLENGE);
-            infoCard.setTitleTrack(CLICK_CHALLENGE);
-            infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(CLICK_CHALLENGE);
             infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
         }

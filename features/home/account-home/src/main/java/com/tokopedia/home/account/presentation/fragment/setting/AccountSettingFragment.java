@@ -96,8 +96,10 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
 
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
-            startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getChangePasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
+            startActivityForResult(
+                    ((AccountHomeRouter)getActivity().getApplicationContext())
+                            .getAddPasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+
         }
     }
 }
