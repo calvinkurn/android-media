@@ -20,10 +20,6 @@ import com.tokopedia.network.service.RegisterPhoneNumberApi;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
-import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
-import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
-import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -236,20 +232,6 @@ public class SessionModule {
                                ValidateOtpMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                      ChangePhoneNumberMapper changePhoneNumberMapper) {
-        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper);
-    }
-
-    @SessionScope
-    @Provides
-    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
-        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper);
     }
 
     @SessionScope
