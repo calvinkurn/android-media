@@ -87,6 +87,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     private Menu menu;
     private boolean onGoingLoanStatus = false;
     private int onGoingLoanId;
+    private boolean menushown = false;
 
     public static Intent createIntent(Context context) {
         return new Intent(context, InstantLoanActivity.class);
@@ -235,7 +236,8 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
 
-        if (onGoingLoanStatus) {
+        if (onGoingLoanStatus && !menushown) {
+            menushown = true;
             MenuInflater menuInflater = getMenuInflater();
             menuInflater.inflate(R.menu.instant_loan_menu, menu);
             return true;
