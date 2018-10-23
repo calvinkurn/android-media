@@ -40,6 +40,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
@@ -132,14 +133,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
+
         initializeDatabase();
         super.onCreate();
         initReact();
-
-        if(!checkAppSignature()){
-            throw new RuntimeException("please use original tokopedia apps.");
-        }
-
+        
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
@@ -233,6 +231,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        WalletUrl.BaseUrl.GQL_TOKOCASH_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         UpdateInactivePhoneURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -276,9 +275,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
-
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
+        FeedUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        FeedUrl.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
+        FeedUrl.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
+        FeedUrl.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+
 
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
@@ -386,7 +389,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         System.loadLibrary("native-lib");
     }
 
-    protected boolean checkAppSignature(){
+    public boolean checkAppSignature(){
         PackageInfo info = null;
         try {
             info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);

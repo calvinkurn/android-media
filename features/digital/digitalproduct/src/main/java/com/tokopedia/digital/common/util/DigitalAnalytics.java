@@ -1,17 +1,9 @@
 package com.tokopedia.digital.common.util;
 
-import android.app.Activity;
-
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
-import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
 
 import java.util.ArrayList;

@@ -53,6 +53,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon

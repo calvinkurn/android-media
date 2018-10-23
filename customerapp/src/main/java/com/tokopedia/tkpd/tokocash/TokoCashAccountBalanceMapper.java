@@ -23,6 +23,12 @@ class TokoCashAccountBalanceMapper implements Func1<BalanceTokoCash, WalletModel
         walletAction.setText(balanceTokoCash.getActionBalance().getLabelAction());
         walletAction.setRedirectUrl(balanceTokoCash.getActionBalance().getRedirectUrl());
         walletModel.setAction(walletAction);
+        walletModel.setPointBalance(balanceTokoCash.getPointBalance());
+        walletModel.setCashBalance(balanceTokoCash.getCashBalance());
+        walletModel.setWalletType(balanceTokoCash.getWalletType());
+
+        walletModel.setPendingCashback(balanceTokoCash.getPendingCashback());
+        walletModel.setAmountPendingCashback(balanceTokoCash.getAmountPendingCashback());
         return walletModel;
     }
 }

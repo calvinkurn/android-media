@@ -199,6 +199,8 @@ public protected *;
 
 -dontwarn android.content.pm.PackageManager
 
+-dontwarn com.tokopedia.topchat.R$id
+
 -keep public class com.tokopedia.design.component.BottomNavigation { *; }
 -keep public class android.support.design.widget.BottomNavigationView { *; }
 -keep public class android.support.design.internal.BottomNavigationMenuView { *; }

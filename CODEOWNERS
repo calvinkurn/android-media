@@ -43,6 +43,10 @@
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digital_browse/         @tokopedia/minion-mark
+/features/digital/digitalproduct        @tokopedia/minion-mark
+/featires/digital/common_travel         @tokopedia/minion-mark
+/features/fintech/tokocash              @nabillasab
+/libraries/travel_calendar              @nabillasab
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -101,3 +105,4 @@
 /features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
 /features/im/challenges                 @ashwanitp
+/libraries/pagination                   @lavekush-t

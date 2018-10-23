@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
+import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
@@ -984,42 +986,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterSuccess(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_SUCCESS,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_SUCCESS,
-                label
-        ).getEvent());
-    }
-
-    public static void eventLoginSuccess(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.LOGIN,
-                AppEventTracking.Category.LOGIN,
-                AppEventTracking.Action.LOGIN_SUCCESS,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRegister(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.CLICK,
-                label
-        ).getEvent());
-    }
-
-    public static void eventRegisterChannel(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.CLICK_CHANNEL,
-                label
-        ).getEvent());
-    }
-
     public static void eventRegisterError(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.REGISTER_ERROR,
@@ -1308,15 +1274,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterThroughLogin() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.REGISTER_LOGIN,
-                AppEventTracking.Category.LOGIN,
-                AppEventTracking.Action.REGISTER,
-                AppEventTracking.EventLabel.REGISTER
-        ).getEvent());
-    }
-
     public static void eventCTAAction() {
         eventCTAAction(AppEventTracking.EventLabel.CTA);
     }
@@ -1394,11 +1351,12 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
-    public static void sendAFCompleteRegistrationEvent() {
+    public static void sendAFCompleteRegistrationEvent(int userId,String methodName) {
         Map<String, Object> eventVal = new HashMap<>();
-        eventVal.put("advertising_id", "aifa");
         eventVal.put("custom_prop1", "registration");
         eventVal.put("os", "Android");
+        eventVal.put(CUSTOMER_USER_ID,userId);
+        eventVal.put(REGSITRATION_METHOD,methodName);
         getAFEngine().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
     }
 

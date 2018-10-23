@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.feedplus.R;
+import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationItemViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,14 @@ public class ProductCommunicationAdapter
         extends RecyclerView.Adapter<ProductCommunicationAdapter.ViewHolder> {
 
     private final int rowNumber;
+    private final FeedAnalytics analytics;
     private List<ProductCommunicationItemViewModel> itemViewModels;
     private FeedPlus.View viewListener;
 
-    public ProductCommunicationAdapter(int rowNumber, FeedPlus.View viewListener) {
+    public ProductCommunicationAdapter(int rowNumber, FeedPlus.View viewListener, FeedAnalytics analytics) {
         this.rowNumber = rowNumber;
         this.viewListener = viewListener;
+        this.analytics = analytics;
         itemViewModels = new ArrayList<>();
     }
 
@@ -79,7 +81,7 @@ public class ProductCommunicationAdapter
     }
 
     private void doEnhancedTracking(ProductCommunicationItemViewModel item) {
-        UserSession userSession = viewListener.getUserSession();
+        UserSessionInterface userSession = viewListener.getUserSession();
         int loginId = Integer.valueOf(
                 !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
         );
@@ -95,7 +97,7 @@ public class ProductCommunicationAdapter
                 item.getRedirectUrl()
         ));
 
-        TrackingUtils.eventTrackingEnhancedEcommerce(
+        analytics.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(list, loginId)
         );
     }

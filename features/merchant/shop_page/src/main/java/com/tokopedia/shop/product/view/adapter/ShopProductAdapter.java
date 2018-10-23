@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.adapter;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,9 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
@@ -27,24 +30,31 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_HIGHLIGHT_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_MERCHANT_VOUCHER_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PROMO_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements DataEndlessScrollListener.OnDataEndlessScrollListener,
-        StickySingleHeaderView.OnStickySingleHeaderAdapter{
+        StickySingleHeaderView.OnStickySingleHeaderAdapter {
+
+    private boolean needToShowEtalase = false;
 
     private ShopProductPromoViewModel shopProductPromoViewModel;
+    private ShopMerchantVoucherViewModel shopMerchantVoucherViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
     private ShopProductEtalaseTitleViewModel shopProductEtalaseTitleViewModel;
+    private ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel;
 
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
+    private RecyclerView recyclerView;
 
     // this view holder is to hold the state between the sticky and non-sticky etalase view holder.
     private WeakReference<ShopProductEtalaseListViewHolder> shopProductEtalaseListViewHolderWeakReference;
@@ -53,15 +63,33 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     public ShopProductAdapter(ShopProductAdapterTypeFactory baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory, null);
         this.shopProductAdapterTypeFactory = baseListAdapterTypeFactory;
+        shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
+        shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
-        shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
+        shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
+        visitables.add(shopMerchantVoucherViewModel);
         visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
+        visitables.add(shopProductEtalaseHighlightViewModel);
         visitables.add(shopProductEtalaseListViewModel);
         visitables.add(shopProductEtalaseTitleViewModel);
+
+        baseListAdapterTypeFactory.attachAdapter(this);
+    }
+
+    public void setNeedToShowEtalase(boolean needToShowEtalase) {
+        if (this.needToShowEtalase != needToShowEtalase) {
+            this.needToShowEtalase = needToShowEtalase;
+            notifyItemChanged(DEFAULT_ETALASE_POSITION);
+            notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
+        }
+    }
+
+    public boolean isNeedToShowEtalase() {
+        return needToShowEtalase;
     }
 
     public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel) {
@@ -71,6 +99,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             this.shopProductPromoViewModel = shopProductPromoViewModel;
         }
         setVisitable(DEFAULT_PROMO_POSITION, this.shopProductPromoViewModel);
+    }
+
+    public void setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
+        if (shopMerchantVoucherViewModel == null) {
+            this.shopMerchantVoucherViewModel = new ShopMerchantVoucherViewModel(null);
+        } else {
+            this.shopMerchantVoucherViewModel = shopMerchantVoucherViewModel;
+        }
+        setVisitable(DEFAULT_MERCHANT_VOUCHER_POSITION, this.shopMerchantVoucherViewModel);
     }
 
     public void setShopProductFeaturedViewModel(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
@@ -91,11 +128,24 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         setVisitable(DEFAULT_ETALASE_POSITION, this.shopProductEtalaseListViewModel);
     }
 
-    public void setShopEtalaseTitle(String etalaseName) {
-        if (TextUtils.isEmpty(etalaseName)) {
-            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
+    public void setShopProductEtalaseHighlightViewModel(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
+        if (shopProductEtalaseHighlightViewModel == null) {
+            this.shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel();
         } else {
-            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(etalaseName);
+            this.shopProductEtalaseHighlightViewModel = shopProductEtalaseHighlightViewModel;
+        }
+        setVisitable(DEFAULT_ETALASE_HIGHLIGHT_POSITION, this.shopProductEtalaseHighlightViewModel);
+    }
+
+    public ShopProductEtalaseHighlightViewModel getShopProductEtalaseHighlightViewModel() {
+        return shopProductEtalaseHighlightViewModel;
+    }
+
+    public void setShopEtalaseTitle(String etalaseName, String etalaseBadge) {
+        if (TextUtils.isEmpty(etalaseName)) {
+            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
+        } else {
+            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(etalaseName, etalaseBadge);
         }
         setVisitable(DEFAULT_ETALASE_TITLE_POSITION, this.shopProductEtalaseTitleViewModel);
     }
@@ -164,15 +214,33 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     @Override
     public void clearAllElements() {
-        clearDataExceptProduct();
+        clearPromoData();
+        clearMerchantVoucherData();
+        clearFeaturedData();
+        clearEtalaseHighlightData();
+        clearEtalaseData();
         clearProductList();
     }
 
-    public void clearDataExceptProduct() {
+    public void clearPromoData() {
+        setShopProductPromoViewModel(null);
+    }
+
+    public void clearMerchantVoucherData() {
+        setShopMerchantVoucherViewModel(null);
+    }
+
+    public void clearFeaturedData() {
+        setShopProductFeaturedViewModel(null);
+    }
+
+    public void clearEtalaseData() {
         setShopProductPromoViewModel(null);
         setShopProductFeaturedViewModel(null);
-        setShopEtalase(null);
-        setShopEtalaseTitle(null);
+    }
+
+    public void clearEtalaseHighlightData() {
+        setShopProductEtalaseHighlightViewModel(null);
     }
 
     public List<ShopProductViewModel> getShopProductViewModelList() {
@@ -192,6 +260,12 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         if (isFeaturedChanged) {
             notifyItemChanged(DEFAULT_FEATURED_POSITION);
         }
+
+        boolean isEtalaseChanged = shopProductEtalaseHighlightViewModel.updateWishListStatus(productId, wishList);
+        if (isEtalaseChanged) {
+            notifyItemChanged(DEFAULT_ETALASE_HIGHLIGHT_POSITION);
+        }
+
     }
 
     @Override
@@ -227,8 +301,8 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         // mechanism to transfer the state from sticky etalase state to non-sticky view holder
-        if (holder instanceof ShopProductEtalaseListViewHolder ) {
-            if (onStickySingleHeaderViewListener!= null &&
+        if (holder instanceof ShopProductEtalaseListViewHolder) {
+            if (onStickySingleHeaderViewListener != null &&
                     onStickySingleHeaderViewListener.isStickyShowed()) {
                 Parcelable recyclerViewState = null;
                 try {
@@ -253,15 +327,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         Parcelable recyclerViewState = null;
         try {
             if (shopProductEtalaseListStickyWeakReference != null &&
-                    shopProductEtalaseListStickyWeakReference.get()!= null) {
+                    shopProductEtalaseListStickyWeakReference.get() != null) {
                 recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
             }
         } catch (Throwable e) {
             recyclerViewState = null;
         }
-        if (recyclerViewState!= null) {
+        if (recyclerViewState != null) {
             if (shopProductEtalaseListViewHolderWeakReference != null &&
-                    shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                    shopProductEtalaseListViewHolderWeakReference.get() != null) {
                 shopProductEtalaseListViewHolderWeakReference.get().setRecyclerViewState(recyclerViewState);
             }
         }
@@ -282,14 +356,14 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             Parcelable recyclerViewState = null;
             try {
                 if (shopProductEtalaseListViewHolderWeakReference != null &&
-                        shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                        shopProductEtalaseListViewHolderWeakReference.get() != null) {
                     recyclerViewState = shopProductEtalaseListViewHolderWeakReference.get().getRecyclerViewState();
                 }
             } catch (Throwable e) {
                 recyclerViewState = null;
             }
-            ((ShopProductEtalaseListViewHolder)viewHolder).setRecyclerViewState(recyclerViewState);
-            ((ShopProductEtalaseListViewHolder)viewHolder).bind(shopProductEtalaseListViewModel);
+            ((ShopProductEtalaseListViewHolder) viewHolder).setRecyclerViewState(recyclerViewState);
+            ((ShopProductEtalaseListViewHolder) viewHolder).bind(shopProductEtalaseListViewModel);
         }
     }
 
@@ -298,10 +372,21 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener;
     }
 
-    public void refreshSticky(){
-        if (onStickySingleHeaderViewListener!= null) {
-            onStickySingleHeaderViewListener.refreshSticky();
+    public void refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
+            recyclerView.post(() -> onStickySingleHeaderViewListener.refreshSticky());
         }
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 }
