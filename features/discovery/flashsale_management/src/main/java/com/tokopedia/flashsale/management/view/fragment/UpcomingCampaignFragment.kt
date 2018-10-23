@@ -2,13 +2,17 @@ package com.tokopedia.flashsale.management.view.fragment
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 
 class UpcomingCampaignFragment : BaseCampaignFragment(){
 
     override fun loadData(page: Int) {
-        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE, "", "1,2,3")
+        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
+                CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE,
+                "", "1,2,3",
+                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -18,7 +22,10 @@ class UpcomingCampaignFragment : BaseCampaignFragment(){
     override fun onSearchSubmitted(text: String) {
         adapter.clearAllElements()
         adapter.notifyDataSetChanged()
-        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3")
+        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
+                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE,
+                DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3",
+                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {

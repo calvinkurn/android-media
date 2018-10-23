@@ -7,18 +7,22 @@ import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactor
 
 class CampaignViewModel() : Visitable<CampaignAdapterTypeFactory>, Parcelable {
 
+    var id: Long = -1
     var name: String = ""
-    var campaign_period: String = ""
+    var campaignPeriod: String = ""
     var status: String = ""
-    var campaign_type: String = ""
+    var campaignType: String? = ""
     var cover: String = ""
+    var campaignUrl: String = ""
 
     constructor(parcel: Parcel) : this() {
+        id = parcel.readLong()
         name = parcel.readString()
-        campaign_period = parcel.readString()
+        campaignPeriod = parcel.readString()
         status = parcel.readString()
-        campaign_type = parcel.readString()
+        campaignType = parcel.readString()
         cover = parcel.readString()
+        campaignUrl = parcel.readString()
     }
 
     override fun type(typeFactory: CampaignAdapterTypeFactory): Int {
@@ -26,11 +30,13 @@ class CampaignViewModel() : Visitable<CampaignAdapterTypeFactory>, Parcelable {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
         parcel.writeString(name)
-        parcel.writeString(campaign_period)
+        parcel.writeString(campaignPeriod)
         parcel.writeString(status)
-        parcel.writeString(campaign_type)
+        parcel.writeString(campaignType)
         parcel.writeString(cover)
+        parcel.writeString(campaignUrl)
     }
 
     override fun describeContents(): Int {

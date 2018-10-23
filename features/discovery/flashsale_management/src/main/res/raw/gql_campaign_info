@@ -1,0 +1,42 @@
+query getCampaignInfo($camp_url: String!){
+    mojito_camp_info(camp_url:$camp_url){
+        data {
+            campaign_id
+            name
+            short_name
+            start_date
+            end_date
+            submission_start_date
+            submission_end_date
+            review_start_date
+            review_end_date
+            phase_end_date
+            campaign_period
+            description
+            promo_code
+            minimum_transaction
+            criteria {
+                criteria_id
+                min_price
+                max_price
+                min_stock
+                minimum_discount_percent
+                maximum_discount_percent
+                minimum_cashback
+                max_submission
+                maximum_rating
+                exclude_preorder
+                exclude_wholesale
+                categories{
+                    dep_id
+                    dep_name
+                    dep_full_name
+                }
+            }
+            banners
+            status_info
+            dashboard_url
+            tnc
+        }
+    }
+}

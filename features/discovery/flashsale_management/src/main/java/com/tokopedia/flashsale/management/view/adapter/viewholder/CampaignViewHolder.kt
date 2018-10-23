@@ -11,9 +11,9 @@ import kotlinx.android.synthetic.main.item_campaign.view.*
 class CampaignViewHolder(itemView: View) : AbstractViewHolder<CampaignViewModel>(itemView) {
 
     override fun bind(campaignViewModel: CampaignViewModel) {
-        itemView.tvCampaignType.text = campaignViewModel.campaign_type
+        itemView.tvCampaignType.text = campaignViewModel.campaignType
         itemView.tvCampaignName.text = campaignViewModel.name
-        itemView.tvCampaignDate.text = campaignViewModel.campaign_period
+        itemView.tvCampaignDate.text = campaignViewModel.campaignPeriod
         itemView.tvStatus.text = campaignViewModel.status
         ImageHandler.loadImageRounded2(itemView.context, itemView.ivImageCampaign, campaignViewModel.cover, 20f)
     }

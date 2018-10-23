@@ -13,14 +13,13 @@ import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
 import com.tokopedia.flashsale.management.view.activity.CampaignDetailActivity
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
-import com.tokopedia.flashsale.management.view.contract.CampaignContract
 import com.tokopedia.flashsale.management.view.presenter.CampaignPresenter
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusListViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import javax.inject.Inject
 
-abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, CampaignAdapterTypeFactory>(), CampaignContract.View{
+abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, CampaignAdapterTypeFactory>() {
 
     @Inject
     lateinit var presenter: CampaignPresenter
@@ -37,7 +36,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     override fun onItemClicked(t: CampaignViewModel) {
         activity?.let {
-            startActivity(CampaignDetailActivity.createIntent(it, 1))
+            startActivity(CampaignDetailActivity.createIntent(it, t.id, t.campaignUrl))
         }
     }
 
@@ -47,14 +46,13 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     override fun initInjector() {
         getComponent(CampaignComponent::class.java).inject(this)
-        presenter.attachView(this)
     }
 
     override fun getAdapterTypeFactory(): CampaignAdapterTypeFactory {
         return CampaignAdapterTypeFactory()
     }
 
-    override fun onSuccessGetCampaignList(data: DataCampaignList) {
+    fun onSuccessGetCampaignList(data: DataCampaignList) {
         val listDummy = ArrayList<CampaignViewModel>()
         for(campaign : Campaign in data.list){
             listDummy.add(campaign.toCampaignViewModel())
@@ -62,18 +60,23 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         renderList(listDummy)
     }
 
-    override fun onErrorGetCampaignList(throwable: Throwable) {
+    fun onErrorGetCampaignList(throwable: Throwable) {
 
     }
 
-    override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
+    fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
         val campaignStatusListViewModel = CampaignStatusListViewModel()
         campaignStatusListViewModel.campaignStatusList = data.data
         adapter.addElement(0, campaignStatusListViewModel)
     }
 
-    override fun onErrorGetCampaignLabel(throwable: Throwable) {
+    fun onErrorGetCampaignLabel(throwable: Throwable) {
 
+    }
+
+    override fun onDestroyView() {
+        presenter.detachView()
+        super.onDestroyView()
     }
 
     companion object {

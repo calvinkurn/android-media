@@ -1,17 +1,94 @@
 package com.tokopedia.flashsale.management.data.campaignlist
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 data class Campaign(
-        var campaign_id: Int = 0,
-        var name: String = "",
-        var campaign_period: String = "",
-        var submission_start_date: String = "",
-        var submission_end_date: String = "",
-        var status: String = "",
-        var campaign_type: String = "",
-        var cover: String = "",
-        var is_joined: Boolean = false,
-        var dashboard_url: String = "",
-        var product_number: Int = 0,
-        var seller_number: Int = 0,
-        var seller_info: SellerInfo = SellerInfo()
+        @SerializedName("campaign_id")
+        @Expose
+        val campaignId: Long = -1,
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("start_date")
+        @Expose
+        val startDate: String = "",
+
+        @SerializedName("end_date")
+        @Expose
+        val endDate: String = "",
+
+        @SerializedName("campaign_period")
+        @Expose
+        val campaignPeriod: String = "",
+
+        @SerializedName("submission_start_date")
+        @Expose
+        val submissionStartDate: String = "",
+
+        @SerializedName("submission_end_date")
+        @Expose
+        val submissionEndDate: String = "",
+
+        @SerializedName("review_start_date")
+        @Expose
+        val reviewStartDate: String = "",
+
+        @SerializedName("review_end_date")
+        @Expose
+        val reviewnEndDate: String = "",
+
+        @SerializedName("phase_end_date")
+        @Expose
+        val phaseEndDate: String = "",
+
+        @SerializedName("status")
+        @Expose
+        val status: String = "",
+
+        @SerializedName("status_info")
+        @Expose
+        val statusInfo: String = "",
+
+        @SerializedName("campaign_type")
+        @Expose
+        val campaignType: String = "",
+
+        @SerializedName(value = "cover", alternate = arrayOf("banner"))
+        @Expose
+        val cover: String = "",
+
+        @SerializedName("description")
+        @Expose
+        val description: String = "",
+
+        @SerializedName("promo_code")
+        @Expose
+        val promoCode: String = "",
+
+        @SerializedName("minimum_transaction")
+        @Expose
+        val minTransaction: String = "",
+
+        /*@SerializedName("banner")
+        @Expose
+        val banner: String,*/
+
+        @SerializedName("is_joined")
+        @Expose
+        val isJoined: Boolean = false,
+
+        @SerializedName("dashboard_url")
+        @Expose
+        val dashboardUrl: String = "",
+
+        @SerializedName("criteria")
+        @Expose
+        val criteria: List<Criteria> = mutableListOf(),
+
+        @SerializedName("tnc")
+        @Expose
+        val tnc: String = ""
 )

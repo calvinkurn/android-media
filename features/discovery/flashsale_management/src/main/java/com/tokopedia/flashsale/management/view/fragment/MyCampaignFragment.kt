@@ -2,6 +2,7 @@ package com.tokopedia.flashsale.management.view.fragment
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
@@ -10,16 +11,19 @@ import com.tokopedia.flashsale.management.view.contract.CampaignContract
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.EmptyMyCampaignViewModel
 
-class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, CampaignStatusListViewHolder.OnCampaignStatusListViewHolderListener{
+class MyCampaignFragment : BaseCampaignFragment(), CampaignStatusListViewHolder.OnCampaignStatusListViewHolderListener{
 
     override fun loadInitialData() {
         super.loadInitialData()
         reloadCampaignData()
-        presenter.getCampaignLabel()
+        presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
+                {onSuccessGetCampaignLabel(it)},{onErrorGetCampaignLabel(it)})
     }
 
     override fun loadData(page: Int) {
-        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE, "", "1,2,3")
+        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
+                CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE, "", "1,2,3",
+                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
     }
 
     override fun getAdapterTypeFactory(): CampaignAdapterTypeFactory {
@@ -38,7 +42,9 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, Campai
     override fun onSearchSubmitted(text: String) {
         adapter.clearAllElements()
         adapter.notifyDataSetChanged()
-        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3")
+        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
+                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3",
+                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -56,7 +62,10 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, Campai
     }
 
     override fun onCampaignStatusClicked(campaignStatusViewModel: CampaignStatusViewModel) {
-        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText, campaignStatusViewModel.convertIdtoCommaString())
+        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
+                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText,
+                campaignStatusViewModel.convertIdtoCommaString(),
+                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
     }
 
     companion object {

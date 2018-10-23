@@ -5,14 +5,21 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
+import com.tokopedia.flashsale.management.view.fragment.FlashSaleInfoFragment
 
 class CampaignDetailFragmentPagerAdapter(val fragmentManager: FragmentManager,
-                                         private val titles: Array<String>)
+                                         private val titles: Array<String>,
+                                         private val campaignId: Long,
+                                         private val campaignUrl: String)
     : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
-    override fun getItem(position: Int) = Fragment()
+    override fun getItem(position: Int) = when(position){
+        0 -> FlashSaleInfoFragment.createInstance(campaignUrl)
+        1 -> Fragment()
+        else -> Fragment()
+    }
 
     override fun getPageTitle(position: Int) = titles[position]
 

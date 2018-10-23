@@ -1,18 +1,18 @@
 package com.tokopedia.flashsale.management.ekstension
 
 import com.tokopedia.flashsale.management.data.campaignlabel.CampaignStatus
-import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.data.campaignlist.Campaign
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
+import com.tokopedia.flashsale.management.view.viewmodel.*
 
 fun Campaign.toCampaignViewModel(): CampaignViewModel {
     return CampaignViewModel().also {
+        it.id = this.campaignId
         it.name = this.name
-        it.campaign_period = this.campaign_period
+        it.campaignPeriod = this.campaignPeriod
         it.status = this.status
-        it.campaign_type = this.campaign_type
+        it.campaignType = this.campaignType
         it.cover = this.cover
+        it.campaignUrl = this.dashboardUrl
     }
 }
 
@@ -25,4 +25,11 @@ fun CampaignStatus.toCampaignStatusViewModel(): CampaignStatusViewModel {
 
 fun CampaignStatusViewModel.convertIdtoCommaString(): String {
     return this.status_id.joinToString(",") { it.toString() }
+}
+
+fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
+    val list = mutableListOf<CampaignInfoViewModel>()
+    list.add(CampaignInfoHeaderViewModel(toCampaignViewModel()))
+    list.addAll(criteria.map { CampaignInfoCategoryViewModel(it)})
+    return list
 }
