@@ -60,6 +60,7 @@ ext {
     tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
+    tkpdMerchantVoucherVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdTokocashVersion = '2.22'
@@ -291,6 +292,7 @@ ext {
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
+            merchantVoucher       : "com.tokopedia.merchantvoucher:merchant-voucher:${tkpdMerchantVoucherVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
@@ -370,6 +372,7 @@ ext {
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             gamification          : ":features:promo:gamification",
+            merchantVoucher       : ":features:promo:merchant_voucher",
             groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
             settingbank           : ":features:user:settingbank",
