@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ import com.tokopedia.applink.RouteManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -196,11 +196,17 @@ public class DashboardFragment
         } else {
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
-
+            int paddingBottom = convertDpToPixel(getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_8));
             if (floatingModel.getCount() != 0) {
                 cvRecommendation.setVisibility(View.VISIBLE);
                 tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
+                paddingBottom = convertDpToPixel(getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_36));
             }
+            rvHistory.setPadding(
+                    rvHistory.getPaddingLeft(),
+                    rvHistory.getPaddingTop(),
+                    rvHistory.getPaddingRight(),
+                    paddingBottom);
         }
 
         if (TextUtils.isEmpty(cursor) || cursor.equals("1")) {
@@ -210,6 +216,12 @@ public class DashboardFragment
             isCanLoadMore = true;
             this.cursor = cursor;
         }
+    }
+
+    public int convertDpToPixel(int dp){
+        DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
+        int px = dp * ((int)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        return px;
     }
 
     @Override
