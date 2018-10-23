@@ -1651,7 +1651,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
                 }
             }
@@ -3173,8 +3173,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getSession().getUserId();
     }
 
-    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
     }
 
     public void onAppsFlyerInit() {
@@ -3185,7 +3185,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
-    public String getDefferedDeeplinkPathIfExists(){
+    public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 
@@ -3193,7 +3193,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
         TrackingUtils.eventPushUserID();
-        Crashlytics.setUserIdentifier(userSession.getUserId());
+        if (Crashlytics.getInstance() != null)
+            Crashlytics.setUserIdentifier(userSession.getUserId());
         BranchSdkUtils.sendIdentityEvent(userSession.getUserId());
         BranchSdkUtils.sendLoginEvent(applicationContext);
     }

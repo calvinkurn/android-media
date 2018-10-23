@@ -20,6 +20,7 @@ public class TokenMapper implements Func1<Response<TokenViewModel>, TokenViewMod
     @Override
     public TokenViewModel call(Response<TokenViewModel> response) {
         if (response.isSuccessful()
+                && response.body() != null
                 && !response.body().getAccessToken().isEmpty()) {
             return response.body();
         } else {

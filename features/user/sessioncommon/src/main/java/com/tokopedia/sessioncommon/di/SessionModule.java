@@ -123,16 +123,16 @@ public class SessionModule {
                                           FingerprintInterceptor fingerprintInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
+        builder.addInterceptor(fingerprintInterceptor);
+        builder.addInterceptor(basicInterceptor);
+        builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
+        builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
+
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
             builder.addInterceptor(debugInterceptor);
             builder.addInterceptor(httpLoggingInterceptor);
         }
-
-        builder.addInterceptor(fingerprintInterceptor);
-        builder.addInterceptor(basicInterceptor);
-        builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
-        builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
 
         return builder.build();
     }

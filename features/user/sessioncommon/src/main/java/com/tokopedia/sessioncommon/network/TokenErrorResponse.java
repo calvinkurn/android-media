@@ -27,7 +27,7 @@ public class TokenErrorResponse extends BaseResponseError {
 
     @Override
     public boolean hasBody() {
-        return !error.isEmpty();
+        return error!= null && !error.isEmpty();
     }
 
     @Override
