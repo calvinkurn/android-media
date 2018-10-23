@@ -198,7 +198,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setClickable(true);
         nextButton.setEnabled(true);
         nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
-                .green_button_rounded_unify));
+                .green_button_rounded));
         nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
     }
 
