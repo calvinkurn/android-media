@@ -770,6 +770,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
+        sendAnalyticsScreenName(getScreenName());
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
         cartAdapter.resetData();
@@ -1111,7 +1112,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
                 if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {

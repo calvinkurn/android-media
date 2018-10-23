@@ -264,6 +264,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         renderTopAds();
         renderWishList((int) itemWidth);
         renderRecentView((int) itemWidth);
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
     }
 
     private double getItemWidth() {
@@ -427,6 +428,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void navigateToCartFragment(CartListData cartListData) {
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
         if (getActivity() instanceof EmptyCartListener) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EmptyCartListener.ARG_CART_LIST_DATA, cartListData);
@@ -444,7 +446,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
             presenter.processInitialGetCartData();
         }
     }
