@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -81,6 +81,7 @@ public class InboxTalkViewFragment extends TalkViewFragment{
             readStatus = bundle.getTalkReadStatus();
 
             NotificationModHandler.clearCacheIfFromNotification(
+                    getActivity(),
                     Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
                     talkID
             );

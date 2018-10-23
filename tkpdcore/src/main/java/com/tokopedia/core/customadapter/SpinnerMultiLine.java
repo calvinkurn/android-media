@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 

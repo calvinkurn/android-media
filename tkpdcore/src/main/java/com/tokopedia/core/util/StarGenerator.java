@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by Steven on 11/01/2016.

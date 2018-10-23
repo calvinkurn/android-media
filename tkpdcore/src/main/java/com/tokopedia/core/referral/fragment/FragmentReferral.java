@@ -16,8 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -159,7 +159,7 @@ public class FragmentReferral extends BasePresenterFragmentV4<IReferralPresenter
             TextViewHelpLink.setVisibility(View.VISIBLE);
             TextViewHelpLink.setOnClickListener(view1 -> {
                 focusOnView();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
+                UnifyTracking.eventReferralAndShare(getActivity(), AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
 
             });
         } else {

@@ -6,7 +6,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by henrypriyono on 9/7/17.

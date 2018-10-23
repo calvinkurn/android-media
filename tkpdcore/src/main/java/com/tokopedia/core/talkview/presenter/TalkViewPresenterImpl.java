@@ -3,7 +3,7 @@ package com.tokopedia.core.talkview.presenter;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;

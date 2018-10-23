@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -91,7 +91,7 @@ public class TalkViewActivity extends TActivity
             fragmentTransaction.add(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
             fragmentTransaction.commit();
         }
-        UnifyTracking.eventDiscussionProductDetail(bundle.getString("from", "N/A"));
+        UnifyTracking.eventDiscussionProductDetail(this, bundle.getString("from", "N/A"));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class TalkViewActivity extends TActivity
                 case TalkViewIntentService.STATUS_SUCCESS:
                     ((TalkViewFragment) fragment).successReply(resultData.getString(TalkViewIntentService.EXTRA_RESULT));
 
-                    UnifyTracking.eventDiscussionProductSend(getIntent().getExtras() != null ?
+                    UnifyTracking.eventDiscussionProductSend(this, getIntent().getExtras() != null ?
                             getIntent().getExtras().getString("from", "N/A") : "N/A");
                     break;
                 case TalkViewIntentService.STATUS_ERROR:

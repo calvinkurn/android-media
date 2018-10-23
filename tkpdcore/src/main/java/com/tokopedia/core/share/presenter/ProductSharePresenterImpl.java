@@ -12,8 +12,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.listener.ShareView;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.ClipboardHandler;
@@ -228,20 +228,20 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     public void shareCategory(ShareData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
+            UnifyTracking.eventShareCategory(view.getActivity(), shareParam[0], shareParam[1] + "-" + media);
         }
     }
 
     private void sendAnalyticsToGTM(String type, String channel) {
         if (type.equals(ShareData.REFERRAL_TYPE)) {
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
-            TrackingUtils.sendMoEngageReferralShareEvent(channel);
+            UnifyTracking.eventReferralAndShare(view.getActivity(), AppEventTracking.Action.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(view.getActivity(), channel);
         }else if (type.equals(ShareData.APP_SHARE_TYPE)) {
-            UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL, channel);
+            UnifyTracking.eventAppShareWhenReferralOff(view.getActivity(), AppEventTracking.Action.SELECT_CHANNEL, channel);
         }else if (type.equals(ShareData.HOTLIST_TYPE)) {
-            HotlistPageTracking.eventShareHotlist(channel);
+            HotlistPageTracking.eventShareHotlist(view.getActivity(), channel);
         }else{
-            UnifyTracking.eventShare(channel);
+            UnifyTracking.eventShare(view.getActivity(), channel);
         }
     }
 }

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -64,7 +64,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
             getFragmentManager().beginTransaction().replace(R.id.container,
                     FragmentReferralFriendsWelcome.newInstance()).commit();
 
-        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_friend_welcome_screen_name));
+        TrackingUtils.sendMoEngageReferralScreenOpen(this, getString(R.string.referral_friend_welcome_screen_name));
 
     }
 

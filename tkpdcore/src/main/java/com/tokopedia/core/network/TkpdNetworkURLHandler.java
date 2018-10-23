@@ -119,11 +119,14 @@ public class TkpdNetworkURLHandler {
         Log.i("GTM TKPD", "KEY: "+key+" STATE: "+state);
         switch (state) {
             case STATE_PROD:
-                return TrackingUtils.getGtmString(key+"_production");
+                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                        key+"_production");
             case STATE_BETA:
-                return TrackingUtils.getGtmString(key+"_staging");
+                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                        key+"_staging");
             case STATE_DEV:
-                return TrackingUtils.getGtmString(key+"_dev");
+                return TrackingUtils.getGtmString(MainApplication.getAppContext(),
+                        key+"_dev");
             default:
                 return null;
         }

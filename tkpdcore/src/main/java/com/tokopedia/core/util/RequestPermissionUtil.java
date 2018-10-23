@@ -9,7 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import java.util.List;
 

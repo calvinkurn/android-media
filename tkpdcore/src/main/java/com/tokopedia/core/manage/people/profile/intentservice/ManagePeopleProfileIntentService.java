@@ -8,7 +8,7 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.datamanager.NetworkParam;
 import com.tokopedia.core.manage.people.profile.interactor.UploadImageProfile;
 import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.shopinfo.adapter.ShopTalkAdapter;
 import com.tokopedia.core.shopinfo.limited.model.ShopTalkLimited;
 

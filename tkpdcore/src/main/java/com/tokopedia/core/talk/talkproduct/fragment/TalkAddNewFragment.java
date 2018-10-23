@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -184,7 +184,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
         getActivity().setResult(TalkProductFragment.RESULT_ADD, new Intent().putExtras(bundle));
         send.setEnabled(true);
         mProgressDialog.dismiss();
-        UnifyTracking.eventTalkSuccessSend();
+        UnifyTracking.eventTalkSuccessSend(getActivity());
         getActivity().finish();
     }
 

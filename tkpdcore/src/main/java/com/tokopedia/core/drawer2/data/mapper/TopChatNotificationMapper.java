@@ -2,7 +2,7 @@ package com.tokopedia.core.drawer2.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer2.data.pojo.TopchatNotificationPojo;
 import com.tokopedia.core.drawer2.data.viewmodel.TopChatNotificationModel;

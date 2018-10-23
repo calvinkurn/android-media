@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;
 import com.tokopedia.core.talkview.model.TalkBaseModel;
 import com.tokopedia.core.util.LabelUtils;

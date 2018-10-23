@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -103,7 +103,7 @@ public class FragmentSettingPeople extends TkpdFragment implements ManageConstan
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded() && getActivity() != null) {
-            ScreenTracking.screen(getScreenName());
+            ScreenTracking.screen(getActivity(), getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

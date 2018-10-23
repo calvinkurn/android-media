@@ -11,8 +11,8 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 
 public class ClipboardHandler {
 	private Activity context;
@@ -24,7 +24,7 @@ public class ClipboardHandler {
 	public static void CreateMenuPopUp(final Activity context,final View v){
 		final PopupMenu popup = new PopupMenu(context, v);
 	    MenuInflater inflater = popup.getMenuInflater();
-	    inflater.inflate(com.tokopedia.core.R.menu.clipboard_copy, popup.getMenu());
+	    inflater.inflate(com.tokopedia.core2.R.menu.clipboard_copy, popup.getMenu());
 	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override

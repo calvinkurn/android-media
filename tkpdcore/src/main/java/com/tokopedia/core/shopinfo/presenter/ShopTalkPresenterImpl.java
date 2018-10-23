@@ -1,6 +1,6 @@
 package com.tokopedia.core.shopinfo.presenter;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.interactor.ShopTalkRetrofitInteractor;

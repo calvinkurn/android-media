@@ -5,7 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import butterknife.ButterKnife;
 

@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.profile.model.DataUser;
 import com.tokopedia.core.manage.people.profile.model.Profile;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFragmentPresenter;

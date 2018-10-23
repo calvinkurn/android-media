@@ -2,6 +2,7 @@ package com.tokopedia.core;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core2.R;
 
 import android.os.Bundle;
 import android.view.Menu;

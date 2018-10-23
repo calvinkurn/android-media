@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Created by stevenfredian on 5/13/16.

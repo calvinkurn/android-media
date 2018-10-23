@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core2.R;
 
 
 public class ShopStatisticDetail extends TActivity {

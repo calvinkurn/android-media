@@ -7,6 +7,7 @@ import com.tokopedia.core.fragment.SettingsFragment;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.tokopedia.core2.R;
 
 public class SettingsNotification extends TActivity {
 

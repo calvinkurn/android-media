@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
@@ -93,7 +93,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
             Location location = new Location(LocationManager.NETWORK_PROVIDER);
             location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
-            LocationCache.saveLocation(context, location);
+            new LocationCache(context).saveLocation(context, location);
         }
     }
 
@@ -101,7 +101,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
     public void onLocationChanged(Location location) {
         Log.d(TAG, "PORING onLocationChanged");
         view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
-        LocationCache.saveLocation(context, location);
+        new LocationCache(context).saveLocation(context, location);
         removeLocationUpdate();
     }
 
@@ -169,7 +169,7 @@ public class GoogleMapPresenterImpl implements GoogleMapPresenter, LocationListe
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                LocationCache.saveLocation(context, location);
+                new LocationCache(context).saveLocation(context, location);
                 return new LatLng(location.getLatitude(), location.getLongitude());
             } else {
                 return DEFAULT_LATLNG_JAKARTA;

@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 /**
  * Custom Textview for Copyable feature

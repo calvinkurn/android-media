@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.talkview.interactor.TalkViewRetrofitInteractor;
 import com.tokopedia.core.talkview.interactor.TalkViewRetrofitInteractorImpl;
 import com.tokopedia.core.talkview.model.ReplyCommentPass;

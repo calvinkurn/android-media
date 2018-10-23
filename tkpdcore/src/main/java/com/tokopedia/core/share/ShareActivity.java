@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 

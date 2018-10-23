@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -93,13 +93,13 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
         presenter.initialize();
 
         btnReferralExplore.setOnClickListener(v -> {
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, AppEventTracking.EventLabel.HOME);
+            UnifyTracking.eventReferralAndShare(getActivity(), AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, AppEventTracking.EventLabel.HOME);
             closeView();
         });
         TextViewHelpLink.setVisibility(presenter.isShowReferralHelpLink() ? View.VISIBLE : View.GONE);
         TextViewHelpLink.setText(Html.fromHtml(presenter.getHowItWorks()));
         TextViewHelpLink.setOnClickListener(view1 -> {
-            UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_KNOW_MORE,"");
+            UnifyTracking.eventReferralAndShare(getActivity(), AppEventTracking.Action.CLICK_KNOW_MORE,"");
             showOnBoardingTooltip(presenter.getHelpButtonContentTitle(), presenter.getHelpButtonContentSubtitle());
         });
         welcomeMessageHearer.setText(Html.fromHtml(getString(R.string.referral_welcome_header)));
