@@ -21,7 +21,7 @@ public interface InstantLoanUrl {
     String LOAN_AMOUNT_QUERY_PARAM = "?loan=";
 
     String SUBMISSION_HISTORY_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/dashboard";
-    String PAYMENT_METHODS_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/order-detail/aplikasi-disbursed/%s";
+    String PAYMENT_METHODS_URL = WEB_DOMAIN + "pinjaman-online/dana-instant/payment-method/%s";
     String HELP_URL = WEB_DOMAIN + "contact-us?pid=162#step1";
 
 }
