@@ -37,7 +37,7 @@
             android:id="@+id/pager_deals"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_250" />
+            android:layout_marginBottom="@dimen/dp_230" />
     </LinearLayout>
 
     <FrameLayout
