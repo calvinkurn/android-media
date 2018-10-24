@@ -355,7 +355,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
                 runOnUiThread(() -> {
                     if (responseInByte != null) {
                         String response = NFCUtils.toHex(responseInByte);
-                        Log.d(TAG, response);
                         presenter.sendCommand(response, inquiryBalanceModel.getId(), 1);
                     }
                 });
