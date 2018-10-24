@@ -65,7 +65,6 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.gql_appsflyer_mapping), AppsflyerMappingResponse.class, requestParams.getParameters());
 
-        Log.e("Testing_appflyer_map",new Gson().toJson(appsflyerMappingRequest));
         String finalUserID = userID;
         String finalAppsFlyerId = appsFlyerId;
         return ObservableFactory.create(Arrays.asList(graphqlRequest), null).map(new Func1<GraphqlResponse, Boolean>() {
@@ -74,7 +73,6 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
 
 
                 AppsflyerMappingResponse response = graphqlResponse.getData(AppsflyerMappingResponse.class);
-                Log.e("Testing_appflyer_map","response"+response.toString());
                 cacheManager.save(USER_ID, finalUserID,30*24*60*60);
                 cacheManager.save(APPSFLYER_ID, finalAppsFlyerId,30*24*60*60);
                 return response.getAppsflyerMapping().getMsg().equalsIgnoreCase("success")?true:false;
