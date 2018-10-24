@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -30,15 +31,15 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
-import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.loginregister.activation.view.listener.ActivationContract;
 import com.tokopedia.loginregister.activation.view.presenter.ActivationPresenter;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -58,6 +59,8 @@ public class ActivationFragment extends BaseDaggerFragment
     private TextView errorOtp;
     private ImageView errorImage;
     private ImageView warningImage;
+    private ProgressBar progressBar;
+    private View mainView;
 
     private String email = "";
     private String password = "";
@@ -136,6 +139,8 @@ public class ActivationFragment extends BaseDaggerFragment
         errorImage = view.findViewById(R.id.error_image);
         warningImage = view.findViewById(R.id.register_icon);
         errorOtp = view.findViewById(R.id.error_otp);
+        progressBar = view.findViewById(R.id.progress_bar);
+        mainView = view.findViewById(R.id.main_view);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -267,20 +272,13 @@ public class ActivationFragment extends BaseDaggerFragment
                 ChangeEmailFragment.ACTION_CHANGE_EMAIL);
     }
 
-    //
-//
     @Override
     public void showLoadingProgress() {
-//        if (progressDialog == null && getActivity() != null) {
-//            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-//        }
-//
-//        if (progressDialog != null) {
-//            progressDialog.showDialog();
-//        }
+        progressBar.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
     }
 
-    //
+
     @Override
     public void onErrorResendActivation(String errorMessage) {
         finishLoadingProgress();
@@ -319,7 +317,7 @@ public class ActivationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessActivateWithUnicode(ActivateUnicodePojo pojo) {
+    public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
         Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email,
@@ -332,9 +330,8 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoadingProgress() {
-//        if (progressDialog != null) {
-//            progressDialog.dismiss();
-//        }
+        progressBar.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
     }
 
     @Override

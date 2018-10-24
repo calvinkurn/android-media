@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +62,7 @@ public class WebViewLoginFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_dialog_webview_login, container);
+        return inflater.inflate(R.layout.fragment_webview_login, container);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -130,7 +129,6 @@ public class WebViewLoginFragment extends DialogFragment {
     }
 
     private boolean parseUrl(String url) {
-        Log.d("steven check ", url);
         Uri uri = Uri.parse(url);
         String server = uri.getAuthority();
         String path = uri.getPath();
@@ -147,7 +145,7 @@ public class WebViewLoginFragment extends DialogFragment {
             }
             Intent intent = new Intent();
             intent.putExtra("bundle", bundle);
-            if(getTargetFragment()!= null) {
+            if (getTargetFragment() != null) {
                 getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
             }
             dismiss();

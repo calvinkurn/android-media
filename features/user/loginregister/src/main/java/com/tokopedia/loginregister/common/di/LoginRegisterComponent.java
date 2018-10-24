@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;

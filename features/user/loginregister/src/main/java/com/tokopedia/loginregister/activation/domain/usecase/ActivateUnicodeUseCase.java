@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.activation.domain.usecase;
 
-import com.tokopedia.loginregister.activation.domain.mapper.ActivationMapper;
-import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
-import com.tokopedia.loginregister.common.data.LoginRegisterApi;
+import com.tokopedia.sessioncommon.data.TokenApi;
+import com.tokopedia.sessioncommon.data.model.TokenViewModel;
+import com.tokopedia.sessioncommon.domain.mapper.TokenMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by nisie on 4/17/17.
  */
 
-public class ActivateUnicodeUseCase extends UseCase<ActivateUnicodePojo> {
+public class ActivateUnicodeUseCase extends UseCase<TokenViewModel> {
 
     public static final String PARAM_UNICODE = "password";
     public static final String PARAM_EMAIL = "username";
@@ -23,19 +23,19 @@ public class ActivateUnicodeUseCase extends UseCase<ActivateUnicodePojo> {
     public static final String DEFAULT_GRANT_TYPE = "password";
     public static final String DEFAULT_PASSWORD_TYPE = "activation_unique_code";
 
-    private final LoginRegisterApi loginRegisterApi;
-    private final ActivationMapper mapper;
+    private final TokenApi tokenApi;
+    private final TokenMapper mapper;
 
     @Inject
-    public ActivateUnicodeUseCase(LoginRegisterApi loginRegisterApi,
-                                  ActivationMapper mapper) {
-        this.loginRegisterApi = loginRegisterApi;
+    public ActivateUnicodeUseCase(TokenApi tokenApi,
+                                  TokenMapper mapper) {
+        this.tokenApi = tokenApi;
         this.mapper = mapper;
     }
 
     @Override
-    public Observable<ActivateUnicodePojo> createObservable(RequestParams requestParams) {
-        return loginRegisterApi.activateWithUnicode(requestParams.getParameters())
+    public Observable<TokenViewModel> createObservable(RequestParams requestParams) {
+        return tokenApi.getToken(requestParams.getParameters())
                 .map(mapper);
     }
 

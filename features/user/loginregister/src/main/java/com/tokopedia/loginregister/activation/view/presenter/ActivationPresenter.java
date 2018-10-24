@@ -1,12 +1,13 @@
 package com.tokopedia.loginregister.activation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
 import com.tokopedia.loginregister.activation.domain.usecase.ActivateUnicodeUseCase;
 import com.tokopedia.loginregister.activation.domain.usecase.ResendActivationUseCase;
-import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
-import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
 import com.tokopedia.loginregister.activation.view.listener.ActivationContract;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.sessioncommon.data.model.TokenViewModel;
+import com.tokopedia.sessioncommon.network.TokenErrorException;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class ActivationPresenter extends BaseDaggerPresenter<ActivationContract.
     public void activateAccount(String email, String unicode) {
         getView().showLoadingProgress();
         activateUnicodeUseCase.execute(ActivateUnicodeUseCase.getParam(email, unicode),
-                new Subscriber<ActivateUnicodePojo>() {
+                new Subscriber<TokenViewModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -40,14 +41,19 @@ public class ActivationPresenter extends BaseDaggerPresenter<ActivationContract.
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().onErrorActivateWithUnicode(ErrorHandlerSession.getErrorMessage
-                                (getView().getContext(), e));
+                        if (e instanceof TokenErrorException
+                                && !((TokenErrorException) e).getErrorDescription().isEmpty()) {
+                            getView().onErrorActivateWithUnicode(((TokenErrorException) e).getErrorDescription());
+                        } else {
+                            getView().onErrorActivateWithUnicode(ErrorHandlerSession.getErrorMessage
+                                    (getView().getContext(), e));
+                        }
                     }
 
                     @Override
-                    public void onNext(ActivateUnicodePojo activateUnicodePojo) {
-                        if (activateUnicodePojo.getError().isEmpty())
-                            getView().onSuccessActivateWithUnicode(activateUnicodePojo);
+                    public void onNext(TokenViewModel tokenViewModel) {
+                        if (!tokenViewModel.getAccessToken().isEmpty())
+                            getView().onSuccessActivateWithUnicode(tokenViewModel);
                         else {
                             getView().onErrorActivateWithUnicode(
                                     ErrorHandlerSession.getDefaultErrorCodeMessage(

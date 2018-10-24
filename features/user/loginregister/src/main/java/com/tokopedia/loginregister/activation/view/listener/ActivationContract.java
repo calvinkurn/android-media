@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
+import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 
 /**
  * @author by nisie on 10/19/18.
@@ -25,7 +25,7 @@ public interface ActivationContract {
 
         void onErrorActivateWithUnicode(String errorMessage);
 
-        void onSuccessActivateWithUnicode(ActivateUnicodePojo activateUnicodePojo);
+        void onSuccessActivateWithUnicode(TokenViewModel activateUnicodePojo);
     }
 
     interface Presenter extends CustomerPresenter<View> {

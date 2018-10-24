@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseI
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;

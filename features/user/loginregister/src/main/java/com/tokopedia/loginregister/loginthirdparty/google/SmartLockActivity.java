@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 
 public class SmartLockActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,

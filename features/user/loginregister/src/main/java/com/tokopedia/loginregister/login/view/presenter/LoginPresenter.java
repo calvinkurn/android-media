@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.LoginModule;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;

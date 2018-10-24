@@ -49,7 +49,7 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.forbidden.activity.ForbiddenActivity;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
@@ -58,7 +58,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
-import com.tokopedia.loginregister.register.RegisterInitialActivity;
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
@@ -587,10 +587,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                     .createInstance(url, name);
             newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
             newFragment.show(fragmentTransaction, "dialog");
+
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-            fragmentTransaction.commitAllowingStateLoss();
 
         }
     }

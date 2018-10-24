@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login.analytics;
+package com.tokopedia.loginregister.common.analytics;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,7 @@ public class LoginRegisterAnalytics {
 
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page";
+    public static final String SCREEN_REGISTER = "Register page";
 
     private static final String EVENT_CLICK_LOGIN = "clickLogin";
     private static final String EVENT_REGISTER_LOGIN = "registerLogin";

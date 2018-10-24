@@ -12,7 +12,7 @@ import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.view.fragment.ActivationFragment;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.login.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 
 import javax.inject.Inject;
 
