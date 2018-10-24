@@ -50,9 +50,10 @@ public class ProductModule {
             PostExecutionThread postExecutionThread,
             ProductRepository productRepository,
             BannerRepository bannerRepository,
-            @MojitoGetWishlistQualifier MojitoApi service) {
+            @MojitoGetWishlistQualifier MojitoApi service,
+            RemoteConfig remoteConfig) {
         return new GetProductUseCase(context, threadExecutor,
-                postExecutionThread, productRepository, bannerRepository, service);
+                postExecutionThread, productRepository, bannerRepository, service, remoteConfig);
     }
 
     @Provides
