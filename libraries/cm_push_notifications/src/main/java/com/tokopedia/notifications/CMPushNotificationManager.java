@@ -12,7 +12,10 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.common.CMNotificationCacheHandler;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.notifications.factory.GeneralNotificationFactory;
 import com.tokopedia.notifications.model.ActionButton;
@@ -25,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import rx.Subscriber;
+
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
@@ -34,6 +39,7 @@ public class CMPushNotificationManager {
     private UpdateFcmTokenUseCase updateFcmTokenUseCase;
     private static final CMPushNotificationManager sInstance;
     private Context mContext;
+    private String mUserId;
 
     public static CMPushNotificationManager getInstance() {
         return sInstance;
@@ -81,7 +87,7 @@ public class CMPushNotificationManager {
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
                 generateNotification(bundle, notificationManagerCompat);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(LOG, "CMPushNotificationManager: handlePushPayload ", e);
         }
     }
@@ -172,7 +178,36 @@ public class CMPushNotificationManager {
         return null;
     }
 
-    private void sendFcmTokenToServer(){
-       // updateFcmTokenUseCase = new UpdateFcmTokenUseCase(mContext);
+    public void setUserId(String userId) {
+        mUserId = userId;
+    }
+
+    public void setFcmToken(String token) {
+        if (TextUtils.isEmpty(token)) {
+            return;
+        }
+        if (CMNotificationUtils.needTokenUpdateRequired(mContext, token)) {
+            sendFcmTokenToServer();
+        }
+    }
+
+    private void sendFcmTokenToServer() {
+        updateFcmTokenUseCase = new UpdateFcmTokenUseCase(mContext);
+        updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
+            }
+        });
     }
 }

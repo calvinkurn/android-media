@@ -10,8 +10,9 @@ public interface CMConstant {
     String EXTRA_APPLINK_FROM_PUSH = "applink_from_cm_notif";
     String EXTRA_NOTIFICATION_TYPE = "notif_type";
     String EXTRA_NOTIFICATION_ID = "notif_id";
-    String NOTIFICATION_ACTION_BUTTONS="action_buttons";
-    String NOTIFICATION_CUSTOM_VALUES="custom_values";
+    String NOTIFICATION_ACTION_BUTTONS = "action_buttons";
+    String NOTIFICATION_CUSTOM_VALUES = "custom_values";
+    String FCM_TOKEN_CACHE_KEY = "fcm_token_cache";
 
     interface NotificationId {
         int GENERAL = 501;
@@ -24,7 +25,7 @@ public interface CMConstant {
         int ACTION_BUTTONS = 508;
     }
 
-    interface NotificationType{
+    interface NotificationType {
         String GENERAL = "cm_general";
         String BIG_IMAGE = "cm_big";
         String PERSISTENT = "cm_persistent";
