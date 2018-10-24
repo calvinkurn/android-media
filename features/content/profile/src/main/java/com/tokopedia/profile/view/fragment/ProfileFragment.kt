@@ -650,7 +650,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToOnboading() {
-        RouteManager.route(context, ApplinkConst.AFFILIATE_ONBOARDING)
+        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_ONBOARDING)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun goToAffiliateExplore() {

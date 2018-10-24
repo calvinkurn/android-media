@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -324,12 +325,12 @@ public class ExploreFragment
         if (isAffiliate) {
             presenter.checkAffiliateQuota(productId, adId);
         } else {
-            RouteManager.route(
-                    getContext(),
-                    ApplinkConst.AFFILIATE_ONBOARDING
-                            .concat(PRODUCT_ID_QUERY_PARAM)
-                            .concat(productId)
-            );
+            String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
+                    .concat(PRODUCT_ID_QUERY_PARAM)
+                    .concat(productId);
+            Intent intent = RouteManager.getIntent(getContext(), onboardingApplink);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 

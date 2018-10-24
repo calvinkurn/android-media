@@ -146,7 +146,7 @@ public class OnboardingFragment extends Fragment {
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
             Intent intent = ExploreActivity.getInstance(getContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });
         commission.setVisibility(View.INVISIBLE);
