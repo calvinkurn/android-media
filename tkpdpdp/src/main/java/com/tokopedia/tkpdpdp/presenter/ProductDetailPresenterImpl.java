@@ -131,10 +131,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private static final String IS_UNPROMOTED_PRODUCT = "0";
 
-    private static final int SHOP_IS_OFFICIAL_TRUE = 1;
+    public static final String OFFICIAL_STORE_TYPE = "os";
+    public static final String MERCHANT_TYPE = "merchant";
     private static final String NON_LOGIN_USER_ID = "0";
-    private static final String OFFICIAL_STORE_TYPE = "os";
-    private static final String MERCHANT_TYPE = "merchant";
+
     private final WishListActionListener wishListActionListener;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
@@ -513,11 +513,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
-                            if (!GlobalConfig.isSellerApp()) {
-                                getPromoWidget(context, generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
-                            }
+                            viewListener.loadPromo();
                             if (productDetailData.getInfo().getHasVariant() && useVariant) {
                                 getProductVariant(context
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
@@ -690,6 +686,75 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             int statFave = data.getIntExtra("state_fav", 5);
             viewListener.onShopFavoriteUpdated(statFave);
         }
+    }
+
+    /**
+     * this is no longer used in next release (need confirmation)
+     * replaced by merchant voucher
+     */
+    @Deprecated
+    public void getPromoWidget(final @NonNull Context context, @NonNull final ProductDetailData productDetailData) {
+        String shopType = productDetailData.getShopInfo().isOfficial() ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+        cacheInteractor.getPromoWidgetCache(generatePromoTargetType(productDetailData, context),
+                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
+            @Override
+            public void onSuccess(PromoAttributes result) {
+                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
+                        && result.getShortDescHtml() != null) {
+                    viewListener.showPromoWidget(result);
+                    ProductPageTracking.eventImpressionWidgetPromo(
+                            context,
+                            result.getShortDesc(),
+                            result.getCustomPromoId(),
+                            result.getCode()
+                    );
+                }
+            }
+
+            @Override
+            public void onError() {
+                retrofitInteractor.getPromo(context,
+                        generatePromoTargetType(productDetailData, context),
+                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
+                        new RetrofitInteractor.PromoListener() {
+                            @Override
+                            public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                cacheInteractor.storePromoWidget(
+                                        generatePromoTargetType(productDetailData, context),
+                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                                        shopType, dataPromoWidget);
+                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                    PromoAttributes attributes = item.getPromoAttributes();
+                                    attributes.setCustomPromoId(item.getId());
+                                    viewListener.showPromoWidget(attributes);
+                                    ProductPageTracking.eventImpressionWidgetPromo(
+                                            context,
+                                            attributes.getShortDesc(),
+                                            attributes.getCustomPromoId(),
+                                            attributes.getCode()
+                                    );
+                                }
+                            }
+
+                            @Override
+                            public void onError(String error) {
+                            }
+                        });
+            }
+        });
+    }
+
+    public String generatePromoTargetType(ProductDetailData productData, Context context) {
+        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
+            return VALUE_TARGET_GOLD_MERCHANT;
+        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
+            return VALUE_TARGET_MERCHANT;
+        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
+            return VALUE_TARGET_LOGIN_USER;
+        }
+        return VALUE_TARGET_GUEST;
     }
 
     @Override
@@ -914,6 +979,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
 
         viewListener.restoreIsAppBarCollapsed(isAppBarCollapsed);
+        viewListener.loadPromo();
     }
 
     @Override
@@ -1023,12 +1089,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial() == SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
-                        if (!GlobalConfig.isSellerApp()) {
-                            getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType
-                            );
-                        }
+                        viewListener.loadPromo();
                         if (data.getInfo().getHasVariant() && useVariant) {
                             getProductVariant(context
                                     , Integer.toString(data.getInfo().getProductId()));
@@ -1065,17 +1126,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showFullScreenError();
                     }
                 });
-    }
-
-    public String generatePromoTargetType(ProductDetailData productData, Context context) {
-        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
-            return VALUE_TARGET_GOLD_MERCHANT;
-        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
-            return VALUE_TARGET_MERCHANT;
-        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
-            return VALUE_TARGET_LOGIN_USER;
-        }
-        return VALUE_TARGET_GUEST;
     }
 
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
@@ -1127,51 +1177,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     private void setVideoProduct(Context context, ProductDetailData productDetailData) {
         requestVideo(context, productDetailData.getInfo().getProductId().toString());
-    }
-
-    public void getPromoWidget(final @NonNull Context context, @NonNull final String targetType, @NonNull final String userId, @NonNull final String shopType) {
-        cacheInteractor.getPromoWidgetCache(targetType, userId, shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
-            @Override
-            public void onSuccess(PromoAttributes result) {
-                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
-                        && result.getShortDescHtml() != null) {
-                    viewListener.showPromoWidget(result);
-                    ProductPageTracking.eventImpressionWidgetPromo(
-                            context,
-                            result.getShortDesc(),
-                            result.getCustomPromoId(),
-                            result.getCode()
-                    );
-                }
-            }
-
-            @Override
-            public void onError() {
-                retrofitInteractor.getPromo(context, targetType, userId, shopType,
-                        new RetrofitInteractor.PromoListener() {
-                            @Override
-                            public void onSucccess(DataPromoWidget dataPromoWidget) {
-                                cacheInteractor.storePromoWidget(targetType, userId, shopType, dataPromoWidget);
-                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
-                                    PromoAttributes attributes = item.getPromoAttributes();
-                                    attributes.setCustomPromoId(item.getId());
-                                    viewListener.showPromoWidget(attributes);
-                                    ProductPageTracking.eventImpressionWidgetPromo(
-                                            context,
-                                            attributes.getShortDesc(),
-                                            attributes.getCustomPromoId(),
-                                            attributes.getCode()
-                                    );
-                                }
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                            }
-                        });
-            }
-        });
     }
 
     public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, String

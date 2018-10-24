@@ -12,7 +12,6 @@ import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -34,7 +33,9 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
+import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -63,10 +64,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     private static final int TWELVE_YEARS_AGO = -12;
     private static final int MAX_CONTACT_NAME_LENGTH = 20;
-    private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
+    private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
     private UserSession userSession;
@@ -77,19 +78,19 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private boolean isChecked = false;
 
     @Inject
-    public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
-                                  FlightAddToCartUseCase flightAddToCartUseCase,
+    public FlightBookingPresenter(FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
                                   FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
-                                  UserSession userSession) {
+                                  UserSession userSession,
+                                  FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
-        this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
         this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
         this.flightAnalytics = flightAnalytics;
         this.userSession = userSession;
+        this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -180,6 +181,20 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     flightBookingCartData.getReturnTrip().setAdultNumericPrice(newFarePrice.getFare().getAdultNumeric());
                     flightBookingCartData.getReturnTrip().setChildNumericPrice(newFarePrice.getFare().getChildNumeric());
                     flightBookingCartData.getReturnTrip().setInfantNumericPrice(newFarePrice.getFare().getInfantNumeric());
+                } else if (
+                        getView().getPriceViewModel().getComboKey() != null &&
+                                getView().getPriceViewModel().getComboKey().length() > 0 &&
+                                newFarePrice.getId().equalsIgnoreCase(getView().getPriceViewModel().getComboKey())) {
+                    int newAdultPrice = newFarePrice.getFare().getAdultNumeric() / 2;
+                    int newChildPrice = newFarePrice.getFare().getChildNumeric() / 2;
+                    int newInfantPrice = newFarePrice.getFare().getInfantNumeric() / 2;
+                    flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newAdultPrice);
+                    flightBookingCartData.getDepartureTrip().setChildNumericPrice(newChildPrice);
+                    flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newInfantPrice);
+
+                    flightBookingCartData.getReturnTrip().setAdultNumericPrice(newAdultPrice);
+                    flightBookingCartData.getReturnTrip().setChildNumericPrice(newChildPrice);
+                    flightBookingCartData.getReturnTrip().setInfantNumericPrice(newInfantPrice);
                 }
             }
             int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
@@ -320,12 +335,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         getView().showFullPageLoading();
         compositeSubscription.add(
                 getDepartureDataObservable()
-                        .map(new Func1<FlightSearchViewModel, FlightBookingCartData>() {
+                        .map(new Func1<FlightJourneyViewModel, FlightBookingCartData>() {
                             @Override
-                            public FlightBookingCartData call(FlightSearchViewModel viewModel) {
+                            public FlightBookingCartData call(FlightJourneyViewModel viewModel) {
                                 FlightBookingCartData flightBookingCartData = new FlightBookingCartData();
                                 FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(viewModel);
                                 flightDetailViewModel.build(getView().getCurrentBookingParamViewModel().getSearchParam());
+                                FlightPriceViewModel priceViewModel = getView().getPriceViewModel();
+                                if (priceViewModel.getComboKey() != null && priceViewModel.getComboKey().length() > 0) {
+                                    flightDetailViewModel.setAdultNumericPrice(priceViewModel.getDeparturePrice().getAdultNumericCombo());
+                                    flightDetailViewModel.setChildNumericPrice(priceViewModel.getDeparturePrice().getChildNumericCombo());
+                                    flightDetailViewModel.setInfantNumericPrice(priceViewModel.getDeparturePrice().getInfantNumericCombo());
+                                } else {
+                                    flightDetailViewModel.setAdultNumericPrice(priceViewModel.getDeparturePrice().getAdultNumeric());
+                                    flightDetailViewModel.setChildNumericPrice(priceViewModel.getDeparturePrice().getChildNumeric());
+                                    flightDetailViewModel.setInfantNumericPrice(priceViewModel.getDeparturePrice().getInfantNumeric());
+                                }
                                 flightBookingCartData.setDepartureTrip(flightDetailViewModel);
                                 return flightBookingCartData;
                             }
@@ -455,7 +480,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     getView().getDepartureTripId(),
                     getView().getReturnTripId(),
                     getView().getIdEmpotencyKey(getView().getDepartureTripId() + "_" + getView().getReturnTripId()),
-                    price
+                    price,
+                    getView().getPriceViewModel().getComboKey()
             );
         } else {
             requestParams = flightAddToCartUseCase.createRequestParam(
@@ -471,10 +497,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         return requestParams;
     }
 
-    private Observable<FlightSearchViewModel> getDepartureDataObservable() {
-        return flightBookingGetSingleResultUseCase
-                .createObservable(flightBookingGetSingleResultUseCase
-                        .createRequestParam(false, getView().getDepartureTripId()));
+    private Observable<FlightJourneyViewModel> getDepartureDataObservable() {
+        return flightSearchJourneyByIdUseCase
+                .createObservable(flightSearchJourneyByIdUseCase
+                        .createRequestParams(getView().getDepartureTripId()));
     }
 
     @NonNull
@@ -496,12 +522,22 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
                 if (isRoundTrip()) {
                     return Observable.just(flightBookingCartData)
-                            .zipWith(flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, getView().getReturnTripId())),
-                                    new Func2<FlightBookingCartData, FlightSearchViewModel, FlightBookingCartData>() {
+                            .zipWith(flightSearchJourneyByIdUseCase.createObservable(flightSearchJourneyByIdUseCase.createRequestParams(getView().getReturnTripId())),
+                                    new Func2<FlightBookingCartData, FlightJourneyViewModel, FlightBookingCartData>() {
                                         @Override
-                                        public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightSearchViewModel flightSearchViewModel) {
+                                        public FlightBookingCartData call(FlightBookingCartData flightBookingCartData, FlightJourneyViewModel flightSearchViewModel) {
                                             FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel().build(flightSearchViewModel);
                                             flightDetailViewModel.build(getView().getCurrentBookingParamViewModel().getSearchParam());
+                                            FlightPriceViewModel priceViewModel = getView().getPriceViewModel();
+                                            if (priceViewModel.getComboKey() != null && priceViewModel.getComboKey().length() > 0) {
+                                                flightDetailViewModel.setAdultNumericPrice(priceViewModel.getReturnPrice().getAdultNumericCombo());
+                                                flightDetailViewModel.setChildNumericPrice(priceViewModel.getReturnPrice().getChildNumericCombo());
+                                                flightDetailViewModel.setInfantNumericPrice(priceViewModel.getReturnPrice().getInfantNumericCombo());
+                                            } else {
+                                                flightDetailViewModel.setAdultNumericPrice(priceViewModel.getReturnPrice().getAdultNumeric());
+                                                flightDetailViewModel.setChildNumericPrice(priceViewModel.getReturnPrice().getChildNumeric());
+                                                flightDetailViewModel.setInfantNumericPrice(priceViewModel.getReturnPrice().getInfantNumeric());
+                                            }
                                             flightBookingCartData.setReturnTrip(flightDetailViewModel);
                                             return flightBookingCartData;
                                         }
@@ -798,6 +834,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void onCountDownTimestampChanged(String timestamp) {
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
+    }
+
+    @Override
+    protected String getComboKey() {
+        return getView().getPriceViewModel().getComboKey();
     }
 
     @Override
