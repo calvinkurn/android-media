@@ -67,7 +67,6 @@
                 android:visibility="gone" />
 
             <RelativeLayout
-                android:background="@drawable/sp_bg_rounded_corners_green"
                 android:id="@+id/sp_kyc_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
