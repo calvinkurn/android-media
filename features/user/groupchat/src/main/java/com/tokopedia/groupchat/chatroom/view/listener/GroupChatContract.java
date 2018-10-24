@@ -78,6 +78,8 @@ public interface GroupChatContract {
         void logoutChannel(OpenChannel openChannel);
 
         void onSuccessEnterRefreshChannel(OpenChannel openChannel);
+
+        void initVideoFragment();
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
