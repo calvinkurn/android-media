@@ -145,9 +145,11 @@ public class OnboardingFragment extends Fragment {
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
-            Intent intent = ExploreActivity.getInstance(getContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            if (getActivity() != null) {
+                Intent intent = ExploreActivity.getInstance(getActivity());
+                startActivity(intent);
+                getActivity().finish();
+            }
         });
         commission.setVisibility(View.INVISIBLE);
     }
