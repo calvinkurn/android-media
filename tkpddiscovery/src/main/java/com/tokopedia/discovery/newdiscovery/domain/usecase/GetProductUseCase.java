@@ -34,7 +34,7 @@ import rx.functions.Func2;
 
 public class GetProductUseCase extends UseCase<SearchResultModel> {
 
-    public static final String PARAMETER_ROWS = "5";
+    public static final String PARAMETER_ROWS = "8";
     private final ProductRepository productRepository;
     private final BannerRepository bannerRepository;
     private final MojitoApi service;
