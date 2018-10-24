@@ -45,11 +45,11 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
 
     private void sendDataLayerEvent(Map<String, Object> eventTracking) {
         sendClearEvent();
-        shopTrackingRouter.sendEventTrackingShopPage(eventTracking);
+        shopTrackingRouter.sendEventTracking(eventTracking);
     }
 
     private void sendClearEvent() {
-        shopTrackingRouter.sendEventTrackingShopPage(
+        shopTrackingRouter.sendEventTracking(
                 DataLayer.mapOf(ShopPageTrackingConstant.EVENT, null,
                         ShopPageTrackingConstant.EVENT_CATEGORY, null,
                         ShopPageTrackingConstant.EVENT_ACTION, null,

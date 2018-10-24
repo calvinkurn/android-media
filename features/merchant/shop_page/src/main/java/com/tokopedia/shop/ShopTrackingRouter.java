@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface ShopTrackingRouter {
 
-    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
+    void sendEventTracking(Map<String, Object> eventTracking);
 
     void sendScreenName(String screenName);
 }

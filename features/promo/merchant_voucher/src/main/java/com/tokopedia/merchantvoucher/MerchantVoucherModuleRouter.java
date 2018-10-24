@@ -14,4 +14,6 @@ import java.util.Map;
 public interface MerchantVoucherModuleRouter {
 
     void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel);
+
+    void sendEventTracking(Map<String, Object> eventTracking);
 }

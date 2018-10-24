@@ -70,7 +70,7 @@ public class ShopPageTrackingUser {
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        shopTrackingRouter.sendEventTrackingShopPage(eventMap);
+        shopTrackingRouter.sendEventTracking(eventMap);
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label,
