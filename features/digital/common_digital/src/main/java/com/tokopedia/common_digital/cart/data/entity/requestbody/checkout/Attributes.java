@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 3/9/17.
  */
@@ -33,6 +35,10 @@ public class Attributes {
     @Expose
     private String clientId;
 
+    @SerializedName("deals_ids")
+    @Expose
+    private List<Integer> dealsIds;
+
     public void setIdentifier(RequestBodyIdentifier identifier) {
         this.identifier = identifier;
     }
@@ -59,5 +65,9 @@ public class Attributes {
 
     public void setAppsFlyer(RequestBodyAppsFlyer appsFlyer) {
         this.appsFlyer = appsFlyer;
+    }
+
+    public void setDealsIds(List<Integer> dealsIds) {
+        this.dealsIds = dealsIds;
     }
 }

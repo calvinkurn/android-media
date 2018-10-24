@@ -4,16 +4,14 @@ package com.tokopedia.digital.newcart.presentation.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -37,6 +35,8 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Inject
     DigitalCartDealsListPresenter presenter;
+    @Inject
+    DigitalModuleRouter digitalModuleRouter;
 
     private InteractionListener interactionListener;
 
@@ -113,12 +113,17 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
 
     @Override
     public void actionDetail(DealProductViewModel productViewModel) {
-
+        presenter.onDealDetailClicked(productViewModel);
     }
 
     @Override
     public void setNextUrl(String nextUrl) {
         this.nextUrl = nextUrl;
+    }
+
+    @Override
+    public void navigateToDetailPage(DealProductViewModel viewModel) {
+        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), viewModel.getUrl(), false, false));
     }
 
     public void setInteractionListener(InteractionListener interactionListener) {

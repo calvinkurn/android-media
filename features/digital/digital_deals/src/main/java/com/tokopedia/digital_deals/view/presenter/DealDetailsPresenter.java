@@ -47,6 +47,9 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     private DealsDetailsResponse dealsDetailsResponse;
     public static final String HOME_DATA = "home_data";
     public final static String TAG = "url";
+    public final static boolean DEFAULT_PARAM_ENABLE = true;
+    public final static String PARAM_BUTTON_BUY_ENABLE = "buy_enabled";
+    public final static String PARAM_RECOMENDATION_ENABLE = "recommendation_enable";
     private TouchViewPager mTouchViewPager;
     private boolean isLoading;
     private boolean isLastPage;
@@ -110,9 +113,17 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 getView().showCollapsingHeader();
                 getView().renderDealDetails(dealsDetailsResponse);
                 searchNextParams.putString(Utils.NEXT_URL, dealsDetailsResponse.getRecommendationUrl());
-                getRecommendedDeals();
+                if (getView().isRecommendationEnableFromArguments()){
+                    getRecommendedDeals();
+                }else {
+                    getView().hideRecomendationDealsView();
+                }
                 CommonUtils.dumper("enter onNext");
                 getLikes();
+                if (!getView().isEnableBuyFromArguments()){
+                    getView().hideCheckoutView();
+                }
+
             }
         });
     }

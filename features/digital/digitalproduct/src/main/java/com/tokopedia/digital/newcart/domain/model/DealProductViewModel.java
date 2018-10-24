@@ -13,6 +13,7 @@ public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFa
     private String imageUrl;
     private long id;
     private boolean selected;
+    private String url;
 
     public DealProductViewModel() {
     }
@@ -82,5 +83,13 @@ public class DealProductViewModel implements Visitable<DigitalDealsAdapterTypeFa
     @Override
     public int type(DigitalDealsAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

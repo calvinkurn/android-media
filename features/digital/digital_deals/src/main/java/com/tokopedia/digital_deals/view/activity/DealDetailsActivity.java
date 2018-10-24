@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -50,6 +51,19 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Activity activity,
+                                          String slug,
+                                          boolean enableBuy,
+                                          boolean enableRecommendation) {
+        Intent intent = new Intent(activity, DealDetailsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(DealDetailsPresenter.HOME_DATA, slug);
+        bundle.putBoolean(DealDetailsPresenter.PARAM_BUTTON_BUY_ENABLE, enableBuy);
+        bundle.putBoolean(DealDetailsPresenter.PARAM_RECOMENDATION_ENABLE, enableRecommendation);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override

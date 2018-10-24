@@ -618,6 +618,7 @@ public class CartDigitalPresenter extends BaseDaggerPresenter<CartDigitalContrac
         attributes.setTransactionAmount(checkoutData.getTransactionAmount());
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
+        attributes.setDealsIds(new ArrayList<>());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(TrackingUtils.getClientID());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());

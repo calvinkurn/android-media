@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.di;
 
 import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.digital.cart.presentation.fragment.CartDigitalFragment;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.presentation.activity.DigitalCartActivity;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalDealCheckoutFragment;
@@ -16,6 +17,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Component(dependencies = DigitalComponent.class, modules = DigitalCartModule.class)
 public interface DigitalCartComponent {
     HttpLoggingInterceptor httpLoggingInterceptor();
+
+    DigitalModuleRouter digitalModuleRouter();
 
     void inject(CartDigitalFragment cartDigitalFragment);
 

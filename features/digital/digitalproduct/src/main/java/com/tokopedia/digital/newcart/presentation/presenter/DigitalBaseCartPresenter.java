@@ -479,6 +479,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
+        attributes.setDealsIds(getDealIds());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
@@ -487,6 +488,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 )))
         );
         return requestBodyCheckout;
+    }
+
+    protected List<Integer> getDealIds(){
+        return new ArrayList<>();
     }
 
     @Override

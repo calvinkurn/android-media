@@ -48,8 +48,8 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
                     public void onNext(List<DealCategoryViewModel> dealCategoryViewModels) {
                         getView().hideGetCategoriesLoading();
                         getView().showDealsPage();
-                        getView().renderDealsTab(dealCategoryViewModels);
                         getView().showCheckoutView(getView().getCartPassData(), getView().getCartInfoData());
+                        getView().renderDealsTab(dealCategoryViewModels);
                     }
                 });
     }
@@ -78,4 +78,6 @@ public class DigitalCartDealsPresenter extends BaseDaggerPresenter<DigitalCartDe
             getView().getSelectedDealsMap().remove(viewModel);
         }
     }
+
+
 }

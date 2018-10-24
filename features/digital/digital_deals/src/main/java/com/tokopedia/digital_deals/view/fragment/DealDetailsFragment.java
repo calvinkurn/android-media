@@ -31,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -71,6 +70,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.DEFAULT_PARAM_ENABLE;
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_BUTTON_BUY_ENABLE;
+import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PARAM_RECOMENDATION_ENABLE;
 
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
@@ -555,6 +558,35 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void removeFooter() {
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).removeFooter();
 
+    }
+
+    @Override
+    public boolean isEnableBuyFromArguments() {
+        if (getArguments() != null) {
+            return getArguments().getBoolean(PARAM_BUTTON_BUY_ENABLE, DEFAULT_PARAM_ENABLE);
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public boolean isRecommendationEnableFromArguments() {
+        if (getArguments() != null) {
+            return getArguments().getBoolean(PARAM_RECOMENDATION_ENABLE, DEFAULT_PARAM_ENABLE);
+        } else {
+            return DEFAULT_PARAM_ENABLE;
+        }
+    }
+
+    @Override
+    public void hideRecomendationDealsView() {
+        recyclerViewDeals.setVisibility(View.GONE);
+        tvRecommendedDeals.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideCheckoutView() {
+        cardView.setVisibility(View.GONE);
     }
 
     @Override

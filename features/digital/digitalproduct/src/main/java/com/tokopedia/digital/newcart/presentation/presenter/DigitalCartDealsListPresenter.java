@@ -1,7 +1,9 @@
 package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.DigitalDealGetProductsUseCase;
+import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsListContract;
 
@@ -46,5 +48,10 @@ public class DigitalCartDealsListPresenter extends BaseDaggerPresenter<DigitalCa
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onDealDetailClicked(DealProductViewModel productViewModel) {
+        getView().navigateToDetailPage(productViewModel);
     }
 }

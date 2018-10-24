@@ -36,6 +36,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalDealCheckoutContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealActionListener;
@@ -83,6 +84,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Inject
     DigitalDealCheckoutPresenter presenter;
+    @Inject
+    DigitalModuleRouter digitalModuleRouter;
 
     public DigitalDealCheckoutFragment() {
         // Required empty public constructor
@@ -108,7 +111,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_digital_deal_checkout, container, false);
     }
 
@@ -230,37 +232,37 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void expand(final View v) {
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        int realWidth;
-        int realHeight;
-
-        if (Build.VERSION.SDK_INT >= 17){
-            //new pleasant way to get real metrics
-            DisplayMetrics realMetrics = new DisplayMetrics();
-            display.getRealMetrics(realMetrics);
-            realWidth = realMetrics.widthPixels;
-            realHeight = realMetrics.heightPixels;
-
-        } else if (Build.VERSION.SDK_INT >= 14) {
-            //reflection for this weird in-between time
-            try {
-                Method mGetRawH = Display.class.getMethod("getRawHeight");
-                Method mGetRawW = Display.class.getMethod("getRawWidth");
-                realWidth = (Integer) mGetRawW.invoke(display);
-                realHeight = (Integer) mGetRawH.invoke(display);
-            } catch (Exception e) {
-                //this may not be 100% accurate, but it's all we've got
-                realWidth = display.getWidth();
-                realHeight = display.getHeight();
-                Log.e("Display Info", "Couldn't use reflection to get the real display metrics.");
-            }
-
-        } else {
-            //This should be close, as lower API devices should not have window navigation bars
-            realWidth = display.getWidth();
-            realHeight = display.getHeight();
-        }
-        final int targetHeight = realHeight;
+//        Display display = getActivity().getWindowManager().getDefaultDisplay();
+//        int realWidth;
+//        int realHeight;
+//
+//        if (Build.VERSION.SDK_INT >= 17){
+//            //new pleasant way to get real metrics
+//            DisplayMetrics realMetrics = new DisplayMetrics();
+//            display.getRealMetrics(realMetrics);
+//            realWidth = realMetrics.widthPixels;
+//            realHeight = realMetrics.heightPixels;
+//
+//        } else if (Build.VERSION.SDK_INT >= 14) {
+//            //reflection for this weird in-between time
+//            try {
+//                Method mGetRawH = Display.class.getMethod("getRawHeight");
+//                Method mGetRawW = Display.class.getMethod("getRawWidth");
+//                realWidth = (Integer) mGetRawW.invoke(display);
+//                realHeight = (Integer) mGetRawH.invoke(display);
+//            } catch (Exception e) {
+//                //this may not be 100% accurate, but it's all we've got
+//                realWidth = display.getWidth();
+//                realHeight = display.getHeight();
+//                Log.e("Display Info", "Couldn't use reflection to get the real display metrics.");
+//            }
+//
+//        } else {
+//            //This should be close, as lower API devices should not have window navigation bars
+//            realWidth = display.getWidth();
+//            realHeight = display.getHeight();
+//        }
+        final int targetHeight = v.getMeasuredHeight();
         CommonUtils.dumper("Target : " + targetHeight);
         CommonUtils.dumper("Current : " + currentHeight);
 
@@ -400,6 +402,16 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
+    public void setMinHeight(int resId) {
+        containerScroll.setMinimumHeight(getResources().getDimensionPixelSize(resId));
+    }
+
+    @Override
+    public void navigateToDealDetailPage(String slug) {
+        startActivity(digitalModuleRouter.getDealDetailIntent(getActivity(), slug, false, false));
+    }
+
+    @Override
     public void actionBuyButton(DealProductViewModel productViewModel) {
 
     }
@@ -411,7 +423,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void actionDetail(DealProductViewModel productViewModel) {
-
+        presenter.onDealDetailClicked(productViewModel);
     }
 
     @Override

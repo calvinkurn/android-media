@@ -159,6 +159,7 @@ import com.tokopedia.digital.tokocash.TopupTokoCashFragment;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -1232,6 +1233,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getTrackingClientId() {
         return TrackingUtils.getClientID();
+    }
+
+    @Override
+    public Intent getDealDetailIntent(Activity activity, String slug, boolean enableBuy, boolean enableRecommendation) {
+        return DealDetailsActivity.getCallingIntent(activity, slug, enableBuy, enableRecommendation);
     }
 
     @Override

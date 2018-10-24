@@ -47,7 +47,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
 
     private void collapseCartDetailAfter5Seconds() {
-        Observable.timer(5, TimeUnit.SECONDS)
+        Observable.timer(2500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -86,6 +86,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             if (getView().getSelectedDeals().size() > 0) {
                 getView().showDealsContainerView();
             }
+            getView().setMinHeight(R.dimen.dp_350);
             getView().renderIconToCollapse();
         }
     }
@@ -99,7 +100,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         );
         long discountPlain = getView().getCheckoutDiscountPricePlain();
         long total = calculateRechargeAndDealsTotal();
-        if (discountPlain > 0){
+        if (discountPlain > 0) {
             long totalWithDiscount = total - discountPlain;
             List<CartAdditionalInfo> additionals = new ArrayList<>(getView().getCartInfoData().getAdditionalInfos());
             List<CartItemDigital> items = new ArrayList<>();
@@ -143,7 +144,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
         long discountPlain = getView().getCheckoutDiscountPricePlain();
         long total = calculateRechargeAndDealsTotal();
-        if (discountPlain > 0){
+        if (discountPlain > 0) {
             long totalWithDiscount = total - discountPlain;
             List<CartAdditionalInfo> additionals = new ArrayList<>(getView().getCartInfoData().getAdditionalInfos());
             List<CartItemDigital> items = new ArrayList<>();
@@ -160,5 +161,19 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
     @Override
     public void onSkipMenuClicked() {
         processToCheckout();
+    }
+
+    @Override
+    public void onDealDetailClicked(DealProductViewModel productViewModel) {
+        getView().navigateToDealDetailPage(productViewModel.getUrl());
+    }
+
+    @Override
+    protected List<Integer> getDealIds() {
+        List<Integer> dealIds = new ArrayList<>();
+        for (DealProductViewModel viewModel : getView().getSelectedDeals()) {
+            dealIds.add((int) viewModel.getId());
+        }
+        return dealIds;
     }
 }

@@ -41,6 +41,7 @@ public class DealProductViewModelMapper {
             viewModel.setSavePriceNumeric(entity.getMrp());
             viewModel.setImageUrl(entity.getImageThumbUrl());
             viewModel.setSelected(false);
+            viewModel.setUrl(entity.getUrl());
         }
         return viewModel;
     }
