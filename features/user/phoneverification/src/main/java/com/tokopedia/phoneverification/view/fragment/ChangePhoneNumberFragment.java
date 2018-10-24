@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -55,16 +56,19 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        BaseAppComponent baseAppComponent = getComponent(BaseAppComponent.class);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            BaseAppComponent baseAppComponent =
+                    ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
 
-        PhoneVerificationComponent phoneVerificationComponent =
-                DaggerPhoneVerificationComponent.
-                        builder().
-                        baseAppComponent(baseAppComponent).
-                        build();
+            PhoneVerificationComponent phoneVerificationComponent =
+                    DaggerPhoneVerificationComponent.
+                            builder().
+                            baseAppComponent(baseAppComponent).
+                            build();
 
 
-        phoneVerificationComponent.inject(this);
+            phoneVerificationComponent.inject(this);
+        }
     }
 
     @Nullable
