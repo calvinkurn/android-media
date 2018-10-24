@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.phoneverification.PhoneVerificationBearerInterceptor;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.PhoneVerificationInterceptor;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
@@ -46,6 +47,8 @@ public class PhoneVerificationModule {
                                              httpLoggingInterceptor,
                                      @PhoneVerificationQualifier PhoneVerificationInterceptor
                                              phoneVerificationInterceptor,
+                                     @PhoneVerificationQualifier PhoneVerificationBearerInterceptor
+                                             phoneVerificationBearerInterceptor,
                                      @PhoneVerificationQualifier OkHttpRetryPolicy retryPolicy,
                                      @PhoneVerificationQualifier FingerprintInterceptor
                                              fingerprintInterceptor,
@@ -56,6 +59,7 @@ public class PhoneVerificationModule {
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .addInterceptor(phoneVerificationInterceptor)
+                .addInterceptor(phoneVerificationBearerInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(errorResponseInterceptor);
 
@@ -85,6 +89,12 @@ public class PhoneVerificationModule {
                                                    @PhoneVerificationQualifier NetworkRouter networkRouter,
                                                    UserSession userSession){
         return new PhoneVerificationInterceptor(context, networkRouter, userSession);
+    }
+
+    @Provides
+    @PhoneVerificationQualifier
+    PhoneVerificationBearerInterceptor providePhoneVerificationBearerInterceptor(UserSession userSession){
+        return new PhoneVerificationBearerInterceptor(userSession);
     }
 
     @Provides
