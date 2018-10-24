@@ -1,9 +1,6 @@
 package com.tokopedia.merchantvoucher.analytic;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.util.HashMap;
 
