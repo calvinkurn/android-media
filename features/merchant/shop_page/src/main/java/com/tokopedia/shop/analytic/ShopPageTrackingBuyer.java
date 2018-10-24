@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.shop.ShopTrackingRouter;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -39,17 +39,17 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_SHOP_PAG
 
 public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
 
-    public ShopPageTrackingBuyer(ShopTrackingRouter shopTrackingRouter) {
+    public ShopPageTrackingBuyer(AbstractionRouter shopTrackingRouter) {
         super(shopTrackingRouter);
     }
 
     private void sendDataLayerEvent(Map<String, Object> eventTracking) {
         sendClearEvent();
-        shopTrackingRouter.sendEventTracking(eventTracking);
+        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventTracking);
     }
 
     private void sendClearEvent() {
-        shopTrackingRouter.sendEventTracking(
+        shopTrackingRouter.getAnalyticTracker().sendEventTracking(
                 DataLayer.mapOf(ShopPageTrackingConstant.EVENT, null,
                         ShopPageTrackingConstant.EVENT_CATEGORY, null,
                         ShopPageTrackingConstant.EVENT_ACTION, null,

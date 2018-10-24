@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by normansyahputa on 2/13/18.
  */
 
-public interface ShopModuleRouter extends ShopTrackingRouter {
+public interface ShopModuleRouter {
 
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 

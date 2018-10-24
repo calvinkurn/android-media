@@ -1,8 +1,9 @@
 package com.tokopedia.shop.analytic;
 
+import android.app.Activity;
 import android.text.TextUtils;
 
-import com.tokopedia.shop.ShopTrackingRouter;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -57,20 +58,20 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
-    protected final ShopTrackingRouter shopTrackingRouter;
+    protected final AbstractionRouter shopTrackingRouter;
 
-    public ShopPageTrackingUser(ShopTrackingRouter shopTrackingRouter) {
-        this.shopTrackingRouter = shopTrackingRouter;
+    public ShopPageTrackingUser(AbstractionRouter router) {
+        this.shopTrackingRouter = router;
     }
 
-    private void sendScreenName(String screenName) {
-        shopTrackingRouter.sendScreenName(screenName);
+    private void sendScreenName(Activity activity, String screenName) {
+        shopTrackingRouter.getAnalyticTracker().sendScreen(activity, screenName);
     }
 
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        shopTrackingRouter.sendEventTracking(eventMap);
+        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventMap);
     }
 
     protected HashMap<String, Object> createMap(String event, String category, String action, String label,
@@ -132,8 +133,8 @@ public class ShopPageTrackingUser {
         return stringBuilder.toString();
     }
 
-    public void sendScreenShopPage(String shopId) {
-        sendScreenName(joinDash(SHOPPAGE, shopId));
+    public void sendScreenShopPage(Activity activity, String shopId) {
+        sendScreenName(activity, joinDash(SHOPPAGE, shopId));
     }
 
     public void clickManageShop(CustomDimensionShopPage customDimensionShopPage) {

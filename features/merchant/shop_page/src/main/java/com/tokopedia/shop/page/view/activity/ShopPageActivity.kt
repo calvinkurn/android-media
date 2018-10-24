@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
@@ -29,7 +30,6 @@ import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.ShopTrackingRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -143,7 +143,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        shopPageTracking = ShopPageTrackingBuyer(application as ShopTrackingRouter)
+        shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
                 getString(R.string.shop_info_title_tab_info))
         intent.run {
@@ -327,7 +327,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 shopInfoFragment.updateShopInfo(this)
             }
 
-            shopPageTracking.sendScreenShopPage(info.shopId)
+            shopPageTracking.sendScreenShopPage(this@ShopPageActivity, info.shopId)
 
             presenter.getFeedWhitelist(info.shopId)
         }

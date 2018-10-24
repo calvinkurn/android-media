@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -46,7 +47,6 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListVi
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.ShopTrackingRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
@@ -178,7 +178,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             selectedEtalaseName = savedInstanceState.getString(SAVED_SELECTED_ETALASE_NAME);
         }
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((ShopTrackingRouter) getActivity().getApplication());
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getActivity().getApplication());
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
                 .baseAppComponent(((BaseMainApplication) (getActivity().getApplication())).getBaseAppComponent())
                 .shopCommonModule(new ShopCommonModule())

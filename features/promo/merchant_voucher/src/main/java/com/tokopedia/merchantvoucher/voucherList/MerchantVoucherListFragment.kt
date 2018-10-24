@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -120,7 +121,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherShopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
         activity?.run {
-            merchantVoucherTracking = MerchantVoucherTracking(application as MerchantVoucherModuleRouter)
+            merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
         }
         super.onCreate(savedInstanceState)
     }

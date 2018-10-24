@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
@@ -45,7 +46,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
         shopName = intent.getStringExtra(SHOP_NAME)
         GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
-        merchantVoucherTracking = MerchantVoucherTracking(application as MerchantVoucherModuleRouter)
+        merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
         if (!shopName.isNullOrEmpty()) {
             supportActionBar?.title = getString(R.string.merchant_voucher_x, shopName)
         }

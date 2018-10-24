@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -77,7 +78,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
         activity?.run {
-            merchantVoucherTracking = MerchantVoucherTracking(application as MerchantVoucherModuleRouter)
+            merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
         }
     }
 
