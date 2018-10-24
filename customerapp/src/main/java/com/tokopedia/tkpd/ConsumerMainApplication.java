@@ -99,8 +99,6 @@ import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
 
-//import com.tokopedia.profile.data.network.ProfileUrl;
-
 /**
  * Created by ricoharisin on 11/11/16.
  */
