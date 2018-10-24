@@ -304,6 +304,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private FloatingActionButton fabWishlist;
     private LinearLayout rootView;
     private boolean isAppBarCollapsed = false;
+    private UserSession userSession;
     private TextView tvTickerGTM;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;
@@ -642,6 +643,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialVar() {
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
