@@ -528,10 +528,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void removeError() {
         adapter.showEmptyFull(false);
-//        adapter.showRetry(false);
-//        adapter.showRetryFull(false);
         isRetryShowing = false;
-//        NetworkErrorHelper.hideEmptyState(getView());
     }
 
     @Override
@@ -583,7 +580,9 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        if (text.length() == 0) {
+            onSearchReset();
+        }
     }
 
     @Override
@@ -606,15 +605,14 @@ public class InboxChatFragment extends BaseDaggerFragment
                 adapter.removeTyping(response.getData().getMsgId());
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
                         adapter.moveToTop(String.valueOf(response.getData().getMsgId()),
                                 response.getData().getMessage().getCensoredReply(), response,
                                 true);
                         reloadNotifDrawer();
-                    }
-                });
+                    });
+                }
                 break;
             default:
                 break;
@@ -631,23 +629,17 @@ public class InboxChatFragment extends BaseDaggerFragment
 
     @Override
     public void onOpenWebSocket() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                TextView title = (TextView) notifier.findViewById(R.id.title);
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                TextView title = notifier.findViewById(R.id.title);
                 title.setText(R.string.connected_websocket);
                 View action = notifier.findViewById(R.id.action);
                 action.setVisibility(View.GONE);
-            }
-        });
+            });
 
-        notifier.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                notifier.setVisibility(View.GONE);
-            }
-        }, 1500);
-        presenter.resetAttempt();
+            notifier.postDelayed(() -> notifier.setVisibility(View.GONE), 1500);
+            presenter.resetAttempt();
+        }
     }
 
     @Override
@@ -659,17 +651,14 @@ public class InboxChatFragment extends BaseDaggerFragment
     @Override
     public void notifyConnectionWebSocket() {
         if (getActivity() != null && presenter != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    notifier.setVisibility(View.VISIBLE);
-                    TextView title = (TextView) notifier.findViewById(R.id.title);
+            getActivity().runOnUiThread(() -> {
+                notifier.setVisibility(View.VISIBLE);
+                TextView title = notifier.findViewById(R.id.title);
 
-                    View action = notifier.findViewById(R.id.action);
+                View action = notifier.findViewById(R.id.action);
 
-                    title.setText(R.string.error_no_connection_retrying);
-                    action.setVisibility(View.VISIBLE);
-                }
+                title.setText(R.string.error_no_connection_retrying);
+                action.setVisibility(View.VISIBLE);
             });
         }
     }
