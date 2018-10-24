@@ -29,7 +29,6 @@ public class ImpressedImageView extends AppCompatImageView {
     private static final String TAG = ImpressedImageView.class.getSimpleName();
     public static final int BOTTOM_MARGIN = 50;
     private ProductImage image;
-    private boolean execute;
     private ViewHintListener hintListener;
 
     public ImpressedImageView(Context context) {
@@ -46,17 +45,22 @@ public class ImpressedImageView extends AppCompatImageView {
         registerObserver(this);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+    }
+
     private void registerObserver(View view){
         getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 if(isVisible(view) && image!=null && !image.isImpressed()){
-                    new ImpresionTask().execute(image.getM_url());
-                    image.setImpressed(true);
-                    getViewTreeObserver().removeOnScrollChangedListener(this);
                     if(hintListener!=null){
                         hintListener.onViewHint();
                     }
+                    getViewTreeObserver().removeOnScrollChangedListener(this);
+                    new ImpresionTask().execute(image.getM_url());
+                    image.setImpressed(true);
                 }
             }
         });
