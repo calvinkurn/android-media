@@ -349,4 +349,6 @@ public interface ProductDetailView extends ViewListener {
     void moveToEstimationDetail();
 
     void showErrorAffiliate(String message);
+
+    boolean isFromExploreAffiliate();
 }

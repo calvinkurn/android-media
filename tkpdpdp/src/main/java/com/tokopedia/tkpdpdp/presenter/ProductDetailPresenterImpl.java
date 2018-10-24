@@ -1342,25 +1342,27 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     public void getProductVariant(@NonNull Context context, @NonNull String id) {
-        retrofitInteractor.getProductVariant(context, id,
-                new RetrofitInteractor.ProductVariantListener() {
-                    @Override
-                    public void onSucccess(final ProductVariant productVariant) {
-                        if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
-                                && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
-                            viewListener.addProductVariant(productVariant);
-                        } else {
-                            viewListener.setVariantFalse();
+        if (!viewListener.isFromExploreAffiliate()) {
+            retrofitInteractor.getProductVariant(context, id,
+                    new RetrofitInteractor.ProductVariantListener() {
+                        @Override
+                        public void onSucccess(final ProductVariant productVariant) {
+                            if (productVariant != null && productVariant.getVariant() != null && productVariant.getVariant().size() > 0
+                                    && productVariant.getChildren() != null && productVariant.getChildren().size() > 0) {
+                                viewListener.addProductVariant(productVariant);
+                            } else {
+                                viewListener.setVariantFalse();
+                            }
+                            viewListener.updateButtonBuyListener();
                         }
-                        viewListener.updateButtonBuyListener();
-                    }
 
-                    @Override
-                    public void onError(String error) {
-                        viewListener.showErrorVariant();
+                        @Override
+                        public void onError(String error) {
+                            viewListener.showErrorVariant();
+                        }
                     }
-                }
-        );
+            );
+        }
     }
 
     public void getProductStock(@NonNull Context context, @NonNull String id) {
