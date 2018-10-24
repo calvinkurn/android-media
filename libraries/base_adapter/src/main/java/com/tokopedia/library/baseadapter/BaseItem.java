@@ -1,4 +1,4 @@
-package com.tokopedia.library.pagination;
+package com.tokopedia.library.baseadapter;
 
 public class BaseItem {
     private String labelRetry;

@@ -1,4 +1,4 @@
-package com.tokopedia.library.pagination;
+package com.tokopedia.library.baseadapter;
 
 import android.support.annotation.Nullable;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.library.pagination;
+package com.tokopedia.library.baseadapter;
 
 import android.content.Context;
 import android.support.annotation.CallSuper;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tokopedia.library.pagination.R;
 
 import java.util.ArrayList;
 import java.util.List;
