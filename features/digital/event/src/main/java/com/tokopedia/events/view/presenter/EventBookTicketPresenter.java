@@ -332,14 +332,17 @@ public class EventBookTicketPresenter
 
     private void generateLocationDateModels() {
         locationDateModels = new ArrayList<>();
-        for (SchedulesViewModel viewModel : dataModel.getSchedulesViewModels()) {
-            LocationDateModel model = new LocationDateModel();
-            model.setmLocation(viewModel.getCityName());
-            if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
-                model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
-            else
-                model.setDate("");
-            locationDateModels.add(model);
+        List<SchedulesViewModel> schedulesViewModelList = dataModel.getSchedulesViewModels();
+        if (schedulesViewModelList != null && !schedulesViewModelList.isEmpty()) {
+            for (SchedulesViewModel viewModel : schedulesViewModelList) {
+                LocationDateModel model = new LocationDateModel();
+                model.setmLocation(viewModel.getCityName());
+                if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+                    model.setDate(Utils.getSingletonInstance().convertEpochToString(viewModel.getStartDate()));
+                else
+                    model.setDate("");
+                locationDateModels.add(model);
+            }
         }
     }
 
