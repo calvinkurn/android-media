@@ -272,6 +272,11 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     }
 
     @Override
+    public int getParentMeasuredHeight() {
+        return getView().getHeight();
+    }
+
+    @Override
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         interactionListener = (InteractionListener) context;

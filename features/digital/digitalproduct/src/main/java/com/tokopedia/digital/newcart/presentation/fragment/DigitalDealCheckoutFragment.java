@@ -66,6 +66,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     private List<DealProductViewModel> selectedDeals;
     private DigitalDealsAdapter adapter;
 
+    private int lastCollapseHeight;
+
     private InteractionListener interactionListener;
 
     public interface InteractionListener {
@@ -80,6 +82,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         void showCartPage();
 
         void hideFullpageLoading();
+
+        int getParentMeasuredHeight();
     }
 
     @Inject
@@ -230,6 +234,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     public void expand(final View v) {
+        containerScroll.setVisibility(View.VISIBLE);
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 //        Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -262,7 +267,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 //            realWidth = display.getWidth();
 //            realHeight = display.getHeight();
 //        }
-        final int targetHeight = v.getMeasuredHeight();
+        lastCollapseHeight = currentHeight;
+        final int targetHeight = interactionListener.getParentMeasuredHeight();
         CommonUtils.dumper("Target : " + targetHeight);
         CommonUtils.dumper("Current : " + currentHeight);
 
@@ -273,15 +279,11 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int measureWithInterpolate = (int) ((targetHeight - currentHeight) * interpolatedTime) + currentHeight;
 
-                int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                int height = targetHeight;
                 if ((int) interpolatedTime != 1) {
                     if (measureWithInterpolate > currentHeight) {
                         height = measureWithInterpolate;
-                    } else {
-                        height = targetHeight;
                     }
-                } else {
-                    containerScroll.setVisibility(View.VISIBLE);
                 }
                 CommonUtils.dumper(interpolatedTime);
                 CommonUtils.dumper(height + " " + measureWithInterpolate);
@@ -303,7 +305,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void collapse(final View v) {
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
+        final int targetHeight = lastCollapseHeight == 0? v.getMeasuredHeight() : lastCollapseHeight;
         CommonUtils.dumper("Target : " + targetHeight);
         CommonUtils.dumper("Current : " + currentHeight);
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
@@ -313,7 +315,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 int measureWithInterpolate = (int) (currentHeight - (currentHeight * interpolatedTime));
-                int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                int height = targetHeight;
                 if ((int) interpolatedTime != 1) {
                     if (measureWithInterpolate > targetHeight) {
                         height = measureWithInterpolate;
