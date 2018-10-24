@@ -1,8 +1,6 @@
 package com.tokopedia.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
-import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
@@ -35,10 +33,6 @@ public interface SessionComponent {
     void inject(RegisterEmailFragment registerEmailFragment);
 
     void inject(CreatePasswordFragment createPasswordFragment);
-
-    void inject(ChangePhoneNumberFragment changePhoneNumberFragment);
-
-    void inject(PhoneVerificationFragment phoneVerificationFragment);
 
     void inject(ProfileCompletionPhoneVerificationFragment profileCompletionPhoneVerificationFragment);
 

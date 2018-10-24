@@ -145,7 +145,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
         return view;
     }
 
-    protected void findView(View view) {
+    public void findView(View view) {
         skipButton = (TextView) view.findViewById(R.id.skip_button);
         phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
         changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
@@ -168,8 +168,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
         super.onSaveInstanceState(outState);
         outState.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
     }
-
-    protected void setViewListener() {
+    public void setRequestOtpButtonListener(){
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,6 +184,12 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
                 }
             }
         });
+    }
+
+
+    public void setViewListener() {
+
+        setRequestOtpButtonListener();
 
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +231,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
         }
     }
 
-    private String getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumberEditText.getText().toString().replace("-", "");
     }
 
@@ -259,7 +264,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
     }
 
 
-    private boolean isValid() {
+    public boolean isValid() {
         boolean isValid = true;
         if (getPhoneNumber().length() == 0) {
             showErrorPhoneNumber(getString(R.string
