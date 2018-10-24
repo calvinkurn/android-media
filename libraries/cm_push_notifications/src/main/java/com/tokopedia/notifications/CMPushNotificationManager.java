@@ -3,27 +3,27 @@ package com.tokopedia.notifications;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.notifications.factory.GeneralNotificationFactory;
 import com.tokopedia.notifications.model.ActionButton;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
@@ -31,14 +31,35 @@ import java.util.logging.Logger;
 public class CMPushNotificationManager {
 
     private final String LOG = CMPushNotificationManager.class.getCanonicalName();
-
-    private static final CMPushNotificationManager _INSTANCE = new CMPushNotificationManager();
+    private UpdateFcmTokenUseCase updateFcmTokenUseCase;
+    private static final CMPushNotificationManager sInstance;
+    private Context mContext;
 
     public static CMPushNotificationManager getInstance() {
-        return _INSTANCE;
+        return sInstance;
     }
 
+    static {
+        sInstance = new CMPushNotificationManager();
+    }
+
+    public void init(@NonNull Context context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Context can not be null");
+        }
+        this.mContext = context.getApplicationContext();
+    }
+
+    /**
+     * To check weather the incoming notification belong to campaign manangment
+     *
+     * @param extras
+     * @return
+     */
     public boolean isFromCMNotificationPlatform(Map<String, String> extras) {
+        if (mContext == null) {
+            throw new IllegalArgumentException("Kindly invoke init before calling notification library");
+        }
         try {
             if (null == extras) {
                 Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
@@ -53,11 +74,15 @@ public class CMPushNotificationManager {
         return false;
     }
 
-    public void handlePushPayload(Context context, RemoteMessage remoteMessage) {
-        if (isFromCMNotificationPlatform(remoteMessage.getData())) {
-            Bundle bundle = convertMapToBundle(remoteMessage.getData());
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-            generateNotification(context, bundle, notificationManagerCompat);
+    public void handlePushPayload(RemoteMessage remoteMessage) {
+        try {
+            if (isFromCMNotificationPlatform(remoteMessage.getData())) {
+                Bundle bundle = convertMapToBundle(remoteMessage.getData());
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
+                generateNotification(bundle, notificationManagerCompat);
+            }
+        }catch (Exception e){
+            Log.e(LOG, "CMPushNotificationManager: handlePushPayload ", e);
         }
     }
 
@@ -73,9 +98,9 @@ public class CMPushNotificationManager {
         return model;
     }
 
-    private void notifyGeneral(Context context, BaseNotificationModel baseNotificationModel,
+    private void notifyGeneral(BaseNotificationModel baseNotificationModel,
                                int notificationId, NotificationManagerCompat notificationManagerCompat) {
-        Notification generalNotif = new GeneralNotificationFactory(context)
+        Notification generalNotif = new GeneralNotificationFactory(mContext)
                 .createNotification(baseNotificationModel, notificationId);
 
         notificationManagerCompat.notify(notificationId, generalNotif);
@@ -92,12 +117,12 @@ public class CMPushNotificationManager {
         return bundle;
     }
 
-    private void generateNotification(Context context, Bundle bundle, NotificationManagerCompat notificationManagerCompat) {
+    private void generateNotification(Bundle bundle, NotificationManagerCompat notificationManagerCompat) {
         String notificationType = getNotificationType(bundle);
         BaseNotificationModel model = convertToBaseModel(bundle);
 
         if (CMConstant.NotificationType.GENERAL.equals(notificationType)) {
-            notifyGeneral(context, model, CMConstant.NotificationId.GENERAL, notificationManagerCompat);
+            notifyGeneral(model, CMConstant.NotificationId.GENERAL, notificationManagerCompat);
         } else if (CMConstant.NotificationType.BIG_IMAGE.equals(notificationType)) {
 
         } else {
@@ -145,5 +170,9 @@ public class CMPushNotificationManager {
             Log.e("getActions", e.getMessage());
         }
         return null;
+    }
+
+    private void sendFcmTokenToServer(){
+       // updateFcmTokenUseCase = new UpdateFcmTokenUseCase(mContext);
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.notifications;
+package com.tokopedia.notifications.common;
 
 /**
  * Created by Ashwani Tyagi on 18/10/18.
