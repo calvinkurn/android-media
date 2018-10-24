@@ -34,6 +34,7 @@ public class KelontongWebChromeClient extends WebChromeClient {
     private Context context;
 
     private FilePickerInterface filePickerInterface;
+    private WebviewListener webviewListener;
 
     public KelontongWebChromeClient(Context context, FilePickerInterface filePickerInterface) {
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
@@ -44,10 +45,16 @@ public class KelontongWebChromeClient extends WebChromeClient {
         }
     }
 
+    public void setWebviewListener(WebviewListener webviewListener) {
+        this.webviewListener = webviewListener;
+    }
+
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         if (newProgress == PROGRESS_COMPLETED) {
             view.setVisibility(View.VISIBLE);
+            if (webviewListener != null)
+                webviewListener.onComplete();
         }
         super.onProgressChanged(view, newProgress);
     }
@@ -145,5 +152,9 @@ public class KelontongWebChromeClient extends WebChromeClient {
         String imageFileName = "img_"+timeStamp+"_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName,".jpg",storageDir);
+    }
+
+    public interface WebviewListener {
+        void onComplete();
     }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -64,7 +65,6 @@ public class KelontongMainActivity extends AppCompatActivity
 
             if (Preference.isFirstTime(this)) {
                 requestPermission();
-                Preference.saveFirstTime(this);
             }
         } else {
             noInternetConnection();
@@ -86,9 +86,16 @@ public class KelontongMainActivity extends AppCompatActivity
         headers.put(X_REQUESTED_WITH, "");
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
+
+        webViewChromeClient.setWebviewListener(() -> {
+            if (Preference.isFirstTime(this)) {
+                showAlertDialog();
+                Preference.saveFirstTime(KelontongMainActivity.this);
+            }
+        });
+
         webView.setWebChromeClient(webViewChromeClient);
         webView.setWebViewClient(webviewClient);
-
         webView.getSettings().setAllowFileAccess(true);
 
         if(Build.VERSION.SDK_INT >= 21){
@@ -120,6 +127,16 @@ public class KelontongMainActivity extends AppCompatActivity
             if (!webviewClient.checkPermission()) {
                 webviewClient.requestPermission();
             }
+        }
+    }
+
+    private void showAlertDialog() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert);
+            builder.setTitle(R.string.dialog_info);
+            builder.setMessage(R.string.dialog_msg);
+            builder.setPositiveButton(R.string.dialog_ok, null);
+            builder.show();
         }
     }
 
