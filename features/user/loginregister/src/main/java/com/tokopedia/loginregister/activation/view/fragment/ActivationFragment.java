@@ -27,7 +27,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.ToasterNormal;
-import com.tokopedia.design.widget.PinEntryEditText;
+import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
 import com.tokopedia.loginregister.activation.domain.pojo.ActivateUnicodePojo;
@@ -52,7 +52,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     private static final int REQUEST_AUTO_LOGIN = 101;
     private TextView activationText;
-    private PinEntryEditText verifyCode;
+    private PinEditText verifyCode;
     private TextView activateButton;
     private TextView footer;
     private TextView errorOtp;

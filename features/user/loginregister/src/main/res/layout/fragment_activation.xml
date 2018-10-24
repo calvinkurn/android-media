@@ -54,7 +54,7 @@
         android:layout_below="@id/activation_text"
         android:orientation="horizontal">
 
-        <com.tokopedia.design.widget.PinEntryEditText
+        <com.tokopedia.design.widget.PinEditText
             android:id="@+id/input_verify_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

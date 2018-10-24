@@ -40,7 +40,7 @@
         tools:text="Masukan PIN untuk mengaktifkan kupon (hanya untuk merchant)"
         tools:visibility="visible" />
 
-    <com.tokopedia.design.widget.PinEntryEditText
+    <com.tokopedia.design.widget.PinEditText
         android:id="@+id/et_input_otp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

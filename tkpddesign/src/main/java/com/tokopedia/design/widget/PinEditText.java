@@ -33,7 +33,7 @@ import com.tokopedia.design.R;
 
 import java.util.Locale;
 
-public class PinEntryEditText extends AppCompatEditText {
+public class PinEditText extends AppCompatEditText {
     private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 
     private String mMask = null;
@@ -79,22 +79,22 @@ public class PinEntryEditText extends AppCompatEditText {
 
     private ColorStateList mColorStates = new ColorStateList(mStates, mColors);
 
-    public PinEntryEditText(Context context) {
+    public PinEditText(Context context) {
         super(context);
     }
 
-    public PinEntryEditText(Context context, AttributeSet attrs) {
+    public PinEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public PinEntryEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PinEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public PinEntryEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public PinEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context,attrs);
         init(context, attrs);
     }
@@ -106,7 +106,7 @@ public class PinEntryEditText extends AppCompatEditText {
         mSpace = multi * mSpace; //convert to pixels for our density
         mTextBottomPadding = multi * mTextBottomPadding; //convert to pixels for our density
 
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEntryEditText, 0, 0);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEditText, 0, 0);
         try {
             TypedValue outValue = new TypedValue();
             ta.getValue(R.styleable.PinEntryEditText_pinAnimationType, outValue);
@@ -416,7 +416,7 @@ public class PinEntryEditText extends AppCompatEditText {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mLastCharPaint.setTextSize((Float) animation.getAnimatedValue());
-                PinEntryEditText.this.invalidate();
+                PinEditText.this.invalidate();
             }
         });
         if (getText().length() == mMaxLength && mOnPinEnteredListener != null) {
@@ -452,7 +452,7 @@ public class PinEntryEditText extends AppCompatEditText {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Float value = (Float) animation.getAnimatedValue();
                 mCharBottom[start] = value;
-                PinEntryEditText.this.invalidate();
+                PinEditText.this.invalidate();
             }
         });
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="PinEntryEditText">
+    <declare-styleable name="PinEditText">
         <attr name="pinAnimationType" format="enum">
             <enum name="popIn" value="0" />
             <enum name="fromBottom" value="1" />
