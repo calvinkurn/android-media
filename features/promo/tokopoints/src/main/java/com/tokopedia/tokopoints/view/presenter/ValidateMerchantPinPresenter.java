@@ -2,20 +2,15 @@ package com.tokopedia.tokopoints.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.contract.SendGiftContract;
 import com.tokopedia.tokopoints.view.contract.ValidateMerchantPinContract;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter;
-import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
-import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;

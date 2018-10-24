@@ -8,7 +8,7 @@ public interface CommonConstant {
     String ARGS_CATEGORY_ID = "category_id";
     String ARGS_SORT_TYPE = "sort_type";
     int DEVICE_ID_BANNER = 256;
-    int PAGE_SIZE = 100;
+    int PAGE_SIZE = 5;
     int HOMEPAGE_PAGE_SIZE = 5;
     int TAB_SETUP_DELAY_MS = 150;
     int HOMEPAGE_TAB_COUNT = 2;
@@ -31,6 +31,7 @@ public interface CommonConstant {
     int MAX_COUPON_RE_FETCH_COUNT = 3;
     int COUPON_RE_FETCH_DELAY_S = 5;
     long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
+    int UI_SETTLING_DELAY_MS = 250;
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;

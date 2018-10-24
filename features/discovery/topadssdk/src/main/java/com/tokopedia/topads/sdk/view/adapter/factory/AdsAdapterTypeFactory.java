@@ -38,7 +38,7 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private boolean enableWishlist;
 
     public AdsAdapterTypeFactory(Context context) {
-        this(context, 0);
+        this(context, -1);
     }
 
     public AdsAdapterTypeFactory(Context context, int clickPosition) {
