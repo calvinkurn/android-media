@@ -7,6 +7,7 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class FlightDetailViewModel implements Parcelable {
     private int countChild;
     private int countInfant;
     private List<FlightDetailRouteViewModel> routeList;
-    private List<FlightAirlineDB> airlineDataList;
+    private List<FlightAirlineViewModel> airlineDataList;
 
     public FlightDetailViewModel() {
     }
@@ -72,7 +73,7 @@ public class FlightDetailViewModel implements Parcelable {
         countInfant = in.readInt();
         routeList = in.createTypedArrayList(FlightDetailRouteViewModel.CREATOR);
         isRefundable = (RefundableEnum) in.readSerializable();
-        airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
+        airlineDataList = in.createTypedArrayList(FlightAirlineViewModel.CREATOR);
     }
 
     public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {
@@ -332,11 +333,11 @@ public class FlightDetailViewModel implements Parcelable {
         parcel.writeTypedList(airlineDataList);
     }
 
-    public List<FlightAirlineDB> getAirlineDataList() {
+    public List<FlightAirlineViewModel> getAirlineDataList() {
         return airlineDataList;
     }
 
-    public void setAirlineDataList(List<FlightAirlineDB> airlineDataList) {
+    public void setAirlineDataList(List<FlightAirlineViewModel> airlineDataList) {
         this.airlineDataList = airlineDataList;
     }
 }

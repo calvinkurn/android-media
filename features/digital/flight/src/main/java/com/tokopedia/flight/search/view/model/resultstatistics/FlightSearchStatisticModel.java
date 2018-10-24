@@ -8,6 +8,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,10 +108,10 @@ public class FlightSearchStatisticModel {
             }
 
             // populate airline and minprice per each airline
-            List<FlightAirlineDB> airlineData = flightSearchViewModel.getAirlineList();
+            List<FlightAirlineViewModel> airlineData = flightSearchViewModel.getAirlineList();
             if (airlineData != null) {
                 for (int j = 0, sizej = airlineData.size(); j < sizej; j++) {
-                    FlightAirlineDB flightAirlineDB = airlineData.get(j);
+                    FlightAirlineViewModel flightAirlineDB = airlineData.get(j);
                     String airlineID = flightAirlineDB.getId();
 
                     if (!airlineIDTrackArray.containsKey(airlineID)) {
@@ -216,17 +217,17 @@ public class FlightSearchStatisticModel {
         return airlineStatList;
     }
 
-    public FlightAirlineDB getAirline(String airlineID) {
+    public FlightAirlineViewModel getAirline(String airlineID) {
         List<AirlineStat> airlineStatList = getAirlineStatList();
         if (airlineStatList!= null) {
             for (int i = 0, sizei = airlineStatList.size(); i < sizei; i++) {
-                FlightAirlineDB flightAirlineDB = airlineStatList.get(i).getAirlineDB();
+                FlightAirlineViewModel flightAirlineDB = airlineStatList.get(i).getAirlineDB();
                 if (airlineID.equals(flightAirlineDB.getId())) {
                     return flightAirlineDB;
                 }
             }
         }
-        return new FlightAirlineDB(airlineID, "", "", "", 0, 1);
+        return new FlightAirlineViewModel(airlineID, "", "", "");
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {

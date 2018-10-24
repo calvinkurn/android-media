@@ -14,6 +14,7 @@ import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 import java.util.ArrayList;
@@ -45,17 +46,17 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
 
     public FlightSearchViewHolder(View itemView, FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
-        containerLayout = (LinearLayout) itemView.findViewById(R.id.container_layout);
-        tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
-        tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
-        tvAirline = (TextView) itemView.findViewById(R.id.tv_airline);
-        flightMultiAirlineView = (FlightMultiAirlineView) itemView.findViewById(R.id.view_multi_airline);
-        airlineRefundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
-        tvPrice = (TextView) itemView.findViewById(R.id.total_price);
-        tvDuration = (TextView) itemView.findViewById(R.id.flight_time);
-        savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
-        arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
-        discountTag = (TextView) itemView.findViewById(R.id.tv_discount_tag);
+        containerLayout = itemView.findViewById(R.id.container_layout);
+        tvDeparture = itemView.findViewById(R.id.departure_time);
+        tvArrival = itemView.findViewById(R.id.arrival_time);
+        tvAirline = itemView.findViewById(R.id.tv_airline);
+        flightMultiAirlineView = itemView.findViewById(R.id.view_multi_airline);
+        airlineRefundableInfo = itemView.findViewById(R.id.airline_refundable_info);
+        tvPrice = itemView.findViewById(R.id.total_price);
+        tvDuration = itemView.findViewById(R.id.flight_time);
+        savingPrice = itemView.findViewById(R.id.saving_price);
+        arrivalAddDay = itemView.findViewById(R.id.arrival_add_day);
+        discountTag = itemView.findViewById(R.id.tv_discount_tag);
         bestPairingTag = itemView.findViewById(R.id.tv_best_pairing_tag);
         containerDetail = itemView.findViewById(R.id.container_detail);
         this.onFlightSearchListener = onFlightSearchListener;
@@ -81,12 +82,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         setSavingPrice(flightJourneyViewModel);
         setArrivalAddDay(flightJourneyViewModel);
         setBestPairingPrice(flightJourneyViewModel);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onFlightSearchListener.onItemClicked(flightJourneyViewModel, getAdapterPosition());
-            }
-        });
+        itemView.setOnClickListener(view -> onFlightSearchListener.onItemClicked(flightJourneyViewModel, getAdapterPosition()));
         setMarginOnFirstItem();
     }
 
@@ -151,11 +147,11 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     private void setAirline(FlightJourneyViewModel flightJourneyViewModel) {
         if (flightJourneyViewModel.getAirlineDataList() != null &&
                 flightJourneyViewModel.getAirlineDataList().size() > 1) {
-            List<FlightAirlineDB> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
+            List<FlightAirlineViewModel> flightAirlineDBs = flightJourneyViewModel.getAirlineDataList();
             if (flightAirlineDBs != null && flightAirlineDBs.size() > 0) {
                 List<String> airlineLogoList = new ArrayList<>();
                 for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                    FlightAirlineDB flightAirlineDB = flightAirlineDBs.get(i);
+                    FlightAirlineViewModel flightAirlineDB = flightAirlineDBs.get(i);
                     airlineLogoList.add(flightAirlineDB.getLogo());
                 }
                 flightMultiAirlineView.setAirlineLogos(airlineLogoList);

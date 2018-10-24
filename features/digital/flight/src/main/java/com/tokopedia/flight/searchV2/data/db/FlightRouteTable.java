@@ -13,6 +13,7 @@ public class FlightRouteTable {
     private String journeyId;
     private String airline;
     private String airlineName;
+    private String airlineShortName;
     private String airlineLogo;
     private String departureAirport;
     private String departureAirportName;
@@ -33,15 +34,16 @@ public class FlightRouteTable {
 
     public FlightRouteTable() {}
 
-    public FlightRouteTable(String journeyId, String airline, String airlineName, String airlineLogo,
-                            String departureAirport, String departureAirportName, String departureAirportCity,
-                            String arrivalAirport, String arrivalAirportName, String arrivalAirportCity,
-                            String departureTimestamp, String arrivalTimestamp, String duration, String infos,
-                            String layover, String flightNumber, boolean isRefundable, String amenities,
-                            int stops, String stopDetail) {
+    public FlightRouteTable(String journeyId, String airline, String airlineName, String airlineShortName,
+                            String airlineLogo, String departureAirport, String departureAirportName,
+                            String departureAirportCity, String arrivalAirport, String arrivalAirportName,
+                            String arrivalAirportCity, String departureTimestamp, String arrivalTimestamp,
+                            String duration, String infos, String layover, String flightNumber,
+                            boolean isRefundable, String amenities, int stops, String stopDetail) {
         this.journeyId = journeyId;
         this.airline = airline;
         this.airlineName = airlineName;
+        this.airlineShortName = airlineShortName;
         this.airlineLogo = airlineLogo;
         this.departureAirport = departureAirport;
         this.departureAirportName = departureAirportName;
@@ -75,6 +77,10 @@ public class FlightRouteTable {
 
     public void setAirlineName(String airlineName) {
         this.airlineName = airlineName;
+    }
+
+    public void setAirlineShortName(String airlineShortName) {
+        this.airlineShortName = airlineShortName;
     }
 
     public void setAirlineLogo(String airlineLogo) {
@@ -159,6 +165,10 @@ public class FlightRouteTable {
 
     public String getAirlineName() {
         return airlineName;
+    }
+
+    public String getAirlineShortName() {
+        return airlineShortName;
     }
 
     public String getAirlineLogo() {

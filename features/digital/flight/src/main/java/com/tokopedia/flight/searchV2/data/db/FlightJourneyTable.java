@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class FlightJourneyTable {
     private String arrivalAirportName;
     private String arrivalAirportCity;
     @Ignore
-    private List<FlightAirlineDB> flightAirlineDBS;
+    private List<FlightAirlineViewModel> flightAirlineDBS;
     private String departureTime;
     private int departureTimeInt;
     private String arrivalTime;
@@ -66,7 +67,7 @@ public class FlightJourneyTable {
     public FlightJourneyTable(@NonNull String id, String term, String departureAirport,
                               String departureAirportName, String departureAirportCity,
                               String arrivalAirport, String arrivalAirportName, String arrivalAirportCity,
-                              List<FlightAirlineDB> flightAirlineDBS, String departureTime, int departureTimeInt,
+                              List<FlightAirlineViewModel> flightAirlineDBS, String departureTime, int departureTimeInt,
                               String arrivalTime, int arrivalTimeInt, int totalTransit, int totalStop,
                               int addDayArrival, String duration, int durationMinute, String adult,
                               String adultCombo, int adultNumeric, int adultNumericCombo, String child,
@@ -183,11 +184,11 @@ public class FlightJourneyTable {
         this.arrivalAirportCity = arrivalAirportCity;
     }
 
-    public List<FlightAirlineDB> getFlightAirlineDBS() {
+    public List<FlightAirlineViewModel> getFlightAirlineDBS() {
         return flightAirlineDBS;
     }
 
-    public void setFlightAirlineDBS(List<FlightAirlineDB> flightAirlineDBS) {
+    public void setFlightAirlineDBS(List<FlightAirlineViewModel> flightAirlineDBS) {
         this.flightAirlineDBS = flightAirlineDBS;
     }
 

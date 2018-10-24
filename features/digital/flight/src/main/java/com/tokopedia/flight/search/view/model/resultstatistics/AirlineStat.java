@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 /**
  * Created by User on 11/1/2017.
@@ -23,11 +24,11 @@ public class AirlineStat implements Parcelable, Visitable<BaseListCheckableTypeF
             return new AirlineStat[size];
         }
     };
-    private FlightAirlineDB airlineDB;
+    private FlightAirlineViewModel airlineDB;
     private int minPrice;
     private String minPriceString;
 
-    public AirlineStat(FlightAirlineDB airlineDB, int minPrice, String minPriceString) {
+    public AirlineStat(FlightAirlineViewModel airlineDB, int minPrice, String minPriceString) {
         this.airlineDB = airlineDB;
         this.minPrice = minPrice;
         this.minPriceString = minPriceString;
@@ -47,7 +48,7 @@ public class AirlineStat implements Parcelable, Visitable<BaseListCheckableTypeF
         this.minPriceString = minPriceString;
     }
 
-    public FlightAirlineDB getAirlineDB() {
+    public FlightAirlineViewModel getAirlineDB() {
         return airlineDB;
     }
 

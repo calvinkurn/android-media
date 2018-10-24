@@ -14,6 +14,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 import java.util.ArrayList;
@@ -313,7 +314,7 @@ public class FlightAnalytics {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineDB airlineDB : viewModel.getAirlineList()) {
+            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineList()) {
                 airlines.add(airlineDB.getShortName().toLowerCase());
             }
             result.append(TextUtils.join(",", airlines));
@@ -332,7 +333,7 @@ public class FlightAnalytics {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineDataList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineDB airlineDB : viewModel.getAirlineDataList()) {
+            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineDataList()) {
                 airlines.add(airlineDB.getShortName().toLowerCase());
             }
             result.append(TextUtils.join(",", airlines));
@@ -442,7 +443,7 @@ public class FlightAnalytics {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineDB airlineDB : viewModel.getAirlineList()) {
+            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineList()) {
                 airlines.add(airlineDB.getId());
             }
             result.append(TextUtils.join(",", airlines));
@@ -464,7 +465,7 @@ public class FlightAnalytics {
         StringBuilder result = new StringBuilder();
         if (viewModel.getAirlineDataList() != null) {
             List<String> airlines = new ArrayList<>();
-            for (FlightAirlineDB airlineDB : viewModel.getAirlineDataList()) {
+            for (FlightAirlineViewModel airlineDB : viewModel.getAirlineDataList()) {
                 airlines.add(airlineDB.getId());
             }
             result.append(TextUtils.join(",", airlines));

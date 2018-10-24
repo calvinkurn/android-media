@@ -19,7 +19,6 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
     private String airlineName;
     private String airlineCode;
     private String airlineLogo;
-    private int airlineMandatoryDOB;
     private String flightNumber;
     private String departureTimestamp;
     private String departureAirportCity;
@@ -45,7 +44,6 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         airlineName = in.readString();
         airlineCode = in.readString();
         airlineLogo = in.readString();
-        airlineMandatoryDOB = in.readInt();
         flightNumber = in.readString();
         departureTimestamp = in.readString();
         departureAirportCity = in.readString();
@@ -98,14 +96,6 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
 
     public void setAirlineLogo(String airlineLogo) {
         this.airlineLogo = airlineLogo;
-    }
-
-    public int isAirlineMandatoryDOB() {
-        return airlineMandatoryDOB;
-    }
-
-    public void setAirlineMandatoryDOB(int airlineMandatoryDOB) {
-        this.airlineMandatoryDOB = airlineMandatoryDOB;
     }
 
     public String getFlightNumber() {
@@ -260,7 +250,6 @@ public class FlightDetailRouteViewModel implements Parcelable, Visitable<FlightD
         parcel.writeString(airlineName);
         parcel.writeString(airlineCode);
         parcel.writeString(airlineLogo);
-        parcel.writeInt(airlineMandatoryDOB);
         parcel.writeString(flightNumber);
         parcel.writeString(departureTimestamp);
         parcel.writeString(departureAirportCity);

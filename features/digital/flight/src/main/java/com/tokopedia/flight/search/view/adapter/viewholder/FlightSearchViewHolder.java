@@ -15,6 +15,7 @@ import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,11 +146,11 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
 
     private void setAirline(FlightSearchViewModel flightSearchViewModel) {
         if (flightSearchViewModel.getAirlineList().size() > 1) {
-            List<FlightAirlineDB> flightAirlineDBs = flightSearchViewModel.getAirlineList();
+            List<FlightAirlineViewModel> flightAirlineDBs = flightSearchViewModel.getAirlineList();
             if (flightAirlineDBs != null && flightAirlineDBs.size() > 0) {
                 List<String> airlineLogoList = new ArrayList<>();
                 for (int i = 0, sizei = flightAirlineDBs.size(); i < sizei; i++) {
-                    FlightAirlineDB flightAirlineDB = flightAirlineDBs.get(i);
+                    FlightAirlineViewModel flightAirlineDB = flightAirlineDBs.get(i);
                     airlineLogoList.add(flightAirlineDB.getLogo());
                 }
                 flightMultiAirlineView.setAirlineLogos(airlineLogoList);

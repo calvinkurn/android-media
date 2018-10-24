@@ -2,8 +2,6 @@ package com.tokopedia.flight.searchV2.data.repository.mapper
 
 import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
 import com.tokopedia.flight.search.data.cloud.model.response.Attributes
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
 import com.tokopedia.flight.search.data.cloud.model.response.Route
@@ -12,6 +10,8 @@ import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.FlightRouteTable
 import com.tokopedia.flight.searchV2.data.db.JourneyAndRoutes
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirportViewModel
 import javax.inject.Inject
 
 /**
@@ -20,15 +20,15 @@ import javax.inject.Inject
 class FlightSearchMapper @Inject constructor() {
 
     fun createCompleteJourneyAndRoutes(journeyResponse: FlightSearchData,
-                                       journeyAirports: Pair<FlightAirportDB, FlightAirportDB>,
-                                       journeyAirlines: List<FlightAirlineDB>,
-                                       routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                                       journeyAirports: Pair<FlightAirportViewModel, FlightAirportViewModel>,
+                                       journeyAirlines: List<FlightAirlineViewModel>,
+                                       routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
                                        isReturn: Boolean): JourneyAndRoutes {
         val isRefundable = isRefundable(journeyResponse.attributes.routes)
         val flightJourneyTable = createFlightJourneyTable(journeyResponse.id, journeyResponse.attributes,
                 isRefundable, isReturn)
-        val routesAirlines = arrayListOf<FlightAirlineDB>()
-        val routesAirports = arrayListOf<Pair<FlightAirportDB, FlightAirportDB>>()
+        val routesAirlines = arrayListOf<FlightAirlineViewModel>()
+        val routesAirports = arrayListOf<Pair<FlightAirportViewModel, FlightAirportViewModel>>()
         for (routeAirlineAndAirport in routesAirlinesAndAirports) {
             routesAirlines.add(routeAirlineAndAirport.first)
             routesAirports.add(Pair(routeAirlineAndAirport.second.first, routeAirlineAndAirport.second.second))
@@ -91,8 +91,8 @@ class FlightSearchMapper @Inject constructor() {
     }
 
     private fun createRoutes(routes: List<Route>, journeyId: String,
-                             routesAirports: List<Pair<FlightAirportDB, FlightAirportDB>>,
-                             routesAirlines: List<FlightAirlineDB>): List<FlightRouteTable> {
+                             routesAirports: List<Pair<FlightAirportViewModel, FlightAirportViewModel>>,
+                             routesAirlines: List<FlightAirlineViewModel>): List<FlightRouteTable> {
         val gson = Gson()
         return routes.zip(routesAirports).zip(routesAirlines).map { it ->
             val (route, pairOfAirport) = it.first
@@ -104,6 +104,7 @@ class FlightSearchMapper @Inject constructor() {
                         journeyId,
                         airline,
                         routeAirline.name,
+                        routeAirline.shortName,
                         routeAirline.logo,
                         departureAirport,
                         routeDepartureAirport.airportName,
@@ -142,8 +143,8 @@ class FlightSearchMapper @Inject constructor() {
     }
 
     private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
-                                                   pairOfAirport: Pair<FlightAirportDB, FlightAirportDB>,
-                                                   airlines: List<FlightAirlineDB>): FlightJourneyTable {
+                                                   pairOfAirport: Pair<FlightAirportViewModel, FlightAirportViewModel>,
+                                                   airlines: List<FlightAirlineViewModel>): FlightJourneyTable {
         val (departureAirport, arrivalAirport) = pairOfAirport
         journey.departureAirportName = departureAirport.airportName
         journey.departureAirportCity = departureAirport.cityName

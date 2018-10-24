@@ -13,6 +13,7 @@ import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
     private boolean isReturning;
     private Fare fare;
     private List<Route> routeList;
-    private List<FlightAirlineDB> airlineDataList; // merge result
+    private List<FlightAirlineViewModel> airlineDataList; // merge result
 
     public FlightSearchViewModel(FlightSearchSingleRouteDB flightSearchSingleRouteDB) {
         Gson gson = new Gson();
@@ -120,7 +121,7 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
         isReturning = in.readByte() != 0;
         fare = in.readParcelable(Fare.class.getClassLoader());
         routeList = in.createTypedArrayList(Route.CREATOR);
-        airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
+        airlineDataList = in.createTypedArrayList(FlightAirlineViewModel.CREATOR);
     }
 
     public String getId() {
@@ -191,11 +192,11 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
         return beforeTotal;
     }
 
-    public List<FlightAirlineDB> getAirlineList() {
+    public List<FlightAirlineViewModel> getAirlineList() {
         return airlineDataList;
     }
 
-    public void setAirlineDataList(List<FlightAirlineDB> airlineDataList) {
+    public void setAirlineDataList(List<FlightAirlineViewModel> airlineDataList) {
         this.airlineDataList = airlineDataList;
     }
 

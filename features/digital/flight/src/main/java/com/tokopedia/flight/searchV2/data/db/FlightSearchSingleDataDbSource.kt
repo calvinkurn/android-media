@@ -10,6 +10,7 @@ import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
 import com.tokopedia.flight.search.view.model.filter.TransitEnum
+import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
 import rx.Observable
 import rx.functions.Func2
@@ -21,8 +22,7 @@ import javax.inject.Inject
 open class FlightSearchSingleDataDbSource @Inject constructor(
         private val flightJourneyDao: FlightJourneyDao,
         private val flightRouteDao: FlightRouteDao,
-        private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
-        private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
+        private val flightAirportDataListDBSource: FlightAirportDataListDBSource) {
 
     open fun insertList(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journey in journeyAndRoutesList) {
@@ -63,16 +63,17 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     private fun populateCompactJourneyAndRoutes(journeyAndRoutes: JourneyAndRoutes): Observable<JourneyAndRoutes> {
         return Observable.from(journeyAndRoutes.routes)
                 .flatMap { route ->
-                    getAirlineById(route.airline).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
-                        airline: FlightAirlineDB, airport: Pair<FlightAirportDB, FlightAirportDB> ->
+                    val flightAirlineViewModel = FlightAirlineViewModel(route.airline, route.airlineName, route.airlineShortName, route.airlineLogo)
+                    Observable.just(flightAirlineViewModel).zipWith(getAirports(route.departureAirport, route.arrivalAirport)) {
+                        airline: FlightAirlineViewModel, airport: Pair<FlightAirportDB, FlightAirportDB> ->
                         Pair(airline, airport)
                     }
                 }
                 .toList()
                 .zipWith(getAirports(journeyAndRoutes.flightJourneyTable.departureAirport, journeyAndRoutes.flightJourneyTable.arrivalAirport)) {
-                    routesAirlinesAndAirports: List<Pair<FlightAirlineDB, Pair<FlightAirportDB, FlightAirportDB>>>,
+                    routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportDB, FlightAirportDB>>>,
                     journeyAirports: Pair<FlightAirportDB, FlightAirportDB> ->
-                    val journeyAirlines = arrayListOf<FlightAirlineDB>()
+                    val journeyAirlines = arrayListOf<FlightAirlineViewModel>()
                     for (routeAirline in routesAirlinesAndAirports) {
                         if (!journeyAirlines.contains(routeAirline.first)) {
                             journeyAirlines.add(routeAirline.first)
@@ -259,13 +260,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         )
     }
 
-    private fun getAirlineById(airlineId: String): Observable<FlightAirlineDB> {
-        return flightAirlineDataListDBSource.getAirline(airlineId)
-    }
-
     private fun createJourneyWithAirportAndAirline(journey: FlightJourneyTable,
                                                    pairOfAirport: Pair<FlightAirportDB, FlightAirportDB>,
-                                                   airlines: List<FlightAirlineDB>): FlightJourneyTable {
+                                                   airlines: List<FlightAirlineViewModel>): FlightJourneyTable {
         val (departureAirport, arrivalAirport) = pairOfAirport
         journey.departureAirportName = departureAirport.airportName
         journey.departureAirportCity = departureAirport.cityName

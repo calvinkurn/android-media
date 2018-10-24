@@ -130,7 +130,7 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                                 new Func2<List<FlightAirlineDB>, FlightSearchViewModel, FlightSearchViewModel>() {
                                     @Override
                                     public FlightSearchViewModel call(List<FlightAirlineDB> flightAirlineDBS, FlightSearchViewModel flightSearchViewModel) {
-                                        flightSearchViewModel.setAirlineDataList(flightAirlineDBS);
+//                                        flightSearchViewModel.setAirlineDataList(flightAirlineDBS);
                                         for (Route route : flightSearchViewModel.getRouteList()) {
                                             for (FlightAirlineDB flightAirlineDB : flightAirlineDBS) {
                                                 if (route.getAirline().equalsIgnoreCase(flightAirlineDB.getId())) {

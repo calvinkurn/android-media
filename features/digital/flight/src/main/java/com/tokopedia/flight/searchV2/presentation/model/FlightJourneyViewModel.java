@@ -42,7 +42,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     private boolean isReturning;
     private FlightFareViewModel fare;
     private List<Route> routeList;
-    private List<FlightAirlineDB> airlineDataList; // merge result
+    private List<FlightAirlineViewModel> airlineDataList; // merge result
     private String comboId;
 
     public FlightJourneyViewModel(String term, String id, String departureAirport,
@@ -53,7 +53,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
                                   String total, int totalNumeric, String comboPrice, int comboPriceNumeric,
                                   boolean isBestPairing, String beforeTotal, RefundableEnum isRefundable,
                                   boolean isReturning, FlightFareViewModel fare, List<Route> routeList,
-                                  List<FlightAirlineDB> airlineDataList, String comboId) {
+                                  List<FlightAirlineViewModel> airlineDataList, String comboId) {
         this.term = term;
         this.id = id;
         this.departureAirport = departureAirport;
@@ -188,7 +188,7 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
         return routeList;
     }
 
-    public List<FlightAirlineDB> getAirlineDataList() {
+    public List<FlightAirlineViewModel> getAirlineDataList() {
         return airlineDataList;
     }
 

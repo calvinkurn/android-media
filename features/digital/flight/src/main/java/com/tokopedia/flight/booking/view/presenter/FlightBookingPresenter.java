@@ -889,13 +889,13 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
         if (flightBookingCartData.getDepartureTrip() != null)
             for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-                if (data.isAirlineMandatoryDOB() == 1)
+//                if (data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 
         if (flightBookingCartData.getReturnTrip() != null)
             for (FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-                if (data.isAirlineMandatoryDOB() == 1)
+//                if (data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 
