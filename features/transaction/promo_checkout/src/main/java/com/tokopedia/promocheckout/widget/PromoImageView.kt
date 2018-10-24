@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list.widget
+package com.tokopedia.promocheckout.widget
 
 import android.content.Context
 import android.util.AttributeSet

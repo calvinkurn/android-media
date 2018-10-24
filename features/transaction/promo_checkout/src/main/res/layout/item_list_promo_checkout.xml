@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.tokopedia.promocheckout.list.widget.PromoImageView
+        <com.tokopedia.promocheckout.widget.PromoImageView
             android:id="@+id/imageBannerPromo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
