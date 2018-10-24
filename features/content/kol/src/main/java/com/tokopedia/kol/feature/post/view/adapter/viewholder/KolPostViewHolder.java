@@ -342,7 +342,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
                     KolEventTracking.Action.SHOP_ITEM_CLICK,
-                    String.valueOf(element.getKolId())
+                    String.valueOf(element.getContentId())
             );
         }
 
