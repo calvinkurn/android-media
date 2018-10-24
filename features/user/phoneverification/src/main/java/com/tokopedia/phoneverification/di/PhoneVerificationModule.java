@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
+import com.tokopedia.phoneverification.PhoneVerificationInterceptor;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.user.session.UserSession;
 
@@ -44,8 +44,8 @@ public class PhoneVerificationModule {
     @PhoneVerificationQualifier
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
-                                     @PhoneVerificationQualifier TkpdAuthInterceptor
-                                             tkpdAuthInterceptor,
+                                     @PhoneVerificationQualifier PhoneVerificationInterceptor
+                                             phoneVerificationInterceptor,
                                      @PhoneVerificationQualifier OkHttpRetryPolicy retryPolicy,
                                      @PhoneVerificationQualifier FingerprintInterceptor
                                              fingerprintInterceptor,
@@ -55,7 +55,7 @@ public class PhoneVerificationModule {
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(phoneVerificationInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(errorResponseInterceptor);
 
@@ -81,10 +81,10 @@ public class PhoneVerificationModule {
 
     @Provides
     @PhoneVerificationQualifier
-    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+    PhoneVerificationInterceptor providePhoneVerificationInterceptor(@ApplicationContext Context context,
                                                    @PhoneVerificationQualifier NetworkRouter networkRouter,
                                                    UserSession userSession){
-        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+        return new PhoneVerificationInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
