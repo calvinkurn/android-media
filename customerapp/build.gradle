@@ -38,9 +38,12 @@ def allowSplit() {
 }
 
 def allowDistribution() {
+    project.logger.info("allowDistribution-start")
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        project.logger.info(tkpdBuildType)
         return "true";
     }
+    project.logger.info("allowDistribution-end")
     return "false";
 }
 
