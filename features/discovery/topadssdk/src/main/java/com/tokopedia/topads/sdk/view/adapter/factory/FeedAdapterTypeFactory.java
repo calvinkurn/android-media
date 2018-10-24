@@ -49,7 +49,7 @@ public class FeedAdapterTypeFactory implements FeedTypeFactory {
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductFeedNewViewHolder.LAYOUT) {
-            holder = new ProductFeedNewViewHolder(view, imageLoader, itemClickListener);
+            holder = new ProductFeedNewViewHolder(view, itemClickListener);
         } else if (viewType == ShopFeedNewViewHolder.LAYOUT) {
             holder = new ShopFeedNewViewHolder(view, imageLoader, itemClickListener);
         } else {
