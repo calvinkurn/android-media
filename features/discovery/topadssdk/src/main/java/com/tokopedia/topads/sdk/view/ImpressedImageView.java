@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.v7.widget.AppCompatImageView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -33,17 +34,15 @@ public class ImpressedImageView extends AppCompatImageView {
 
     public ImpressedImageView(Context context) {
         super(context);
-        registerObserver(this);
     }
 
     public ImpressedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        registerObserver(this);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         registerObserver(this);
     }
 
@@ -53,10 +52,11 @@ public class ImpressedImageView extends AppCompatImageView {
             public void onScrollChanged() {
                 if(isVisible(view) && image!=null && !image.isImpressed()){
                     new ImpresionTask().execute(image.getM_url());
+                    image.setImpressed(true);
+                    getViewTreeObserver().removeOnScrollChangedListener(this);
                     if(hintListener!=null){
                         hintListener.onViewHint();
                     }
-                    image.setImpressed(true);
                 }
             }
         });
