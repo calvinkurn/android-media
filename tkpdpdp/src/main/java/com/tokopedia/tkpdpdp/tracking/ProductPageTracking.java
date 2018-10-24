@@ -44,22 +44,7 @@ public class ProductPageTracking {
     public static final String USE_VOUCHER = "use voucher";
 
     private static String joinDash(String... s) {
-        return join(" - ", s);
-    }
-
-    private static String join(String separator, String... s) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(s[0]);
-        int index = 1;
-        int length = s.length;
-        while (length > index) {
-            if (!TextUtils.isEmpty(s[index])) {
-                stringBuilder.append(separator);
-                stringBuilder.append(s[index]);
-            }
-            index++;
-        }
-        return stringBuilder.toString();
+        return TextUtils.join(" - ", s);
     }
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
