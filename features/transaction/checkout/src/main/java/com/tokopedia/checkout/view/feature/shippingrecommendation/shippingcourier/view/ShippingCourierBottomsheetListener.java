@@ -10,7 +10,7 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 public interface ShippingCourierBottomsheetListener {
 
     void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                          int cartPosition, boolean hasCourierPromo, boolean isPromoCourier);
+                          int cartPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint);
 
     void onCourierShipmentRecpmmendationCloseClicked();
 

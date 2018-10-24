@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurat
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -23,6 +24,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,16 +220,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, String serviceName, boolean hasCourierPromo) {
+                                          int cartPosition, ServiceData serviceData, boolean hasCourierPromo) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         if (isToogleYearEndPromotionOn()) {
-            if (shippingCourierViewModels.size() > 0 && shippingCourierViewModels.get(0).getServiceData().getError() != null &&
-                    shippingCourierViewModels.get(0).getProductData().getError().getErrorMessage() != null &&
-                    shippingCourierViewModels.get(0).getProductData().getError().getErrorId() != null &&
-                    shippingCourierViewModels.get(0).getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+            if (serviceData.getError() != null && serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED) &&
+                    !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
                 flagNeedToSetPinpoint = true;
-                selectedServiceId = shippingCourierViewModels.get(0).getServiceData().getServiceId();
+                selectedServiceId = serviceData.getServiceId();
             }
         } else {
             for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
@@ -246,7 +246,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName,
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
                     flagNeedToSetPinpoint, hasCourierPromo);
         }
         dismiss();

@@ -138,7 +138,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo) {
+    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean hasCourierPromo, boolean isNeedPinpoint) {
         if (shippingCourierViewModel.getProductData().getError() != null) {
             if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 presenter.updateSelectedCourier(shippingCourierViewModel);
@@ -149,7 +149,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
         shippingCourierBottomsheetListener.onCourierChoosen(
                 courierItemData, presenter.getRecipientAddressModel(), cartPosition, hasCourierPromo,
-                !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()));
+                !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()), isNeedPinpoint);
         dismiss();
     }
 

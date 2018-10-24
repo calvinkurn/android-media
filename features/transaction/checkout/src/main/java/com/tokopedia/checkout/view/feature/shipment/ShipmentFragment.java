@@ -1551,11 +1551,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
-                                 int cartItemPosition, boolean hasCourierPromo, boolean isPromoCourier) {
-        if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+                                 int cartItemPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint) {
+        sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());
+        if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
                 recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
+                recipientAddressModel.getLongitude().equalsIgnoreCase("0")))) {
             setPinpoint(cartItemPosition);
         } else {
             sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());

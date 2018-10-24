@@ -77,12 +77,6 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
-
-<<<<<<< HEAD
-=======
-        <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
-
->>>>>>> 3056e193883cfb3a539256e4dcee2a9f1c641765
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"

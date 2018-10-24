@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface ShippingDurationAdapterListener {
 
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList,
-                                   int cartPosition, String serviceName, boolean hasCourierPromo);
+                                   int cartPosition, ServiceData serviceData, boolean hasCourierPromo);
 
     void onAllShippingDurationItemShown();
 

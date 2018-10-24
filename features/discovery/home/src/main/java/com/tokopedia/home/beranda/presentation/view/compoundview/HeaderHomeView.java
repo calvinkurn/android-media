@@ -211,7 +211,6 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(R.string.home_header_tokocash_unable_to_load_label);
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label);
             tvActionTokocash.setVisibility(VISIBLE);
             tvTitleTokocash.setVisibility(GONE);
@@ -240,13 +239,13 @@ public class HeaderHomeView extends BaseCustomView {
         tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
         tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
         ivLogoTokocash.setImageResource(R.drawable.ic_tokocash);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
 
         if (homeHeaderWalletAction.isLinked()) {
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
@@ -287,6 +286,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvActionTokocash.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkActionButton()));
         tokoCashHolder.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkBalance()));
         ivLogoTokocash.setImageResource(R.drawable.wallet_ic_ovo_home);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
 
         if (homeHeaderWalletAction.isLinked()) {
             pointsOvo.setVisibility(VISIBLE);

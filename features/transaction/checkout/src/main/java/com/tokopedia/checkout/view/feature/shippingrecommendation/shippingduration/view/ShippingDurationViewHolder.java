@@ -94,7 +94,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                     shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
                     shippingDurationAdapterListener.onShippingDurationChoosen(
                             shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition,
-                            shippingDurationViewModel.getServiceData().getServiceName(), hasCourierPromo);
+                            shippingDurationViewModel.getServiceData(), hasCourierPromo);
                 }
             }
         });

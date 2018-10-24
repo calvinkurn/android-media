@@ -291,8 +291,6 @@ public interface ProductDetailView extends ViewListener {
 
     void showSuccessWishlistSnackBar();
 
-    void showPromoWidget(PromoAttributes promoAttributes);
-
     void onPromoWidgetCopied();
 
     void showProductCampaign();
@@ -321,6 +319,8 @@ public interface ProductDetailView extends ViewListener {
 
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
 
+    void loadPromo();
+
     boolean isSellerApp();
 
     void renderAddToCartSuccess(AddToCartResult addToCartResult);
@@ -342,4 +342,6 @@ public interface ProductDetailView extends ViewListener {
     void onSuccesLoadRateEstimaion(RatesModel ratesModel);
 
     void moveToEstimationDetail();
+
+    void showPromoWidget(PromoAttributes promoAttributes);
 }
