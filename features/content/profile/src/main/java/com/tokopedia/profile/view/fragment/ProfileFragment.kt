@@ -82,6 +82,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
         private const val SETTING_PROFILE_CODE = 83
+        private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
 
         fun createInstance(bundle: Bundle): ProfileFragment {
@@ -134,7 +135,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
-            SETTING_PROFILE_CODE, EDIT_POST_CODE -> {
+            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE -> {
                 onSwipeRefresh()
             }
         }
@@ -652,7 +653,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun goToOnboading() {
         val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_ONBOARDING)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        startActivityForResult(intent, ONBOARDING_CODE)
     }
 
     private fun goToAffiliateExplore() {
