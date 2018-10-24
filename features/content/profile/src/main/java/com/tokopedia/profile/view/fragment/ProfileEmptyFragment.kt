@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -14,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
@@ -29,6 +31,9 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
         ProfileEmptyContract.View {
 
     private var userId: Int = 0
+
+    override lateinit var profileRouter: ProfileModuleRouter
+
     @Inject
     lateinit var presenter: ProfileEmptyContract.Presenter
 
@@ -48,7 +53,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        GraphqlClient.init(context!!)
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
@@ -62,6 +66,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
+        GraphqlClient.init(context!!)
         DaggerProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
                 .build()
@@ -113,6 +118,12 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     private fun initVar() {
         arguments?.let {
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
+        }
+        if (context!!.applicationContext is ProfileModuleRouter) {
+            profileRouter = context!!.applicationContext as ProfileModuleRouter
+        } else {
+            throw IllegalStateException("Application must implement "
+                    .plus(ProfileModuleRouter::class.java.simpleName))
         }
     }
 }

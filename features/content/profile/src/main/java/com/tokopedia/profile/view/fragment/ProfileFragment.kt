@@ -69,9 +69,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
+    override lateinit var profileRouter: ProfileModuleRouter
+
     @Inject
     lateinit var presenter: ProfileContract.Presenter
-    lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
         private const val POST_ID = "{post_id}"
