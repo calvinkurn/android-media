@@ -1033,7 +1033,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-        renderTopAds(15);
+        renderTopAds(5);
     }
 
     private float getUnformattedWeight(String productWeight) {

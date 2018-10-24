@@ -10,6 +10,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
@@ -51,6 +53,11 @@ public class ProductModule {
             @MojitoGetWishlistQualifier MojitoApi service) {
         return new GetProductUseCase(context, threadExecutor,
                 postExecutionThread, productRepository, bannerRepository, service);
+    }
+
+    @Provides
+    RemoteConfig provideRemoteConfig(@ApplicationContext Context context){
+        return new FirebaseRemoteConfigImpl(context);
     }
 
     @Provides

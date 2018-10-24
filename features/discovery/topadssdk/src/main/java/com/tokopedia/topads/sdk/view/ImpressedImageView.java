@@ -13,8 +13,11 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import android.view.ViewTreeObserver;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author by errysuprayogi on 3/27/17.
@@ -26,6 +29,7 @@ public class ImpressedImageView extends AppCompatImageView {
     public static final int BOTTOM_MARGIN = 50;
     private ProductImage image;
     private boolean execute;
+    private ViewHintListener hintListener;
 
     public ImpressedImageView(Context context) {
         super(context);
@@ -49,6 +53,9 @@ public class ImpressedImageView extends AppCompatImageView {
             public void onScrollChanged() {
                 if(isVisible(view) && image!=null && !image.isImpressed()){
                     new ImpresionTask().execute(image.getM_url());
+                    if(hintListener!=null){
+                        hintListener.onViewHint();
+                    }
                     image.setImpressed(true);
                 }
             }
@@ -76,6 +83,10 @@ public class ImpressedImageView extends AppCompatImageView {
         return Resources.getSystem().getDisplayMetrics().heightPixels - offsetBottomMargin(BOTTOM_MARGIN);
     }
 
+    public void setViewHintListener(ViewHintListener hintListener) {
+        this.hintListener = hintListener;
+    }
+
     public void setImage(ProductImage image) {
         this.image = image;
         Glide.with(getContext()).load(image.getM_ecs()).into(this);
@@ -86,5 +97,9 @@ public class ImpressedImageView extends AppCompatImageView {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return (int) px;
+    }
+
+    public interface ViewHintListener {
+        void onViewHint();
     }
 }

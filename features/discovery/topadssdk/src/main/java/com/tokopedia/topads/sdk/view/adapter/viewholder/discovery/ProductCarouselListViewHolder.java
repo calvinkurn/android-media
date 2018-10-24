@@ -78,6 +78,12 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
