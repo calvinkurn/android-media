@@ -109,17 +109,17 @@ public class PinEditText extends AppCompatEditText {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEditText, 0, 0);
         try {
             TypedValue outValue = new TypedValue();
-            ta.getValue(R.styleable.PinEntryEditText_pinAnimationType, outValue);
+            ta.getValue(R.styleable.PinEditText_AnimationType, outValue);
             mAnimatedType = outValue.data;
-            mMask = ta.getString(R.styleable.PinEntryEditText_pinCharacterMask);
-            mSingleCharHint = ta.getString(R.styleable.PinEntryEditText_pinRepeatedHint);
-            mLineStroke = ta.getDimension(R.styleable.PinEntryEditText_pinLineStroke, mLineStroke);
-            mLineStrokeSelected = ta.getDimension(R.styleable.PinEntryEditText_pinLineStrokeSelected, mLineStrokeSelected);
-            mSpace = ta.getDimension(R.styleable.PinEntryEditText_pinCharacterSpacing, mSpace);
-            mTextBottomPadding = ta.getDimension(R.styleable.PinEntryEditText_pinTextBottomPadding, mTextBottomPadding);
-            mIsDigitSquare = ta.getBoolean(R.styleable.PinEntryEditText_pinBackgroundIsSquare, mIsDigitSquare);
-            mPinBackground = ta.getDrawable(R.styleable.PinEntryEditText_pinBackgroundDrawable);
-            ColorStateList colors = ta.getColorStateList(R.styleable.PinEntryEditText_pinLineColors);
+            mMask = ta.getString(R.styleable.PinEditText_CharacterMask);
+            mSingleCharHint = ta.getString(R.styleable.PinEditText_RepeatedHint);
+            mLineStroke = ta.getDimension(R.styleable.PinEditText_LineStroke, mLineStroke);
+            mLineStrokeSelected = ta.getDimension(R.styleable.PinEditText_LineStrokeSelected, mLineStrokeSelected);
+            mSpace = ta.getDimension(R.styleable.PinEditText_CharacterSpacing, mSpace);
+            mTextBottomPadding = ta.getDimension(R.styleable.PinEditText_TextBottomPadding, mTextBottomPadding);
+            mIsDigitSquare = ta.getBoolean(R.styleable.PinEditText_BackgroundIsSquare, mIsDigitSquare);
+            mPinBackground = ta.getDrawable(R.styleable.PinEditText_BackgroundDrawable);
+            ColorStateList colors = ta.getColorStateList(R.styleable.PinEditText_LineColors);
             if (colors != null) {
                 mColorStates = colors;
             }
@@ -373,7 +373,7 @@ public class PinEditText extends AppCompatEditText {
     }
 
     /**
-     * Request focus on this PinEntryEditText
+     * Request focus on this PinEditText
      */
     public void focus() {
         requestFocus();
