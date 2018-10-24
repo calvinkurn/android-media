@@ -155,7 +155,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         progressBar = rootview.findViewById(R.id.train_review_progress_bar);
 
         voucherCartHachikoView.setActionListener(this);
-        voucherCartHachikoView.setPromoLabelOnly();
+        voucherCartHachikoView.setPromoAndCouponLabel();
 
         ArrayList<String> messages = new ArrayList<>();
         messages.add("Cek kembali detail pesanan Anda sebelum lanjut ke halaman pembayaran");
