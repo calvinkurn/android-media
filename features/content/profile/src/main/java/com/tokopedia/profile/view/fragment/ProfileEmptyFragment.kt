@@ -33,8 +33,8 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     companion object {
         private const val SETTING_PROFILE_CODE = 83
 
-        fun createInstance(bundle: Bundle): ProfileFragment {
-            val fragment = ProfileFragment()
+        fun createInstance(bundle: Bundle): ProfileEmptyFragment {
+            val fragment = ProfileEmptyFragment()
             fragment.arguments = bundle
             return fragment
         }
