@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:gravity="bottom"
     android:orientation="vertical">
 
     <LinearLayout
@@ -120,6 +121,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:foregroundGravity="bottom"
         android:minHeight="@dimen/dp_150" />
 
 </LinearLayout>

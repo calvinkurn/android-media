@@ -305,7 +305,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     public void collapse(final View v) {
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = lastCollapseHeight == 0? v.getMeasuredHeight() : lastCollapseHeight;
+        final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight? v.getMeasuredHeight() : lastCollapseHeight;
         CommonUtils.dumper("Target : " + targetHeight);
         CommonUtils.dumper("Current : " + currentHeight);
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
