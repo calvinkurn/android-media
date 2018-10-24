@@ -197,7 +197,6 @@ ext {
             logout                      : ":features:user:logout",
             notifCenter                 : ":features:user:notifcenter",
             otp                         : ":features:user:otp",
-            profile                     : ":features:user:profile",
             settingbank                 : ":features:user:settingbank",
             talk                        : ":features:user:talk",
             topchat                     : ":features:user:topchat",
