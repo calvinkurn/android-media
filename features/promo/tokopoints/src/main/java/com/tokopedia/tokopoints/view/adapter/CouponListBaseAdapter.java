@@ -18,9 +18,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.library.pagination.PaginationAdapter;
-import com.tokopedia.library.pagination.PaginationAdapterCallback;
-import com.tokopedia.library.pagination.PaginationItem;
+import com.tokopedia.library.pagination.AdapterCallback;
+import com.tokopedia.library.pagination.BaseAdapter;
+import com.tokopedia.library.pagination.BaseItem;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
@@ -37,12 +37,12 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEntity> {
+public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
 
-    public class ViewHolder extends PaginationAdapter.BaseVH {
+    public class ViewHolder extends BaseAdapter.BaseVH {
         TextView description, label, value, btnContinue;
         ImageView imgBanner, imgLabel;
         public boolean isVisited = false;
@@ -62,12 +62,12 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
         }
 
         @Override
-        public void bindView(PaginationItem item, int position) {
+        public void bindView(BaseItem item, int position) {
             setData(this, (CouponValueEntity) item);
         }
     }
 
-    public CouponListPaginationAdapter(CatalogPurchaseRedemptionPresenter presenter, PaginationAdapterCallback callback, Context context) {
+    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context) {
         super(callback);
         this.mPresenter = presenter;
         this.mContext = context;
@@ -138,12 +138,12 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.tp_item_coupon, parent, false);
 
-        return new CouponListPaginationAdapter.ViewHolder(itemView);
+        return new CouponListBaseAdapter.ViewHolder(itemView);
     }
 
     @Override
-    public void loadMore(int pageNumber) {
-        super.loadMore(pageNumber);
+    public void loadData(int pageNumber) {
+        super.loadData(pageNumber);
 
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         graphqlUseCase.clearRequest();

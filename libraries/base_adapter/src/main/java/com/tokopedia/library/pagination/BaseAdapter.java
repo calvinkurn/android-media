@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PaginationAdapter<T extends PaginationItem> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int LOADING = -94567;
     private static final int ERROR_ITEM_COUNT = -1;
@@ -37,15 +36,15 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
     private boolean mIsError = false;
 
     /*Callback method for library consumer*/
-    private PaginationAdapterCallback mCallback;
+    private AdapterCallback mCallback;
 
     private View mRetryView, mLoaderView;
 
     private List<T> mItems;
 
-    protected PaginationAdapter(PaginationAdapterCallback callback) {
+    protected BaseAdapter(AdapterCallback callback) {
         if (callback == null) {
-            throw new RuntimeException("PaginationAdapterCallback object cannot be null");
+            throw new RuntimeException("AdapterCallback object cannot be null");
         }
 
         this.mItems = new ArrayList<>();
@@ -102,7 +101,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @return Footer object T
      */
     final T getFooterObject() {
-        return (T) new PaginationItem();
+        return (T) new BaseItem();
     }
 
     public String getRetryButtonLabel(Context context) {
@@ -180,7 +179,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
 
     /**
      * <b>PLEASE DO NOT OVERRIDE<b/>
-     * This one the magic to detect scroll and invoke <code>loadMore(int)<code/>
+     * This one the magic to detect scroll and invoke <code>loadData(int)<code/>
      *
      * @param recyclerView RecyclerView instance
      */
@@ -217,7 +216,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
             }
         }
 
-        loadMore(mCurrentPageIndex);
+        loadData(mCurrentPageIndex);
     }
 
     /**
@@ -286,7 +285,7 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
      * @param currentPageIndex
      */
     @CallSuper
-    public void loadMore(int currentPageIndex) {
+    public void loadData(int currentPageIndex) {
         setLoading(true);
     }
 
@@ -388,14 +387,14 @@ public abstract class PaginationAdapter<T extends PaginationItem> extends Recycl
 
         @Override
         public void onClick(View view) {
-            loadMore(mCurrentPageIndex);
+            loadData(mCurrentPageIndex);
             if (mCallback != null) {
                 mCallback.onRetryPageLoad(mCurrentPageIndex);
             }
         }
 
         @Override
-        public void bindView(PaginationItem item, int position) {
+        public void bindView(BaseItem item, int position) {
             if (mIsError) {
                 if (mRetryView == null) {
                     mRetryView = getRetryView(container.getContext());

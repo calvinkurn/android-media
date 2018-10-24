@@ -1,6 +1,6 @@
 package com.tokopedia.library.pagination;
 
-public class PaginationItem {
+public class BaseItem {
     private String labelRetry;
     private String retryMessage;
 
@@ -22,7 +22,7 @@ public class PaginationItem {
 
     @Override
     public String toString() {
-        return "PaginationItem{" +
+        return "BaseItem{" +
                 ", labelRetry='" + labelRetry + '\'' +
                 ", retryMessage='" + retryMessage + '\'' +
                 '}';

@@ -439,6 +439,6 @@ ext {
             omsApi            : ":libraries:oms",
             youtubeutil       : ":libraries:youtubeutil",
             travelCalendar    : ":libraries:travel_calendar",
-            pagination        : ":libraries:pagination"
+            baseAdapter        : ":libraries:base_adapter"
     ]
 }
