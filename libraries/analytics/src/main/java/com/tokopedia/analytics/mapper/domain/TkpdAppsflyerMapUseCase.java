@@ -1,9 +1,7 @@
 package com.tokopedia.analytics.mapper.domain;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -70,8 +68,6 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
         return ObservableFactory.create(Arrays.asList(graphqlRequest), null).map(new Func1<GraphqlResponse, Boolean>() {
             @Override
             public Boolean call(GraphqlResponse graphqlResponse) {
-
-
                 AppsflyerMappingResponse response = graphqlResponse.getData(AppsflyerMappingResponse.class);
                 cacheManager.save(USER_ID, finalUserID,30*24*60*60);
                 cacheManager.save(APPSFLYER_ID, finalAppsFlyerId,30*24*60*60);
