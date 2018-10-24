@@ -21,7 +21,11 @@ import java.util.Map;
 
 public class ProductPageTracking {
 
+    public static final String CLICK = "click";
+    public static final String IMPRESSION = "impression";
+
     public static final String CLICK_PDP = "clickPDP";
+    public static final String VIEW_PDP = "viewPDP";
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
     public static final String CLICK_OS_PROMO = "clickOSPromo";
     public static final String PDP_PROMO_WIDGET_PROMO = "pdp promo widget - promo";
@@ -32,6 +36,31 @@ public class ProductPageTracking {
     public static final String PDP_PROMO_CLICK_ON_PROMO_SHORT_DESC = "user click on promo short desc";
     public static final String PDP_PROMO_IMPRESSION_EVENT_ACTION = "user impression on promo";
     public static final String EVENT_CATEGORY_PROMO_PDP = "pdp promo widget - promo";
+
+    // MERCHANT VOUCHER
+    public static final String MERCHANT_VOUCHER = "merchant voucher";
+    public static final String SEE_ALL = "see all";
+    public static final String MVC_DETAIL = "mvc detail";
+    public static final String USE_VOUCHER = "use voucher";
+
+    private static String joinDash(String... s) {
+        return join(" - ", s);
+    }
+
+    private static String join(String separator, String... s) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(s[0]);
+        int index = 1;
+        int length = s.length;
+        while (length > index) {
+            if (!TextUtils.isEmpty(s[index])) {
+                stringBuilder.append(separator);
+                stringBuilder.append(s[index]);
+            }
+            index++;
+        }
+        return stringBuilder.toString();
+    }
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
@@ -261,6 +290,58 @@ public class ProductPageTracking {
                                 )
                         )
                 )
+        );
+    }
+
+    public static void eventClickMerchantVoucherSeeAll(Context context, String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                joinDash(CLICK, MERCHANT_VOUCHER, SEE_ALL),
+                productId
+        );
+    }
+
+    public static void eventClickMerchantVoucherSeeDetail(Context context, String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                joinDash(CLICK, MERCHANT_VOUCHER, MVC_DETAIL),
+                productId
+        );
+    }
+
+    public static void eventClickMerchantVoucherUse(Context context, String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                CLICK_PDP,
+                PRODUCT_DETAIL_PAGE,
+                joinDash(CLICK, MERCHANT_VOUCHER, USE_VOUCHER),
+                productId
+        );
+    }
+
+    public static void eventImpressionMerchantVoucherUse(Context context, String productId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                VIEW_PDP,
+                PRODUCT_DETAIL_PAGE,
+                joinDash(IMPRESSION, MERCHANT_VOUCHER, USE_VOUCHER),
+                productId
         );
     }
 }
