@@ -9,15 +9,15 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.tokopedia.kelontongapp.firebase.Preference;
+import com.tokopedia.kelontongapp.helper.ConnectionManager;
 import com.tokopedia.kelontongapp.webview.KelontongWebChromeClient;
 import com.tokopedia.kelontongapp.webview.FilePickerInterface;
 import com.tokopedia.kelontongapp.webview.KelontongWebview;
@@ -53,14 +53,28 @@ public class KelontongMainActivity extends AppCompatActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_kelontong);
 
-        initializeWebview();
+        loadWebViewPage();
+    }
 
-        if (Preference.isFirstTime(this)) {
-            requestPermission();
-            Preference.saveFirstTime(this);
+    private void loadWebViewPage() {
+        if (ConnectionManager.isNetworkConnected(this)) {
+            setContentView(R.layout.activity_main_kelontong);
+            initializeWebview();
+
+            if (Preference.isFirstTime(this)) {
+                requestPermission();
+                Preference.saveFirstTime(this);
+            }
+        } else {
+            noInternetConnection();
         }
+    }
+
+    private void noInternetConnection() {
+        setContentView(R.layout.activity_no_internet);
+        Button btnTryAgain = findViewById(R.id.btn_retry);
+        btnTryAgain.setOnClickListener(v -> loadWebViewPage());
     }
 
     private void initializeWebview() {
