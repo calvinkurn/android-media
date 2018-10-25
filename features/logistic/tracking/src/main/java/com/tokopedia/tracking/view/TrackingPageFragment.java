@@ -132,8 +132,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
-        trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
         sendAnalyticsOnViewTrackingRendered();
@@ -157,7 +156,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void closeMainLoadingPage() {
         loadingScreen.dismiss();
         rootView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -181,6 +179,17 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 });
     }
 
+    private void setHistoryView(TrackingViewModel model) {
+        if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
+                model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
+            trackingHistory.setVisibility(View.GONE);
+        } else {
+            trackingHistory.setVisibility(View.VISIBLE);
+            trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+            trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        }
+    }
+
     private void setEmptyHistoryView(TrackingViewModel model) {
         if (model.isInvalid() || model.getStatus().toLowerCase().contains(INVALID_REFERENCE_STATUS)) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
@@ -188,10 +197,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             notificationHelpStep.setVisibility(View.VISIBLE);
             notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
             notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
-        } else if (model.getChange() == 0 || model.getHistoryList().size() == 0) {
+        } else if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+                || model.getChange() == 0 || model.getHistoryList().size() == 0) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
+            notificationText.setText(getString(R.string.warning_no_courier_change));
+            notificationHelpStep.setVisibility(View.GONE);
         } else {
-            trackingHistory.setVisibility(View.VISIBLE);
+            emptyUpdateNotification.setVisibility(View.GONE);
+            notificationHelpStep.setVisibility(View.GONE);
         }
     }
 

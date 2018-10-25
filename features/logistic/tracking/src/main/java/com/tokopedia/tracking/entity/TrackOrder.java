@@ -16,13 +16,13 @@ public class TrackOrder {
 
     @SerializedName("change")
     @Expose
-    private Integer change;
+    private int change;
     @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("no_history")
     @Expose
-    private Integer noHistory;
+    private int noHistory;
     @SerializedName("track_history")
     @Expose
     private List<TrackHistory> trackHistory = new ArrayList<TrackHistory>();
@@ -31,7 +31,7 @@ public class TrackOrder {
     private String receiverName;
     @SerializedName("order_status")
     @Expose
-    private Integer orderStatus;
+    private int orderStatus;
     @SerializedName("detail")
     @Expose
     private Detail detail;
@@ -40,77 +40,41 @@ public class TrackOrder {
     private String shippingRefNum;
     @SerializedName("invalid")
     @Expose
-    private Integer invalid;
+    private int invalid;
 
-    public Integer getChange() {
+    public int getChange() {
         return change;
-    }
-
-    public void setChange(Integer change) {
-        this.change = change;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getNoHistory() {
+    public int getNoHistory() {
         return noHistory;
-    }
-
-    public void setNoHistory(Integer noHistory) {
-        this.noHistory = noHistory;
     }
 
     public List<TrackHistory> getTrackHistory() {
         return trackHistory;
     }
 
-    public void setTrackHistory(List<TrackHistory> trackHistory) {
-        this.trackHistory = trackHistory;
-    }
-
     public String getReceiverName() {
         return receiverName;
     }
 
-    public void setReceiverName(String receiverName) {
-        this.receiverName = receiverName;
-    }
-
-    public Integer getOrderStatus() {
+    public int getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(Integer orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public Detail getDetail() {
         return detail;
     }
 
-    public void setDetail(Detail detail) {
-        this.detail = detail;
-    }
-
     public String getShippingRefNum() {
         return shippingRefNum;
     }
 
-    public void setShippingRefNum(String shippingRefNum) {
-        this.shippingRefNum = shippingRefNum;
-    }
-
-    public Integer getInvalid() {
+    public int getInvalid() {
         return invalid;
-    }
-
-    public void setInvalid(Integer invalid) {
-        this.invalid = invalid;
     }
 }

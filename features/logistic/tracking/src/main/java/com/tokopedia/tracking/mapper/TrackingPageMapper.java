@@ -28,6 +28,7 @@ public class TrackingPageMapper implements ITrackingPageMapper {
         model.setServiceCode(order.getDetail().getServiceCode());
         model.setChange(order.getChange());
         model.setStatus(order.getStatus());
+        model.setStatusNumber(order.getOrderStatus());
 
         List<TrackingHistoryViewModel> trackingHistoryViewModels = new ArrayList<>();
         for (int i = 0; i < order.getTrackHistory().size(); i++) {
