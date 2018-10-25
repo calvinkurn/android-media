@@ -88,6 +88,9 @@ public class SearchProductGqlResponse {
         @SerializedName("count_text")
         @Expose
         private String countText;
+        @SerializedName("additional_params")
+        @Expose
+        private String additionalParams;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection;
@@ -126,6 +129,10 @@ public class SearchProductGqlResponse {
 
         public String getCountText() {
             return countText;
+        }
+
+        public String getAdditionalParams() {
+            return additionalParams;
         }
 
         public Redirection getRedirection() {

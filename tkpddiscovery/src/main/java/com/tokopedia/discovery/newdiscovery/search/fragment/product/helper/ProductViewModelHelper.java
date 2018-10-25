@@ -70,6 +70,7 @@ public class ProductViewModelHelper {
         if (gqlResponse.getQuickFilterModel() != null) {
             productViewModel.setQuickFilterModel(gqlResponse.getQuickFilterModel());
         }
+        productViewModel.setAdditionalParams(gqlResponse.getSearchProduct().getAdditionalParams());
         return productViewModel;
     }
 
