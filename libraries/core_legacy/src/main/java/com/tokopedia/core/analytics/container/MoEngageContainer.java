@@ -1,13 +1,12 @@
 package com.tokopedia.core.analytics.container;
 
 import android.app.Application;
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.core.MoEngage;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;

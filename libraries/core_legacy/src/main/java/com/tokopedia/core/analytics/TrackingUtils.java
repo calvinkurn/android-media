@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,17 +11,15 @@ import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.legacy.CommonUtils;
+import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -680,12 +677,12 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine(context).setPushPreference(status);
     }
 
-    public static void sendMoEngageEvents(String eventName, Map<String, Object> values) {
+    public static void sendMoEngageEvents(Context context, String eventName, Map<String, Object> values) {
         PayloadBuilder builder = new PayloadBuilder();
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             builder.putAttrObject(entry.getKey(), entry.getValue());
         }
-        getMoEngine().sendEvent(builder.build(), eventName);
+        getMoEngine(context).sendEvent(builder.build(), eventName);
     }
 }
 

@@ -7,9 +7,9 @@ import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
-import com.tkpd.library.utils.CommonUtils;
-//import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.legacy.CommonUtils;
+//import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
+import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.appsflyer.Jordan;

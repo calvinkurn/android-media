@@ -76,7 +76,7 @@ public class CourierActivity extends TActivity {
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                         String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
-                        UnifyTracking.eventPDPOrientationChanged(productId);
+                        UnifyTracking.eventPDPOrientationChanged(this, productId);
                         localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                         localCacheHandler.applyEditor();
                     }

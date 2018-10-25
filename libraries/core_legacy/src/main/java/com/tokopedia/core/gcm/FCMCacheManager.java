@@ -13,7 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.deprecated.SessionHandler;

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 
 /**
  * @author  by alvarisi on 1/9/17.

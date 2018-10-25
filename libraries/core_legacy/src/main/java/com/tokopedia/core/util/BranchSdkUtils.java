@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.BaseAbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -39,7 +37,6 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
-import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.

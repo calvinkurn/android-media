@@ -2,15 +2,13 @@ package com.tokopedia.core.analytics.container;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
-import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 

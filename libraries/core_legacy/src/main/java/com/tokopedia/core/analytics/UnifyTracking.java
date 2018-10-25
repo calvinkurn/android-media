@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.MethodChecker;
+import com.tkpd.library.utils.legacy.CommonUtils;
+import com.tkpd.library.utils.legacy.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
@@ -1275,8 +1275,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCTAAction() {
-        eventCTAAction(AppEventTracking.EventLabel.CTA);
+    public static void eventCTAAction(Context context) {
+        eventCTAAction(context, AppEventTracking.EventLabel.CTA);
     }
 
     public static void eventCTAAction(Context context, String channel) {

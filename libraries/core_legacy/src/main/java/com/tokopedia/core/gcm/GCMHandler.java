@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;

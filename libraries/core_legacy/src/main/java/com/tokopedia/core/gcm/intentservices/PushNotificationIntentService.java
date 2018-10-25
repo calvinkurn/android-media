@@ -3,7 +3,7 @@ package com.tokopedia.core.gcm.intentservices;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.data.PushNotificationDataInteractor;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;

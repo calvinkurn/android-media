@@ -58,7 +58,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
     public void onClick(View v) {
         if (v.getId() == R.id.simple_top_bar_close_button) {
             finish();
-            DescriptionActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+            DescriptionActivity.this.overridePendingTransition(0,com.tokopedia.core2.R.anim.push_down);
         }
     }
 
@@ -72,7 +72,7 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                 String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
-                UnifyTracking.eventPDPOrientationChanged(productId);
+                UnifyTracking.eventPDPOrientationChanged(this, productId);
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
                 localCacheHandler.applyEditor();
             }

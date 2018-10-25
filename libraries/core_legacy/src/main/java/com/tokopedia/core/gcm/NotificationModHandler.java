@@ -10,7 +10,7 @@ import android.content.pm.PackageManager;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.deprecated.LocalCacheHandler;

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.appsflyer.AppsFlyerConversionListener;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;

@@ -7,7 +7,7 @@ import android.util.Base64;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
@@ -17,7 +17,6 @@ import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerpri
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;

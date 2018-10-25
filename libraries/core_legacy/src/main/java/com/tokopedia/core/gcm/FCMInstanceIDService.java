@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 

@@ -8,8 +8,8 @@ import android.preference.PreferenceManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
-import com.tkpd.library.utils.AnalyticsLog;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;

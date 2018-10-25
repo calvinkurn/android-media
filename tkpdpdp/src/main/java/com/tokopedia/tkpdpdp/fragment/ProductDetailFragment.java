@@ -50,6 +50,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -67,7 +68,6 @@ import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewM
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
-import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -560,9 +560,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             appBarLayout.setVisibility(View.VISIBLE);
             if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
                 if (productData != null) {
-                    UnifyTracking.eventPDPOrientationChanged(Integer.toString(productData.getInfo().getProductId()));
+                    UnifyTracking.eventPDPOrientationChanged(getActivity(), Integer.toString(productData.getInfo().getProductId()));
                 } else {
-                    UnifyTracking.eventPDPOrientationChanged(productPass.getProductId());
+                    UnifyTracking.eventPDPOrientationChanged(getActivity(), productPass.getProductId());
                 }
                 localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED, Boolean.TRUE);
                 localCacheHandler.applyEditor();
@@ -896,7 +896,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     ),
                     REQUEST_PRODUCT_MODAL
             );
-            getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+            getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
         }
     }
 
@@ -921,11 +921,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             intent.putExtra(VariantActivity.KEY_SELLER_MODE, true);
         }
         startActivityForResult(intent, REQUEST_VARIANT);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
         if (productData.getInfo().getHasVariant()
                 && productVariant != null
                 && variantLevel1 != null) {
-            UnifyTracking.eventClickVariant(generateVariantString());
+            UnifyTracking.eventClickVariant(getActivity(), generateVariantString());
         }
 
     }
@@ -935,7 +935,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         Intent intent = new Intent(getActivity(), DescriptionActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
     @Override
@@ -943,7 +943,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         Intent intent = new Intent(getActivity(), InstallmentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-        getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, 0);
+        getActivity().overridePendingTransition(com.tokopedia.core2.R.anim.pull_up, 0);
     }
 
     @Override
@@ -1157,7 +1157,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showErrorVariant() {
         Snackbar snack = Snackbar.make(coordinatorLayout, getString(R.string.error_variant), Snackbar.LENGTH_INDEFINITE);
-        TextView tv = snack.getView().findViewById(com.tokopedia.core.R.id.snackbar_text);
+        TextView tv = snack.getView().findViewById(com.tokopedia.core2.R.id.snackbar_text);
         tv.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_54));
         tv.setMaxLines(5);
 
@@ -1404,11 +1404,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         (getActivity());
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(generateVariantString());
+                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
             } else {
                 startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
                 if (productData.getInfo().getHasVariant())
-                    UnifyTracking.eventClickCartVariant(generateVariantString());
+                    UnifyTracking.eventClickCartVariant(getActivity(), generateVariantString());
             }
             return true;
         } else if (i == R.id.action_report) {

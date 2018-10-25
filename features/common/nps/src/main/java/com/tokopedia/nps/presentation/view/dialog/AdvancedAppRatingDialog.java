@@ -64,7 +64,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
+                UnifyTracking.eventClickAppRating(v.getContext(), LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
                 dialog.dismiss();
                 saveVersionCodeForState();
                 saveRating(appRatingView.getRating());
@@ -80,7 +80,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
             @Override
             public void onClick(View v) {
                 hideDialog();
-                UnifyTracking.eventCancelAppRating(LABEL_CANCEL_ADVANCED_APP_RATING);
+                UnifyTracking.eventCancelAppRating(v.getContext(), LABEL_CANCEL_ADVANCED_APP_RATING);
                 dialog.dismiss();
             }
         });
@@ -132,6 +132,6 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected void onShowDialog() {
-        UnifyTracking.eventAppRatingImpression(this.getClass().getSimpleName());
+        UnifyTracking.eventAppRatingImpression(activity, this.getClass().getSimpleName());
     }
 }

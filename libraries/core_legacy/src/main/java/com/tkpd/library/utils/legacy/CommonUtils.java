@@ -1,7 +1,6 @@
-package com.tkpd.library.utils;
+package com.tkpd.library.utils.legacy;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -28,11 +27,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
 
 import java.io.BufferedReader;
 import java.io.File;

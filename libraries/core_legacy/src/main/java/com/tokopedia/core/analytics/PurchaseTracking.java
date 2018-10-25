@@ -46,7 +46,7 @@ public class PurchaseTracking extends TrackingUtils {
     public static void digital(Context context, Purchase purchase) {
         getGTMEngine(context).clearEnhanceEcommerce();
         getGTMEngine(context).eventPurchaseDigital(purchase);
-        appsFlyerPurchaseEvent(purchase,"Digital");
+        appsFlyerPurchaseEvent(context, purchase,"Digital");
         getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX);
     }
 
@@ -59,7 +59,7 @@ public class PurchaseTracking extends TrackingUtils {
         }
     }
 
-    public static void appsFlyerPurchaseEvent(Purchase trackignData,String productType) {
+    public static void appsFlyerPurchaseEvent(Context context, Purchase trackignData,String productType) {
         Map<String, Object> afValue = new HashMap<>();
         int quantity =  0;
         List<String> productList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class PurchaseTracking extends TrackingUtils {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         }
 
-        getAFEngine().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+        getAFEngine(context).sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        getAFEngine(context).sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 }

@@ -1,4 +1,4 @@
-package com.tkpd.library.utils;
+package com.tkpd.library.utils.legacy;
 
 import android.content.Context;
 import android.os.Build;

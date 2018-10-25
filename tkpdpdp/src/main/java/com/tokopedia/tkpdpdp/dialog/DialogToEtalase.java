@@ -48,7 +48,7 @@ public class DialogToEtalase extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(com.tokopedia.core.R.layout.dialog_move_to_etalase);
+        setContentView(com.tokopedia.core2.R.layout.dialog_move_to_etalase);
         tvYes = (TextView) findViewById(R.id.ok_button);
         spinner = (Spinner) findViewById(R.id.spinner_etalase);
         etNew = (EditText) findViewById(R.id.etalase_name);
@@ -77,14 +77,14 @@ public class DialogToEtalase extends Dialog {
                 Map<String, String> param;
                 if (selected.getEtalaseId() != null) {
                     if (selected.getEtalaseId() == 0 & newName.isEmpty()) {
-                        etNew.setError(context.getString(com.tokopedia.core.R.string.error_field_required));
+                        etNew.setError(context.getString(com.tokopedia.core2.R.string.error_field_required));
                         return;
                     } else if (selected.getEtalaseId() == 0 & !newName.isEmpty()) {
                         if (!ValidationTextUtil.isValidText(3, newName)) {
-                            etNew.setError(context.getString(com.tokopedia.core.R.string.error_min_3_character));
+                            etNew.setError(context.getString(com.tokopedia.core2.R.string.error_min_3_character));
                             return;
                         } else if (isAvailableEtalase(newName)) {
-                            etNew.setError(context.getString(com.tokopedia.core.R.string.error_etalase_exist));
+                            etNew.setError(context.getString(com.tokopedia.core2.R.string.error_etalase_exist));
                             return;
                         }
                     }

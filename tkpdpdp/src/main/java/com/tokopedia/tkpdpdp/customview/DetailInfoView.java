@@ -144,11 +144,11 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     returnableView.setVisibility(View.VISIBLE);
                     break;
                 case 2:
-                    tvReturnable.setText(getContext().getString(com.tokopedia.core.R.string.title_no));
+                    tvReturnable.setText(getContext().getString(com.tokopedia.core2.R.string.title_no));
                     break;
                 default:
                     returnableView.setVisibility(View.GONE);
-                    tvReturnable.setText(getContext().getString(com.tokopedia.core.R.string.return_no_policy));
+                    tvReturnable.setText(getContext().getString(com.tokopedia.core2.R.string.return_no_policy));
                     break;
             }
         } else {

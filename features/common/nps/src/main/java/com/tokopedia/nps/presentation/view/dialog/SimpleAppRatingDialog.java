@@ -50,7 +50,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                     public void onClick(DialogInterface dialog, int which) {
                         openPlayStore(activity);
                         saveVersionCodeForState();
-                        UnifyTracking.eventClickAppRating(AppEventTracking.Event.CLICK_APP_RATING);
+                        UnifyTracking.eventClickAppRating(activity, AppEventTracking.Event.CLICK_APP_RATING);
                         dialog.dismiss();
                     }
                 })
@@ -58,7 +58,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         hideDialog();
-                        UnifyTracking.eventCancelAppRating(AppEventTracking.Event.CANCEL_APP_RATING);
+                        UnifyTracking.eventCancelAppRating(activity, AppEventTracking.Event.CANCEL_APP_RATING);
                         dialog.dismiss();
                     }
                 })
@@ -79,7 +79,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected void onShowDialog() {
-        UnifyTracking.eventAppRatingImpression(this.getClass().getSimpleName());
+        UnifyTracking.eventAppRatingImpression(activity, this.getClass().getSimpleName());
     }
 
     private void hideDialog() {

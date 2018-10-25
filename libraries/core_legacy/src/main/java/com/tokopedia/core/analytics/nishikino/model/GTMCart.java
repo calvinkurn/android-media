@@ -1,6 +1,6 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

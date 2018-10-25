@@ -1,4 +1,4 @@
-package com.tkpd.library.utils;
+package com.tkpd.library.utils.legacy;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,7 +20,6 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
-import android.widget.ImageView;
 
 import java.io.File;
 

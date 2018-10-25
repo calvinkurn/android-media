@@ -16,7 +16,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 

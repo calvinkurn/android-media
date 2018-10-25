@@ -129,6 +129,8 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context mContext);
 
+    void onAppsFlyerInit();
+
     SessionHandler legacySessionHandler();
 
     GCMHandler legacyGCMHandler();

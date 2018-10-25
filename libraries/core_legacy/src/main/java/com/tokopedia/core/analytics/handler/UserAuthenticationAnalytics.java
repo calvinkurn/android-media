@@ -2,9 +2,7 @@ package com.tokopedia.core.analytics.handler;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.data.DiskAnalyticsDataStore;
 
 /**
@@ -37,19 +35,5 @@ public class UserAuthenticationAnalytics {
     public static void setActiveAuthenticationMedium(Context context, String medium) {
         checkNotNullAnalyticsData(context);
         mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);
-    }
-
-    public static void sendAnalytics(Context context) {
-        checkNotNullAnalyticsData(context);
-        switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
-            case AppEventTracking.GTMCacheValue.LOGIN:
-                UnifyTracking.eventLoginSuccess(context, mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                break;
-            case AppEventTracking.GTMCacheValue.REGISTER:
-                UnifyTracking.eventRegisterSuccess(context, mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
-                break;
-        }
     }
 }

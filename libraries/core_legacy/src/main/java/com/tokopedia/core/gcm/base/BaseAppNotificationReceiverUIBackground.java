@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
@@ -44,8 +44,6 @@ import java.util.Map;
 import java.util.Set;
 
 import rx.Subscriber;
-
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
 /**
  * Created by alvarisi on 1/18/17.
