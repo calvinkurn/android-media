@@ -17,9 +17,10 @@ import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
-import com.tokopedia.loginregister.registerinitial.domain.RegisterValidationUseCase;
+import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterContract;
+import com.tokopedia.loginregister.registerinitial.view.subscriber.RegisterThirdPartySubscriber;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 
 import javax.inject.Inject;
@@ -77,7 +78,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterContra
                 ErrorHandlerSession.getErrorMessage(new ErrorHandlerSession.ErrorForbiddenListener() {
                     @Override
                     public void onForbidden() {
-                        getView().onForbidden();
+                        getView().getLoginRouter().onForbidden();
                     }
 
                     @Override
@@ -159,27 +160,30 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterContra
     @Override
     public void registerWebview(Intent data) {
         getView().showProgressBar();
+        Bundle bundle = data.getBundleExtra(BUNDLE_WEBVIEW);
+        String methodName = bundle != null ? bundle.getString(WebViewLoginFragment.NAME,
+                LoginRegisterAnalytics.WEBVIEW) : LoginRegisterAnalytics.WEBVIEW;
 
-//        Bundle bundle = data.getBundleExtra(BUNDLE_WEBVIEW);
-//        if (bundle != null && bundle.getString(ARGS_PATH).contains(ARGS_ERROR)) {
-//            getView().dismissProgressBar();
-//            getView().onErrorRegisterSosmed(bundle.getString(ARGS_MESSAGE) + " " + ErrorHandlerSession.ErrorCode
-//                    .EMPTY_ACCESS_TOKEN);
-//        } else if (bundle != null
-//                && bundle.getString(ARGS_PATH) != null
-//                && bundle.getString(ARGS_CODE) != null
-//                && bundle.getString(ARGS_SERVER) != null) {
-//            String name = bundle.getString(WebViewLoginFragment.NAME, "");
-//            registerWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(
-//                    bundle.getString(ARGS_CODE),
-//                    HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH)
-//            ), new RegisterSosmedSubscriber(name, getView()));
-//        } else {
-//            getView().dismissProgressBar();
-//            getView().onErrorRegisterSosmed(
-//                    ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
-//                            .EMPTY_ACCESS_TOKEN, getView().getContext()));
-//        }
+        if (bundle != null && bundle.getString(ARGS_PATH, "").contains(ARGS_ERROR)) {
+            getView().dismissProgressBar();
+            getView().onErrorRegisterSosmed(methodName,
+                    bundle.getString(ARGS_MESSAGE)
+                            + " " + ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN);
+        } else if (bundle != null
+                && bundle.getString(ARGS_PATH) != null
+                && bundle.getString(ARGS_CODE) != null
+                && bundle.getString(ARGS_SERVER) != null) {
+            registerWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(
+                    bundle.getString(ARGS_CODE),
+                    HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH)
+            ), new RegisterThirdPartySubscriber(getView().getContext(), getView()
+                    .getLoginRouter(), "", getView(), methodName));
+        } else {
+            getView().dismissProgressBar();
+            getView().onErrorRegisterSosmed(
+                    methodName, ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
+                            .EMPTY_ACCESS_TOKEN, getView().getContext()));
+        }
     }
 
     @Override
@@ -193,20 +197,24 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterContra
     }
 
     @Override
-    public void registerFacebook(AccessToken accessToken) {
-//        getView().showProgressBar();
-//        loginSosmedUseCase.execute(
-//                LoginWithSosmedUseCase.getParamFacebook(accessToken),
-//                new RegisterSosmedSubscriber(LoginRegisterAnalytics.FACEBOOK, getView())
-//        );
+    public void registerFacebook(AccessToken accessToken, String email) {
+        getView().showProgressBar();
+        loginSosmedUseCase.execute(
+                LoginWithSosmedUseCase.getParamFacebook(accessToken),
+                new RegisterThirdPartySubscriber(getView().getContext(),
+                        getView().getLoginRouter(), email, getView(),
+                        LoginRegisterAnalytics.FACEBOOK)
+        );
     }
 
     @Override
-    public void registerGoogle(String accessToken) {
-//        getView().showProgressBar();
-//        loginSosmedUseCase.execute(
-//                LoginWithSosmedUseCase.getParamGoogle(accessToken),
-//                new RegisterSosmedSubscriber(LoginRegisterAnalytics.GOOGLE, getView())
-//        );
+    public void registerGoogle(String accessToken, String email) {
+        getView().showProgressBar();
+        loginSosmedUseCase.execute(
+                LoginWithSosmedUseCase.getParamGoogle(accessToken),
+                new RegisterThirdPartySubscriber(getView().getContext(),
+                        getView().getLoginRouter(), email, getView(),
+                        LoginRegisterAnalytics.GOOGLE)
+        );
     }
 }

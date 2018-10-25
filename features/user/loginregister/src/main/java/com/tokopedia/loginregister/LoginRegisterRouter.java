@@ -2,6 +2,7 @@ package com.tokopedia.loginregister;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * @author by nisie on 10/2/18.
@@ -16,4 +17,7 @@ public interface LoginRegisterRouter {
                                    String shopName, String shopId,
                                    boolean hasShop, String loginMethod);
 
+    void eventMoRegistrationStart(String labelEmail);
+
+    Intent getHomeIntent(Context context);
 }

@@ -8,9 +8,9 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import java.util.ArrayList;
 
@@ -33,11 +33,9 @@ public interface RegisterContract {
 
         void dismissProgressBar();
 
-        void onErrorRegisterSosmed(String errorMessage);
+        void onErrorRegisterSosmed(String methodName, String errorMessage);
 
         GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
-
-        void onForbidden();
 
         void showRegisteredEmailDialog(String email);
 
@@ -53,8 +51,13 @@ public interface RegisterContract {
 
         void setTempPhoneNumber(String maskedPhoneNumber);
 
-
         Context getContext();
+
+        void onGoToAddName();
+
+        void onSuccessRegisterSosmed(String methodName);
+
+        LoginSuccessRouter getLoginRouter();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -65,9 +68,9 @@ public interface RegisterContract {
 
         void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
 
-        void registerFacebook(AccessToken accessToken);
+        void registerFacebook(AccessToken accessToken, String email);
 
-        void registerGoogle(String model);
+        void registerGoogle(String model, String email);
 
         void validateRegister(String id);
     }

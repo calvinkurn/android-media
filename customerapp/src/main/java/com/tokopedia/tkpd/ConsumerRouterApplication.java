@@ -3216,4 +3216,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 loginMethod
         );
     }
+
+    @Override
+    public void eventMoRegistrationStart(String label) {
+        UnifyTracking.eventMoRegistrationStart(label);
+    }
 }

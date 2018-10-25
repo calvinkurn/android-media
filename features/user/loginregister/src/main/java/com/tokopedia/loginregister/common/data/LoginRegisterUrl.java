@@ -13,4 +13,9 @@ public class LoginRegisterUrl {
     public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
     public static final String PATH_IMAGE_ACTIVATION = "https://ecs7.tokopedia.net/img/android/others/icon_activation.png";
 
+    //* REGISTER URL
+    public static final String PATH_REGISTER_VALIDATION = "/api/v1/account";
+
+
+
 }

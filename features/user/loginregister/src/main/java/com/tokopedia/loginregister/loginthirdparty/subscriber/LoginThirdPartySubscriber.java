@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.loginthirdparty;
+package com.tokopedia.loginregister.loginthirdparty.subscriber;
 
 import android.content.Context;
 

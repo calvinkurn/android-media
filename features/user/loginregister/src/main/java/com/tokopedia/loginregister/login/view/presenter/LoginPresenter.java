@@ -16,7 +16,7 @@ import com.tokopedia.loginregister.login.di.LoginModule;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber;
-import com.tokopedia.loginregister.loginthirdparty.LoginThirdPartySubscriber;
+import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber;
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase;
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;

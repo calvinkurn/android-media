@@ -32,28 +32,32 @@ public class LoginRegisterAnalytics {
 
     private static final String CATEGORY_LOGIN = "Login";
     private static final String CATEGORY_SMART_LOCK = "Smart Lock";
+    private static final String CATEGORY_ACTIVATION_PAGE = "activation page";
+    private static final String CATEGORY_REGISTER = "Register";
+    public static final String CATEGORY_REGISTER_PAGE = "register page";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";
     private static final String ACTION_LOGIN_ERROR = "Login Error";
     private static final String ACTION_LOGIN_SUCCESS = "Login Success";
     private static final String ACTION_SUCCESS = "Success";
-    private static final String ACTION_ACTIVATION_PAGE = "activation page";
+    private static final String ACTION_CLICK_CHANNEL = "Click Channel";
 
     private static final String LABEL_CTA = "CTA";
     private static final String LABEL_REGISTER = "Register";
     private static final String LABEL_PASSWORD = "Kata Sandi";
     public static final String LABEL_EMAIL = "Email";
     private static final String LABEL_PHONE_NUMBER = "Phone Number";
-    private static final String LABEL_GPLUS = "Google Plus";
-    private static final String LABEL_FACEBOOK = "Facebook";
+    public static final String LABEL_GPLUS = "Google Plus";
+    public static final String LABEL_FACEBOOK = "Facebook";
     private static final String LABEL_SAVE_PASSWORD = "Save Password";
     private static final String LABEL_NEVER_SAVE_PASSWORD = "Never";
+    public static final String LABEL_GMAIL = "Gmail";
+    public static final String LABEL_WEBVIEW = "Web View";
 
     public static final String WEBVIEW = "webview";
     public static final String GOOGLE = "google";
     public static final String FACEBOOK = "facebook";
-
 
     private AnalyticTracker analyticTracker;
 
@@ -143,7 +147,7 @@ public class LoginRegisterAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "LoginPhoneNumberActivity");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_PHONE,
                 map, applicationContext);
     }
 
@@ -171,7 +175,7 @@ public class LoginRegisterAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
                 map, applicationContext);
     }
 
@@ -204,7 +208,7 @@ public class LoginRegisterAnalytics {
     public void eventClickBackEmailActivation() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_BACK,
-                ACTION_ACTIVATION_PAGE,
+                CATEGORY_ACTIVATION_PAGE,
                 "click back button",
                 ""
         );
@@ -213,7 +217,7 @@ public class LoginRegisterAnalytics {
     public void eventClickActivateEmail() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_CONFIRM,
-                ACTION_ACTIVATION_PAGE,
+                CATEGORY_ACTIVATION_PAGE,
                 "click on aktivasi",
                 ""
         );
@@ -222,9 +226,102 @@ public class LoginRegisterAnalytics {
     public void eventClickResendActivationEmail() {
         analyticTracker.sendEventTracking(
                 EVENT_CLICK_REGISTER,
-                ACTION_ACTIVATION_PAGE,
+                CATEGORY_ACTIVATION_PAGE,
                 "click on kirim ulang",
                 ""
+        );
+    }
+
+    public void eventClickRegisterEmail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER,
+                ACTION_CLICK_CHANNEL,
+                LABEL_EMAIL
+        );
+
+    }
+
+    public void eventClickOnLoginFromRegister() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_REGISTER_PAGE,
+                "click on masuk",
+                ""
+        );
+    }
+
+    public void eventClickRegisterFacebook(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER,
+                ACTION_CLICK_CHANNEL,
+                LABEL_FACEBOOK
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_FACEBOOK,
+                map, applicationContext);
+
+    }
+
+    public void eventClickRegisterGoogle(Context applicationContext) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER,
+                ACTION_CLICK_CHANNEL,
+                LABEL_GPLUS
+        );
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_GOOGLE,
+                map, applicationContext);
+    }
+
+    public void eventClickRegisterWebview(Context applicationContext, String name) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER,
+                ACTION_CLICK_CHANNEL,
+                name
+        );
+    }
+
+    public void eventProceedEmailAlreadyRegistered() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_CONFIRM,
+                CATEGORY_REGISTER_PAGE,
+                "click on pop up box register (ya, masuk)",
+                ""
+        );
+    }
+
+    public void eventCancelEmailAlreadyRegistered() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_CONFIRM,
+                CATEGORY_REGISTER_PAGE,
+                "click on pop up box register (ubah)",
+                "email"
+        );
+    }
+
+    public void eventProceedRegisterWithPhoneNumber() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_CONFIRM,
+                CATEGORY_REGISTER_PAGE,
+                "click on pop up box register (ya, benar)",
+                ""
+        );
+    }
+
+    public void eventCancelRegisterWithPhoneNumber() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_CONFIRM,
+                CATEGORY_REGISTER_PAGE,
+                "click on pop up box register (ubah)",
+                "phone number"
         );
     }
 }
