@@ -16,7 +16,6 @@ import android.widget.Toast
 
 import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-import android.util.Log
 
 /**
  * Created by meta on 12/10/18.

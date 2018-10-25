@@ -113,6 +113,11 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         val fcmToken = Preference.getFcmToken(this)
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+        } else {
+            CookieManager.getInstance().setAcceptCookie(true);
+        }
         loadHome()
     }
 
