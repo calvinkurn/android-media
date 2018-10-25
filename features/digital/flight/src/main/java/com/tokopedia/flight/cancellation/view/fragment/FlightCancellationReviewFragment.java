@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -154,7 +155,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     public void showSuccessDialog(int resId) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title));
-        dialog.setDesc(getString(resId));
+        dialog.setDesc(Html.fromHtml(getString(resId)));
         dialog.setBtnOk("OK");
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
