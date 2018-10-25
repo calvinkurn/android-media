@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
@@ -90,48 +91,39 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         final ArrayList<ImageView> indicatorItems = new ArrayList<>();
         inflate(getContext(), R.layout.layout_ads_banner_shop_pager, this);
         RecyclerView recyclerView = findViewById(R.id.list);
-        LinearLayout indicatorContainer = findViewById(R.id.indicator);
+        TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
+        TextView shopName = (TextView) findViewById(R.id.shop_name);
+        LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
+
+        promotedTxt.setText(cpm.getPromotedText());
+        shopName.setText(TopAdsBannerView.escapeHTML(cpm.getName()));
+        if (cpm.getBadges().size() > 0) {
+            badgeContainer.removeAllViews();
+            badgeContainer.setVisibility(View.VISIBLE);
+            for (Badge badge : cpm.getBadges()) {
+                ImageView badgeImg = new ImageView(context);
+                badgeImg.setLayoutParams(new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size_small),
+                        context.getResources().getDimensionPixelSize(R.dimen.badge_size_small)));
+                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
+                badgeContainer.addView(badgeImg);
+            }
+        } else {
+            badgeContainer.setVisibility(View.GONE);
+        }
+
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
-        recyclerView.setOnFlingListener(null);
-        SnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(recyclerView);
+
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
-            if (cpm.getCpmShop().getProducts().size() > 1) {
-                indicatorContainer.removeAllViews();
-                items.add(new BannerShopProductViewModel(cpm, appLink, adsClickUrl));
-                for (int i = 0; i < 2; i++) {
-                    ImageView pointView = new ImageView(getContext());
-                    pointView.setPadding(10, 0, 10, 5);
-                    if (i == 0) {
-                        pointView.setImageResource(R.drawable.dot_green);
-                    } else {
-                        pointView.setImageResource(R.drawable.dot_grey);
-                    }
-                    indicatorItems.add(pointView);
-                    indicatorContainer.addView(pointView);
-                }
+            for (int i = 0; i < cpm.getCpmShop().getProducts().size(); i++) {
+                items.add(new BannerShopProductViewModel(cpm.getCpmShop().getProducts().get(i),
+                        appLink, adsClickUrl));
             }
             bannerAdsAdapter.setList(items);
         }
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int currentPosition =
-                        ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                for (int i = 0; i < indicatorItems.size(); i++) {
-                    if (currentPosition != i) {
-                        indicatorItems.get(i).setImageResource(R.drawable.dot_grey);
-                    } else {
-                        indicatorItems.get(i).setImageResource(R.drawable.dot_green);
-                    }
-                }
-            }
-        });
     }
 
     private boolean activityIsFinishing(Context context) {
