@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.view.BannerAdsContract;
+import com.tokopedia.topads.sdk.view.SpacesItemDecoration;
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
@@ -114,7 +115,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
-
+        recyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_8)));
         if (cpm != null && cpm.getCpmShop() != null) {
             ArrayList<Item> items = new ArrayList<>();
             items.add(new BannerShopViewModel(cpm, appLink, adsClickUrl));
