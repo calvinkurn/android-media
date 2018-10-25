@@ -16,6 +16,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.phoneverification.PhoneVerificationBearerInterceptor;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.PhoneVerificationInterceptor;
+import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.user.session.UserSession;
 
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -53,7 +55,8 @@ public class PhoneVerificationModule {
                                      @PhoneVerificationQualifier FingerprintInterceptor
                                              fingerprintInterceptor,
                                      @PhoneVerificationQualifier ErrorResponseInterceptor
-                                             errorResponseInterceptor) {
+                                             errorResponseInterceptor,
+                                     @PhoneVerificationChuckQualifier Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -65,7 +68,7 @@ public class PhoneVerificationModule {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
-//            clientBuilder.addInterceptor(chuckInterceptor);
+            clientBuilder.addInterceptor(chuckInterceptor);
         }
 
         return clientBuilder.build();
@@ -138,5 +141,15 @@ public class PhoneVerificationModule {
         } else {
             return null;
         }
+    }
+
+    @Provides
+    @PhoneVerificationChuckQualifier
+    public Interceptor provideChuckInterceptor(@ApplicationContext Context context) {
+        if (context instanceof PhoneVerificationRouter) {
+            return ((PhoneVerificationRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + PhoneVerificationRouter.class
+                .getSimpleName());
     }
 }

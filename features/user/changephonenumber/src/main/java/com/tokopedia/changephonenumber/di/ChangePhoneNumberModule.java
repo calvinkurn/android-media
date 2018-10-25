@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.data.api.ChangePhoneNumberApi;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -57,7 +59,8 @@ public class ChangePhoneNumberModule {
                                      @ChangePhoneNumberQualifier FingerprintInterceptor
                                              fingerprintInterceptor,
                                      @ChangePhoneNumberQualifier ErrorResponseInterceptor
-                                             errorResponseInterceptor) {
+                                             errorResponseInterceptor,
+                                     @ChangePhoneNumberChuckQualifier Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -68,7 +71,7 @@ public class ChangePhoneNumberModule {
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
-//            clientBuilder.addInterceptor(chuckInterceptor);
+            clientBuilder.addInterceptor(chuckInterceptor);
         }
 
         return clientBuilder.build();
@@ -159,13 +162,13 @@ public class ChangePhoneNumberModule {
         return new ChangePhoneNumberInterceptor(context, networkRouter, userSession);
     }
 
-//    @Provides
-//    @ChangePhoneNumberQualifier
-//    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-//        if (context instanceof ChangePhoneNumberRouter) {
-//            return ((ChangePhoneNumberRouter) context).getChuckInterceptor();
-//        }
-//        throw new RuntimeException("App should implement " + ChangePhoneNumberRouter.class
-// .getSimpleName());
-//    }
+    @Provides
+    @ChangePhoneNumberChuckQualifier
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        if (context instanceof ChangePhoneNumberRouter) {
+            return ((ChangePhoneNumberRouter) context).getChuckInterceptor();
+        }
+        throw new RuntimeException("App should implement " + ChangePhoneNumberRouter.class
+ .getSimpleName());
+    }
 }

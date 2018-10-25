@@ -72,19 +72,8 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
     }
 
     @Override
-    public void setRequestOtpButtonListener() {
-        requestOtpButton.setOnClickListener(v -> {
-            if (isValid()) {
-                Intent intent = VerificationActivity.getCallingIntent(
-                        getActivity(),
-                        getPhoneNumber(),
-                        RequestOtpUseCase.OTP_TYPE_PHONE_NUMBER_VERIFICATION,
-                        true,
-                        RequestOtpUseCase.MODE_SMS
-                );
-                startActivityForResult(intent, RESULT_PROFILE_COMPLETION_PHONE_VERIF);
-            }
-        });
+    public void initInjector() {
+        super.initInjector();
     }
 
     @Override
@@ -132,14 +121,15 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
                     .EXTRA_PHONE_NUMBER));
         } else if (requestCode == RESULT_PROFILE_COMPLETION_PHONE_VERIF &&
                 resultCode == Activity.RESULT_OK) {
-            onSuccessVerifyPhoneNumber();
+            presenter.verifyPhoneNumber(getPhoneNumber());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void onSuccessVerifyPhoneNumber() {
+    @Override
+    public void onSuccessVerifyPhoneNumber() {
         parentView.getUserSession().setIsMsisdnVerified(true);
-        userSession.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
+        userSession.setPhoneNumber(getPhoneNumber());
         parentView.onSuccessEditProfile(EditUserProfileUseCase.EDIT_VERIF);
         CommonUtils.UniversalToast(getActivity(), getString(R.string
                 .success_verify_phone_number));

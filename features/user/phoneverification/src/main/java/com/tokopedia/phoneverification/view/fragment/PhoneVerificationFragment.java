@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
@@ -24,6 +25,8 @@ import com.tokopedia.phoneverification.di.PhoneVerificationComponent;
 import com.tokopedia.phoneverification.util.CustomPhoneNumberUtil;
 import com.tokopedia.phoneverification.view.activity.ChangePhoneNumberActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.listener.PhoneVerification;
+import com.tokopedia.phoneverification.view.presenter.VerifyPhoneNumberPresenter;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
@@ -32,7 +35,8 @@ import javax.inject.Inject;
  * Created by nisie on 2/22/17.
  */
 
-public class PhoneVerificationFragment extends BaseDaggerFragment {
+public class PhoneVerificationFragment extends BaseDaggerFragment
+        implements PhoneVerification.View{
 
     @Override
     protected String getScreenName() {
@@ -40,7 +44,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
     }
 
     @Override
-    protected void initInjector() {
+    public void initInjector() {
         if (getActivity() != null && getActivity().getApplication() != null) {
             BaseAppComponent baseAppComponent =
                     ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
@@ -77,7 +81,9 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
     PhoneVerificationAnalytics analytics;
 
     @Inject
-    UserSession userSession;
+    public UserSession userSession;
+    @Inject
+    public VerifyPhoneNumberPresenter presenter;
 
     private boolean isMandatory = false;
 
@@ -168,6 +174,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
         super.onSaveInstanceState(outState);
         outState.putString(EXTRA_PARAM_PHONE_NUMBER, phoneNumber);
     }
+
     public void setRequestOtpButtonListener(){
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,7 +242,9 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
         return phoneNumberEditText.getText().toString().replace("-", "");
     }
 
-    private void onSuccessVerifyPhoneNumber() {
+    @Override
+    public void onSuccessVerifyPhoneNumber() {
+        userSession.setIsMsisdnVerified(true);
         if (listener != null)
             listener.onSuccessVerification();
         else {
@@ -258,11 +267,23 @@ public class PhoneVerificationFragment extends BaseDaggerFragment {
             phoneNumberEditText.setText(data.getStringExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER));
         } else if (requestCode == RESULT_PHONE_VERIFICATION &&
                 resultCode == Activity.RESULT_OK){
-            onSuccessVerifyPhoneNumber();
+            presenter.verifyPhoneNumber(getPhoneNumber());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onErrorVerifyPhoneNumber(String errorMessage) {
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public UserSession getUserSession() {
+        return this.userSession;
+    }
 
     public boolean isValid() {
         boolean isValid = true;
