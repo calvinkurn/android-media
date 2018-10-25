@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public class ImpressedImageView extends AppCompatImageView {
 
     private static final String TAG = ImpressedImageView.class.getSimpleName();
-    public static final int BOTTOM_MARGIN = 50;
+    public static final int BOTTOM_MARGIN = 80;
     private ProductImage image;
     private ViewHintListener hintListener;
 

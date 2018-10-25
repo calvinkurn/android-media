@@ -1033,7 +1033,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (isAllowShowCaseNcf()) {
             startShowCase();
         }
-        renderTopAds(5);
+        renderTopAds(5, successResult);
     }
 
     private float getUnformattedWeight(String productWeight) {
@@ -2343,7 +2343,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 productData.getInfo().getProductWeight(), productData.getInfo().getProductWeightUnit()));
     }
 
-    private void renderTopAds(int itemSize) {
+    private void renderTopAds(int itemSize, ProductDetailData productData) {
         if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
             return;
         try {
