@@ -35,7 +35,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
     public static final int LAYOUT = R.layout.layout_ads_banner_shop_product;
     private static final String TAG = BannerShopProductViewHolder.class.getSimpleName();
     private ImageLoader imageLoader;
-    private ImpressedImageView imageView;
+    private ImageView imageView;
     private TextView descTxt;
     private TextView priceTxt;
     private LinearLayout layoutContainer;
@@ -46,7 +46,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         super(itemView);
         this.topAdsBannerClickListener = topAdsBannerClickListener;
         imageLoader = new ImageLoader(itemView.getContext());
-        imageView = (ImpressedImageView) itemView.findViewById(R.id.icon);
+        imageView = itemView.findViewById(R.id.icon);
         descTxt = itemView.findViewById(R.id.description);
         priceTxt = itemView.findViewById(R.id.price);
         layoutContainer = itemView.findViewById(R.id.layout_container);
@@ -54,7 +54,8 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
 
     @Override
     public void bind(final BannerShopProductViewModel element) {
-        imageView.setImage(element.getProduct().getImage());
+        final Product product = element.getProduct();
+        imageLoader.loadImage(product.getImageProduct().getImageUrl(), product.getImageProduct().getImageUrl(), imageView);
         descTxt.setText(TopAdsBannerView.escapeHTML(element.getProduct().getName()));
         priceTxt.setText(element.getProduct().getPriceFormat());
         layoutContainer.setOnClickListener(new View.OnClickListener() {
