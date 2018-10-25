@@ -1,8 +1,8 @@
 package com.tokopedia.flight.booking.di;
 
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,14 +12,10 @@ import dagger.Provides;
  */
 @Module
 public class FlightBookingModule {
-    @Provides
-    FlightBookingGetSingleResultUseCase getSingleResultUseCase(FlightRepository flightRepository) {
-        return new FlightBookingGetSingleResultUseCase(flightRepository);
-    }
 
     @Provides
     FlightAddToCartUseCase flightAddToCartUseCase(FlightRepository flightRepository,
-                                                  FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
+                                                  FlightSearchJourneyByIdUseCase flightBookingGetSingleResultUseCase) {
         return new FlightAddToCartUseCase(flightRepository, flightBookingGetSingleResultUseCase);
     }
 }

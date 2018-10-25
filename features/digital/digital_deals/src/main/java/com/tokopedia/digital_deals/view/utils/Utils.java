@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
@@ -12,7 +13,11 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -295,14 +300,15 @@ public class Utils {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
-        TextView tvlcn = snackView.findViewById(R.id.tv_location_name);
         TextView tvmsg = snackView.findViewById(R.id.tv_msg);
         if (locationToast) {
-            tvmsg.setText(context.getResources().getString(R.string.location_changed_to));
-            tvlcn.setText(text.toUpperCase());
+            String str=context.getResources().getString(R.string.location_changed_to);
+            str+=text.toUpperCase();
+            tvmsg.setText(getLocationText(str,context.getResources().getColor(R.color.black_40)));
         } else {
+            snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_50));
+            snackView.findViewById(R.id.divider).setBackgroundColor(context.getResources().getColor(R.color.red_error));
             tvmsg.setText(text);
-            tvlcn.setVisibility(View.GONE);
         }
 
         TextView okbtn = snackView.findViewById(R.id.snack_ok);
@@ -317,6 +323,13 @@ public class Utils {
         snackbar.show();
     }
 
+    private SpannableString getLocationText(String text, int color) {
+        int startIndexOfLink = text.indexOf(":");
+        SpannableString spannableString = new SpannableString(text);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(color), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
+    }
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
         ((DealsModuleRouter) ((Activity) context).getApplication()).shareDeal(context, uri, name, imageUrl);
