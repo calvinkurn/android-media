@@ -164,9 +164,11 @@ public class CartMapperData implements ICartMapperData {
             checkoutDigitalData.setStringQuery(
                     responseCheckoutData.getAttributes().getQueryString()
             );
-            checkoutDigitalData.setTransactionId(
-                    responseCheckoutData.getAttributes().getParameter().getTransactionId()
-            );
+            if (responseCheckoutData.getAttributes().getParameter() != null) {
+                checkoutDigitalData.setTransactionId(
+                        responseCheckoutData.getAttributes().getParameter().getTransactionId()
+                );
+            }
             return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);

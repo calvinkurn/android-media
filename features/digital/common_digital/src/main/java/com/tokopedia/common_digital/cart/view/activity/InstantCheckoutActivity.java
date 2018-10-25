@@ -37,7 +37,7 @@ import javax.inject.Inject;
  */
 public class InstantCheckoutActivity extends BaseSimpleActivity {
 
-    public static final int REQUEST_CODE = InstantCheckoutActivity.class.hashCode();
+    public static final int REQUEST_CODE = 2001;
     private static final long FORCE_TIMEOUT = 60000L;
     private static final String TAG = InstantCheckoutActivity.class.getSimpleName();
 
