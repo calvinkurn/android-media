@@ -41,6 +41,9 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     private val isHome: Boolean
         get() = webView!!.url.equals(KelontongBaseUrl.BASE_URL, ignoreCase = true)
 
+    private val isMitraUrl: Boolean
+        get() = webView!!.url.contains(KelontongBaseUrl.TOKOPEDIA_URL, ignoreCase = true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -110,6 +113,10 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         val fcmToken = Preference.getFcmToken(this)
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken))
+        loadHome()
+    }
+
+    private fun loadHome() {
         webView!!.loadUrl(KelontongBaseUrl.BASE_URL, headers)
     }
 
@@ -138,7 +145,12 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
                     if (isHome) {
                         onBackPressed()
                     } else if (webView!!.canGoBack()) {
-                        webView!!.goBack()
+                        if (!isMitraUrl) {
+                            webView!!.clearHistory()
+                            loadHome()
+                        } else {
+                            webView!!.goBack()
+                        }
                     }
                     return true
                 }
