@@ -95,7 +95,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == 35) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals)) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
             else
