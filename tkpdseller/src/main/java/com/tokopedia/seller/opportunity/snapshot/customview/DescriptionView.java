@@ -109,7 +109,7 @@ public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmen
         public void onClick(View v) {
             if (!isExpand) {
                 renderExpand();
-                UnifyTracking.eventPDPExpandDescription();
+                UnifyTracking.eventPDPExpandDescription(v.getContext());
             } else {
                 renderCollapse();
             }

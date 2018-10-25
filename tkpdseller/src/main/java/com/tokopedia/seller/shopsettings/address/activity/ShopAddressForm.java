@@ -410,7 +410,7 @@ public class ShopAddressForm extends TActivity {
     }
 
     public void initializeZipCodes() {
-        String header = getResources().getString(com.tokopedia.core.R.string.hint_type_postal_code);
+        String header = getResources().getString(com.tokopedia.core2.R.string.hint_type_postal_code);
         if (!zipCodes.contains(header)) zipCodes.add(0, header);
 
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
@@ -436,7 +436,7 @@ public class ShopAddressForm extends TActivity {
             checkDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
         }
 
-        item.setTitle(getString(com.tokopedia.core.R.string.title_action_save_address));
+        item.setTitle(getString(com.tokopedia.core2.R.string.title_action_save_address));
         return true;
     }
 

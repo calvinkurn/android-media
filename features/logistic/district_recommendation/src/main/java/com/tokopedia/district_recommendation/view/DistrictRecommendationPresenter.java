@@ -2,7 +2,7 @@ package com.tokopedia.district_recommendation.view;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.district_recommendation.domain.model.Address;

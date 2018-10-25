@@ -155,6 +155,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
             public void onItemSelected(int adapterPosition, SimpleCheckListItemModel item) {
 
                 UnifyTracking.eventOpportunity(
+                        getActivity(),
                         OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
                         OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
                         AppEventTracking.Action.SUBMIT,

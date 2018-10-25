@@ -12,7 +12,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;

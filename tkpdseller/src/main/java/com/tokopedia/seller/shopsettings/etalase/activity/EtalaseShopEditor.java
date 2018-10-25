@@ -295,7 +295,7 @@ public class EtalaseShopEditor extends TActivity {
                                 etalaseName = userInput.getText().toString().trim();
                                 AddEtalase(etalaseName);
                                 alertDialog.dismiss();
-                                UnifyTracking.eventEtalaseAdd();
+                                UnifyTracking.eventEtalaseAdd(EtalaseShopEditor.this);
                             } else
                                 userInput
                                         .setError(getString(R.string.error_etalase_exist));

@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;

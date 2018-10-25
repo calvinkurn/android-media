@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -101,7 +101,7 @@ public class ShopEditorActivity extends TActivity implements
         } else if (onBack.equals(LOG_OUT)) {
             SessionHandler session = new SessionHandler(this);
             session.Logout(this);
-            UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
+            UnifyTracking.eventDrawerClick(this, (AppEventTracking.EventLabel.SIGN_OUT));
         } else {
             super.onBackPressed();
         }
