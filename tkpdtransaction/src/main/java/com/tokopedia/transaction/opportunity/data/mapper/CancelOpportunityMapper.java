@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.opportunity.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.replacement.AcceptReplacementData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.transaction.opportunity.data.model.CancelReplacementModel;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;

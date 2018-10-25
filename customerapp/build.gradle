@@ -158,9 +158,9 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !isAlpha() && !allowDistribution()) {
+//            if (!isProduction() && !isAlpha() && !allowDistribution()) {
                 signingConfig signingConfigs.debug
-            }
+//            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true

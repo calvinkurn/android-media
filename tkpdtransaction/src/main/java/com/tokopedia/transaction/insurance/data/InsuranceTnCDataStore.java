@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.insurance.data;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.insurance.data.network.InsuranceWebViewService;
 
 import javax.inject.Inject;

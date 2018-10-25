@@ -389,8 +389,6 @@ import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
-import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
-import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
@@ -459,7 +457,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
         ICheckoutModuleRouter,
-        com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
@@ -1923,8 +1920,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setImageUri(imageSource)
                 .build();
 
-        Intent intent = new Intent(context, AddToCartActivity.class);
-        intent.putExtra(EXTRA_PRODUCT_CART, pass);
+//        Intent intent = new Intent(context, AddToCartActivity.class);
+//        intent.putExtra(EXTRA_PRODUCT_CART, pass);
+
+
+        Intent intent = new Intent(context, CartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -1937,20 +1938,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return cartEntity.toString();
                     }
                 });
-    }
-
-    @Override
-    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category, String defaultSelectedTab
-    ) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
-            Context context, String platform, String category
-    ) {
-        return LoyaltyActivity.newInstanceCouponNotActive(context, platform, category);
     }
 
     @Override

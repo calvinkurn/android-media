@@ -1,10 +1,8 @@
 package com.tokopedia.transaction.insurance.view;
 
 import android.app.Activity;
-import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

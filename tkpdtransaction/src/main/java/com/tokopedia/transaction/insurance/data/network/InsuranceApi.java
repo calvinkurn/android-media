@@ -1,13 +1,9 @@
 package com.tokopedia.transaction.insurance.data.network;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
-import java.util.Map;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
-import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
