@@ -3,8 +3,6 @@ package com.tokopedia.flight.searchV2.data.db
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
@@ -38,10 +36,9 @@ class FlightSearchSingleDataDbSourceTest {
 
     private lateinit var flightJourneyDao: FlightJourneyDao
     private lateinit var flightRouteDao: FlightRouteDao
+
     @Mock
     private lateinit var flightAirportDataListDBSource: FlightAirportDataListDBSource
-    @Mock
-    private lateinit var flightAirlineDataListDBSource: FlightAirlineDataListDBSource
 
     private lateinit var flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource
 
@@ -53,10 +50,8 @@ class FlightSearchSingleDataDbSourceTest {
         flightJourneyDao = flightSearchRoomDb.flightJourneyDao()
         flightRouteDao = flightSearchRoomDb.flightRouteDao()
         flightSearchSingleDataDbSource = FlightSearchSingleDataDbSource(flightJourneyDao, flightRouteDao,
-                flightAirportDataListDBSource, flightAirlineDataListDBSource)
+                flightAirportDataListDBSource)
 
-        `when`(flightAirlineDataListDBSource.getAirline(Mockito.anyString()))
-                .thenReturn(Observable.just(FlightAirlineDB()))
         `when`(flightAirportDataListDBSource.getAirport(Mockito.anyString()))
                 .thenReturn(Observable.just(FlightAirportDB()))
     }
@@ -195,17 +190,17 @@ class FlightSearchSingleDataDbSourceTest {
     }
 
     // condition
-        // journey 1 total transit = 0
-        // journey 2 total transit = 2
-        // journey 3 total transit = 2
+    // journey 1 total transit = 0
+    // journey 2 total transit = 2
+    // journey 3 total transit = 2
     // action
-        // Filter journeys by number of transit = 2
+    // Filter journeys by number of transit = 2
     // expected result
-        // size of journeys = 2
-        // item[0] = journey 2
-        // item[1] = journey 3
-        // item[0].totalTransit = 2
-        // item[1].totalTransit = 2
+    // size of journeys = 2
+    // item[0] = journey 2
+    // item[1] = journey 3
+    // item[0].totalTransit = 2
+    // item[1].totalTransit = 2
     @Test
     fun getFilterJourneys_findTransit_showTransitJourneys() {
         val flightJourneyTable1 = createFlightJourneyTable("1")
@@ -239,16 +234,16 @@ class FlightSearchSingleDataDbSourceTest {
     }
 
     // condition
-        // journey 1 airline = JT
-        // journey 2 airline = JT
-        // journey 3 airline = JT
+    // journey 1 airline = JT
+    // journey 2 airline = JT
+    // journey 3 airline = JT
     // action
-        // Filter by airline = JT
+    // Filter by airline = JT
     // expected result
-        // size of journeys = 3
-        // journey 1 airline = JT
-        // journey 2 airline = JT
-        // journey 3 airline = JT
+    // size of journeys = 3
+    // journey 1 airline = JT
+    // journey 2 airline = JT
+    // journey 3 airline = JT
     @Test
     fun getFilterJourneys_findAirline_showAirlineJourneys() {
         val flightJourneyTable1 = createFlightJourneyTable("1")
@@ -281,13 +276,13 @@ class FlightSearchSingleDataDbSourceTest {
     }
 
     // condition
-        // journey 1 total transit = 0
-        // journey 2 total transit = 2
-        // journey 3 total transit = 2
+    // journey 1 total transit = 0
+    // journey 2 total transit = 2
+    // journey 3 total transit = 2
     // action
-        // Get number of journeys filtered by number of transit = 2
+    // Get number of journeys filtered by number of transit = 2
     // expected result
-        // Return 2
+    // Return 2
     @Test
     fun getSearchCount_filterByNumberOfTransitEqualsToTwo_ReturnTwo() {
         val flightJourneyTable1 = createFlightJourneyTable("1")
@@ -317,15 +312,15 @@ class FlightSearchSingleDataDbSourceTest {
     }
 
     // condition
-        // journey 1 price = Rp 1.000.000
-        // journey 2 price = Rp 1.500.000
-        // journey 3 price = Rp   500.000
+    // journey 1 price = Rp 1.000.000
+    // journey 2 price = Rp 1.500.000
+    // journey 3 price = Rp   500.000
     // action
-        // FlightSortOption = CHEAPEST
+    // FlightSortOption = CHEAPEST
     // expected result
-        // journey 3 price = Rp   500.000
-        // journey 1 price = Rp 1.000.000
-        // journey 2 price = Rp 1.500.000
+    // journey 3 price = Rp   500.000
+    // journey 1 price = Rp 1.000.000
+    // journey 2 price = Rp 1.500.000
     @Test
     fun getFilteredJourneys_sortByCheapestPrice_journeysSortedByCheapestPrice() {
         val flightJourneyTable1 = createFlightJourneyTable("1")

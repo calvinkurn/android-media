@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 /**
@@ -35,7 +34,7 @@ public class AirlineStat implements Parcelable, Visitable<BaseListCheckableTypeF
     }
 
     protected AirlineStat(Parcel in) {
-        this.airlineDB = in.readParcelable(FlightAirlineDB.class.getClassLoader());
+        this.airlineDB = in.readParcelable(FlightAirlineViewModel.class.getClassLoader());
         this.minPrice = in.readInt();
         this.minPriceString = in.readString();
     }
