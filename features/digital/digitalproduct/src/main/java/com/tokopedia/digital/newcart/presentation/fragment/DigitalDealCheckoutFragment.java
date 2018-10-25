@@ -1,22 +1,16 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 
-import android.animation.ValueAnimator;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,15 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
@@ -44,9 +34,9 @@ import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsA
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsAdapterTypeFactory;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalDealCheckoutPresenter;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -54,6 +44,7 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter> implements DigitalDealCheckoutContract.View, DigitalDealActionListener {
+    private static final long ANIMATION_DURATION = TimeUnit.MILLISECONDS.toMillis(300);
     private LinearLayout containerLayout;
     private LinearLayout containerSelectedDeals;
     private LinearLayout containerDetail;
@@ -67,6 +58,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     private DigitalDealsAdapter adapter;
 
     private int lastCollapseHeight;
+    private boolean isAlreadyCollapsByUser = false;
 
     private InteractionListener interactionListener;
 
@@ -109,7 +101,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         selectedDeals = new ArrayList<>();
         super.onCreate(savedInstanceState);
         cartDigitalInfoData = getArguments().getParcelable(ARG_CART_INFO);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -208,71 +199,24 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
 
     @Override
     public void hideCartDetailView() {
+        isAlreadyCollapsByUser = true;
         containerDetail.setVisibility(View.GONE);
-//        containerLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        collapse(containerLayout);
+        collapseCheckoutView(containerLayout);
     }
 
     @Override
     public void showCartDetailView() {
+        isAlreadyCollapsByUser = true;
         containerDetail.setVisibility(View.VISIBLE);
-//        containerLayout.setLayoutParams( new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        expand(containerLayout);
-//
-//        ValueAnimator anim = ValueAnimator.ofInt(containerLayout.getMeasuredHeight(), -100);
-//        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                int val = (Integer) valueAnimator.getAnimatedValue();
-//                ViewGroup.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-//                layoutParams.height = val;
-//                viewToIncreaseHeight.setLayoutParams(layoutParams);
-//            }
-//        });
-//        anim.setDuration(DURATION);
-//        anim.start();
+        expandCheckoutView(containerLayout);
     }
 
-    public void expand(final View v) {
+    public void expandCheckoutView(final View v) {
         containerScroll.setVisibility(View.VISIBLE);
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        Display display = getActivity().getWindowManager().getDefaultDisplay();
-//        int realWidth;
-//        int realHeight;
-//
-//        if (Build.VERSION.SDK_INT >= 17){
-//            //new pleasant way to get real metrics
-//            DisplayMetrics realMetrics = new DisplayMetrics();
-//            display.getRealMetrics(realMetrics);
-//            realWidth = realMetrics.widthPixels;
-//            realHeight = realMetrics.heightPixels;
-//
-//        } else if (Build.VERSION.SDK_INT >= 14) {
-//            //reflection for this weird in-between time
-//            try {
-//                Method mGetRawH = Display.class.getMethod("getRawHeight");
-//                Method mGetRawW = Display.class.getMethod("getRawWidth");
-//                realWidth = (Integer) mGetRawW.invoke(display);
-//                realHeight = (Integer) mGetRawH.invoke(display);
-//            } catch (Exception e) {
-//                //this may not be 100% accurate, but it's all we've got
-//                realWidth = display.getWidth();
-//                realHeight = display.getHeight();
-//                Log.e("Display Info", "Couldn't use reflection to get the real display metrics.");
-//            }
-//
-//        } else {
-//            //This should be close, as lower API devices should not have window navigation bars
-//            realWidth = display.getWidth();
-//            realHeight = display.getHeight();
-//        }
         lastCollapseHeight = currentHeight;
         final int targetHeight = interactionListener.getParentMeasuredHeight();
-        CommonUtils.dumper("Target : " + targetHeight);
-        CommonUtils.dumper("Current : " + currentHeight);
-
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         v.getLayoutParams().height = currentHeight;
         Animation a = new Animation() {
             @Override
@@ -285,8 +229,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                         height = measureWithInterpolate;
                     }
                 }
-                CommonUtils.dumper(interpolatedTime);
-                CommonUtils.dumper(height + " " + measureWithInterpolate);
 
                 v.getLayoutParams().height = height;
                 v.requestLayout();
@@ -298,17 +240,14 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             }
         };
 
-        a.setDuration(300);
+        a.setDuration(ANIMATION_DURATION);
         v.startAnimation(a);
     }
 
-    public void collapse(final View v) {
+    public void collapseCheckoutView(final View v) {
         int currentHeight = v.getHeight();
         v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight? v.getMeasuredHeight() : lastCollapseHeight;
-        CommonUtils.dumper("Target : " + targetHeight);
-        CommonUtils.dumper("Current : " + currentHeight);
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+        final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ? v.getMeasuredHeight() : lastCollapseHeight;
         v.getLayoutParams().height = currentHeight;
         v.setVisibility(View.VISIBLE);
         Animation a = new Animation() {
@@ -323,8 +262,6 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                 } else {
                     containerScroll.setVisibility(View.GONE);
                 }
-                CommonUtils.dumper(interpolatedTime);
-                CommonUtils.dumper(height + " " + measureWithInterpolate);
 
                 v.getLayoutParams().height = height;
                 v.requestLayout();
@@ -335,8 +272,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                 return true;
             }
         };
-        // 1dp/ms
-        a.setDuration(300);
+        a.setDuration(ANIMATION_DURATION);
         v.startAnimation(a);
     }
 
@@ -397,6 +333,26 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public void updateToolbarTitle(int resId) {
         interactionListener.updateToolbarTitle(getString(resId));
+    }
+
+    @Override
+    public void updateToolbarTitle(String toolbarTitle) {
+        interactionListener.updateToolbarTitle(toolbarTitle);
+    }
+
+    @Override
+    public void updateCheckoutButtonText(String checkoutButtonText) {
+        checkoutHolderView.setTextButton(checkoutButtonText);
+    }
+
+    @Override
+    public void renderSkipToCheckoutMenu() {
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public boolean isAlreadyCollapsByUser() {
+        return isAlreadyCollapsByUser;
     }
 
     public void updateSelectedDeal(DealProductViewModel viewModel) {

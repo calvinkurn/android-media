@@ -152,6 +152,10 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         return voucherDiscount;
     }
 
+    public void setTextButton(String checkoutButtonText) {
+        checkoutButton.setText(checkoutButtonText);
+    }
+
     public interface ActionListener {
 
         void onCheckoutButtonClicked();

@@ -71,6 +71,9 @@ public class AttributesCart {
     @SerializedName("cross_selling_type")
     @Expose
     private int crossSellingType;
+    @SerializedName("cross_selling_config")
+    @Expose
+    private CrossSellingConfig crossSellingConfig;
 
     public String getClientNumber() {
         return clientNumber;
@@ -150,5 +153,9 @@ public class AttributesCart {
 
     public int getCrossSellingType() {
         return crossSellingType;
+    }
+
+    public CrossSellingConfig getCrossSellingConfig() {
+        return crossSellingConfig;
     }
 }

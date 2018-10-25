@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
+import com.tokopedia.common_digital.cart.view.model.cart.CrossSellingConfig;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.cart.view.model.cart.Relation;
 import com.tokopedia.common_digital.cart.view.model.cart.RelationData;
@@ -60,7 +61,6 @@ public class CartMapperData implements ICartMapperData {
             attributesDigital.setEnableVoucher(responseCartData.getAttributes().isEnableVoucher());
             attributesDigital.setIsCouponActive(responseCartData.getAttributes().isCouponActive());
             attributesDigital.setVoucherAutoCode(responseCartData.getAttributes().getVoucherAutoCode());
-            attributesDigital.setCrossSellingType(responseCartData.getAttributes().getCrossSellingType());
             if (responseCartData.getAttributes().getUserInputPrice() != null) {
                 UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
                 userInputPriceDigital.setMaxPaymentPlain(
@@ -76,7 +76,7 @@ public class CartMapperData implements ICartMapperData {
                 attributesDigital.setUserInputPrice(userInputPriceDigital);
             }
 
-            if (responseCartData.getAttributes().getAutoApply() != null){
+            if (responseCartData.getAttributes().getAutoApply() != null) {
                 AutoApplyVoucher entity = responseCartData.getAttributes().getAutoApply();
                 CartAutoApplyVoucher applyVoucher = new CartAutoApplyVoucher();
                 applyVoucher.setCode(entity.getCode());
@@ -115,6 +115,18 @@ public class CartMapperData implements ICartMapperData {
             relationships.setRelationOperator(new Relation(relationDataOperator));
             relationships.setRelationProduct(new Relation(relationDataProduct));
 
+            if (responseCartData.getAttributes().getCrossSellingConfig() != null) {
+                CrossSellingConfig crossSellingConfig = new CrossSellingConfig();
+                crossSellingConfig.setSkipAble(responseCartData.getAttributes().getCrossSellingConfig().isSkipAble());
+                crossSellingConfig.setHeaderTitle(responseCartData.getAttributes().getCrossSellingConfig().getWording().getHeaderTitle());
+                crossSellingConfig.setBodyTitle(responseCartData.getAttributes().getCrossSellingConfig().getWording().getBodyTitle());
+                crossSellingConfig.setBodyContentBefore(responseCartData.getAttributes().getCrossSellingConfig().getWording().getBodyContentBefore());
+                crossSellingConfig.setBodyContentAfter(responseCartData.getAttributes().getCrossSellingConfig().getWording().getBodyContentAfter());
+                crossSellingConfig.setCheckoutButtonText(responseCartData.getAttributes().getCrossSellingConfig().getWording().getCheckoutButtonText());
+                cartDigitalInfoData.setCrossSellingConfig(crossSellingConfig);
+            }
+
+            cartDigitalInfoData.setCrossSellingType(responseCartData.getAttributes().getCrossSellingType());
             cartDigitalInfoData.setAdditionalInfos(cartAdditionalInfoList);
             cartDigitalInfoData.setAttributes(attributesDigital);
             cartDigitalInfoData.setId(responseCartData.getId());

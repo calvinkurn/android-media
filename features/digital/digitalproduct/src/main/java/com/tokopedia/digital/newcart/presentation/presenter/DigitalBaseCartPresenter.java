@@ -153,11 +153,11 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
-                getView().showContent();
-                getView().hideLoading();
                 getView().setCartDigitalInfo(cartDigitalInfoData);
                 getView().setCheckoutParameter(buildCheckoutData(cartDigitalInfoData, userSession.getAccessToken()));
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
+                    getView().showContent();
+                    getView().hideLoading();
                     getView().interruptRequestTokenVerification(userSession.getPhoneNumber());
                 } else {
                     renderCart(cartDigitalInfoData);
@@ -171,11 +171,13 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         if (getView().getCartPassData().getInstantCheckout().equals("1") && !cartDigitalInfoData.isForceRenderCart()) {
             processToInstantCheckout();
         } else {
-            switch (cartDigitalInfoData.getAttributes().getCrossSellingType()) {
+            switch (cartDigitalInfoData.getCrossSellingType()) {
                 case 1:
                     getView().inflateDealsPage(cartDigitalInfoData, getView().getCartPassData());
                     break;
                 default:
+                    getView().showContent();
+                    getView().hideLoading();
                     renderBaseCart(cartDigitalInfoData);
                     break;
             }
@@ -490,7 +492,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return requestBodyCheckout;
     }
 
-    protected List<Integer> getDealIds(){
+    protected List<Integer> getDealIds() {
         return new ArrayList<>();
     }
 
@@ -666,7 +668,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             @Override
             public void onNext(InstantCheckoutData instantCheckoutData) {
                 getView().hideContent();
-                getView().hideLoading();
                 getView().renderToInstantCheckoutPage(instantCheckoutData);
             }
         };

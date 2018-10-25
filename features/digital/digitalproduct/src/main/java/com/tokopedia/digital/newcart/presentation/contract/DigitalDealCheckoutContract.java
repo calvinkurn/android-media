@@ -44,6 +44,14 @@ public interface DigitalDealCheckoutContract {
         void setMinHeight(@DimenRes int resId);
 
         void navigateToDealDetailPage(String slug);
+
+        void updateToolbarTitle(String toolbarTitle);
+
+        void updateCheckoutButtonText(String checkoutButtonText);
+
+        void renderSkipToCheckoutMenu();
+
+        boolean isAlreadyCollapsByUser();
     }
 
     interface Presenter extends DigitalBaseContract.Presenter<View>{

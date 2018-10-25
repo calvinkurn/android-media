@@ -33,6 +33,38 @@ public class CartDigitalInfoData implements Parcelable {
 
     private boolean forceRenderCart;
 
+    private int crossSellingType;
+
+    private CrossSellingConfig crossSellingConfig;
+
+    protected CartDigitalInfoData(Parcel in) {
+        type = in.readString();
+        id = in.readString();
+        attributes = in.readParcelable(AttributesDigital.class.getClassLoader());
+        title = in.readString();
+        instantCheckout = in.readByte() != 0;
+        needOtp = in.readByte() != 0;
+        smsState = in.readString();
+        mainInfo = in.createTypedArrayList(CartItemDigital.CREATOR);
+        additionalInfos = in.createTypedArrayList(CartAdditionalInfo.CREATOR);
+        relationships = in.readParcelable(Relationships.class.getClassLoader());
+        forceRenderCart = in.readByte() != 0;
+        crossSellingType = in.readInt();
+        crossSellingConfig = in.readParcelable(CrossSellingConfig.class.getClassLoader());
+    }
+
+    public static final Creator<CartDigitalInfoData> CREATOR = new Creator<CartDigitalInfoData>() {
+        @Override
+        public CartDigitalInfoData createFromParcel(Parcel in) {
+            return new CartDigitalInfoData(in);
+        }
+
+        @Override
+        public CartDigitalInfoData[] newArray(int size) {
+            return new CartDigitalInfoData[size];
+        }
+    };
+
     public String getType() {
         return type;
     }
@@ -124,6 +156,21 @@ public class CartDigitalInfoData implements Parcelable {
     public CartDigitalInfoData() {
     }
 
+    public int getCrossSellingType() {
+        return crossSellingType;
+    }
+
+    public void setCrossSellingType(int crossSellingType) {
+        this.crossSellingType = crossSellingType;
+    }
+
+    public CrossSellingConfig getCrossSellingConfig() {
+        return crossSellingConfig;
+    }
+
+    public void setCrossSellingConfig(CrossSellingConfig crossSellingConfig) {
+        this.crossSellingConfig = crossSellingConfig;
+    }
 
     @Override
     public int describeContents() {
@@ -132,43 +179,18 @@ public class CartDigitalInfoData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.type);
-        dest.writeString(this.id);
-        dest.writeParcelable(this.attributes, flags);
-        dest.writeString(this.title);
-        dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.needOtp ? (byte) 1 : (byte) 0);
-        dest.writeString(this.smsState);
-        dest.writeTypedList(this.mainInfo);
-        dest.writeTypedList(this.additionalInfos);
-        dest.writeParcelable(this.relationships, flags);
-        dest.writeByte(this.forceRenderCart ? (byte) 1 : (byte) 0);
+        dest.writeString(type);
+        dest.writeString(id);
+        dest.writeParcelable(attributes, flags);
+        dest.writeString(title);
+        dest.writeByte((byte) (instantCheckout ? 1 : 0));
+        dest.writeByte((byte) (needOtp ? 1 : 0));
+        dest.writeString(smsState);
+        dest.writeTypedList(mainInfo);
+        dest.writeTypedList(additionalInfos);
+        dest.writeParcelable(relationships, flags);
+        dest.writeByte((byte) (forceRenderCart ? 1 : 0));
+        dest.writeInt(crossSellingType);
+        dest.writeParcelable(crossSellingConfig, flags);
     }
-
-    protected CartDigitalInfoData(Parcel in) {
-        this.type = in.readString();
-        this.id = in.readString();
-        this.attributes = in.readParcelable(AttributesDigital.class.getClassLoader());
-        this.title = in.readString();
-        this.instantCheckout = in.readByte() != 0;
-        this.needOtp = in.readByte() != 0;
-        this.smsState = in.readString();
-        this.mainInfo = in.createTypedArrayList(CartItemDigital.CREATOR);
-        this.additionalInfos = in.createTypedArrayList(CartAdditionalInfo.CREATOR);
-        this.relationships = in.readParcelable(Relationships.class.getClassLoader());
-        this.forceRenderCart = in.readByte() != 0;
-    }
-
-    public static final Creator<CartDigitalInfoData> CREATOR = new Creator<CartDigitalInfoData>() {
-        @Override
-        public CartDigitalInfoData createFromParcel(Parcel source) {
-            return new CartDigitalInfoData(source);
-        }
-
-        @Override
-        public CartDigitalInfoData[] newArray(int size) {
-            return new CartDigitalInfoData[size];
-        }
-    };
-
 }

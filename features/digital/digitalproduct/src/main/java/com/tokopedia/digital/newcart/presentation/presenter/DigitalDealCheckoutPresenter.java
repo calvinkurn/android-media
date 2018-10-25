@@ -3,7 +3,6 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
@@ -27,7 +26,7 @@ import rx.schedulers.Schedulers;
 
 public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<DigitalDealCheckoutContract.View>
         implements DigitalDealCheckoutContract.Presenter {
-
+    private static final long AUTO_COLLAPSE_ANIMATION_DELAY = 2500;
     private UserSession userSession;
 
     @Inject
@@ -41,13 +40,20 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
         getView().setCheckoutParameter(buildCheckoutData(getView().getCartInfoData(), userSession.getAccessToken()));
         renderBaseCart(getView().getCartInfoData());
         getView().renderCategory(getView().getCartInfoData().getAttributes().getCategoryName());
-        collapseCartDetailAfter5Seconds();
-        getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
+        autoCollapseCheckoutView();
+        if (getView().getCartInfoData().getCrossSellingConfig() != null) {
+            getView().updateToolbarTitle(getView().getCartInfoData().getCrossSellingConfig().getHeaderTitle());
+            getView().updateCheckoutButtonText(getView().getCartInfoData().getCrossSellingConfig().getCheckoutButtonText());
+            if (getView().getCartInfoData().getCrossSellingConfig().isSkipAble()) {
+                getView().renderSkipToCheckoutMenu();
+            }
+        } else {
+            getView().updateToolbarTitle(R.string.digital_deal_toolbar_title);
+        }
     }
 
-
-    private void collapseCartDetailAfter5Seconds() {
-        Observable.timer(2500, TimeUnit.MILLISECONDS)
+    private void autoCollapseCheckoutView() {
+        Observable.timer(AUTO_COLLAPSE_ANIMATION_DELAY, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,7 +71,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                     @Override
                     public void onNext(Long aLong) {
                         if (isViewAttached()) {
-                            if (getView().isCartDetailViewVisible()) {
+                            if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()) {
                                 getView().hideCartDetailView();
                                 getView().hideDealsContainerView();
                                 getView().renderIconToExpand();

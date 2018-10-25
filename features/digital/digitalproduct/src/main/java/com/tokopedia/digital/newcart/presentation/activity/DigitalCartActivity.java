@@ -21,6 +21,7 @@ import com.tokopedia.digital.cart.di.DaggerDigitalCartComponent;
 import com.tokopedia.digital.cart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
+import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
 
@@ -112,6 +113,19 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, getTagFragment())
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragment() != null && getFragment() instanceof DigitalDealNatigationListener) {
+            if (!((DigitalDealNatigationListener) getFragment()).canGoBack()) {
+                ((DigitalDealNatigationListener) getFragment()).goBack();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

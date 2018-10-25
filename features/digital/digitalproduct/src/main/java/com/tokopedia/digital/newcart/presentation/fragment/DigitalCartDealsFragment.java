@@ -30,6 +30,7 @@ import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsContract;
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsPagerAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
+import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
 
 import java.util.ArrayList;
@@ -43,7 +44,8 @@ import javax.inject.Inject;
  * A simple {@link Fragment} subclass.
  */
 public class DigitalCartDealsFragment extends BaseDaggerFragment implements DigitalCartDealsContract.View,
-        DigitalCartDealsListFragment.InteractionListener, DigitalDealCheckoutFragment.InteractionListener {
+        DigitalCartDealsListFragment.InteractionListener, DigitalDealCheckoutFragment.InteractionListener,
+        DigitalDealNatigationListener {
     private static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
     private static final String EXTRA_CART_DATA = "EXTRA_CART_DATA";
     private static final String TAG_DIGITAL_CHECKOUT = "digital_deals_checkout_fragment";
@@ -61,7 +63,26 @@ public class DigitalCartDealsFragment extends BaseDaggerFragment implements Digi
     private DigitalDealsPagerAdapter pagerAdapter;
     private InteractionListener interactionListener;
 
-    public interface InteractionListener{
+    @Override
+    public boolean canGoBack() {
+        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+            return !((DigitalDealCheckoutFragment) checkoutFragment).isCartDetailViewVisible();
+        }
+        return true;
+    }
+
+    @Override
+    public void goBack() {
+        Fragment checkoutFragment = getChildFragmentManager().findFragmentByTag(TAG_DIGITAL_CHECKOUT);
+        if (checkoutFragment instanceof DigitalDealCheckoutFragment) {
+            ((DigitalDealCheckoutFragment) checkoutFragment).hideCartDetailView();
+            ((DigitalDealCheckoutFragment) checkoutFragment).hideDealsContainerView();
+            ((DigitalDealCheckoutFragment) checkoutFragment).renderIconToExpand();
+        }
+    }
+
+    public interface InteractionListener {
         void updateToolbarTitle(String title);
     }
 
