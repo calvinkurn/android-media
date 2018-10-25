@@ -6,32 +6,42 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 
 /**
  * most of the codes is no-op that need to defined at the application.
  */
 public class SessionHandler implements UserSession {
+    private final GCMHandler gcmHandler;
     protected Context context;
+    private final SessionHandler sessionHandler;
 
     public SessionHandler(Context context) {
         this.context = context;
+
+        /**
+         * get implementation here using router
+         */
+        sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
+        gcmHandler = RouterUtils.getRouterFromContext(context).legacyGCMHandler();
     }
 
     public String getLoginName(){
-        return null;
+        return sessionHandler.getLoginName();
     }
     public String getGTMLoginID(){
-        return null;
+        return sessionHandler.getGTMLoginID();
     }
     public String getShopID(){
-        return null;
+        return sessionHandler.getShopID();
     }
     public String getLoginID(){
-        return null;
+        return sessionHandler.getLoginID();
     }
     public boolean isUserHasShop(){
-        return false;
+        return sessionHandler.isUserHasShop();
     }
 
     public String getAdsId(){
@@ -61,28 +71,28 @@ public class SessionHandler implements UserSession {
     }
 
     public boolean isV4Login(){
-        return false;
+        return sessionHandler.isV4Login();
     }
 
     public String getPhoneNumber() {
-        return "";
+        return sessionHandler.getPhoneNumber();
     }
 
     public String getEmail() {
-        return "";
+        return sessionHandler.getEmail();
     }
 
     public String getRefreshToken() {
-        return "";
+        return sessionHandler.getRefreshToken();
     }
 
     public String getAccessToken() {
-        return "";
+        return sessionHandler.getAccessToken();
     }
 
     @Override
     public String getFreshToken() {
-        return null;
+        return sessionHandler.getFreshToken();
     }
 
     @Override
@@ -92,7 +102,7 @@ public class SessionHandler implements UserSession {
 
     @Override
     public String getDeviceId() {
-        return null;
+        return gcmHandler.getRegistrationId();
     }
 
     @Override
@@ -117,16 +127,16 @@ public class SessionHandler implements UserSession {
 
     @Override
     public String getProfilePicture() {
-        return null;
+        return sessionHandler.getProfilePicture();
     }
 
     @Override
     public boolean isMsisdnVerified() {
-        return false;
+        return sessionHandler.isMsisdnVerified();
     }
 
     @Override
     public boolean isHasPassword() {
-        return false;
+        return sessionHandler.isHasPassword();
     }
 }
