@@ -1,7 +1,7 @@
 package com.tokopedia.logisticdata.data.apiservice;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.Map;
 

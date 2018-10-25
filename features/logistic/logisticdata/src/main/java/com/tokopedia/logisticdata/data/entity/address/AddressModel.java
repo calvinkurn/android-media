@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class AddressModel implements Parcelable {
 
@@ -78,288 +78,224 @@ public class AddressModel implements Parcelable {
     }
 
     /**
-     * 
-     * @return
-     *     The addressId
+     * @return The addressId
      */
     public String getAddressId() {
         return addressId;
     }
 
     /**
-     * 
-     * @param addressId
-     *     The address_id
+     * @param addressId The address_id
      */
     public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
     /**
-     * 
-     * @return
-     *     The receiverPhone
+     * @return The receiverPhone
      */
     public String getReceiverPhone() {
         return receiverPhone;
     }
 
     /**
-     * 
-     * @param receiverPhone
-     *     The receiver_phone
+     * @param receiverPhone The receiver_phone
      */
     public void setReceiverPhone(String receiverPhone) {
         this.receiverPhone = receiverPhone;
     }
 
     /**
-     * 
-     * @return
-     *     The addressStatus
+     * @return The addressStatus
      */
     public Integer getAddressStatus() {
         return addressStatus;
     }
 
     /**
-     * 
-     * @param addressStatus
-     *     The address_status
+     * @param addressStatus The address_status
      */
     public void setAddressStatus(Integer addressStatus) {
         this.addressStatus = addressStatus;
     }
 
     /**
-     * 
-     * @return
-     *     The postalCode
+     * @return The postalCode
      */
     public String getPostalCode() {
         return postalCode;
     }
 
     /**
-     * 
-     * @param postalCode
-     *     The postal_code
+     * @param postalCode The postal_code
      */
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
     /**
-     * 
-     * @return
-     *     The latitude
+     * @return The latitude
      */
     public String getLatitude() {
         return latitude;
     }
 
     /**
-     * 
-     * @param latitude
-     *     The latitude
+     * @param latitude The latitude
      */
     public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
     /**
-     * 
-     * @return
-     *     The addressStreet
+     * @return The addressStreet
      */
     public String getAddressStreet() {
         return MethodChecker.fromHtml(addressStreet).toString();
     }
 
     /**
-     * 
-     * @param addressStreet
-     *     The address_street
+     * @param addressStreet The address_street
      */
     public void setAddressStreet(String addressStreet) {
         this.addressStreet = addressStreet;
     }
 
     /**
-     * 
-     * @return
-     *     The cityName
+     * @return The cityName
      */
     public String getCityName() {
         return cityName;
     }
 
     /**
-     * 
-     * @param cityName
-     *     The city_name
+     * @param cityName The city_name
      */
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
 
     /**
-     * 
-     * @return
-     *     The districtId
+     * @return The districtId
      */
     public String getDistrictId() {
         return districtId;
     }
 
     /**
-     * 
-     * @param districtId
-     *     The district_id
+     * @param districtId The district_id
      */
     public void setDistrictId(String districtId) {
         this.districtId = districtId;
     }
 
     /**
-     * 
-     * @return
-     *     The cityId
+     * @return The cityId
      */
     public String getCityId() {
         return cityId;
     }
 
     /**
-     * 
-     * @param cityId
-     *     The city_id
+     * @param cityId The city_id
      */
     public void setCityId(String cityId) {
         this.cityId = cityId;
     }
 
     /**
-     * 
-     * @return
-     *     The countryName
+     * @return The countryName
      */
     public String getCountryName() {
         return countryName;
     }
 
     /**
-     * 
-     * @param countryName
-     *     The country_name
+     * @param countryName The country_name
      */
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
 
     /**
-     * 
-     * @return
-     *     The longitude
+     * @return The longitude
      */
     public String getLongitude() {
         return longitude;
     }
 
     /**
-     * 
-     * @param longitude
-     *     The longitude
+     * @param longitude The longitude
      */
     public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
     /**
-     * 
-     * @return
-     *     The provinceId
+     * @return The provinceId
      */
     public String getProvinceId() {
         return provinceId;
     }
 
     /**
-     * 
-     * @param provinceId
-     *     The province_id
+     * @param provinceId The province_id
      */
     public void setProvinceId(String provinceId) {
         this.provinceId = provinceId;
     }
 
     /**
-     * 
-     * @return
-     *     The addressName
+     * @return The addressName
      */
     public String getAddressName() {
         return MethodChecker.fromHtml(addressName).toString();
     }
 
     /**
-     * 
-     * @param addressName
-     *     The address_name
+     * @param addressName The address_name
      */
     public void setAddressName(String addressName) {
         this.addressName = addressName;
     }
 
     /**
-     * 
-     * @return
-     *     The receiverName
+     * @return The receiverName
      */
     public String getReceiverName() {
         return MethodChecker.fromHtml(receiverName).toString();
     }
 
     /**
-     * 
-     * @param receiverName
-     *     The receiver_name
+     * @param receiverName The receiver_name
      */
     public void setReceiverName(String receiverName) {
         this.receiverName = receiverName;
     }
 
     /**
-     * 
-     * @return
-     *     The provinceName
+     * @return The provinceName
      */
     public String getProvinceName() {
         return provinceName;
     }
 
     /**
-     * 
-     * @param provinceName
-     *     The province_name
+     * @param provinceName The province_name
      */
     public void setProvinceName(String provinceName) {
         this.provinceName = provinceName;
     }
 
     /**
-     * 
-     * @return
-     *     The districtName
+     * @return The districtName
      */
     public String getDistrictName() {
         return districtName;
     }
 
     /**
-     * 
-     * @param districtName
-     *     The district_name
+     * @param districtName The district_name
      */
     public void setDistrictName(String districtName) {
         this.districtName = districtName;

@@ -1,13 +1,11 @@
 package com.tokopedia.logisticdata.data.entity.address;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -335,11 +333,6 @@ public class Destination implements Parcelable {
                 + ", " + postalCode
                 + "<br>" + provinceName
                 + "<br>" + receiverPhone;
-    }
-
-    public String getGeoLocation(Context context) {
-        this.geoLocation = GeoLocationUtils.reverseGeoCode(context, latitude, longitude);
-        return this.geoLocation;
     }
 
     public boolean isCompleted() {
