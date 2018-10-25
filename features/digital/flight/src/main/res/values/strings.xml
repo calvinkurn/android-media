@@ -378,9 +378,9 @@
     <string name="flight_cancellation_review_description">Saya telah menyetujui Syarat dan Ketentuan Pembatalan Pesanan untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.</string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
-    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, seluruh dana pembayaran Anda akan <b>hangus</b> karena pihak maskapai tidak menyediakan fitur pengembalian dana.]]></string>
+    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Tiket pesawat yang dibatalkan kemungkinan <b>tidak dapat dikembalikan</b>. Segala ketentuan pembatalan tiket pesawat akan disesuaikan dengan kebijakan maskapai.]]></string>
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
-    <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan pesanan, dana pembayaran Anda <b>akan dikembalikan</b> sesuai dengan syarat dan ketentuan pihak maskapai penerbangan.]]></string>
+    <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan tiket pesawat, nominal dana yang dikembalikan akan disesuaikan dengan kebijakan maskapai.]]></string>
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
     <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pesanan Telah Diterima</string>
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
