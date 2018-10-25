@@ -966,6 +966,8 @@ public interface AppEventTracking {
         String CATEGORY = "category";
         String CATEGORY_ID = "category_id";
         String PRODUCT_ID = "product_id";
+        String PRODUCT_GROUP_NAME = "product_group_name";
+        String PRODUCT_GROUP_ID = "product_group_id";
         String PRODUCT_NAME = "product_name";
         String PRODUCT_URL = "product_url";
         String PRODUCT_PRICE = "product_price";
@@ -1003,6 +1005,7 @@ public interface AppEventTracking {
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
         String HOTLIST_ID = "hotlist_id";
+        String CITY = "city";
 
     }
 
@@ -1026,7 +1029,7 @@ public interface AppEventTracking {
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
         String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
-        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favourite";
+        String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favorite";
         String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
         String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";

@@ -57,5 +57,5 @@ public interface ShopModuleRouter {
 
     boolean isFeedShopPageEnabled();
 
-    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
+    void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed);
 }

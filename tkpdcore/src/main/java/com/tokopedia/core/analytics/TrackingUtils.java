@@ -347,12 +347,12 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
-    public static void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
+    public static void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, shopName);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, shopID);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, shopLocation);
-        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_URL_SLUG, shopDomain);
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, isShopOfficaial);
         getMoEngine().sendEvent(
                 builder.build(),
@@ -364,7 +364,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void sendMoEngageAddressEvent(String address) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.ADDRESS_ADDED, address);
+        builder.putAttrString(AppEventTracking.MOENGAGE.CITY, address);
         getMoEngine().sendEvent(
                 builder.build(), AppEventTracking.MOENGAGE.ADDRESS_ADDED
         );
@@ -414,8 +414,8 @@ public class TrackingUtils extends TrackingConfig {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, categoryName);
         builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY_ID, categoryId);
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productName);
-        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, productId);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_GROUP_NAME, productName);
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_GROUP_ID, productId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, subCategoryId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, subCategoryName);
         getMoEngine().sendEvent(

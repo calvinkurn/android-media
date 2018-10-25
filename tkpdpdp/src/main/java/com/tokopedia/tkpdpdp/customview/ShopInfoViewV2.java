@@ -186,7 +186,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                     favoriteText.setCompoundDrawablesWithIntrinsicBounds(
                             R.drawable.ic_check_green_24dp, 0, 0, 0);
                 }
-                TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
+                TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, true);
                 break;
             case 0:
             default:
@@ -203,7 +203,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
                     favoriteText.setCompoundDrawablesWithIntrinsicBounds(
                             R.drawable.ic_add_black_24dp, 0, 0, 0);
                 }
-                TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
+                TrackingUtils.sendMoEngageFavoriteEvent(productDetailData.getShopInfo().getShopName(), productDetailData.getShopInfo().getShopId(), productDetailData.getShopInfo().getShopDomain(), productDetailData.getShopInfo().getShopLocation(), productDetailData.getShopInfo().getShopIsOfficial() == 1 ? true : false, false);
                 break;
         }
     }

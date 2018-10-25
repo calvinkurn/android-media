@@ -25,7 +25,7 @@ public class MoEngageConstants {
 
     public void sendSubCategory(String subCategoryId, String subCategoryName) {
         SUBCATEGORY_ID = subCategoryId;
-        CATEGORY = subCategoryName;
+        SUBCATEGORY = subCategoryName;
         TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 

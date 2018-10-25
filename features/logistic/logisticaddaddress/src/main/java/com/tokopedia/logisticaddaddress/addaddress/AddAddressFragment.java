@@ -483,7 +483,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         address.setReceiverName(receiverNameEditText.getText().toString());
         address.setAddressStreet(addressEditText.getText().toString());
         address.setReceiverPhone(receiverPhoneEditText.getText().toString());
-        TrackingUtils.sendMoEngageAddressEvent(addressEditText.getText().toString());
+        if (!TextUtils.isEmpty(districtEditText.getText())) {
+            TrackingUtils.sendMoEngageAddressEvent(districtEditText.getText().toString());
+        }
     }
 
     private View.OnClickListener onCityDistrictClick() {
