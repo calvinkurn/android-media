@@ -351,4 +351,7 @@ public interface ProductDetailView extends ViewListener {
     void showErrorAffiliate(String message);
 
     void showPromoWidget(PromoAttributes promoAttributes);
+  
+    boolean isFromExploreAffiliate();
+  
 }
