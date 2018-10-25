@@ -51,7 +51,7 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    AddWishListUseCase providesTkpTkpdAddWishListUseCase() {
+    AddWishListUseCase providesAddWishListUseCase() {
         return new AddWishListUseCase(cartListView.getActivity());
     }
 

@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.autosweepmf.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.tokocash.autosweepmf.data.mapper.AutoSweepLimitMapperEntity;
 import com.tokopedia.tokocash.autosweepmf.data.model.ResponseAutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.data.source.AutoSweepLimitDataStore;

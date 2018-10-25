@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.imagesearch.search;
 
+import android.content.Context;
+
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -11,7 +13,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 public class ImageSearchPresenter extends DiscoveryPresenter<ImageSearchContract.View, ImageSearchActivity>
         implements ImageSearchContract.Presenter {
 
-    public ImageSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        super(getProductUseCase, getImageSearchUseCase);
+    public ImageSearchPresenter(Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        super(context, getProductUseCase, getImageSearchUseCase);
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
 import com.tokopedia.checkout.view.feature.multipleaddressform.IMultipleAddressPresenter;

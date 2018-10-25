@@ -1,7 +1,5 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;

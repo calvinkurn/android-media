@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -43,8 +42,10 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
@@ -59,14 +60,11 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
-import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
@@ -82,7 +80,7 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFr
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView {
+        implements OrderDetailView, ToolbarChangeListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -93,7 +91,6 @@ public class OrderDetailActivity extends TActivity
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
-    private OrderDetailAnalytics orderDetailAnalytics;
 
     @Inject
     OrderDetailPresenterImpl presenter;
@@ -135,8 +132,6 @@ public class OrderDetailActivity extends TActivity
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
-        orderDetailAnalytics =
-                new OrderDetailAnalytics((ITransactionOrderDetailRouter) getApplication());
     }
 
     private void initInjector() {
@@ -155,31 +150,11 @@ public class OrderDetailActivity extends TActivity
         setItemListView(data);
         setAwbLayout(data);
         setInvoiceView(data);
-        setBookingCode(data);
         setDescriptionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
         setUploadAwb(data);
-    }
-
-    private void setBookingCode(OrderDetailData data) {
-        ViewGroup layout = findViewById(R.id.booking_code_layout);
-        if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
-            TextView text = findViewById(R.id.booking_code);
-            text.setText(data.getBookingCode());
-            OnlineBooking codeData = new OnlineBooking(
-                    data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
-            );
-            layout.setOnClickListener(view -> {
-                orderDetailAnalytics.sendAnalyticsClickShipping(
-                        OrderDetailConstant.VALUE_CLICK_BUTTON_DETAIL,
-                        OrderDetailConstant.VALUE_EMPTY);
-                startActivity(BookingCodeActivity.createInstance(this, codeData));
-            });
-        } else {
-            layout.setVisibility(View.GONE);
-        }
     }
 
     private void setUploadAwb(final OrderDetailData data) {
@@ -518,7 +493,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onError(String errorMessage) {
-        Log.d(OrderDetailActivity.class.getSimpleName(), "onError: " + errorMessage);
         NetworkErrorHelper.showEmptyState(this,
                 getMainView(),
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -675,7 +649,6 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Check Again Later
         Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }

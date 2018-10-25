@@ -1,5 +1,10 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +16,7 @@ import java.util.List;
  * Created by errysuprayogi on 12/28/17.
  */
 
-public class CpmShop {
+public class CpmShop implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -20,16 +25,22 @@ public class CpmShop {
     private static final String KEY_SLOGAN = "slogan";
     private static final String KEY_PRODUCT = "product";
 
-    private int id;
+    @SerializedName(KEY_ID)
+    private String id;
+    @SerializedName(KEY_NAME)
     private String name;
+    @SerializedName(KEY_DOMAIN)
     private String domain;
+    @SerializedName(KEY_TAGLINE)
     private String tagline;
+    @SerializedName(KEY_SLOGAN)
     private String slogan;
+    @SerializedName(KEY_PRODUCT)
     private List<Product> products = new ArrayList<>();
 
     public CpmShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
-            setId(object.getInt(KEY_ID));
+            setId(object.getString(KEY_ID));
         }
         if(!object.isNull(KEY_NAME)){
             setName(object.getString(KEY_NAME));
@@ -51,6 +62,42 @@ public class CpmShop {
         }
     }
 
+    protected CpmShop(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        domain = in.readString();
+        tagline = in.readString();
+        slogan = in.readString();
+        products = in.createTypedArrayList(Product.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(domain);
+        dest.writeString(tagline);
+        dest.writeString(slogan);
+        dest.writeTypedList(products);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CpmShop> CREATOR = new Creator<CpmShop>() {
+        @Override
+        public CpmShop createFromParcel(Parcel in) {
+            return new CpmShop(in);
+        }
+
+        @Override
+        public CpmShop[] newArray(int size) {
+            return new CpmShop[size];
+        }
+    };
+
     public List<Product> getProducts() {
         return products;
     }
@@ -59,11 +106,11 @@ public class CpmShop {
         this.products = products;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

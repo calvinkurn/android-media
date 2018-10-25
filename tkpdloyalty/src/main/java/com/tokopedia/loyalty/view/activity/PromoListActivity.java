@@ -27,7 +27,6 @@ import com.tokopedia.loyalty.di.module.PromoListActivityModule;
 import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
-import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
 import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;

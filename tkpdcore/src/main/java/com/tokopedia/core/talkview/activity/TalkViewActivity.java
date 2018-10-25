@@ -44,7 +44,6 @@ public class TalkViewActivity extends TActivity
     InboxTalkResultReceiver mReceiverTalk;
     TalkDetailResultReceiver mReceiverTalkDetail;
 
-    @DeepLink(Constants.Applinks.TALK_DETAIL)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         extras.putString("from", INBOX_TALK);
         Intent homeIntent = null;

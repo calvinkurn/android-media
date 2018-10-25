@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.constant.OrderDetailTypeDef;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.ButtonData;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenter;
 
 /**
@@ -327,7 +327,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
             button.setTextColor(getResources().getColor(R.color.black));
         } else if(responseVisibility == OrderDetailTypeDef.GREEN_BUTTON) {
             button.setVisibility(VISIBLE);
-            button.setBackgroundResource(R.drawable.green_button_rounded_unify);
+            button.setBackgroundResource(R.drawable.green_button_rounded_unify_logistic_module);
             button.setTextColor(getResources().getColor(R.color.white));
         } else button.setVisibility(GONE);
     }

@@ -3,8 +3,8 @@ package com.tokopedia.tokocash;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 /**
  * Created by nabillasabbaha on 09/05/18.

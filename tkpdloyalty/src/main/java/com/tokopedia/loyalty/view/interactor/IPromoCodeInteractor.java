@@ -3,7 +3,6 @@ package com.tokopedia.loyalty.view.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 
-import rx.Observable;
 import rx.Subscriber;
 
 /**

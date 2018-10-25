@@ -20,12 +20,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:paddingBottom="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
                 android:paddingStart="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_16">
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_8">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_70"
-                        android:textSize="@dimen/text_size_large"
+                        android:textSize="@dimen/sp_18"
                         android:textStyle="bold"
                         tools:text="486118" />
 
@@ -72,19 +72,19 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_four" />
+                android:background="@color/white_two" />
 
             <LinearLayout
                 android:id="@+id/description_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:paddingBottom="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
                 android:paddingStart="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_16">
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_16">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -147,8 +147,8 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/dp_8"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -207,19 +207,19 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_four" />
+                android:background="@color/white_two" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
                 android:paddingStart="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_16">
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_20"
+                android:paddingBottom="@dimen/dp_16">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -231,7 +231,7 @@
                     android:id="@+id/currenct_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/orange_red"
                     tools:text="On Process" />
 
                 <android.support.v7.widget.RecyclerView
@@ -258,14 +258,15 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/info" />
+                            app:srcCompat="@drawable/info"
+                            tools:ignore="VectorDrawableCompat" />
 
                         <TextView
                             android:id="@+id/notification_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_8"
                             android:layout_marginStart="@dimen/dp_8"
+                            android:layout_marginLeft="@dimen/dp_8"
                             android:text="@string/warning_no_courier_change" />
 
                     </LinearLayout>
@@ -284,12 +285,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
                 android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_16">
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:layout_marginBottom="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/further_information_text"

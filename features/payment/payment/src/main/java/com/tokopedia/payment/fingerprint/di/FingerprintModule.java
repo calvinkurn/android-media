@@ -1,9 +1,12 @@
 package com.tokopedia.payment.fingerprint.di;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintApi;
 import com.tokopedia.payment.fingerprint.data.FingerprintDataSourceCloud;
@@ -41,53 +44,67 @@ public class FingerprintModule {
                                            SavePublicKeyUseCase savePublicKeyUseCase,
                                            PaymentFingerprintUseCase paymentFingerprintUseCase,
                                            GetPostDataOtpUseCase getPostDataOtpUseCase,
-                                           UserSession userSession){
+                                           UserSession userSession) {
         return new TopPayPresenter(saveFingerPrintUseCase, savePublicKeyUseCase,
                 paymentFingerprintUseCase, getPostDataOtpUseCase, userSession);
-    };
+    }
+
+    ;
 
     @FingerprintScope
     @Provides
-    FingerprintRepository fingerprintRepository(FingerprintDataSourceCloud fingerprintDataSourceCloud){
+    FingerprintRepository fingerprintRepository(FingerprintDataSourceCloud fingerprintDataSourceCloud) {
         return new FingerprintRepositoryImpl(fingerprintDataSourceCloud);
     }
 
     @FingerprintScope
     @Provides
-    FingerprintApi providesFingerprintApi(@FingerprintQualifier Retrofit retrofit){
+    FingerprintApi providesFingerprintApi(@FingerprintQualifier Retrofit retrofit) {
         return retrofit.create(FingerprintApi.class);
     }
 
     @FingerprintScope
     @Provides
-    AccountFingerprintApi provideAccountFingerprintApi(@AccountQualifier Retrofit retrofit){
+    AccountFingerprintApi provideAccountFingerprintApi(@AccountQualifier Retrofit retrofit) {
         return retrofit.create(AccountFingerprintApi.class);
     }
 
     @AccountQualifier
     @FingerprintScope
     @Provides
-    public Retrofit provideAccountRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+    Retrofit provideAccountRetrofit(OkHttpClient okHttpClient,
+                                    Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(PaymentFingerprintConstant.ACCOUNTS_DOMAIN).client(okHttpClient).build();
     }
 
     @FingerprintQualifier
     @FingerprintScope
     @Provides
-    public Retrofit provideFingerprintRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+    Retrofit provideFingerprintRetrofit(OkHttpClient okHttpClient,
+                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(PaymentFingerprintConstant.TOP_PAY_DOMAIN).client(okHttpClient).build();
     }
 
     @FingerprintScope
     @Provides
-    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor){
+    Context provideContext(@ApplicationContext Context context) {
+        return context;
+    }
+
+    @FingerprintScope
+    @Provides
+    OkHttpClient provideOkHttpClient(Context context, HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new TkpdAuthInterceptor())
+                .addInterceptor(
+                        new TkpdAuthInterceptor(
+                                context,
+                                (NetworkRouter) context,
+                                new com.tokopedia.user.session.UserSession(context)
+                        )
+                )
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
-        if(GlobalConfig.isAllowDebuggingTools()){
+        if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor);
         }
         return builder.build();

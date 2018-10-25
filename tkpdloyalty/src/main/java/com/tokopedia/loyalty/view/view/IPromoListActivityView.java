@@ -1,6 +1,5 @@
 package com.tokopedia.loyalty.view.view;
 
-import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 
 import java.util.List;
