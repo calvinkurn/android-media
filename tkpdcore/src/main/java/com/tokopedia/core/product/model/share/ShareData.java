@@ -221,7 +221,7 @@ public class ShareData implements Parcelable {
     public String getCampaignName() {
         String campaign = "Product Share";
         if (getType() != null)
-            campaign = getType() + " Share";
+            campaign = getType() + "%20Share";
         return campaign;
     }
 
