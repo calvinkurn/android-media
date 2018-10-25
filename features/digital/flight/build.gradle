@@ -3,13 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
-//    configurations {
-//        all {
-//            resolutionStrategy {
-//                force "android.arch.core:runtime:1.1.1"
-//            }
-//        }
-//    }
+    configurations {
+        all {
+            resolutionStrategy {
+                force "android.arch.core:runtime:1.1.1"
+            }
+        }
+    }
 }
 
 project.ext {
