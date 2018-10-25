@@ -24,7 +24,7 @@ public interface FlightModuleRouter {
 
     Intent getLoginIntent();
 
-    void goToFlightActivity(Context context);
+//    void goToFlightActivity(Context context);
 
     Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
 

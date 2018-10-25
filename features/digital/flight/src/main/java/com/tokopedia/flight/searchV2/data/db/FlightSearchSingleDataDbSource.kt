@@ -3,9 +3,9 @@ package com.tokopedia.flight.searchV2.data.db
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
+import com.tokopedia.flight_dbflow.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
+import com.tokopedia.flight_dbflow.FlightAirportDB
 import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum

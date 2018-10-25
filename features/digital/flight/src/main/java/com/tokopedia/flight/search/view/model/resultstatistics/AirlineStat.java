@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 
 /**
  * Created by User on 11/1/2017.

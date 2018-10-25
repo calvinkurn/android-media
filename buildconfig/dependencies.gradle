@@ -366,6 +366,7 @@ ext {
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
             tokoCash              : ":features:fintech:tokocash",
             flight                : ":features:digital:flight",
+            flightDbFlow          : ":features:digital:flight_dbflow",
             flightNoOp            : ":features:digital:flight_no_op",
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",

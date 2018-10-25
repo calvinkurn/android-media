@@ -182,7 +182,6 @@ import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -863,10 +862,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(intent);
     }
 
-    @Override
-    public void goToFlightActivity(Context context) {
-        TkpdFlight.goToFlightActivity(context);
-    }
+//    @Override
+//    public void goToFlightActivity(Context context) {
+//        TkpdFlight.INSTANCE.goToFlightActivity(context);
+//    }
 
     @Override
     public void goToDraftProductList(Context context) {
