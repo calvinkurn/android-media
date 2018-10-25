@@ -214,7 +214,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
-                    firstPageViewModel.affiliatePostQuota.formatted
+                    firstPageViewModel.affiliatePostQuota
             )
         }
 
@@ -488,15 +488,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun addFooter(headerViewModel: ProfileHeaderViewModel, quota: String) {
+    private fun addFooter(headerViewModel: ProfileHeaderViewModel,
+                          affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(quota)) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
                 recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = quota
+                recommendationQuota.text = affiliatePostQuota.formatted
             } else {
                 recommendationQuota.visibility = View.GONE
             }
