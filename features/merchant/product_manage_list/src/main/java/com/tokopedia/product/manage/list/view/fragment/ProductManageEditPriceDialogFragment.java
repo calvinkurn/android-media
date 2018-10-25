@@ -111,7 +111,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if (isPriceValid() && listenerDialogEditPrice != null) {
-                    UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
                     listenerDialogEditPrice.onSubmitEditPrice(productId,
                             formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),
                             spinnerCounterInputViewPrice.getSpinnerValue(),
@@ -126,7 +126,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
-                UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
             }
         });
 
