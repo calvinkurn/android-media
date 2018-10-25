@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Object of this class will serve as response for view lauyer
  */
-final public class GraphqlResponse {
+public class GraphqlResponse {
     private Map<Type, Object> mResults;
     private Map<Type, List<GraphqlError>> mErrors;
     private final boolean mIsCached;
