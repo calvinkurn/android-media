@@ -8,16 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
-
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 
 /**
  * @author alifa on 5/8/17.
