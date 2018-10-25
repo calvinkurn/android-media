@@ -114,19 +114,6 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER &&
-                resultCode == Activity.RESULT_OK) {
-            phoneNumberEditText.setText(data.getStringExtra(ChangePhoneNumberFragment
-                    .EXTRA_PHONE_NUMBER));
-        } else if (requestCode == RESULT_PROFILE_COMPLETION_PHONE_VERIF &&
-                resultCode == Activity.RESULT_OK) {
-            presenter.verifyPhoneNumber(getPhoneNumber());
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
     public void onSuccessVerifyPhoneNumber() {
         parentView.getUserSession().setIsMsisdnVerified(true);
         userSession.setPhoneNumber(getPhoneNumber());

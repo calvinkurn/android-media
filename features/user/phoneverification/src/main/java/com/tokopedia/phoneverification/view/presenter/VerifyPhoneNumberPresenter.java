@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.phoneverification.view.subscriber.VerifyPhoneNumberSubscriber;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -15,14 +16,19 @@ public class VerifyPhoneNumberPresenter extends BaseDaggerPresenter<PhoneVerific
         implements PhoneVerification.Presenter {
 
     private final VerifyPhoneNumberUseCase verifyPhoneNumberUseCase;
+    private final UserSession userSession;
 
     @Inject
-    public VerifyPhoneNumberPresenter(VerifyPhoneNumberUseCase verifyPhoneNumberUseCase) {
+    public VerifyPhoneNumberPresenter(VerifyPhoneNumberUseCase verifyPhoneNumberUseCase,
+                                      UserSession userSession) {
         this.verifyPhoneNumberUseCase = verifyPhoneNumberUseCase;
+        this.userSession = userSession;
     }
 
-    @Inject
-
+    @Override
+    public void attachView(PhoneVerification.View view) {
+        super.attachView(view);
+    }
 
     @Override
     public void detachView() {
@@ -33,7 +39,7 @@ public class VerifyPhoneNumberPresenter extends BaseDaggerPresenter<PhoneVerific
     @Override
     public void verifyPhoneNumber(String phoneNumber) {
         verifyPhoneNumberUseCase.execute(
-                VerifyPhoneNumberUseCase.getParam(getView().getUserSession().getUserId(), phoneNumber),
+                VerifyPhoneNumberUseCase.getParam(userSession.getUserId(), phoneNumber),
                 new VerifyPhoneNumberSubscriber(getView()));
     }
 }
