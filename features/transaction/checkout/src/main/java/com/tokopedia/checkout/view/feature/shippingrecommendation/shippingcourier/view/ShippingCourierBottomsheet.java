@@ -123,7 +123,9 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Override
     protected void onCloseButtonClick() {
         super.onCloseButtonClick();
-        shippingCourierBottomsheetListener.onCourierShipmentRecpmmendationCloseClicked();
+        if (shippingCourierBottomsheetListener != null) {
+            shippingCourierBottomsheetListener.onCourierShipmentRecpmmendationCloseClicked();
+        }
     }
 
     @Override
@@ -136,8 +138,10 @@ public class ShippingCourierBottomsheet extends BottomSheets
             presenter.updateSelectedCourier(shippingCourierViewModel);
         }
         CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
-        shippingCourierBottomsheetListener.onCourierChoosen(
-                courierItemData, presenter.getRecipientAddressModel(), cartPosition, isNeedPinpoint);
+        if (shippingCourierBottomsheetListener != null) {
+            shippingCourierBottomsheetListener.onCourierChoosen(
+                    courierItemData, presenter.getRecipientAddressModel(), cartPosition, isNeedPinpoint);
+        }
         dismiss();
     }
 }
