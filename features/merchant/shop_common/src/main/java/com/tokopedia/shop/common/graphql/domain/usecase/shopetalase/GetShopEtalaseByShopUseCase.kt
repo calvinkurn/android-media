@@ -2,6 +2,9 @@ package com.tokopedia.shop.common.graphql.domain.usecase.shopetalase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.gql.ShopEtalaseByShopQuery
@@ -30,17 +33,24 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
                 variables[IS_OWNER] = requestParams.getBoolean(IS_OWNER, false)
                 return variables
             }
+
+            override fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
+                return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setSessionIncluded(true)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                        .build();
+            }
         }
-        graphQLUseCase.useCache = true
     }
 
-    fun setForceNetwork(forceNetwork: Boolean) {
-        graphQLUseCase.forceNetwork = forceNetwork
+    fun clearCache() {
+        graphQLUseCase.clearCache()
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<ArrayList<ShopEtalaseModel>> {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(GraphQLResultMapper())
+                .doOnError { graphQLUseCase.clearCache() }
     }
 
     override fun unsubscribe() {

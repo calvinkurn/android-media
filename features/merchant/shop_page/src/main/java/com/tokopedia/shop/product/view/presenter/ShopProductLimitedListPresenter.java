@@ -257,6 +257,10 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
 
     }
 
+    public void clearCache(){
+        getShopEtalaseByShopUseCase.clearCache();
+    }
+
     @Override
     public void detachView() {
         super.detachView();

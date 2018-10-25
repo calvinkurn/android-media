@@ -2,9 +2,7 @@ package com.tokopedia.seller.shopsettings.notes.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetailResult;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 import com.tokopedia.core.network.apiservices.shop.MyShopNoteActService;
@@ -34,8 +32,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 @Deprecated
 public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRetrofitInteractor {
-
-    private static final String TAG = WithdrawRetrofitInteractorImpl.class.getSimpleName();
 
     private final CompositeSubscription compositeSubscription;
     private MyShopNoteService shopNoteService;
