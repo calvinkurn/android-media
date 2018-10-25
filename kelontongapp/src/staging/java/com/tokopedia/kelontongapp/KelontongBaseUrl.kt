@@ -6,4 +6,5 @@ package com.tokopedia.kelontongapp
 object KelontongBaseUrl {
     val BASE_URL = "https://mitra-staging.tokopedia.com/"
     val COOKIE_URL = ".tokopedia.com"
+    val TOKOPEDIA_URL = "tokopedia.com"
 }
