@@ -1,8 +1,11 @@
 package com.tokopedia.kol.feature.post.view.subscriber;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.post.domain.model.ContentListDomain;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 
 import rx.Subscriber;
 
@@ -38,12 +41,15 @@ public class GetKolPostShopSubscriber extends Subscriber<ContentListDomain> {
                 contentListDomain.getVisitableList(),
                 contentListDomain.getLastCursor()
         );
-        //TODO milhamj
-//        view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
-//                KolEventTracking.Event.EVENT_SHOP_PAGE,
-//                KolEventTracking.Category.SHOP_PAGE_FEED,
-//                KolEventTracking.Action.SHOP_ITEM_IMPRESSION,
-//                String.valueOf(post.getId()));
+        for (Visitable visitable: contentListDomain.getVisitableList()) {
+            if (visitable instanceof KolPostViewModel) {
+                KolPostViewModel kolPostViewModel = (KolPostViewModel) visitable;
+                view.getAbstractionRouter().getAnalyticTracker().sendEventTracking(
+                        KolEventTracking.Event.EVENT_SHOP_PAGE,
+                        KolEventTracking.Category.SHOP_PAGE_FEED,
+                        KolEventTracking.Action.SHOP_ITEM_IMPRESSION,
+                        String.valueOf(kolPostViewModel.getContentId()));
+            }
+        }
     }
-
 }

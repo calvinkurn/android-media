@@ -130,4 +130,5 @@ public interface ProductDetailPresenter {
 
     void requestAffiliateProductData(ProductDetailData productDetailData);
 
+    void getPromoWidget(final @NonNull Context context, @NonNull ProductDetailData productDetailData);
 }

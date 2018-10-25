@@ -1,6 +1,6 @@
 package com.tokopedia.shop.page.domain.interactor;
 
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -19,15 +19,15 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
     private static final String SHOP_ID = "SHOP_ID";
 
     private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
-    private final DeleteShopInfoUseCase deleteShopInfoUseCase;
+    private final DeleteShopInfoCacheUseCase deleteShopInfoCacheUseCase;
     private final DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase;
 
     @Inject
     public ToggleFavouriteShopAndDeleteCacheUseCase(ToggleFavouriteShopUseCase toggleFavouriteShopUseCase,
-                                                    DeleteShopInfoUseCase deleteShopInfoUseCase,
+                                                    DeleteShopInfoCacheUseCase deleteShopInfoCacheUseCase,
                                                     DeleteFavoriteListCacheUseCase deleteFavoriteListCacheUseCase) {
         this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
-        this.deleteShopInfoUseCase = deleteShopInfoUseCase;
+        this.deleteShopInfoCacheUseCase = deleteShopInfoCacheUseCase;
         this.deleteFavoriteListCacheUseCase = deleteFavoriteListCacheUseCase;
     }
 
@@ -40,7 +40,7 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
                         if (aBoolean) {
                             try {
                                 deleteFavoriteListCacheUseCase.executeSync();
-                                deleteShopInfoUseCase.executeSync();
+                                deleteShopInfoCacheUseCase.executeSync();
                             } catch (Throwable e) {
                                 // no-op
                             }
@@ -61,7 +61,7 @@ public class ToggleFavouriteShopAndDeleteCacheUseCase extends UseCase<Boolean> {
     @Override
     public void unsubscribe() {
         super.unsubscribe();
-        deleteShopInfoUseCase.unsubscribe();
+        deleteShopInfoCacheUseCase.unsubscribe();
         toggleFavouriteShopUseCase.unsubscribe();
         deleteFavoriteListCacheUseCase.unsubscribe();
     }

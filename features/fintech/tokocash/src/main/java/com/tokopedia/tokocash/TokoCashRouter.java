@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
@@ -45,4 +46,6 @@ public interface TokoCashRouter {
     Intent getWebviewActivityWithIntent(Context context, String url);
 
     String getExtraBroadcastReceiverWallet();
+
+    AnalyticTracker getAnalyticTracker();
 }

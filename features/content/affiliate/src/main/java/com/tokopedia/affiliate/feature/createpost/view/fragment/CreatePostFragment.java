@@ -47,6 +47,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private static final String VIEW_MODEL = "view_model";
     private static final String PARAM_USER_ID = "{user_id}";
+    private static final String PRODUCT_ID_QUERY_PARAM = "?product_id=";
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
     private static final int REQUEST_LOGIN = 83;
@@ -220,9 +221,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     public void onErrorNotAffiliate() {
         if (getActivity() != null) {
             String onboardingApplink = ApplinkConst.AFFILIATE_ONBOARDING
-                    + "?product_id=" +
-                    viewModel.getProductId();
-            RouteManager.route(getActivity(), onboardingApplink);
+                    .concat(PRODUCT_ID_QUERY_PARAM)
+                    .concat(viewModel.getProductId());
+            Intent intent = RouteManager.getIntent(getActivity(), onboardingApplink);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             getActivity().finish();
         }
     }

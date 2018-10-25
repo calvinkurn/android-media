@@ -33,6 +33,7 @@ import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +49,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
+    private static final String PARAM_USER_ID = "{user_id}";
     //TODO milhamj change to real url
     private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia" +
             ".com/bantuan/pembeli/";
@@ -64,11 +66,13 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     private String productId = "";
     private SuggestionAdapter adapter;
-    private UserSession userSession;
     private AfterTextWatcher textWatcher;
 
     @Inject
     UsernameInputContract.Presenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
         UsernameInputFragment fragment = new UsernameInputFragment();
@@ -153,6 +157,13 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterUsername() {
+        Intent profileIntent = RouteManager.getIntent(
+                getContext(),
+                ApplinkConst.PROFILE.replace(PARAM_USER_ID, userSession.getUserId())
+        );
+        profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(profileIntent);
+
         Intent intent;
         if (!TextUtils.isEmpty(productId)) {
             intent = RecommendProductActivity.createIntent(
@@ -165,10 +176,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
                     OnboardingActivity.FINISH_TRUE
             );
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         startActivity(intent);
-        getActivity().finish();
     }
 
     @Override
@@ -182,9 +190,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private void initVar(Bundle savedInstanceState) {
-        if (userSession == null) {
-            userSession = new UserSession(getContext());
-        }
         if (adapter == null) {
             adapter = new SuggestionAdapter(this);
         }

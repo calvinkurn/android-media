@@ -69,9 +69,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
+    override lateinit var profileRouter: ProfileModuleRouter
+
     @Inject
     lateinit var presenter: ProfileContract.Presenter
-    lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
         private const val POST_ID = "{post_id}"
@@ -82,6 +83,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
         private const val SETTING_PROFILE_CODE = 83
+        private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
 
         fun createInstance(bundle: Bundle): ProfileFragment {
@@ -134,7 +136,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
-            SETTING_PROFILE_CODE, EDIT_POST_CODE -> {
+            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE -> {
                 onSwipeRefresh()
             }
         }
@@ -212,7 +214,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
-                    firstPageViewModel.affiliatePostQuota.formatted
+                    firstPageViewModel.affiliatePostQuota
             )
         }
 
@@ -486,15 +488,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun addFooter(headerViewModel: ProfileHeaderViewModel, quota: String) {
+    private fun addFooter(headerViewModel: ProfileHeaderViewModel,
+                          affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(quota)) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
                 recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = quota
+                recommendationQuota.text = affiliatePostQuota.formatted
             } else {
                 recommendationQuota.visibility = View.GONE
             }
@@ -650,7 +653,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToOnboading() {
-        RouteManager.route(context, ApplinkConst.AFFILIATE_ONBOARDING)
+        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_ONBOARDING)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivityForResult(intent, ONBOARDING_CODE)
     }
 
     private fun goToAffiliateExplore() {

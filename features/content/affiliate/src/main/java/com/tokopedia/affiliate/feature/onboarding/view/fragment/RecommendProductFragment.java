@@ -36,8 +36,6 @@ public class RecommendProductFragment extends BaseDaggerFragment
         implements RecommendProductContract.View {
 
     private static final String DEFAULT_PRODUCT_ID = "0";
-    private static final String PRODUCT_ID_BRACKET = "{product_id}";
-    private static final String AD_ID_BRACKET = "{ad_id}";
 
     private ImageView image;
     private TextView name;
@@ -91,13 +89,15 @@ public class RecommendProductFragment extends BaseDaggerFragment
         name.setText(viewModel.getProductName());
         commission.setText(viewModel.getCommission());
         recommendBtn.setOnClickListener(v -> {
-            Intent intent = CreatePostActivity.getInstance(
-                    getContext(),
-                    productId,
-                    viewModel.getAdId()
-            );
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(intent);
+            if (getActivity() != null) {
+                Intent intent = CreatePostActivity.getInstance(
+                        getActivity(),
+                        productId,
+                        viewModel.getAdId()
+                );
+                startActivity(intent);
+                getActivity().finish();
+            }
         });
     }
 
@@ -144,9 +144,11 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     private void initView() {
         seeOther.setOnClickListener(v -> {
-            Intent intent = ExploreActivity.getInstance(getContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(intent);
+            if (getActivity() != null) {
+                Intent intent = ExploreActivity.getInstance(getActivity());
+                startActivity(intent);
+                getActivity().finish();
+            }
         });
     }
 }

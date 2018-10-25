@@ -39,6 +39,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
+    public static final String OVO = "OVO";
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
@@ -169,7 +170,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
+    public void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
+                                              boolean isLinked, String walletType) {
+        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+
+        if (walletType.equals(OVO) && !isLinked) {
+            sendTrackingOvoActivation();
+        }
+
+        if (applink != null && applink.startsWith("http")) {
+            openApplink(String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    applink));
+        } else if (applink != null && applink.startsWith("tokopedia")) {
+            openApplink(applink);
+        }
+    }
+
+    @Override
+    public void onTokopediaPayRightItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
 
         if (applink != null && applink.startsWith("http")) {
@@ -257,5 +276,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                 title.toLowerCase(),
                 section.toLowerCase(),
                 item.toLowerCase());
+    }
+
+    private void sendTrackingOvoActivation() {
+        if (accountAnalytics == null)
+            return;
+
+        accountAnalytics.eventClickActivationOvoMyAccount();
     }
 }

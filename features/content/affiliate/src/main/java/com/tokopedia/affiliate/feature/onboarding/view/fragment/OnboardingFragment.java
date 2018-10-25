@@ -4,27 +4,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
+import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.Objects;
+import javax.inject.Inject;
 
-public class OnboardingFragment extends Fragment {
+public class OnboardingFragment extends BaseDaggerFragment {
 
     private static final String PATH_FORMAT = "%s/%s/%s/%s.jpg";
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
@@ -34,13 +37,15 @@ public class OnboardingFragment extends Fragment {
     private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
     private static final int LOGIN_CODE = 13;
 
+    @Inject
+    UserSessionInterface userSession;
+
     private ImageView image;
     private TextView title;
     private TextView subtitle;
     private ButtonCompat goBtn;
     private TextView commission;
 
-    private UserSession userSession;
     private String productId = "";
     private boolean isOnboardingFinish = false;
 
@@ -84,10 +89,23 @@ public class OnboardingFragment extends Fragment {
         outState.putString(OnboardingActivity.PARAM_PRODUCT_ID, productId);
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        BaseAppComponent baseAppComponent
+                = ((BaseMainApplication) getActivity().getApplication())
+                .getBaseAppComponent();
+        DaggerOnboardingComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this);
+    }
+
     private void initVar(Bundle savedInstanceState) {
-        if (userSession == null) {
-            userSession = new UserSession(getContext());
-        }
         if (savedInstanceState != null) {
             isOnboardingFinish = savedInstanceState.getBoolean(
                     OnboardingActivity.PARAM_IS_FINISH,
@@ -145,9 +163,11 @@ public class OnboardingFragment extends Fragment {
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
-            Intent intent = ExploreActivity.getInstance(getContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            startActivity(intent);
+            if (getActivity() != null) {
+                Intent intent = ExploreActivity.getInstance(getActivity());
+                startActivity(intent);
+                getActivity().finish();
+            }
         });
         commission.setVisibility(View.INVISIBLE);
     }

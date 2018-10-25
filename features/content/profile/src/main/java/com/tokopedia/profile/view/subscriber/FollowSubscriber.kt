@@ -33,13 +33,18 @@ class FollowSubscriber(private val view: ProfileContract.View) : Subscriber<Grap
     }
 
     override fun onNext(response: GraphqlResponse) {
-        val query: FollowKolQuery = response.getData(FollowKolQuery::class.java)
-        val isSuccess = query.data.data.status == FOLLOW_SUCCESS
+        val query: FollowKolQuery? = response.getData(FollowKolQuery::class.java)
+
+        if (query == null) {
+            onError(RuntimeException())
+            return
+        }
         if (!TextUtils.isEmpty(query.data.error)) {
             view.onErrorFollowKol(query.data.error)
             return
         }
 
+        val isSuccess = query.data.data.status == FOLLOW_SUCCESS
         if (isSuccess) {
             view.onSuccessFollowKol()
         } else {

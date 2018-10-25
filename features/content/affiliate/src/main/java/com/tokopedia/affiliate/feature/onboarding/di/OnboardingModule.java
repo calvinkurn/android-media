@@ -8,6 +8,8 @@ import com.tokopedia.affiliate.feature.onboarding.view.listener.RecommendProduct
 import com.tokopedia.affiliate.feature.onboarding.view.listener.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.presenter.RecommendProductPresenter;
 import com.tokopedia.affiliate.feature.onboarding.view.presenter.UsernameInputPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,6 +31,12 @@ public class OnboardingModule {
     RecommendProductContract.Presenter provideRecommendProductPresenter(
             RecommendProductPresenter recommendProductPresenter) {
         return recommendProductPresenter;
+    }
+
+    @OnboardingScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
