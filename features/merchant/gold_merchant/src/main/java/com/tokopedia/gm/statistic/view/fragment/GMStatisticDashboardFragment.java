@@ -100,7 +100,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
 
                 // if diff is zero, then the bottom has been reached
                 if (diff == 0) {
-                    UnifyTracking.eventScrollGMStat();
+                    UnifyTracking.eventScrollGMStat(getActivity());
                 }
             }
         });
@@ -156,7 +156,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     @Override
     public void onSuccessLoadProductGraph(GetProductGraph getProductGraph) {
         gmStatisticSummaryViewHolder.setData(getProductGraph);
-        UnifyTracking.eventLoadGMStat();
+        UnifyTracking.eventLoadGMStat(getActivity());
     }
 
     @Override

@@ -64,6 +64,7 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../../../publish_local.gradle'

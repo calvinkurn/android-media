@@ -76,7 +76,7 @@ class GmMembershipProductFragment : GmProductFragment(){
 
     override fun confirmSelection() {
         if (currentSelectedProductId != DEFAULT_SUBSCRIPTION_TYPE) {
-            UnifyTracking.eventClickSubscribeGoldMerchant(adapter.productSelection)
+            UnifyTracking.eventClickSubscribeGoldMerchant(activity, adapter.productSelection)
             setReturn()
         } else {
             NetworkErrorHelper.showSnackbar(activity, getString(R.string.gm_subscribe_no_product_selected))

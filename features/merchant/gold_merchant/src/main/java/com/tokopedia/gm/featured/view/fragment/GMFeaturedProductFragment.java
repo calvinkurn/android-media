@@ -138,7 +138,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickAddFeaturedProduct();
+                UnifyTracking.eventClickAddFeaturedProduct(getActivity());
                 moveToProductPicker();
             }
         });
@@ -460,9 +460,9 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
             return true;
         } else if (item.getItemId() == R.id.menu_done) {
             if (isFeaturedProductListChanged(gmFeaturedProductModelListFromServer, adapter.getData())) {
-                UnifyTracking.eventSortFeaturedProductChange();
+                UnifyTracking.eventSortFeaturedProductChange(getActivity());
             } else {
-                UnifyTracking.eventSortFeaturedProductNotChange();
+                UnifyTracking.eventSortFeaturedProductNotChange(getActivity());
             }
             onBackPressed();
             return true;
@@ -475,7 +475,7 @@ public class GMFeaturedProductFragment extends BaseListFragment<BlankPresenter, 
         builder.setMessage(getString(R.string.gm_featured_product_delete_desc, ((GMFeaturedProductAdapter) adapter).getTotalChecked()));
         builder.setPositiveButton(R.string.label_delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                UnifyTracking.eventDeleteFeaturedProduct();
+                UnifyTracking.eventDeleteFeaturedProduct(getActivity());
                 gmTemporaryDelete = ((GMFeaturedProductAdapter) adapter).deleteCheckedItem();
                 showSnackbarWithUndo();
                 reloadAfterDeleteAction();
