@@ -33,7 +33,6 @@ import com.tokopedia.util.CustomPhoneNumberUtil;
 public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificationFragment {
 
     public static final String TAG = "verif";
-    public static final int RESULT_PROFILE_COMPLETION_PHONE_VERIF = 22;
 
     private ProfileCompletionContract.View parentView;
     private ProfileCompletionContract.Presenter parentPresenter;

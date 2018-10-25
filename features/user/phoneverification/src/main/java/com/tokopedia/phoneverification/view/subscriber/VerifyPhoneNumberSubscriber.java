@@ -3,8 +3,6 @@ package com.tokopedia.phoneverification.view.subscriber;
 import com.tokopedia.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
 /**
@@ -15,7 +13,6 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<VerifyPhoneNumberDom
 
     private final PhoneVerification.View view;
 
-    @Inject
     public VerifyPhoneNumberSubscriber(PhoneVerification.View view) {
         this.view = view;
     }

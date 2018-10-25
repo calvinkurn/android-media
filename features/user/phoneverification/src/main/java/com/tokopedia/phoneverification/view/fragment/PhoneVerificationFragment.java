@@ -147,6 +147,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_phone_verification, container, false);
         findView(view);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
+        presenter.attachView(this);
         setViewListener();
         return view;
     }
