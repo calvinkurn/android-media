@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.flight.cancellation.data.cache.FlightCancellationReasonDataCacheSource;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancelPassengerEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
@@ -28,11 +29,14 @@ import rx.functions.Func1;
 public class FlightCancellationCloudDataSource {
     private FlightApi flightApi;
     private Gson gson;
+    private FlightCancellationReasonDataCacheSource flightCancellationReasonDataCacheSource;
 
     @Inject
-    public FlightCancellationCloudDataSource(FlightApi flightApi, @FlightQualifier Gson gson) {
+    public FlightCancellationCloudDataSource(FlightApi flightApi, @FlightQualifier Gson gson,
+                                             FlightCancellationReasonDataCacheSource flightCancellationReasonDataCacheSource) {
         this.flightApi = flightApi;
         this.gson = gson;
+        this.flightCancellationReasonDataCacheSource = flightCancellationReasonDataCacheSource;
     }
 
     public Observable<List<Passenger>> getCancelablePassenger(String invoiceId) {
@@ -40,6 +44,8 @@ public class FlightCancellationCloudDataSource {
                 .flatMap(new Func1<Response<DataResponse<CancelPassengerEntity>>, Observable<List<Passenger>>>() {
                     @Override
                     public Observable<List<Passenger>> call(Response<DataResponse<CancelPassengerEntity>> dataResponse) {
+                        flightCancellationReasonDataCacheSource.saveCache(dataResponse.body().getData()
+                                .getAttributes().getReasons());
                         return Observable.just(dataResponse.body().getData()
                                 .getAttributes().getPassengers());
                     }
