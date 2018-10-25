@@ -770,7 +770,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             } else { // highlight
                 shopPageTracking.clickWishlist(
                         !shopProductViewModel.isWishList(),
-                        ListTitleTypeDef.HIGHLIGHTED, selectedEtalaseName,
+                        ListTitleTypeDef.HIGHLIGHTED,
+                        shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                         CustomDimensionShopPageProduct.create(shopInfo, shopProductViewModel.getId()));
             }
         }
@@ -811,7 +812,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             } else if (shopTrackType == ShopTrackProductTypeDef.ETALASE_HIGHLIGHT) {
                 shopPageTracking.clickProductPicture(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
-                        selectedEtalaseName,
+                        shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                         CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
                         shopProductViewModel, shopProductAdapter.getDataSize(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             }

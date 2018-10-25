@@ -16,6 +16,7 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
@@ -30,6 +31,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_ETALASE;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_HIGHLIGHT_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
@@ -86,6 +88,22 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             notifyItemChanged(DEFAULT_ETALASE_POSITION);
             notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
         }
+    }
+
+    public String getEtalaseNameHighLight(ShopProductViewModel shopProductViewModel) {
+        ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel = getShopProductEtalaseHighlightViewModel();
+        List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList =
+                shopProductEtalaseHighlightViewModel.getEtalaseHighlightCarouselViewModelList();
+        for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
+            List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModelList.get(i).getShopProductViewModelList();
+            for (int j =0, sizej = shopProductViewModelList.size(); j<sizej; j++) {
+                ShopProductViewModel shopProductViewModelEtalase = shopProductViewModelList.get(j);
+                if (shopProductViewModelEtalase.getId().equals(shopProductViewModel.getId())) {
+                    return etalaseHighlightCarouselViewModelList.get(i).getShopEtalaseViewModel().getEtalaseName();
+                }
+            }
+        }
+        return ALL_ETALASE;
     }
 
     public boolean isNeedToShowEtalase() {
