@@ -374,7 +374,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             updateFavouriteResult()
         }
         shopPageViewHolder.updateFavoriteButton(shopInfo)
-        application as ShopModuleRouter
     }
 
     private fun updateFavouriteResult() {
