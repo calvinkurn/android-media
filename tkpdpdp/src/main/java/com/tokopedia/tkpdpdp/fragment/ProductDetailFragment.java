@@ -1023,7 +1023,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
-        if (productPass.isFromExploreAffiliate()) {
+        if (isFromExploreAffiliate()) {
             buttonAffiliate.renderView(affiliate);
         } else {
             if (affiliate != null) {
@@ -1034,8 +1034,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
+    public boolean isFromExploreAffiliate() {
+        return productPass.isFromExploreAffiliate();
+    }
+
+    @Override
     public void showErrorAffiliate(String message) {
-        if (getActivity() != null && productPass.isFromExploreAffiliate()) {
+        if (getActivity() != null && isFromExploreAffiliate()) {
             if (TextUtils.isEmpty(message)) message = getActivity().getString(R.string.error_no_connection2);
             Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
                     .setAction(
@@ -1070,7 +1075,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.productData = successResult;
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
-        if (!productPass.isFromExploreAffiliate()) {
+        if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
         }
         this.ratingTalkCourierView.renderData(successResult);
