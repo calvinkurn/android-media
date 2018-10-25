@@ -443,7 +443,7 @@ public class EventsHomeActivity extends TActivity
             @Override
             public void onPageSelected(int newPosition) {
 
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
+                UnifyTracking.eventDigitalEventTracking(EventsHomeActivity.this,EventsGAConst.EVENT_CLICK_TAB, categoryViewPager.getAdapter().getPageTitle(newPosition) + "-"
                         + String.valueOf(newPosition));
 
                 IFragmentLifecycleCallback fragmentToShow = (CategoryFragment) categoryTabsPagerAdapter.getItem(newPosition);
@@ -470,7 +470,7 @@ public class EventsHomeActivity extends TActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

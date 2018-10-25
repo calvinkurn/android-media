@@ -200,7 +200,7 @@ public class EventReviewTicketPresenter
     public void clickGoToPromo() {
         getView().showProgressBar();
         goToLoyaltyActivity();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promocode);
+        UnifyTracking.eventDigitalEventTracking(getView().getActivity(),EventsGAConst.EVENT_CHECK_PROMO, promocode);
     }
 
     private void goToLoyaltyActivity() {
@@ -478,7 +478,7 @@ public class EventReviewTicketPresenter
                     String paymentURL = checkoutResponse.get("url").getAsString();
                     ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, getView().getActivity().getResources().getString(R.string.pembayaran));
                     getView().hideProgressBar();
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
+                    UnifyTracking.eventDigitalEventTracking(getView().getActivity(),EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
                             + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                 }
             });
@@ -510,7 +510,7 @@ public class EventReviewTicketPresenter
                     paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
                     paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                     paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
+                    UnifyTracking.eventDigitalEventTracking(getView().getActivity(),EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
                             + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                     getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                     createInstance(getView().getActivity().getApplicationContext(), paymentPassData),

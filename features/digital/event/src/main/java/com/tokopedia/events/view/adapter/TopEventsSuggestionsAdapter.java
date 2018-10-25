@@ -188,7 +188,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             if (!titleHolder.isShown()) {
                 titleHolder.setShown(true);
                 categoryItems.get(titleHolder.getAdapterPosition()).setTrack(true);
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION,
+                UnifyTracking.eventDigitalEventTracking(holder.itemView.getContext(), EventsGAConst.EVENT_SEARCH_IMPRESSION,
                         highLightText
                                 + " - " + categoryItems.get(titleHolder.getAdapterPosition()).getTitle()
                                 + " - " + titleHolder.getAdapterPosition());
@@ -327,7 +327,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             mContext.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
+            UnifyTracking.eventDigitalEventTracking(mContext, EventsGAConst.EVENT_SEARCH_CLICK,
                     highLightText
                             + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
                             + " - " + getAdapterPosition());
@@ -341,7 +341,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 like = "like";
             else
                 like = "unlike";
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+            UnifyTracking.eventDigitalEventTracking(mContext, EventsGAConst.EVENT_LIKE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
@@ -351,7 +351,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         public void shareEvent() {
             CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
             Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl());
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+            UnifyTracking.eventDigitalEventTracking(mContext, EventsGAConst.EVENT_SHARE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition()));
         }

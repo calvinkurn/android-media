@@ -5,19 +5,10 @@ package com.tokopedia.core.network.core;
  */
 
 @Deprecated
-public class OkHttpRetryPolicy {
-
-    public int readTimeout;
-    public int writeTimeout;
-    public int connectTimeout;
-    public int maxRetryAttempt;
-
+public class OkHttpRetryPolicy extends com.tokopedia.abstraction.common.network.OkHttpRetryPolicy {
 
     public OkHttpRetryPolicy(int readTimeout, int writeTimeout, int connectTimeout, int maxRetryAttempt) {
-        this.readTimeout = readTimeout;
-        this.writeTimeout = writeTimeout;
-        this.connectTimeout = connectTimeout;
-        this.maxRetryAttempt = maxRetryAttempt;
+        super(readTimeout, writeTimeout, connectTimeout, maxRetryAttempt);
     }
 
 

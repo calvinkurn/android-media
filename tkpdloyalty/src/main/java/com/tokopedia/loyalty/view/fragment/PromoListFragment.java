@@ -99,7 +99,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     public void renderPromoDataList(List<PromoData> promoDataList, boolean firstTimeLoad) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
-        View errorView = containerList.findViewById(com.tokopedia.core.R.id.main_retry);
+        View errorView = containerList.findViewById(com.tokopedia.core2.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
             adapter.addAllItems(promoDataList);
@@ -324,7 +324,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
-                UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
+                UnifyTracking.eventPromoListClickSubCategory(getActivity(), subCategoryName);
 
                 actionListener.onChangeFilter(typeFilter);
 
@@ -408,7 +408,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
-        UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoName);
+        UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(getActivity(), promoName);
         ClipboardManager clipboard = (ClipboardManager)
                 context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
@@ -437,7 +437,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoCodeTooltipClicked() {
-        UnifyTracking.eventPromoTooltipClickOpenTooltip();
+        UnifyTracking.eventPromoTooltipClickOpenTooltip(getActivity());
         if (bottomSheetViewInfoPromoCode == null) {
             bottomSheetViewInfoPromoCode = new BottomSheetView(getActivity());
             bottomSheetViewInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -450,7 +450,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             bottomSheetViewInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                    UnifyTracking.eventPromoTooltipClickCloseTooltip(getActivity());
                     bottomSheetViewInfoPromoCode.dismiss();
                 }
             });

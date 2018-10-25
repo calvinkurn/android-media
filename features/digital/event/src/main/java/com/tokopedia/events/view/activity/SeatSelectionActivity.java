@@ -349,7 +349,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

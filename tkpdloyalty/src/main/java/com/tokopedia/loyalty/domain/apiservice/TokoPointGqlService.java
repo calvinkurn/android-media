@@ -1,11 +1,12 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
+import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.network.BaseService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -42,7 +43,7 @@ public class TokoPointGqlService extends BaseService<TokoPointGqlApi> {
                 .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .getClientBuilder();
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(builder);
-        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(MainApplication.getAppContext()));
         tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(TkpdBaseURL.TokoPoint.HMAC_KEY));
         tkpdOkHttpBuilder.setOkHttpRetryPolicy(getOkHttpRetryPolicy());
         tkpdOkHttpBuilder.addDebugInterceptor();

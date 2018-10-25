@@ -162,7 +162,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
+            UnifyTracking.eventDigitalEventTracking(context, EventsGAConst.EVENT_PRODUCT_CLICK,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + getAdapterPosition());
         }
@@ -183,7 +183,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 item.setLiked(false);
                 itemRemoved(getAdapterPosition());
             }
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+            UnifyTracking.eventDigitalEventTracking(context, EventsGAConst.EVENT_LIKE,
                     title
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
@@ -196,7 +196,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
             else
                 ((EventFavouriteActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+            UnifyTracking.eventDigitalEventTracking(context, EventsGAConst.EVENT_SHARE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition()));
         }
@@ -244,7 +244,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
             categoryItems.get(holder.getIndex()).setTrack(true);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+            UnifyTracking.eventDigitalEventTracking(context, EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
     }

@@ -296,7 +296,7 @@ public class EventBookTicketActivity
             super.onBackPressed();
         else
             finish();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

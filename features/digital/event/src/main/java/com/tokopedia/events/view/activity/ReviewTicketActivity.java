@@ -386,7 +386,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvEmailID.clearFocus();
             mainContent.requestFocus();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CHANGE_EMAIL, "");
         mPresenter.updateEmail(tvEmailID.getText().toString());
     }
 
@@ -417,7 +417,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             tvTelephone.clearFocus();
             mainContent.requestFocus();
         }
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CHANGE_NUMBER, "");
         mPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
@@ -457,18 +457,18 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                    UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
+                    UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
+                    UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -510,7 +510,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 RouteManager.route(this, url);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
                 manager.sendBroadcast(new Intent(EventModuleRouter.ACTION_CLOSE_ACTIVITY));
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                 this.finish();
             }
         }
@@ -563,7 +563,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        UnifyTracking.eventDigitalEventTracking(this,EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override

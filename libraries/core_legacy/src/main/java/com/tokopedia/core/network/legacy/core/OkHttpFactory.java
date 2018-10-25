@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.core;
+package com.tokopedia.core.network.legacy.core;
 
 import android.content.Context;
 
@@ -43,7 +43,7 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder).addInterceptor(getHttpLoggingInterceptor());
     }
 
-    private HttpLoggingInterceptor getHttpLoggingInterceptor() {
+    protected HttpLoggingInterceptor getHttpLoggingInterceptor() {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;

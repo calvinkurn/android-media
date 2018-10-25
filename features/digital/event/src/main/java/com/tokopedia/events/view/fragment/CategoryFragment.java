@@ -102,7 +102,7 @@ public class CategoryFragment extends TkpdBaseV4Fragment implements IFragmentLif
             int lastIndex = linearLayoutManager.findLastCompletelyVisibleItemPosition();
             for (int i = 0; i < lastIndex; i++) {
                 if (!categoryViewModel.getItems().get(i).isTrack())
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryViewModel.getItems().get(i).getTitle()
+                    UnifyTracking.eventDigitalEventTracking(getActivity(), EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryViewModel.getItems().get(i).getTitle()
                             + " - " + i);
                 categoryViewModel.getItems().get(i).setTrack(true);
             }

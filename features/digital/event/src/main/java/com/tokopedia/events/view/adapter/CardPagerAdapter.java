@@ -102,7 +102,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         super.setPrimaryItem(container, position, object);
         currentDataIndex = position;
         if (!mData.get(currentDataIndex).isTrack()) {
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
+            UnifyTracking.eventDigitalEventTracking(container.getContext(), EventsGAConst.EVENT_PRODUCT_IMPRESSION, mData.get(currentDataIndex).getTitle()
                     + " - " + currentDataIndex);
             mData.get(currentDataIndex).setTrack(true);
         }

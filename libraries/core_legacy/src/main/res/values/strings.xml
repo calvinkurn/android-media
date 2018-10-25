@@ -32,7 +32,6 @@
     <string name="rescenter_trouble_diff_desc">Barang tidak sesuai deskripsi</string>
     <string name="rescenter_trouble_broken">Barang rusak</string>
     <string name="rescenter_trouble_diff_carrier">Kendala agen kurir atau ongkos kirim</string>
-    <string name="rescenter_trouble_diff_desc">Barang tidak sesuai deskripsi</string>
     <string name="rescenter_trouble_diff_quantity">Barang tidak lengkap</string>
     <string name="rescenter_trouble_not_received">Barang tidak diterima</string>
     <string name="rescenter_trouble_undefined">Undefined Trouble</string>

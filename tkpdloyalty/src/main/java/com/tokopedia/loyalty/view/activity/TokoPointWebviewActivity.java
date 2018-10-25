@@ -33,13 +33,13 @@ public class TokoPointWebviewActivity extends TkpdCoreWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(com.tokopedia.core.R.layout.activity_webview_container);
+        inflateView(com.tokopedia.core2.R.layout.activity_webview_container);
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = TokoPointWebViewFragment.createInstance(url);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(com.tokopedia.core.R.id.container, fragment);
+            fragmentTransaction.add(com.tokopedia.core2.R.id.container, fragment);
             fragmentTransaction.commit();
         }
     }

@@ -99,8 +99,8 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public FingerprintInterceptor provideFingerprintInterceptor() {
-        return new FingerprintInterceptor();
+    public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context) {
+        return new FingerprintInterceptor(context);
     }
 
     @ApplicationScope
