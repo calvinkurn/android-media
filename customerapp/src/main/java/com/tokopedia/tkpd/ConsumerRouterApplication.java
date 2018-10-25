@@ -861,11 +861,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(intent);
     }
 
-//    @Override
-//    public void goToFlightActivity(Context context) {
-//        TkpdFlight.INSTANCE.goToFlightActivity(context);
-//    }
-
     @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
