@@ -20,15 +20,13 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
-import com.tokopedia.discovery.util.MoEngageConstants;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -47,7 +45,6 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
 
     Toolbar toolbar;
     DiscoverySearchView searchView;
-    MoEngageConstants moEngageConstants;
     ProgressBar progressBar;
     FrameLayout frameLayout;
 
@@ -77,13 +74,11 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
             moveTaskToBack(true);
         }
-
-        moEngageConstants = new MoEngageConstants(this);
         trackMoEngageCategory();
     }
 
     private void trackMoEngageCategory() {
-        moEngageConstants.sendCategory(departmentId, categoryName);
+        MoEngageEventTracking.sendCategory(departmentId, categoryName);
     }
 
     @Override

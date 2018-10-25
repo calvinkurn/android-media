@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -25,7 +24,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.util.MoEngageConstants;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 
 import java.util.ArrayList;
@@ -54,7 +53,6 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private ProductFragment productFragment;
     private CategoryCatalogFragment catalogFragment;
     private static boolean isSubCtaegory = true;
-    MoEngageConstants moEngageConstants;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -113,7 +111,6 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         setPresenter(categoryPresenter);
         categoryPresenter.attachView(this);
         categoryPresenter.setDiscoveryView(this);
-        moEngageConstants = new MoEngageConstants(this);
         categoryName = "";
         loadInitialData();
         trackMoEngageCategory();
@@ -121,9 +118,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private void trackMoEngageCategory() {
         if (isSubCtaegory) {
-            moEngageConstants.sendSubCategory(departmentId, categoryName);
+            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
         } else {
-            moEngageConstants.sendProductCategory(departmentId, categoryName);
+            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
         }
     }
 

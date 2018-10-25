@@ -4,32 +4,28 @@ import android.content.Context;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 
-public class MoEngageConstants {
+public class MoEngageEventTracking {
 
-    public String CATEGORY_ID = "";
-    public String CATEGORY = "";
-    public String PRODUCT_ID = "";
-    public String PRODUCT_NAME = "";
-    public String SUBCATEGORY = "";
-    public String SUBCATEGORY_ID = "";
+    public static String CATEGORY_ID = "";
+    public static String CATEGORY = "";
+    public static String PRODUCT_ID = "";
+    public static String PRODUCT_NAME = "";
+    public static String SUBCATEGORY = "";
+    public static String SUBCATEGORY_ID = "";
 
-    public MoEngageConstants(Context context) {
-
-    }
-
-    public void sendCategory(String categoryId, String categoryName) {
+    public static void sendCategory(String categoryId, String categoryName) {
         CATEGORY_ID = categoryId;
         CATEGORY = categoryName;
         TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 
-    public void sendSubCategory(String subCategoryId, String subCategoryName) {
+    public static void sendSubCategory(String subCategoryId, String subCategoryName) {
         SUBCATEGORY_ID = subCategoryId;
         SUBCATEGORY = subCategoryName;
         TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
     }
 
-    public void sendProductCategory(String productId, String productName) {
+    public static void sendProductCategory(String productId, String productName) {
         PRODUCT_ID = productId;
         PRODUCT_NAME = productName;
         TrackingUtils.sendMoEngageCategoryEvent(CATEGORY_ID, CATEGORY, SUBCATEGORY_ID, SUBCATEGORY, PRODUCT_ID, PRODUCT_NAME);
