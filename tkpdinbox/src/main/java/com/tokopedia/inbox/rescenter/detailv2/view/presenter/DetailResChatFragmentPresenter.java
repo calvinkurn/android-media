@@ -237,7 +237,7 @@ public class DetailResChatFragmentPresenter
 
     private void postReply(String message, List<AttachmentViewModel> attachmentList) {
 
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
+        if (TrackingUtils.getGtmString(context, AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             sendDiscussionV2UseCase.execute(
                     SendDiscussionV2UseCase
                             .getSendReplyParams(resolutionId, message, attachmentList),

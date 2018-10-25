@@ -149,11 +149,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
         if (editAppealSolutionModel != null) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatImpressionSolutionAppealDetailPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatImpressionSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             }
@@ -173,15 +173,15 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         btnContinue.setOnClickListener(view -> {
             presenter.onContinueButtonClicked(resultViewModel, editAppealSolutionModel);
             if (editAppealSolutionModel == null) {
-                UnifyTracking.eventCreateResoStep2Continue();
+                UnifyTracking.eventCreateResoStep2Continue(getActivity());
             } else {
                 if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
                     UnifyTracking.eventTracking(
-                            InboxAnalytics.eventResoChatClickSolutionContinueEditDetailPage(
+                            getActivity(),InboxAnalytics.eventResoChatClickSolutionContinueEditDetailPage(
                                     editAppealSolutionModel.resolutionId, editAppealSolutionModel.solutionName));
                 } else {
                     UnifyTracking.eventTracking(
-                            InboxAnalytics.eventResoChatClickSolutionContinueAppealDetailPage(
+                            getActivity(),InboxAnalytics.eventResoChatClickSolutionContinueAppealDetailPage(
                                     editAppealSolutionModel.resolutionId, editAppealSolutionModel.solutionName));
                 }
             }
@@ -422,11 +422,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     public void submitData(ResultViewModel resultViewModel) {
         if (editAppealSolutionModel != null) {
             if (SolutionListActivity.isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionEditDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
+                UnifyTracking.eventTracking(getActivity(),InboxAnalytics.eventResoChatClickSolutionAppealDetailPage(
                         editAppealSolutionModel.resolutionId,
                         editAppealSolutionModel.getSolutionName()));
             }

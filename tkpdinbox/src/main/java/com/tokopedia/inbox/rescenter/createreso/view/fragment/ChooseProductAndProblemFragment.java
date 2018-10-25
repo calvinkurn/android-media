@@ -128,7 +128,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
             @Override
             public void onClick(View view) {
                 presenter.buttonContinueClicked();
-                UnifyTracking.eventCreateResoStep1Continue();
+                UnifyTracking.eventCreateResoStep1Continue(getActivity());
             }
         });
 

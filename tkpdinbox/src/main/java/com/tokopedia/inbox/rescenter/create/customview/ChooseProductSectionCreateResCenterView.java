@@ -6,8 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.inbox.rescenter.create.customadapter.ProductAdapter;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.PassProductTrouble;

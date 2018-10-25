@@ -152,7 +152,7 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
 
     @Override
     public void onBackPressed() {
-        UnifyTracking.eventTracking(InboxAnalytics.eventResoClickDetailBack(resolutionID));
+        UnifyTracking.eventTracking(this,InboxAnalytics.eventResoClickDetailBack(resolutionID));
         setResult(RESULT_OK);
         finish();
     }

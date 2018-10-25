@@ -8,7 +8,7 @@ import android.os.ResultReceiver;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.contactus.inboxticket.intentservice.InboxTicketResultReceiver;
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.contactus.inboxticket.InboxTicketConstant;
 import com.tokopedia.contactus.inboxticket.interactor.InboxTicketActRetrofitInteractor;
 import com.tokopedia.contactus.inboxticket.interactor.InboxTicketActRetrofitInteractorImpl;

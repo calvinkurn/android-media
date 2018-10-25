@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.create.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.inbox.rescenter.create.listener.ChoooseProductTroubleListener;
 import com.tokopedia.inbox.rescenter.create.listener.ChooseProductTroubleListener;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;

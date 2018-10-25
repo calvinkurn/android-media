@@ -20,8 +20,8 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -277,7 +277,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventDiscussionDetail();
+                UnifyTracking.eventDiscussionDetail(v.getContext());
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, TalkViewActivity.class);
                 bundle.putString("from", TalkViewActivity.INBOX_TALK);

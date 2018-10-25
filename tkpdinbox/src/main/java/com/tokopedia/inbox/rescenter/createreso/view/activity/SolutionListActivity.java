@@ -102,10 +102,10 @@ public class SolutionListActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (!isCreateReso) {
             if (isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseEditPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseEditPage(
                         editAppealSolutionModel.resolutionId));
             } else {
-                UnifyTracking.eventTracking(InboxAnalytics.eventResoChatClickCloseAppealPage(
+                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseAppealPage(
                         editAppealSolutionModel.resolutionId));
             }
         }
