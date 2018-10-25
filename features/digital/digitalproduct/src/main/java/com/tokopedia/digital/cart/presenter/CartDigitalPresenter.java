@@ -615,7 +615,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(view.getDigitalIdentifierParam());
-        attributes.setClientId(TrackingUtils.getClientID());
+        attributes.setClientId(TrackingUtils.getClientID(view.getApplicationContext()));
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(

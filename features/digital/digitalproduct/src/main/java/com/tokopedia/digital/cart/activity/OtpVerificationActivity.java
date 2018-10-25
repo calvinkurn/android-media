@@ -425,13 +425,13 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         btnValidateOtp.setBackground(
                                 getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                        com.tokopedia.core2.R.drawable.bg_grey_border_black
                                 )
                         );
                     } else {
                         btnValidateOtp.setBackgroundDrawable(
                                 getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                        com.tokopedia.core2.R.drawable.bg_grey_border_black
                                 )
                         );
                     }
@@ -441,13 +441,13 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         btnValidateOtp.setBackground(
                                 getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.green_button
+                                        com.tokopedia.core2.R.drawable.green_button
                                 )
                         );
                     } else {
                         btnValidateOtp.setBackgroundDrawable(
                                 getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.green_button
+                                        com.tokopedia.core2.R.drawable.green_button
                                 )
                         );
                     }

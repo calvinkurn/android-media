@@ -88,6 +88,7 @@ dependencies {
         changing = true;
         exclude group: 'com.google.code.gson', module: 'gson'
     }
+    implementation project(":libraries:core_legacy")
 }
 
 apply from: '../../../publish_local.gradle'

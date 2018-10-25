@@ -106,7 +106,7 @@ public class TopUpTokoCashView extends FrameLayout {
 
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                UnifyTracking.eventSelectProductOnNativePage(categoryData.getName(), categoryData.getName());
+                UnifyTracking.eventSelectProductOnNativePage(getContext(),categoryData.getName(), categoryData.getName());
                 listener.onDigitalChooserClicked(data, productText);
             }
 
@@ -122,7 +122,7 @@ public class TopUpTokoCashView extends FrameLayout {
             @Override
             public void onClick(View view) {
                 String isInstant = instantCheckoutCheckbox.isChecked() ? "instant" : "no instant";
-                UnifyTracking.eventClickBuyOnNative(categoryData.getName(), isInstant);
+                UnifyTracking.eventClickBuyOnNative(getContext(),categoryData.getName(), isInstant);
                 listener.onProcessAddToCart(generatePreCheckoutData());
             }
         };
