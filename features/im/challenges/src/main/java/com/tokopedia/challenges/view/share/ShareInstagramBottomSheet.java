@@ -52,7 +52,8 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight((int) (screenHeight / 1.5));
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight((int) (screenHeight / 1.5));
 
     }
 
