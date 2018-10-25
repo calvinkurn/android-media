@@ -258,6 +258,15 @@
         <item name="android:isIndicator">true</item>
     </style>
 
+    <style name="RatingBar.XXL" parent="Base.Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/tkpd_rating_bar_xxl</item>
+        <item name="android:stepSize">1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:isIndicator">true</item>
+        <item name="android:minHeight">@dimen/dp_42</item>
+        <item name="android:maxHeight">@dimen/dp_42</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.AppBarOverlayWhite" parent="ThemeOverlay.AppCompat.Light" />
@@ -280,4 +289,5 @@
         <item name="android:maxHeight">11dp</item>
     </style>
 
+    <dimen name="dp_42">42dp</dimen>
 </resources>
