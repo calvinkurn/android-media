@@ -269,7 +269,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     }
 
     private void onNameClicked() {
-        UnifyTracking.eventTopAdsProductClickDetailProductPDP();
+        UnifyTracking.eventTopAdsProductClickDetailProductPDP(getActivity());
         if (listener != null && ad != null) {
             listener.goToProductActivity(ad.getProductUri());
         }
