@@ -29,7 +29,8 @@ fun CampaignStatusViewModel.convertIdtoCommaString(): String {
 
 fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
     val list = mutableListOf<CampaignInfoViewModel>()
-    list.add(CampaignInfoHeaderViewModel(toCampaignViewModel()))
+    list.add(CampaignInfoHeaderViewModel(this))
+    list.add(CampaignInfoSectionViewModel("Kriteria Produk"))
     list.addAll(criteria.map { CampaignInfoCategoryViewModel(it)})
     return list
 }

@@ -48,15 +48,11 @@ data class Campaign(
         @Expose
         val status: String = "",
 
-        @SerializedName("status_info")
-        @Expose
-        val statusInfo: String = "",
-
         @SerializedName("campaign_type")
         @Expose
         val campaignType: String = "",
 
-        @SerializedName(value = "cover", alternate = arrayOf("banner"))
+        @SerializedName(value = "cover", alternate = arrayOf("banners"))
         @Expose
         val cover: String = "",
 
@@ -83,6 +79,9 @@ data class Campaign(
         @SerializedName("dashboard_url")
         @Expose
         val dashboardUrl: String = "",
+
+        @SerializedName("status_info")
+        @Expose val statusInfo: StatusInfo = StatusInfo(),
 
         @SerializedName("criteria")
         @Expose

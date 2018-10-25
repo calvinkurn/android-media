@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardElevation="@dimen/dp_3"
-    app:cardPreventCornerOverlap="false"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:focusable="true">
+    app:cardPreventCornerOverlap="false">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:padding="@dimen/dp_16">
 
         <android.support.v7.widget.CardView
@@ -114,33 +113,32 @@
             app:layout_constraintTop_toTopOf="@+id/tvStatus"
             app:layout_constraintBottom_toBottomOf="@+id/tvStatus"/>
 
-        <com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout
+        <LinearLayout
             android:id="@+id/base_expand_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_16"
-            app:el_duration="400"
-            app:el_expanded="false"
-            app:layout_constraintTop_toBottomOf="@+id/tvCampaignDate"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCampaignDate">
 
             <TextView
                 android:id="@+id/title_process"
                 style="@style/TextView.Small.Bold"
-                tools:text="@string/title_campaign_product_selection_end"/>
+                android:text="@string/title_campaign_product_selection_end" />
 
             <TextView
                 android:id="@+id/desc_process"
                 style="@style/TextView.Micro"
-                android:layout_below="@+id/title_process"
                 android:layout_marginTop="@dimen/dp_8"
-                tools:text="@string/desc_campaign_product_selection_end"/>
+                android:text="@string/desc_campaign_product_selection_end" />
 
-        </com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout>
+        </LinearLayout>
 
         <Button android:id="@+id/btn_list_product"
             android:layout_width="match_parent"
@@ -148,12 +146,12 @@
             style="@style/Button.Submit.Green.Full"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/label_product_list"
+            app:layout_goneMarginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/base_expand_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 

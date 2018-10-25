@@ -7,7 +7,6 @@ import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
-import com.tokopedia.flashsale.management.view.contract.CampaignContract
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.EmptyMyCampaignViewModel
 

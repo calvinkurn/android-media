@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoHeaderViewHolder
 import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoCategoryViewHolder
+import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoSectionViewHolder
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoCategoryViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
+import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoSectionViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoViewModel
 
 class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
@@ -16,6 +18,7 @@ class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
         return when(model){
             is CampaignInfoHeaderViewModel -> CampaignInfoHeaderViewHolder.LAYOUT
             is CampaignInfoCategoryViewModel -> CampaignInfoCategoryViewHolder.LAYOUT
+            is CampaignInfoSectionViewModel -> CampaignInfoSectionViewHolder.LAYOUT
         }
     }
 
@@ -23,6 +26,7 @@ class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
         return when(type){
             CampaignInfoHeaderViewHolder.LAYOUT -> CampaignInfoHeaderViewHolder(parent)
             CampaignInfoCategoryViewHolder.LAYOUT -> CampaignInfoCategoryViewHolder(parent)
+            CampaignInfoSectionViewHolder.LAYOUT -> CampaignInfoSectionViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

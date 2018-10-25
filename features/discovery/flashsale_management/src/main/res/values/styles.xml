@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ExpandableStyleArrow" parent="style_expandable_option_default">
+        <item name="eo_text_option_style">@style/TextView.Small.Bold</item>
+        <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
+    </style>
+
+    <style name="ExpandableHeaderStyle" parent="eo_header_style">
+        <item name="android:background">@color/light_grey</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:padding">@dimen/dp_16</item>
+    </style>
+</resources>

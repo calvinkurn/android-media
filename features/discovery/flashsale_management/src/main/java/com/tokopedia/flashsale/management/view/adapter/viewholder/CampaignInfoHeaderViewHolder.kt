@@ -6,7 +6,10 @@ import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.ekstension.gone
+import com.tokopedia.flashsale.management.ekstension.isVisible
 import com.tokopedia.flashsale.management.ekstension.loadUrl
+import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_camp_detail.view.*
 
@@ -21,28 +24,26 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
         itemView.tvCampaignType.text = campaign.campaignType
         itemView.tvCampaignName.text = campaign.name
         itemView.tvStatus.text = campaign.status
+        itemView.tvCampaignDate.text = campaign.campaignPeriod
+        itemView.tvCampaignType.text = campaign.campaignType
+        itemView.tvStatus.text = campaign.statusInfo.label
+        itemView.title_process.text = campaign.statusInfo.head
+        itemView.desc_process.text = campaign.statusInfo.subText
 
-        itemView.iv_arrow_down.setOnClickListener { itemView.base_expand_view.toggle() }
         itemView.iv_arrow_down.rotation = 0f
-        itemView.base_expand_view.apply {
-            setExpanded(false)
-            setListener(object : ExpandableLayoutListener {
-                override fun onAnimationEnd() {}
+        itemView.iv_arrow_down.setOnClickListener {toggle()}
+        itemView.tvStatus.setOnClickListener { toggle() }
 
-                override fun onOpened() {}
+        toggle()
+    }
 
-                override fun onAnimationStart() {}
-
-                override fun onPreOpen() {
-                    createRotateAnimator(itemView.iv_arrow_down, 0f, 180f).start()
-                }
-
-                override fun onClosed() {}
-
-                override fun onPreClose() {
-                    createRotateAnimator(itemView.iv_arrow_down, 180f, 0f).start()
-                }
-            })
+    private fun toggle(){
+        if (itemView.base_expand_view.isVisible) {
+            createRotateAnimator(itemView.iv_arrow_down, 180f, 0f).start()
+            itemView.base_expand_view.gone()
+        } else {
+            createRotateAnimator(itemView.iv_arrow_down, 0f, 180f).start()
+            itemView.base_expand_view.visible()
         }
     }
 

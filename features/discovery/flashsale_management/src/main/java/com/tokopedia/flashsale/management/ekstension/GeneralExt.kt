@@ -1,5 +1,6 @@
 package com.tokopedia.flashsale.management.ekstension
 
+import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.util.AppExecutors
@@ -16,3 +17,9 @@ fun <T> Deferred<T>.thenOnUI(uiFunction: (T) -> Unit){
 fun ImageView.loadUrl(url: String, radius: Float){
     ImageHandler.loadImageRounded2(context, this, url, radius)
 }
+
+val View.isVisible
+    get() = visibility == View.VISIBLE
+
+fun View.visible() {visibility = View.VISIBLE}
+fun View.gone() {visibility = View.GONE}

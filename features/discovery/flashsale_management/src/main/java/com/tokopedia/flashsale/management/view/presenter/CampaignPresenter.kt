@@ -15,7 +15,6 @@ import com.tokopedia.flashsale.management.domain.SingleGraphqlUseCaseKt
 import com.tokopedia.flashsale.management.ekstension.thenOnUI
 import com.tokopedia.flashsale.management.util.AppExecutors
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import kotlinx.coroutines.*
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async

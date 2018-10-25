@@ -50,7 +50,6 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         campaignUrl = arguments?.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
         super.onViewCreated(view, savedInstanceState)
-        //loadData(0)
     }
 
     override fun onDestroyView() {

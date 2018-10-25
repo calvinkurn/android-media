@@ -17,4 +17,12 @@
     <string name="title_campaign_product_selection_end">Proses seleksi produk selesai</string>
     <string name="desc_campaign_product_selection_end">Lihat status produk Anda pada Daftar Produk</string>
     <string name="label_discount_range">Kisaran Harga Diskon</string>
+    <string name="label_discount">Diskon</string>
+    <string name="label_rating">Rating</string>
+    <string name="label_limit_request">Batas Pengajuan</string>
+    <string name="label_min_stock">Min Stok</string>
+    <string name="label_min_cashback">Min Cashback</string>
+    <string name="label_notes">Catatan Lainnya</string>
+    <string name="range_format">%1$s-%2$s</string>
+    <string name="submission_count_format">%1$d produk</string>
 </resources>
