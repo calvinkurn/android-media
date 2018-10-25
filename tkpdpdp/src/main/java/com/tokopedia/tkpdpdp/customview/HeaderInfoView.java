@@ -59,7 +59,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
-    private CountDownTimer countDownTimer = null;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -172,7 +171,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(ProductDetailData data, long pdpElapsedTime) {
+    public void renderProductCampaign(ProductDetailData data) {
         Campaign campaign = data.getCampaign();
         if(campaign != null && campaign.getActive()) {
             textTimerTitle.setText(campaign.getCampaignShortName());
@@ -191,7 +190,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            showCountdownTimer(data, pdpElapsedTime);
+            showCountdownTimer(data);
         } else {
             linearDiscountTimerHolder.setVisibility(GONE);
             textDiscount.setVisibility(GONE);
@@ -219,37 +218,37 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void showCountdownTimer(final ProductDetailData data, final long pdpElapsedTime) {
+    private void showCountdownTimer(final ProductDetailData data) {
         Campaign campaign = data.getCampaign();
+        linearDiscountTimerHolder.setVisibility(GONE);
+
         try {
-            if (countDownTimer!=null) countDownTimer.cancel();
-            linearDiscountTimerHolder.setVisibility(GONE);
-            SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
+            if (!countDownView.isTimerActive()) {
+                SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
 
-            //*1000 to convert serverTime to millisecond since serverTime is unix
-            long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
-            serverTimeMillisecond += pdpElapsedTime;
+                //*1000 to convert serverTime to millisecond since serverTime is unix
+                long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
+                long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
 
-            long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
+                if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
+                    Date serverDate = new Date();
+                    serverDate.setTime(
+                            serverTimeMillisecond
+                    );
 
-            if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
+                    countDownView.setup(
+                            serverDate,
+                            sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
+                                @Override
+                                public void onCountDownFinished() {
+                                    hideProductCampaign(campaign);
+                                    showAlerDialog();
+                                }
+                            });
+                    linearDiscountTimerHolder.setVisibility(VISIBLE);
+                }
+            } else{
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
-
-                Date serverDate = new Date();
-                serverDate.setTime(
-                        serverTimeMillisecond
-                );
-
-                countDownView.setup(
-                        serverDate,
-                        sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
-                    @Override
-                    public void onCountDownFinished() {
-                        hideProductCampaign(campaign);
-                        showAlerDialog();
-                    }
-                });
-
             }
         } catch (Exception ex) {
             ex.printStackTrace();

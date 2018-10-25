@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ public class CountDownView extends FrameLayout {
 
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
+
+    private boolean isTimerActive = false;
 
     public CountDownView(@NonNull Context context) {
         super(context);
@@ -109,6 +112,7 @@ public class CountDownView extends FrameLayout {
             }
         };
         startAutoRefreshCounter();
+        isTimerActive = true;
     }
 
     public void setup(final Date serverTime, final Date expiredTime,
@@ -126,7 +130,6 @@ public class CountDownView extends FrameLayout {
                     serverTime.setTime(
                             serverTime.getTime() + REFRESH_DELAY_MS
                     );
-
                     TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
                     setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
                     refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
@@ -136,6 +139,7 @@ public class CountDownView extends FrameLayout {
             }
         };
         startAutoRefreshCounter();
+        isTimerActive = true;
     }
 
     private void handleExpiredTime(CountDownListener listener) {
@@ -164,6 +168,7 @@ public class CountDownView extends FrameLayout {
     }
 
     public void stopAutoRefreshCounter() {
+        isTimerActive = false;
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
         }
@@ -247,5 +252,9 @@ public class CountDownView extends FrameLayout {
 
     public interface CountDownListener {
         void onCountDownFinished();
+    }
+
+    public boolean isTimerActive() {
+        return isTimerActive;
     }
 }

@@ -62,7 +62,7 @@ public class ProductDetailData implements Parcelable{
 
     @SerializedName("server_time_unix")
     @Expose
-    private Long serverTimeUnix;
+    private long serverTimeUnix;
 
     /**
      * this is not supposed to be here

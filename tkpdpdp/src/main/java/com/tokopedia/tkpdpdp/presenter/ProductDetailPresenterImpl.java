@@ -501,6 +501,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new CacheInteractor.GetProductDetailCacheListener() {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
+                            Campaign campaign = productDetailData.getCampaign();
+                            campaign.setActive(false);
+                            productDetailData.setCampaign(campaign);
                             viewListener.onProductDetailLoaded(productDetailData);
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
@@ -528,6 +531,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         , Integer.toString(productDetailData.getInfo().getProductId()));
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
+
+                            getProductDetailFromNetwork(context, productPass, useVariant);
                         }
 
                         @Override

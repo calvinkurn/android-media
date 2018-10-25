@@ -298,9 +298,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private String lastStateOnClickBuyWhileRequestVariant;
     private RemoteConfig firebaseRemoteConfig;
 
-    private long pdpElapsedTime = 0;
-    private long lastTime = 0;
-
     @Inject
     GetWishlistCountUseCase getWishlistCountUseCase;
 
@@ -334,9 +331,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onCreate(Bundle savedInstanceState) {
         initInjector();
         super.onCreate(savedInstanceState);
-
-        lastTime = System.currentTimeMillis();
-
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
             useVariant = false;
@@ -899,7 +893,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         this.productData = successResult;
         this.headerInfoView.renderData(successResult);
-        this.headerInfoView.renderProductCampaign(successResult, pdpElapsedTime);
+        this.headerInfoView.renderProductCampaign(successResult);
         this.pictureView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
         this.ratingTalkCourierView.renderData(successResult);
@@ -1383,7 +1377,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
-                            headerInfoView.renderProductCampaign(productData, pdpElapsedTime);
+                            headerInfoView.renderProductCampaign(productData);
                             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
@@ -1446,8 +1440,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onResume() {
         super.onResume();
 
-        countPdpElapsedTime();
-
         if (productData != null) {
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
@@ -1459,7 +1451,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onPause() {
         super.onPause();
-        lastTime = System.currentTimeMillis();
         presenter.stopIndexingApp(appIndexHandler);
         destroyVideoLayout();
     }
@@ -1612,7 +1603,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showProductCampaign() {
         if (headerInfoView != null && productData != null) {
-            headerInfoView.renderProductCampaign(productData, pdpElapsedTime);
+            headerInfoView.renderProductCampaign(productData);
         }
     }
 
@@ -2246,12 +2237,5 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             icon.mutate();
             icon.setDrawableByLayerId(R.id.ic_cart_count, badge);
         }
-    }
-
-    private void countPdpElapsedTime(){
-        long timeNow = System.currentTimeMillis();
-        long diff = timeNow - this.lastTime;
-        this.lastTime = timeNow;
-        pdpElapsedTime = diff;
     }
 }
