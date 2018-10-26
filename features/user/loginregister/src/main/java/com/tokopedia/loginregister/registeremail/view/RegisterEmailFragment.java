@@ -112,6 +112,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Inject
     UserSessionInterface userSession;
 
+    //** see fragment_register_email
+    private int REGISTER_BUTTON_IME = 123321;
+
     public static RegisterEmailFragment createInstance(Bundle bundle) {
         RegisterEmailFragment fragment = new RegisterEmailFragment();
         fragment.setArguments(bundle);
@@ -474,31 +477,26 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
         registerPassword.setOnEditorActionListener((v, id, event) -> {
-            if (id == R.id.register_button || id == EditorInfo.IME_NULL) {
-                analytics.eventRegisterWithEmail();
-                presenter.onRegisterClicked(
-                        email.getText().toString(),
-                        name.getText().toString(),
-                        registerPassword.getText().toString(),
-                        registerPassword.getText().toString(),
-                        getUnmaskedPhone(),
-                        getIsAutoVerify()
-                );
+            if (id == REGISTER_BUTTON_IME || id == EditorInfo.IME_NULL) {
+                registerEmail();
                 return true;
             }
             return false;
         });
 
-        registerButton.setOnClickListener(v -> {
-            analytics.eventRegisterWithEmail();
-            presenter.onRegisterClicked(
-                    email.getText().toString(),
-                    name.getText().toString(),
-                    registerPassword.getText().toString(),
-                    registerPassword.getText().toString(),
-                    phone.getText().toString(),
-                    getIsAutoVerify());
-        });
+        registerButton.setOnClickListener(v -> registerEmail());
+    }
+
+    private void registerEmail() {
+        analytics.eventRegisterWithEmail();
+        presenter.onRegisterClicked(
+                email.getText().toString(),
+                name.getText().toString(),
+                registerPassword.getText().toString(),
+                registerPassword.getText().toString(),
+                getUnmaskedPhone(),
+                getIsAutoVerify()
+        );
     }
 
     private String getUnmaskedPhone() {
@@ -745,16 +743,16 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     void showRationaleForGetAccounts(final PermissionRequest request) {
         RequestPermissionUtil.onShowRationale(getActivity(),
                 new RequestPermissionUtil.PermissionRequestListener() {
-            @Override
-            public void onProceed() {
-                request.proceed();
-            }
+                    @Override
+                    public void onProceed() {
+                        request.proceed();
+                    }
 
-            @Override
-            public void onCancel() {
-                request.cancel();
-            }
-        }, Manifest.permission.GET_ACCOUNTS);
+                    @Override
+                    public void onCancel() {
+                        request.cancel();
+                    }
+                }, Manifest.permission.GET_ACCOUNTS);
     }
 
     @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)

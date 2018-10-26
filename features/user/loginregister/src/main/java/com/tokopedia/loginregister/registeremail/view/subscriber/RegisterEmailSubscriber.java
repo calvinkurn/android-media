@@ -1,11 +1,11 @@
 package com.tokopedia.loginregister.registeremail.view.subscriber;
 
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailContract;
-import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.otp.common.network.ErrorMessageException;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
-import com.tokopedia.loginregister.R;
+
 import rx.Subscriber;
 
 /**
@@ -46,14 +46,13 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailPojo> {
     @Override
     public void onError(Throwable e) {
         viewListener.dismissLoadingProgress();
-        if (e instanceof MessageErrorException
+        if (e instanceof ErrorMessageException
                 && e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
             viewListener.showInfo();
         } else  if (e instanceof ErrorMessageException
-                && e.getLocalizedMessage() != null
-                && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
-            viewListener.showInfo();
+                && e.getLocalizedMessage() != null) {
+            viewListener.onErrorRegister(e.getLocalizedMessage());
         }else {
             ErrorHandlerSession.getErrorMessage(new ErrorHandlerSession.ErrorForbiddenListener() {
                 @Override
