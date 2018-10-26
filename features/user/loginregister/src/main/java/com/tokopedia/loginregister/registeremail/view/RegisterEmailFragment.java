@@ -481,7 +481,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                         name.getText().toString(),
                         registerPassword.getText().toString(),
                         registerPassword.getText().toString(),
-                        phone.getText().toString(),
+                        getUnmaskedPhone(),
                         getIsAutoVerify()
                 );
                 return true;
@@ -499,6 +499,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     phone.getText().toString(),
                     getIsAutoVerify());
         });
+    }
+
+    private String getUnmaskedPhone() {
+        return phone.getText().toString().replace("-", "");
     }
 
 
