@@ -2,8 +2,8 @@ package com.tokopedia.flight.searchV2.data.repository.mapper
 
 import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
+import com.tokopedia.flight_dbflow.FlightAirlineDB
+import com.tokopedia.flight_dbflow.FlightAirportDB
 import com.tokopedia.flight.search.data.cloud.model.response.Attributes
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
 import com.tokopedia.flight.search.data.cloud.model.response.Route
