@@ -26,4 +26,7 @@
     <string name="profile_delete_post">Hapus Rekomendasi</string>
     <string name="profile_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari rekomendasi ini</string>
     <string name="profile_post_deleted">Rekomendasi berhasil dihapus</string>
+    <string name="profile_recommend_get_commission">Rekomendasikan Produk ke Teman, Bisa Dapat Komisi!</string>
+    <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
+    <string name="profile_try_now">Coba Sekarang</string>
 </resources>

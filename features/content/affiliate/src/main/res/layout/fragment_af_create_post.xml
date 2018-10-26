@@ -123,7 +123,7 @@
                 app:layout_constraintTop_toBottomOf="@id/setMain">
 
                 <com.tokopedia.design.component.ButtonCompat
-                    android:id="@+id/doneBtn"
+                    android:id="@+id/addImageBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_1"
@@ -133,13 +133,13 @@
                     android:layout_marginStart="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_1"
                     android:layout_weight="1"
-                    android:text="@string/af_done"
+                    android:text="@string/af_add_images"
                     android:textAllCaps="false"
                     app:buttonCompatSize="big"
                     app:buttonCompatType="secondary" />
 
                 <com.tokopedia.design.component.ButtonCompat
-                    android:id="@+id/addImageBtn"
+                    android:id="@+id/doneBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_1"
@@ -149,7 +149,7 @@
                     android:layout_marginStart="@dimen/dp_1"
                     android:layout_marginTop="@dimen/dp_1"
                     android:layout_weight="1"
-                    android:text="@string/af_add_images"
+                    android:text="@string/af_done"
                     android:textAllCaps="false"
                     app:buttonCompatSize="big"
                     app:buttonCompatType="primary" />

@@ -26,7 +26,6 @@
 
         <activity
             android:name=".talkdetails.view.activity.TalkDetailsActivity"
-            android:label="@string/talk"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -38,7 +37,6 @@
 
         <activity
             android:name=".shoptalk.view.activity.ShopTalkActivity"
-            android:label="@string/talk"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan|stateHidden"/>

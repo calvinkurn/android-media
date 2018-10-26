@@ -69,9 +69,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
+    override lateinit var profileRouter: ProfileModuleRouter
+
     @Inject
     lateinit var presenter: ProfileContract.Presenter
-    lateinit var profileRouter: ProfileModuleRouter
 
     companion object {
         private const val POST_ID = "{post_id}"
@@ -213,7 +214,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
             addFooter(
                     firstPageViewModel.profileHeaderViewModel,
-                    firstPageViewModel.affiliatePostQuota.formatted
+                    firstPageViewModel.affiliatePostQuota
             )
         }
 
@@ -487,15 +488,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun addFooter(headerViewModel: ProfileHeaderViewModel, quota: String) {
+    private fun addFooter(headerViewModel: ProfileHeaderViewModel,
+                          affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
         if (headerViewModel.isOwner) {
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(quota)) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
                 recommendationQuota.visibility = View.VISIBLE
-                recommendationQuota.text = quota
+                recommendationQuota.text = affiliatePostQuota.formatted
             } else {
                 recommendationQuota.visibility = View.GONE
             }
