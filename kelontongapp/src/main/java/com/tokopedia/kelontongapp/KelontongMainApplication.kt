@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.support.multidex.MultiDex
 
 import com.crashlytics.android.Crashlytics
 
@@ -18,11 +17,6 @@ class KelontongMainApplication : Application() {
 
     val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
     val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
-
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
-    }
 
     override fun onCreate() {
         super.onCreate()

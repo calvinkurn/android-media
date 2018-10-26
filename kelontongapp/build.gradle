@@ -37,7 +37,6 @@ android {
         applicationId "com.tokopedia.kelontongapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        multiDexEnabled true
         versionCode getTkpdKelontongVersionCode()
         versionName getTkpdKelontongVersionName()
 
@@ -67,7 +66,9 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
-    implementation rootProject.ext.serviceDependencies.crashlytics
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
