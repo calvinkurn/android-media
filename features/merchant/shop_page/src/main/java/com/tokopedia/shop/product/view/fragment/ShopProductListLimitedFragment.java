@@ -588,7 +588,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             List<ShopProductViewModel> shopProductViewModelList = list.get(i);
             etalaseHighlightCarouselViewModels.add(
                     new EtalaseHighlightCarouselViewModel(shopProductViewModelList, highlightEtalaseViewModelList.get(i)));
-            if (shopInfo != null) {
+            if (shopInfo != null && shopProductViewModelList!= null && shopProductViewModelList.size() > 0) {
                 shopPageTracking.impressionProductList(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
                         highlightEtalaseViewModelList.get(i).getEtalaseName(),
