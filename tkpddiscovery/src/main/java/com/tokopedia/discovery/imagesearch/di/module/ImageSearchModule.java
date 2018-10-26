@@ -15,6 +15,7 @@ import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,9 +39,10 @@ public class ImageSearchModule {
             PostExecutionThread postExecutionThread,
             ImageSearchService imageSearchService,
             ImageProductMapper imageProductMapper,
-            @MojitoGetWishlistQualifier MojitoApi service) {
+            @MojitoGetWishlistQualifier MojitoApi service,
+            UserSession userSession) {
         return new GetImageSearchUseCase(context, threadExecutor,
-                postExecutionThread, imageSearchService, imageProductMapper, service);
+                postExecutionThread, imageSearchService, imageProductMapper, service, userSession);
     }
 
     @Provides
@@ -52,5 +54,11 @@ public class ImageSearchModule {
     @Provides
     ImageSearchPresenter provideImageSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         return new ImageSearchPresenter(context, getProductUseCase, getImageSearchUseCase);
+    }
+
+    @SearchScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
