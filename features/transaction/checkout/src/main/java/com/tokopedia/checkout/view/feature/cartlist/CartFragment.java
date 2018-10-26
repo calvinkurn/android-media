@@ -770,6 +770,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
+        sendAnalyticsScreenName(getScreenName());
         refreshHandler.finishRefresh();
         this.cartListData = cartListData;
         cartAdapter.resetData();
@@ -1111,7 +1112,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
                 if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
@@ -1123,6 +1123,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 } else {
                     if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
                         dPresenter.processInitialGetCartData(false);
+                    } else {
+                        CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
+                        dPresenter.setCartListData(cartListData);
+                        renderLoadGetCartDataFinish();
+                        renderInitialGetCartListDataSuccess(cartListData);
                     }
                 }
             }
@@ -1316,10 +1321,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().finish();
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
+            sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            sendAnalyticsScreenName(getScreenName());
         }
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        sendAnalyticsScreenName(getScreenName());
         if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {

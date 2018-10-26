@@ -41,7 +41,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
-import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
@@ -76,7 +75,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     public static final String TAG = "verif";
     protected static final String FORMAT = "%02d";
     protected static final long COUNTDOWN_INTERVAL_SECOND = 1000;
-    private static final String TOKOCASH = "TokoCash";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
     private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
@@ -89,7 +87,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
     protected TextView requestOtpCallButton;
     protected View inputOtpView;
     protected EditText otpEditText;
-    protected TextView tokocashText;
     protected CountDownTimer countDownTimer;
     protected IncomingSmsReceiver smsReceiver;
     protected TkpdProgressDialog progressDialog;
@@ -157,7 +154,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
         countdownText = (TextView) view.findViewById(R.id.countdown_text);
         inputOtpView = view.findViewById(R.id.input_otp_view);
         otpEditText = (EditText) view.findViewById(R.id.input_otp);
-        tokocashText = (TextView) view.findViewById(R.id.tokocash_text);
         instruction = view.findViewById(R.id.verification_instruction);
 
     }
@@ -263,26 +259,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                 , 0);
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
-
-        Spannable tokoCashSpannable = new SpannableString(getString(R.string.tokocash_phone_verification_text));
-
-        tokoCashSpannable.setSpan(new ClickableSpan() {
-                                      @Override
-                                      public void onClick(View view) {
-
-                                      }
-
-                                      @Override
-                                      public void updateDrawState(TextPaint ds) {
-                                          ds.setColor(MethodChecker.getColor(getActivity(),
-                                                  com.tokopedia.core.R.color.tkpd_main_green));
-                                      }
-                                  }
-                , getString(R.string.tokocash_phone_verification_text).indexOf(TOKOCASH)
-                , getString(R.string.tokocash_phone_verification_text).indexOf(TOKOCASH) + TOKOCASH.length()
-                , 0);
-
-        tokocashText.setText(tokoCashSpannable, TextView.BufferType.SPANNABLE);
     }
 
 
@@ -347,14 +323,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                 parentPresenter.skipView(TAG);
             }
         });
-
-        tokocashText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(TokoCashWebViewActivity.getIntentCall(getActivity()));
-            }
-        });
-
     }
 
     protected void initialVar() {
@@ -472,7 +440,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     protected void stopTimer() {
         instruction.setVisibility(View.VISIBLE);
-        tokocashText.setVisibility(View.VISIBLE);
         requestOtpButton.setVisibility(View.VISIBLE);
         inputOtpView.setVisibility(View.GONE);
         verifyButton.setText(getResources().getString(R.string.continue_form));
@@ -501,7 +468,6 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
     protected void enableOtpButton() {
         instruction.setVisibility(View.VISIBLE);
-        tokocashText.setVisibility(GONE);
         countdownText.setVisibility(GONE);
         requestOtpButton.setVisibility(View.VISIBLE);
         requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));

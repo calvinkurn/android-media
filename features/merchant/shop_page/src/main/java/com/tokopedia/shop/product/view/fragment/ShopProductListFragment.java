@@ -138,7 +138,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(null,
                 this, null, this,
-                this,
+                this, null,
                 true, 0, ShopTrackProductTypeDef.PRODUCT
         );
     }

@@ -2,11 +2,11 @@ package com.tokopedia.checkout.domain.usecase;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.datamodel.ShippingRecommendationData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -41,7 +41,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                         ShipmentDetailData shipmentDetailData,
                         int selectedServiceId,
                         List<ShopShipment> shopShipments,
-                        Subscriber<List<ShippingDurationViewModel>> subscriber) {
+                        Subscriber<ShippingRecommendationData> subscriber) {
         clearRequest();
         query = getQueryWithParams(query, shipmentDetailData);
 
@@ -52,19 +52,35 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .map(graphqlResponse -> {
-                    GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
-                    List<ShippingDurationViewModel> shippingDurationViewModels = null;
-                    if (data != null && data.getRatesData() != null &&
-                            data.getRatesData().getRatesDetailData() != null &&
-                            data.getRatesData().getRatesDetailData().getServices() != null) {
-                        String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
-                        shippingDurationViewModels = shippingDurationConverter.convertToViewModel(
-                                data.getRatesData().getRatesDetailData().getServices(),
-                                shopShipments, shipmentDetailData, ratesId, selectedServiceId
-                        );
+                .map(new Func1<GraphqlResponse, ShippingRecommendationData>() {
+                    @Override
+                    public ShippingRecommendationData call(GraphqlResponse graphqlResponse) {
+                        GetRatesCourierRecommendationData data = graphqlResponse.getData(GetRatesCourierRecommendationData.class);
+                        ShippingRecommendationData shippingRecommendationData = new ShippingRecommendationData();
+
+                        // Check response not null
+                        if (data != null && data.getRatesData() != null && data.getRatesData().getRatesDetailData() != null) {
+                            // Check has service / duration list
+                            if (data.getRatesData().getRatesDetailData().getServices() != null &&
+                                    data.getRatesData().getRatesDetailData().getServices().size() > 0) {
+                                // Check if has error
+                                if (data.getRatesData().getRatesDetailData().getError() != null &&
+                                        !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getError().getErrorMessage())) {
+                                    shippingRecommendationData.setErrorMessage(data.getRatesData().getRatesDetailData().getError().getErrorMessage());
+                                    shippingRecommendationData.setErrorId(data.getRatesData().getRatesDetailData().getError().getErrorId());
+                                }
+                                String ratesId = data.getRatesData().getRatesDetailData().getRatesId();
+                                // Has service / duration list
+                                shippingRecommendationData.setShippingDurationViewModels(
+                                        shippingDurationConverter.convertToViewModel(
+                                                data.getRatesData().getRatesDetailData().getServices(),
+                                                shopShipments, shipmentDetailData, ratesId, selectedServiceId
+                                        )
+                                );
+                            }
+                        }
+                        return shippingRecommendationData;
                     }
-                    return shippingDurationViewModels;
                 })
                 .subscribe(subscriber);
     }
