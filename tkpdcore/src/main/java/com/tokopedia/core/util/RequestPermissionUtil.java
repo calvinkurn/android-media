@@ -17,7 +17,9 @@ import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
+ * Deprecated. Use from tkpdabstraction instead.
  */
+@Deprecated
 public class RequestPermissionUtil {
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {

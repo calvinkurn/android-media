@@ -1,24 +1,28 @@
-package com.tokopedia.otp.common.util;
+package com.tokopedia.abstraction.common.utils;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.tokopedia.otp.R;
+import com.tokopedia.abstraction.R;
 
 import java.util.List;
 
-import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by Nisie on 8/5/16.
  */
 public class RequestPermissionUtil {
+
+    public interface PermissionRequestListener {
+        void onProceed();
+
+        void onCancel();
+    }
 
     public static void onPermissionDenied(Context context, List<String> listPermission) {
         String allPermission = "";
@@ -134,46 +138,26 @@ public class RequestPermissionUtil {
         }
     }
 
-    public static void onNeverAskAgain(Context context, List<String> listPermission) {
+    public static void onNeverAskAgain(Context context) {
         Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
 
     }
 
-    public static void onShowRationale(Context context, final PermissionRequest request,
+    public static void onShowRationale(Context context, final PermissionRequestListener listener,
                                        String permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
+                .setPositiveButton(R.string.title_ok, (dialog, which) -> listener.onProceed())
+                .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> listener.onCancel())
                 .show();
     }
 
-    public static void onShowRationale(Context context, final PermissionRequest request,
+    public static void onShowRationale(Context context, final PermissionRequestListener listener,
                                        List<String> permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
+                .setPositiveButton(R.string.title_ok, (dialog, which) -> listener.onProceed())
+                .setNegativeButton(R.string.dialog_cancel, (dialog, which) -> listener.onCancel())
                 .show();
     }
 

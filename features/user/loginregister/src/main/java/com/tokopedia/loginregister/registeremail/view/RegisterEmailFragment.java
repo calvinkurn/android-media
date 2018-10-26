@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.registeremail.view;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -61,12 +63,20 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
 /**
  * @author by nisie on 10/25/18.
  */
+@RuntimePermissions
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailContract.View {
 
@@ -151,7 +161,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         wrapperPhone = view.findViewById(R.id.wrapper_phone);
         name = view.findViewById(R.id.name);
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
-
+        presenter.attachView(this);
         prepareView();
         setViewListener();
         return view;
@@ -419,7 +429,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
 
-    //    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
+    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void setupEmailAddressToEmailTextView() {
         List<String> list = getEmailListOfAccountsUserHasLoggedInto();
         if (list.size() > 0) {
@@ -464,8 +474,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             }
             return false;
         });
-//        RegisterEmailFragmentPermissionsDispatcher
-//                .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
+        RegisterEmailFragmentPermissionsDispatcher
+                .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
         registerPassword.setOnEditorActionListener((v, id, event) -> {
             if (id == R.id.register_button || id == EditorInfo.IME_NULL) {
@@ -533,7 +543,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         wrapper.setHelperEnabled(false);
         wrapper.setHelper(null);
         if (s == null) {
-            wrapper.setError(s);
+            wrapper.setError(null);
             wrapper.setErrorEnabled(false);
         } else {
             wrapper.setErrorEnabled(true);
@@ -727,24 +737,35 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        RegisterEmailFragmentPermissionsDispatcher.onRequestPermissionsResult(
-//                RegisterEmailFragment.this, requestCode, grantResults);
+        RegisterEmailFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                RegisterEmailFragment.this, requestCode, grantResults);
     }
-//
-//    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-//    void showRationaleForGetAccounts(final PermissionRequest request) {
-//        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
-//    }
-//
-//    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-//    void showDeniefForGetAccounts() {
-//        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-//    }
-//
-//    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-//    void showNeverAskForGetAccounts() {
-//        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
-//    }
+
+    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(),
+                new RequestPermissionUtil.PermissionRequestListener() {
+            @Override
+            public void onProceed() {
+                request.proceed();
+            }
+
+            @Override
+            public void onCancel() {
+                request.cancel();
+            }
+        }, Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniefForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
+    void showNeverAskForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
 
     @Override
     public void onDestroyView() {

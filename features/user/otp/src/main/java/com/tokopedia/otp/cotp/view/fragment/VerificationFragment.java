@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -41,7 +42,6 @@ import com.tokopedia.otp.common.design.PinInputEditText;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
 import com.tokopedia.otp.common.util.IncomingSmsReceiver;
-import com.tokopedia.otp.common.util.RequestPermissionUtil;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -296,7 +296,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(analytics!= null && viewModel != null) {
+                if (analytics != null && viewModel != null) {
                     analytics.eventClickVerifyButton(viewModel.getOtpType());
                 }
                 presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
@@ -424,7 +424,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void trackOnBackPressed() {
-        if(analytics!= null && viewModel!= null) {
+        if (analytics != null && viewModel != null) {
             analytics.eventClickBackOTPPage(viewModel.getOtpType());
         }
 
@@ -484,7 +484,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(analytics!= null && viewModel != null){
+                if (analytics != null && viewModel != null) {
                     analytics.eventClickResendOtp(viewModel.getOtpType());
                 }
                 inputOtp.setText("");
@@ -502,7 +502,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             useOtherMethod.setVisibility(View.VISIBLE);
 
             useOtherMethod.setOnClickListener(v -> {
-                if(analytics!= null && viewModel != null){
+                if (analytics != null && viewModel != null) {
                     analytics.eventClickUseOtherMethod(viewModel.getOtpType());
                 }
                 dropKeyboard();
@@ -608,7 +608,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @OnShowRationale(Manifest.permission.RECEIVE_SMS)
     void showRationaleForReadSms(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.RECEIVE_SMS);
+        RequestPermissionUtil.onShowRationale(getActivity(), new RequestPermissionUtil.PermissionRequestListener() {
+            @Override
+            public void onProceed() {
+                request.proceed();
+            }
+
+            @Override
+            public void onCancel() {
+                request.cancel();
+            }
+        }, Manifest.permission.RECEIVE_SMS);
     }
 
     @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
