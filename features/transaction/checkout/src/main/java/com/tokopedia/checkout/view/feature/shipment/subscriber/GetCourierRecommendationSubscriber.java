@@ -57,7 +57,11 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        view.renderCourierStateFailed(itemPosition);
+        if (isInitialLoad) {
+            view.renderCourierStateFailed(itemPosition);
+        } else {
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+        }
     }
 
     @Override
