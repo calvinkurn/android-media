@@ -50,6 +50,7 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
+import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
@@ -318,15 +319,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void goToRegisterEmailPage() {
         showProgressBar();
-//        Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
-//        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+        Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
+        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
     }
 
     @Override
     public void goToRegisterEmailPageWithEmail(String email) {
         showProgressBar();
-//        Intent intent = RegisterEmailActivity.getCallingIntentWithEmail(getActivity(), email);
-//        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
+        Intent intent = RegisterEmailActivity.getCallingIntentWithEmail(getActivity(), email);
+        startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
     }
 
     private void goToVerificationPhoneRegister(String phone) {
