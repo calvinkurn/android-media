@@ -25,11 +25,6 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETP
  */
 public class AddAddressActivity extends BaseSimpleActivity {
 
-    @Override
-    public String getScreenName() {
-        return SCREEN_ADD_ADDRESS_FORM;
-    }
-
     /**
      * Always pass a bundle because the activity always get intent extra
      */
@@ -86,4 +81,10 @@ public class AddAddressActivity extends BaseSimpleActivity {
         intent.putExtras(bundle);
         return intent;
     }
+
+    @Override
+    public String getScreenName() {
+        return SCREEN_ADD_ADDRESS_FORM;
+    }
+
 }
