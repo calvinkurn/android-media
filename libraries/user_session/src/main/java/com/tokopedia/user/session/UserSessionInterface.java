@@ -80,6 +80,10 @@ public interface UserSessionInterface {
 
     void logoutSession();
 
+    void setFirstTimeUserOnboarding(boolean isFirstTime);
+
+    void setFirstTimeUser(boolean isFirstTime);
+
     void setToken(String accessToken, String tokenType, String refreshToken);
 
     void setLoginSession(boolean isLogin, String userId, String fullName, String shopId,
@@ -88,13 +92,8 @@ public interface UserSessionInterface {
 
     void setIsMSISDNVerified(boolean isMsisdnVerified);
 
-    void setFirstTimeUserOnboarding(boolean isFirstTime);
-
-    void setFirstTimeUser(boolean isFirstTime);
-
     void setHasPassword(boolean hasPassword);
 
     void setProfilePicture(String profilePicture);
-
 
 }

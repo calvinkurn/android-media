@@ -164,8 +164,7 @@
     </entry>
     <entry>
         <key>app_refferal_content</key>
-        <value>Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama
-            mereka berhasil.
+        <value>Ayo share kode ini ke temanmu dan nikmati bonus TokoCash setelah transaksi pertama mereka berhasil.
         </value>
     </entry>
     <entry>
@@ -262,27 +261,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_wallet_label_register</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>mainapp_wallet_applink_register</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>mainapp_wallet_applink</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>mainapp_wallet_label_name</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>mainapp_is_enabled_new_talk</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        >>>>>>> f6fc85365a36b1ecd77a8fca9183fe71375629c2
         <key>sellerapp_is_enabled_new_talk</key>
         <value>true</value>
     </entry>

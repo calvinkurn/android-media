@@ -77,7 +77,6 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
-
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"

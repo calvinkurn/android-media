@@ -163,13 +163,12 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     private fun displayImageBackground(shopInfo: ShopInfo) {
-        if (!(TextApiUtils.isValueTrue(shopInfo.info.shopIsOfficial) || shopInfo.info.isShopIsGoldBadge)){
-            shopBackgroundImageView.visibility = View.GONE
-        } else {
+        if (shopInfo.info.isShopOfficial || shopInfo.info.isGoldMerchant){
             shopBackgroundImageView.visibility = View.VISIBLE
             ImageHandler.LoadImage(shopBackgroundImageView, shopInfo.info.shopCover)
+        } else {
+            shopBackgroundImageView.visibility = View.GONE
         }
-
     }
 
     private fun goToReviewQualityDetail() {

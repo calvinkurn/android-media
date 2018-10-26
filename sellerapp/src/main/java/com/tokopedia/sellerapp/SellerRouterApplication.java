@@ -127,8 +127,6 @@ import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivi
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
-import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
@@ -182,8 +180,7 @@ import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
@@ -210,10 +207,12 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -243,7 +242,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
-        KolRouter, PaymentSettingRouter, TalkRouter {
+        KolRouter, PaymentSettingRouter, TalkRouter,
+        MerchantVoucherModuleRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1213,17 +1213,17 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+        return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
 
     @Override
     public Intent getShopPageIntentByDomain(Context context, String domain) {
-        return ShopPageActivity.createIntentWithDomain(context, domain);
+        return ShopPageInternalRouter.getShopPageIntentByDomain(context, domain);
     }
 
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "");
+        return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {
@@ -1615,22 +1615,26 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopEtalaseIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopNotesIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopBasicDataIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
-    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+    public @NonNull
+    Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
@@ -1725,5 +1729,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAutomaticResetPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
+    }
+
+    @Override
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
     }
 }

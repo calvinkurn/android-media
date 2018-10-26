@@ -37,7 +37,22 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:text="@string/flight_search_discount_tag" />
+                android:text="@string/flight_search_discount_tag"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_best_pairing_tag"
+                style="@style/FlightChips.Info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:text="@string/flight_search_best_pairing_tag"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
 
         <RelativeLayout

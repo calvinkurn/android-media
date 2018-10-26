@@ -16,7 +16,7 @@ public interface MerchantSaldoPriorityContract {
 
         void onSaldoStatusUpdateError(String errorMessage);
 
-        void onSaldoStatusUpdateSuccess();
+        void onSaldoStatusUpdateSuccess(boolean newState);
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -11,27 +11,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.tokopedia.core.gcm.Constants.Applinks.SHOP;
 
 /**
  * @author by nisie on 5/16/17.
  */
 
 public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.ViewHolder> {
-
-    private static final String SHOP_ID_BRACKETS = "{shop_id}";
 
     private static final int MAX_FEED_SIZE = 6;
     private static final int MAX_FEED_SIZE_SMALL = 3;
@@ -169,28 +162,13 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
                     activityCardViewModel.getEventLabel()
             );
 
-            doTrackingEnhancedEcommerce();
+            viewListener.eventTrackingEEGoToProduct(activityCardViewModel.getHeader().getShopId(),
+                    activityCardViewModel.getFeedId(),
+                    activityCardViewModel.getTotalProduct(),
+                    this.positionInFeed,
+                    "-");
+
         };
-    }
-
-    private void doTrackingEnhancedEcommerce() {
-        String loginIdString = viewListener.getUserSession().getUserId();
-        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
-
-        String shopId = String.valueOf(activityCardViewModel.getHeader().getShopId());
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(activityCardViewModel.getFeedId()),
-                FeedEnhancedTracking.Promotion.createContentNameProductUpload(
-                        activityCardViewModel.getTotalProduct()),
-                String.valueOf(activityCardViewModel.getTotalProduct()),
-                this.positionInFeed,
-                "-",
-                activityCardViewModel.getHeader().getShopId(),
-                SHOP.replace(SHOP_ID_BRACKETS, shopId)
-        ));
-        TrackingUtils.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(list, loginIdInt));
     }
 
     private void setProductNamePadding(ViewHolder holder) {
