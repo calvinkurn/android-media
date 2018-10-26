@@ -39,7 +39,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     @Inject
     UserSession userSession;
 
-    public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
+    public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack) {
         Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
         intent.putExtra(EXTRA_IS_MANDATORY, isMandatory);
         intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, isLogoutOnBack);
@@ -62,7 +62,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
         analytics = PhoneVerificationAnalytics.createInstance(getApplicationContext());
     }
 
-    private void initInjector(){
+    private void initInjector() {
         BaseAppComponent baseAppComponent =
                 ((BaseMainApplication) this.getApplication()).getBaseAppComponent();
         PhoneVerificationComponent phoneVerificationComponent =
@@ -90,24 +90,30 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     }
 
     private void initView() {
-        PhoneVerificationActivationFragment fragmentHeader = PhoneVerificationActivationFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener(), canSkip);
+        PhoneVerificationActivationFragment fragmentHeader = PhoneVerificationActivationFragment
+                .createInstance();
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance
+                (getPhoneVerificationListener(), canSkip);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
-            fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
+            fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader
+                    .getClass().getSimpleName());
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
+        } else if (((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id
+                .container))
                 .getListener() == null) {
-            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id.container))
+            ((PhoneVerificationFragment) getSupportFragmentManager().findFragmentById(R.id
+                    .container))
                     .setPhoneVerificationListener(getPhoneVerificationListener());
         }
         fragmentTransaction.commit();
     }
 
-    private PhoneVerificationFragment.PhoneVerificationFragmentListener getPhoneVerificationListener() {
+    private PhoneVerificationFragment.PhoneVerificationFragmentListener
+    getPhoneVerificationListener() {
         return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
             @Override
             public void onSkipVerification() {
@@ -139,27 +145,25 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
 
     @Override
     public void onBackPressed() {
-        if(analytics != null){
+        if (analytics != null) {
             analytics.eventClickOnBackPressed();
         }
 
-        if (isLogoutOnBack) {
-            //TODO @alvinatin confirm this
-            userSession.logoutSession();
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+
     }
 
     private void goToSellerHome() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent(getApplicationContext());
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent
+                (getApplicationContext());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
 
     private void goToConsumerHome() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent(getApplicationContext());
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getHomeIntent
+                (getApplicationContext());
         intent.putExtra(PhoneVerificationConst.EXTRA_INIT_FRAGMENT,
                 PhoneVerificationConst.INIT_STATE_FRAGMENT_HOME);
         startActivity(intent);
@@ -167,7 +171,8 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getIntentCreateShop(getApplicationContext());
+        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getIntentCreateShop
+                (getApplicationContext());
         startActivity(intent);
         finish();
     }
