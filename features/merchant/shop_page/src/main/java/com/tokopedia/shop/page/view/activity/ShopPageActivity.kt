@@ -370,7 +370,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewHolder.toggleFavourite()
             updateFavouriteResult()
         }
-        shopPageViewHolder.updateFavoriteButton(shopInfo)
+        shopPageViewHolder.updateFavoriteButton()
     }
 
     private fun updateFavouriteResult() {
@@ -380,7 +380,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onErrorToggleFavourite(e: Throwable) {
-        shopPageViewHolder.updateFavoriteButton(shopInfo)
+        shopPageViewHolder.updateFavoriteButton()
         if (e is UserNotLoginException) {
             val intent = (application as ShopModuleRouter).getLoginIntent(this)
             startActivityForResult(intent, REQUEST_CODER_USER_LOGIN)
@@ -450,7 +450,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
                     CustomDimensionShopPage.create(shopInfo))
         }
-        shopInfo?.info?.isShopOfficial?.let { ( application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, !isFavourite) }
+        shopInfo?.info?.isShopOfficial?.let { ( application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
     }
