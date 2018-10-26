@@ -669,7 +669,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCancelAutoApplyCouponSuccess() {
-        onRemovePromoCode();
+        shipmentAdapter.updatePromo(null);
+        shipmentPresenter.setPromoCodeAppliedData(null);
+        shipmentPresenter.setHasDeletePromoAfterChecKPromoCodeFinal(true);
         shipmentAdapter.cancelAutoApplyCoupon();
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
     }
@@ -1238,9 +1240,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onRemovePromoCode() {
-        shipmentAdapter.updatePromo(null);
-        shipmentPresenter.setPromoCodeAppliedData(null);
-        shipmentPresenter.setHasDeletePromoAfterChecKPromoCodeFinal(true);
+        shipmentPresenter.cancelAutoApplyCoupon();
     }
 
     @Override
