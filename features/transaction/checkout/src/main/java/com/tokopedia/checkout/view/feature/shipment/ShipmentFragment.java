@@ -692,6 +692,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void cancelAllCourierPromo() {
+        shipmentAdapter.cancelAllCourierPromo();
+    }
+
+    @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
         sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
@@ -1504,11 +1509,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
         if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
-//            if (checkCourierPromoStillExist()) {
-//                setCourierPromoApplied(itemPosition);
-//            } else {
-                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
-//            }
+            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
         }
     }
 

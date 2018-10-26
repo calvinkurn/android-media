@@ -898,6 +898,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().renderErrorCheckPromoShipmentData(
                                             promoCodeCartShipmentData.getErrorMessage()
                                     );
+                                    getView().cancelAllCourierPromo();
                                 }
                             }
                         })

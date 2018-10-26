@@ -90,6 +90,8 @@ public interface ShipmentContract {
 
         void renderCourierStateFailed(int itemPosition);
 
+        void cancelAllCourierPromo();
+
         void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition,
                                               ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
 
