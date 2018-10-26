@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
-import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
 
 public class SendGiftActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {

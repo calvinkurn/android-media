@@ -40,6 +40,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -133,14 +134,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
+
         initializeDatabase();
         super.onCreate();
         initReact();
-
-        if(!checkAppSignature()){
-            throw new RuntimeException("please use original tokopedia apps.");
-        }
-
+        
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
@@ -257,6 +255,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         OmsUrl.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
+        EventsUrl.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
         DealsUrl.DEALS_DOMAIN = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_GQL;
@@ -392,7 +391,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         System.loadLibrary("native-lib");
     }
 
-    protected boolean checkAppSignature(){
+    public boolean checkAppSignature(){
         PackageInfo info = null;
         try {
             info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);

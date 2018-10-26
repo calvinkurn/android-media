@@ -21,6 +21,7 @@ import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.common.di.TokoCashComponent;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,9 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
     private String phoneNumber;
     private String changeMsisdnApplink;
 
+    @Inject
+    WalletAnalytics walletAnalytics;
+
     public static ActivationOvoFragment newInstance(String registeredApplink,
                                                     String phoneNumber, String changeMsisdnApplink) {
         ActivationOvoFragment fragment = new ActivationOvoFragment();
@@ -49,6 +53,9 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
+        TokoCashComponent tokoCashComponent =
+                TokoCashComponentInstance.getComponent(getActivity().getApplication());
+        tokoCashComponent.inject(this);
     }
 
     @Override
@@ -78,12 +85,14 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
         activationNewAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                walletAnalytics.eventClickMakeNewOvoAccount();
                 directPageWithApplink(registeredApplink);
             }
         });
         changeNumberBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                walletAnalytics.eventClickChangePhoneNumber();
                 directPageWithApplink(changeMsisdnApplink);
             }
         });

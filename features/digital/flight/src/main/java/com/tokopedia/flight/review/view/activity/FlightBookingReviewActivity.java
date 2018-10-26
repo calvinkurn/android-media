@@ -19,16 +19,21 @@ import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
  */
 
 public class FlightBookingReviewActivity extends BaseFlightActivity implements HasComponent<FlightBookingComponent> {
+    public static final String EXTRA_COMBO_KEY = "EXTRA_COMBO_KEY";
 
-    public static Intent createIntent(Context context, FlightBookingReviewModel flightBookingReviewModel){
+    public static Intent createIntent(Context context, FlightBookingReviewModel flightBookingReviewModel, String comboKey){
         Intent intent = new Intent(context, FlightBookingReviewActivity.class);
         intent.putExtra(FlightBookingReviewFragment.EXTRA_DATA_REVIEW, flightBookingReviewModel);
+        intent.putExtra(EXTRA_COMBO_KEY, comboKey);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightBookingReviewFragment.createInstance((FlightBookingReviewModel) getIntent().getParcelableExtra(FlightBookingReviewFragment.EXTRA_DATA_REVIEW));
+        return FlightBookingReviewFragment.createInstance(
+                (FlightBookingReviewModel) getIntent().getParcelableExtra(FlightBookingReviewFragment.EXTRA_DATA_REVIEW),
+                getIntent().getStringExtra(EXTRA_COMBO_KEY)
+        );
     }
 
     @Override
