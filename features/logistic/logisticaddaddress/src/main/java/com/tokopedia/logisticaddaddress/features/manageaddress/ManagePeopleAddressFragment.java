@@ -22,13 +22,11 @@ import android.view.Window;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
 import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
@@ -36,8 +34,6 @@ import com.tokopedia.logisticaddaddress.adapter.EndLessScrollBehavior;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
-import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -54,7 +50,7 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.RESULT_ERROR;
  * A placeholder fragment containing a simple view.
  */
 public class ManagePeopleAddressFragment extends BaseDaggerFragment
-        implements MPAddressView {
+        implements ManagePeopleAddressView {
 
     private static final String EXTRA_PARAM_ARRAY_LIST = "EXTRA_PARAM_ARRAY_LIST";
 
@@ -76,7 +72,7 @@ public class ManagePeopleAddressFragment extends BaseDaggerFragment
     @Inject
     ManageAddressAdapter adapter;
     @Inject
-    ManagePeopleAddressFragmentPresenter presenter;
+    ManagePeopleAddressPresenter presenter;
 
     public static Fragment newInstance() {
         ManagePeopleAddressFragment fragment = new ManagePeopleAddressFragment();

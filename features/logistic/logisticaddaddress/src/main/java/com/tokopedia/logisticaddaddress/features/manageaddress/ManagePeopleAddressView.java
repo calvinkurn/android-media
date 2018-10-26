@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created on 5/18/16.
  */
-public interface MPAddressView {
+public interface ManagePeopleAddressView {
 
     void prepareRecyclerView();
 

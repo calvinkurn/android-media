@@ -6,8 +6,8 @@ import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
 import com.tokopedia.logisticaddaddress.adapter.ManageAddressAdapter;
 import com.tokopedia.logisticaddaddress.features.manageaddress.MPAddressActivityListener;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenter;
+import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenterImpl;
 
 import java.util.ArrayList;
 
@@ -41,13 +41,13 @@ public class ManageAddressModule {
 
     @Provides
     @AddressScope
-    ManagePeopleAddressFragmentPresenter provideManageAddressPresenter(ManagePeopleAddressPresenter presenter) {
+    ManagePeopleAddressPresenter provideManageAddressPresenter(ManagePeopleAddressPresenterImpl presenter) {
         return presenter;
     }
 
     @Provides
     @AddressScope
-    AddressViewHolder.ManageAddressListener provideAddressViewHolderListener(ManagePeopleAddressPresenter presenter) {
+    AddressViewHolder.ManageAddressListener provideAddressViewHolderListener(ManagePeopleAddressPresenterImpl presenter) {
         return presenter;
     }
 

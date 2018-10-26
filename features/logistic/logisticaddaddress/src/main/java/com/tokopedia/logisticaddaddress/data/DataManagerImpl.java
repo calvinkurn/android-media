@@ -8,13 +8,12 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.di.AddressScope;
-import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressFragmentPresenter;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenter;
+import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressPresenterImpl;
 import com.tokopedia.logisticaddaddress.utils.LocalDatabaseUtils;
 import com.tokopedia.logisticaddaddress.utils.NetworkParam;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.cloud.RetrofitInteractorImpl;
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.user.session.UserSession;
 
@@ -38,7 +37,7 @@ public class DataManagerImpl implements DataManager {
 
     private static final String TAG = DataManagerImpl.class.getSimpleName();
 
-    private ManagePeopleAddressFragmentPresenter presenter;
+    private ManagePeopleAddressPresenter presenter;
     private final RetrofitInteractorImpl retrofit;
     private CacheManager cacheManager;
 
@@ -48,7 +47,7 @@ public class DataManagerImpl implements DataManager {
         this.cacheManager = cacheManager;
     }
 
-    public void setPresenter(ManagePeopleAddressPresenter presenter) {
+    public void setPresenter(ManagePeopleAddressPresenterImpl presenter) {
         this.presenter = presenter;
     }
 
