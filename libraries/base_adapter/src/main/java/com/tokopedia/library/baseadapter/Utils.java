@@ -1,7 +1,9 @@
-package com.tokopedia.library.pagination;
+package com.tokopedia.library.baseadapter;
 
 import android.content.Context;
 import android.view.View;
+
+import com.tokopedia.library.pagination.R;
 
 public class Utils {
 

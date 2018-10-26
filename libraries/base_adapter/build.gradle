@@ -5,17 +5,17 @@ android {
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ['targetModuleName': 'pagination']
+                arguments = ['targetModuleName': 'BaseAdapter']
             }
         }
     }
 }
 
 project.ext {
-    artifactId = 'pagination'
-    groupId = 'com.tokopedia.library.pagination'
-    versionName = "${tkpdPaginationVersion}"
-    artifactName = "pagination-release"
+    artifactId = 'base_adapter'
+    groupId = 'com.tokopedia.library.baseadapter'
+    versionName = "${tkpdBaseAdapterlVersion}"
+    artifactName = "base_adapter-release"
 }
 
 

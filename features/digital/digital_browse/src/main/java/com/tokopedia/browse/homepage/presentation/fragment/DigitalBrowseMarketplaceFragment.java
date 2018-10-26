@@ -111,8 +111,10 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
         if (savedInstanceState != null) {
             digitalBrowseMarketplaceViewModel = savedInstanceState.getParcelable(KEY_MARKETPLACE_DATA);
 
-            renderCategory(digitalBrowseMarketplaceViewModel.getRowViewModelList());
-            renderPopularBrands(digitalBrowseMarketplaceViewModel.getPopularBrandsList());
+            if (digitalBrowseMarketplaceViewModel != null) {
+                renderCategory(digitalBrowseMarketplaceViewModel.getRowViewModelList());
+                renderPopularBrands(digitalBrowseMarketplaceViewModel.getPopularBrandsList());
+            }
         }
     }
 

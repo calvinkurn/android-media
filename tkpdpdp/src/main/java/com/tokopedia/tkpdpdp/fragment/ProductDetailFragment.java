@@ -477,6 +477,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 if (getContext() == null) {
                     return;
                 }
+                if (productData!=null) {
+                    ProductPageTracking.eventClickMerchantVoucherUse(getActivity(), String.valueOf(productData.getInfo().getProductId()));
+                }
                 //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
                 /*if (!voucherListPresenter.isLogin()) {
                     Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
@@ -495,6 +498,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             @Override
             public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
                 if (getContext() != null && productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherSeeDetail(getActivity(), String.valueOf(productData.getInfo().getProductId()));
                     Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
                             merchantVoucherViewModel, productData.getShopInfo().getShopId());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
@@ -504,6 +508,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             @Override
             public void onSeeAllClicked() {
                 if (getContext() != null && productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherSeeAll(getActivity(), String.valueOf(productData.getInfo().getProductId()));
                     Intent intent = MerchantVoucherListActivity.createIntent(getContext(), productData.getShopInfo().getShopId(),
                             productData.getShopInfo().getShopName());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
@@ -1571,6 +1576,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        if (merchantVoucherViewModelList.size() == 0) {
+            merchantVoucherListWidget.setData(null);
+            promoWidgetView.setVisibility(View.GONE);
+            promoContainer.setVisibility(View.GONE);
+            return;
+        }
+        if (getActivity()!= null && productData!= null) {
+            ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), String.valueOf(productData.getInfo().getProductId()));
+        }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
         promoWidgetView.setVisibility(View.GONE);
         promoContainer.setVisibility(View.VISIBLE);
