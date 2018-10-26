@@ -186,9 +186,6 @@ public class MoEngageContainer implements IMoengageContainer {
                 if (checkNull(value.getTopAdsAmt()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
 
-                if (checkNull(value.isTopadsUser()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_USER, value.isTopadsUser());
-
                 if (checkNull(value.isHasPurchasedMarketplace()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
 

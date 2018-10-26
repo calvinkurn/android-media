@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
-import com.google.gson.JsonArray;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
@@ -26,16 +25,13 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.ProductShopInfo;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsParameter;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -370,24 +366,6 @@ public class TrackingUtils extends TrackingConfig {
         );
     }
 
-
-    public static void sendMoEngageShippingReceivedEvent(boolean success) {
-        PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RECEIVED, success);
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SHIPPING_CONFIRMED
-        );
-    }
-
-    public static void sendMoEngageOpenSellerScreen() {
-        PayloadBuilder builder = new PayloadBuilder();
-        getMoEngine().sendEvent(
-                builder.build(),
-                AppEventTracking.EventMoEngage.SELLER_SCREEN_OPEN
-        );
-    }
-
     public static void sendMoEngageAddToCart(@NonNull Product product) {
         try {
             PayloadBuilder builder = new PayloadBuilder();
@@ -444,11 +422,6 @@ public class TrackingUtils extends TrackingConfig {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void sendMoEngageClickedNewOrder() {
-        PayloadBuilder builder = new PayloadBuilder();
-        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
     }
 
     public static void sendMoEngageClickDiskusi(@NonNull ProductDetailData data) {

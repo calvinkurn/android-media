@@ -986,13 +986,11 @@ public interface AppEventTracking {
         String REFINED_SEARCH = "refined_search";
 
         String TOTAL_SOLD_ITEM = "total_sold_item";
-        String DATE_SHOP_CREATED = "date_shop_created";
         String SHOP_LOCATION = "shop_location";
 
         String TOKOCASH_AMT = "tokocash_amt";
         String SALDO_AMT = "saldo_amt";
         String TOPADS_AMT = "topads_amt";
-        String TOPADS_USER = "is_topads_user";
         String HAS_PURCHASED_TICKET = "has_purchased_ticket";
         String HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace";
         String HAS_PURCHASED_DIGITAL = "has_purchased_digital";
@@ -1028,11 +1026,8 @@ public interface AppEventTracking {
         String SEARCH_ATTEMPT = "Search_Attempt";
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
-        String CLICKED_NEW_ORDER = "Seller_Clicked_Neworder";
         String SELLER_ADDED_FAVORITE = "Seller_Added_To_Favorite";
         String SELLER_REMOVE_FAVORITE = "Seller_Removed_From_Favorite";
-        String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
-        String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
