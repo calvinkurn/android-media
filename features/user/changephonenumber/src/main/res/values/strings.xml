@@ -14,5 +14,6 @@
     <string name="tokocash">TokoCash</string>
     <string name="change_phone_number">Ubah Nomor Ponsel</string>
     <string name="withdraw_tokopedia_balance">Tarik Saldo Tokopedia</string>
+    <string name="button_continue">Lanjutkan</string>
 
 </resources>

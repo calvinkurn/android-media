@@ -22,29 +22,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:lineSpacingExtra="6sp"
-                android:paddingBottom="16dp"
-                android:paddingTop="8dp"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8"
                 android:text="@string/are_you_sure_change_phone_number"
                 android:textColor="@color/black_70"
-                android:textSize="20sp"
+                android:textSize="@dimen/sp_20"
                 android:textStyle="bold" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/card_background_with_shadow">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="10dp">
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:paddingTop="@dimen/dp_10">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -54,26 +54,25 @@
                         android:lineSpacingExtra="9sp"
                         android:text="@string/you_have"
                         android:textColor="@color/black_38"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/sp_12"
                         android:textStyle="normal" />
 
                     <LinearLayout
                         android:id="@+id/tokopedia_balance_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:drawableLeftCompat="@drawable/ic_icon_saldo"
                             android:drawablePadding="9dp"
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
                             android:text="@string/tokopedia_balance"
                             android:textColor="@color/black_70"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="normal" />
 
                         <TextView
@@ -83,7 +82,7 @@
                             android:fontFamily="sans-serif"
                             android:gravity="end|center_vertical"
                             android:textColor="@color/black_70"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/sp_12"
                             android:textStyle="bold"
                             tools:text="Rp 2.430.034,123" />
                     </LinearLayout>
@@ -92,13 +91,12 @@
                         android:id="@+id/tokocash_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:orientation="horizontal">
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:drawableLeftCompat="@drawable/ic_tokocash_icon"
                             android:drawablePadding="9dp"
                             android:fontFamily="sans-serif"
                             android:gravity="center_vertical"
@@ -146,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/green_button_rounded_unify"
+                android:background="@drawable/green_button_rounded"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/change_phone_number"
