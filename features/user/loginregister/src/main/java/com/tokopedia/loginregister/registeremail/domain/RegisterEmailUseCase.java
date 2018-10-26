@@ -3,8 +3,6 @@ package com.tokopedia.loginregister.registeremail.domain;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.registeremail.domain.mapper.RegisterEmailMapper;
 import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
-import com.tokopedia.session.register.data.model.RegisterEmailModel;
-import com.tokopedia.session.register.data.repository.RegisterEmailRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

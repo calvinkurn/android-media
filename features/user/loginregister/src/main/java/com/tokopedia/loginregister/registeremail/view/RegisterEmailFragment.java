@@ -38,9 +38,11 @@ import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
+import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
 import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registeremail.view.adapter.AutoCompleteTextAdapter;
@@ -82,17 +84,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     String EMAIL = "EMAIL";
     String IS_AUTO_VERIFY = "ISAUTOVERIFY";
 
-    int GO_TO_REGISTER = 0;
-    int GO_TO_ACTIVATION_PAGE = 1;
-    int GO_TO_LOGIN = 2;
-    int GO_TO_RESET_PASSWORD = 3;
-
-    String PARAM_BIRTHDAY = "birth_day";
-    String PARAM_BIRTHMONTH = "birth_month";
-    String PARAM_BIRTHYEAR = "birth_year";
-    String PARAM_FACEBOOK_USERID = "fb_user_id";
-    String PARAM_GENDER = "gender";
-
     View container;
     View redirectView;
     AutoCompleteTextView email;
@@ -129,7 +120,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        DaggerRegisterEmailComponent daggerLoginComponent =
+                (DaggerRegisterEmailComponent) DaggerRegisterEmailComponent
+                        .builder().loginRegisterComponent(getComponent(LoginRegisterComponent.class))
+                        .build();
 
+        daggerLoginComponent.inject(this);
     }
 
     @Override

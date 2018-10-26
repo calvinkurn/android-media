@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 
 import javax.inject.Inject;
 
 /**
  * @author by nisie on 10/25/18.
  */
-public class RegisterEmailActivity extends BaseSimpleActivity {
+public class RegisterEmailActivity extends BaseSimpleActivity implements HasComponent {
 
     public static final String EXTRA_PARAM_EMAIL = "email";
 
@@ -24,7 +28,7 @@ public class RegisterEmailActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-        if(getIntent().getExtras()!= null){
+        if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
         return null;
@@ -47,5 +51,11 @@ public class RegisterEmailActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         analytics.eventClickBackRegisterWithEmail();
         super.onBackPressed();
+    }
+
+    @Override
+    public LoginRegisterComponent getComponent() {
+        return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
+                getApplication()).getBaseAppComponent()).build();
     }
 }
