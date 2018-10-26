@@ -4,29 +4,31 @@ import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedApi;
-import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
+import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
-import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
-import com.tokopedia.feedplus.data.repository.FavoriteShopRepositoryImpl;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.data.repository.FeedRepositoryImpl;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
+import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
+import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
+import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.vote.di.VoteModule;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -101,15 +103,9 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    GlobalCacheManager provideGlobalCacheManager() {
-        return new GlobalCacheManager();
-    }
-
-    @FeedPlusScope
-    @Provides
     FeedApi provideFeedApi(Retrofit.Builder retrofitBuilder,
                            OkHttpClient okHttpClient) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
+        return retrofitBuilder.baseUrl(FeedUrl.GRAPHQL_DOMAIN)
                 .client(okHttpClient)
                 .build()
                 .create(FeedApi.class);
@@ -120,7 +116,7 @@ public class FeedPlusModule {
     ApolloClient providesApolloClient(OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
-                .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
+                .serverUrl(FeedUrl.GRAPHQL_DOMAIN)
                 .build();
     }
 
@@ -134,15 +130,13 @@ public class FeedPlusModule {
     @Provides
     FeedFactory provideFeedFactory(@ApplicationContext Context context,
                                    FeedApi feedApi,
-                                   ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
-                                   GlobalCacheManager globalCacheManager) {
+                                   CacheManager globalCacheManager) {
         return new FeedFactory(
                 context,
                 feedApi,
-                apolloClient,
                 feedListMapper,
                 feedResultMapperLocal,
                 feedResultMapperCloud,
@@ -166,44 +160,89 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ActionService provideActionService() {
-        return new ActionService();
-    }
-
-    @FeedPlusScope
-    @Provides
-    FavoriteShopRepository provideFavoriteShopRepository(FavoriteShopFactory favoriteShopFactory) {
-        return new FavoriteShopRepositoryImpl(favoriteShopFactory);
-    }
-
-    @FeedPlusScope
-    @Provides
-    MojitoNoRetryAuthService provideMojitoNoRetryAuthService() {
-        return new MojitoNoRetryAuthService();
-    }
-
-    @FeedPlusScope
-    @Provides
-    AddWishListUseCase providesTkpTkpdAddWishListUseCase(@ApplicationContext Context context){
+    AddWishListUseCase providesTkpTkpdAddWishListUseCase(@ApplicationContext Context context) {
         return new AddWishListUseCase(context);
     }
 
     @FeedPlusScope
     @Provides
-    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context){
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(@ApplicationContext Context context) {
         return new RemoveWishListUseCase(context);
     }
 
     @FeedPlusScope
     @Provides
     FeedPlusDetail.Presenter FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
-                                                      AddWishListUseCase addWishlistUseCase,
-                                                      RemoveWishListUseCase removeWishlistUseCase,
-                                                      UserSession userSession) {
+                                                     AddWishListUseCase addWishlistUseCase,
+                                                     RemoveWishListUseCase removeWishlistUseCase,
+                                                     UserSession userSession) {
         return new FeedPlusDetailPresenter(getFeedsDetailUseCase,
                 addWishlistUseCase,
                 removeWishlistUseCase,
                 userSession);
     }
+
+    //SHOP COMMON
+    //TODO : Change to when shop common component is provided
+
+    @FeedPlusScope
+    @Named("WS")
+    @Provides
+    Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
+                                     Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(FeedUrl.BASE_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @FeedPlusScope
+    @Named("TOME")
+    @Provides
+    Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
+                                       Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(FeedUrl.TOME_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @FeedPlusScope
+    @Provides
+    public ShopCommonWSApi provideShopCommonWsApi(@Named("WS") Retrofit retrofit) {
+        return retrofit.create(ShopCommonWSApi.class);
+    }
+
+    @FeedPlusScope
+    @Provides
+    public ShopCommonApi provideShopCommonApi(@Named("TOME") Retrofit retrofit) {
+        return retrofit.create(ShopCommonApi.class);
+    }
+
+
+    @FeedPlusScope
+    @Provides
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
+                                                                      ShopCommonWSApi shopCommonWS4Api,
+                                                                      com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+        return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
+    }
+
+    @FeedPlusScope
+    @Provides
+    public ShopCommonDataSource provideShopCommonDataSource(ShopCommonCloudDataSource shopInfoCloudDataSource) {
+        return new ShopCommonDataSource(shopInfoCloudDataSource);
+    }
+
+    @FeedPlusScope
+    @Provides
+    public ShopCommonRepository provideShopCommonRepository(ShopCommonDataSource shopInfoDataSource) {
+        return new ShopCommonRepositoryImpl(shopInfoDataSource);
+    }
+
+    @FeedPlusScope
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository) {
+        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    }
+
 
 }

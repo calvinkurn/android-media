@@ -110,9 +110,11 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     public void onClick(int id) {
         if (itemClickListener != null) {
             if (id == R.id.fav_btn) {
-                itemClickListener.onAddFavorite(adapterPosition, data);
+                itemClickListener.onAddFavorite(adapterPosition == RecyclerView.NO_POSITION ?
+                        getAdapterPosition() : adapterPosition, data);
             } else if (id == R.id.container || id == R.id.header) {
-                itemClickListener.onShopItemClicked(adapterPosition, data);
+                itemClickListener.onShopItemClicked(adapterPosition == RecyclerView.NO_POSITION ?
+                        getAdapterPosition() : adapterPosition, data);
             }
         }
     }

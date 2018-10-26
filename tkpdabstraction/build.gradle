@@ -34,7 +34,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.multiDex
+    api rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.networkDependencies.glide
 }

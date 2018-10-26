@@ -1,11 +1,5 @@
 package com.tokopedia.shop.common.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.analytic.ShopPageTracking;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.ShopCommonModule;
@@ -18,8 +12,6 @@ import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -53,13 +45,4 @@ public class ShopModule {
         return new ToggleFavouriteShopUseCase(shopCommonRepository);
     }
 
-    @ShopScope
-    @Provides
-    public ShopPageTracking provideShopPageTracking(@ApplicationContext Context context){
-        if(context instanceof ShopModuleRouter){
-            return new ShopPageTracking((ShopModuleRouter)context);
-        }else{
-            return null;
-        }
-    }
 }

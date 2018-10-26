@@ -766,6 +766,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
             setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
             setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+            ((GroupChatContract.View)getActivity()).initVideoFragment();
         }
 
         setSendButtonEnabled(true);

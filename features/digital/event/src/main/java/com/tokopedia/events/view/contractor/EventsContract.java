@@ -1,12 +1,6 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
-import android.content.Intent;
-
-import com.tkpd.library.ui.widget.TouchViewPager;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 
@@ -17,22 +11,8 @@ import java.util.List;
  */
 
 public class EventsContract {
-    public interface View extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
+    public interface EventHomeView extends EventBaseContract.EventBaseView {
         void renderCategoryList(List<CategoryViewModel> categoryList);
-
-        RequestParams getParams();
-
-        android.view.View getRootView();
-
-        void showProgressBar();
-
-        void hideProgressBar();
 
         void hideSearchButton();
 
@@ -42,11 +22,7 @@ public class EventsContract {
 
     }
 
-    public interface Presenter extends CustomerPresenter<View> {
-
-        void initialize();
-
-        void onDestroy();
+    public interface EventHomePresenter extends EventBaseContract.EventBasePresenter {
 
         void startBannerSlide(TouchViewPager viewPager);
 
