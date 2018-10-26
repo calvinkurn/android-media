@@ -47,10 +47,13 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstanceFromAddress(@NonNull Context context, @Nullable HashMap<String, String> locationPass) {
+    public static Intent createInstanceFromAddress(@NonNull Context context,
+                                                   @Nullable HashMap<String, String> locationPass,
+                                                   boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(EXTRA_HASH_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
         intent.putExtras(bundle);
         return intent;
     }

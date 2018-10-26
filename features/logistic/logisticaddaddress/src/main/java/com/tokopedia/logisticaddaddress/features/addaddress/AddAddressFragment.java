@@ -1123,16 +1123,12 @@ public class AddAddressFragment extends BaseDaggerFragment
             }
 
             HashMap<String, String> locationMap = bundleLocationMap(locationPass);
-            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
-                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, true);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, false);
-                startActivityForResult(intent, REQUEST_CODE);
-            }
+            Intent intent = ((IAddressRouter) getActivity().getApplication())
+                    .getGeoLocationActivityIntent(
+                            getActivity(), locationMap,
+                            isAddAddressFromCartCheckoutMarketplace()
+                    );
+            startActivityForResult(intent, REQUEST_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
