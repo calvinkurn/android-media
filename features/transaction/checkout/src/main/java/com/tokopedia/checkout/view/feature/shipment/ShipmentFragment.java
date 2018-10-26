@@ -625,6 +625,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         shipmentAdapter.updatePromo(null);
         shipmentPresenter.setPromoCodeAppliedData(null);
+        shipmentAdapter.resetCourierPromoState();
     }
 
     @Override

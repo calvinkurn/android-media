@@ -690,6 +690,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
     }
 
+    public void resetCourierPromoState() {
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            shipmentCartItemModel.setStateHasLoadCourierState(false);
+        }
+    }
+
     private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel,
                                               boolean hasExtraMarginTop) {
         if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
