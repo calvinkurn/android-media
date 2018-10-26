@@ -4,6 +4,6 @@
     android:layout_height="wrap_content"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
-    android:paddingRight="@dimen/padding_vs"
+    android:paddingRight="@dimen/dp_5"
     android:paddingTop="0dp"
-    android:textSize="@dimen/font_medium" />
+    android:textSize="@dimen/sp_16" />

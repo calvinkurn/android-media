@@ -460,7 +460,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ITkpdLoyaltyModuleRouter,
         ICheckoutModuleRouter,
         IAddressRouter,
-        com.tokopedia.transaction.router.ICartCheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
