@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.loginregister.registeremail.view.RegisterEmailFragment;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());
         }
-        return null;
+        return RegisterEmailFragment.createInstance(bundle);
     }
 
 
