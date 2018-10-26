@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
+import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.loginregister.welcomepage.di.DaggerWelcomePageComponent;
 
 import javax.inject.Inject;
 
@@ -43,7 +45,12 @@ public class WelcomePageFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
+        DaggerWelcomePageComponent daggerLoginComponent =
+                (DaggerWelcomePageComponent) DaggerWelcomePageComponent
+                        .builder().loginRegisterComponent(getComponent(LoginRegisterComponent.class))
+                        .build();
 
+        daggerLoginComponent.inject(this);
     }
 
     @Nullable

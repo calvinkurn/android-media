@@ -364,7 +364,15 @@ public class LoginRegisterAnalytics {
         ((LoginRegisterRouter) applicationContext).eventMoRegister(name, phone);
         ((LoginRegisterRouter) applicationContext).sendBranchRegisterEvent(email, phone);
 
+    }
 
+    public void eventSuccessRegisterSosmed(String methodName) {
+        analyticTracker.sendEventTracking(
+                EVENT_REGISTER_SUCCESS,
+                CATEGORY_REGISTER,
+                ACTION_REGISTER_SUCCESS,
+                methodName
+        );
     }
 
     public void eventContinueFromWelcomePage() {
@@ -384,4 +392,6 @@ public class LoginRegisterAnalytics {
                 ""
         );
     }
+
+
 }

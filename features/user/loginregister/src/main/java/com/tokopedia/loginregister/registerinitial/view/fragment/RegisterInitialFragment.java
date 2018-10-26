@@ -54,6 +54,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter;
+import com.tokopedia.loginregister.welcomepage.WelcomePageActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
@@ -387,8 +388,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 //                startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber),
 //                        REQUEST_ADD_NAME_REGISTER_PHONE);
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-//                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
-//                        REQUEST_WELCOME_PAGE);
+                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                        REQUEST_WELCOME_PAGE);
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
 //                if (resultCode == Activity.RESULT_OK) {
 //                    goToProfileCompletionPage();
@@ -411,8 +412,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-//                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
-//                        REQUEST_WELCOME_PAGE);
+                startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                        REQUEST_WELCOME_PAGE);
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession();
                 dismissProgressBar();
@@ -599,9 +600,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
-//        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
-//        startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
-//                REQUEST_WELCOME_PAGE);
+        analytics.eventSuccessRegisterSosmed(methodName);
+        startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
+                REQUEST_WELCOME_PAGE);
     }
 
     @Override
