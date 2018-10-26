@@ -448,7 +448,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     isOwner(),
                     TextUtils.isEmpty(keyword) ? ListTitleTypeDef.ETALASE : ListTitleTypeDef.SEARCH_RESULT,
                     selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo, "", attribution),
-                    list, shopProductAdapter.getDataSize(), shopId, shopInfo.getInfo().getShopName()
+                    list, shopProductAdapter.getShopProductViewModelList().size(), shopId, shopInfo.getInfo().getShopName()
             );
         }
         if (!TextUtils.isEmpty(keyword)) {
@@ -520,7 +520,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType,
+                                 int productPosition) {
         if (shopInfo != null) {
             // shopTrackType is always from product
             shopPageTracking.clickProductPicture(
@@ -528,7 +529,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     TextUtils.isEmpty(keyword) ? ListTitleTypeDef.ETALASE : ListTitleTypeDef.SEARCH_RESULT,
                     selectedEtalaseName,
                     CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
-                    shopProductViewModel, shopProductAdapter.getDataSize(), shopId, shopInfo.getInfo().getShopName());
+                    shopProductViewModel, productPosition, shopId, shopInfo.getInfo().getShopName());
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
                 shopProductViewModel.getDisplayedPrice(), shopProductViewModel.getImageUrl(), attribution,

@@ -535,7 +535,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     isOwner(),
                     ListTitleTypeDef.ETALASE,
                     selectedEtalaseName, CustomDimensionShopPageAttribution.create(shopInfo, "", attribution),
-                    list, shopProductAdapter.getDataSize(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName()
+                    list, shopProductAdapter.getShopProductViewModelList().size(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName()
             );
         }
 
@@ -620,7 +620,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     ListTitleTypeDef.HIGHLIGHTED,
                     FEATURED_PRODUCT,
                     CustomDimensionShopPageAttribution.create(shopInfo, "", attribution),
-                    list, shopProductAdapter.getDataSize(),
+                    list, 0,
                     shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
         }
         shopProductAdapter.refreshSticky();
@@ -795,26 +795,27 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType,
+                                 int productPosition) {
         if (shopInfo != null) {
             if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
                 shopPageTracking.clickProductPicture(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
                         FEATURED_PRODUCT,
                         CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
-                        shopProductViewModel, shopProductAdapter.getDataSize(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
+                        shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             } else if (shopTrackType == ShopTrackProductTypeDef.PRODUCT) {
                 shopPageTracking.clickProductPicture(isOwner(),
                         ListTitleTypeDef.ETALASE,
                         selectedEtalaseName,
                         CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
-                        shopProductViewModel, shopProductAdapter.getDataSize(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
+                        shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             } else if (shopTrackType == ShopTrackProductTypeDef.ETALASE_HIGHLIGHT) {
                 shopPageTracking.clickProductPicture(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
                         shopProductAdapter.getEtalaseNameHighLight(shopProductViewModel),
                         CustomDimensionShopPageAttribution.create(shopInfo, shopProductViewModel.getId(), attribution),
-                        shopProductViewModel, shopProductAdapter.getDataSize(), shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
+                        shopProductViewModel, productPosition, shopInfo.getInfo().getShopId(), shopInfo.getInfo().getShopName());
             }
         }
         shopModuleRouter.goToProductDetail(getActivity(), shopProductViewModel.getId(), shopProductViewModel.getName(),
