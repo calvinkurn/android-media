@@ -1,8 +1,8 @@
-package com.tokopedia.library.pagination;
+package com.tokopedia.library.baseadapter;
 
 import android.support.annotation.Nullable;
 
-public interface PaginationAdapterCallback {
+public interface AdapterCallback {
 
     /**
      * Trigger when user click on retry button,

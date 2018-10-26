@@ -18,8 +18,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.library.pagination.PaginationAdapter;
-import com.tokopedia.library.pagination.PaginationAdapterCallback;
+import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.library.baseadapter.BaseAdapter;
+import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
@@ -36,12 +37,12 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEntity> {
+public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends BaseAdapter.BaseVH {
         TextView description, label, value, btnContinue;
         ImageView imgBanner, imgLabel;
         public boolean isVisited = false;
@@ -59,17 +60,134 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
             imgLabel = view.findViewById(R.id.img_time);
             progressTimer = view.findViewById(R.id.progress_timer);
         }
+
+        @Override
+        public void bindView(BaseItem item, int position) {
+            setData(this, (CouponValueEntity) item);
+        }
     }
 
-    public CouponListPaginationAdapter(CatalogPurchaseRedemptionPresenter presenter, PaginationAdapterCallback callback, Context context) {
+    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context) {
         super(callback);
         this.mPresenter = presenter;
         this.mContext = context;
     }
 
     @Override
-    public void bindView(RecyclerView.ViewHolder vh, CouponValueEntity item, int position) {
-        CouponListPaginationAdapter.ViewHolder holder = (CouponListPaginationAdapter.ViewHolder) vh;
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder vh) {
+        super.onViewAttachedToWindow(vh);
+
+        if (vh instanceof ViewHolder) {
+            ViewHolder holder = (ViewHolder) vh;
+
+            CouponValueEntity data = getItems().get(holder.getAdapterPosition());
+            if (data == null) {
+                return;
+            }
+
+            if (!holder.isVisited) {
+                Map<String, String> item = new HashMap<>();
+                item.put("id", String.valueOf(data.getCatalogId()));
+                item.put("name", data.getTitle());
+                item.put("position", String.valueOf(holder.getAdapterPosition()));
+                item.put("creative", data.getTitle());
+                item.put("creative_url", data.getImageUrlMobile());
+                item.put("promo_code", data.getCode());
+
+                Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+                promotions.put("promotions", Arrays.asList(item));
+
+                Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+                promoView.put("promoView", promotions);
+
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                        data.getTitle(), promoView);
+
+                holder.isVisited = true;
+            }
+        }
+    }
+
+    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getCatalogId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), promoClick);
+    }
+
+    @Override
+    protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tp_item_coupon, parent, false);
+
+        return new CouponListBaseAdapter.ViewHolder(itemView);
+    }
+
+    @Override
+    public void loadData(int pageNumber) {
+        super.loadData(pageNumber);
+
+        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
+        graphqlUseCase.clearRequest();
+        //Adding request for main query
+        Map<String, Object> variablesMain = new HashMap<>();
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
+
+        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),
+                TokoPointPromosEntity.class,
+                variablesMain);
+        graphqlUseCase.addRequest(graphqlRequestMain);
+
+
+        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loadCompletedWithError();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                //handling the catalog listing and tabs
+                TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
+                if (catalogListingOuter != null) {
+                    if (catalogListingOuter.getCoupon().getCoupons() != null) {
+                        loadCompleted(catalogListingOuter.getCoupon().getCoupons(), catalogListingOuter);
+                        setLastPage(!catalogListingOuter.getCoupon().getPaging().isHasNext());
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void setData(ViewHolder holder, CouponValueEntity item) {
         holder.description.setText(item.getTitle());
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
@@ -193,120 +311,5 @@ public class CouponListPaginationAdapter extends PaginationAdapter<CouponValueEn
                 holder.value.setPadding(0, 0, 0, 0);
             }
         }
-    }
-
-    @Override
-    protected RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent, LayoutInflater inflater) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tp_item_coupon, parent, false);
-
-        return new CouponListPaginationAdapter.ViewHolder(itemView);
-    }
-
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder vh) {
-        super.onViewAttachedToWindow(vh);
-
-        if (vh instanceof ViewHolder) {
-            ViewHolder holder = (ViewHolder) vh;
-
-            CouponValueEntity data = getItems().get(holder.getAdapterPosition());
-            if (data == null) {
-                return;
-            }
-
-            if (!holder.isVisited) {
-                Map<String, String> item = new HashMap<>();
-                item.put("id", String.valueOf(data.getCatalogId()));
-                item.put("name", data.getTitle());
-                item.put("position", String.valueOf(holder.getAdapterPosition()));
-                item.put("creative", data.getTitle());
-                item.put("creative_url", data.getImageUrlMobile());
-                item.put("promo_code", data.getCode());
-
-                Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-                promotions.put("promotions", Arrays.asList(item));
-
-                Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
-                promoView.put("promoView", promotions);
-
-                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        data.getTitle(), promoView);
-
-                holder.isVisited = true;
-            }
-        }
-    }
-
-    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
-        Map<String, String> item = new HashMap<>();
-        item.put("id", String.valueOf(data.getCatalogId()));
-        item.put("name", data.getTitle());
-        item.put("position", String.valueOf(position));
-        item.put("creative", data.getTitle());
-        item.put("creative_url", data.getImageUrlMobile());
-        item.put("promo_code", data.getCode());
-
-        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-        promotions.put("promotions", Arrays.asList(item));
-
-        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
-
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.getTitle(), promoClick);
-    }
-
-    @Override
-    public void loadMore(int pageNumber) {
-        super.loadMore(pageNumber);
-
-        GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
-        graphqlUseCase.clearRequest();
-        //Adding request for main query
-        Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
-
-        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),
-                TokoPointPromosEntity.class,
-                variablesMain);
-        graphqlUseCase.addRequest(graphqlRequestMain);
-
-
-        graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                loadCompletedWithError();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                //handling the catalog listing and tabs
-                TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
-                if (catalogListingOuter != null) {
-                    if (catalogListingOuter.getCoupon().getCoupons() != null) {
-                        loadCompleted(catalogListingOuter.getCoupon().getCoupons(), catalogListingOuter);
-                        setLastPage(!catalogListingOuter.getCoupon().getPaging().isHasNext());
-                    }
-                }
-            }
-        });
-
     }
 }
