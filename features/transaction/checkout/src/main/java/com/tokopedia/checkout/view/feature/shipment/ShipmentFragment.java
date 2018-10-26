@@ -1650,6 +1650,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void reloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
+        if (shipmentCartItemModel.getSelectedShipmentDetailData().getShopId() == null) {
+            shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
+        }
         shipmentPresenter.processGetCourierRecommendation(
                 shipmentCartItemModel.getShippingId(),
                 shipmentCartItemModel.getSpId(),
