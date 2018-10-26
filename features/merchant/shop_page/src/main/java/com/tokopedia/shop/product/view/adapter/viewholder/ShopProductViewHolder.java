@@ -121,7 +121,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType, getAdapterPosition() - ITEM_OFFSET + 1);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType, getAdapterPosition() - ITEM_OFFSET );
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
