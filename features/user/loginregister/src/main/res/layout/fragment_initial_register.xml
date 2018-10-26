@@ -50,7 +50,7 @@
                 android:paddingLeft="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_24"/>
 
-            <com.tokopedia.core.customView.LoginTextView
+            <com.tokopedia.loginregister.common.view.LoginTextView
                 android:id="@+id/register_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 app:iconButton="@drawable/bg_transparent"
                 app:textColor="@color/black_70"/>
 
-            <com.tokopedia.core.customView.LoginTextView
+            <com.tokopedia.loginregister.common.view.LoginTextView
                 android:id="@+id/register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
