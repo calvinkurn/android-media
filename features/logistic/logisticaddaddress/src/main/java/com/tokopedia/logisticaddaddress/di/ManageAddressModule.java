@@ -29,7 +29,7 @@ public class ManageAddressModule {
     @Provides
     @AddressScope
     @ActivityContext
-    Context provideConthext() {
+    Context provideContext() {
         return this.context;
     }
 
