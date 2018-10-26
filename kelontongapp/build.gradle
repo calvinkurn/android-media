@@ -42,7 +42,6 @@ android {
         versionName getTkpdKelontongVersionName()
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -56,17 +55,6 @@ android {
         }
     }
 
-    flavorDimensions "tier"
-
-    productFlavors {
-        live {
-            dimension "tier"
-        }
-        staging {
-            dimension "tier"
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -77,16 +65,14 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation rootProject.ext.serviceDependencies.crashlytics
 
     implementation rootProject.ext.playServicesDependencies.firebase
     implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
 
     testImplementation rootProject.ext.testDependencies.junit
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
 }
 
 apply plugin: 'com.google.gms.google-services'

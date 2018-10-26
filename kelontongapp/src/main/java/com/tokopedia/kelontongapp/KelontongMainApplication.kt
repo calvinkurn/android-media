@@ -16,8 +16,8 @@ import io.fabric.sdk.android.Fabric
  */
 class KelontongMainApplication : Application() {
 
-    val NOTIFICATION_CHANNEL_NAME = KelontongMainApplication::class.java.getSimpleName()
-    val NOTIFICATION_CHANNEL_DESC = KelontongMainApplication::class.java.getName()
+    val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
+    val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)

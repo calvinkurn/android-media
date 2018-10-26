@@ -22,6 +22,7 @@ class NotificationModel {
     var summary: String? = null
     var loginRequired: Boolean? = null
     var createTime: String? = null
+    var targetApp: String? = null
     private val additionalProperties = HashMap<String, Any>()
 
     fun getAdditionalProperties(): Map<String, Any> {
@@ -49,6 +50,7 @@ class NotificationModel {
             model.tkpCode = Integer.parseInt(data.getString("tkp_code", "0"))
             model.toUserId = data.getString("to_user_id", "")
             model.title = data.getString("title", "")
+            model.targetApp = data.getString("target_app", "")
             return model
         }
     }

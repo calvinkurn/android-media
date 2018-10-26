@@ -3,10 +3,8 @@ package com.tokopedia.kelontongapp.firebase
 import android.content.Context
 import android.content.SharedPreferences
 
-import com.tokopedia.kelontongapp.KelontongMainActivity
-import com.tokopedia.kelontongapp.KelontongMainApplication
-
 import android.content.Context.MODE_PRIVATE
+import com.tokopedia.kelontongapp.KelontongConstant
 
 /**
  * Created by meta on 16/10/18.
@@ -14,29 +12,29 @@ import android.content.Context.MODE_PRIVATE
 object Preference {
 
     private fun sharedPrefences(context: Context): SharedPreferences {
-        return context.getSharedPreferences(KelontongMainApplication::class.java!!.getName(), MODE_PRIVATE)
+        return context.getSharedPreferences(KelontongConstant.PreferenceConstant.PREFERENCES_MITRA_APPLICATION, MODE_PRIVATE)
     }
 
     fun saveFcmToken(context: Context, token: String) {
         val editor = sharedPrefences(context).edit()
-        editor.putString(FirebaseIDService::class.java!!.getName(), token)
+        editor.putString(KelontongConstant.PreferenceConstant.PREFERENCES_FIREBASE_TOKEN, token)
         editor.apply()
     }
 
     fun getFcmToken(context: Context): String {
         val preferences = sharedPrefences(context)
-        return preferences.getString(FirebaseIDService::class.java!!.getName(), "")
+        return preferences.getString(KelontongConstant.PreferenceConstant.PREFERENCES_FIREBASE_TOKEN, "")
     }
 
     fun saveFirstTime(context: Context) {
         val editor = sharedPrefences(context).edit()
-        editor.putString(KelontongMainActivity::class.java!!.getName(), "1")
+        editor.putString(KelontongConstant.PreferenceConstant.PREFERENCES_FIRST_TIME, "1")
         editor.apply()
     }
 
     fun isFirstTime(context: Context): Boolean {
         val preferences = sharedPrefences(context)
-        val isUserFirstTime = preferences.getString(KelontongMainActivity::class.java!!.getName(), "")
+        val isUserFirstTime = preferences.getString(KelontongConstant.PreferenceConstant.PREFERENCES_FIRST_TIME, "")
         return isUserFirstTime!!.isEmpty()
     }
 }

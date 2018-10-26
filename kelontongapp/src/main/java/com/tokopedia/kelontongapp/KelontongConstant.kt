@@ -15,6 +15,15 @@ object KelontongConstant {
         val LOWER_CODE = 1600
         val UPPER_CODE = 1700
 
+        val TARGET_APP = "mitraapp"
+
         val NOTIFICATION_ID_GENERAL = 1600
+    }
+
+    object PreferenceConstant {
+
+        val PREFERENCES_MITRA_APPLICATION = "mitra_application";
+        val PREFERENCES_FIREBASE_TOKEN = "mitra_firebase_token";
+        val PREFERENCES_FIRST_TIME = "mitra_first_time";
     }
 }
