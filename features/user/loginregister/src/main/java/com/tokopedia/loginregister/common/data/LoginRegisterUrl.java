@@ -17,6 +17,9 @@ public class LoginRegisterUrl {
     public static final String PATH_REGISTER_VALIDATION = "/api/v1/account";
     public static final String DO_REGISTER = "api/register";
 
+    //*WELCOME PAGE
+    public final static String URL_BACKGROUND
+            = "https://ecs7.tokopedia.net/img/android/welcome_baloon/xhdpi/welcome_baloon.png";
 
 
 }

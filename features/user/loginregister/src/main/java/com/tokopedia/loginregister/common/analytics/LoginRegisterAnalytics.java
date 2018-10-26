@@ -29,15 +29,18 @@ public class LoginRegisterAnalytics {
     private static final String EVENT_LOGIN_CLICK = "clickLogin";
     private static final String EVENT_SUCCESS_SMART_LOCK = "eventSuccessSmartLock";
     private static final String EVENT_CLICK_BACK = "clickBack";
-    public static final String EVENT_CLICK_CONFIRM = "clickConfirm";
-    public static final String EVENT_CLICK_REGISTER = "clickRegister";
+    private static final String EVENT_CLICK_CONFIRM = "clickConfirm";
+    private static final String EVENT_CLICK_REGISTER = "clickRegister";
     private static final String EVENT_REGISTER_SUCCESS = "registerSuccess";
+    private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
+    public static final String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
 
     private static final String CATEGORY_LOGIN = "Login";
     private static final String CATEGORY_SMART_LOCK = "Smart Lock";
     private static final String CATEGORY_ACTIVATION_PAGE = "activation page";
     private static final String CATEGORY_REGISTER = "Register";
-    public static final String CATEGORY_REGISTER_PAGE = "register page";
+    private static final String CATEGORY_REGISTER_PAGE = "register page";
+    private static final String CATEGORY_WELCOME_PAGE = "welcome page";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";
@@ -362,5 +365,23 @@ public class LoginRegisterAnalytics {
         ((LoginRegisterRouter) applicationContext).sendBranchRegisterEvent(email, phone);
 
 
+    }
+
+    public void eventContinueFromWelcomePage() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_HOME_PAGE,
+                CATEGORY_WELCOME_PAGE,
+                "click on lanjut",
+                ""
+        );
+    }
+
+    public void eventClickProfileCompletionFromWelcomePage() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_USER_PROFILE,
+                CATEGORY_WELCOME_PAGE,
+                "click on lengkapi profil",
+                ""
+        );
     }
 }
