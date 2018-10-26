@@ -1,12 +1,13 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
+import java.util.HashMap;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,8 +17,8 @@ import rx.Observable;
 
 public class GetEventsListRequestUseCase extends UseCase<List<EventsCategoryDomain>> {
     private final EventRepository eventRepository;
-    public GetEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public GetEventsListRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

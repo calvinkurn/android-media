@@ -3,17 +3,15 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.events.R;
@@ -39,6 +37,11 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
         initPresenter();
         ButterKnife.bind(this);
         mPresenter.attachView(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mPresenter.onClickOptionMenu(item.getItemId());
     }
 
     @Override
@@ -100,6 +103,6 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     }
 
     private BaseAppComponent getBaseAppComponent() {
-        return ((MainApplication) getApplication()).getBaseAppComponent();
+        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
     }
 }

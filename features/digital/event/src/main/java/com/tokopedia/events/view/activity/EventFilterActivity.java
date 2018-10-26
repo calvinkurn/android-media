@@ -18,6 +18,7 @@ import com.tokopedia.events.view.contractor.EventFilterContract;
 import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.fragment.CategoryFilterFragment;
 import com.tokopedia.events.view.fragment.TimeFilterFragment;
+import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
 import com.tokopedia.events.view.utils.Utils;
 
 import butterknife.BindView;
@@ -50,7 +51,7 @@ public class EventFilterActivity
     View deleteCategory;
     @BindView(R2.id.selected_filter2)
     LinearLayout selectedCategory;
-    private EventFilterContract.EventFilterPresenter filterPresenter;
+    private EventFilterPresenterImpl filterPresenter;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, EventFilterActivity.class);
@@ -60,7 +61,7 @@ public class EventFilterActivity
     void initPresenter() {
         initInjector();
         mPresenter = eventComponent.getEventFilterPresenter();
-        filterPresenter = (EventFilterContract.EventFilterPresenter) mPresenter;
+        filterPresenter = (EventFilterPresenterImpl) mPresenter;
     }
 
     @Override
