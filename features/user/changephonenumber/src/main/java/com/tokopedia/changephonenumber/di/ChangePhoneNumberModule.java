@@ -166,7 +166,7 @@ public class ChangePhoneNumberModule {
 
     @Provides
     @ChangePhoneNumberQualifier
-    public ChangePhoneNumberInterceptor provideTkpdAuthInterceptor(@ChangePhoneNumberQualifier UserSession
+    public ChangePhoneNumberInterceptor provideChangePhoneNumberInterceptor(@ChangePhoneNumberQualifier UserSession
                                                                       userSession) {
         return new ChangePhoneNumberInterceptor(userSession);
     }
