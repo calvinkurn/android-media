@@ -1,13 +1,14 @@
 package com.tokopedia.events.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -18,22 +19,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.Utils;
@@ -46,18 +41,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SeatSelectionActivity extends TActivity implements HasComponent<EventComponent>,
+public class SeatSelectionActivity extends EventBaseActivity implements
         SeatSelectionContract.SeatSelectionView {
 
 
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.tv_movie_name)
     TextView movieName;
     @BindView(R2.id.selected_seats)
@@ -89,14 +79,13 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
 
-    private EventComponent eventComponent;
-    @Inject
-    SeatSelectionPresenter mPresenter;
+    SeatSelectionPresenter seatSelectionPresenter;
 
     private SelectedSeatViewModel selectedSeatViewModel;
 
     private SeatLayoutViewModel seatLayoutViewModel;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
+    private EventsAnalytics eventsAnalytics;
 
     int price;
     int maxTickets;
@@ -105,67 +94,40 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> rowIds = new ArrayList<>();
     List<String> physicalRowIds = new ArrayList<>();
     List<String> seatIds = new ArrayList<>();
+    List<String> seatNos = new ArrayList<>();
     List<String> actualseat = new ArrayList<>();
     private HashMap<String, Integer> seatNumberMap;
     String areaId;
     private int quantity;
-    FirebaseRemoteConfigImpl remoteConfig;
 
+    @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getSeatSelectionPresenter();
+        seatSelectionPresenter = (SeatSelectionPresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.seat_selection_layout;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.seat_selection_layout);
         seatNumberMap = new HashMap<>();
-        ButterKnife.bind(this);
-        executeInjector();
         selectedSeatViewModel = new SelectedSeatViewModel();
         seatLayoutViewModel = new SeatLayoutViewModel();
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
-
-        mPresenter.attachView(this);
-        mPresenter.initialize();
-        mPresenter.getProfile();
-        mPresenter.getSeatSelectionDetails();
-        setupToolbar();
-        toolbar.setTitle(R.string.seat_selection_title);
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
-    }
-
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
-    @Override
-    public EventComponent getComponent() {
-        if (eventComponent == null) initInjector();
-        return eventComponent;
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
+        seatSelectionPresenter.getSeatSelectionDetails();
     }
 
     @Override
@@ -175,7 +137,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void renderSeatSelection(int salesPrice, int maxTickets, SeatLayoutViewModel viewModel) {
-        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         price = salesPrice;
         this.maxTickets = maxTickets;
         this.seatLayoutViewModel = viewModel;
@@ -192,7 +154,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         String currentChar = "";
         for (int i = 0; i < numOfRows; ) {
             LayoutDetailViewModel layoutDetailViewModel = seatLayoutViewModel.getLayoutDetail().get(i);
-            CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
+            CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, seatSelectionPresenter);
             int rowId = layoutDetailViewModel.getRowId();
             if (Utils.isNotNullOrEmpty(layoutDetailViewModel.getPhysicalRowId())) {
                 currentChar = layoutDetailViewModel.getPhysicalRowId();
@@ -222,11 +184,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     }
 
     @Override
-    public RequestParams getParams() {
-        return RequestParams.EMPTY;
-    }
-
-    @Override
     public void showPayButton(int ticketQuantity, int price) {
 
     }
@@ -243,13 +200,13 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     @Override
     public void showProgressBar() {
-        progBar.setVisibility(View.VISIBLE);
+        super.showProgressBar();
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressBar() {
-        progBar.setVisibility(View.GONE);
+        super.hideProgressBar();
         progressBarLayout.setVisibility(View.GONE);
     }
 
@@ -257,7 +214,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public void setTicketPrice(int numOfTickets) {
         this.quantity = numOfTickets;
         ticketCount.setText(String.format(getString(R.string.x_type),
-                numOfTickets, mPresenter.getTicketCategory()));
+                numOfTickets, seatSelectionPresenter.getTicketCategory()));
         ticketPrice.setText(String.format(CurrencyUtil.RUPIAH_FORMAT,
                 CurrencyUtil.convertToCurrencyString(numOfTickets * price)));
     }
@@ -283,6 +240,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         selectedSeatViewModel.setQuantity(quantity);
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
+        selectedSeatViewModel.setSeatNos(seatNos);
         selectedSeatViewModel.setPhysicalRowIds(physicalRowIds);
         selectedSeatViewModel.setActualSeatNos(actualseat);
     }
@@ -302,7 +260,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.getProfile();
+        seatSelectionPresenter.getProfile();
     }
 
     @Override
@@ -310,6 +268,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         seatIds.clear();
         physicalRowIds.clear();
         areacodes.clear();
+        seatNos.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 int k = 0;
@@ -323,10 +282,11 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 }
                 physicalRowIds.add(physicalRowID.toString());
                 seatIds.add(String.valueOf(seatNumberMap.get(selectedSeat)));
+                seatNos.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             selectedSeatViewModel.setQuantity(selectedSeats.size());
-            mPresenter.verifySeatSelection(selectedSeatViewModel);
+            seatSelectionPresenter.verifySeatSelection(selectedSeatViewModel);
         } else {
 
             Toast.makeText(this, String.format(getString(R.string.select_max_ticket), maxTickets),
@@ -343,18 +303,28 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode);
+        seatSelectionPresenter.onActivityResult(requestCode);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        seatSelectionPresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public String getScreenName() {
-        return mPresenter.getSCREEN_NAME();
+        return seatSelectionPresenter.getSCREEN_NAME();
     }
 
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
 }

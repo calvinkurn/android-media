@@ -331,6 +331,10 @@ public class PackageViewModel implements Parcelable {
         this.forms = forms;
     }
 
+    public boolean isSaleStarted() {
+        return isSaleStarted;
+    }
+
     public PackageViewModel() {
     }
 

@@ -102,7 +102,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -968,16 +967,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getAppComponent().chuckInterceptor();
     }
 
-    @Override
-    public OkHttpClient getOkHttpClient(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor) {
-        return OkHttpFactory.create().buildDaggerClientBearerEvents(
-                eventInerceptors,
-                getAppComponent().okHttpRetryPolicy(),
-                getAppComponent().chuckInterceptor(),
-                getAppComponent().debugInterceptor(),
-                loggingInterceptor
-        );
-    }
 
     @Override
     public Intent getTrainOrderListIntent(Context context) {
@@ -1154,12 +1143,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
+    public void sendEventTracking(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
 
-    @Override
     public void sendScreenName(String screenName) {
         ScreenTracking.screen(screenName);
     }
@@ -2924,12 +2912,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getOnBoardingIntent(Activity activity) {
         return new Intent(activity, NewOnboardingActivity.class);
-    }
-
-    @Override
-    public SessionHandler getSessionHandler() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler;
     }
 
 

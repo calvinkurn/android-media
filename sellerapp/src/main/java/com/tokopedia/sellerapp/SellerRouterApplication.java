@@ -524,7 +524,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
+    public void sendEventTracking(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -541,7 +541,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(String screenName) {
         ScreenTracking.screen(screenName);
     }
