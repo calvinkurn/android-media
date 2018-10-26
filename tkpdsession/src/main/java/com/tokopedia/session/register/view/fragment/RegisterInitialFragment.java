@@ -319,7 +319,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     protected void setViewListener() {
         loginButton.setOnClickListener(v -> {
             if (getActivity() != null) {
-                getActivity().finish();
                 goToLoginPage();
             }
         });
@@ -327,10 +326,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void goToLoginPage() {
-        analytics.eventClickOnLogin();
 
+        analytics.eventClickOnLogin();
         Intent intent = LoginActivity.getCallingIntent(getActivity());
         startActivity(intent);
+        getActivity().finish();
     }
 
     @Override

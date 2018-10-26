@@ -35,6 +35,21 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
         return RegisterEmailFragment.createInstance(bundle);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInjector();
+    }
+
+
+    private void initInjector() {
+        DaggerRegisterEmailComponent daggerRegisterEmailComponent = (DaggerRegisterEmailComponent)
+                DaggerRegisterEmailComponent
+                        .builder().loginRegisterComponent(getComponent())
+                        .build();
+
+        daggerRegisterEmailComponent.inject(this);
+    }
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, RegisterEmailActivity.class);
