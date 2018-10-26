@@ -23,9 +23,10 @@ public class ProductPageTracking {
 
     public static final String CLICK = "click";
     public static final String IMPRESSION = "impression";
-
-    public static final String CLICK_PDP = "clickPDP";
     public static final String VIEW_PDP = "viewPDP";
+    public static final String CLICK_PDP = "clickPDP";
+    public static final String LANDSCAPE_VIEW = "landscape view";
+  
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
     public static final String CLICK_OS_PROMO = "clickOSPromo";
     public static final String PDP_PROMO_WIDGET_PROMO = "pdp promo widget - promo";
@@ -276,6 +277,20 @@ public class ProductPageTracking {
                         )
                 )
         );
+    }
+
+    public static void eventPdpOrientationChanged(Context context, String productId) {
+        if (context != null
+                && context.getApplicationContext() != null
+                && context.getApplicationContext() instanceof AbstractionRouter) {
+            AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+            tracker.sendEventTracking(
+                    VIEW_PDP,
+                    PRODUCT_DETAIL_PAGE,
+                    LANDSCAPE_VIEW,
+                    String.format("product_id : %s", productId)
+            );
+        }
     }
 
     public static void eventClickMerchantVoucherSeeAll(Context context, String productId) {

@@ -49,6 +49,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
@@ -76,6 +77,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
@@ -83,6 +85,7 @@ import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationU
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -501,7 +504,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new CacheInteractor.GetProductDetailCacheListener() {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
-                            viewListener.onProductDetailLoaded(productDetailData);
+                            viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
 
@@ -953,7 +956,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
-            viewListener.onProductDetailLoaded(productData);
+            viewListener.onProductDetailLoaded(productData, mappingToViewData(productData));
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
@@ -1078,7 +1081,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onSuccess(@NonNull ProductDetailData data) {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
-                        viewListener.onProductDetailLoaded(data);
+
+                        viewListener.onProductDetailLoaded(data, mappingToViewData(data));
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
@@ -1126,6 +1130,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showFullScreenError();
                     }
                 });
+    }
+
+    private ProductViewData mappingToViewData(ProductDetailData data) {
+        ProductViewData viewData = new ProductViewData();
+        viewData.setProductId(String.valueOf(data.getInfo().getProductId()));
+        viewData.setCourierList(mappingToListCourierViewData(data));
+        return viewData;
+    }
+
+    private ArrayList<CourierViewData> mappingToListCourierViewData(ProductDetailData data) {
+        ArrayList<CourierViewData> list = new ArrayList<>();
+        for (ShopShipment shopShipment : data.getShopInfo().getShopShipments()) {
+            CourierViewData items = new CourierViewData();
+            items.setCourierId(shopShipment.getShippingId());
+            items.setLogo(shopShipment.getLogo());
+            items.setPackageName(shopShipment.getPackageNames());
+            items.setCourierName(shopShipment.getShippingName());
+            list.add(items);
+        }
+        return list;
     }
 
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
