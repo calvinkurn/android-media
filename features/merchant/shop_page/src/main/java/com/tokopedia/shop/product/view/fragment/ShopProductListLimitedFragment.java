@@ -699,7 +699,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onEmptyButtonClicked() {
         if (shopInfo != null) {
-            shopPageTracking.clickAddProduct(CustomDimensionShopPage.create(shopInfo));
+            shopPageTracking.clickZeroProduct(CustomDimensionShopPage.create(shopInfo));
         }
         ((ShopModuleRouter) getActivity().getApplication()).goToAddProduct(getActivity());
     }
