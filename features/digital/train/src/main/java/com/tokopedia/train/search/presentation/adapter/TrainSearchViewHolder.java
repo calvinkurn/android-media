@@ -27,7 +27,7 @@ import java.util.List;
 public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewModel> {
 
     private static final int OUT_OF_STOCK = 0;
-    private static final int LIMIT_TICKET = 10;
+    private static final int LIMIT_TICKET = 50;
 
     @LayoutRes
     public static int LAYOUT = R.layout.item_train_schedule;
