@@ -2367,8 +2367,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
                 .setUri(shareUrl)
-                .setSource(userId)
-                .setPrice(sharing)
+                .setSource(userId) // just using existing variable
+                .setPrice(sharing) // here too
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();

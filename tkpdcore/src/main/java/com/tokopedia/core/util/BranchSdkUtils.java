@@ -115,7 +115,7 @@ public class BranchSdkUtils {
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
                 linkProperties.setFeature(data.getPrice());
-                linkProperties.setCampaign(String.format("%s - %s", data.getId(), data.getId()));
+                linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
                 linkProperties.setChannel(data.getType());
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
