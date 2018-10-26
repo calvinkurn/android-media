@@ -590,7 +590,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,
-                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl(), userSession.getUserId(), "sharing");
     }
 
     private void setupViewPager() {

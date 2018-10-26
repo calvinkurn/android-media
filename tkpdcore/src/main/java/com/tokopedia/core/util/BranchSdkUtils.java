@@ -3,7 +3,6 @@ package com.tokopedia.core.util;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -36,7 +35,6 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
-import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.
@@ -115,6 +113,10 @@ public class BranchSdkUtils {
                 desktopUrl = ((TkpdCoreRouter) activity.getApplication())
                         .getDesktopLinkGroupChat();
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
+                linkProperties.setFeature(data.getPrice());
+                linkProperties.setCampaign(String.format("%s - %s", data.getId(), data.getId()));
+                linkProperties.setChannel(data.getType());
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
