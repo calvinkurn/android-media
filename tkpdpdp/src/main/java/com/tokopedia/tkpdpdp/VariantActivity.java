@@ -212,18 +212,21 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
-        widgetQty.setNumber(selectedQuantity);
         etNotesSeller.setText(selectedRemarkNotes);
         widgetQty.setOnPickerActionListener(num -> {
             selectedQuantity = num;
             textCartPrice.setText(generateTextCartPrice());
         });
         try {
-            widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
-            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
+            widgetQty.setInitialState(
+                    Integer.parseInt(productDetailData.getInfo().getProductMinOrder()),
+                    DEFAULT_MAXIMUM_STOCK_PICKER,
+                    selectedQuantity);
         } catch (NumberFormatException e) {
-            widgetQty.setMinValue(DEFAULT_MINIMUM_STOCK_PICKER);
-            widgetQty.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER);
+            widgetQty.setInitialState(
+                    DEFAULT_MINIMUM_STOCK_PICKER,
+                    DEFAULT_MAXIMUM_STOCK_PICKER,
+                    selectedQuantity);
         }
         if(isCampaign()) {
             textOriginalPrice.setText(productDetailData.getCampaign().getOriginalPriceFmt());
