@@ -1504,11 +1504,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
         if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
-            if (checkCourierPromoStillExist()) {
-                setCourierPromoApplied(itemPosition);
-            } else {
+//            if (checkCourierPromoStillExist()) {
+//                setCourierPromoApplied(itemPosition);
+//            } else {
                 shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
-            }
+//            }
         }
     }
 
