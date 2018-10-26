@@ -85,8 +85,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.miscDependencies.chips
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.features.topAdsManagement)
-
 }
 
 apply from: '../publish_local.gradle'
