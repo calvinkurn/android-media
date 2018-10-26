@@ -1634,6 +1634,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentPresenter.getHasDeletePromoAfterChecKPromoCodeFinal()) {
             shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                     null, recipientAddressModel, cartPosition);
+            shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
             reloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
         } else {
             shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
