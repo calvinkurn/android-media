@@ -129,7 +129,7 @@ public class BranchSdkUtils {
             linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
 
-        linkProperties.setCampaign(data.getCampaignName());
+        linkProperties.setCampaign(getCampaignName(data.getType()));
         linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
         linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
@@ -354,28 +354,35 @@ public class BranchSdkUtils {
         }
     }
 
-    private static String getOgTitle(ShareData data){
-        if(TextUtils.isEmpty(data.getOgTitle())){
+    private static String getOgTitle(ShareData data) {
+        if (TextUtils.isEmpty(data.getOgTitle())) {
             return data.getName();
-        }else {
-           return data.getOgTitle();
+        } else {
+            return data.getOgTitle();
         }
     }
 
-    private static String getOgDesc(ShareData data){
-        if(TextUtils.isEmpty(data.getOgDescription())){
+    private static String getOgDesc(ShareData data) {
+        if (TextUtils.isEmpty(data.getOgDescription())) {
             return data.getDescription();
-        }else {
+        } else {
             return data.getOgDescription();
         }
     }
 
-    private static String getOgImage(ShareData data){
-        if(TextUtils.isEmpty(data.getOgImageUrl())){
+    private static String getOgImage(ShareData data) {
+        if (TextUtils.isEmpty(data.getOgImageUrl())) {
             return data.getImgUri();
-        }else {
+        } else {
             return data.getOgImageUrl();
         }
+    }
+
+    public static String getCampaignName(String type) {
+        String campaign = "Product Share";
+        if (type != null)
+            campaign = type + " Share";
+        return campaign;
     }
 
     public interface GenerateShareContents {
