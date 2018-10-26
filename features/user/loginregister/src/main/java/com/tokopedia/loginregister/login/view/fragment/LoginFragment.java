@@ -95,16 +95,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private static final int REQUEST_VERIFY_PHONE = 108;
     private static final int REQUEST_ADD_NAME = 109;
 
-
-    public static final int TYPE_SQ_PHONE = 1;
-    public static final int TYPE_SQ_EMAIL = 2;
-
     public static final String IS_AUTO_LOGIN = "auto_login";
     public static final String AUTO_LOGIN_METHOD = "method";
 
     public static final String AUTO_LOGIN_EMAIL = "email";
     public static final String AUTO_LOGIN_PASS = "pw";
-    private static final int MINIMAL_HEIGHT = 1200;
 
     public static final String IS_AUTO_FILL = "auto_fill";
     public static final String AUTO_FILL_EMAIL = "email";

@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -102,6 +103,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     TkpdHintTextInputLayout wrapperPhone;
     EditText name;
     TextView registerNextTAndC;
+    ProgressBar progressBar;
 
     @Inject
     RegisterEmailPresenter presenter;
@@ -159,6 +161,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         wrapperPassword = view.findViewById(R.id.wrapper_password);
         wrapperPhone = view.findViewById(R.id.wrapper_phone);
         name = view.findViewById(R.id.name);
+        progressBar = view.findViewById(R.id.progress_bar);
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
         presenter.attachView(this);
         prepareView();
@@ -454,7 +457,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
-        Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+        Pattern emailPattern = Patterns.EMAIL_ADDRESS;
         Account[] accounts = AccountManager.get(getActivity()).getAccountsByType("com.google");
         for (Account account : accounts) {
             if (emailPattern.matcher(account.name).matches()) {
@@ -596,19 +599,16 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void showLoadingProgress() {
         setActionsEnabled(false);
-//        if (progressDialog == null && getActivity() != null)
-//            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-//
-//        if (progressDialog != null && getActivity() != null)
-//            progressDialog.showDialog();
+        container.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
 
-//        if (progressDialog != null && getActivity() != null)
-//            progressDialog.dismiss();
+        container.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
 
@@ -620,18 +620,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     password
             );
             startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
-        }
-    }
-
-    @Override
-    public void goToAutomaticResetPassword() {
-        if (getActivity() != null) {
-            dismissLoadingProgress();
-            Intent intent = ((LoginRegisterRouter) getActivity().getApplicationContext())
-                    .getAutomaticResetPasswordIntent(
-                            getActivity(), email.getText().toString()
-                    );
-            startActivity(intent);
         }
     }
 
@@ -716,14 +704,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         });
         redirectView.setVisibility(View.VISIBLE);
         container.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void goToLoginEmail() {
-        if (getActivity() != null) {
-            startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email.getText().toString()));
-            getActivity().finish();
-        }
     }
 
     @Override

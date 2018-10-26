@@ -25,8 +25,6 @@ public interface RegisterEmailContract {
 
         void goToActivationPage(RegisterEmailPojo pojo, String email, String password);
 
-        void goToAutomaticResetPassword();
-
         void goToAutomaticLogin();
 
         void dropKeyboard();
@@ -38,8 +36,6 @@ public interface RegisterEmailContract {
         void showInfo();
 
         void onForbidden();
-
-        void goToLoginEmail();
 
         Context getContext();
     }
