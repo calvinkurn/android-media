@@ -149,19 +149,8 @@ public class AddAddressFragment extends BaseDaggerFragment
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject
-    AddAddressPresenter mPresenter;
-    @Inject
-    UserSession userSession;
-
-    @Override
-    protected void initInjector() {
-        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
-        DaggerAddressComponent.builder()
-                .baseAppComponent(appComponent)
-                .addressModule(new AddressModule())
-                .build().inject(this);
-    }
+    @Inject AddAddressPresenter mPresenter;
+    @Inject UserSession userSession;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -172,11 +161,27 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
+    protected void initInjector() {
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerAddressComponent.builder()
+                .baseAppComponent(appComponent)
+                .addressModule(new AddressModule())
+                .build().inject(this);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
+    }
+
+    private void setupArguments(Bundle arguments) {
+        this.token = arguments.getParcelable(KERO_TOKEN);
+        this.address = arguments.getParcelable(EDIT_PARAM);
+        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     @Nullable
@@ -194,13 +199,11 @@ public class AddAddressFragment extends BaseDaggerFragment
         setViewListener();
     }
 
-    private void setupArguments(Bundle arguments) {
-        this.token = arguments.getParcelable(KERO_TOKEN);
-        this.address = arguments.getParcelable(EDIT_PARAM);
-        this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
-        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+    @Override
+    public void onStart() {
+        super.onStart();
+        sendAnalyticsScreenName(getScreenName());
     }
-
 
     @Override
     public void onResume() {
@@ -208,398 +211,10 @@ public class AddAddressFragment extends BaseDaggerFragment
         setTextWatcher();
     }
 
-    private void setTextWatcher() {
-        receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
-        addressEditText.addTextChangedListener(watcher(addressLayout));
-        addressEditText.addTextChangedListener(characterWatcher(addressLabel));
-        addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
-        receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
-        passwordEditText.addTextChangedListener(watcher(passwordLayout));
-
-        districtEditText.addTextChangedListener(watcher(districtLayout));
-        zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
-
-        postCodeEditText.addTextChangedListener(watcher(postCodeLayout));
-
-    }
-
-    private TextWatcher characterWatcher(TextView watcher) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (watcher.getVisibility() != View.VISIBLE) watcher.setVisibility(View.VISIBLE);
-                int textLength = charSequence.length();
-                int charLeft;
-                if (textLength < ADDRESS_MIN_CHARACTER) {
-                    charLeft = ADDRESS_MIN_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING, charLeft));
-                } else {
-                    charLeft = ADDRESS_MAX_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING2, charLeft));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        };
-    }
-
-    private TextWatcher watcher(final TextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
-
-    private TextWatcher zipPostTextWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (zipCodeTextView.getText().length() < 1) {
-                    zipCodeLayout.setError(getContext().getString(R.string.error_field_required));
-                } else {
-                    zipCodeLayout.setError(null);
-                    sendAnalyticsOnZipCodeInputFreeText(s.toString());
-                }
-            }
-        };
-    }
-
-    protected void initView(View view) {
-        receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
-        receiverNameEditText = view.findViewById(R.id.receiver_name);
-        addressTypeLayout = view.findViewById(R.id.address_type_layout);
-        addressTypeEditText = view.findViewById(R.id.address_type);
-        addressLayout = view.findViewById(R.id.address_layout);
-        addressEditText = view.findViewById(R.id.address);
-        receiverPhoneLayout = view.findViewById(R.id.receiver_phone_layout);
-        receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
-        chooseLocation = view.findViewById(R.id.layout_value_location);
-        locationEditText = view.findViewById(R.id.value_location);
-        passwordLayout = view.findViewById(R.id.password_layout);
-        passwordEditText = view.findViewById(R.id.password);
-        saveButton = view.findViewById(R.id.save_button);
-        addressLabel = view.findViewById(R.id.address_label_watcher);
-
-        districtLayout = view.findViewById(R.id.district_layout);
-        districtEditText = view.findViewById(R.id.district);
-        zipCodeLayout = view.findViewById(R.id.postal_code_layout);
-        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
-
-        postCodeLayout = view.findViewById(R.id.post_code_layout);
-        postCodeEditText = view.findViewById(R.id.post_code);
-        addressSpinerLayout = view.findViewById(R.id.address_spinner_layout);
-        spinnerProvince = view.findViewById(R.id.provinsi);
-        provinceError = view.findViewById(R.id.province_error);
-        regencyTitle = view.findViewById(R.id.regency_title);
-        progressRegency = view.findViewById(R.id.regency_progress);
-        spinnerRegency = view.findViewById(R.id.regency);
-        regencyError = view.findViewById(R.id.regency_error);
-        districtTitle = view.findViewById(R.id.district_title);
-        progressDistrict = view.findViewById(R.id.district_progress);
-        spinnerSubDistrict = view.findViewById(R.id.sub_district);
-        subDistrictError = view.findViewById(R.id.sub_district_error);
-
-        if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
-            addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
-            receiverNameEditText.setText(userSession.getName());
-            receiverPhoneEditText.setText(userSession.getPhoneNumber());
-        }
-
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        mProgressBar = view.findViewById(R.id.logistic_spinner);
-
-        provinceAdapter = ProvinceAdapter.createInstance(getActivity());
-        spinnerProvince.setAdapter(provinceAdapter);
-        regencyAdapter = RegencyAdapter.createInstance(getActivity());
-        spinnerRegency.setAdapter(regencyAdapter);
-        subDistrictAdapter = SubDistrictAdapter.createInstance(getActivity());
-        spinnerSubDistrict.setAdapter(subDistrictAdapter);
-
-        passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
-        selectLayout();
-    }
-
-    private void selectLayout() {
-        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
-        if (isDistrictRecommendation() && token != null) {
-            addressSpinerLayout.setVisibility(View.GONE);
-            postCodeLayout.setVisibility(View.GONE);
-            districtLayout.setVisibility(View.VISIBLE);
-            zipCodeLayout.setVisibility(View.VISIBLE);
-        } else {
-            addressSpinerLayout.setVisibility(View.VISIBLE);
-            postCodeLayout.setVisibility(View.VISIBLE);
-            districtLayout.setVisibility(View.GONE);
-            zipCodeLayout.setVisibility(View.GONE);
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    protected void setViewListener() {
-        zipCodeLayout.setOnTouchListener(onZipCodeTouch());
-        zipCodeTextView.setOnTouchListener(onZipCodeTouch());
-        zipCodeTextView.setOnItemClickListener(onZipCodeItemClick());
-        zipCodeTextView.addTextChangedListener(zipPostTextWatcher());
-        districtLayout.setOnClickListener(onCityDistrictClick());
-        districtEditText.setOnClickListener(onCityDistrictClick());
-        chooseLocation.setOnClickListener(onChooseLocation());
-        locationEditText.setOnClickListener(onChooseLocation());
-
-        addressTypeEditText.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-                sendAnalyticsOnInputAddressAsClicked();
-            return false;
-        });
-
-        receiverNameEditText.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-                sendAnalyticsOnInputNameClicked();
-            return false;
-        });
-
-        addressEditText.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-                sendAnalyticsOnInputAddressClicked();
-            return false;
-        });
-
-        receiverPhoneEditText.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-                sendAnalyticsOnInputPhoneClicked();
-            return false;
-        });
-
-
-        saveButton.setOnClickListener(view -> {
-            sendAnalyticsOnSubmitSaveAddressClicked();
-            if (isValidAddress()) {
-                updateAddress();
-                mPresenter.saveAddress();
-            }
-        });
-
-        spinnerProvince.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                        if (pos != 0) {
-                            provinceError.setVisibility(View.GONE);
-
-                            List<Province> provinceList = provinceAdapter.getList();
-//                            Province province = provinceList.get(pos - 1);
-//                            address.setProvinceName(province.getProvinceName());
-//                            address.setProvinceId(province.getProvinceId());
-                        }
-
-                        if (isEdit()) mPresenter.onEditProvinceSelected(pos);
-                        else mPresenter.onProvinceSelected(pos);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                }
-        );
-
-        spinnerRegency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    regencyError.setVisibility(View.GONE);
-
-                    List<City> cityList = regencyAdapter.getList();
-//                    City city = cityList.get(pos - 1);
-//                    address.setCityName(city.getCityName());
-//                    address.setCityId(city.getCityId());
-                    mPresenter.onRegencySelected(pos);
-                }
-
-                if (!isEdit()) mPresenter.onRegencySelected(pos);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerSubDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                if (pos != 0) {
-                    subDistrictError.setVisibility(View.GONE);
-
-                    List<District> districtList = subDistrictAdapter.getList();
-//                    District district = districtList.get(pos - 1);
-//                    address.setDistrictName(district.getDistrictName());
-//                    address.setDistrictId(district.getDistrictId());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-    private void updateAddress() {
-        if (address == null) address = new Destination();
-
-        if (isDistrictRecommendation()) {
-            address.setPostalCode(zipCodeTextView.getText().toString());
-        } else {
-            address.setPostalCode(postCodeEditText.getText().toString());
-        }
-
-        address.setAddressName(addressTypeEditText.getText().toString());
-        address.setReceiverName(receiverNameEditText.getText().toString());
-        address.setAddressStreet(addressEditText.getText().toString());
-        address.setReceiverPhone(receiverPhoneEditText.getText().toString());
-    }
-
-    private View.OnClickListener onCityDistrictClick() {
-        return view -> {
-            sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = ((IAddressRouter) getActivity().getApplication())
-                    .getDistrictRecommendationIntent(
-                            getActivity(), token,
-                            getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
-                    );
-            startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
-        };
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private View.OnTouchListener onZipCodeTouch() {
-        return (view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                sendAnalyticsOnZipCodeSelectionClicked();
-            if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
-            return false;
-        };
-    }
-
-    private AdapterView.OnItemClickListener onZipCodeItemClick() {
-        return (adapterView, view, i, l) -> {
-            if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
-                zipCodeTextView.setText("");
-            }
-
-            address.setPostalCode(zipCodeTextView.getText().toString());
-            sendAnalyticsOnZipCodeDropdownSelectionClicked();
-        };
-    }
-
     @Override
-    public void setPinpointAddress(String address) {
-        locationEditText.setText(address);
-    }
-
-    private void requestPinpointAddress(Destination address) {
-        if (address.getLatitude() != null &&
-                address.getLongitude() != null &&
-                !address.getLatitude().equals("") &&
-                !address.getLongitude().equals("")
-                ) {
-            mPresenter.requestReverseGeoCode(getContext(), address);
-        }
-    }
-
-    public void initializeZipCodes() {
-        zipCodeTextView.setText("");
-        String header = getResources().getString(R.string.hint_type_postal_code);
-        if (!zipCodes.contains(header)) zipCodes.add(0, header);
-
-        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
-                getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
-                zipCodes);
-
-        zipCodeTextView.setAdapter(zipCodeAdapter);
-    }
-
-    private View.OnClickListener onChooseLocation() {
-        return view -> {
-            openGeoLocation();
-            sendAnalyticsOnLocationSelectionClicked();
-        };
-    }
-
-    private void openGeoLocation() {
-        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
-
-        int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
-        if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
-
-            LocationPass locationPass = new LocationPass();
-
-            if (!TextUtils.isEmpty(address.getLatitude())
-                    && !TextUtils.isEmpty(address.getLongitude())
-                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
-                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
-                locationPass.setLatitude(address.getLatitude());
-                locationPass.setLongitude(address.getLongitude());
-                locationPass.setGeneratedAddress(locationEditText.getText().toString());
-            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
-                locationPass.setDistrictName(address.getDistrictName());
-                locationPass.setCityName(address.getCityName());
-            } else {
-                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
-                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
-            }
-
-            HashMap<String, String> locationMap = bundleLocationMap(locationPass);
-            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
-                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, true);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, false);
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        } else {
-            CommonUtils.dumper("Google play services unavailable");
-            Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
-            dialog.show();
-        }
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detachView();
     }
 
     @Override
@@ -663,28 +278,9 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
     }
 
-    protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-        }
-        if (isEdit() && address != null) {
-            receiverNameEditText.setText(address.getReceiverName());
-            addressTypeEditText.setText(address.getAddressName());
-            addressEditText.setText(address.getAddressStreet());
-            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
-                    address.getProvinceName(),
-                    address.getCityName(),
-                    address.getDistrictName()
-            )));
-
-            zipCodeTextView.setText(address.getPostalCode());
-            postCodeEditText.setText(address.getPostalCode());
-            receiverPhoneEditText.setText(address.getReceiverPhone());
-            requestPinpointAddress(address);
-        } else if (address == null) {
-            address = new Destination();
-        }
+    @Override
+    public void setPinpointAddress(String address) {
+        locationEditText.setText(address);
     }
 
     @Override
@@ -761,35 +357,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mPresenter.detachView();
-    }
-
-    @Override
-    protected String getScreenName() {
-        if (isAddAddressFromCartCheckoutMarketplace()) {
-            return isFromMarketPlaceCartEmptyAddressFirst()
-                    ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
-                    : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
-        }
-        return null;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        sendAnalyticsScreenName(getScreenName());
-    }
-
-    private boolean isAddAddressFromCartCheckoutMarketplace() {
-        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
-    }
-
-    private boolean isFromMarketPlaceCartEmptyAddressFirst() {
-        return isFromMarketPlaceCartEmptyAddressFirst;
-    }
-
     public boolean isValidAddress() {
         boolean isValid = true;
 
@@ -1172,5 +739,436 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void sendAnalyticsScreenName(String screenName) {
         if (isAddAddressFromCartCheckoutMarketplace())
             checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
+    }
+
+    @Override
+    protected String getScreenName() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            return isFromMarketPlaceCartEmptyAddressFirst()
+                    ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
+                    : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
+        }
+        return null;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    protected void setViewListener() {
+        zipCodeLayout.setOnTouchListener(onZipCodeTouch());
+        zipCodeTextView.setOnTouchListener(onZipCodeTouch());
+        zipCodeTextView.setOnItemClickListener(onZipCodeItemClick());
+        zipCodeTextView.addTextChangedListener(zipPostTextWatcher());
+        districtLayout.setOnClickListener(onCityDistrictClick());
+        districtEditText.setOnClickListener(onCityDistrictClick());
+        chooseLocation.setOnClickListener(onChooseLocation());
+        locationEditText.setOnClickListener(onChooseLocation());
+
+        addressTypeEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressAsClicked();
+            return false;
+        });
+
+        receiverNameEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputNameClicked();
+            return false;
+        });
+
+        addressEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputAddressClicked();
+            return false;
+        });
+
+        receiverPhoneEditText.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnInputPhoneClicked();
+            return false;
+        });
+
+
+        saveButton.setOnClickListener(view -> {
+            sendAnalyticsOnSubmitSaveAddressClicked();
+            if (isValidAddress()) {
+                updateAddress();
+                mPresenter.saveAddress();
+            }
+        });
+
+        spinnerProvince.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                        if (pos != 0) {
+                            provinceError.setVisibility(View.GONE);
+
+                            List<Province> provinceList = provinceAdapter.getList();
+//                            Province province = provinceList.get(pos - 1);
+//                            address.setProvinceName(province.getProvinceName());
+//                            address.setProvinceId(province.getProvinceId());
+                        }
+
+                        if (isEdit()) mPresenter.onEditProvinceSelected(pos);
+                        else mPresenter.onProvinceSelected(pos);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                }
+        );
+
+        spinnerRegency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                if (pos != 0) {
+                    regencyError.setVisibility(View.GONE);
+
+                    List<City> cityList = regencyAdapter.getList();
+//                    City city = cityList.get(pos - 1);
+//                    address.setCityName(city.getCityName());
+//                    address.setCityId(city.getCityId());
+                    mPresenter.onRegencySelected(pos);
+                }
+
+                if (!isEdit()) mPresenter.onRegencySelected(pos);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        spinnerSubDistrict.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                if (pos != 0) {
+                    subDistrictError.setVisibility(View.GONE);
+
+                    List<District> districtList = subDistrictAdapter.getList();
+//                    District district = districtList.get(pos - 1);
+//                    address.setDistrictName(district.getDistrictName());
+//                    address.setDistrictId(district.getDistrictId());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public void initializeZipCodes() {
+        zipCodeTextView.setText("");
+        String header = getResources().getString(R.string.hint_type_postal_code);
+        if (!zipCodes.contains(header)) zipCodes.add(0, header);
+
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
+                getContext(),
+                R.layout.item_autocomplete_text_double_row,
+                R.id.item,
+                zipCodes);
+
+        zipCodeTextView.setAdapter(zipCodeAdapter);
+    }
+
+    protected void initView(View view) {
+        receiverNameLayout = view.findViewById(R.id.receiver_name_layout);
+        receiverNameEditText = view.findViewById(R.id.receiver_name);
+        addressTypeLayout = view.findViewById(R.id.address_type_layout);
+        addressTypeEditText = view.findViewById(R.id.address_type);
+        addressLayout = view.findViewById(R.id.address_layout);
+        addressEditText = view.findViewById(R.id.address);
+        receiverPhoneLayout = view.findViewById(R.id.receiver_phone_layout);
+        receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
+        chooseLocation = view.findViewById(R.id.layout_value_location);
+        locationEditText = view.findViewById(R.id.value_location);
+        passwordLayout = view.findViewById(R.id.password_layout);
+        passwordEditText = view.findViewById(R.id.password);
+        saveButton = view.findViewById(R.id.save_button);
+        addressLabel = view.findViewById(R.id.address_label_watcher);
+
+        districtLayout = view.findViewById(R.id.district_layout);
+        districtEditText = view.findViewById(R.id.district);
+        zipCodeLayout = view.findViewById(R.id.postal_code_layout);
+        zipCodeTextView = view.findViewById(R.id.autocomplete_postal_code);
+
+        postCodeLayout = view.findViewById(R.id.post_code_layout);
+        postCodeEditText = view.findViewById(R.id.post_code);
+        addressSpinerLayout = view.findViewById(R.id.address_spinner_layout);
+        spinnerProvince = view.findViewById(R.id.provinsi);
+        provinceError = view.findViewById(R.id.province_error);
+        regencyTitle = view.findViewById(R.id.regency_title);
+        progressRegency = view.findViewById(R.id.regency_progress);
+        spinnerRegency = view.findViewById(R.id.regency);
+        regencyError = view.findViewById(R.id.regency_error);
+        districtTitle = view.findViewById(R.id.district_title);
+        progressDistrict = view.findViewById(R.id.district_progress);
+        spinnerSubDistrict = view.findViewById(R.id.sub_district);
+        subDistrictError = view.findViewById(R.id.sub_district_error);
+
+        if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
+            addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
+            receiverNameEditText.setText(userSession.getName());
+            receiverPhoneEditText.setText(userSession.getPhoneNumber());
+        }
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        mProgressBar = view.findViewById(R.id.logistic_spinner);
+
+        provinceAdapter = ProvinceAdapter.createInstance(getActivity());
+        spinnerProvince.setAdapter(provinceAdapter);
+        regencyAdapter = RegencyAdapter.createInstance(getActivity());
+        spinnerRegency.setAdapter(regencyAdapter);
+        subDistrictAdapter = SubDistrictAdapter.createInstance(getActivity());
+        spinnerSubDistrict.setAdapter(subDistrictAdapter);
+
+        passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
+        selectLayout();
+    }
+
+    private void setTextWatcher() {
+        receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
+        addressEditText.addTextChangedListener(watcher(addressLayout));
+        addressEditText.addTextChangedListener(characterWatcher(addressLabel));
+        addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
+        receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
+        passwordEditText.addTextChangedListener(watcher(passwordLayout));
+
+        districtEditText.addTextChangedListener(watcher(districtLayout));
+        zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
+
+        postCodeEditText.addTextChangedListener(watcher(postCodeLayout));
+
+    }
+
+    private TextWatcher characterWatcher(TextView watcher) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (watcher.getVisibility() != View.VISIBLE) watcher.setVisibility(View.VISIBLE);
+                int textLength = charSequence.length();
+                int charLeft;
+                if (textLength < ADDRESS_MIN_CHARACTER) {
+                    charLeft = ADDRESS_MIN_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING, charLeft));
+                } else {
+                    charLeft = ADDRESS_MAX_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING2, charLeft));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
+    }
+
+    private TextWatcher watcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    private TextWatcher zipPostTextWatcher() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (zipCodeTextView.getText().length() < 1) {
+                    zipCodeLayout.setError(getContext().getString(R.string.error_field_required));
+                } else {
+                    zipCodeLayout.setError(null);
+                    sendAnalyticsOnZipCodeInputFreeText(s.toString());
+                }
+            }
+        };
+    }
+
+    private void selectLayout() {
+        // TODO ATTENTION: when new checkout flow is fully released, please refactor (remove) this part immediately
+        if (isDistrictRecommendation() && token != null) {
+            addressSpinerLayout.setVisibility(View.GONE);
+            postCodeLayout.setVisibility(View.GONE);
+            districtLayout.setVisibility(View.VISIBLE);
+            zipCodeLayout.setVisibility(View.VISIBLE);
+        } else {
+            addressSpinerLayout.setVisibility(View.VISIBLE);
+            postCodeLayout.setVisibility(View.VISIBLE);
+            districtLayout.setVisibility(View.GONE);
+            zipCodeLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateAddress() {
+        if (address == null) address = new Destination();
+
+        if (isDistrictRecommendation()) {
+            address.setPostalCode(zipCodeTextView.getText().toString());
+        } else {
+            address.setPostalCode(postCodeEditText.getText().toString());
+        }
+
+        address.setAddressName(addressTypeEditText.getText().toString());
+        address.setReceiverName(receiverNameEditText.getText().toString());
+        address.setAddressStreet(addressEditText.getText().toString());
+        address.setReceiverPhone(receiverPhoneEditText.getText().toString());
+    }
+
+    private View.OnClickListener onCityDistrictClick() {
+        return view -> {
+            sendAnalyticsOnDistrictSelectionClicked();
+            Intent intent = ((IAddressRouter) getActivity().getApplication())
+                    .getDistrictRecommendationIntent(
+                            getActivity(), token,
+                            getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
+                    );
+            startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
+        };
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private View.OnTouchListener onZipCodeTouch() {
+        return (view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                sendAnalyticsOnZipCodeSelectionClicked();
+            if (!zipCodeTextView.isPopupShowing()) zipCodeTextView.showDropDown();
+            return false;
+        };
+    }
+
+    private AdapterView.OnItemClickListener onZipCodeItemClick() {
+        return (adapterView, view, i, l) -> {
+            if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
+                zipCodeTextView.setText("");
+            }
+
+            address.setPostalCode(zipCodeTextView.getText().toString());
+            sendAnalyticsOnZipCodeDropdownSelectionClicked();
+        };
+    }
+
+    private void requestPinpointAddress(Destination address) {
+        if (address.getLatitude() != null &&
+                address.getLongitude() != null &&
+                !address.getLatitude().equals("") &&
+                !address.getLongitude().equals("")
+                ) {
+            mPresenter.requestReverseGeoCode(getContext(), address);
+        }
+    }
+
+    private View.OnClickListener onChooseLocation() {
+        return view -> {
+            openGeoLocation();
+            sendAnalyticsOnLocationSelectionClicked();
+        };
+    }
+
+    private void openGeoLocation() {
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+
+        int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
+        if (ConnectionResult.SUCCESS == resultCode) {
+            CommonUtils.dumper("Google play services available");
+
+            LocationPass locationPass = new LocationPass();
+
+            if (!TextUtils.isEmpty(address.getLatitude())
+                    && !TextUtils.isEmpty(address.getLongitude())
+                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
+                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
+                locationPass.setLatitude(address.getLatitude());
+                locationPass.setLongitude(address.getLongitude());
+                locationPass.setGeneratedAddress(locationEditText.getText().toString());
+            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
+                locationPass.setDistrictName(address.getDistrictName());
+                locationPass.setCityName(address.getCityName());
+            } else {
+                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
+                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
+            }
+
+            HashMap<String, String> locationMap = bundleLocationMap(locationPass);
+            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
+                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
+                Intent intent = ((IAddressRouter) getActivity().getApplication())
+                        .getGeoLocationActivityIntent(getActivity(), locationMap, true);
+                startActivityForResult(intent, REQUEST_CODE);
+            } else {
+                Intent intent = ((IAddressRouter) getActivity().getApplication())
+                        .getGeoLocationActivityIntent(getActivity(), locationMap, false);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        } else {
+            CommonUtils.dumper("Google play services unavailable");
+            Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
+            dialog.show();
+        }
+    }
+
+    protected void initialVar() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
+        }
+        if (isEdit() && address != null) {
+            receiverNameEditText.setText(address.getReceiverName());
+            addressTypeEditText.setText(address.getAddressName());
+            addressEditText.setText(address.getAddressStreet());
+            districtEditText.setText(TextUtils.join(", ", Arrays.asList(
+                    address.getProvinceName(),
+                    address.getCityName(),
+                    address.getDistrictName()
+            )));
+
+            zipCodeTextView.setText(address.getPostalCode());
+            postCodeEditText.setText(address.getPostalCode());
+            receiverPhoneEditText.setText(address.getReceiverPhone());
+            requestPinpointAddress(address);
+        } else if (address == null) {
+            address = new Destination();
+        }
+    }
+
+    private boolean isAddAddressFromCartCheckoutMarketplace() {
+        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+    }
+
+    private boolean isFromMarketPlaceCartEmptyAddressFirst() {
+        return isFromMarketPlaceCartEmptyAddressFirst;
     }
 }
