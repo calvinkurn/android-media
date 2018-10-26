@@ -76,7 +76,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
                 pojo.getChannel().getExitMessage(),
                 convertChannelQuickReply(pojo.getChannel()),
-                pojo.getChannel().getVideoId()
+                pojo.getChannel().getVideoId(),
+                pojo.getChannel().getSettingGroupChat()
         );
     }
 

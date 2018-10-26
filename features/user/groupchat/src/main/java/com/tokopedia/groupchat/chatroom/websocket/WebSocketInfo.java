@@ -61,6 +61,7 @@ public class WebSocketInfo {
     private ByteString mByteString;
     private boolean onOpen;
     private boolean onReconnect;
+    private String error;
 
     private WebSocketInfo() {
     }
@@ -391,8 +392,13 @@ public class WebSocketInfo {
     }
 
     static WebSocketInfo createReconnect() {
+        return createReconnect("");
+    }
+
+    static WebSocketInfo createReconnect(String error) {
         WebSocketInfo socketInfo = new WebSocketInfo();
         socketInfo.onReconnect = true;
+        socketInfo.error = error;
         return socketInfo;
     }
 

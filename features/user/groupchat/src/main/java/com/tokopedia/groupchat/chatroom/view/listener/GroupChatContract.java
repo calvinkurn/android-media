@@ -84,6 +84,8 @@ public interface GroupChatContract {
         void clearMessageEditText();
 
         void afterSendMessage(PendingChatViewModel pendingChatViewModel, Exception errorSendIndicator);
+
+        void reportWebSocket(String url, String error);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

@@ -1352,31 +1352,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-//    public void onSuccessEnterRefreshChannel() {
-//
-//        hideLoading();
-//        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-//                (GroupChatFragment.class.getSimpleName());
-//        if (fragment != null) {
-//        }
-//
-//        refreshTab();
-//        setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-//        setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-//        tabAdapter.setActiveFragment(initialFragment);
-//
-//        if (currentFragmentIsChat()) {
-//
-//        } else if (currentFragmentIsVote() && checkPollValid()) {
-//            refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-//        } else if (currentFragmentIsVote()) {
-//            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-//            showFragment(CHATROOM_FRAGMENT);
-//        } else if (currentFragmentIsInfo()) {
-//            populateChannelInfoFragment();
-//        }
-//    }
-
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
@@ -1390,34 +1365,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 presenter.connectWebSocket(userSession, viewModel.getChannelUuid(), viewModel.getChannelInfoViewModel().getGroupChatToken());
             }
         });
-    }
-
-    public void onUserBanned(String errorMessage) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.default_banned_title);
-        if (viewModel != null
-                && viewModel.getChannelInfoViewModel() != null
-                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
-            builder.setMessage(viewModel.getChannelInfoViewModel().getBannedMessage());
-        } else {
-            builder.setMessage(errorMessage);
-        }
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                Intent intent = new Intent();
-                if (viewModel != null) {
-                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
-                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
-                }
-                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
-                finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
     }
 
     public void onChannelNotFound(String errorMessage) {
@@ -1611,22 +1558,40 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void onUserBanned() {
         hideLoading();
-//        if (user != null
-//                && !TextUtils.isEmpty(user.getUserId())
-//                && userSession.getUserId().equals(user.getUserId())) {
-//            onUserBanned(getString(R.string.user_is_banned));
-//        }
+        String errorMessage = getString(R.string.user_is_banned);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.default_banned_title);
+        if (viewModel != null
+                && viewModel.getChannelInfoViewModel() != null
+                && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getBannedMessage())) {
+            builder.setMessage(viewModel.getChannelInfoViewModel().getBannedMessage());
+        } else {
+            builder.setMessage(errorMessage);
+        }
+        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent intent = new Intent();
+                if (viewModel != null) {
+                    intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
+                    intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
+                }
+                setResult(ChannelActivity.RESULT_ERROR_ENTER_CHANNEL, intent);
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     public void onChannelDeleted() {
         onChannelNotFound(getString(R.string.channel_has_been_deleted));
-
     }
 
     @Override
     public void onChannelFrozen() {
-//        onChannelNotFound(getString(R.string.channel_deactivated));
-
         AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getString(R.string.channel_not_found));
         myAlertDialog.setMessage(getString(R.string.channel_deactivated));
@@ -1849,7 +1814,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 data.getString("applinks", ""),
                 data.getString("tkp_code", "")
         );
-
         if (currentFragmentIsChat()) {
             showPushNotif(model);
         } else {
@@ -1874,7 +1838,14 @@ public class GroupChatActivity extends BaseSimpleActivity
             fragment.setInitialSavedState(savedState);
         }
     }
+
     public List<Visitable> getList() {
         return listMessage;
     }
+
+    @Override
+    public void reportWebSocket(String url, String error) {
+        ((GroupChatModuleRouter) getApplication()).sendAnalyticsGroupChat(url, error);
+    }
+
 }

@@ -459,7 +459,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
-        DigitalBrowseRouter {
+        DigitalBrowseRouter{
 
     private static final String EXTRA = "extra";
 
@@ -2281,6 +2281,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
+    }
+
+    @Override
+    public void sendAnalyticsGroupChat(String url, String error) {
+        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+            AnalyticsLog.logGroupChatWebSocketError(url, error);
+        }
     }
 
     @Override

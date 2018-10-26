@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -365,6 +366,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
                     .getGroupChatPointsViewModel() != null) {
                 autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
+            }
+            if (getActivity() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
+                    && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
+                    .getSettingGroupChat() != null) {
+                replyEditText.setFilters( new InputFilter[] {
+                        new InputFilter.LengthFilter(((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
+                        .getSettingGroupChat().getMaxChar()) } );
             }
 
         } catch (NullPointerException e) {

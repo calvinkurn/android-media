@@ -62,6 +62,24 @@ public class AnalyticsLog {
     }
 
 
+    public static void logGroupChatWebSocketError(String url, String error) {
+        AnalyticsLog.log("ErrorType=LogGroupChatWebSocketError!"
+                + " Error=" + error
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
+                .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
+                + " Url=" + "'" + url + "'"
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceId=" + "'" + GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "'"
+                + " "
+
+        );
+    }
+
+
     public static void logNetworkError(String url, int errorCode) {
         String baseUrl = getBaseUrl(url);
 

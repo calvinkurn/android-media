@@ -37,7 +37,7 @@ public class RxWebSocketUtil {
         client = new OkHttpClient.Builder().pingInterval(10, TimeUnit.SECONDS).build();
     }
 
-    private static RxWebSocketUtil getInstance() {
+    public static RxWebSocketUtil getInstance() {
         if (instance == null) {
             synchronized (RxWebSocketUtil.class) {
                 if (instance == null) {

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
@@ -37,11 +38,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final GetChannelInfoUseCase getChannelInfoUseCase;
     private CompositeSubscription mSubscription;
     private String urlWebSocket;
+    private LocalCacheHandler localCacheHandler;
 
     @Inject
     public GroupChatPresenter(
                               GetChannelInfoUseCase getChannelInfoUseCase) {
         this.getChannelInfoUseCase = getChannelInfoUseCase;
+    }
+
+    @Override
+    public void attachView(GroupChatContract.View view) {
+        super.attachView(view);
+        localCacheHandler = new LocalCacheHandler(getView().getContext(), GroupChatPresenter.class.getName());
     }
 
     public void connectWebSocket(UserSession userSession, String channelUrl, String groupChatToken) {
@@ -118,6 +126,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 showDummy("onOpened ".concat(channelUrl), "logger open");
                 getView().onOpenWebSocket();
                 Log.d("RxWebSocket Presenter", " on WebSocket open");
+                setReportWebSocket(false);
             }
 
             @Override
@@ -156,8 +165,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             public void onError(Throwable e) {
                 super.onError(e);
                 Log.d("RxWebSocket Presenter", "onError " + e.toString());
-                showDummy("onError", e.toString());
+                showDummy(e.toString(), "logger error");
                 getView().setSnackBarRetry();
+                reportWebSocket(e);
             }
         };
         Subscription subscription = RxWebSocket.get(channelUrl, accessToken).subscribe(subscriber);
@@ -203,6 +213,22 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                     false
             );
             getView().onMessageReceived(dummy, !showLog);
+        }
+    }
+
+    public boolean shouldReportWebSocket() {
+        return localCacheHandler.getBoolean(GroupChatPresenter.class.getName(), false);
+    }
+
+    public void setReportWebSocket(boolean reportWebSocket) {
+        localCacheHandler.putBoolean(GroupChatPresenter.class.getName(), reportWebSocket);
+        localCacheHandler.applyEditor();
+    }
+
+    private void reportWebSocket(Throwable e) {
+        if(shouldReportWebSocket()){
+            getView().reportWebSocket(urlWebSocket, e.toString());
+            setReportWebSocket(false);
         }
     }
 }
