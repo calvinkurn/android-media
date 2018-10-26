@@ -1,4 +1,4 @@
-package com.tokopedia.phoneverification;
+package com.tokopedia.phoneverification.data.network;
 
 import android.content.Context;
 import android.os.Build;

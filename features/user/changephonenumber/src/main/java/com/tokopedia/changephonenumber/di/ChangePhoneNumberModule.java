@@ -23,6 +23,7 @@ import com.tokopedia.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -53,6 +54,8 @@ public class ChangePhoneNumberModule {
     @ChangePhoneNumberQualifier
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
+                                     @ChangePhoneNumberQualifier TkpdAuthInterceptor
+                                             tkpdAuthInterceptor,
                                      @ChangePhoneNumberQualifier ChangePhoneNumberInterceptor
                                              changePhoneNumberInterceptor,
                                      @ChangePhoneNumberQualifier OkHttpRetryPolicy retryPolicy,
@@ -65,6 +68,7 @@ public class ChangePhoneNumberModule {
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(changePhoneNumberInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(errorResponseInterceptor);
@@ -115,6 +119,14 @@ public class ChangePhoneNumberModule {
 
     @Provides
     @ChangePhoneNumberQualifier
+    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                          @ChangePhoneNumberQualifier NetworkRouter networkRouter,
+                                                          @ChangePhoneNumberQualifier UserSession userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+    }
+
+    @Provides
+    @ChangePhoneNumberQualifier
     ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
@@ -154,12 +166,9 @@ public class ChangePhoneNumberModule {
 
     @Provides
     @ChangePhoneNumberQualifier
-    public ChangePhoneNumberInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                                   @ChangePhoneNumberQualifier
-                                                                  NetworkRouter networkRouter,
-                                                                   @ChangePhoneNumberQualifier UserSession
+    public ChangePhoneNumberInterceptor provideTkpdAuthInterceptor(@ChangePhoneNumberQualifier UserSession
                                                                       userSession) {
-        return new ChangePhoneNumberInterceptor(context, networkRouter, userSession);
+        return new ChangePhoneNumberInterceptor(userSession);
     }
 
     @Provides
