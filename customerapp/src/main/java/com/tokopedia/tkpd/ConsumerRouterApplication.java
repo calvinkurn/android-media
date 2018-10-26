@@ -3221,4 +3221,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void eventMoRegistrationStart(String label) {
         UnifyTracking.eventMoRegistrationStart(label);
     }
+
+    @Override
+    public void eventMoRegister(String name, String phone) {
+        UnifyTracking.eventMoRegister(name, phone);
+    }
+
+    @Override
+    public void sendBranchRegisterEvent(String email, String phone) {
+        BranchSdkUtils.sendRegisterEvent(email, phone);
+    }
 }

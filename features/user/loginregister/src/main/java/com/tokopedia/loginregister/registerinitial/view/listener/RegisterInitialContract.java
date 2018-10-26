@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * @author by nisie on 10/24/18.
  */
-public interface RegisterContract {
+public interface RegisterInitialContract {
 
     interface View extends CustomerView {
 

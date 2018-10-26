@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.registeremail;
+package com.tokopedia.loginregister.registeremail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,11 +18,15 @@ public class RegisterEmailActivity extends BaseSimpleActivity {
 
     public static final String EXTRA_PARAM_EMAIL = "email";
 
-//    @Inject
-//    LoginRegisterAnalytics analytics;
+    @Inject
+    LoginRegisterAnalytics analytics;
 
     @Override
     protected Fragment getNewFragment() {
+        Bundle bundle = new Bundle();
+        if(getIntent().getExtras()!= null){
+            bundle.putAll(getIntent().getExtras());
+        }
         return null;
     }
 
@@ -39,5 +43,9 @@ public class RegisterEmailActivity extends BaseSimpleActivity {
         return intent;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        analytics.eventClickBackRegisterWithEmail();
+        super.onBackPressed();
+    }
 }

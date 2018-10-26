@@ -19,7 +19,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo;
-import com.tokopedia.loginregister.registerinitial.view.listener.RegisterContract;
+import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.subscriber.RegisterThirdPartySubscriber;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 
@@ -30,8 +30,8 @@ import rx.Subscriber;
 /**
  * @author by nisie on 10/24/18.
  */
-public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterContract.View>
-        implements RegisterContract.Presenter {
+public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitialContract.View>
+        implements RegisterInitialContract.Presenter {
 
     private static final String BUNDLE_WEBVIEW = "bundle";
     private static final String ARGS_PATH = "path";

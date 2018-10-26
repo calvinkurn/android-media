@@ -15,6 +15,7 @@ public class LoginRegisterUrl {
 
     //* REGISTER URL
     public static final String PATH_REGISTER_VALIDATION = "/api/v1/account";
+    public static final String DO_REGISTER = "api/register";
 
 
 

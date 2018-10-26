@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.loginregister">
 
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22"/>
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -21,7 +25,7 @@
             android:windowSoftInputMode="stateHidden"/>
 
         <activity
-            android:name=".registeremail.RegisterEmailActivity"
+            android:name=".registeremail.view.activity.RegisterEmailActivity"
             android:label="@string/title_activity_register_2"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

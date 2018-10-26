@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,8 @@ public class LoginRegisterAnalytics {
 
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page";
-    public static final String SCREEN_REGISTER = "Register page";
+    public static final String SCREEN_REGISTER_INITIAL = "Register page";
+    public static final String SCREEN_REGISTER_EMAIL = "Register with Email Page";
 
     private static final String EVENT_CLICK_LOGIN = "clickLogin";
     private static final String EVENT_REGISTER_LOGIN = "registerLogin";
@@ -29,6 +31,7 @@ public class LoginRegisterAnalytics {
     private static final String EVENT_CLICK_BACK = "clickBack";
     public static final String EVENT_CLICK_CONFIRM = "clickConfirm";
     public static final String EVENT_CLICK_REGISTER = "clickRegister";
+    private static final String EVENT_REGISTER_SUCCESS = "registerSuccess";
 
     private static final String CATEGORY_LOGIN = "Login";
     private static final String CATEGORY_SMART_LOCK = "Smart Lock";
@@ -42,6 +45,7 @@ public class LoginRegisterAnalytics {
     private static final String ACTION_LOGIN_SUCCESS = "Login Success";
     private static final String ACTION_SUCCESS = "Success";
     private static final String ACTION_CLICK_CHANNEL = "Click Channel";
+    public static final String ACTION_REGISTER_SUCCESS = "Register Success";
 
     private static final String LABEL_CTA = "CTA";
     private static final String LABEL_REGISTER = "Register";
@@ -323,5 +327,40 @@ public class LoginRegisterAnalytics {
                 "click on pop up box register (ubah)",
                 "phone number"
         );
+    }
+
+    public void eventClickBackRegisterWithEmail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_BACK,
+                CATEGORY_REGISTER_PAGE,
+                "click back (daftar dengan email)",
+                ""
+        );
+    }
+
+    public void eventRegisterWithEmail() {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                "click on daftar (daftar dengan email)",
+                ""
+        );
+    }
+
+    public void eventSuccessRegisterEmail(Context applicationContext, int userId, String name, String email, String phone) {
+        analyticTracker.sendEventTracking(
+                EVENT_REGISTER_SUCCESS,
+                CATEGORY_REGISTER,
+                ACTION_REGISTER_SUCCESS,
+                LABEL_EMAIL
+        );
+
+        ((LoginRegisterRouter) applicationContext)
+                .sendAFCompleteRegistrationEvent(userId, "Email");
+
+        ((LoginRegisterRouter) applicationContext).eventMoRegister(name, phone);
+        ((LoginRegisterRouter) applicationContext).sendBranchRegisterEvent(email, phone);
+
+
     }
 }

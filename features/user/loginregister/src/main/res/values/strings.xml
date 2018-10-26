@@ -271,9 +271,6 @@
     <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="code_error">Kode error :</string>
 
-    <!--REGISTER PAGE -->
-    <string name="title_register">Daftar Sekarang di Tokopedia</string>
-
     <!-- ACTIVATION PAGE -->
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="title_activation_otp">Aktivasi</string>
@@ -281,6 +278,26 @@
 
     <!-- CHANGE EMAIL PAGE -->
     <string name="title_old_email">Email Terdaftar</string>
+
+    <!--REGISTER PAGE -->
+    <string name="title_register">Daftar Sekarang di Tokopedia</string>
+
+    <!-- REGISTER EMAIL PAGE -->
+    <string name="title_full_name">Nama Lengkap</string>
+    <string name="prompt_password">Kata Sandi</string>
+    <string name="title_register_wo_u">Daftar</string>
+    <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
+    <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilakan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
+    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
+    <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
+    <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
+    <string name="error_max_35_character">Maksimal 35 karakter</string>
+    <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
+    <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
+
 
 
 </resources>

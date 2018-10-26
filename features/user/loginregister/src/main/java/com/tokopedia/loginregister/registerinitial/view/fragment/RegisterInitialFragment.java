@@ -52,7 +52,7 @@ import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView;
-import com.tokopedia.loginregister.registerinitial.view.listener.RegisterContract;
+import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -73,7 +73,7 @@ import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInAct
  * @author by nisie on 10/24/18.
  */
 public class RegisterInitialFragment extends BaseDaggerFragment
-        implements RegisterContract.View,
+        implements RegisterInitialContract.View,
         PartialRegisterInputView.PartialRegisterInputViewListener {
 
     private static final int ID_ACTION_LOGIN = 112;
@@ -140,7 +140,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_REGISTER;
+        return LoginRegisterAnalytics.SCREEN_REGISTER_INITIAL;
     }
 
     @Override
@@ -681,24 +681,26 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void showRegisteredEmailDialog(String email) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.email_already_registered));
-        dialog.setDesc(
-                String.format(getResources().getString(
-                        R.string.email_already_registered_info), email));
-        dialog.setBtnOk(getString(R.string.already_registered_yes));
-        dialog.setOnOkClickListener(v -> {
-            analytics.eventProceedEmailAlreadyRegistered();
-            dialog.dismiss();
-            startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
-            getActivity().finish();
-        });
-        dialog.setBtnCancel(getString(R.string.already_registered_no));
-        dialog.setOnCancelClickListener(v -> {
-            analytics.eventCancelEmailAlreadyRegistered();
-            dialog.dismiss();
-        });
-        dialog.show();
+        if (getActivity() != null) {
+            final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+            dialog.setTitle(getString(R.string.email_already_registered));
+            dialog.setDesc(
+                    String.format(getResources().getString(
+                            R.string.email_already_registered_info), email));
+            dialog.setBtnOk(getString(R.string.already_registered_yes));
+            dialog.setOnOkClickListener(v -> {
+                analytics.eventProceedEmailAlreadyRegistered();
+                dialog.dismiss();
+                startActivity(LoginActivity.getIntentLoginFromRegister(getActivity(), email));
+                getActivity().finish();
+            });
+            dialog.setBtnCancel(getString(R.string.already_registered_no));
+            dialog.setOnCancelClickListener(v -> {
+                analytics.eventCancelEmailAlreadyRegistered();
+                dialog.dismiss();
+            });
+            dialog.show();
+        }
     }
 
     @Override
