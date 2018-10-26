@@ -332,10 +332,9 @@ public class AddAddressFragment extends BaseDaggerFragment
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
         if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
-            UserSession sess = new UserSession(getActivity());
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
-            receiverNameEditText.setText(sess.getName());
-            receiverPhoneEditText.setText(sess.getPhoneNumber());
+            receiverNameEditText.setText(userSession.getName());
+            receiverPhoneEditText.setText(userSession.getPhoneNumber());
         }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
