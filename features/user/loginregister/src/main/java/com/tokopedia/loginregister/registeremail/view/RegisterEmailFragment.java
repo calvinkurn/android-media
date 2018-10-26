@@ -83,16 +83,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     private static final int REQUEST_AUTO_LOGIN = 101;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
 
-    int MAX_PHONE_NUMBER = 13;
-    int MIN_PHONE_NUMBER = 6;
     int PASSWORD_MINIMUM_LENGTH = 6;
-    int IS_EMAIL_ACTIVE = 1;
 
     String NAME = "NAME";
     String PHONE = "PHONE";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
-    String IS_AUTO_VERIFY = "ISAUTOVERIFY";
 
     View container;
     View redirectView;
