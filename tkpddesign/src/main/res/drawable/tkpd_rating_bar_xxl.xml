@@ -5,8 +5,7 @@
         android:drawable="@drawable/ic_stars_disable_xxl"/>
     <item
         android:id="@android:id/secondaryProgress"
-        android:drawable="@drawable/ic_stars_disable_xxl"
-        android:left="@dimen/dp_4" android:right="@dimen/dp_4"/>
+        android:drawable="@drawable/ic_stars_disable_xxl"/>
     <item
         android:id="@android:id/progress"
         android:drawable="@drawable/ic_stars_active_xxl"/>
