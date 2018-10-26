@@ -43,6 +43,6 @@ class KelontongMainApplication : Application() {
     }
 
     companion object {
-        val NOTIFICATION_CHANNEL_ID = KelontongMainApplication::class.java.getPackage().getName()
+        val NOTIFICATION_CHANNEL_ID = "mitra_tkpd_notification_channel_id"
     }
 }
