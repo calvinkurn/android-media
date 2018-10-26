@@ -20,7 +20,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.travel.presentation.TravelPassengerBookingActivity;
+import com.tokopedia.common.travel.presentation.TravelPassengerBookingListActivity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
+import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.tkpdtrain.R;
@@ -66,7 +68,7 @@ import rx.Observable;
  */
 public class TrainBookingPassengerFragment extends BaseDaggerFragment implements TrainBookingPassengerContract.View {
 
-    public static final int ADD_PASSENGER_REQUEST_CODE = 1009;
+    public static final int PASSENGER_LIST_REQUEST_CODE = 1009;
     public static final int NEXT_STEP_REQUEST_CODE = 1010;
     private static final String TRAIN_PARAM_PASSENGER = "train_param_passenger";
 
@@ -228,15 +230,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
                 // TODO clean this code
                 TravelPassenger travelPassenger = new TravelPassenger();
-                travelPassenger.setPhoneNumber(trainPassengerViewModel.getPhone());
-                travelPassenger.setName(trainPassengerViewModel.getName());
-                travelPassenger.setHeaderTitle(trainPassengerViewModel.getHeaderTitle());
-                travelPassenger.setIdentityNumber(trainPassengerViewModel.getIdentityNumber());
                 travelPassenger.setPassengerId(trainPassengerViewModel.getPassengerId());
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
-                travelPassenger.setSalutationId(trainPassengerViewModel.getSalutationId());
-                travelPassenger.setSalutationTitle(trainPassengerViewModel.getSalutationTitle());
-                startActivityForResult(TravelPassengerBookingActivity.callingIntent(getActivity(), travelPassenger), ADD_PASSENGER_REQUEST_CODE);
+                startActivityForResult(TravelPassengerBookingListActivity.callingIntent(getActivity(), travelPassenger, getCurrentPassengerListName()), PASSENGER_LIST_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -277,6 +273,14 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public List<TrainPassengerViewModel> getCurrentPassengerList() {
         return trainParamPassenger.getTrainPassengerViewModelList();
+    }
+
+    public List<String> getCurrentPassengerListName() {
+        List<String> passengerListName = new ArrayList<>();
+        for (TrainPassengerViewModel trainPassengerViewModel:getCurrentPassengerList()) {
+            passengerListName.add(trainPassengerViewModel.getName());
+        }
+        return passengerListName;
     }
 
     @Override
@@ -432,19 +436,18 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ADD_PASSENGER_REQUEST_CODE:
+            case PASSENGER_LIST_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerBookingActivity.PASSENGER_DATA);
+                    TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerBookingListActivity.PASSENGER_DATA);
                     //TODO clean this code
                     TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
-                    trainPassengerViewModel.setPhone(travelPassenger.getPhoneNumber());
                     trainPassengerViewModel.setName(travelPassenger.getName());
                     trainPassengerViewModel.setHeaderTitle(travelPassenger.getHeaderTitle());
-                    trainPassengerViewModel.setIdentityNumber(travelPassenger.getIdentityNumber());
+                    trainPassengerViewModel.setIdentityNumber(travelPassenger.getIdNumber());
                     trainPassengerViewModel.setPassengerId(travelPassenger.getPassengerId());
                     trainPassengerViewModel.setPaxType(travelPassenger.getPaxType());
-                    trainPassengerViewModel.setSalutationId(travelPassenger.getSalutationId());
-                    trainPassengerViewModel.setSalutationTitle(travelPassenger.getSalutationTitle());
+                    trainPassengerViewModel.setSalutationId(travelPassenger.getTitle());
+                    trainPassengerViewModel.setSalutationTitle(getSalutationString(travelPassenger.getTitle()));
                     presenter.updateDataPassengers(trainPassengerViewModel);
                 }
                 break;
@@ -458,6 +461,16 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                         );
                     }
                 }
+        }
+    }
+
+    private String getSalutationString(int title) {
+        if (title == TravelPassengerTitle.TUAN) {
+            return "Tn";
+        } else if (title == TravelPassengerTitle.NYONYA) {
+            return "Ny";
+        } else {
+            return "Nn";
         }
     }
 

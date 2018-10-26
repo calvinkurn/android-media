@@ -10,33 +10,51 @@ public class TravelPassengerEntity {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("userId")
     @Expose
     private int userId;
-    @SerializedName("idNumber")
+    @SerializedName("title")
     @Expose
-    private String idNumber;
+    private int title;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("salutationId")
+    @SerializedName("firstName")
     @Expose
-    private int salutationId;
+    private String firstName;
+    @SerializedName("lastName")
+    @Expose
+    private String lastName;
     @SerializedName("birthDate")
     @Expose
     private String birthDate;
-    @SerializedName("phoneNumber")
+    @SerializedName("nationality")
     @Expose
-    private String phoneNumber;
+    private String nationality;
+    @SerializedName("passportNo")
+    @Expose
+    private String passportNo;
+    @SerializedName("passportCountry")
+    @Expose
+    private String passportCountry;
+    @SerializedName("passportExpiry")
+    @Expose
+    private String passportExpiry;
+    @SerializedName("idNumber")
+    @Expose
+    private String idNumber;
     @SerializedName("isBuyer")
     @Expose
     private int isBuyer;
     @SerializedName("paxType")
     @Expose
     private int paxType;
+    @SerializedName("travelId")
+    @Expose
+    private int travelId;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -44,24 +62,44 @@ public class TravelPassengerEntity {
         return userId;
     }
 
-    public String getIdNumber() {
-        return idNumber;
+    public int getTitle() {
+        return title;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getSalutationId() {
-        return salutationId;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public String getBirthDate() {
         return birthDate;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getNationality() {
+        return nationality;
+    }
+
+    public String getPassportNo() {
+        return passportNo;
+    }
+
+    public String getPassportCountry() {
+        return passportCountry;
+    }
+
+    public String getPassportExpiry() {
+        return passportExpiry;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
     }
 
     public int getIsBuyer() {
@@ -70,5 +108,9 @@ public class TravelPassengerEntity {
 
     public int getPaxType() {
         return paxType;
+    }
+
+    public int getTravelId() {
+        return travelId;
     }
 }

@@ -7,49 +7,71 @@ public class TravelPassenger implements Parcelable {
 
     private int id;
     private int userId;
-    private int salutationId;
+    private int title;
     private int paxType;
     private String name;
-    private String identityNumber;
+    private String firstName;
+    private String lastName;
     private String birthDate;
-    private String phoneNumber;
+    private String nationality;
+    private String passportNo;
+    private String passportCountry;
+    private String passportExpiry;
+    private String idNumber;
     private String headerTitle;
-    private int passengerId;
-    private String salutationTitle;
+    private int travelId;
     private int isBuyer;
+    private String salutationTitle;
+    private boolean isSelected;
+    private int passengerId;
 
     public TravelPassenger() {
     }
 
+
     protected TravelPassenger(Parcel in) {
         id = in.readInt();
         userId = in.readInt();
-        salutationId = in.readInt();
+        title = in.readInt();
         paxType = in.readInt();
         name = in.readString();
-        identityNumber = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
         birthDate = in.readString();
-        phoneNumber = in.readString();
+        nationality = in.readString();
+        passportNo = in.readString();
+        passportCountry = in.readString();
+        passportExpiry = in.readString();
+        idNumber = in.readString();
         headerTitle = in.readString();
-        passengerId = in.readInt();
-        salutationTitle = in.readString();
+        travelId = in.readInt();
         isBuyer = in.readInt();
+        salutationTitle = in.readString();
+        isSelected = in.readByte() != 0;
+        passengerId = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(userId);
-        dest.writeInt(salutationId);
+        dest.writeInt(title);
         dest.writeInt(paxType);
         dest.writeString(name);
-        dest.writeString(identityNumber);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
         dest.writeString(birthDate);
-        dest.writeString(phoneNumber);
+        dest.writeString(nationality);
+        dest.writeString(passportNo);
+        dest.writeString(passportCountry);
+        dest.writeString(passportExpiry);
+        dest.writeString(idNumber);
         dest.writeString(headerTitle);
-        dest.writeInt(passengerId);
-        dest.writeString(salutationTitle);
+        dest.writeInt(travelId);
         dest.writeInt(isBuyer);
+        dest.writeString(salutationTitle);
+        dest.writeByte((byte) (isSelected ? 1 : 0));
+        dest.writeInt(passengerId);
     }
 
     @Override
@@ -85,14 +107,6 @@ public class TravelPassenger implements Parcelable {
         this.userId = userId;
     }
 
-    public int getSalutationId() {
-        return salutationId;
-    }
-
-    public void setSalutationId(int salutationId) {
-        this.salutationId = salutationId;
-    }
-
     public int getPaxType() {
         return paxType;
     }
@@ -109,28 +123,12 @@ public class TravelPassenger implements Parcelable {
         this.name = name;
     }
 
-    public String getIdentityNumber() {
-        return identityNumber;
-    }
-
-    public void setIdentityNumber(String identityNumber) {
-        this.identityNumber = identityNumber;
-    }
-
     public String getBirthDate() {
         return birthDate;
     }
 
     public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public String getHeaderTitle() {
@@ -141,14 +139,6 @@ public class TravelPassenger implements Parcelable {
         this.headerTitle = headerTitle;
     }
 
-    public int getPassengerId() {
-        return passengerId;
-    }
-
-    public void setPassengerId(int passengerId) {
-        this.passengerId = passengerId;
-    }
-
     public String getSalutationTitle() {
         return salutationTitle;
     }
@@ -157,24 +147,112 @@ public class TravelPassenger implements Parcelable {
         this.salutationTitle = salutationTitle;
     }
 
-    public int getIsBuyer() {
+    public int getTitle() {
+        return title;
+    }
+
+    public void setTitle(int title) {
+        this.title = title;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getNationality() {
+        return nationality;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
+    public String getPassportNo() {
+        return passportNo;
+    }
+
+    public void setPassportNo(String passportNo) {
+        this.passportNo = passportNo;
+    }
+
+    public String getPassportCountry() {
+        return passportCountry;
+    }
+
+    public void setPassportCountry(String passportCountry) {
+        this.passportCountry = passportCountry;
+    }
+
+    public String getPassportExpiry() {
+        return passportExpiry;
+    }
+
+    public void setPassportExpiry(String passportExpiry) {
+        this.passportExpiry = passportExpiry;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public int getTravelId() {
+        return travelId;
+    }
+
+    public void setTravelId(int travelId) {
+        this.travelId = travelId;
+    }
+
+    public int isBuyer() {
         return isBuyer;
     }
 
-    public void setIsBuyer(int isBuyer) {
-        this.isBuyer = isBuyer;
+    public void setBuyer(int buyer) {
+        isBuyer = buyer;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public int getPassengerId() {
+        return passengerId;
+    }
+
+    public void setPassengerId(int passengerId) {
+        this.passengerId = passengerId;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof TravelPassenger && ((TravelPassenger) obj).getPassengerId() == passengerId;
+        return obj instanceof TravelPassenger && ((TravelPassenger) obj).getName().equals(name);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result *= prime * passengerId;
+        result *= prime * travelId;
         return result;
     }
 }

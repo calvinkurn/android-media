@@ -34,7 +34,7 @@ public class TravelSearchSortAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_travel_sort_search, parent, false);
+                .inflate(R.layout.item_travel_sort_search, null);
         return new ItemViewHolder(view);
     }
 

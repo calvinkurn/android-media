@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ResponseTravelPassengerList {
 
-    @SerializedName("kaiPassengers")
+    @SerializedName("travelPassengers")
     @Expose
     private TravelPassengerListEntity travelPassengerListEntity;
 

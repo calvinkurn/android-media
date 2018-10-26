@@ -9,33 +9,27 @@ import java.util.List;
 /**
  * Created by nabillasabbaha on 25/06/18.
  */
-public interface TravelPassengerBookingContract {
+public interface TravelPassengerBookingListContract {
 
     interface View extends CustomerView {
 
-        int getPaxType();
-
-        String getSalutationTitle();
-
-        String getContactName();
-
-        String getPhoneNumber();
-
-        String getIdentityNumber();
-
         void showMessageErrorInSnackBar(int resId);
+
+        void showMessageErrorInSnackBar(String message);
 
         void navigateToBookingPassenger(TravelPassenger trainPassengerViewModel);
 
-        int getSpinnerPosition();
-
         void renderPassengerList(List<TravelPassenger> travelPassengerList);
+
+        void showProgressBar();
+
+        void hideProgressBar();
 
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void submitDataPassenger(TravelPassenger trainPassengerViewModel);
+        void getPassengerList();
 
         void onDestroyView();
     }

@@ -5,19 +5,11 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.domain.GetTravelPassengersUseCase;
-import com.tokopedia.common.travel.domain.entity.ResponseTravelPassengerList;
-import com.tokopedia.common.travel.domain.entity.TravelPassengerEntity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelBookingPassenger;
 import com.tokopedia.common.travel.utils.typedef.TravelPassengerTitle;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 /**
  * Created by nabillasabbaha on 26/06/18.
@@ -39,51 +31,13 @@ public class TravelPassengerBookingPresenter extends BaseDaggerPresenter<TravelP
     }
 
     @Override
-    public void getPassengerList() {
-        getTravelPassengersUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                ResponseTravelPassengerList responseTravelPassengerList = graphqlResponse.getData(ResponseTravelPassengerList.class);
-                List<TravelPassengerEntity> travelPassengerEntities = responseTravelPassengerList.getTravelPassengerListEntity().getTravelPassengerEntityList();
-
-                List<TravelPassenger> travelPassengerList = new ArrayList<>();
-                for (TravelPassengerEntity travelPassengerEntity : travelPassengerEntities) {
-                    TravelPassenger travelPassenger = new TravelPassenger();
-                    travelPassenger.setPhoneNumber(travelPassengerEntity.getPhoneNumber());
-                    travelPassenger.setBirthDate(travelPassengerEntity.getBirthDate());
-                    travelPassenger.setId(travelPassengerEntity.getId());
-                    travelPassenger.setIdentityNumber(travelPassengerEntity.getIdNumber());
-                    travelPassenger.setIsBuyer(travelPassengerEntity.getIsBuyer());
-                    travelPassenger.setName(travelPassengerEntity.getName());
-                    travelPassenger.setPaxType(travelPassengerEntity.getPaxType());
-                    travelPassenger.setSalutationId(travelPassengerEntity.getSalutationId());
-                    travelPassenger.setUserId(travelPassengerEntity.getUserId());
-                    travelPassengerList.add(travelPassenger);
-                }
-                getView().renderPassengerList(travelPassengerList);
-            }
-        });
-    }
-
-    @Override
     public void submitDataPassenger(TravelPassenger trainPassengerViewModel) {
         if (isAllDataValid()) {
             trainPassengerViewModel.setSalutationTitle(getView().getSalutationTitle());
-            trainPassengerViewModel.setSalutationId(getSalutationId());
+            trainPassengerViewModel.setTitle(getSalutationId());
             trainPassengerViewModel.setName(getView().getContactName());
             if (getView().getPaxType() == TravelBookingPassenger.ADULT) {
-                trainPassengerViewModel.setPhoneNumber(getView().getPhoneNumber());
-                trainPassengerViewModel.setIdentityNumber(getView().getIdentityNumber());
+                trainPassengerViewModel.setIdNumber(getView().getIdentityNumber());
             }
             getView().navigateToBookingPassenger(trainPassengerViewModel);
         }

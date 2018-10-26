@@ -1,15 +1,21 @@
-query GetPassenger {
-  kaiPassengers {
-    passengerList {
+query travelPassenger {
+  travelPassengers {
+    passengerList{
       id
       userId
-      idNumber
+      title
       name
-      salutationId
+      firstName
+      lastName
       birthDate
-      phoneNumber
+      nationality
+      passportNo
+      passportCountry
+      passportExpiry
+      idNumber
       isBuyer
       paxType
+      travelId
     }
   }
 }

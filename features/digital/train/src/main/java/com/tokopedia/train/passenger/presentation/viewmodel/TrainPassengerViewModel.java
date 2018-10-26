@@ -17,9 +17,11 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
     private String headerTitle;
     private int passengerId;
     private String salutationTitle;
+    private int travelId;
 
     public TrainPassengerViewModel() {
     }
+
 
     protected TrainPassengerViewModel(Parcel in) {
         salutationId = in.readInt();
@@ -31,6 +33,7 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         headerTitle = in.readString();
         passengerId = in.readInt();
         salutationTitle = in.readString();
+        travelId = in.readInt();
     }
 
     @Override
@@ -44,6 +47,7 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
         dest.writeString(headerTitle);
         dest.writeInt(passengerId);
         dest.writeString(salutationTitle);
+        dest.writeInt(travelId);
     }
 
     @Override
@@ -133,6 +137,14 @@ public class TrainPassengerViewModel implements Parcelable, Visitable<TrainBooki
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getTravelId() {
+        return travelId;
+    }
+
+    public void setTravelId(int travelId) {
+        this.travelId = travelId;
     }
 
     @Override

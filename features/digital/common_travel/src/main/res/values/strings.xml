@@ -33,4 +33,6 @@
         <item name="travel_search_sort_item_latest_arrival">Waktu Tiba Termalam</item>
     </string-array>
     <string name="travel_title_sort_search">Urutkan</string>
+    <string name="menu_passenger_list">Edit</string>
+    <string name="error_message_choose_passenger">Kategori umur penumpang tidak sesuai</string>
 </resources>

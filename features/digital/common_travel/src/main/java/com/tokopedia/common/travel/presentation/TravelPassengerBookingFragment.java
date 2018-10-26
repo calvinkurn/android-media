@@ -103,7 +103,6 @@ public class TravelPassengerBookingFragment extends BaseDaggerFragment
             identityNumberInfo.setVisibility(View.GONE);
         }
         renderPassengerData();
-        presenter.getPassengerList();
     }
 
     private void renderSpinnerForAdult() {
@@ -126,10 +125,10 @@ public class TravelPassengerBookingFragment extends BaseDaggerFragment
         }
         if (!TextUtils.isEmpty(trainPassengerViewModel.getName()))
             contactName.setText(trainPassengerViewModel.getName());
-        if (!TextUtils.isEmpty(trainPassengerViewModel.getPhoneNumber()))
-            phoneNumber.setText(trainPassengerViewModel.getPhoneNumber());
-        if (!TextUtils.isEmpty(trainPassengerViewModel.getIdentityNumber()))
-            identityNumber.setText(trainPassengerViewModel.getIdentityNumber());
+//        if (!TextUtils.isEmpty(trainPassengerViewModel.getPhoneNumber()))
+//            phoneNumber.setText(trainPassengerViewModel.getPhoneNumber());
+//        if (!TextUtils.isEmpty(trainPassengerViewModel.getIdentityNumber()))
+//            identityNumber.setText(trainPassengerViewModel.getIdentityNumber());
 
         setEnableEditTextBasedOnCheckbox();
         if (isCheckSameAsBuyer) {
