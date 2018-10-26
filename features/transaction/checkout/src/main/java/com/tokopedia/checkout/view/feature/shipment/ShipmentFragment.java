@@ -672,6 +672,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updatePromo(null);
         shipmentPresenter.setPromoCodeAppliedData(null);
         shipmentPresenter.setHasDeletePromoAfterChecKPromoCodeFinal(true);
+        shipmentAdapter.resetCourierPromoState();
         shipmentAdapter.cancelAutoApplyCoupon();
         shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
     }
