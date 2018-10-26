@@ -81,8 +81,10 @@ public class ShippingCourierBottomsheet extends BottomSheets
         if (shippingCourierViewModels != null && shippingCourierViewModels.size() > 0) {
             presenter.setData(shippingCourierViewModels);
             setupRecyclerView(cartPosition);
+            updateHeight();
         } else {
             showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition, shopShipmentList);
+            updateHeight();
         }
     }
 
