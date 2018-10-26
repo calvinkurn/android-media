@@ -1152,17 +1152,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         return list;
     }
 
-    public String generatePromoTargetType(ProductDetailData productData, Context context) {
-        if (productData.getShopInfo().getShopIsOwner() == 1 && productData.getShopInfo().getShopIsGold() == 1) {
-            return VALUE_TARGET_GOLD_MERCHANT;
-        } else if (productData.getShopInfo().getShopIsOwner() == 1) {
-            return VALUE_TARGET_MERCHANT;
-        } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
-            return VALUE_TARGET_LOGIN_USER;
-        }
-        return VALUE_TARGET_GUEST;
-    }
-
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
         retrofitInteractor.getOtherProducts(context, param,
                 new RetrofitInteractor.OtherProductListener() {
