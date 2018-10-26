@@ -132,6 +132,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
+        initialHistoryView();
         setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
@@ -171,12 +172,13 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void showError(String message) {
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                    }
-                });
+                () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
+    }
+
+    private void initialHistoryView() {
+        trackingHistory.setVisibility(View.GONE);
+        emptyUpdateNotification.setVisibility(View.GONE);
+        liveTrackingButton.setVisibility(View.GONE);
     }
 
     private void setHistoryView(TrackingViewModel model) {
@@ -191,7 +193,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setEmptyHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatus().toLowerCase().contains(INVALID_REFERENCE_STATUS)) {
+        if (model.isInvalid()) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_courier_invalid));
             notificationHelpStep.setVisibility(View.VISIBLE);
@@ -237,23 +239,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private View.OnClickListener onFurtherInformationClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
-            }
-        };
+        return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
 
     private View.OnClickListener onLiveTrackingClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendAnalyticsOnButtonLiveTrackingClicked();
-                startActivity(
-                        SimpleWebViewActivity.createIntent(getActivity(),
-                                getArguments().getString(URL_LIVE_TRACKING)));
-            }
+        return view -> {
+            sendAnalyticsOnButtonLiveTrackingClicked();
+            startActivity(
+                    SimpleWebViewActivity.createIntent(getActivity(),
+                            getArguments().getString(URL_LIVE_TRACKING)));
         };
     }
 
