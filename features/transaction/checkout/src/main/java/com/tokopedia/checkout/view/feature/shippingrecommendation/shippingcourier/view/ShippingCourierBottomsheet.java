@@ -6,13 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.di.ShippingCourierModule;
@@ -40,13 +45,14 @@ public class ShippingCourierBottomsheet extends BottomSheets
     private LinearLayout llContent;
     private RecyclerView rvCourier;
     private LinearLayout llNetworkErrorView;
+    private ProgressBar pbLoading;
 
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
 
     @Inject
     ShippingCourierContract.Presenter presenter;
     @Inject
-    ShippingCourierAdapter shippingDurationAdapter;
+    ShippingCourierAdapter shippingCourierAdapter;
 
     public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
                                                          RecipientAddressModel recipientAddressModel,
@@ -66,6 +72,18 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     public void setShippingCourierBottomsheetListener(ShippingCourierBottomsheetListener shippingCourierBottomsheetListener) {
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
+    }
+
+    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel,
+                                             List<ShopShipment> shopShipmentList) {
+        hideLoading();
+        if (shippingCourierViewModels != null && shippingCourierViewModels.size() > 0) {
+            presenter.setData(shippingCourierViewModels);
+            setupRecyclerView(cartPosition);
+        } else {
+            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition, shopShipmentList);
+        }
     }
 
     private void initializeInjector() {
@@ -92,6 +110,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         llContent = view.findViewById(R.id.ll_content);
         rvCourier = view.findViewById(R.id.rv_courier);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        pbLoading = view.findViewById(R.id.pb_loading);
 
         initializeInjector();
         presenter.attachView(this);
@@ -104,14 +123,16 @@ public class ShippingCourierBottomsheet extends BottomSheets
             if (shippingCourierViewModels != null) {
                 presenter.setData(shippingCourierViewModels);
                 setupRecyclerView(cartPosition);
+            } else {
+                showLoading();
             }
         }
     }
 
     private void setupRecyclerView(int cartPosition) {
-        shippingDurationAdapter.setShippingCourierAdapterListener(this);
-        shippingDurationAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
-        shippingDurationAdapter.setCartPosition(cartPosition);
+        shippingCourierAdapter.setShippingCourierAdapterListener(this);
+        shippingCourierAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
+        shippingCourierAdapter.setCartPosition(cartPosition);
         boolean hasCourierPromo = false;
         for (ShippingCourierViewModel shippingCourierViewModel : presenter.getShippingCourierViewModels()) {
             if (!TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode())) {
@@ -119,11 +140,11 @@ public class ShippingCourierBottomsheet extends BottomSheets
                 break;
             }
         }
-        shippingDurationAdapter.setHasCourierPromo(hasCourierPromo);
+        shippingCourierAdapter.setHasCourierPromo(hasCourierPromo);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvCourier.setLayoutManager(linearLayoutManager);
-        rvCourier.setAdapter(shippingDurationAdapter);
+        rvCourier.setAdapter(shippingCourierAdapter);
     }
 
     @Override
@@ -161,4 +182,35 @@ public class ShippingCourierBottomsheet extends BottomSheets
         }
         return false;
     }
+
+    @Override
+    public void showLoading() {
+        llContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        pbLoading.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.GONE);
+        llContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
+        pbLoading.setVisibility(View.GONE);
+        llContent.setVisibility(View.GONE);
+        llNetworkErrorView.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(getContext(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        showLoading();
+                        shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
+                    }
+                });
+        updateHeight();
+    }
+
 }

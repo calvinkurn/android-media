@@ -90,6 +90,11 @@ public interface ShipmentContract {
 
         void renderCourierStateFailed(int itemPosition);
 
+        void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition,
+                                              ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
+        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
@@ -216,7 +221,10 @@ public interface ShipmentContract {
                              ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
-                                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+                                             ShipmentDetailData shipmentDetailData,
+                                             ShipmentCartItemModel shipmentCartItemModel,
+                                             List<ShopShipment> shopShipmentList,
+                                             boolean isInitialLoad);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -272,6 +280,10 @@ public interface ShipmentContract {
         void setCouponStateChanged(boolean appliedCoupon);
 
         boolean getCouponStateChanged();
+
+        void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
+
+        boolean getHasDeletePromoAfterChecKPromoCodeFinal();
     }
 
 }

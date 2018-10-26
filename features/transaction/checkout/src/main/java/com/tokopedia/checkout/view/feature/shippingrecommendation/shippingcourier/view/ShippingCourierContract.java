@@ -5,7 +5,9 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -18,6 +20,12 @@ import java.util.List;
 public interface ShippingCourierContract {
 
     interface View extends CustomerView {
+        void showLoading();
+
+        void hideLoading();
+
+        void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList);
+
         Activity getActivity();
     }
 

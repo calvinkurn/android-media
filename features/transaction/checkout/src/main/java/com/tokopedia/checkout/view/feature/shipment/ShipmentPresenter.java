@@ -126,6 +126,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutData checkoutData;
     private boolean partialCheckout;
     private boolean couponStateChanged;
+    private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
@@ -1472,11 +1473,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
                                                 ShipmentDetailData shipmentDetailData,
-                                                List<ShopShipment> shopShipmentList) {
+                                                ShipmentCartItemModel shipmentCartItemModel,
+                                                List<ShopShipment> shopShipmentList,
+                                                boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
-                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter));
+                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
+                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
     }
 
     @Override
@@ -1504,5 +1508,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean getCouponStateChanged() {
         return couponStateChanged;
+    }
+
+    @Override
+    public void setHasDeletePromoAfterChecKPromoCodeFinal(boolean hasDeletePromoAfterChecKPromoCodeFinal) {
+        this.hasDeletePromoAfterChecKPromoCodeFinal = hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
+        return hasDeletePromoAfterChecKPromoCodeFinal;
     }
 }
