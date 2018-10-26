@@ -91,7 +91,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private void savePhoneVerified(AccountModel accountModel) {
         if (accountModel.getProfile() != null) {
-            userSession.setIsMsisdnVerified(accountModel.getProfile().isPhoneVerified());
+            userSession.setIsMSISDNVerified(accountModel.getProfile().isPhoneVerified());
         }
     }
 }
