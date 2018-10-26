@@ -370,7 +370,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 dismissProgressBar();
                 getActivity().setResult(Activity.RESULT_CANCELED);
             } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-//                UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity
@@ -653,7 +652,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             @Override
             public void onGoToSecurityQuestion(SecurityPojo securityPojo, String fullName, String email, String phone) {
-
+                Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                        getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
+                startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
             }
         };
     }
