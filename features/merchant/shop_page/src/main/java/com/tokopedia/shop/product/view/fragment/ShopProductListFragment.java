@@ -101,6 +101,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     private String shopId;
     private String keyword;
+    private String prevAnalyticKeyword = "";
     private String sortValue;
     private String attribution;
 
@@ -451,11 +452,12 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                     list, shopProductAdapter.getShopProductViewModelList().size(), shopId, shopInfo.getInfo().getShopName()
             );
         }
-        if (!TextUtils.isEmpty(keyword)) {
+        if (!TextUtils.isEmpty(keyword) && !prevAnalyticKeyword.equals(keyword)) {
             shopPageTracking.searchKeyword(isOwner(),
                     keyword,
                     list.size() > 0,
                     CustomDimensionShopPage.create(shopInfo));
+            prevAnalyticKeyword = keyword;
         }
 
         hideLoading();
