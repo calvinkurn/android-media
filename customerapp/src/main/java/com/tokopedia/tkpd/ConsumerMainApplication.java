@@ -396,7 +396,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public boolean checkAppSignature(){
->>>>>>> a470cfa9cadbdfd1b5b3d34fd91f807cf123aa62
         PackageInfo info = null;
         try {
             info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
