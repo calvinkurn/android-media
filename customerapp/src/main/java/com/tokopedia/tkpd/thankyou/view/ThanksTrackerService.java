@@ -45,14 +45,12 @@ public class ThanksTrackerService extends IntentService {
         if (data != null && data.getPlatform() != null && data.getPlatform().equals("marketplace")){
             return data.getId() != null
                     && !data.getId().isEmpty()
-                    && data.getPlatform() != null
                     && !data.getPlatform().isEmpty()
                     && data.getShopTypes() != null
                     && !data.getShopTypes().isEmpty();
         } else if (data != null && data.getPlatform() != null && data.getPlatform().equals("digital")){
             return data.getId() != null
                     && !data.getId().isEmpty()
-                    && data.getPlatform() != null
                     && !data.getPlatform().isEmpty();
         } else {
             return false;
