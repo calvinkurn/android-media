@@ -353,8 +353,8 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(
                 builder.build(),
                 isFollowed ?
-                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE :
-                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE
+                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
     }
 
