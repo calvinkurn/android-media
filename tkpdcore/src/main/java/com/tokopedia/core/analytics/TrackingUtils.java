@@ -518,7 +518,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<Integer, String> category) {
+    public static void sendMoEngageSearchAttempt(String keyword, boolean isResultFound, HashMap<String, String> category) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrString(AppEventTracking.MOENGAGE.KEYWORD, keyword);
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound);

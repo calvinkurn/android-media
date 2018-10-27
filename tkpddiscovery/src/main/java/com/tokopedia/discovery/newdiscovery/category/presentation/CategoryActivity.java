@@ -52,7 +52,6 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     private ProductFragment productFragment;
     private CategoryCatalogFragment catalogFragment;
-    private static boolean isSubCtaegory = true;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -65,7 +64,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
-            isSubCtaegory = false;
+            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -77,7 +76,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent(activity, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
-            isSubCtaegory = true;
+            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
         }
@@ -113,15 +112,6 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryPresenter.setDiscoveryView(this);
         categoryName = "";
         loadInitialData();
-        trackMoEngageCategory();
-    }
-
-    private void trackMoEngageCategory() {
-        if (isSubCtaegory) {
-            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
-        } else {
-            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
-        }
     }
 
     @Override

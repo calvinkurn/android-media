@@ -115,7 +115,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
-        HashMap<Integer, String> category = new HashMap<Integer, String>();
+        HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -126,7 +126,7 @@ public class BaseDiscoveryActivity
                 } else {
                     break;
                 }
-                category.put(productViewModel.getProductList().get(i).getCategoryID(), productViewModel.getProductList().get(i).getCategoryName());
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
 
             }
         }
@@ -139,7 +139,7 @@ public class BaseDiscoveryActivity
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
-        HashMap<Integer, String> category = new HashMap<Integer, String>();
+        HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -150,7 +150,7 @@ public class BaseDiscoveryActivity
                 } else {
                     break;
                 }
-                category.put(productViewModel.getProductList().get(i).getCategoryID(), productViewModel.getProductList().get(i).getCategoryName());
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
