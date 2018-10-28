@@ -94,8 +94,21 @@ public class BranchSdkUtils {
 
     private static LinkProperties createLinkProperties(ShareData data, String channel, Activity activity) {
         LinkProperties linkProperties = new LinkProperties();
+
+        linkProperties.setCampaign(CAMPAIGN_NAME);
+        linkProperties.setChannel(channel);
+        linkProperties.setFeature(data.getType());
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", data.getOgTitle());
+        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
+
         String deeplinkPath;
-        String desktopUrl = null;
+        String desktopUrl;
+
+        linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+        linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
+        linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
+
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
         } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -126,21 +139,9 @@ public class BranchSdkUtils {
             deeplinkPath = getApplinkPath(data.renderShareUri(), "");
         }
 
-        if (desktopUrl == null) {
-            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
-            linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
-            linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
 
-        }
-
-        linkProperties.setCampaign(CAMPAIGN_NAME);
-        linkProperties.setChannel(channel);
-        linkProperties.setFeature(data.getType());
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderBranchShareUri(deeplinkPath));
-        linkProperties.addControlParameter("$og_url", data.getOgUrl());
-        linkProperties.addControlParameter("$og_title", data.getOgTitle());
-        linkProperties.addControlParameter("$og_image_url", data.getOgImageUrl());
 
         return linkProperties;
     }
