@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister;
+package com.tokopedia.loginphone;
 
 import org.junit.Test;
 
