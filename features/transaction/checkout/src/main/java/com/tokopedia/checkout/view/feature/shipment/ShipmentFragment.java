@@ -1657,8 +1657,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentCartItemModel.getSelectedShipmentDetailData().setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
         }
         shipmentPresenter.processGetCourierRecommendation(
-                shipmentCartItemModel.getShippingId(),
-                shipmentCartItemModel.getSpId(),
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId(),
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId(),
                 cartPosition,
                 shipmentCartItemModel.getSelectedShipmentDetailData(),
                 shipmentCartItemModel, shopShipmentList, false);
