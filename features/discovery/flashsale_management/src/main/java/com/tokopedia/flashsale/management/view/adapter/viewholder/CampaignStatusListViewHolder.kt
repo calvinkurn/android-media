@@ -10,7 +10,7 @@ import com.tokopedia.flashsale.management.data.campaignlabel.CampaignStatus
 import com.tokopedia.flashsale.management.ekstension.toCampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusListViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
-import com.tokopedia.product.manage.item.video.view.adapter.CampaignStatusListAdapter
+import com.tokopedia.flashsale.management.view.adapter.CampaignStatusListAdapter
 import kotlinx.android.synthetic.main.item_list_campaign_status.view.*
 
 class CampaignStatusListViewHolder(itemView: View,
