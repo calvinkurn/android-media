@@ -72,8 +72,6 @@ open class CustomVoucherView : FrameLayout {
             mScallopRelativePosition = attributes.getFloat(R.styleable.CustomVoucherView_vchScallopRelativePosition, 0.7f)
             if (attributes.hasValue(R.styleable.CustomVoucherView_vchElevation)) {
                 mShadowRadius = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchElevation, 0)
-            } else if (attributes.hasValue(R.styleable.CustomVoucherView_android_elevation)) {
-                mShadowRadius = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_android_elevation, 0)
             }
             mDashWidth = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchDashWidth, defaultRadius)
             mDashGap = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchDashGap, defaultRadius)
