@@ -5,8 +5,10 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
+import com.tokopedia.affiliate.feature.explore.domain.usecase.AutoCompleteUseCase;
 import com.tokopedia.affiliate.feature.explore.domain.usecase.ExploreUseCase;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
+import com.tokopedia.affiliate.feature.explore.view.subscriber.AutoCompleteSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckQuotaSubscriber;
 import com.tokopedia.affiliate.feature.explore.view.subscriber.GetExploreFirstSubscriber;
@@ -23,14 +25,17 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     private ExploreUseCase exploreUseCase;
     private CheckQuotaUseCase checkQuotaUseCase;
     private CheckAffiliateUseCase checkAffiliateUseCase;
+    private AutoCompleteUseCase autoCompleteUseCase;
 
     @Inject
     public ExplorePresenter(ExploreUseCase exploreUseCase,
                             CheckQuotaUseCase checkQuotaUseCase,
-                            CheckAffiliateUseCase checkAffiliateUseCase) {
+                            CheckAffiliateUseCase checkAffiliateUseCase,
+                            AutoCompleteUseCase autoCompleteUseCase) {
         this.exploreUseCase = exploreUseCase;
         this.checkQuotaUseCase = checkQuotaUseCase;
         this.checkAffiliateUseCase = checkAffiliateUseCase;
+        this.autoCompleteUseCase = autoCompleteUseCase;
     }
 
     @Override
@@ -39,6 +44,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
         exploreUseCase.unsubscribe();
         checkQuotaUseCase.unsubscribe();
         checkAffiliateUseCase.unsubscribe();
+        autoCompleteUseCase.unsubscribe();
     }
 
     @Override
@@ -51,11 +57,9 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
                         getView(),
                         !TextUtils.isEmpty(exploreParams.getKeyword()))
         );
-
     }
 
     @Override
-
     public void loadMoreData(ExploreParams exploreParams) {
         exploreUseCase.clearRequest();
         exploreUseCase.addRequest(exploreUseCase.getRequestLoadMore(exploreParams));
@@ -65,6 +69,13 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     @Override
     public void checkIsAffiliate(String productId, String adId) {
         checkAffiliateUseCase.execute(new CheckAffiliateSubscriber(getView(), productId, adId));
+    }
+
+    @Override
+    public void getAutoComplete(String keyword) {
+        autoCompleteUseCase.clearRequest();
+        autoCompleteUseCase.addRequest(autoCompleteUseCase.getRequest(keyword));
+        autoCompleteUseCase.execute(new AutoCompleteSubscriber(getView()));
     }
 
     @Override
