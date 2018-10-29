@@ -1,32 +1,32 @@
 package com.tokopedia.notifications.domain;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.notifications.common.CMNotificationUrls;
+import com.tokopedia.notifications.data.source.CMNotificationUrls;
+import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.usecase.UseCase;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import rx.Observable;
 
 /**
  * Created by Ashwani Tyagi on 23/10/18.
  */
 public class UpdateFcmTokenUseCase extends RestRequestUseCase {
 
-    private Context context;
+    private RequestParams requestParams = RequestParams.create();
 
-    public UpdateFcmTokenUseCase(@ApplicationContext Context context) {
-        this.context = context;
+    public UpdateFcmTokenUseCase() {
+    }
+
+    public void createRequestParams(String userId, String accessToken, String gAdsId, String token) {
+        requestParams.putString("userid", userId);
+        requestParams.putString("authtoken", accessToken);
+        requestParams.putString("device", "ANDROID");
+        requestParams.putString("fcm_token", token);
+        requestParams.putString("identifier", gAdsId);
+        requestParams.putString("requesttimestamp", CMNotificationUtils.getCurrentLocalTimeStamp());
     }
 
     @Override
@@ -34,9 +34,13 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
         List<RestRequest> tempRequest = new ArrayList<>();
 
         RestRequest restRequest1 = new RestRequest.Builder(CMNotificationUrls.CM_TOKEN_UPDATE, String.class)
+                .setBody(requestParams.getParameters())
+                .setRequestType(RequestType.POST)
                 .build();
         tempRequest.add(restRequest1);
 
         return tempRequest;
     }
+
+
 }

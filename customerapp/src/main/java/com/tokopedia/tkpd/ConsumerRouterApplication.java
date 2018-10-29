@@ -84,6 +84,7 @@ import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -249,6 +250,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifcenter.NotifCenterRouter;
+import com.tokopedia.notifications.CMPushNotificationManager;
+import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -486,8 +489,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter,TkpdAppsFlyerRouter,
-        ScanQrCodeRouter {
+        TalkRouter, TkpdAppsFlyerRouter,
+        ScanQrCodeRouter, CMRouter {
 
 
     private static final String EXTRA = "extra";
@@ -520,6 +523,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initializeDagger();
         initDaggerInjector();
         initRemoteConfig();
+        initCMPushNotification();
     }
 
     private void initDaggerInjector() {
@@ -902,7 +906,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
-       
+
     @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
@@ -3168,6 +3172,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
     }
 
+    @Override
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
@@ -3175,7 +3180,30 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
-    public String getDefferedDeeplinkPathIfExists(){
+    public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        refereshFcmTokenToCMNotif(FCMCacheManager.getRegistrationId(this));
+        onAppsFlyerInit();
+
+    }
+
+    @Override
+    public String getAccessToken() {
+        return getSession().getAccessToken();
+    }
+
+    @Override
+    public void refereshFcmTokenToCMNotif(String token) {
+        CMPushNotificationManager.getInstance().setFcmTokenCMNotif(token);
+
+    }
+
+    private void initCMPushNotification() {
+        CMPushNotificationManager.getInstance().init(this);
+        CMPushNotificationManager.getInstance().setFcmTokenCMNotif(FCMCacheManager.getRegistrationId(this));
     }
 }

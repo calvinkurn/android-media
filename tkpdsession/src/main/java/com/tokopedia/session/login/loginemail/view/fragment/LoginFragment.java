@@ -52,6 +52,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -469,7 +470,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
-        ((TkpdCoreRouter)(getContext().getApplicationContext())).onAppsFlyerInit();
+        ((TkpdCoreRouter) (getContext().getApplicationContext())).onLoginSuccess();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

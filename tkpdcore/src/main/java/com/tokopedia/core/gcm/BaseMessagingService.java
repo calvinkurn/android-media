@@ -16,6 +16,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.GlobalConfig;
 
+import java.util.Map;
+
 import io.hansel.hanselsdk.Hansel;
 
 /**
@@ -39,8 +41,10 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
         if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {
             Hansel.handlePushPayload(this, data);
-        }else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
+        } else if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
             appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+        } else if (appNotificationReceiver.isFromCMNotificationPlatform(remoteMessage.getData())) {
+            appNotificationReceiver.onCampaignManagementNotificationReceived(remoteMessage);
         } else {
             AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
             appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
@@ -70,6 +74,16 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
                 @Override
                 public void onMoengageNotificationReceived(RemoteMessage message) {
+                    // no-op
+                }
+
+                @Override
+                public boolean isFromCMNotificationPlatform(Map<String, String> extra) {
+                    return false;
+                }
+
+                @Override
+                public void onCampaignManagementNotificationReceived(RemoteMessage message) {
                     // no-op
                 }
             };

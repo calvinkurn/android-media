@@ -13,6 +13,8 @@ public interface CMConstant {
     String NOTIFICATION_ACTION_BUTTONS = "action_buttons";
     String NOTIFICATION_CUSTOM_VALUES = "custom_values";
     String FCM_TOKEN_CACHE_KEY = "fcm_token_cache";
+    String USERID_CACHE_KEY = "userid_cache";
+    String GADSID_CACHE_KEY = "gadsid_cache";
 
     interface NotificationId {
         int GENERAL = 501;

@@ -6,7 +6,9 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 
 import io.hansel.hanselsdk.Hansel;
@@ -27,12 +29,16 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
         Hansel.setNewToken(this, refreshedToken);
+        ((TkpdCoreRouter) getApplicationContext()).refereshFcmTokenToCMNotif(refreshedToken);
+
     }
 
     @Override
     public void updateMoEngageToken(String token) {
         CommonUtils.dumper("Moengage RefreshedToken: " + token);
         PushManager.getInstance().refreshToken(getApplicationContext(), token);
+        ((TkpdCoreRouter) getApplicationContext()).refereshFcmTokenToCMNotif(token);
+
     }
 
     @Override

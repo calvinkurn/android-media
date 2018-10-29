@@ -3,14 +3,20 @@ package com.tokopedia.notifications;
 import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.notifications.common.CMConstant;
@@ -23,6 +29,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +46,6 @@ public class CMPushNotificationManager {
     private UpdateFcmTokenUseCase updateFcmTokenUseCase;
     private static final CMPushNotificationManager sInstance;
     private Context mContext;
-    private String mUserId;
 
     public static CMPushNotificationManager getInstance() {
         return sInstance;
@@ -49,12 +55,40 @@ public class CMPushNotificationManager {
         sInstance = new CMPushNotificationManager();
     }
 
+    /**
+     * initialization of push notification library
+     *
+     * @param context
+     */
     public void init(@NonNull Context context) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
         this.mContext = context.getApplicationContext();
     }
+
+    /**
+     * Send FCM token to server
+     *
+     * @param token
+     */
+
+    public void setFcmTokenCMNotif(String token) {
+        Log.e("error", "token: " + token);
+
+        if (mContext == null) {
+            throw new IllegalArgumentException("Kindly invoke init before calling notification library");
+        }
+        if (TextUtils.isEmpty(token)) {
+            return;
+        }
+        if (CMNotificationUtils.tokenUpdateRequired(mContext, token) ||
+                CMNotificationUtils.mapTokenWithUserRequired(mContext, getUserId()) ||
+                CMNotificationUtils.mapTokenWithGAdsIdRequired(mContext, getGoogleAdId())) {
+            sendFcmTokenToServer(token);
+        }
+    }
+
 
     /**
      * To check weather the incoming notification belong to campaign manangment
@@ -80,7 +114,15 @@ public class CMPushNotificationManager {
         return false;
     }
 
+    /**
+     * Handle the remote message and show push notification
+     *
+     * @param remoteMessage
+     */
     public void handlePushPayload(RemoteMessage remoteMessage) {
+        if (mContext == null) {
+            throw new IllegalArgumentException("Kindly invoke init before calling notification library");
+        }
         try {
             if (isFromCMNotificationPlatform(remoteMessage.getData())) {
                 Bundle bundle = convertMapToBundle(remoteMessage.getData());
@@ -136,7 +178,7 @@ public class CMPushNotificationManager {
         }
     }
 
-    public String getNotificationType(Bundle extras) {
+    private String getNotificationType(Bundle extras) {
         try {
             if (null == extras) {
                 Log.e(LOG, "CMPushNotificationManager: No Intent extra available");
@@ -178,36 +220,76 @@ public class CMPushNotificationManager {
         return null;
     }
 
-    public void setUserId(String userId) {
-        mUserId = userId;
+    private void sendFcmTokenToServer(String token) {
+        String userId = getUserId();
+        String accessToken = ((CMRouter) mContext).getAccessToken();
+        String gAdId = getGoogleAdId();
+        updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
+        updateFcmTokenUseCase.createRequestParams(userId, accessToken, gAdId, token);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e(LOG, "onCompleted: sendFcmTokenToServer ");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(LOG, "CMPushNotificationManager: sendFcmTokenToServer " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                        RestResponse res1 = typeRestResponseMap.get(String.class);
+                        Log.e("code", "" + res1.getCode());
+                        Log.e("data", "" + res1.getData());
+                        Log.e("error", "" + res1.getErrorBody());
+
+                        if (true) {
+                            CMNotificationUtils.saveToken(mContext, token);
+                            CMNotificationUtils.saveUserId(mContext, userId);
+                            CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
+                        }
+                    }
+                });
+            }
+        }, 1000);
+
     }
 
-    public void setFcmToken(String token) {
-        if (TextUtils.isEmpty(token)) {
-            return;
+
+    private String getGoogleAdId() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID);
+
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId != null && !TextUtils.isEmpty(adsId.trim())) {
+            return adsId;
+        } else {
+            AdvertisingIdClient.Info adInfo;
+            try {
+                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext);
+            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+                return "";
+            }
+
+            if (adInfo != null) {
+                String adID = adInfo.getId();
+
+                if (!TextUtils.isEmpty(adID)) {
+                    localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, adID);
+                    localCacheHandler.applyEditor();
+                }
+                return adID;
+            }
         }
-        if (CMNotificationUtils.needTokenUpdateRequired(mContext, token)) {
-            sendFcmTokenToServer();
-        }
+        return "";
     }
 
-    private void sendFcmTokenToServer() {
-        updateFcmTokenUseCase = new UpdateFcmTokenUseCase(mContext);
-        updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-
-            }
-        });
+    private String getUserId() {
+        return ((CMRouter) mContext).getUserId();
     }
+
 }

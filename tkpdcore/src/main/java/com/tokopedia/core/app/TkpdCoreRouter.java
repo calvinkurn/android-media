@@ -200,4 +200,9 @@ public interface TkpdCoreRouter {
     Intent getChangePasswordIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
+
+    void onLoginSuccess();
+
+    void refereshFcmTokenToCMNotif(String token);
+
 }
