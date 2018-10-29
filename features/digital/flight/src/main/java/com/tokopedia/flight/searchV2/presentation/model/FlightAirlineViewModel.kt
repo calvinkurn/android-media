@@ -6,7 +6,7 @@ import android.os.Parcelable
 /**
  * Created by Rizky on 23/10/18.
  */
-class FlightAirlineViewModel(val id: String, val name: String, val shortName: String, val logo: String): Parcelable {
+data class FlightAirlineViewModel(val id: String, val name: String, val shortName: String, val logo: String): Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -34,4 +34,5 @@ class FlightAirlineViewModel(val id: String, val name: String, val shortName: St
             return arrayOfNulls(size)
         }
     }
+
 }

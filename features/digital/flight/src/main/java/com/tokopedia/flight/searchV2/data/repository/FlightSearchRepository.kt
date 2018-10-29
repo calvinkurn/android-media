@@ -2,10 +2,13 @@ package com.tokopedia.flight.searchV2.data.repository
 
 import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
+import com.tokopedia.flight.search.data.cloud.model.response.AttributesInc
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
 import com.tokopedia.flight.search.data.cloud.model.response.Meta
 import com.tokopedia.flight.searchV2.data.ComboAndMetaWrapper
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
+import com.tokopedia.flight.searchV2.data.api.single.response.AttributesAirline
+import com.tokopedia.flight.searchV2.data.api.single.response.AttributesAirport
 import com.tokopedia.flight.searchV2.data.api.single.response.Included
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightSearchCombinedDataDbSource
@@ -29,7 +32,7 @@ open class FlightSearchRepository @Inject constructor(
         private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource,
         private val flightSearchMapper: FlightSearchMapper) {
 
-    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, included: List<Included>, isReturnTrip: Boolean):
+    private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, included: List<Included<AttributesInc>>, isReturnTrip: Boolean):
             Observable<JourneyAndRoutes> {
         return Observable.from(journeyResponse.attributes.routes)
                 .flatMap { route ->
@@ -177,11 +180,11 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchSingleDataDbSource.getSearchCount(filterModel)
     }
 
-    private fun getAirports(departureAirport: String, arrivalAirport: String, included: List<Included>) :
+    private fun getAirports(departureAirport: String, arrivalAirport: String, included: List<Included<AttributesInc>>) :
             Observable<Pair<FlightAirportViewModel, FlightAirportViewModel>> {
         val foundDepartureAirport = included.find {
             it.type == "airport" && it.id == departureAirport
-        }
+        } as Included<AttributesAirport>?
         val foundDepartureAirportViewModel = if (foundDepartureAirport != null) {
             FlightAirportViewModel(foundDepartureAirport.id, foundDepartureAirport.attributes.name,
                     foundDepartureAirport.attributes.city)
@@ -191,7 +194,7 @@ open class FlightSearchRepository @Inject constructor(
 
         val foundArrivalAirport = included.find {
             it.type == "airport" && it.id == arrivalAirport
-        }
+        } as Included<AttributesAirport>?
         val foundArrivalAirportViewModel = if (foundArrivalAirport != null) {
             FlightAirportViewModel(foundArrivalAirport.id, foundArrivalAirport.attributes.name,
                     foundArrivalAirport.attributes.city)
@@ -201,10 +204,10 @@ open class FlightSearchRepository @Inject constructor(
         return Observable.just(Pair(foundDepartureAirportViewModel, foundArrivalAirportViewModel))
     }
 
-    private fun getAirlineById(airlineId: String, included: List<Included>): Observable<FlightAirlineViewModel> {
+    private fun getAirlineById(airlineId: String, included: List<Included<AttributesInc>>): Observable<FlightAirlineViewModel> {
         val foundAirline = included.find {
             it.type == "airline" && it.id == airlineId
-        }
+        } as Included<AttributesAirline>?
         val flightAirlineViewModel = if (foundAirline != null) {
             FlightAirlineViewModel(foundAirline.id, foundAirline.attributes.name,
                     foundAirline.attributes.shortName, foundAirline.attributes.logo)

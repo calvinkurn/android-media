@@ -56,7 +56,7 @@ public interface FlightApi {
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
-    Observable<Response<FlightDataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
+    Observable<Response<String>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
 
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_SEARCH_COMBINED)
