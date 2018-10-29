@@ -83,7 +83,6 @@ public class SearchInputView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SearchInputView);
         try {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
@@ -92,6 +91,7 @@ public class SearchInputView extends BaseCustomView {
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
     private void init() {
@@ -100,12 +100,7 @@ public class SearchInputView extends BaseCustomView {
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
-    }
 
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (searchDrawable != null) {
             searchImageView.setImageDrawable(searchDrawable);
         }
@@ -180,8 +175,6 @@ public class SearchInputView extends BaseCustomView {
                 searchTextView.setText("");
             }
         });
-        invalidate();
-        requestLayout();
     }
 
     public void setSearchText(String searchText) {
