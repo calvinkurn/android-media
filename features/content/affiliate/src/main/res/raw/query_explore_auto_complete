@@ -1,5 +1,8 @@
 query topadsExploreAutocom($keyword:String!){
   topadsExploreAutocom(keyword:$keyword){
-    match
+    match{
+        text
+        formatted
+        }
   }
 }
