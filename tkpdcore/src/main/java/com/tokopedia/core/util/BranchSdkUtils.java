@@ -126,8 +126,8 @@ public class BranchSdkUtils {
                 desktopUrl = ((TkpdCoreRouter) activity.getApplication())
                         .getDesktopLinkGroupChat();
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
-                linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, desktopUrl);
-                linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(String.format("$%s", BRANCH_ANDROID_DESKTOP_URL_KEY), desktopUrl);
+                linkProperties.addControlParameter(String.format("$%s", BRANCH_IOS_DESKTOP_URL_KEY), desktopUrl);
                 linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
