@@ -163,7 +163,6 @@ public class InboxChatFragment extends BaseDaggerFragment
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
         if (GlobalConfig.isSellerApp()){
-            sendBroadcast.setVisibility(View.VISIBLE);
             sendBroadcast.setOnClickListener(v -> {
                 if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
                     startActivity(((BroadcastMessageRouter) getActivity().getApplication()).getBroadcastMessageListIntent(getContext()));
@@ -693,7 +692,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
         sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
 
-        checkNeedToShowCasing();
+        if (isValidToCreateBroadcast)
+            checkNeedToShowCasing();
     }
 
     private void checkNeedToShowCasing() {
