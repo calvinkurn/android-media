@@ -23,7 +23,7 @@ public interface TrainRouter {
 
     Interceptor getChuckInterceptor();
 
-    Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform, String reservationId, String reservationCode);
+    Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform, String reservationId, String reservationCode);
 
     Intent getLoginIntent();
 

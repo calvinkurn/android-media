@@ -10,6 +10,7 @@ import com.tokopedia.instantloan.domain.interactor.GetBannersUserCase;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.network.InstantLoanAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,6 +43,12 @@ public class InstantLoanModule {
     @Provides
     public PostPhoneDataUseCase providePostPhoneDataUseCase(InstantLoanAuthInterceptor instantLoanAuthInterceptor, @ApplicationContext Context context) {
         return new PostPhoneDataUseCase(instantLoanAuthInterceptor, context);
+    }
+
+    @InstantLoanScope
+    @Provides
+    public UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
 

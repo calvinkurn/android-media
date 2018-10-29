@@ -8,6 +8,7 @@ import com.tokopedia.loyalty.domain.entity.response.Coupon;
 import com.tokopedia.loyalty.domain.entity.response.CouponListDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.DigitalVoucherData;
 import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.HachikoDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointResponse;
 import com.tokopedia.loyalty.domain.entity.response.ValidateRedeemCouponResponse;
 import com.tokopedia.loyalty.domain.entity.response.VoucherResponse;
@@ -62,24 +63,30 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
 
 
     @Override
-    public TokoPointDrawerData convertTokoplusPointDrawer(GqlTokoPointDrawerDataResponse tokoplusPointDrawerData) {
+    public TokoPointDrawerData convertTokoplusPointDrawer(HachikoDrawerDataResponse dataResponse) {
+
+        GqlTokoPointDrawerDataResponse tokoplusPointDrawerData = dataResponse.getGqlTokoPointDrawerDataResponse();
+
         PopUpNotif popUpNotif = new PopUpNotif();
         TokoPointDrawerData.UserTier userTier = new TokoPointDrawerData.UserTier();
         TokoPointDrawerData tokoPointDrawerData = new TokoPointDrawerData();
 
-        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
+        if (tokoplusPointDrawerData != null
+                && tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null &&
                 !TextUtils.isEmpty(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getTitle())) {
             tokoPointDrawerData.setHasNotif(1);
         } else {
             tokoPointDrawerData.setHasNotif(0);
         }
 
-        tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag() ? 1 : 0);
-        tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getGqlTokoPointUrl().getMainPageUrl());
+        if (tokoplusPointDrawerData != null) {
+            tokoPointDrawerData.setOffFlag(tokoplusPointDrawerData.getOffFlag() ? 1 : 0);
+            tokoPointDrawerData.setMainPageUrl(tokoplusPointDrawerData.getGqlTokoPointUrl().getMainPageUrl());
+            tokoPointDrawerData.setMainPageTitle("");
+        }
 
-        tokoPointDrawerData.setMainPageTitle("");
-
-        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+        if (tokoplusPointDrawerData != null
+                && tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
                 tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier() != null) {
             userTier.setTierNameDesc(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getNameDesc());
             userTier.setTierImageUrl(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointTier().getImageUrl());
@@ -88,7 +95,8 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             tokoPointDrawerData.setUserTier(null);
         }
 
-        if (tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
+        if (tokoplusPointDrawerData != null
+                && tokoplusPointDrawerData.getGqlTokoPointStatus() != null &&
                 tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints() != null) {
             userTier.setRewardPointsStr(tokoplusPointDrawerData.getGqlTokoPointStatus().getGqlTokoPointPoints().getRewardString());//getUserTier().getRewardPointsStr());
 
@@ -96,7 +104,7 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             userTier.setRewardPointsStr("");
         }
 
-        if (tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null) {
+        if (tokoplusPointDrawerData != null && tokoplusPointDrawerData.getGqlTokoPointPopupNotif() != null) {
             popUpNotif.setAppLink(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getAppLink());
             popUpNotif.setButtonText(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonText());
             popUpNotif.setButtonUrl(tokoplusPointDrawerData.getGqlTokoPointPopupNotif().getButtonURL());
@@ -106,6 +114,11 @@ public class TokoPointResponseMapper implements ITokoPointResponseMapper {
             tokoPointDrawerData.setPopUpNotif(popUpNotif);
         } else {
             tokoPointDrawerData.setPopUpNotif(null);
+        }
+
+        if (dataResponse.getTokopointsSumCoupon() != null) {
+            tokoPointDrawerData.setSumCoupon(dataResponse.getTokopointsSumCoupon().getSumCoupon());
+            tokoPointDrawerData.setSumCouponStr(dataResponse.getTokopointsSumCoupon().getSumCouponStr());
         }
         return tokoPointDrawerData;
     }

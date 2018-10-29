@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.helper;
 
-import com.google.gson.Gson;
+import android.text.TextUtils;
+
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -15,7 +17,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.La
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
-import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,12 @@ public class ProductViewModelHelper {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
         productViewModel.setCpmModel(gqlResponse.getCpmModel());
+        if (searchProductResponse.getRelated() != null &&
+                !TextUtils.isEmpty(searchProductResponse.getRelated().getRelatedKeyword())) {
+            productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProductResponse.getRelated()));
+        } else if (gqlResponse.getGuidedSearchResponse() != null) {
+            productViewModel.setGuidedSearchViewModel(convertToGuidedSearchViewModel(gqlResponse.getGuidedSearchResponse()));
+        }
         productViewModel.setProductList(convertToProductItemListGql(searchProductResponse.getProducts()));
         productViewModel.setAdsModel(gqlResponse.getTopAdsModel());
         productViewModel.setQuery(searchProductResponse.getQuery());
@@ -60,13 +67,27 @@ public class ProductViewModelHelper {
         if (gqlResponse.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(gqlResponse.getDynamicFilterModel());
         }
-        if (gqlResponse.getGuidedSearchResponse() != null) {
-            productViewModel.setGuidedSearchViewModel(convertToGuidedSearchViewModel(gqlResponse.getGuidedSearchResponse()));
-        }
         if (gqlResponse.getQuickFilterModel() != null) {
             productViewModel.setQuickFilterModel(gqlResponse.getQuickFilterModel());
         }
+        productViewModel.setAdditionalParams(gqlResponse.getSearchProduct().getAdditionalParams());
         return productViewModel;
+    }
+
+    private static RelatedSearchModel convertToRelatedSearchModel(SearchProductGqlResponse.Related related) {
+        RelatedSearchModel relatedSearchModel = new RelatedSearchModel();
+        relatedSearchModel.setRelatedKeyword(related.getRelatedKeyword());
+
+        List<RelatedSearchModel.OtherRelated> otherRelatedList = new ArrayList<>();
+        for (SearchProductGqlResponse.OtherRelated otherRelatedResponse : related.getOtherRelated()) {
+            RelatedSearchModel.OtherRelated otherRelatedViewModel = new RelatedSearchModel.OtherRelated();
+            otherRelatedViewModel.setKeyword(otherRelatedResponse.getKeyword());
+            otherRelatedViewModel.setUrl(otherRelatedResponse.getUrl());
+            otherRelatedList.add(otherRelatedViewModel);
+        }
+        relatedSearchModel.setOtherRelated(otherRelatedList);
+
+        return relatedSearchModel;
     }
 
     private static GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchResponse guidedSearchResponse) {

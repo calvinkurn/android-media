@@ -86,7 +86,7 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         requestParams.putString(BrowseApi.START, Integer.toString(searchParameter.getStartRow()));
         requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
+        requestParams.putString(BrowseApi.Q, omitNewline(searchParameter.getQueryKey()));
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
         requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
@@ -102,6 +102,10 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
         }
         return requestParams;
+    }
+
+    private static String omitNewline(String text) {
+        return text.replace("\n", "");
     }
 
     @Override

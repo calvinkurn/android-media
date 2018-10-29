@@ -54,12 +54,7 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         textLabelProgressTitle = view.findViewById(R.id.text_label_progress_title);
         textLabelProgressMessage = view.findViewById(R.id.text_label_progress_message);
 
-        buttonTopup.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onClick();
-            }
-        });
+        buttonTopup.setOnClickListener(v -> listener.onClick());
     }
 
     public void showCardInfoFromApi(InquiryBalanceModel inquiryBalanceModel) {
@@ -71,12 +66,12 @@ public class ETollUpdateBalanceResultView extends LinearLayout {
         eTollCardInfoView.showCardInfo(inquiryBalanceModel.getCardInfo());
     }
 
-    public void showError(String erroMessage) {
+    public void showError(String errorMessage) {
         textLabelProgressTitle.setVisibility(VISIBLE);
         textLabelProgressTitle.setText(getResources().getString(R.string.update_card_balance_failed_title));
         textLabelProgressTitle.setTextColor(getResources().getColor(R.color.red_600));
         textLabelProgressMessage.setVisibility(VISIBLE);
-        textLabelProgressMessage.setText(erroMessage);
+        textLabelProgressMessage.setText(errorMessage);
         textLabelProgressMessage.setTextColor(getResources().getColor(R.color.grey));
         eTollCardInfoView.setVisibility(VISIBLE);
         eTollCardInfoView.removeCardInfo();
