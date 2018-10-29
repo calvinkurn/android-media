@@ -53,6 +53,11 @@ public class OrderListActivity extends BaseSimpleActivity
                 .putExtras(bundle);
     }
 
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_order_list_module;
+    }
+
     @DeepLink(ApplinkConst.FLIGHT_ORDER)
     public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
 
@@ -88,7 +93,6 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_list_module);
         initVar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
