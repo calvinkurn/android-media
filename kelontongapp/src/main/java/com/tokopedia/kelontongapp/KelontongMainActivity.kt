@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.Toast
@@ -170,7 +169,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewChromeClient != null) {
             webViewChromeClient!!.onActivityResult(requestCode, resultCode, data)
