@@ -1,20 +1,28 @@
 package com.tokopedia.events.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
@@ -25,21 +33,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.gcm.Constants;
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.data.source.EventsUrl;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
+import com.tokopedia.events.domain.model.scanticket.ScanResponseInfo;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
@@ -47,15 +55,13 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 
-import javax.inject.Inject;
-
 import at.blogc.android.views.ExpandableTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class EventDetailsActivity extends TActivity implements HasComponent<EventComponent>,
+public class EventDetailsActivity extends EventBaseActivity implements
         EventsDetailsContract.EventDetailsView {
 
 
@@ -71,8 +77,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageView ivArrowSeating;
     @BindView(R2.id.tv_expandable_tnc)
     ExpandableTextView tvExpandableTermsNCondition;
-    @BindView(R2.id.app_bar)
-    Toolbar appBar;
     @BindView(R2.id.event_time)
     LinearLayout timeView;
     @BindView(R2.id.event_location)
@@ -103,10 +107,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
     ImageTextViewHolder addressHolder;
+    private Menu mMenu;
 
-    private EventComponent eventComponent;
-    @Inject
-    EventsDetailsPresenter mPresenter;
+
+    EventsDetailsContract.EventDetailPresenter eventsDetailsPresenter;
     private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     public static String FROM = "from";
@@ -117,26 +121,37 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     public static final int FROM_DEEPLINK = 2;
 
+    private EventsAnalytics eventsAnalytics;
+    private static final int CODE = 1001;
 
-    @DeepLink({Constants.Applinks.EVENTS_DETAILS})
+
+    @DeepLink({EventsUrl.AppLink.EVENTS_DETAILS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
         Intent destination = new Intent(context, EventDetailsActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
-        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        destination.putExtra(EventsUrl.AppLink.EXTRA_FROM_PUSH, true);
         destination.putExtra(FROM, FROM_DEEPLINK);
         return destination;
     }
 
     @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getEventDetailsPresenter();
+        eventsDetailsPresenter = (EventsDetailsContract.EventDetailPresenter) mPresenter;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_detail_activity);
-        ButterKnife.bind(this);
-        executeInjector();
-
         timeHolder = new ImageTextViewHolder();
         locationHolder = new ImageTextViewHolder();
         addressHolder = new ImageTextViewHolder();
@@ -152,8 +167,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
-        setupToolbar();
-        toolbar.setTitle("Events");
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
 
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -173,27 +187,29 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
                 }
             }
         });
-
-        mPresenter.initialize();
-        mPresenter.attachView(this);
-        mPresenter.getEventDetails();
     }
 
     @Override
-    public void showMessage(String message) {
-
+    protected int getLayoutRes() {
+        return R.layout.event_detail_activity;
     }
 
     @Override
-    public Activity getActivity() {
-        return this;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_scan_ticket, menu);
+        mMenu = menu;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public void navigateToActivityRequest(Intent intent, int requestCode) {
-        hideProgressBar();
-        startActivityForResult(intent, requestCode);
-
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_scan_qr_code) {
+            startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
+                    .gotoQrScannerPage(true), CODE);
+            return true;
+        }
+        eventsDetailsPresenter.onClickOptionMenu(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -204,10 +220,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         if (homedata.getMinStartDate() > 0) {
             if (homedata.getMinStartDate() == homedata.getMaxEndDate()) {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate());
             } else {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
-                        + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(homedata.getMaxEndDate());
             }
         } else {
             timeView.setVisibility(View.GONE);
@@ -286,12 +302,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
-    }
-
-    @Override
-    public RequestParams getParams() {
-        return RequestParams.EMPTY;
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
     @Override
@@ -304,14 +315,12 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void showProgressBar() {
-        progBar.setVisibility(View.VISIBLE);
-        progressBarLayout.setVisibility(View.VISIBLE);
+        super.showProgressBar();
     }
 
     @Override
     public void hideProgressBar() {
-        progBar.setVisibility(View.GONE);
-        progressBarLayout.setVisibility(View.GONE);
+        super.hideProgressBar();
     }
 
     @Override
@@ -319,17 +328,22 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         return mainContent;
     }
 
+    @Override
+    public void setMenuItemVisibility(boolean canScanCode) {
+        mMenu.findItem(R.id.action_scan_qr_code).setVisible(canScanCode);
+    }
+
     @OnClick(R2.id.expand_view)
     void setSeemorebutton() {
         if (tvExpandableDescription.isExpanded()) {
             seemorebutton.setText(R.string.expand);
             ivArrowSeating.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
         } else {
             seemorebutton.setText(R.string.collapse);
             ivArrowSeating.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableDescription.toggle();
@@ -340,13 +354,13 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (tvExpandableTermsNCondition.isExpanded()) {
             seemorebuttonTnC.setText(R.string.expand);
             ivArrowSeatingTnC.animate().rotation(0f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
                     textViewTitle.getText().toString());
 
         } else {
             seemorebuttonTnC.setText(R.string.collapse);
             ivArrowSeatingTnC.animate().rotation(180f);
-            UnifyTracking.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
                     textViewTitle.getText().toString());
         }
         tvExpandableTermsNCondition.toggle();
@@ -354,41 +368,36 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @OnClick(R2.id.btn_book)
     void book() {
-        mPresenter.bookBtnClick();
-    }
-
-
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
-    @Override
-    public EventComponent getComponent() {
-        if (eventComponent == null) initInjector();
-        return eventComponent;
+        eventsDetailsPresenter.bookBtnClick();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     public String getScreenName() {
-        return mPresenter.getSCREEN_NAME();
+        return eventsDetailsPresenter.getSCREEN_NAME();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Gson gson = new Gson();
+        ScanResponseInfo scanResponseInfo = null;
+        if (requestCode == CODE && resultCode == RESULT_OK) {
+            scanResponseInfo = gson.fromJson(data.getStringExtra("scanResult"), ScanResponseInfo.class);
+            Intent intent = new Intent(this, ScanQRCodeActivity.class);
+            intent.putExtra("scanUrl", scanResponseInfo.getUrl());
+            startActivity(intent);
+        }
+
     }
 }

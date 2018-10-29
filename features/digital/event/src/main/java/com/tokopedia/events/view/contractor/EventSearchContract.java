@@ -1,15 +1,9 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
-import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
@@ -20,27 +14,12 @@ import java.util.List;
  */
 
 public class EventSearchContract {
-    public interface IEventSearchView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
-
-        void showProgressBar();
-
-        void hideProgressBar();
-
-        RequestParams getParams();
-
-        android.view.View getRootView();
-
+    public interface EventSearchView extends EventBaseContract.EventBaseView {
         FragmentManager getFragmentManagerInstance();
 
         void setTopEvents(List<CategoryItemsViewModel> searchViewModels);
 
-        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight);
+        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards);
 
         void removeFooter();
 
@@ -49,17 +28,15 @@ public class EventSearchContract {
         void addEvents(List<CategoryItemsViewModel> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
+
+        void setFilterActive();
+
+        void setFilterInactive();
     }
 
-    public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView> {
-
-        void getEventsListBySearch(String searchText);
+    public interface EventSearchPresenter extends EventBaseContract.EventBasePresenter {
 
         void setupCallback(EventsContract.AdapterCallbacks callbacks);
-
-        void initialize();
-
-        void onDestroy();
 
         void setEventLike(CategoryItemsViewModel model, int position);
 
@@ -69,12 +46,15 @@ public class EventSearchContract {
 
         boolean onOptionMenuClick(int id);
 
-        void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
-
         void onSearchResultClick(SearchViewModel searchViewModel, int position);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
+
+        void openFilters();
+
+        void onActivityResult(int requestcode, int resultcode, Intent data);
+
     }
 }

@@ -37,6 +37,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -62,7 +63,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     private Context context;
     private WishListView wishlistView;
     private OnWishlistActionButtonClicked actionButtonClicked;
-
+    private WishlistAnalytics wishlistAnalytics;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -99,11 +100,11 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public WishListProductAdapter(Context context, List<RecyclerViewItem> data) {
+    public WishListProductAdapter(Context context, List<RecyclerViewItem> data, WishlistAnalytics wishlistAnalytics) {
         super(context, data);
         this.context = context;
         this.data = data;
-
+        this.wishlistAnalytics = wishlistAnalytics;
     }
 
     public void setActionButtonClicked(OnWishlistActionButtonClicked actionButtonClicked) {
@@ -220,7 +221,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             data.setId(product.getId());
             data.setName(product.getName());
             data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_url());
+            data.setImgUri(product.getImage().getM_ecs());
             Bundle bundle = new Bundle();
             Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -341,7 +342,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
+
                     UnifyTracking.eventWishlistView(product.getName());
+                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
 
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);

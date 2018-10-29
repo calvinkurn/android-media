@@ -136,4 +136,76 @@ public class Attributes {
     public int getTotalStop() {
         return totalStop;
     }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public void setAid(String aid) {
+        this.aid = aid;
+    }
+
+    public void setDepartureAirport(String departureAirport) {
+        this.departureAirport = departureAirport;
+    }
+
+    public void setDepartureTime(String departureTime) {
+        this.departureTime = departureTime;
+    }
+
+    public void setDepartureTimeInt(int departureTimeInt) {
+        this.departureTimeInt = departureTimeInt;
+    }
+
+    public void setArrivalAirport(String arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public void setArrivalTimeInt(int arrivalTimeInt) {
+        this.arrivalTimeInt = arrivalTimeInt;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
+    public void setTotalTransit(int totalTransit) {
+        this.totalTransit = totalTransit;
+    }
+
+    public void setTotalStop(int totalStop) {
+        this.totalStop = totalStop;
+    }
+
+    public void setAddDayArrival(int addDayArrival) {
+        this.addDayArrival = addDayArrival;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public void setDurationMinute(int durationMinute) {
+        this.durationMinute = durationMinute;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public void setTotalNumeric(int totalNumeric) {
+        this.totalNumeric = totalNumeric;
+    }
+
+    public void setBeforeTotal(String beforeTotal) {
+        this.beforeTotal = beforeTotal;
+    }
+
+    public void setFare(Fare fare) {
+        this.fare = fare;
+    }
 }

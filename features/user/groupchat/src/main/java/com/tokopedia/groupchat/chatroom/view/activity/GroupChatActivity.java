@@ -124,9 +124,11 @@ public class GroupChatActivity extends BaseSimpleActivity
     private long onPlayTime, onPauseTime, onEndTime, onLeaveTime, onTrackingTime;
     private Map<String, SavedState> fragmentSavedStates;
     private List<Visitable> listMessage;
+    private Handler youtubeRunnable;
 
     public GroupChatActivity() {
     }
+
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -200,6 +202,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private boolean canShowDialog = true;
     private boolean isFirstTime;
     private boolean shouldRefreshAfterLogin = false;
+    private boolean youtubeIsFullScreen = false;
     private BroadcastReceiver notifReceiver;
 
     public View rootView, loading, main;
@@ -249,8 +252,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
-            viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+            String path = getIntent().getExtras().getString("channel_id", "");
+            if(TextUtils.isEmpty(path)) {
+                path = getIntent().getExtras().getString(GroupChatActivity.EXTRA_CHANNEL_UUID, "");
+            }
+            viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
@@ -274,6 +280,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        if(channelInfoViewModel == null){
+            return;
+        }
         setSponsorData();
 
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
@@ -298,7 +307,8 @@ public class GroupChatActivity extends BaseSimpleActivity
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
                     if (!wasRestored) {
-                        youTubePlayer = player;
+                        try {
+                            youTubePlayer = player;
 
                         //set the player style default
                         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
@@ -308,78 +318,83 @@ public class GroupChatActivity extends BaseSimpleActivity
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                youTubePlayer.play();
+                                if(youTubePlayer != null){
+                                    youTubePlayer.play();
+                                }
                             }
                         }, YOUTUBE_DELAY);
 
-                        youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
-                            String TAG = "youtube";
+                            youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                                String TAG = "youtube";
 
-                            @Override
-                            public void onPlaying() {
-                                Log.i(TAG, "onPlaying: ");
-                                if (onPlayTime == 0) {
-                                    onPlayTime = System.currentTimeMillis() / 1000L;
-                                    analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
+                                @Override
+                                public void onPlaying() {
+                                    Log.i(TAG, "onPlaying: ");
+                                    if (onPlayTime == 0) {
+                                        onPlayTime = System.currentTimeMillis() / 1000L;
+                                        analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onPaused() {
-                                Log.i(TAG, "onPaused: ");
-                                onPauseTime = System.currentTimeMillis() / 1000L;
-                            }
+                                @Override
+                                public void onPaused() {
+                                    Log.i(TAG, "onPaused: ");
+                                    onPauseTime = System.currentTimeMillis() / 1000L;
+                                }
 
-                            @Override
-                            public void onStopped() {
-                                Log.i(TAG, "onStopped: ");
-                            }
+                                @Override
+                                public void onStopped() {
+                                    Log.i(TAG, "onStopped: ");
+                                }
 
-                            @Override
-                            public void onBuffering(boolean b) {
-                                Log.i(TAG, "onBuffering: ");
-                            }
+                                @Override
+                                public void onBuffering(boolean b) {
+                                    Log.i(TAG, "onBuffering: ");
+                                }
 
-                            @Override
-                            public void onSeekTo(int i) {
-                                Log.i(TAG, "onSeekTo: ");
-                            }
-                        });
+                                @Override
+                                public void onSeekTo(int i) {
+                                    Log.i(TAG, "onSeekTo: ");
+                                }
+                            });
 
-                        youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
-                            String TAG = "youtube";
+                            youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                                String TAG = "youtube";
 
-                            @Override
-                            public void onLoading() {
-                                Log.i(TAG, "onLoading: ");
-                            }
+                                @Override
+                                public void onLoading() {
+                                    Log.i(TAG, "onLoading: ");
+                                }
 
-                            @Override
-                            public void onLoaded(String s) {
-                                Log.i(TAG, "onLoaded: ");
-                            }
+                                @Override
+                                public void onLoaded(String s) {
+                                    Log.i(TAG, "onLoaded: ");
+                                }
 
-                            @Override
-                            public void onAdStarted() {
-                                Log.i(TAG, "onAdStarted: ");
-                            }
+                                @Override
+                                public void onAdStarted() {
+                                    Log.i(TAG, "onAdStarted: ");
+                                }
 
-                            @Override
-                            public void onVideoStarted() {
-                                Log.i(TAG, "onVideoStarted: ");
-                            }
+                                @Override
+                                public void onVideoStarted() {
+                                    Log.i(TAG, "onVideoStarted: ");
+                                }
 
-                            @Override
-                            public void onVideoEnded() {
-                                Log.i(TAG, "onVideoEnded: ");
-                                onEndTime = System.currentTimeMillis() / 1000L;
-                            }
+                                @Override
+                                public void onVideoEnded() {
+                                    Log.i(TAG, "onVideoEnded: ");
+                                    onEndTime = System.currentTimeMillis() / 1000L;
+                                }
 
-                            @Override
-                            public void onError(YouTubePlayer.ErrorReason errorReason) {
-                                Log.i(TAG, errorReason.getDeclaringClass() + " onError: " + errorReason.name());
-                            }
-                        });
+                                @Override
+                                public void onError(YouTubePlayer.ErrorReason errorReason) {
+                                    Log.i(TAG, errorReason.getDeclaringClass() + " onError: " + errorReason.name());
+                                }
+                            });
+                        } catch (Exception e) {
+                            onInitializationFailure(provider, YouTubeInitializationResult.SERVICE_MISSING);
+                        }
                     }
                 }
 
@@ -448,6 +463,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showTooltip();
             }
         };
+//
+//        youtubeRunnable =
+        youtubeRunnable = new Handler();
+
     }
 
     public void setSnackBarErrorLoading() {
@@ -759,6 +778,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+        if(youtubeIsFullScreen && youTubePlayer != null){
+            youTubePlayer.setFullscreen(false);
+            return;
+        }
+
         if (currentlyLoadingFragment() || hasErrorEmptyState()) {
             finish();
             super.onBackPressed();
@@ -1158,6 +1182,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         kickIfIdleForTooLong();
 
+        if(youTubePlayer == null && getChannelInfoViewModel() != null) {
+            initVideoFragment(getChannelInfoViewModel());
+        }
+
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
             presenter.connectWebSocket(userSession, viewModel.getChannelUrl(), viewModel.getChannelInfoViewModel().getGroupChatToken());
@@ -1272,6 +1300,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onDestroy() {
+        if(youTubePlayer!=null){
+            youTubePlayer.release();
+        }
+
+        youtubeRunnable.removeCallbacksAndMessages(null);
+
         super.onDestroy();
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
@@ -1342,6 +1376,12 @@ public class GroupChatActivity extends BaseSimpleActivity
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).clearMessageEditText();
         }
+    }
+
+
+    @Override
+    public void initVideoFragment() {
+        initVideoFragment(getChannelInfoViewModel());
     }
 
     @Override
@@ -1592,6 +1632,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelFrozen() {
+        if(viewModel.getChannelInfoViewModel() == null) {
+            onChannelDeleted();
+            return;
+        }
         AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getString(R.string.channel_not_found));
         myAlertDialog.setMessage(getString(R.string.channel_deactivated));

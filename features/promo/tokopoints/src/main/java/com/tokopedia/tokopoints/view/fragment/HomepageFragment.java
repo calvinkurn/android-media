@@ -16,12 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -45,6 +44,7 @@ import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusTierEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointSumCoupon;
 import com.tokopedia.tokopoints.view.presenter.HomepagePresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -219,28 +219,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     @Override
     public void onSuccessPromos(@NonNull TokoPointPromosEntity data) {
         initPromoPager(data.getCatalog().getCatalogs(), data.getCoupon().getCoupons(), data.getCoupon().getEmptyMessage());
-
-        TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
-                (int) getResources().getDimension(R.dimen.tp_margin_medium),
-                (int) getResources().getDimension(R.dimen.tp_margin_regular));
-
-        if (data.getCoupon() != null && data.getCoupon().getCoupons() != null && !data.getCoupon().getCoupons().isEmpty()) {
-            TextView counterCoupon = getView().findViewById(R.id.text_count);
-            if (data.getCoupon().getCoupons().size() > CommonConstant.MAX_COUPON_TO_SHOW_COUNT) {
-                counterCoupon.setVisibility(View.VISIBLE);
-                counterCoupon.setText(CommonConstant.MAX_COUPON_TO_SHOW_COUNT + "+");
-            } else if (data.getCoupon().getCoupons().size() > 0) {
-                counterCoupon.setVisibility(View.VISIBLE);
-                counterCoupon.setText(String.valueOf(data.getCoupon().getCoupons().size()));
-            }
-
-            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon_space);
-            mCouponCount = data.getCoupon().getCoupons().size();
-        } else {
-            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
-            TabUtil.removedPaddingAtLast(mTabLayoutPromo,
-                    (int) getResources().getDimension(R.dimen.tp_margin_medium));
-        }
     }
 
     @Override
@@ -508,8 +486,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -587,11 +564,15 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         mToolTip.show();
 
-        mToolTip.setBtnCloseOnClick(view -> AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL));
+        mToolTip.setBtnCloseOnClick(view -> {
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
+                    AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL);
+        mToolTip.cancel();
+        });
+
     }
 
     @Override
@@ -663,5 +644,24 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         PopupNotificationBottomSheet popupNotificationBottomSheet = new PopupNotificationBottomSheet();
         popupNotificationBottomSheet.setData(data);
         popupNotificationBottomSheet.show(getChildFragmentManager(), data.getTitle());
+    }
+
+    @Override
+    public void showTokoPointCoupon(TokoPointSumCoupon data) {
+        TabUtil.wrapTabIndicatorToTitle(mTabLayoutPromo,
+                (int) getResources().getDimension(R.dimen.tp_margin_medium),
+                (int) getResources().getDimension(R.dimen.tp_margin_regular));
+
+        if (data.getSumCoupon() > 0) {
+            TextView counterCoupon = getView().findViewById(R.id.text_count);
+            counterCoupon.setVisibility(View.VISIBLE);
+            counterCoupon.setText(data.getSumCouponStr());
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon_space);
+            mCouponCount = data.getSumCoupon();
+        } else {
+            mTabLayoutPromo.getTabAt(CommonConstant.MY_COUPON_TAB).setText(R.string.tp_label_my_coupon);
+            TabUtil.removedPaddingAtLast(mTabLayoutPromo,
+                    (int) getResources().getDimension(R.dimen.tp_margin_medium));
+        }
     }
 }

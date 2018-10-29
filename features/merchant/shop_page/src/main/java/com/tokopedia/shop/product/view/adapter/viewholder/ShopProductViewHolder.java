@@ -1,11 +1,9 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
-import android.app.Activity;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,8 +12,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -28,7 +29,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public static final int LIST_LAYOUT = R.layout.item_shop_product_list;
     public static final double RATIO_WITH_RELATIVE_TO_SCREEN = 2.3;
 
-    private final ShopProductClickedNewListener shopProductClickedListener;
+    private final ShopProductClickedListener shopProductClickedListener;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
     protected ImageView productImageView;
@@ -45,16 +46,18 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private View soldOutView;
 
     private boolean isFixWidth;
-    private boolean isFeatured;
+    private @ShopTrackProductTypeDef int shopTrackType;
     private int deviceWidth;
     private int layoutType;
     private View vgRating;
+    private View badgeContainer;
 
-    public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                 boolean isFixWidth, int deviceWidth, boolean isFeatured, int layoutType) {
+    public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener,
+                                 boolean isFixWidth, int deviceWidth,
+                                 @ShopTrackProductTypeDef int shopTrackType, int layoutType) {
         super(itemView);
         this.isFixWidth = isFixWidth;
-        this.isFeatured = isFeatured;
+        this.shopTrackType = shopTrackType;
         this.deviceWidth = deviceWidth;
         this.layoutType = layoutType;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -70,6 +73,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
+
+        badgeContainer = view.findViewById(R.id.badges_container);
 
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
@@ -116,7 +121,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel, isFeatured);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType, getAdapterPosition() - ITEM_OFFSET );
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
@@ -154,16 +159,36 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
+        badgeContainer.setVisibility(View.GONE);
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
                     R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);
         }
-        freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
-        wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
+
+        if (shopProductViewModel.isFreeReturn()) {
+            freeReturnImageView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            freeReturnImageView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isPo()) {
+            preOrderTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            preOrderTextView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isWholesale()) {
+            wholesaleTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            wholesaleTextView.setVisibility(View.GONE);
+        }
     }
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
@@ -178,7 +203,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onWishListClicked(shopProductViewModel, isFeatured);
+        shopProductClickedListener.onWishListClicked(shopProductViewModel, shopTrackType);
     }
 
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {

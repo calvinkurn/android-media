@@ -1,9 +1,5 @@
 package com.tokopedia.otp.cotp.domain.source;
 
-import com.crashlytics.android.Crashlytics;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.otp.cotp.data.SQLoginApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.mapper.MakeLoginMapper;
@@ -40,25 +36,8 @@ public class MakeLoginDataSource {
         return otpLoginApi
                 .makeLogin(parameters)
                 .map(makeLoginMapper)
-                .doOnNext(saveToCache())
-                .doOnNext(setTrackingData());
+                .doOnNext(saveToCache());
     }
-
-    private Action1<? super OtpLoginDomain> setTrackingData() {
-        return new Action1<OtpLoginDomain>() {
-            @Override
-            public void call(OtpLoginDomain makeLoginDomain) {
-                TrackingUtils.eventPushUserID();
-                if (!GlobalConfig.DEBUG) {
-                    Crashlytics.setUserIdentifier(String.valueOf(makeLoginDomain
-                            .getUserId()));
-                }
-                BranchSdkUtils.sendIdentityEvent(String.valueOf(makeLoginDomain
-                        .getUserId()));
-            }
-        };
-    }
-
 
     private Action1<OtpLoginDomain> saveToCache() {
         return new Action1<OtpLoginDomain>() {

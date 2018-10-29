@@ -45,6 +45,9 @@ public class ProductData implements Parcelable {
     @SerializedName("ut")
     @Expose
     private String unixTime;
+    @SerializedName("promo_code")
+    @Expose
+    private String promoCode;
     @SerializedName("price")
     @Expose
     private PriceData price;
@@ -59,7 +62,7 @@ public class ProductData implements Parcelable {
     private ProductTextData texts;
     @SerializedName("error")
     @Expose
-    private ErrorData error;
+    private ErrorProductData error;
 
     public ProductData() {
     }
@@ -76,11 +79,12 @@ public class ProductData implements Parcelable {
         recommend = in.readByte() != 0;
         checkSum = in.readString();
         unixTime = in.readString();
+        promoCode = in.readString();
         price = in.readParcelable(PriceData.class.getClassLoader());
         etd = in.readParcelable(EstimatedTimeDeliveryData.class.getClassLoader());
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
-        error = in.readParcelable(ErrorData.class.getClassLoader());
+        error = in.readParcelable(ErrorProductData.class.getClassLoader());
     }
 
     @Override
@@ -96,6 +100,7 @@ public class ProductData implements Parcelable {
         dest.writeByte((byte) (recommend ? 1 : 0));
         dest.writeString(checkSum);
         dest.writeString(unixTime);
+        dest.writeString(promoCode);
         dest.writeParcelable(price, flags);
         dest.writeParcelable(etd, flags);
         dest.writeParcelable(insurance, flags);
@@ -240,11 +245,19 @@ public class ProductData implements Parcelable {
         this.texts = texts;
     }
 
-    public ErrorData getError() {
+    public ErrorProductData getError() {
         return error;
     }
 
-    public void setError(ErrorData error) {
+    public void setError(ErrorProductData error) {
         this.error = error;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 }

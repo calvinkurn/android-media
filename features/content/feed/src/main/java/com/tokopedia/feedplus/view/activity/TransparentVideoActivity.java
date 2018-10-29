@@ -24,8 +24,6 @@ import com.tokopedia.feedplus.R;
 
 public class TransparentVideoActivity extends AppCompatActivity {
 
-
-
     private static final String PARAM_VIDEO_URL = "PARAM_VIDEO_URL";
     private static final String PARAM_TEXT = "PARAM_TEXT";
     private static final String ARGS_POSITION = "ARGS_POSITION";

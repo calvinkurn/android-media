@@ -6,15 +6,24 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <activity android:name=".view.activity.EventsHomeActivity"
-            android:theme="@style/EventAppTheme"/>
-        <activity android:name=".view.activity.EventLocationActivity" />
-        <activity android:name=".view.activity.EventDetailsActivity" />
-        <activity android:name=".view.activity.EventBookTicketActivity" />
-        <activity android:name=".view.activity.ReviewTicketActivity" />
-        <activity android:name=".view.activity.EventSearchActivity" />
-        <activity android:name=".view.activity.SeatSelectionActivity"></activity>
-        <activity android:name=".view.activity.EventFavouriteActivity" />
+        <activity
+            android:name=".view.activity.EventsHomeActivity"
+            android:label="Events"/>
+        <activity android:name=".view.activity.EventDetailsActivity"
+            android:label="Events"/>
+        <activity
+            android:name=".view.activity.EventBookTicketActivity"
+            android:label="@string/book_ticket_title" />
+        <activity android:name=".view.activity.ReviewTicketActivity"
+            android:label="@string/event_review_title"/>
+        <activity android:name=".view.activity.EventSearchActivity"
+            android:label="Events"/>
+        <activity android:name=".view.activity.SeatSelectionActivity"
+            android:label="@string/event_seat_selection_title" />
+        <activity android:name=".view.activity.EventFavouriteActivity"
+            android:label="Favorit Saya"/>
+        <activity android:name=".view.activity.EventFilterActivity" />
+        <activity android:name=".view.activity.ScanQRCodeActivity"></activity>
     </application>
 
 </manifest>

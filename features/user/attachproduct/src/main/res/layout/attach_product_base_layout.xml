@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_attach_product"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_8">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/attach_product_chat_image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="false">
+
+        <com.tokopedia.design.image.SquareImageView
+            android:id="@+id/attach_product_chat_image"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:gravity="center"
+            android:src="@drawable/ic_loading_toped"/>
+    </android.support.v7.widget.CardView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@id/attach_product_chat_image_layout"
+        android:layout_toRightOf="@id/attach_product_chat_image_layout"
+        android:maxWidth="172dp"
+        android:layout_toLeftOf="@+id/delete_button"
+        >
+
+        <TextView
+            android:id="@+id/attach_product_chat_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="4sp"
+            android:maxLines="1"
+            android:maxWidth="172dp"
+            android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD"/>
+
+        <TextView
+            android:id="@+id/attach_product_chat_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attach_product_chat_name"
+            android:fontFamily="sans-serif-medium"
+            android:lineSpacingExtra="6sp"
+            android:textColor="@color/orange_red"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="Rp 2.099.000"
+            />
+    </RelativeLayout>
+    
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_action_x"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/dp_8"
+        tools:visibility="visible"
+        android:visibility="gone"
+        />
+</RelativeLayout>

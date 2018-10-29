@@ -9,7 +9,6 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -28,7 +27,8 @@ import java.util.List;
 public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewModel> {
 
     private static final int OUT_OF_STOCK = 0;
-    private static final int LIMIT_TICKET = 10;
+    private static final int LOWER_LIMIT_TICKET = 10;
+    private static final int UPPER_LIMIT_TICKET = 50;
 
     @LayoutRes
     public static int LAYOUT = R.layout.item_train_schedule;
@@ -114,10 +114,10 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
                 trainScheduleViewModel.isFastestFlag(),
                 trainScheduleViewModel.isCheapestFlag());
         trainNameTv.setText(String.format("%s %s", trainScheduleViewModel.getTrainName(), trainScheduleViewModel.getTrainNumber()));
-        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getClassTrain()));
-        originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        classNameTv.setText(String.format("%s (%s)", trainScheduleViewModel.getDisplayClass(), trainScheduleViewModel.getSubclass()));
+        originCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()), trainScheduleViewModel.getOrigin()));
-        destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        destinationCodeTv.setText(String.format("%s %s", TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()), trainScheduleViewModel.getDestination()));
         durationTv.setText(trainScheduleViewModel.getDisplayDuration());
 
@@ -184,10 +184,14 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     }
 
     private void setAvailabilitySeat(int availableSeat) {
-        if (availableSeat > LIMIT_TICKET) {
-            availabilitySeatTv.setVisibility(View.INVISIBLE);
+        if (availableSeat > LOWER_LIMIT_TICKET) {
+            if (availableSeat > UPPER_LIMIT_TICKET) {
+                availabilitySeatTv.setText(R.string.train_search_available_seat_label);
+            } else {
+                availabilitySeatTv.setText(String.format(getString(R.string.train_search_remain_seat_upper_label), availableSeat));
+            }
+            availabilitySeatTv.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
         } else {
-            availabilitySeatTv.setVisibility(View.VISIBLE);
             if (availableSeat == OUT_OF_STOCK) {
                 availabilitySeatTv.setText(getString(R.string.train_search_seat_full_label));
                 setColorTextDisable(availabilitySeatTv);

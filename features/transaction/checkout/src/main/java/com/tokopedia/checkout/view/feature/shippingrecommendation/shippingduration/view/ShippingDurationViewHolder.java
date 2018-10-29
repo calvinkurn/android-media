@@ -34,14 +34,19 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private View vSeparatorError;
     private TextView tvDurationHeaderInfo;
     private RelativeLayout rlContent;
+    private TextView tvPromoPotency;
 
     private int cartPosition;
     private ShippingDurationAdapter adapter;
+    // set true if has courier promo, whether own courier or other duration's courier
+    private boolean hasCourierPromo;
 
-    public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter, int cartPosition) {
+    public ShippingDurationViewHolder(View itemView, ShippingDurationAdapter adapter,
+                                      int cartPosition, boolean hasCourierPromo) {
         super(itemView);
         this.cartPosition = cartPosition;
         this.adapter = adapter;
+        this.hasCourierPromo = hasCourierPromo;
 
         tvError = itemView.findViewById(R.id.tv_error);
         tvDuration = itemView.findViewById(R.id.tv_duration);
@@ -51,10 +56,18 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         vSeparatorError = itemView.findViewById(R.id.v_separator_error);
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
         rlContent = itemView.findViewById(R.id.rl_content);
+        tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener) {
+
+        if (shippingDurationAdapterListener.isToogleYearEndPromotionOn() &&
+                shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
+            tvPromoPotency.setVisibility(View.VISIBLE);
+        } else {
+            tvPromoPotency.setVisibility(View.GONE);
+        }
 
         if (!TextUtils.isEmpty(shippingDurationViewModel.getErrorMessage())) {
             tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
@@ -81,7 +94,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                     shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
                     shippingDurationAdapterListener.onShippingDurationChoosen(
                             shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition,
-                            shippingDurationViewModel.getServiceData().getServiceName());
+                            shippingDurationViewModel.getServiceData(), hasCourierPromo);
                 }
             }
         });

@@ -1,10 +1,10 @@
 package com.tokopedia.flight.airport.domain.interactor;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.airport.view.viewmodel.FlightCountryAirportViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/padding_detail"
+    android:padding="@dimen/dp_15"
     android:background="@color/white">
 
     <TextView
@@ -21,8 +21,8 @@
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_15"
         android:text="@string/tokocash_phone_number"
-        android:textColor="@color/digital_voucher_notes"
-        android:textSize="@dimen/fontvs" />
+        android:textColor="@color/font_black_disabled_38"
+        android:textSize="@dimen/sp_12" />
 
     <TextView
         android:id="@+id/wallet_phone_number"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_5"
-        android:textSize="@dimen/font_medium" />
+        android:textSize="@dimen/sp_16" />
 
     <View
         android:layout_width="match_parent"
@@ -47,15 +47,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/green_button_rounded_unify"
+            style="@style/Button.Submit.Green"
             android:paddingBottom="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_30"
             android:paddingRight="@dimen/dp_30"
             android:paddingTop="@dimen/dp_10"
+            android:textSize="@dimen/sp_13"
             android:text="@string/tokocash_send_sms_verification"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_s_medium"
             android:visibility="visible"/>
 
         <Button
@@ -69,12 +69,19 @@
             android:paddingRight="@dimen/dp_30"
             android:paddingTop="@dimen/dp_10"
             android:textAllCaps="false"
-            android:textColor="@color/digital_voucher"
-            android:textSize="@dimen/text_size_s_medium"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_13"
             android:enabled="false"
             android:visibility="gone"/>
 
     </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/input_otp_view"
@@ -94,11 +101,11 @@
             android:layout_marginBottom="@dimen/dp_20"
             android:gravity="center"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/fonts"
+            android:textSize="@dimen/sp_14"
             android:text="@string/title_otp" />
 
 
-        <com.tkpd.library.ui.widget.PinEntryEditText
+        <com.tokopedia.design.widget.PinEntryEditText
             android:id="@+id/input_otp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,21 +121,21 @@
             android:paddingBottom="@dimen/dp_10"
             android:textIsSelectable="false"
             android:textSize="28sp"
-            app:pinLineColors="@color/pin_line_colors" />
+            app:pinLineColors="@drawable/pin_line_colors" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/verification_btn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        style="@style/Button.Submit.White.Stroke"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/activate_grey_button_rounded"
         android:minHeight="0dp"
         android:text="@string/tokocash_button_verification"
         android:textAllCaps="false"
         android:textColor="@color/text_grey_activation"
-        android:textSize="@dimen/fonts"
+        android:textSize="@dimen/sp_12"
         android:enabled="false"/>
 
 </LinearLayout>

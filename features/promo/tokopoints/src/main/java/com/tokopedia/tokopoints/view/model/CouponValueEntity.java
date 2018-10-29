@@ -2,8 +2,9 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class CouponValueEntity {
+public class CouponValueEntity extends BaseItem {
     @Expose
     @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;
@@ -78,6 +79,17 @@ public class CouponValueEntity {
 
     @SerializedName("tnc")
     private String tnc;
+
+    @SerializedName("swipe")
+    private CouponSwipeDetail swipe;
+
+    public CouponSwipeDetail getSwipe() {
+        return swipe;
+    }
+
+    public void setSwipe(CouponSwipeDetail swipe) {
+        this.swipe = swipe;
+    }
 
     public String getMinimumUsage() {
         return minimumUsage;
@@ -262,6 +274,7 @@ public class CouponValueEntity {
                 ", overview='" + overview + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +
+                ", swipe=" + swipe +
                 '}';
     }
 }

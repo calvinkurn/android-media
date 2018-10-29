@@ -51,6 +51,8 @@ public class BaseListAdapter<T, F extends AdapterTypeFactory> extends BaseAdapte
                             onAdapterInteractionListener.onItemClicked(item);
                         } catch (ClassCastException e) {
                             e.printStackTrace();
+                        } catch (ArrayIndexOutOfBoundsException e){
+                            e.printStackTrace();
                         }
                     }
                 }

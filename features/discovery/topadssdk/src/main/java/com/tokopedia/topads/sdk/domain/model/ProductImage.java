@@ -1,12 +1,17 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * @author by errysuprayogi on 4/3/17.
  */
-public class ProductImage {
+public class ProductImage implements Parcelable {
 
     private static final String KEY_M_URL = "m_url";
     private static final String KEY_S_URL = "s_url";
@@ -15,12 +20,19 @@ public class ProductImage {
     private static final String KEY_S_ECS = "s_ecs";
     private static final String KEY_XS_ECS = "xs_ecs";
 
+    @SerializedName(KEY_M_URL)
     private String m_url;
+    @SerializedName(KEY_S_URL)
     private String s_url;
+    @SerializedName(KEY_XS_URL)
     private String xs_url;
+    @SerializedName(KEY_M_ECS)
     private String m_ecs;
+    @SerializedName(KEY_S_ECS)
     private String s_ecs;
+    @SerializedName(KEY_XS_ECS)
     private String xs_ecs;
+    private boolean impressed;
 
     public ProductImage(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_M_URL)){
@@ -41,6 +53,52 @@ public class ProductImage {
         if(!object.isNull(KEY_XS_ECS)){
             setXs_ecs(object.getString(KEY_XS_ECS));
         }
+    }
+
+    protected ProductImage(Parcel in) {
+        m_url = in.readString();
+        s_url = in.readString();
+        xs_url = in.readString();
+        m_ecs = in.readString();
+        s_ecs = in.readString();
+        xs_ecs = in.readString();
+        impressed = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(m_url);
+        dest.writeString(s_url);
+        dest.writeString(xs_url);
+        dest.writeString(m_ecs);
+        dest.writeString(s_ecs);
+        dest.writeString(xs_ecs);
+        dest.writeByte((byte) (impressed ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProductImage> CREATOR = new Creator<ProductImage>() {
+        @Override
+        public ProductImage createFromParcel(Parcel in) {
+            return new ProductImage(in);
+        }
+
+        @Override
+        public ProductImage[] newArray(int size) {
+            return new ProductImage[size];
+        }
+    };
+
+    public boolean isImpressed() {
+        return impressed;
+    }
+
+    public void setImpressed(boolean impressed) {
+        this.impressed = impressed;
     }
 
     public String getM_url() {

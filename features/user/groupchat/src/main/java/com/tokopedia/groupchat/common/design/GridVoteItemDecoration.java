@@ -12,12 +12,14 @@ public class GridVoteItemDecoration extends RecyclerView.ItemDecoration {
 
     private int itemCount;
     private int spanCount;
-    private int space;
+    private int dimensionV;
+    private int dimensionH;
     private boolean includeEdge;
 
 
-    public GridVoteItemDecoration(int dimension, int spanCount, int itemCount) {
-        this.space = dimension;
+    public GridVoteItemDecoration(int dimensionH, int dimensionV, int spanCount, int itemCount) {
+        this.dimensionV = dimensionV;
+        this.dimensionH = dimensionH;
         this.spanCount = spanCount;
         this.itemCount = itemCount;
     }
@@ -25,26 +27,35 @@ public class GridVoteItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
-        if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.right = space / 2;
-        } else if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
-            outRect.left = space / 2;
+        int size = parent.getAdapter().getItemCount();
+        boolean isLeft = parent.getChildAdapterPosition(view) % 2 == 0;
+        boolean isRight = parent.getChildAdapterPosition(view) % 2 == 1;
+
+        if (isLeft) {
+            outRect.right = dimensionH / 2;
+        } else if (isRight) {
+            outRect.left = dimensionH / 2;
         } else {
-            outRect.right = space / 2;
-            outRect.left = space / 2;
+            outRect.right = dimensionH / 2;
+            outRect.left = dimensionH / 2;
         }
 
-        if (itemCount > 2) {
-            int index = parent.getChildAdapterPosition(view) / 2;
+        int maxRowIndex = (size - 1) / 2;
+        int recentRow = parent.getChildAdapterPosition(view)/2;
 
-            if (index == 0) {
-                outRect.bottom = space / 2;
-            } else if (index == parent.getAdapter().getItemCount() - 1) {
-                outRect.top = space / 2;
-            } else {
-                outRect.bottom = space / 2;
-                outRect.top = space / 2;
-            }
+        boolean isTop = recentRow == 0;
+        boolean isBottom = (recentRow == maxRowIndex);
+
+        if (isTop) {
+            outRect.bottom = dimensionV / 2;
+        }
+        if (isBottom) {
+            outRect.top = dimensionV / 2;
+        }
+
+        if (!isTop && !isBottom) {
+            outRect.bottom = dimensionV / 2;
+            outRect.top = dimensionV / 2;
         }
     }
 }

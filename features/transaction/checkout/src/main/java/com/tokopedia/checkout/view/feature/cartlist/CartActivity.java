@@ -4,19 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.view.Window;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
+import com.tokopedia.navigation_common.listener.EmptyCartListener;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity {
+public class CartActivity extends BaseCheckoutActivity implements EmptyCartListener {
+
+    private Fragment cartFragment;
+    private Fragment emptyCartFragment;
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -35,10 +40,12 @@ public class CartActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected void initInjector() { }
+    protected void initInjector() {
+    }
 
     @Override
-    protected void setupURIPass(Uri data) { }
+    protected void setupURIPass(Uri data) {
+    }
 
     @Override
     protected void setupBundlePass(Bundle extras) {
@@ -84,6 +91,28 @@ public class CartActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return CartFragment.newInstance("");
+        cartFragment = CartFragment.newInstance(null,"");
+        ((CartFragment) cartFragment).setEmptyCartListener(this);
+        return cartFragment;
+    }
+
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+        if (emptyCartFragment == null) {
+            emptyCartFragment = EmptyCartFragment.newInstance(autoApplyMessage, "");
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, emptyCartFragment, getTagFragment())
+                .commit();
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+        if (cartFragment == null) {
+            cartFragment = CartFragment.newInstance(bundle,"");
+        }
+        getSupportFragmentManager().beginTransaction()
+                .replace(com.tokopedia.abstraction.R.id.parent_view, cartFragment, getTagFragment())
+                .commit();
     }
 }

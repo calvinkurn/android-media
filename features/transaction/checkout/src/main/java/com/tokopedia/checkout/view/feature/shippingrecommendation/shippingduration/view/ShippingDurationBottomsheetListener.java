@@ -15,11 +15,15 @@ public interface ShippingDurationBottomsheetListener {
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                    CourierItemData courierItemData,
                                    RecipientAddressModel recipientAddressModel,
-                                   int cartPosition,
-                                   int selectedServiceId,
-                                   String selectedServiceName, boolean flagNeedToSetPinpoint);
+                                   int cartPosition, int selectedServiceId,
+                                   String selectedServiceName, boolean flagNeedToSetPinpoint,
+                                   boolean hasCourierPromo);
+
+    void onNoCourierAvailable(String message);
 
     void onShippingDurationButtonCloseClicked();
 
     void onShippingDurationButtonShowCaseDoneClicked();
+
+    void onShowDurationListWithCourierPromo(boolean isCourierPromo, String duration);
 }

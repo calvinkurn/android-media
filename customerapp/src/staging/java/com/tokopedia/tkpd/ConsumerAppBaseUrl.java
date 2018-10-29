@@ -7,7 +7,8 @@ package com.tokopedia.tkpd;
 @SuppressWarnings("WeakerAccess")
 public class ConsumerAppBaseUrl {
 
-    public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.staging.tokopedia.com/";
+    public static final String BASE_INSTANT_LOAN_URL = "https://staging.tokopedia.com/";
+    public static final String BASE_TOKOPEDIA_WEBSITE = "https://staging.tokopedia.com/";
     public static final String BASE_TOKOPEDIA_GQL = "https://gql-staging.tokopedia.com/";
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api-staging.tokopedia.com/";
@@ -56,4 +57,8 @@ public class ConsumerAppBaseUrl {
     public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
     public static final String KAI_WEB_DOMAIN = "https://tiket-staging.tokopedia.com/";
     public static final String TOKOCARD_BASE_DOMAIN = "https://staging.tokopedia.com/tokocard/";
+
+    public static final String LOGISTIC_BASE_DOMAIN = "https://gw-staging.tokopedia.com/";
+    public static final String CART_BASE_DOMAIN = "https://api-staging.tokopedia.com/";
+    public static final String TRANSACTION_BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
 }

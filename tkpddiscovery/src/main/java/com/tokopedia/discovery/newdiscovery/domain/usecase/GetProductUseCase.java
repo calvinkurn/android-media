@@ -20,6 +20,7 @@ import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import org.w3c.dom.Text;
 
@@ -78,23 +79,33 @@ public class GetProductUseCase extends UseCase<SearchResultModel> {
         mRequestOfficialStoreBanner = requestOfficialStoreBanner;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(BrowseApi.SOURCE, !TextUtils.isEmpty(
-                searchParameter.getSource())?searchParameter.getSource():BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+                searchParameter.getSource()) ? searchParameter.getSource() : BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.ROWS, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
         requestParams.putString(BrowseApi.OB, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SORT);
         requestParams.putString(BrowseApi.START, Integer.toString(searchParameter.getStartRow()));
         requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
-        requestParams.putString(BrowseApi.Q, searchParameter.getQueryKey());
+        requestParams.putString(BrowseApi.Q, omitNewline(searchParameter.getQueryKey()));
         requestParams.putString(BrowseApi.UNIQUE_ID, searchParameter.getUniqueID());
         requestParams.putBoolean(BrowseApi.REFINED, forceSearch);
+        requestParams.putInt(TopAdsParams.KEY_ITEM, 2);
+        requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP);
+        requestParams.putString(TopAdsParams.KEY_SRC, requestParams.getString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH));
+        requestParams.putInt(TopAdsParams.KEY_PAGE, (searchParameter.getStartRow() /
+                Integer.parseInt(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1));
         if (!TextUtils.isEmpty(searchParameter.getUserID())) {
             requestParams.putString(BrowseApi.USER_ID, searchParameter.getUserID());
         }
         if (!TextUtils.isEmpty(searchParameter.getDepartmentId())) {
             requestParams.putString(BrowseApi.SC, searchParameter.getDepartmentId());
+            requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, searchParameter.getDepartmentId());
         }
         return requestParams;
+    }
+
+    private static String omitNewline(String text) {
+        return text.replace("\n", "");
     }
 
     @Override

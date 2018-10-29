@@ -100,6 +100,7 @@ public interface BrowseApi {
     String RETURNABLES = "returnables";
     String HOT_ID = "hot_id";
     String REFINED = "rf";
+    String RELATED = "related";
     String PAGE = "page";
     String PAGE_SIZE = "page_size";
 

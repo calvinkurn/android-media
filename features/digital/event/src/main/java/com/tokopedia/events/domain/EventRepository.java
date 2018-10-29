@@ -1,7 +1,6 @@
 package com.tokopedia.events.domain;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
@@ -15,6 +14,7 @@ import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.model.ProductRatingDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -25,13 +25,13 @@ import rx.Observable;
 
 public interface EventRepository {
 
-    Observable<List<EventsCategoryDomain>> getEvents(TKPDMapParam<String, Object> params);
+    Observable<List<EventsCategoryDomain>> getEvents(HashMap<String, Object> params);
 
-    Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params);
+    Observable<SearchDomainModel> getSearchEvents(HashMap<String, Object> params);
 
     Observable<SearchDomainModel> getSearchNext(String nextUrl);
 
-    Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params);
+    Observable<List<EventLocationDomain>> getEventsLocationList(HashMap<String, Object> params);
 
     Observable<List<EventsCategoryDomain>> getEventsListByLocation(String location);
 

@@ -15,7 +15,6 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
 
     private final OmsRepositoryData omsRepository;
 
-    @Inject
     public PostVerifyCartUseCase(OmsRepositoryData omsRepository) {
         this.omsRepository = omsRepository;
     }
@@ -23,7 +22,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyMyCartResponse> {
     @Override
     public Observable<VerifyMyCartResponse> createObservable(RequestParams requestParams) {
         JsonObject requestBody = (JsonObject) requestParams.getObject(Utils.Constants.CHECKOUTDATA);
-        boolean flag = requestParams.getBoolean(Utils.Constants.PROMOCODECASE, false);
+        boolean flag = requestParams.getBoolean(Utils.Constants.ISSEATINGEVENT, false);
         return omsRepository.verifyCard(requestBody, flag);
     }
 }
