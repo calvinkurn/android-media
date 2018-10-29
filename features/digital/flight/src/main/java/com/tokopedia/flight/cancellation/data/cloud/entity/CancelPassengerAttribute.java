@@ -13,7 +13,7 @@ public class CancelPassengerAttribute {
     @SerializedName("passengers")
     @Expose
     private List<Passenger> passengers;
-    @SerializedName("reasons")
+    @SerializedName("cancellation_reason")
     @Expose
     private List<Reason> reasons;
 

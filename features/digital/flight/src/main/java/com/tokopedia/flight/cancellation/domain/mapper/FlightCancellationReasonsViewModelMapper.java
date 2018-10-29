@@ -32,7 +32,7 @@ public class FlightCancellationReasonsViewModelMapper {
         FlightCancellationReasonViewModel data = new FlightCancellationReasonViewModel();
 
         data.setId(reason.getId());
-        data.setDetail(reason.getDetail());
+        data.setDetail(reason.getTitle());
         data.setRequiredDocs(reason.getRequiredDocs());
 
         return data;

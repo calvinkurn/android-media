@@ -11,22 +11,23 @@ import java.util.List;
 
 public class FlightCancellationReasonViewModel implements Parcelable {
 
-    private int id;
+    private String id;
     private String detail;
     private List<String> requiredDocs;
 
     public FlightCancellationReasonViewModel() {
     }
 
+
     protected FlightCancellationReasonViewModel(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         detail = in.readString();
         requiredDocs = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(detail);
         dest.writeStringList(requiredDocs);
     }
@@ -48,11 +49,11 @@ public class FlightCancellationReasonViewModel implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
