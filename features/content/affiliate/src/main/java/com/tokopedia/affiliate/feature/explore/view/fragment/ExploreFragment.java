@@ -227,11 +227,13 @@ public class ExploreFragment
     public void onSearchTextChanged(String text) {
         if (autoCompleteLayout.getVisibility() == View.GONE)
             autoCompleteLayout.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(text))
-            presenter.getAutoComplete(text);
-        else {
-            autoCompleteAdapter.clearAdapter();
-        }
+        onSearchTextModified(text, false);
+    }
+
+    private void onSearchTextModified(String text, boolean isFromAutoComplete) {
+        if (TextUtils.isEmpty(text)) autoCompleteAdapter.clearAdapter();
+        if (!isFromAutoComplete) presenter.getAutoComplete(text);
+
     }
 
     @Override
@@ -421,6 +423,7 @@ public class ExploreFragment
 
     private void clearAutoCompleteAdapter(String keyword) {
         searchView.getSearchTextView().setText(keyword);
+        onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
     }
 
