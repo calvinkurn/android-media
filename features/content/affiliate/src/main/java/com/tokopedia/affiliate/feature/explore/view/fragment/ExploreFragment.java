@@ -411,7 +411,7 @@ public class ExploreFragment
     public void onAutoCompleteItemClicked(String keyword) {
         clearAutoCompleteAdapter(keyword);
         autoCompleteLayout.setVisibility(View.GONE);
-
+        presenter.getFirstData(exploreParams, false);
     }
 
     @Override
