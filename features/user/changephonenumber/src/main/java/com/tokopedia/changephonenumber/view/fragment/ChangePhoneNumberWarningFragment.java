@@ -18,7 +18,6 @@ import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
 import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.R;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
-import com.tokopedia.changephonenumber.di.ChangePhoneNumberQualifier;
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningComponent;
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningModule;
 import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarningComponent;
@@ -36,8 +35,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
-import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel
-        .BALANCE_THRESHOLD_FOR_WARNING;
+import static com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel.BALANCE_THRESHOLD_FOR_WARNING;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -59,7 +57,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Inject
     WarningListAdapter adapter;
     @Inject
-    @ChangePhoneNumberQualifier
     UserSession userSession;
     @Inject
     ChangePhoneNumberAnalytics changePhoneNumberAnalytics;
@@ -167,13 +164,13 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        ChangePhoneNumberWarningComponent sessionComponent =
+        ChangePhoneNumberWarningComponent changePhoneNumberWarningComponent =
                 DaggerChangePhoneNumberWarningComponent.builder()
                         .changePhoneNumberComponent(ChangePhoneNumberInstance
                                 .getChangePhoneNumberComponent(this.getActivity().getApplication()))
                         .changePhoneNumberWarningModule(new ChangePhoneNumberWarningModule())
                         .build();
-        sessionComponent.inject(this);
+        changePhoneNumberWarningComponent.inject(this);
         presenter.attachView(this);
     }
 

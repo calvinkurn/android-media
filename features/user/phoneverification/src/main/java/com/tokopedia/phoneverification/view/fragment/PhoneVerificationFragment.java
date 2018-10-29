@@ -295,4 +295,10 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
         }
         return isValid;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

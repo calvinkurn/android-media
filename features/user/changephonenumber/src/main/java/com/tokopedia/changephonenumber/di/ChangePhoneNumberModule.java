@@ -51,19 +51,14 @@ public class ChangePhoneNumberModule {
     private static final int NET_RETRY = 1;
 
     @Provides
-    @ChangePhoneNumberQualifier
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
-                                     @ChangePhoneNumberQualifier TkpdAuthInterceptor
-                                             tkpdAuthInterceptor,
-                                     @ChangePhoneNumberQualifier ChangePhoneNumberInterceptor
-                                             changePhoneNumberInterceptor,
-                                     @ChangePhoneNumberQualifier OkHttpRetryPolicy retryPolicy,
-                                     @ChangePhoneNumberQualifier FingerprintInterceptor
-                                             fingerprintInterceptor,
-                                     @ChangePhoneNumberQualifier ErrorResponseInterceptor
-                                             errorResponseInterceptor,
-                                     @ChangePhoneNumberChuckQualifier Interceptor chuckInterceptor) {
+                                     TkpdAuthInterceptor tkpdAuthInterceptor,
+                                     ChangePhoneNumberInterceptor changePhoneNumberInterceptor,
+                                     OkHttpRetryPolicy retryPolicy,
+                                     FingerprintInterceptor fingerprintInterceptor,
+                                     ErrorResponseInterceptor errorResponseInterceptor,
+                                     Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -82,8 +77,7 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
-    Retrofit provideRetrofit(@ChangePhoneNumberQualifier OkHttpClient okHttpClient) {
+    Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(ChangePhoneNumberUrl.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
@@ -94,13 +88,11 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    ChangePhoneNumberApi provideChangePhoneNumberApi(@ChangePhoneNumberQualifier Retrofit
-                                                             retrofit) {
+    ChangePhoneNumberApi provideChangePhoneNumberApi(Retrofit retrofit) {
         return retrofit.create(ChangePhoneNumberApi.class);
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
                 NET_WRITE_TIMEOUT,
@@ -109,24 +101,20 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     public FingerprintInterceptor provideFingerPrintInterceptor(@ApplicationContext Context context,
-                                                                @ChangePhoneNumberQualifier
-                                                                        UserSession userSession) {
+                                                                UserSession userSession) {
         return new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
                 userSession);
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
-                                                          @ChangePhoneNumberQualifier NetworkRouter networkRouter,
-                                                          @ChangePhoneNumberQualifier UserSession userSession) {
+                                                          NetworkRouter networkRouter,
+                                                          UserSession userSession) {
         return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
@@ -138,7 +126,6 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
@@ -155,7 +142,6 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         if (context instanceof NetworkRouter) {
             return ((NetworkRouter) context);
@@ -165,19 +151,16 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
-    @ChangePhoneNumberQualifier
-    public ChangePhoneNumberInterceptor provideChangePhoneNumberInterceptor(@ChangePhoneNumberQualifier UserSession
-                                                                      userSession) {
+    public ChangePhoneNumberInterceptor provideChangePhoneNumberInterceptor(UserSession userSession) {
         return new ChangePhoneNumberInterceptor(userSession);
     }
 
     @Provides
-    @ChangePhoneNumberChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
         if (context instanceof ChangePhoneNumberRouter) {
             return ((ChangePhoneNumberRouter) context).getChuckInterceptor();
         }
         throw new RuntimeException("App should implement " + ChangePhoneNumberRouter.class
- .getSimpleName());
+                .getSimpleName());
     }
 }

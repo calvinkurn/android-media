@@ -44,19 +44,15 @@ public class PhoneVerificationModule {
     private static final int NET_RETRY = 1;
 
     @Provides
-    @PhoneVerificationQualifier
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
-                                     @PhoneVerificationQualifier PhoneVerificationInterceptor
-                                             phoneVerificationInterceptor,
-                                     @PhoneVerificationQualifier PhoneVerificationBearerInterceptor
+                                     PhoneVerificationInterceptor phoneVerificationInterceptor,
+                                     PhoneVerificationBearerInterceptor
                                              phoneVerificationBearerInterceptor,
-                                     @PhoneVerificationQualifier OkHttpRetryPolicy retryPolicy,
-                                     @PhoneVerificationQualifier FingerprintInterceptor
-                                             fingerprintInterceptor,
-                                     @PhoneVerificationQualifier ErrorResponseInterceptor
-                                             errorResponseInterceptor,
-                                     @PhoneVerificationChuckQualifier Interceptor chuckInterceptor) {
+                                     OkHttpRetryPolicy retryPolicy,
+                                     FingerprintInterceptor fingerprintInterceptor,
+                                     ErrorResponseInterceptor errorResponseInterceptor,
+                                     Interceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -75,8 +71,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
-    Retrofit provideRetrofit(@PhoneVerificationQualifier OkHttpClient okHttpClient) {
+    Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(PhoneVerificationConst.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
@@ -87,26 +82,23 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
     PhoneVerificationInterceptor providePhoneVerificationInterceptor(@ApplicationContext Context context,
-                                                   @PhoneVerificationQualifier NetworkRouter networkRouter,
+                                                   NetworkRouter networkRouter,
                                                    UserSession userSession){
         return new PhoneVerificationInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
-    @PhoneVerificationQualifier
     PhoneVerificationBearerInterceptor providePhoneVerificationBearerInterceptor(UserSession userSession){
         return new PhoneVerificationBearerInterceptor(userSession);
     }
 
     @Provides
-    PhoneVerificationApi provideChangePhoneNumberApi(@PhoneVerificationQualifier Retrofit retrofit) {
+    PhoneVerificationApi provideChangePhoneNumberApi(Retrofit retrofit) {
         return retrofit.create(PhoneVerificationApi.class);
     }
 
     @Provides
-    @PhoneVerificationQualifier
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
                 NET_WRITE_TIMEOUT,
@@ -115,7 +107,6 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
     public FingerprintInterceptor provideFingerPrintInterceptor(@ApplicationContext Context context,
                                                                 UserSession userSession) {
         return new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
@@ -123,7 +114,6 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
     ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
@@ -134,7 +124,6 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationQualifier
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         if (context instanceof NetworkRouter) {
             return ((NetworkRouter) context);
@@ -144,7 +133,6 @@ public class PhoneVerificationModule {
     }
 
     @Provides
-    @PhoneVerificationChuckQualifier
     public Interceptor provideChuckInterceptor(@ApplicationContext Context context) {
         if (context instanceof PhoneVerificationRouter) {
             return ((PhoneVerificationRouter) context).getChuckInterceptor();

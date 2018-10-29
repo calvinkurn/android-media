@@ -18,7 +18,6 @@ import dagger.Component;
 @Component(modules = ChangePhoneNumberModule.class, dependencies = BaseAppComponent.class)
 public interface ChangePhoneNumberComponent {
 
-    @ChangePhoneNumberQualifier
     UserSession provideUserSession();
 
     ChangePhoneNumberRepository provideRepository();

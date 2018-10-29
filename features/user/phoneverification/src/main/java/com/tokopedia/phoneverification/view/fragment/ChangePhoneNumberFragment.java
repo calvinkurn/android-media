@@ -45,6 +45,7 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     EditText phoneNumberEditText;
     TextView changePhoneNumberButton;
     View progressDialog;
+    View mainView;
 
     @Inject
     ChangePhoneNumberPresenter presenter;
@@ -73,10 +74,13 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change_phone_number, container, false);
+        mainView = view.findViewById(R.id.main_view);
         phoneNumberEditText = (EditText) view.findViewById(R.id.phone_number);
         changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
+        progressDialog = view.findViewById(R.id.loading_view);
         phoneNumberEditText.addTextChangedListener(watcher(phoneNumberEditText));
         setViewListener();
         presenter.attachView(this);
@@ -87,7 +91,8 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity().getIntent().getExtras() != null) {
-            phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_PHONE_NUMBER, ""));
+            phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString
+                    (EXTRA_PHONE_NUMBER, ""));
         }
     }
 
@@ -120,24 +125,23 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (phoneNumberEditText != null && !phoneNumberEditText.getText().toString().isEmpty()) {
+                if (phoneNumberEditText != null && !phoneNumberEditText.getText().toString()
+                        .isEmpty()) {
                     KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
                     showLoading();
-                    presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
+                    presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace
+                            ("-", ""));
                 } else {
-                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.please_fill_phone_number));
+                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
+                            .please_fill_phone_number));
                 }
             }
         });
     }
 
     private void showLoading() {
-        if (progressDialog == null && getActivity() != null) {
-            //progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-        if (progressDialog != null) {
-            //progressDialog.showDialog();
-        }
+        mainView.setVisibility(View.INVISIBLE);
+        progressDialog.setVisibility(View.VISIBLE);
     }
 
 
@@ -152,9 +156,8 @@ public class ChangePhoneNumberFragment extends BaseDaggerFragment
     }
 
     private void finishLoading() {
-        if (progressDialog != null) {
-            //progressDialog.dismiss();
-        }
+        mainView.setVisibility(View.VISIBLE);
+        progressDialog.setVisibility(View.GONE);
     }
 
     @Override

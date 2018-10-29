@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
 import com.tokopedia.changephonenumber.R;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
-import com.tokopedia.changephonenumber.di.ChangePhoneNumberQualifier;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputComponent;
 import com.tokopedia.changephonenumber.di.input.ChangePhoneNumberInputModule;
 import com.tokopedia.changephonenumber.di.input.DaggerChangePhoneNumberInputComponent;
@@ -55,7 +54,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     ChangePhoneNumberInputFragmentListener.Presenter presenter;
 
     @Inject
-    @ChangePhoneNumberQualifier
     UserSession userSession;
 
     private RelativeLayout progressDialog;
@@ -184,13 +182,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
-        ChangePhoneNumberInputComponent sessionComponent =
+        ChangePhoneNumberInputComponent changePhoneNumberInputComponent =
                 DaggerChangePhoneNumberInputComponent.builder()
                         .changePhoneNumberComponent(ChangePhoneNumberInstance
                                 .getChangePhoneNumberComponent(this.getActivity().getApplication()))
                         .changePhoneNumberInputModule(new ChangePhoneNumberInputModule())
                         .build();
-        sessionComponent.inject(this);
+        changePhoneNumberInputComponent.inject(this);
     }
 
     @Override
