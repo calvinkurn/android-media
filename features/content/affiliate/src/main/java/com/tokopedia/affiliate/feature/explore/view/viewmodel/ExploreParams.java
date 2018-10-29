@@ -11,6 +11,7 @@ public class ExploreParams {
     private ExploreSort sort;
     private boolean isCanLoadMore;
     private String cursor;
+    private boolean isLoading;
 
     public ExploreParams() {
         resetParams();
@@ -71,5 +72,13 @@ public class ExploreParams {
 
     public String getCursor() {
         return cursor;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
     }
 }

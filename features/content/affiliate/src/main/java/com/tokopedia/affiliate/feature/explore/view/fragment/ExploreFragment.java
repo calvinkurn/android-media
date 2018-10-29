@@ -112,6 +112,7 @@ public class ExploreFragment
         presenter.attachView(this);
         initView();
         initListener();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
@@ -192,6 +193,7 @@ public class ExploreFragment
     @Override
     public void onRefresh() {
         exploreParams.setFirstData();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
     }
 
@@ -220,6 +222,7 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
@@ -235,8 +238,7 @@ public class ExploreFragment
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
         }
-
-        if (!isFromAutoComplete) presenter.getAutoComplete(text);
+        if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
     }
 
     @Override
@@ -245,6 +247,7 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         dropKeyboard();
         exploreParams.resetSearch();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
     }
 
@@ -288,6 +291,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+        exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
@@ -304,6 +308,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
                 getView(),
@@ -336,6 +341,7 @@ public class ExploreFragment
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
