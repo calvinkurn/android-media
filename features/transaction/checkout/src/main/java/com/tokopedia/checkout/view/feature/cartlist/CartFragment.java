@@ -1336,6 +1336,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             sendAnalyticsScreenName(getScreenName());
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         }
     }
 

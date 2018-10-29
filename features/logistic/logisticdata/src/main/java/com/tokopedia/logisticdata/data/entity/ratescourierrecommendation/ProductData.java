@@ -45,6 +45,9 @@ public class ProductData implements Parcelable {
     @SerializedName("ut")
     @Expose
     private String unixTime;
+    @SerializedName("promo_code")
+    @Expose
+    private String promoCode;
     @SerializedName("price")
     @Expose
     private PriceData price;
@@ -76,6 +79,7 @@ public class ProductData implements Parcelable {
         recommend = in.readByte() != 0;
         checkSum = in.readString();
         unixTime = in.readString();
+        promoCode = in.readString();
         price = in.readParcelable(PriceData.class.getClassLoader());
         etd = in.readParcelable(EstimatedTimeDeliveryData.class.getClassLoader());
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
@@ -96,6 +100,7 @@ public class ProductData implements Parcelable {
         dest.writeByte((byte) (recommend ? 1 : 0));
         dest.writeString(checkSum);
         dest.writeString(unixTime);
+        dest.writeString(promoCode);
         dest.writeParcelable(price, flags);
         dest.writeParcelable(etd, flags);
         dest.writeParcelable(insurance, flags);
@@ -246,5 +251,13 @@ public class ProductData implements Parcelable {
 
     public void setError(ErrorProductData error) {
         this.error = error;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
     }
 }
