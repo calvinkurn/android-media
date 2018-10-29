@@ -3,10 +3,10 @@ package com.tokopedia.seller.product.variant.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantDashboardNewViewHolder;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 

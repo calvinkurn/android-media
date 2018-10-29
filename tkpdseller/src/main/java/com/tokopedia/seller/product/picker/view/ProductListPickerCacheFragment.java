@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.picker.view;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseItemPickerCacheAdapter;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.picker.view.adapter.ProductListPickerCacheAdapter;
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;

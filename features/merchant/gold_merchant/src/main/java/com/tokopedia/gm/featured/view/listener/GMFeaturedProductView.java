@@ -1,7 +1,7 @@
 package com.tokopedia.gm.featured.view.listener;
 
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 import com.tokopedia.gm.featured.view.adapter.model.GMFeaturedProductModel;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 
 /**
  * Created by normansyahputa on 9/7/17.

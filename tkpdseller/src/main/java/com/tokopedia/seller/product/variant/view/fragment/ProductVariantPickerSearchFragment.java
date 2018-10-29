@@ -9,7 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
+import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
+import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
+import com.tokopedia.base.list.seller.view.fragment.BaseSearchListFragment;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
@@ -17,10 +21,6 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbycat.Product
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionParent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
-import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.base.view.listener.BasePickerItemSearchList;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerSearchListNewAdapter;
