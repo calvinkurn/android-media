@@ -32,7 +32,8 @@ public class StartPurchaseBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight / 3);
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight(screenHeight / 3);
     }
 
 
