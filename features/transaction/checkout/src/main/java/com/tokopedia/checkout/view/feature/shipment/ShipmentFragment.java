@@ -1709,8 +1709,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierPromoCanceled(String shipperName) {
-        onRemovePromoCode();
-        showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+        if (shipmentAdapter.isCourierPromoStillExist()) {
+            shipmentAdapter.cancelAutoApplyCoupon();
+            shipmentAdapter.updatePromo(null);
+            onRemovePromoCode();
+            showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+        }
     }
 
     @Override
