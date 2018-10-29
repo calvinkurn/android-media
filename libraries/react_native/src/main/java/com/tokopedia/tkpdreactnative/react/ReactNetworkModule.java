@@ -198,9 +198,13 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getBaseApiUrl(String param, Promise promise){
-//        if ()
-        promise.resolve(param);
-//        TkpdBaseURL.MOJITO_DOMAIN
+        if (param.equals("mojito")){
+            promise.resolve(TkpdBaseURL.MOJITO_DOMAIN);
+        } else if (param.equals("ace")){
+            promise.resolve(TkpdBaseURL.ACE_DOMAIN);
+        } else {
+            promise.reject("Base API Url param is not found!");
+        }
     }
 
 
