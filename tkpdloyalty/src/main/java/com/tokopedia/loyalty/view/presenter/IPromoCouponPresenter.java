@@ -24,6 +24,8 @@ public interface IPromoCouponPresenter {
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
 
+    void submitTrainVoucher(CouponData couponData, String reservationId, String reservationCode);
+
     void submitEventVoucher(CouponData couponData, JsonObject requestBody, boolean flag);
 
     void parseAndSubmitEventVoucher(String json, CouponData couponData, String platform);

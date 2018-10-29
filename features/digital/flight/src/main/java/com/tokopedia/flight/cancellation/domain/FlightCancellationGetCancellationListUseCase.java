@@ -1,7 +1,7 @@
 package com.tokopedia.flight.cancellation.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderEntityToCancellationListMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;

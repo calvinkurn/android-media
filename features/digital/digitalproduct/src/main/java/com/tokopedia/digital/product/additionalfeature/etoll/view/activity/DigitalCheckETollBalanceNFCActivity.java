@@ -3,7 +3,6 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.activity;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
 import android.nfc.tech.NfcA;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
@@ -28,7 +26,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -116,7 +113,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         if (GlobalConfig.isSellerApp()) {
             homeIntent = SellerAppRouter.getSellerHomeActivity(context);
         } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
+            homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
         }
         homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                 HomeRouter.INIT_STATE_FRAGMENT_HOME);
@@ -211,21 +208,18 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             finish();
         });
 
-        nfcDisabledView.setListener(new NFCDisabledView.OnActivateNFCClickListener() {
-            @Override
-            public void onClick() {
-                if (getApplication() instanceof AbstractionRouter) {
-                    abstractionRouter
-                            .getAnalyticTracker()
-                            .sendEventTracking(
-                                    ETollEventTracking.Event.CLICK_NFC,
-                                    ETollEventTracking.Category.DIGITAL_NFC,
-                                    ETollEventTracking.Action.CLICK_ACTIVATE,
-                                    ETollEventTracking.Label.EMONEY
-                            );
-                }
-                directToNFCSettingsPage();
+        nfcDisabledView.setListener(() -> {
+            if (getApplication() instanceof AbstractionRouter) {
+                abstractionRouter
+                        .getAnalyticTracker()
+                        .sendEventTracking(
+                                ETollEventTracking.Event.CLICK_NFC,
+                                ETollEventTracking.Category.DIGITAL_NFC,
+                                ETollEventTracking.Action.CLICK_ACTIVATE,
+                                ETollEventTracking.Label.EMONEY
+                        );
             }
+            directToNFCSettingsPage();
         });
     }
 
@@ -287,10 +281,7 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         isoDep = IsoDep.get(tag);
 
         try {
-            if (isoDep.isConnected()) {
-                isoDep.close();
-            }
-
+            isoDep.close();
             isoDep.connect();
             isoDep.setTimeout(TRANSCEIVE_TIMEOUT_IN_SEC); // 5 sec time out
 
@@ -303,34 +294,31 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             final byte[] commandLastBalance =
                     isoDep.transceive(NFCUtils.hexStringToByteArray(COMMAND_LAST_BALANCE));
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    byte[] cardUID = isoDep.getTag().getId();
+            runOnUiThread(() -> {
+                byte[] cardUID = isoDep.getTag().getId();
 
-                    String responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney);
-                    String responseCardAttribute = NFCUtils.toHex(commandCardAttribute);
-                    String responseCardUID = NFCUtils.toHex(cardUID);
-                    String responseCardInfo = NFCUtils.toHex(commandCardInfo);
-                    String responseCardLastBalance = NFCUtils.toHex(commandLastBalance);
+                String responseSelectEMoney = NFCUtils.toHex(commandSelectEMoney);
+                String responseCardAttribute = NFCUtils.toHex(commandCardAttribute);
+                String responseCardUID = NFCUtils.toHex(cardUID);
+                String responseCardInfo = NFCUtils.toHex(commandCardInfo);
+                String responseCardLastBalance = NFCUtils.toHex(commandLastBalance);
 
-                    if (responseSelectEMoney.equals(COMMAND_SUCCESSFULLY_EXECUTED)) {
-                        presenter.inquiryBalance(1, responseCardAttribute, responseCardInfo,
-                                responseCardUID, responseCardLastBalance);
-                    } else {
-                        // show error reading card
-                        if (getApplication() instanceof AbstractionRouter) {
-                            abstractionRouter
-                                    .getAnalyticTracker()
-                                    .sendEventTracking(
-                                            ETollEventTracking.Event.CLICK_NFC,
-                                            ETollEventTracking.Category.DIGITAL_NFC,
-                                            ETollEventTracking.Action.CARD_IS_NOT_SUPPORTED,
-                                            ETollEventTracking.Label.EMONEY
-                                    );
-                        }
-                        showError(getResources().getString(R.string.card_is_not_supported));
+                if (responseSelectEMoney.equals(COMMAND_SUCCESSFULLY_EXECUTED)) {
+                    presenter.inquiryBalance(1, responseCardAttribute, responseCardInfo,
+                            responseCardUID, responseCardLastBalance);
+                } else {
+                    // show error reading card
+                    if (getApplication() instanceof AbstractionRouter) {
+                        abstractionRouter
+                                .getAnalyticTracker()
+                                .sendEventTracking(
+                                        ETollEventTracking.Event.CLICK_NFC,
+                                        ETollEventTracking.Category.DIGITAL_NFC,
+                                        ETollEventTracking.Action.CARD_IS_NOT_SUPPORTED,
+                                        ETollEventTracking.Label.EMONEY
+                                );
                     }
+                    showError(getResources().getString(R.string.card_is_not_supported));
                 }
             });
         } catch (IOException e) {
@@ -364,14 +352,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
             try {
                 final byte [] responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(inquiryBalanceModel.getCommand()));
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (responseInByte != null) {
-                            String response = NFCUtils.toHex(responseInByte);
-                            Log.d(TAG, response);
-                            presenter.sendCommand(response, inquiryBalanceModel.getId(), 1);
-                        }
+                runOnUiThread(() -> {
+                    if (responseInByte != null) {
+                        String response = NFCUtils.toHex(responseInByte);
+                        presenter.sendCommand(response, inquiryBalanceModel.getId(), 1);
                     }
                 });
             } catch (IOException e) {

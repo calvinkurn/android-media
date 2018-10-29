@@ -33,7 +33,8 @@
     <string name="title_info_withdrawal_2">Biaya Admin</string>
     <string name="body_info_withdrawal_2">BRI - Rp 1.000\nBiaya transfer antar bank ditanggung pengguna</string>
     <string name="title_info_withdrawal_3">Waktu Proses Penarikan</string>
-    <string name="body_info_withdrawal_3">BCA, BRI, BNI, CIMB, Mandiri - paling lama 48 jam\nBank lain - paling lama 7 hari kerja (tidak termasuk Sabtu/Minggu/libur) </string>
+    <string name="body_info_withdrawal_3">BCA, BRI, BNI, CIMB, Mandiri - paling lama 24 jam\nBank
+        lain - paling lama 2 hari kerja (tidak termasuk Sabtu/Minggu/libur) </string>
     <string name="title_info_withdrawal_4">Biaya Tambahan Ditanggung Pengguna</string>
     <string name="exceed_limit_withdraw">Anda telah melewati batas maksimal penarikan dana per hari</string>
 
@@ -45,7 +46,8 @@
     <string name="indicator_password_error">kata sandi</string>
     <string name="alert_success_withdraw_title">Penarikan Saldo Sedang Diproses</string>
     <string name="alert_success_withdraw_positive">Ok</string>
-    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses penarikan paling lama 48 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
+    <string name="alert_success_withdraw_body">Anda telah melakukan penarikan saldo. Waktu proses
+        penarikan paling lama 24 jam (tidak termasuk Sabtu/Minggu/Libur)</string>
     <string name="minimal_withdrawal">Jumlah minimum penarikan dana sebesar Rp %1$s</string>
 
     <string name="alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
