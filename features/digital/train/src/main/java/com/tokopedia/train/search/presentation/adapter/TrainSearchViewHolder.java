@@ -27,7 +27,8 @@ import java.util.List;
 public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewModel> {
 
     private static final int OUT_OF_STOCK = 0;
-    private static final int LIMIT_TICKET = 10;
+    private static final int LOWER_LIMIT_TICKET = 10;
+    private static final int UPPER_LIMIT_TICKET = 50;
 
     @LayoutRes
     public static int LAYOUT = R.layout.item_train_schedule;
@@ -183,10 +184,14 @@ public class TrainSearchViewHolder extends AbstractViewHolder<TrainScheduleViewM
     }
 
     private void setAvailabilitySeat(int availableSeat) {
-        if (availableSeat > LIMIT_TICKET) {
-            availabilitySeatTv.setVisibility(View.INVISIBLE);
+        if (availableSeat > LOWER_LIMIT_TICKET) {
+            if (availableSeat > UPPER_LIMIT_TICKET) {
+                availabilitySeatTv.setText(R.string.train_search_available_seat_label);
+            } else {
+                availabilitySeatTv.setText(String.format(getString(R.string.train_search_remain_seat_upper_label), availableSeat));
+            }
+            availabilitySeatTv.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
         } else {
-            availabilitySeatTv.setVisibility(View.VISIBLE);
             if (availableSeat == OUT_OF_STOCK) {
                 availabilitySeatTv.setText(getString(R.string.train_search_seat_full_label));
                 setColorTextDisable(availabilitySeatTv);

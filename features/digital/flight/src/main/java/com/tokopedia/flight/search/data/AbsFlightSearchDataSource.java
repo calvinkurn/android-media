@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.data.source.cloud.DataCloudSource;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.db.AbsFlightSearchDataDBSource;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;

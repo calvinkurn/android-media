@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 

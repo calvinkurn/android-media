@@ -30,7 +30,6 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -241,29 +240,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetSingleFeedDetail(final FeedDetailHeaderViewModel header,
-                                             SingleFeedDetailViewModel singleFeedDetailViewModel) {
-        footer.setVisibility(View.VISIBLE);
-
-        if (pagingHandler.getPage() == 1) {
-            adapter.add(header);
-        }
-
-        adapter.add(singleFeedDetailViewModel);
-
-        shareButton.setOnClickListener(onShareClicked(
-                header.getShareLinkURL(),
-                header.getShopName(),
-                header.getShopAvatar(),
-                header.getShareLinkDescription()));
-
-        seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.getShopId()));
-
-        pagingHandler.setHasNext(false);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onSuccessGetFeedDetail(
             final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
@@ -284,7 +260,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
         seeShopButon.setOnClickListener(onGoToShopDetailFromButton(header.getShopId()));
 
-        pagingHandler.setHasNext(hasNextPage);
+        pagingHandler.setHasNext(listDetail.size() > 1 && hasNextPage);
 
         adapter.notifyDataSetChanged();
     }

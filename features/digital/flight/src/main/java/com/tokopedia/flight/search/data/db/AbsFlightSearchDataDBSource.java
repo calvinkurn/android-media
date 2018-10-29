@@ -10,13 +10,13 @@ import com.tokopedia.flight.common.data.db.BaseDataDBSource;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
 import com.tokopedia.flight.search.data.cloud.model.response.Meta;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +91,10 @@ public abstract class AbsFlightSearchDataDBSource
     protected abstract void insertSingleFlightData(FlightSearchData flightSearchData);
 
     private Observable<Boolean> insertFlightMetaData(final Meta meta) {
-        final FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
+        final FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(
+                meta.getDepartureAirport(), meta.getArrivalAirport(),
+                meta.getTime(), meta.isNeedRefresh(), meta.getRefreshTime(), meta.getMaxRetry(),
+                0, System.currentTimeMillis() / 1000L);
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {

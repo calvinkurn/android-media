@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics;
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
-import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
@@ -30,17 +30,21 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
     private InstantLoanPresenter mPresenter;
     private InstantLoanActivity mActivity;
     private final String link = "syarat dan ketentuan";
+    InstantLoanAnalytics instantLoanAnalytics;
 
     public InstantLoanIntroViewPagerAdapter(InstantLoanActivity activity, int[] layouts, InstantLoanPresenter presenter) {
         this.mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mLayouts = layouts;
         this.mPresenter = presenter;
         this.mActivity = activity;
+
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(mLayouts[position], container, false);
+
+        instantLoanAnalytics = new InstantLoanAnalytics(container.getContext());
 
         if (position == mLayouts.length - 2) {
 
@@ -113,7 +117,10 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
     }
 
     private void sendLoanPopupClickEvent(String label) {
-        InstantLoanEventTracking.eventLoanPopupClick(label);
+        if (instantLoanAnalytics == null) {
+            return;
+        }
+        instantLoanAnalytics.eventLoanPopupClick(label);
     }
 
     @Override

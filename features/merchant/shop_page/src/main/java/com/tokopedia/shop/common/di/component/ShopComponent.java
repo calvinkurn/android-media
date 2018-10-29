@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
 import com.tokopedia.shop.common.di.module.ShopModule;
@@ -59,5 +58,4 @@ public interface ShopComponent {
 
     ToggleFavouriteShopUseCase toggleFavouriteShopUseCase();
 
-    ShopPageTracking shopPageTracking();
 }

@@ -24,7 +24,7 @@ public interface ReputationRouter {
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
-    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
+    void sendEventTracking(Map<String, Object> eventTracking);
 
     Intent getTopProfileIntent(Context context, String reviewUserId);
 

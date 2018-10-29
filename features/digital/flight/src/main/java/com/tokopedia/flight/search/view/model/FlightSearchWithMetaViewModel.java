@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 
 import java.util.List;
 

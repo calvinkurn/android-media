@@ -47,10 +47,6 @@ public interface ShopModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void sendEventTrackingShopPage(Map<String, Object> eventTracking);
-
-    void sendScreenName(String screenName);
-
     Intent getTopProfileIntent(Context context, String userId);
 
     boolean isFeedShopPageEnabled();

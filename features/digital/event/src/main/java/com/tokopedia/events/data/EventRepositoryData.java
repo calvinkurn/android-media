@@ -1,7 +1,6 @@
 package com.tokopedia.events.data;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.LikeUpdateResponse;
@@ -22,6 +21,7 @@ import com.tokopedia.events.domain.model.ProductRatingDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +45,7 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<List<EventsCategoryDomain>> getEvents(TKPDMapParam<String, Object> params) {
+    public Observable<List<EventsCategoryDomain>> getEvents(HashMap<String, Object> params) {
 
         return eventsDataStoreFactory
                 .createCloudDataStore()
@@ -53,7 +53,7 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params) {
+    public Observable<SearchDomainModel> getSearchEvents(HashMap<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getSearchEvents(params).map(new SearchResponseMapper());
@@ -67,7 +67,7 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params) {
+    public Observable<List<EventLocationDomain>> getEventsLocationList(HashMap<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getEventsLocationList(params).map(new Func1<EventLocationEntity, List<EventLocationDomain>>() {
