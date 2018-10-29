@@ -126,11 +126,13 @@ public class BranchSdkUtils {
                 desktopUrl = ((TkpdCoreRouter) activity.getApplication())
                         .getDesktopLinkGroupChat();
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
                 linkProperties.setChannel(String.format("%s - Android", data.getType()));
-                linkProperties.addControlParameter("uri_redirect_mode","2");
+                linkProperties.addControlParameter("$uri_redirect_mode","2");
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
