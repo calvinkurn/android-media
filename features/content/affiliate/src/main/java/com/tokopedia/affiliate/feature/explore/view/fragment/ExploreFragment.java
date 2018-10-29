@@ -216,8 +216,8 @@ public class ExploreFragment
     @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
-        if (autoCompleteLayout.getVisibility() == View.GONE)
-            autoCompleteLayout.setVisibility(View.VISIBLE);
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
         presenter.getFirstData(exploreParams, false);
@@ -232,8 +232,9 @@ public class ExploreFragment
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
         if (TextUtils.isEmpty(text)) autoCompleteAdapter.clearAdapter();
-        if (!isFromAutoComplete) presenter.getAutoComplete(text);
+        else autoCompleteLayout.setVisibility(View.GONE);
 
+        if (!isFromAutoComplete) presenter.getAutoComplete(text);
     }
 
     @Override
@@ -413,7 +414,7 @@ public class ExploreFragment
     public void onAutoCompleteItemClicked(String keyword) {
         clearAutoCompleteAdapter(keyword);
         autoCompleteLayout.setVisibility(View.GONE);
-        presenter.getFirstData(exploreParams, false);
+        onSearchSubmitted(keyword);
     }
 
     @Override
