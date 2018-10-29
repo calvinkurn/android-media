@@ -51,7 +51,7 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
-
+    promoCheckoutVersion = '2.22'
 
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
@@ -84,6 +84,7 @@ ext {
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             productDraftDatabase        : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             profile                     : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
+            promoCheckout               : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
             reputation                  : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon            : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                        : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -183,6 +184,7 @@ ext {
             checkout                    : ":features:transaction:checkout",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
+            promoCheckout               : ":features:transaction:promo_checkout",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
