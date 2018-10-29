@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.base.list.seller.view.fragment;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Px;
@@ -7,9 +7,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.seller.R;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author normansyahputa on 5/17/17.
  */
-
+@Deprecated
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.base.list.seller.view.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 
 /**
  * Created by normansyahputa on 5/26/17.

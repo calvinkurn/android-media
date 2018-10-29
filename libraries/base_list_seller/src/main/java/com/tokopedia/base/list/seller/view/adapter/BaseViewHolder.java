@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * Created by nathan on 6/23/17.
  */
-
+@Deprecated
 public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder {
 
     public abstract void bindObject(T t);

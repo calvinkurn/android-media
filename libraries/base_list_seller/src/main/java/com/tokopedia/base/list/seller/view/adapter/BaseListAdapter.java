@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.view.old.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
+@Deprecated
 public abstract class BaseListAdapter<T extends ItemType> extends BaseLinearRecyclerViewAdapter {
 
 

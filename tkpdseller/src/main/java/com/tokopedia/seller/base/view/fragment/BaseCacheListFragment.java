@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 import com.tokopedia.seller.base.view.listener.BasePickerItemCacheList;

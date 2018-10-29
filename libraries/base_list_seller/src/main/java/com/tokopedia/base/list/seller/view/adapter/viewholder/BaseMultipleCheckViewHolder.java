@@ -1,13 +1,13 @@
-package com.tokopedia.seller.base.view.adapter.viewholder;
+package com.tokopedia.base.list.seller.view.adapter.viewholder;
 
 import android.view.View;
 
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 
 /**
  * Created by nathan on 6/23/17.
  */
-
+@Deprecated
 public abstract class BaseMultipleCheckViewHolder<T> extends BaseViewHolder<T> {
 
     public interface CheckedCallback<T> {

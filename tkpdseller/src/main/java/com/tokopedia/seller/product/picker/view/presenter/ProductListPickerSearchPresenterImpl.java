@@ -1,10 +1,10 @@
 package com.tokopedia.seller.product.picker.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMapperView;
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView;
+import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMapperView;
 import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
 
 import rx.Subscriber;
@@ -13,7 +13,7 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 9/7/17.
  */
 
-public class ProductListPickerSearchPresenterImpl extends BaseDaggerPresenter<ProductListPickerSearchView>  implements ProductListPickerSearchPresenter {
+public class ProductListPickerSearchPresenterImpl extends BaseDaggerPresenter<ProductListPickerSearchView> implements ProductListPickerSearchPresenter {
 
     private final GetProductListSellingUseCase getProductListSellingUseCase;
     private final GetProductListPickerMapperView getProductListPickerMapperView;

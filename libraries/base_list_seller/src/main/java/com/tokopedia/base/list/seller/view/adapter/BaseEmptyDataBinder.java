@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -9,13 +9,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.NoResultDataBinder;
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public abstract class BaseEmptyDataBinder extends NoResultDataBinder {
 
     protected String emptyTitleText;

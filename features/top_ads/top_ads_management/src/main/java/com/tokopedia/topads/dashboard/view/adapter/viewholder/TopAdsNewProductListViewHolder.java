@@ -5,8 +5,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 
 /**

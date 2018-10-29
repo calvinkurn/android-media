@@ -11,17 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter;
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenterImpl;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsCreditAdapter;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsAddCreditFragmentListener;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenter;
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsAddCreditPresenterImpl;
 
 import java.util.List;
 

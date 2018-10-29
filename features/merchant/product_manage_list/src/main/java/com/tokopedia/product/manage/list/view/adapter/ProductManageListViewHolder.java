@@ -7,16 +7,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 import com.tokopedia.product.manage.item.common.util.FreeReturnTypeDef;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef;
 import com.tokopedia.product.manage.list.constant.ProductManageStockDef;
 import com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
+import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 
 /**
  * Created by zulfikarrahman on 9/25/17.

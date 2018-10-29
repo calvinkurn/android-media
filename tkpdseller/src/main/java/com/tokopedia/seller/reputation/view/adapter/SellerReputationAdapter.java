@@ -16,17 +16,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.reputation.util.DateHeaderFormatter;
 import com.tokopedia.seller.reputation.view.helper.DateUtilHelper;
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

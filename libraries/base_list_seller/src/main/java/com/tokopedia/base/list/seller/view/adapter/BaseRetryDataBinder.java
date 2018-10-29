@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,13 +6,14 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.util.DataBindAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.base.list.seller.R;
+import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 
 /**
  * Created by Nisie on 2/26/16.
  */
+@Deprecated
 public class BaseRetryDataBinder extends RetryDataBinder {
 
     private int errorDrawableRes;

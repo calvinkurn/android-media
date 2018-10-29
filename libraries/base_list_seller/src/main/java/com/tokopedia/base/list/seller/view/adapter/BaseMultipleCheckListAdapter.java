@@ -1,11 +1,11 @@
-package com.tokopedia.seller.base.view.adapter;
+package com.tokopedia.base.list.seller.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.product.manage.item.common.util.ItemIdType;
-import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.base.list.seller.common.util.ItemIdType;
+import com.tokopedia.base.list.seller.view.adapter.viewholder.BaseMultipleCheckViewHolder;
+import com.tokopedia.base.list.seller.view.old.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
+@Deprecated
 public abstract class BaseMultipleCheckListAdapter<T extends ItemIdType> extends BaseListAdapter<T> {
 
     protected HashSet<String> hashSet;

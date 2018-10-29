@@ -1,6 +1,5 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -14,8 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;

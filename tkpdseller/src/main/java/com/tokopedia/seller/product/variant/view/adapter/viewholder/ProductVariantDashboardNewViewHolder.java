@@ -5,15 +5,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDashboardNewAdapter;
 import com.tokopedia.seller.product.variant.view.model.ProductVariantDashboardViewModel;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
