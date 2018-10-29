@@ -978,9 +978,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
-                                                          String reservationId, String reservationCode) {
-        return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
+    public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
+                                                       String reservationId, String reservationCode) {
+        return LoyaltyActivity.newInstanceTrainCouponActive(activity, platform, "11",
                 reservationId, reservationCode);
     }
 
@@ -3210,8 +3210,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getSession().getUserId();
     }
 
-    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
     }
 
     public void onAppsFlyerInit() {
