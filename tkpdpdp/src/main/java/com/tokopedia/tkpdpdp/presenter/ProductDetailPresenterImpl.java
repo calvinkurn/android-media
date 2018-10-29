@@ -66,7 +66,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -701,52 +700,52 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         cacheInteractor.getPromoWidgetCache(generatePromoTargetType(productDetailData, context),
                 SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
                 shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
-            @Override
-            public void onSuccess(PromoAttributes result) {
-                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
-                        && result.getShortDescHtml() != null) {
-                    viewListener.showPromoWidget(result);
-                    ProductPageTracking.eventImpressionWidgetPromo(
-                            context,
-                            result.getShortDesc(),
-                            result.getCustomPromoId(),
-                            result.getCode()
-                    );
-                }
-            }
+                    @Override
+                    public void onSuccess(PromoAttributes result) {
+                        if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
+                                && result.getShortDescHtml() != null) {
+                            viewListener.showPromoWidget(result);
+                            ProductPageTracking.eventImpressionWidgetPromo(
+                                    context,
+                                    result.getShortDesc(),
+                                    result.getCustomPromoId(),
+                                    result.getCode()
+                            );
+                        }
+                    }
 
-            @Override
-            public void onError() {
-                retrofitInteractor.getPromo(context,
-                        generatePromoTargetType(productDetailData, context),
-                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
-                        new RetrofitInteractor.PromoListener() {
-                            @Override
-                            public void onSucccess(DataPromoWidget dataPromoWidget) {
-                                cacheInteractor.storePromoWidget(
-                                        generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
-                                        shopType, dataPromoWidget);
-                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
-                                    PromoAttributes attributes = item.getPromoAttributes();
-                                    attributes.setCustomPromoId(item.getId());
-                                    viewListener.showPromoWidget(attributes);
-                                    ProductPageTracking.eventImpressionWidgetPromo(
-                                            context,
-                                            attributes.getShortDesc(),
-                                            attributes.getCustomPromoId(),
-                                            attributes.getCode()
-                                    );
-                                }
-                            }
+                    @Override
+                    public void onError() {
+                        retrofitInteractor.getPromo(context,
+                                generatePromoTargetType(productDetailData, context),
+                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
+                                new RetrofitInteractor.PromoListener() {
+                                    @Override
+                                    public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                        cacheInteractor.storePromoWidget(
+                                                generatePromoTargetType(productDetailData, context),
+                                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                                                shopType, dataPromoWidget);
+                                        if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                            PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                            PromoAttributes attributes = item.getPromoAttributes();
+                                            attributes.setCustomPromoId(item.getId());
+                                            viewListener.showPromoWidget(attributes);
+                                            ProductPageTracking.eventImpressionWidgetPromo(
+                                                    context,
+                                                    attributes.getShortDesc(),
+                                                    attributes.getCustomPromoId(),
+                                                    attributes.getCode()
+                                            );
+                                        }
+                                    }
 
-                            @Override
-                            public void onError(String error) {
-                            }
-                        });
-            }
-        });
+                                    @Override
+                                    public void onError(String error) {
+                                    }
+                                });
+                    }
+                });
     }
 
     public String generatePromoTargetType(ProductDetailData productData, Context context) {
@@ -764,7 +763,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processResultTalk(int resultCode, Intent data) {
         if (isResultOK(resultCode) & isIntentOK(data)) {
             if (data.getExtras() != null && data.getBooleanExtra(
-                    TalkProductActivity.RESULT_TALK_HAS_ADDED, false
+                    "RESULT_TALK_HAS_ADDED", false
             )) {
                 viewListener.onProductTalkUpdated();
             }

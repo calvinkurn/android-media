@@ -181,10 +181,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
-            android:name=".talk.talkproduct.activity.TalkAddNew"
-            android:label="@string/title_activity_talk_add_new"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".SettingsNotification"
             android:label="@string/title_activity_settings_notification"
             android:screenOrientation="portrait" />
@@ -280,14 +276,6 @@
             android:label="Informasi Toko"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".talk.talkproduct.activity.TalkProductActivity"
-            android:label="@string/title_talk"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".talkview.activity.TalkViewActivity"
-            android:label="@string/title_talk"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".share.ShareActivity"
             android:label="@string/title_activity_share"
             android:screenOrientation="portrait" />
@@ -345,11 +333,6 @@
             android:name=".gallery.GalleryActivity"
             android:screenOrientation="portrait" />
 
-        <activity
-            android:name=".shopinfo.activity.ShopDiscussionActivity"
-            android:label="@string/title_talk_only"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <!-- ======================================================= -->
         <!-- RECEIVERS REGISTRY -->
         <!-- ======================================================= -->
@@ -400,19 +383,10 @@
             android:name=".service.DownloadService"
             android:exported="false" />
         <service
-            android:name=".talkview.intentservice.TalkViewIntentService"
-            android:exported="false" />
-        <service
             android:name=".manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
         <service
             android:name=".product.intentservice.ProductInfoIntentService"
-            android:exported="false" />
-        <service
-            android:name=".talkview.intentservice.TalkDetailIntentService"
-            android:exported="false" />
-        <service
-            android:name=".talk.talkproduct.intentservice.TalkAddNewIntentService"
             android:exported="false" />
 
         <!-- ======================================================= -->
