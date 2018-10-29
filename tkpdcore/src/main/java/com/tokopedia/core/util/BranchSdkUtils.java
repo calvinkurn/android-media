@@ -129,7 +129,7 @@ public class BranchSdkUtils {
                 linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
-                linkProperties.setChannel(data.getType());
+                linkProperties.setChannel(String.format("%s - Android", data.getType()));
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());

@@ -2366,6 +2366,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setTextContent(contentMessage)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
+                .setOgImageUrl(imgUrl)
                 .setUri(shareUrl)
                 .setSource(userId) // just using existing variable
                 .setPrice(sharing) // here too
