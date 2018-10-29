@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by Rizky on 23/10/18.
  */
-class Included(
+class IncludedAirline(
         @SerializedName("type")
         @Expose
         val type: String,
@@ -15,5 +15,5 @@ class Included(
         val id: String,
         @SerializedName("attributes")
         @Expose
-        val attributes: Attributes
+        val attributes: AttributesAirline
 )

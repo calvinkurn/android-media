@@ -1,12 +1,13 @@
 package com.tokopedia.events.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.events.domain.model.EventLocationDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,8 +17,9 @@ import rx.Observable;
 
 public class GetEventsLocationListRequestUseCase extends UseCase<List<EventLocationDomain>> {
     private final EventRepository eventRepository;
-    public GetEventsLocationListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+
+    @Inject
+    public GetEventsLocationListRequestUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 

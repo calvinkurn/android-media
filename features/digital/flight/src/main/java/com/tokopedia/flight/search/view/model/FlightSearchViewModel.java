@@ -8,8 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight_dbflow.FlightSearchReturnRouteDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
@@ -80,7 +80,14 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
         this.totalNumeric = flightSearchSingleRouteDB.getTotalNumeric();
         this.beforeTotal = flightSearchSingleRouteDB.getBeforeTotal();
 
-        this.isRefundable = flightSearchSingleRouteDB.getIsRefundable();
+        if (flightSearchSingleRouteDB.getIsRefundable() == RefundableEnum.REFUNDABLE.getId()) {
+            this.isRefundable = RefundableEnum.REFUNDABLE;
+        } else if (flightSearchSingleRouteDB.getIsRefundable() == RefundableEnum.NOT_REFUNDABLE.getId()) {
+            this.isRefundable = RefundableEnum.NOT_REFUNDABLE;
+        } else {
+            this.isRefundable = RefundableEnum.PARTIAL_REFUNDABLE;
+        }
+
         this.isReturning = flightSearchSingleRouteDB instanceof FlightSearchReturnRouteDB;
 
         String routesJsonString = flightSearchSingleRouteDB.getRoutes();
