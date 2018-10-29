@@ -1,7 +1,5 @@
 package com.tokopedia.core.router;
 
-import android.app.Fragment;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,9 +13,9 @@ import com.tokopedia.core.util.RouterUtils;
  */
 
 /**
+ * @author nisie
  * @deprecated do not use this class
  * please use TkpdInboxRouter instead
- * @author nisie
  */
 @Deprecated
 public class InboxRouter {
@@ -26,9 +24,6 @@ public class InboxRouter {
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
-    private static final String INBOX_TALK_ACTIVITY = "com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity";
-    private static final String INBOX_TALK_FRAGMENT = "com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment";
-
 
     public static final String ARG_PARAM_EXTRA_INSTANCE_TYPE = "ARG_PARAM_EXTRA_INSTANCE_TYPE";
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
@@ -67,25 +62,6 @@ public class InboxRouter {
         return RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
     }
 
-    public static Intent getInboxTalkActivityIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, INBOX_TALK_ACTIVITY);
-        return intent;
-    }
-
-    public static Fragment instanceInboxTalkFromNotification(Context context) {
-        Fragment fragment = Fragment.instantiate(context, INBOX_TALK_FRAGMENT);
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static Fragment instanceInboxMessageFromNotification(Context context) {
-        Fragment fragment = Fragment.instantiate(context, INBOX_MESSAGE_FRAGMENT);
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     /////////// Class
     public static Class<?> getInboxticketActivityClass() {
         Class<?> parentIndexHomeClass = null;
@@ -105,33 +81,6 @@ public class InboxRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
-    }
-
-    public static Class<?> getInboxTalkActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_TALK_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    /////////// COMPONENT NAME
-
-    public static ComponentName getInboxticketActivityComponentName(Context context) {
-        return RouterUtils.getActivityComponentName(context, INBOX_TICKET_ACTIVITY);
-    }
-
-    public static Fragment instanceInboxTicketFragmentFromNotification(Context context) {
-        Fragment fragment = Fragment.instantiate(context, INBOX_TICKET_FRAGMENT);
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static ComponentName getInboxMessageActivityComponentName(Context context) {
-        return RouterUtils.getActivityComponentName(context, INBOX_MESSAGE_ACTIVITY);
     }
 
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID) {

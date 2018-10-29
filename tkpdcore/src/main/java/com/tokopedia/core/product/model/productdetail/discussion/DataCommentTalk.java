@@ -2,7 +2,6 @@ package com.tokopedia.core.product.model.productdetail.discussion;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.talk.model.model.InboxTalk;
 
 import java.util.ArrayList;
 import java.util.List;
