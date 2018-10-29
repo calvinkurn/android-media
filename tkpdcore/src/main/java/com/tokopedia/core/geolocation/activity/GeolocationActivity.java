@@ -47,6 +47,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
+    // Address -> Router
     public static Intent createInstanceFromAddress(@NonNull Context context,
                                                    @Nullable HashMap<String, String> locationPass,
                                                    boolean isFromMarketPlaceCart) {
@@ -58,6 +59,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         return intent;
     }
 
+    // Shop Open -> Router
     public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
@@ -66,6 +68,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         return intent;
     }
 
+    // Shipment Fragment -> Direct dep
     public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
