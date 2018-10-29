@@ -1,8 +1,11 @@
 package com.tokopedia.logisticgeolocation;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import java.util.List;
@@ -63,5 +66,10 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    public static boolean checkHasPermission(Activity activity, String permission) {
+        return ContextCompat.checkSelfPermission(activity, permission)
+                == PackageManager.PERMISSION_GRANTED;
     }
 }

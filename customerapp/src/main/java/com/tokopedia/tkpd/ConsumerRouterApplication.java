@@ -1949,6 +1949,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+            Context context, String platform, String category, String defaultSelectedTab
+    ) {
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
+    }
+
+    @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
@@ -2613,7 +2620,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
+        return null;
     }
 
     @Override
@@ -2652,12 +2659,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGeoLocationActivityIntent(Context context, HashMap<String, String> locationMap, boolean isFromMarketplaceCart) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GeolocationActivity.EXTRA_HASH_LOCATION, locationMap);
-        bundle.putBoolean(GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketplaceCart);
-        intent.putExtras(bundle);
-        return intent;
+        return GeolocationActivity.createInstanceFromAddress(context, locationMap, isFromMarketplaceCart);
     }
 
     @Override
