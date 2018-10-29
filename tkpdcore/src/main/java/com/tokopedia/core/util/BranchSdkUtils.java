@@ -130,6 +130,7 @@ public class BranchSdkUtils {
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
                 linkProperties.setChannel(String.format("%s - Android", data.getType()));
+                linkProperties.addControlParameter("uri_redirect_mode","2");
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
