@@ -72,7 +72,7 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
-        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition);
+        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
 
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
@@ -213,7 +213,7 @@ public interface ShipmentContract {
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
-        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition);
+        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 

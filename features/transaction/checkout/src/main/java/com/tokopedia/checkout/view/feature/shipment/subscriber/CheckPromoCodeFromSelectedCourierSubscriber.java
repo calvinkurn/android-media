@@ -14,11 +14,13 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
 
     private final ShipmentContract.View view;
     private final int itemPosition;
+    private final boolean noToast;
 
     public CheckPromoCodeFromSelectedCourierSubscriber(ShipmentContract.View view,
-                                                       int itemPosition) {
+                                                       int itemPosition, boolean noToast) {
         this.view = view;
         this.itemPosition = itemPosition;
+        this.noToast = noToast;
     }
 
     @Override
@@ -38,9 +40,11 @@ public class CheckPromoCodeFromSelectedCourierSubscriber extends Subscriber<Prom
     public void onNext(PromoCodeCartListData promoCodeCartListData) {
         if (view != null) {
             if (!promoCodeCartListData.isError()) {
-                view.renderCheckPromoCodeFromCourierSuccess(promoCodeCartListData, itemPosition);
+                view.renderCheckPromoCodeFromCourierSuccess(promoCodeCartListData, itemPosition, noToast);
             } else {
-                view.showToastError(promoCodeCartListData.getErrorMessage());
+                if (!noToast) {
+                    view.showToastError(promoCodeCartListData.getErrorMessage());
+                }
             }
         }
     }

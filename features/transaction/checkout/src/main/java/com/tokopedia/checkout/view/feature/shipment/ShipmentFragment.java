@@ -600,8 +600,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData,
-                                                       int itemPosition) {
-        if (!shipmentAdapter.isCourierPromoStillExist()) {
+                                                       int itemPosition, boolean noToast) {
+        if (!noToast && !shipmentAdapter.isCourierPromoStillExist()) {
             showToastNormal(promoCodeCartListData.getDataVoucher().getMessageSuccess());
         }
         setAppliedPromoCodeData(promoCodeCartListData);
@@ -1509,7 +1509,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
         if (isToogleYearEndPromoOn() && !TextUtils.isEmpty(courierItemData.getPromoCode())) {
-            shipmentPresenter.processCheckPromoCodeFromSelectedCourier(courierItemData.getPromoCode(), itemPosition);
+            String promoCode = courierItemData.getPromoCode();
+            if (!shipmentAdapter.isCourierPromoStillExist() && shipmentPresenter.getPromoCodeAppliedData() != null &&
+                    !TextUtils.isEmpty(shipmentPresenter.getPromoCodeAppliedData().getPromoCode())) {
+                promoCode = shipmentPresenter.getPromoCodeAppliedData().getPromoCode();
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, true);
+            } else {
+                shipmentPresenter.processCheckPromoCodeFromSelectedCourier(promoCode, itemPosition, false);
+            }
         }
     }
 
