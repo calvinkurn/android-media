@@ -1,11 +1,11 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'graphql']
+    configurations {
+        all {
+            resolutionStrategy {
+                force "android.arch.core:runtime:1.1.1"
             }
         }
     }
@@ -25,11 +25,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
-
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
     implementation project(rootProject.ext.libraries.network)
+
+    //room
+    api rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../publish_local.gradle'
