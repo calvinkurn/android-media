@@ -58,6 +58,9 @@ class KelontongWebChromeClient(context: Context, filePickerInterface: FilePicker
     override fun onShowFileChooser(
             webView: WebView, filePathCallback: ValueCallback<Array<Uri?>>,
             fileChooserParams: WebChromeClient.FileChooserParams): Boolean {
+        if (callbackAfterL != null) {
+            callbackAfterL!!.onReceiveValue(null)
+        }
         callbackAfterL = filePathCallback
 
         var takePictureIntent: Intent? = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -93,12 +96,10 @@ class KelontongWebChromeClient(context: Context, filePickerInterface: FilePicker
         chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser")
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray)
         filePickerInterface!!.startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST)
-        return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
+        return true
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (intent == null)
-            return
         if (Build.VERSION.SDK_INT >= 21) {
             var results: Array<Uri?>? = null
             //Check if response is positive
