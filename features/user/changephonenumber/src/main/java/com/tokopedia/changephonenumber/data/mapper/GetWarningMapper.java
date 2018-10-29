@@ -2,6 +2,7 @@ package com.tokopedia.changephonenumber.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.changephonenumber.data.model.GetWarningData;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
@@ -9,6 +10,7 @@ import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.functions.Func1;
 
 /**
@@ -44,8 +46,7 @@ public class GetWarningMapper implements Func1<Response<TokopediaWsV4Response>, 
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new RuntimeException(
-                            tkpdResponseResponse.body().getErrorMessageJoined());
+                    Observable.error(new MessageErrorException(tkpdResponseResponse.body().getErrorMessageJoined()));
                 } else {
                     throw new RuntimeException("");
                 }

@@ -2,11 +2,13 @@ package com.tokopedia.changephonenumber.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.changephonenumber.data.model.ValidateOtpStatusData;
 
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.functions.Func1;
 
 /**
@@ -21,7 +23,7 @@ public class ValidateOtpStatusMapper implements Func1<Response<ValidateOtpStatus
 
     @Override
     public Boolean call(Response<ValidateOtpStatusData> response) {
-        Boolean isValid;
+        boolean isValid = false;
         if (response.isSuccessful()) {
             if (response.body() != null) {
                 if (TextUtils.isEmpty(response.body().getHeader().getErrorCode())) {
@@ -35,7 +37,7 @@ public class ValidateOtpStatusMapper implements Func1<Response<ValidateOtpStatus
                     }
                 }
             } else {
-                throw new RuntimeException(response.errorBody().toString());
+                Observable.error(new MessageErrorException(response.errorBody().toString()));
             }
 
         } else {

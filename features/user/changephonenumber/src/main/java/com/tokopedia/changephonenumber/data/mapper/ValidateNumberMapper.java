@@ -1,12 +1,14 @@
 package com.tokopedia.changephonenumber.data.mapper;
 
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.changephonenumber.data.model.ValidateNumberData;
 
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.functions.Func1;
 
 /**
@@ -20,7 +22,7 @@ public class ValidateNumberMapper implements Func1<Response<TokopediaWsV4Respons
 
     @Override
     public Boolean call(Response<TokopediaWsV4Response> tkpdResponseResponse) {
-        Boolean model;
+        boolean model = false;
         if (tkpdResponseResponse.isSuccessful()) {
             if (!tkpdResponseResponse.body().isError() &&
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
@@ -32,8 +34,7 @@ public class ValidateNumberMapper implements Func1<Response<TokopediaWsV4Respons
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new RuntimeException(
-                            tkpdResponseResponse.body().getErrorMessageJoined());
+                    Observable.error(new MessageErrorException(tkpdResponseResponse.body().getErrorMessageJoined()));
                 } else {
                     throw new RuntimeException("");
                 }
