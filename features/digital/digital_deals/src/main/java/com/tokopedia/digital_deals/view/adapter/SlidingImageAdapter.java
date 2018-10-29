@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
@@ -25,6 +26,7 @@ public class SlidingImageAdapter extends PagerAdapter {
     private List<ProductItem> productItems;
     private Context context;
     private DealsHomePresenter mPresenter;
+    private int currentPosition=-1;
 
 
     public SlidingImageAdapter(List<ProductItem> productItems, DealsHomePresenter presenter) {
@@ -62,6 +64,19 @@ public class SlidingImageAdapter extends PagerAdapter {
             }
         });
         return imageLayout;
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
+        if (position != currentPosition) {
+            ImageView image = (ImageView) object;
+            WrapContentHeightViewPager pager = (WrapContentHeightViewPager) container;
+            if (image != null ) {
+                currentPosition = position;
+                pager.measureCurrentView(image);
+            }
+        }
     }
 
     @Override

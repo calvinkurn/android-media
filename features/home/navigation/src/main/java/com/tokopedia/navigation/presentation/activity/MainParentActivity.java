@@ -681,6 +681,8 @@ public class MainParentActivity extends BaseActivity implements
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (cartFragment == null) {
                 cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            } else if (bundle != null) {
+                cartFragment.setArguments(bundle);
             }
             fragmentList.set(CART_MENU, cartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
