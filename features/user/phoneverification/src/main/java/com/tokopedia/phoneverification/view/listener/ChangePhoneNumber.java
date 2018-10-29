@@ -1,6 +1,7 @@
 package com.tokopedia.phoneverification.view.listener;
 
 import android.app.Activity;
+import android.content.Context;
 import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -22,6 +23,8 @@ public interface ChangePhoneNumber {
         Activity getActivity();
 
         void onErrorChangePhoneNumber(String errorMessage);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

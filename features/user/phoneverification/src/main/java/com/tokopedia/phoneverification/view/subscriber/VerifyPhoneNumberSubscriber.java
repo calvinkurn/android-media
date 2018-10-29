@@ -1,6 +1,6 @@
 package com.tokopedia.phoneverification.view.subscriber;
 
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.phoneverification.data.VerifyPhoneNumberDomain;
 import com.tokopedia.phoneverification.view.listener.PhoneVerification;
 
@@ -25,13 +25,8 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<VerifyPhoneNumberDom
 
     @Override
     public void onError(Throwable throwable) {
-        view.onErrorVerifyPhoneNumber(throwable.getLocalizedMessage());
-        if (throwable instanceof ResponseV4ErrorException) {
-            view.onErrorVerifyPhoneNumber(
-                    ((ResponseV4ErrorException) throwable).getErrorList().get(0));
-        } else {
-            view.onErrorVerifyPhoneNumber(throwable.getLocalizedMessage());
-        }
+        view.onErrorVerifyPhoneNumber(ErrorHandler.getErrorMessage(view.getContext(), throwable));
+
     }
 
     @Override

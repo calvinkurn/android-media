@@ -1,7 +1,7 @@
 package com.tokopedia.phoneverification.view.subscriber;
 
 
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.phoneverification.view.listener.ChangePhoneNumber;
 
@@ -26,12 +26,7 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberVie
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof ResponseV4ErrorException) {
-            viewListener.onErrorChangePhoneNumber(
-                    ((ResponseV4ErrorException) e).getErrorList().get(0));
-        } else {
-            viewListener.onErrorChangePhoneNumber(e.getLocalizedMessage());
-        }
+        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessage(viewListener.getContext(), e));
     }
 
     @Override

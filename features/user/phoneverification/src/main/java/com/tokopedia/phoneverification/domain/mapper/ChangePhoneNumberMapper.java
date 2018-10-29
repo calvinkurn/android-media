@@ -1,5 +1,6 @@
 package com.tokopedia.phoneverification.domain.mapper;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.phoneverification.domain.pojo.ChangePhoneNumberPojo;
@@ -7,6 +8,7 @@ import com.tokopedia.phoneverification.domain.pojo.ChangePhoneNumberPojo;
 import javax.inject.Inject;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.functions.Func1;
 
 /**
@@ -33,7 +35,7 @@ public class ChangePhoneNumberMapper implements Func1<Response<TokopediaWsV4Resp
             } else {
                 if (response.body().getErrorMessages() != null
                         && !response.body().getErrorMessages().isEmpty()) {
-                    throw new RuntimeException(response.body().getErrorMessageJoined());
+                    Observable.error(new MessageErrorException(response.body().getErrorMessageJoined()));
                 } else {
                     throw new RuntimeException("");
                 }
