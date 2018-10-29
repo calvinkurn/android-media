@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -103,6 +104,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goToEtalaseList(Context context) {
+
+    }
+
+    @Override
     public void goToDraftProductList(Context context) {
 
     }
@@ -189,11 +195,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getOnBoardingActivityIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getPhoneVerificationActivityIntent(Context context) {
         return null;
     }
@@ -221,6 +222,11 @@ public class PosRouterApplication extends MainApplication implements
         PosSessionHandler.clearPosUserData(this);
         PosCacheHandler.clearUserData(this);
         SchedulerService.cancelCacheScheduler(getApplicationContext());
+    }
+
+    @Override
+    public void onAppsFlyerInit() {
+
     }
 
     @Override
@@ -439,11 +445,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getTalkIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -546,6 +547,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getWithdrawIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
     }
 
     @Override
@@ -725,6 +731,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
+
+    }
+
+    @Override
     public FingerprintModel getFingerprintModel() {
         return null;
     }
@@ -761,6 +772,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getChangePasswordIntent(Context context) {
         //        There is no change password in pos
+        return null;
+    }
+
+    @Override
+    public Intent getInboxTalkCallingIntent(Context context) {
         return null;
     }
 
