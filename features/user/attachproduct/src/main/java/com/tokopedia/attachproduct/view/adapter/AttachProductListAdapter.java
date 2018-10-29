@@ -25,6 +25,13 @@ public class AttachProductListAdapter extends BaseListAdapter<AttachProductItemV
         checkedList = new ArrayList<>();
     }
 
+    public AttachProductListAdapter(AttachProductListAdapterTypeFactory baseListAdapterTypeFactory,
+                                    HashSet<Integer> productIds, ArrayList<AttachProductItemViewModel> checkedList) {
+        super(baseListAdapterTypeFactory);
+        this.productIds = productIds;
+        this.checkedList = checkedList;
+    }
+
     @Override
     public List<AttachProductItemViewModel> getData() {
         return super.getData();

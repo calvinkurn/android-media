@@ -327,6 +327,7 @@ dependencies {
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)

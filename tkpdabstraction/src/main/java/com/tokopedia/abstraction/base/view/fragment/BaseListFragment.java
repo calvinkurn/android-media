@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +23,8 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     private static final int DEFAULT_INITIAL_PAGE = 1;
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
-    private SnackbarRetry snackBarRetry;
+    private Snackbar snackBarRetry;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;
 
@@ -289,16 +289,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void onGetListErrorWithExistingData(Throwable throwable) {
-        showSnackBarRetry(throwable, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
+        showSnackBarRetry(throwable,v -> {
                 if (endlessRecyclerViewScrollListener != null) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage();
                 } else {
                     loadInitialData();
                 }
-            }
-        });
+                });
     }
 
     @Override
@@ -316,18 +313,19 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         hideSnackBarRetry();
     }
 
-    private void showSnackBarRetry(Throwable throwable, NetworkErrorHelper.RetryClickedListener listener) {
+    private void showSnackBarRetry(Throwable throwable, View.OnClickListener listener) {
         if (snackBarRetry == null) {
             String message = getMessageFromThrowable(getView().getContext(), throwable);
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, listener);
-            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+
+            snackBarRetry = ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
+                    .setAction(R.string.retry_label, listener);
         }
-        snackBarRetry.showRetrySnackbar();
+        snackBarRetry.show();
     }
 
     private void hideSnackBarRetry() {
         if (snackBarRetry != null) {
-            snackBarRetry.hideRetrySnackbar();
+            snackBarRetry.dismiss();
             snackBarRetry = null;
         }
     }

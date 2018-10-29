@@ -31,6 +31,7 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
@@ -213,6 +214,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
+        ImageUploaderUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         LogoutUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_DOMAIN);
         SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
