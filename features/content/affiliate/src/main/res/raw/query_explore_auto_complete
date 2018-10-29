@@ -1,5 +1,5 @@
-query topadsExploreAutocom($keyword:String!){
-  topadsExploreAutocom(keyword:$keyword){
+query topadsExploreAutocom($keyword:String!, $limit: Int!){
+  topadsExploreAutocom(keyword:$keyword, limit:$limit){
     match{
         text
         formatted

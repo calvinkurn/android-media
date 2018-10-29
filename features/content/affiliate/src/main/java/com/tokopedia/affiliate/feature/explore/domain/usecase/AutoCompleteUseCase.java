@@ -19,6 +19,7 @@ import javax.inject.Inject;
 public class AutoCompleteUseCase extends GraphqlUseCase {
 
     private final static String PARAM_KEYWORD = "keyword";
+    private final static String PARAM_LIMIT = "limit";
 
     private final Context context;
 
@@ -39,6 +40,7 @@ public class AutoCompleteUseCase extends GraphqlUseCase {
         RequestParams params = RequestParams.create();
         if (!TextUtils.isEmpty(keyword)) {
             params.putString(PARAM_KEYWORD, keyword);
+            params.putInt(PARAM_LIMIT, 3);
         }
         return params;
     }
