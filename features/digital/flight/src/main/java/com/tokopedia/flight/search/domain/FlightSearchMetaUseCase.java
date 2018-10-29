@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.domain;
 
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;

@@ -308,8 +308,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     }
                     shopPageTracking.eventTypeKeywordSearchProduct(getString(R.string.shop_info_title_tab_product),
                             text, info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
-                    val etalaseId = (shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME) as ShopProductListLimitedFragment)
-                            .selectedEtalaseId
+                    val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
+                    if (fragment == null)
+                        return
+                    val etalaseId = (fragment as ShopProductListLimitedFragment).selectedEtalaseId
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
                             text, etalaseId, shopAttribution))
                     //reset the search, since the result will go to another activity.

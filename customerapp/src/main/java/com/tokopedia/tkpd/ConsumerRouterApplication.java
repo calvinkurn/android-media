@@ -102,7 +102,6 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.EventInerceptors;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -182,7 +181,6 @@ import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -864,11 +862,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToFlightActivity(Context context) {
-        TkpdFlight.goToFlightActivity(context);
-    }
-
-    @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -969,16 +962,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getAppComponent().chuckInterceptor();
     }
 
-    @Override
-    public OkHttpClient getOkHttpClient(EventInerceptors eventInerceptors, HttpLoggingInterceptor loggingInterceptor) {
-        return OkHttpFactory.create().buildDaggerClientBearerEvents(
-                eventInerceptors,
-                getAppComponent().okHttpRetryPolicy(),
-                getAppComponent().chuckInterceptor(),
-                getAppComponent().debugInterceptor(),
-                loggingInterceptor
-        );
-    }
 
     @Override
     public Intent getTrainOrderListIntent(Context context) {
@@ -2896,12 +2879,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getOnBoardingIntent(Activity activity) {
         return new Intent(activity, NewOnboardingActivity.class);
-    }
-
-    @Override
-    public SessionHandler getSessionHandler() {
-        SessionHandler sessionHandler = new SessionHandler(this);
-        return sessionHandler;
     }
 
 

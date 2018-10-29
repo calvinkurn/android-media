@@ -127,6 +127,7 @@ ext {
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
             flight                      : ":features:digital:flight",
+            flightDbFlow                : ":features:digital:flight_dbflow",
 //            flight_no_op                : ":features:digital:flight_no_op",
             train                       : ":features:digital:train",
 

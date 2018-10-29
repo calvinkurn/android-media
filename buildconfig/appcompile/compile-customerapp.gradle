@@ -16,6 +16,7 @@ include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
 include "features:digital:flight"
+include "features:digital:flight_dbflow"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
 

@@ -166,6 +166,14 @@ public class EntityPackageItem implements Parcelable {
         this.areaCode = areaCode;
     }
 
+    public List<String> getSeatRowId() {
+        return seatRowId;
+    }
+
+    public List<String> getAreaCode() {
+        return areaCode;
+    }
+
     @Override
     public String toString() {
         return

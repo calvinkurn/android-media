@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
@@ -29,10 +30,10 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private List<PackageViewModel> packageViewModelList;
     private Context mContext;
-    private EventBookTicketPresenter mPresenter;
+    private EventBookTicketContract.BookTicketPresenter mPresenter;
 
 
-    public AddTicketAdapter(Context context, List<PackageViewModel> data, EventBookTicketPresenter presenter) {
+    public AddTicketAdapter(Context context, List<PackageViewModel> data, EventBookTicketContract.BookTicketPresenter presenter) {
         packageViewModelList = data;
         mContext = context;
         mPresenter = presenter;

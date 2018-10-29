@@ -1,13 +1,9 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
@@ -18,22 +14,7 @@ import java.util.List;
  */
 
 public class EventSearchContract {
-    public interface IEventSearchView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
-
-        void showProgressBar();
-
-        void hideProgressBar();
-
-        RequestParams getParams();
-
-        android.view.View getRootView();
-
+    public interface EventSearchView extends EventBaseContract.EventBaseView {
         FragmentManager getFragmentManagerInstance();
 
         void setTopEvents(List<CategoryItemsViewModel> searchViewModels);
@@ -53,13 +34,9 @@ public class EventSearchContract {
         void setFilterInactive();
     }
 
-    public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView> {
+    public interface EventSearchPresenter extends EventBaseContract.EventBasePresenter {
 
         void setupCallback(EventsContract.AdapterCallbacks callbacks);
-
-        void initialize();
-
-        void onDestroy();
 
         void setEventLike(CategoryItemsViewModel model, int position);
 
@@ -78,7 +55,6 @@ public class EventSearchContract {
         void openFilters();
 
         void onActivityResult(int requestcode, int resultcode, Intent data);
-
 
     }
 }
