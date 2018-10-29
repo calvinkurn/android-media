@@ -58,6 +58,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions "server"
+
+    productFlavors {
+        live {
+            dimension "server"
+        }
+        staging {
+            dimension "server"
+        }
+    }
 }
 
 dependencies {
