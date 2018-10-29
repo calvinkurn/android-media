@@ -10,10 +10,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
@@ -73,10 +72,10 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     private void showTitle(Context context, int position) {
-        if(list.get(position) instanceof ChatListViewModel){
+        if (list.get(position) instanceof ChatListViewModel) {
             ChatListViewModel now = (ChatListViewModel) list.get(position);
             if (position > 0) {
-                if(list.get(position-1) instanceof ChatListViewModel) {
+                if (list.get(position - 1) instanceof ChatListViewModel) {
                     ChatListViewModel prev = (ChatListViewModel) list.get(position - 1);
 
                     if (now.getSectionSize() > 0 && !compareType(now.getSpanMode(), prev.getSpanMode())) {
@@ -131,8 +130,8 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    public void removeWithMessageId(String messageId){
-        if(list != null && !list.isEmpty() && !TextUtils.isEmpty(messageId)) {
+    public void removeWithMessageId(String messageId) {
+        if (list != null && !list.isEmpty() && !TextUtils.isEmpty(messageId)) {
             for (Visitable visitable : list) {
                 if (visitable instanceof ChatListViewModel
                         && messageId.equals(((ChatListViewModel) visitable).getId())) {
@@ -194,7 +193,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeLoading() {
         this.list.remove(loadingModel);
-        notifyItemRemoved(list.size()-1);
+        notifyItemRemoved(list.size() - 1);
     }
 
 
@@ -237,7 +236,8 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return false;
     }
 
-    public void moveToTop(String messageId, String lastReply, WebSocketResponse response, boolean showNotif) {
+    public void moveToTop(String messageId, String lastReply, WebSocketResponse response, boolean
+            showNotif) {
         boolean isNew = true;
         String currentId;
         for (int i = 0; i < list.size(); i++) {
@@ -296,6 +296,41 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             }
             presenter.moveViewToTop();
 
+        }
+    }
+
+    public void updateListCache(String messageId, String lastReply, boolean showNotif,
+                                List<Visitable> list) {
+        String currentId;
+        for (int i = 0; i < list.size(); i++) {
+            try {
+                ChatListViewModel temp = (ChatListViewModel) list.get(i);
+                currentId = String.valueOf(temp.getId());
+                if (currentId.equals(messageId)) {
+                    if (showNotif) {
+                        int unread = temp.getUnreadCounter();
+                        unread++;
+                        temp.setMessage(MethodChecker.fromHtml(lastReply.trim()).toString());
+                        temp.setUnreadCounter(unread);
+                        temp.setReadStatus(InboxMessageConstant.STATE_CHAT_UNREAD);
+                        temp.setTime(String.valueOf(new Date().getTime()));
+                        temp.setTyping(false);
+                    } else {
+                        temp.setMessage(MethodChecker.fromHtml(lastReply.trim()).toString());
+                        temp.setUnreadCounter(0);
+                        temp.setReadStatus(InboxMessageConstant.STATE_CHAT_READ);
+                        temp.setTime(String.valueOf(new Date().getTime()));
+                        temp.setTyping(false);
+                    }
+                    list.remove(i);
+                    list.add(0, temp);
+                    break;
+                }
+
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                break;
+            }
         }
     }
 

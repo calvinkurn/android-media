@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderlist.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;

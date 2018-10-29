@@ -2,9 +2,9 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.library.pagination.PaginationItem;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class CouponValueEntity extends PaginationItem {
+public class CouponValueEntity extends BaseItem {
     @Expose
     @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;

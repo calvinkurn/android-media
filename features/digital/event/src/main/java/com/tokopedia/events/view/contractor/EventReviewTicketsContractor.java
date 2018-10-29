@@ -15,26 +15,14 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
 public class EventReviewTicketsContractor {
 
-    public interface EventReviewTicketsView extends CustomerView {
-        void showMessage(String message);
-
-        Activity getActivity();
-
-        void navigateToActivityRequest(Intent intent, int requestCode);
-
+    public interface EventReviewTicketsView extends EventBaseContract.EventBaseView {
         void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats);
 
         void setEmailID(String emailID);
 
         void setPhoneNumber(String number);
 
-        void showProgressBar();
-
-        void hideProgressBar();
-
         void initForms(String[] hintText, String[] regex);
-
-        android.view.View getRootView();
 
         void showPromoSuccessMessage(String text, int color);
 
@@ -49,9 +37,7 @@ public class EventReviewTicketsContractor {
         boolean validateAllFields();
     }
 
-    public interface Presenter extends CustomerPresenter<EventReviewTicketsView> {
-
-        void onDestroy();
+    public interface EventReviewTicketPresenter extends EventBaseContract.EventBasePresenter {
 
         void proceedToPayment();
 
@@ -63,8 +49,6 @@ public class EventReviewTicketsContractor {
 
         void updateNumber(String number);
 
-        void getProfile();
-
         void clickEmailIcon();
 
         void clickMoreinfoIcon();
@@ -74,5 +58,7 @@ public class EventReviewTicketsContractor {
         void clickGoToPromo();
 
         String getSCREEN_NAME();
+
+        void getProfile();
     }
 }

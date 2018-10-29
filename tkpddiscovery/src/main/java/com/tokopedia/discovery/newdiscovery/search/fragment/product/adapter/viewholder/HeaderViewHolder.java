@@ -125,7 +125,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 suggestionText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        clickListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
+                        if (!TextUtils.isEmpty(element.getSuggestionModel().getSuggestedQuery())) {
+                            clickListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
+                        }
                     }
                 });
                 suggestionText.setVisibility(View.VISIBLE);

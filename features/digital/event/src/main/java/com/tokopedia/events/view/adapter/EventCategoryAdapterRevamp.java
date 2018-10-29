@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
@@ -20,6 +19,7 @@ import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -42,13 +42,14 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     private int blackColor;
     private boolean isFavActivity;
     private boolean isTrackingEnabled;
+    private EventsAnalytics eventsAnalytics;
 
     public EventCategoryAdapterRevamp(Context context, List<CategoryItemsViewModel> categoryItems, boolean isFav) {
         this.context = context;
         this.categoryItems = categoryItems;
         isFavActivity = isFav;
         if (!isFav)
-            ((EventsHomeActivity) context).mPresenter.setupCallback(this);
+            ((EventsHomeActivity) context).eventHomePresenter.setupCallback(this);
         redColor = context.getResources().getColor(R.color.red_1);
         blackColor = context.getResources().getColor(R.color.black_54);
     }
@@ -162,7 +163,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             context.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_CLICK,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + getAdapterPosition());
         }
@@ -176,14 +177,14 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             else
                 like = "like";
             if (!isFavActivity)
-                ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+                ((EventsHomeActivity) context).eventHomePresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
             else {
-                ((EventFavouriteActivity) context).mPresenter.removeEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+                ((EventFavouriteActivity) context).eventFavouritePresenter.removeEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
                 CategoryItemsViewModel item = categoryItems.remove(getAdapterPosition());
                 item.setLiked(false);
                 itemRemoved(getAdapterPosition());
             }
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
                     title
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
@@ -193,10 +194,10 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         @OnClick(R2.id.tv_event_share)
         public void shareEvent() {
             if (!isFavActivity)
-                ((EventsHomeActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
+                ((EventsHomeActivity) context).eventHomePresenter.shareEvent(categoryItems.get(getAdapterPosition()));
             else
-                ((EventFavouriteActivity) context).mPresenter.shareEvent(categoryItems.get(getAdapterPosition()));
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+                ((EventFavouriteActivity) context).eventFavouritePresenter.shareEvent(categoryItems.get(getAdapterPosition()));
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition()));
         }
@@ -228,6 +229,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.event_category_item_revamp, parent, false);
 
+        this.context = parent.getContext();
+        eventsAnalytics = new EventsAnalytics(context.getApplicationContext());
         return new ViewHolder(view);
     }
 
@@ -244,7 +247,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
             categoryItems.get(holder.getIndex()).setTrack(true);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_IMPRESSION, categoryItems.get(holder.getIndex()).getTitle()
                     + " - " + holder.getIndex());
         }
     }
