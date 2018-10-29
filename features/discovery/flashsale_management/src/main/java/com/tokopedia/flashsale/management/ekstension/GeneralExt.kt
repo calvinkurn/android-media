@@ -8,18 +8,23 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.launch
 
-fun <T> Deferred<T>.thenOnUI(uiFunction: (T) -> Unit){
+fun <T> Deferred<T>.thenOnUI(uiFunction: (T) -> Unit) {
     GlobalScope.launch(AppExecutors.uiContext) {
         uiFunction(this@thenOnUI.await())
     }
 }
 
-fun ImageView.loadUrl(url: String, radius: Float){
+fun ImageView.loadUrl(url: String, radius: Float) {
     ImageHandler.loadImageRounded2(context, this, url, radius)
 }
 
 val View.isVisible
     get() = visibility == View.VISIBLE
 
-fun View.visible() {visibility = View.VISIBLE}
-fun View.gone() {visibility = View.GONE}
+fun View.visible() {
+    visibility = View.VISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}

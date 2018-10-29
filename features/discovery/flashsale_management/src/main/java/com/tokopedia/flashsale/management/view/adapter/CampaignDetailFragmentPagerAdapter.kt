@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
+import com.tokopedia.flashsale.management.product.view.FlashSaleProductListFragment
 import com.tokopedia.flashsale.management.view.fragment.FlashSaleInfoFragment
 
 class CampaignDetailFragmentPagerAdapter(val fragmentManager: FragmentManager,
@@ -17,7 +18,7 @@ class CampaignDetailFragmentPagerAdapter(val fragmentManager: FragmentManager,
 
     override fun getItem(position: Int) = when(position){
         0 -> FlashSaleInfoFragment.createInstance(campaignUrl)
-        1 -> Fragment()
+        1 -> FlashSaleProductListFragment.createInstance(campaignUrl)
         else -> Fragment()
     }
 
