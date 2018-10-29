@@ -13,6 +13,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,9 @@ public class CategoryChildAdapter  extends MultiLevelExpIndListAdapter {
             @Override
             public void onClick(View view) {
                 Category categoryClicked = (Category)getItemAt(position);
+                if (categoryClicked.getHasChild()) {
+                    MoEngageEventTracking.sendSubCategory(categoryClicked.getId(), categoryClicked.getName());
+                }
                 if (categoryClicked.getChildren()!=null && categoryClicked.getChildren().size()>0) {
                     activePosition = position;
                     toggleSelectedChild();
