@@ -137,6 +137,20 @@ public class SearchTracking {
         );
     }
 
+    public static void eventClickRelatedSearch(Context context, String currentKeyword, String relatedKeyword) {
+        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+
+        tracker.sendEventTracking(
+                "",
+                "search result",
+                "click - related keyword",
+                String.format("%s - %s", currentKeyword, relatedKeyword)
+        );
+    }
+
     public static void eventImpressionGuidedSearch(Context context, String currentKey, String page) {
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
