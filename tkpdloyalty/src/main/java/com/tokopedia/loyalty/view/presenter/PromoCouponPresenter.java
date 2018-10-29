@@ -66,12 +66,12 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
             platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING;
-            param.put("category_id", view.getCategoryId());
+            param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         } else if (platform.equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
-            platform = "kai";
-            param.put("category_id", view.getCategoryId());
+            platform = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.KAI;
+            param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, view.getCategoryId());
         }
-        param.put("type", platform);
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, platform);
 
         promoCouponInteractor.getCouponList(
                 AuthUtil.generateParamsNetwork(view.getContext(), param),
@@ -124,11 +124,11 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
     public void processGetEventCouponList(int categoryId, int productId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         view.disableSwipeRefresh();
-        param.put("category_id", String.valueOf(categoryId));
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.CATEGORY_ID, String.valueOf(categoryId));
         param.put("product_id", String.valueOf(productId));
         param.put("page", String.valueOf(1));
         param.put("page_size", String.valueOf(20));
-        param.put("type", IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
+        param.put(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TYPE, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING);
 
         //TODO Revert Later
         promoCouponInteractor.getCouponList(
