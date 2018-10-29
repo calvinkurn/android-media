@@ -175,7 +175,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
         super.onResume();
         flightSearchPresenter.attachView(this);
 
-        loadInitialData();
+        flightSearchPresenter.fetchSortAndFilterLocalData(selectedSortOption, flightFilterModel, true);
     }
 
     @Override
