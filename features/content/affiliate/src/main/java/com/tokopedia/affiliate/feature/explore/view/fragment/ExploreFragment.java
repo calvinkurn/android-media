@@ -225,14 +225,16 @@ public class ExploreFragment
 
     @Override
     public void onSearchTextChanged(String text) {
-        if (autoCompleteLayout.getVisibility() == View.GONE)
-            autoCompleteLayout.setVisibility(View.VISIBLE);
         onSearchTextModified(text, false);
     }
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
-        if (TextUtils.isEmpty(text)) autoCompleteAdapter.clearAdapter();
-        else autoCompleteLayout.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(text)) {
+            autoCompleteAdapter.clearAdapter();
+            autoCompleteLayout.setVisibility(View.GONE);
+        } else {
+            autoCompleteLayout.setVisibility(View.VISIBLE);
+        }
 
         if (!isFromAutoComplete) presenter.getAutoComplete(text);
     }
@@ -296,6 +298,8 @@ public class ExploreFragment
         }
         adapter.clearAllElements();
         adapter.addElement(itemList);
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -317,6 +321,8 @@ public class ExploreFragment
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -413,8 +419,8 @@ public class ExploreFragment
     @Override
     public void onAutoCompleteItemClicked(String keyword) {
         clearAutoCompleteAdapter(keyword);
-        autoCompleteLayout.setVisibility(View.GONE);
         onSearchSubmitted(keyword);
+        autoCompleteLayout.setVisibility(View.GONE);
     }
 
     @Override
