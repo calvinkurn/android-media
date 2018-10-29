@@ -754,6 +754,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+        setResult();
     }
 
     @Override

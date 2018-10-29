@@ -3,15 +3,16 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 import java.util.List;
 
 /**
- * @author  by zulfikarrahman on 11/20/17.
+ * @author by zulfikarrahman on 11/20/17.
  */
 
 public class FlightDetailViewModel implements Parcelable {
@@ -95,6 +96,48 @@ public class FlightDetailViewModel implements Parcelable {
             setDepartureTime(flightSearchViewModel.getDepartureTime());
             setArrivalTime(flightSearchViewModel.getArrivalTime());
             setAirlineDataList(flightSearchViewModel.getAirlineList());
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public FlightDetailViewModel build(FlightJourneyViewModel flightJourneyViewModel) {
+        if (flightJourneyViewModel != null) {
+            setId(flightJourneyViewModel.getId());
+            setDepartureAirport(flightJourneyViewModel.getDepartureAirport());
+            setDepartureAirportCity(flightJourneyViewModel.getDepartureAirportCity());
+            setArrivalAirport(flightJourneyViewModel.getArrivalAirport());
+            setArrivalAirportCity(flightJourneyViewModel.getArrivalAirportCity());
+            setTotalTransit(flightJourneyViewModel.getTotalTransit());
+            setBeforeTotal(flightJourneyViewModel.getBeforeTotal());
+            RefundableEnum refundableEnum = null;
+            switch (flightJourneyViewModel.isRefundable()) {
+                case NOT_REFUNDABLE:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
+                    break;
+                case REFUNDABLE:
+                    refundableEnum = RefundableEnum.REFUNDABLE;
+                    break;
+                case PARTIAL_REFUNDABLE:
+                    refundableEnum = RefundableEnum.PARTIAL_REFUNDABLE;
+                    break;
+                default:
+                    refundableEnum = RefundableEnum.NOT_REFUNDABLE;
+            }
+            setIsRefundable(refundableEnum);
+            setTotal(flightJourneyViewModel.getTotal());
+            setTotalNumeric(flightJourneyViewModel.getTotalNumeric());
+            setAdultNumericPrice(flightJourneyViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightJourneyViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightJourneyViewModel.getFare().getInfantNumeric());
+
+            FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
+            FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
+            setRouteList(mapper.transform(flightJourneyViewModel.getRouteList(), flightJourneyViewModel.getAirlineDataList()));
+            setDepartureTime(flightJourneyViewModel.getDepartureTime());
+            setArrivalTime(flightJourneyViewModel.getArrivalTime());
+            setAirlineDataList(flightJourneyViewModel.getAirlineDataList());
             return this;
         } else {
             return null;

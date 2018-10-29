@@ -44,7 +44,7 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
 
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.features.districtRecommendation)
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.abstraction)

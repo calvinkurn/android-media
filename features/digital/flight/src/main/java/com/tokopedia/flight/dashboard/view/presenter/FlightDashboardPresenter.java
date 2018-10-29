@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
@@ -29,6 +29,7 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator;
+import com.tokopedia.flight.searchV2.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +82,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightModuleRouter flightModuleRouter;
     private FlightAirportViewModelMapper flightAirportViewModelMapper;
 
+    private FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase;
+
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
                                     FlightDashboardValidator validator,
@@ -94,7 +97,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightSelectPassengerValidator passengerValidator,
                                     FlightAirportVersionCheckUseCase flightAirportVersionCheckUseCase,
                                     FlightModuleRouter flightModuleRouter,
-                                    FlightAirportViewModelMapper flightAirportViewModelMapper) {
+                                    FlightAirportViewModelMapper flightAirportViewModelMapper,
+                                    FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
@@ -108,6 +112,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.flightAirportVersionCheckUseCase = flightAirportVersionCheckUseCase;
         this.flightModuleRouter = flightModuleRouter;
         this.flightAirportViewModelMapper = flightAirportViewModelMapper;
+        this.flightDeleteAllFlightSearchDataUseCase = flightDeleteAllFlightSearchDataUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -126,7 +131,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (!flightDashboardCache.getReturnDate().isEmpty()) {
             FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
             Date returnDate = FlightDateUtil.stringToDate(flightDashboardCache.getReturnDate());
-            if (returnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))){
+            if (returnDate.before(FlightDateUtil.stringToDate(viewModel.getDepartureDate()))) {
                 flightDashboardCache.putReturnDate(viewModel.getDepartureDate());
             } else {
                 viewModel.setReturnDate(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT));
@@ -423,7 +428,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
             flightAnalytics.eventSearchClick(getView().getScreenName());
-            deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
+            flightDeleteAllFlightSearchDataUseCase.execute(new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
 
@@ -431,7 +436,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                 @Override
                 public void onError(Throwable e) {
-
+                    e.printStackTrace();
                 }
 
                 @Override
@@ -650,7 +655,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     private void actionAirportSync() {
-        if (isViewAttached()){
+        if (isViewAttached()) {
             flightAirportVersionCheckUseCase.execute(flightAirportVersionCheckUseCase.createRequestParams(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT)),
                     new Subscriber<Boolean>() {
                         @Override
@@ -665,7 +670,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
                         @Override
                         public void onNext(Boolean aBoolean) {
-                            if (aBoolean){
+                            if (aBoolean) {
                                 getView().startAirportSyncInBackground(flightModuleRouter.getLongConfig(FLIGHT_AIRPORT));
                             }
                         }

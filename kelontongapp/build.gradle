@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'io.fabric'
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.google.gms:google-services:4.1.0'
+    }
+}
+
+def getTkpdKelontongVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
+def getTkpdKelontongVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    project.ext {
+        defaultVersionCode = 1;
+        defaultVersionName = "1.0";
+    }
+
+    defaultConfig {
+        applicationId "com.tokopedia.kelontongapp"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode getTkpdKelontongVersionCode()
+        versionName getTkpdKelontongVersionName()
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+
+    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.playServicesDependencies.firebaseAnalytics
+
+    testImplementation rootProject.ext.testDependencies.junit
+}
+
+apply plugin: 'com.google.gms.google-services'

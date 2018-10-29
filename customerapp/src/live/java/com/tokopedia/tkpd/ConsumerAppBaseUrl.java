@@ -10,6 +10,7 @@ import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 public class ConsumerAppBaseUrl {
 
     public static final String BASE_TOKOPEDIA_WEBSITE = "https://www.tokopedia.com/";
+    public static final String BASE_INSTANT_LOAN_URL = "https://www.tokopedia.com/";
     public static final String BASE_TOKOPEDIA_GQL = "https://gql.tokopedia.com";
     public static final String BASE_DOMAIN = "https://ws.tokopedia.com/";
     public static final String BASE_API_DOMAIN = "https://api.tokopedia.com/";

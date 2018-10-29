@@ -1,7 +1,5 @@
 package com.tokopedia.flight.common.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.requestbody.FlightCartRequest;
@@ -16,14 +14,16 @@ import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.DeletePassengerRequest;
 import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequest;
-import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightPassengerDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
@@ -97,9 +97,9 @@ public interface FlightRepository {
 
     Observable<Boolean> isSearchCacheExpired(boolean isReturn);
 
-    Observable<List<FlightPassengerDb>> getPassengerList(String passengerId);
+    Observable<List<FlightPassengerDB>> getPassengerList(String passengerId);
 
-    Observable<FlightPassengerDb> getSinglePassengerById(String passengerId);
+    Observable<FlightPassengerDB> getSinglePassengerById(String passengerId);
 
     Observable<Boolean> updateIsSelected(String passengerId, int isSelected);
 

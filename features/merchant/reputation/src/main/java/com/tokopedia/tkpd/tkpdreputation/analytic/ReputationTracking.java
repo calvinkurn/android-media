@@ -20,7 +20,7 @@ public class ReputationTracking {
         HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, getEventCategory(myShop),
                 action, label);
         eventMap.put(ReputationTrackingConstant.SHOP_ID, shopId);
-        reputationRouter.sendEventTrackingShopPage(eventMap);
+        reputationRouter.sendEventTracking(eventMap);
     }
 
     private String getEventCategory(boolean myShop) {
@@ -35,7 +35,7 @@ public class ReputationTracking {
         HashMap<String, Object> eventMap = createEventMap(ReputationTrackingConstant.CLICK_OFFICIAL_STORE, getEventCategory(myShop),
                 action, label);
         eventMap.put(ReputationTrackingConstant.PRODUCT_ID, productId);
-        reputationRouter.sendEventTrackingShopPage(eventMap);
+        reputationRouter.sendEventTracking(eventMap);
     }
 
     private HashMap<String, Object> createEventMap(String event, String category, String action, String label) {

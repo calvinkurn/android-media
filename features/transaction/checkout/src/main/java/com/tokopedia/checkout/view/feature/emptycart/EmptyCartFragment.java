@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -221,7 +222,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         });
 
         rvWishList.setNestedScrollingEnabled(false);
+        ((SimpleItemAnimator) rvWishList.getItemAnimator()).setSupportsChangeAnimations(false);
         rvLastSeen.setNestedScrollingEnabled(false);
+        ((SimpleItemAnimator) rvLastSeen.getItemAnimator()).setSupportsChangeAnimations(false);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
         tvWishListSeeAll.setOnClickListener(v -> {
@@ -261,6 +264,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         renderTopAds();
         renderWishList((int) itemWidth);
         renderRecentView((int) itemWidth);
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
     }
 
     private double getItemWidth() {
@@ -383,6 +387,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void showLoading() {
+        nestedScrollView.scrollTo(0, 0);
         swipeRefreshLayout.setRefreshing(true);
     }
 
@@ -423,6 +428,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void navigateToCartFragment(CartListData cartListData) {
+        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
         if (getActivity() instanceof EmptyCartListener) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EmptyCartListener.ARG_CART_LIST_DATA, cartListData);
@@ -440,7 +446,6 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
             presenter.processInitialGetCartData();
         }
     }
@@ -484,7 +489,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onProductItemClicked(int position, Product product) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
+                String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 

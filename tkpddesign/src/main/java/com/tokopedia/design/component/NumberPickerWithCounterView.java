@@ -119,26 +119,18 @@ public class NumberPickerWithCounterView extends BaseCustomView {
         }
     }
 
-    public void setNumber(int number) {
-        numberInputView.setText(String.valueOf(number));
+    public void setInitialState(int minValue, int maxValue, int defaultValue) {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        numberInputView.setText(String.valueOf(defaultValue));
         minusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) > minValue);
         plusImageButton.setEnabled(enabled && Integer.parseInt(numberInputView.getText().toString().trim()) < maxValue);
+        invalidate();
+        requestLayout();
     }
 
     public void setOnPickerActionListener(OnPickerActionListener onPickerActionListener) {
         this.onPickerActionListener = onPickerActionListener;
-    }
-
-    public void setMinValue(int number) {
-        this.minValue = number;
-        invalidate();
-        requestLayout();
-    }
-
-    public void setMaxValue(int number) {
-        this.maxValue = number;
-        invalidate();
-        requestLayout();
     }
 
     public int getValue() {
