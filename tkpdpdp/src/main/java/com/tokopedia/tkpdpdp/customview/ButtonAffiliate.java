@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;

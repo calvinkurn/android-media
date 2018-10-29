@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
