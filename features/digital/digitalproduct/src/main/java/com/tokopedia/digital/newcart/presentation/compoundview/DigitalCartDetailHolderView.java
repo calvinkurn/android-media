@@ -68,6 +68,7 @@ public class DigitalCartDetailHolderView extends LinearLayout {
             detailToggleAppCompatTextView.setVisibility(GONE);
         }
         if (adapter.getItemCount() != mainInfos.size() && additionalInfos != null) {
+            detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
             List<Visitable> newLists = new ArrayList<>(mainInfos);
             newLists.addAll(constructAdditionalInfo(additionalInfos));
             adapter.setInfos(newLists);

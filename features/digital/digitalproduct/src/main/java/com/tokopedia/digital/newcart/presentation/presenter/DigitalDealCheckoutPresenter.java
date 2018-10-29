@@ -7,6 +7,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.domain.usecase.DigitalCheckoutUseCase;
+import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
@@ -118,6 +119,27 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
             getView().renderAdditionalInfo(additionals);
         }
         getView().renderCheckoutView(total);
+    }
+
+    @Override
+    protected void renderIfHasDiscount(VoucherDigital voucherDigital) {
+        long total = calculateRechargeAndDealsTotal();
+        if (voucherDigital.getAttributeVoucher().getDiscountAmountPlain() > 0) {
+            long discountPlain = voucherDigital.getAttributeVoucher().getDiscountAmountPlain();
+            long totalWithDiscount = total - discountPlain;
+            List<CartAdditionalInfo> additionals = new ArrayList<>(getView().getCartInfoData().getAdditionalInfos());
+            List<CartItemDigital> items = new ArrayList<>();
+            items.add(new CartItemDigital(getView().getString(R.string.digital_cart_additional_payment_cost_label), getStringIdrFormat((double) total)));
+            items.add(new CartItemDigital(getView().getString(R.string.digital_cart_additional_payment_promo_label), String.format("-%s", getStringIdrFormat((double) discountPlain))));
+            items.add(new CartItemDigital(getView().getString(R.string.digital_cart_additional_payment_total_cost_label), getStringIdrFormat((double) totalWithDiscount)));
+            CartAdditionalInfo cartAdditionalInfo = new CartAdditionalInfo(getView().getString(R.string.digital_cart_additional_payment_label), items);
+            additionals.add(cartAdditionalInfo);
+            getView().renderAdditionalInfo(additionals);
+            getView().expandAdditionalInfo();
+            getView().enableVoucherDiscount(
+                    voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
+            );
+        }
     }
 
     private long calculateRechargeAndDealsTotal() {
