@@ -28,6 +28,7 @@
         service_id
         service_order
         status
+        is_promo
         range_price {
             min_price
             max_price
@@ -58,6 +59,7 @@
             recommend
             checksum
             ut
+            promo_code
             price {
                 price
                 formatted_price

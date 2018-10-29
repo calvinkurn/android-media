@@ -23,6 +23,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("status")
     @Expose
     private int status;
+    @SerializedName("is_promo")
+    @Expose
+    private int isPromo;
     @SerializedName("range_price")
     @Expose
     private RangePriceData rangePrice;
@@ -43,6 +46,7 @@ public class ServiceData implements Parcelable {
         serviceName = in.readString();
         serviceId = in.readInt();
         status = in.readInt();
+        isPromo = in.readInt();
         rangePrice = in.readParcelable(RangePriceData.class.getClassLoader());
         texts = in.readParcelable(ServiceTextData.class.getClassLoader());
         error = in.readParcelable(ErrorServiceData.class.getClassLoader());
@@ -54,6 +58,7 @@ public class ServiceData implements Parcelable {
         dest.writeString(serviceName);
         dest.writeInt(serviceId);
         dest.writeInt(status);
+        dest.writeInt(isPromo);
         dest.writeParcelable(rangePrice, flags);
         dest.writeParcelable(texts, flags);
         dest.writeParcelable(error, flags);
@@ -131,5 +136,13 @@ public class ServiceData implements Parcelable {
 
     public void setError(ErrorServiceData error) {
         this.error = error;
+    }
+
+    public int getIsPromo() {
+        return isPromo;
+    }
+
+    public void setIsPromo(int isPromo) {
+        this.isPromo = isPromo;
     }
 }

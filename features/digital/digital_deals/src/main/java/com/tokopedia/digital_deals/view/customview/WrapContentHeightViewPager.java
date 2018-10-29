@@ -3,68 +3,60 @@ package com.tokopedia.digital_deals.view.customview;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
-public class WrapContentHeightViewPager extends ViewPager {
+/**
+ *
+ * Created by Tokopedia 05 on 7/11/2016.
+ */
+public class  WrapContentHeightViewPager extends ViewPager {
+    private View currentView;
 
-    /**
-     * Constructor
-     *
-     * @param context the context
-     */
     public WrapContentHeightViewPager(Context context) {
         super(context);
     }
 
-    /**
-     * Constructor
-     *
-     * @param context the context
-     * @param attrs   the attribute set
-     */
     public WrapContentHeightViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        if (currentView == null) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+        int height = 0;
+        currentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        int h = currentView.getMeasuredHeight();
+        if (h > height) height = h;
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-        // find the first child view
-        View view = getChildAt(0);
-        if (view != null) {
-            // measure the first child view with the specified measure spec
-            view.measure(widthMeasureSpec, heightMeasureSpec);
-        }
-
-        setMeasuredDimension(getMeasuredWidth(), measureHeight(heightMeasureSpec, view));
+    }
+    public void measureCurrentView(View currentView) {
+        this.currentView = currentView;
+        requestLayout();
     }
 
-    /**
-     * Determines the height of this view
-     *
-     * @param measureSpec A measureSpec packed into an int
-     * @param view        the base view with already measured height
-     * @return The height of the view, honoring constraints from measureSpec
-     */
-    private int measureHeight(int measureSpec, View view) {
-        int result = 0;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-
-        if (specMode == MeasureSpec.EXACTLY) {
-            result = specSize;
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (getCurrentItem() == 0 && getChildCount() == 0) {
+            return false;
         } else {
-            // set the height from the base view if available
-            if (view != null) {
-                result = view.getMeasuredHeight();
-            }
-            if (specMode == MeasureSpec.AT_MOST) {
-                result = Math.min(result, specSize);
-            }
+            return super.onTouchEvent(ev);
         }
-        return result;
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (getCurrentItem() == 0 && getChildCount() == 0) {
+            return false;
+        } else {
+            return super.onInterceptTouchEvent(ev);
+        }
+    }
 }

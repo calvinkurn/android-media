@@ -9,12 +9,10 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.instantloan.constant.DeviceDataKeys;
 import com.tokopedia.instantloan.data.model.response.ResponsePhoneData;
 import com.tokopedia.instantloan.data.model.response.ResponseUserProfileStatus;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
-import com.tokopedia.instantloan.ddcollector.OnDeviceDataReady;
 import com.tokopedia.instantloan.ddcollector.PermissionResultCallback;
 import com.tokopedia.instantloan.ddcollector.account.Account;
 import com.tokopedia.instantloan.ddcollector.app.Application;
@@ -25,6 +23,7 @@ import com.tokopedia.instantloan.ddcollector.sms.Sms;
 import com.tokopedia.instantloan.domain.interactor.GetLoanProfileStatusUseCase;
 import com.tokopedia.instantloan.domain.interactor.PostPhoneDataUseCase;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
+import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -41,6 +40,9 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
     private GetLoanProfileStatusUseCase mGetLoanProfileStatusUseCase;
     private PostPhoneDataUseCase mPostPhoneDataUseCase;
+
+    @Inject
+    UserSession userSession;
 
     @Inject
     public InstantLoanPresenter(GetLoanProfileStatusUseCase getLoanProfileStatusUseCase, PostPhoneDataUseCase mPostPhoneDataUseCase) {
@@ -77,6 +79,10 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
                 RestResponse restResponse = typeRestResponseMap.get(ResponseUserProfileStatus.class);
                 ResponseUserProfileStatus responseUserProfileStatus = restResponse.getData();
                 getView().onSuccessLoanProfileStatus(responseUserProfileStatus.getUserProfileLoanEntity());
+                getView().setUserOnGoingLoanStatus(
+                        (responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId() != 0),
+                        responseUserProfileStatus.getUserProfileLoanEntity().getOnGoingLoanId());
+
             }
         });
     }
@@ -88,7 +94,7 @@ public class InstantLoanPresenter extends BaseDaggerPresenter<InstantLoanContrac
 
     @Override
     public boolean isUserLoggedIn() {
-        return SessionHandler.isV2Login(getView().getAppContext());
+        return userSession != null && userSession.isLoggedIn();
     }
 
     @Override

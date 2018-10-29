@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
+import com.tokopedia.loyalty.domain.usecase.TrainCheckVoucherUseCase;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.interactor.IPromoCouponInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoCouponInteractor;
@@ -44,9 +45,15 @@ public class PromoCouponViewModule {
     }
 
     @Provides
+    TrainCheckVoucherUseCase provideTrainCheckVoucherUseCase(LoyaltyModuleRouter loyaltyModuleRouter) {
+        return new TrainCheckVoucherUseCase(loyaltyModuleRouter);
+    }
+
+    @Provides
     @LoyaltyScope
-    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase) {
-        return new PromoCouponPresenter(view, promoCouponInteractor, flightCheckVoucherUseCase);
+    IPromoCouponPresenter provideIPromoCouponPresenter(IPromoCouponInteractor promoCouponInteractor, FlightCheckVoucherUseCase flightCheckVoucherUseCase,
+                                                       TrainCheckVoucherUseCase trainVoucherUseCase) {
+        return new PromoCouponPresenter(view, promoCouponInteractor, flightCheckVoucherUseCase, trainVoucherUseCase);
     }
 
 

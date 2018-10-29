@@ -15,25 +15,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics;
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
-import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity;
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.contractor.InstantLoanContractor;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.LOAN_AMOUNT_QUERY_PARAM;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_NO_COLLATERAL;
-import static com.tokopedia.instantloan.view.activity.InstantLoanActivity.PINJAMAN_TITLE;
 import static com.tokopedia.instantloan.view.fragment.DanaInstantFragment.LOGIN_REQUEST_CODE;
 
 
@@ -42,11 +41,16 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     private static final String TAB_POSITION = "tab_position";
     private Spinner mSpinnerLoanAmount;
 
-
     @Inject
     InstantLoanPresenter presenter;
+    @Inject
+    InstantLoanAnalytics instantLoanAnalytics;
+
+    @Inject
+    UserSession userSession;
 
     private int mCurrentTab;
+    private Context context;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +63,12 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     public void onResume() {
         super.onResume();
         presenter.attachView(this);
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        this.context = context;
+        super.onAttachActivity(context);
     }
 
     @Override
@@ -123,7 +133,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     private void sendCariPinjamanClickEvent() {
         String eventLabel = getScreenName() + " - " + mSpinnerLoanAmount.getSelectedItem().toString();
-        InstantLoanEventTracking.eventCariPinjamanClick(eventLabel);
+        instantLoanAnalytics.eventCariPinjamanClick(eventLabel);
     }
 
     @Override
@@ -135,7 +145,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_REQUEST_CODE) {
-            if (!SessionHandler.isV4Login(getContext())) {
+            if (userSession != null && userSession.isLoggedIn()) {
                 showToastMessage(getResources().getString(R.string.login_to_proceed), Toast.LENGTH_SHORT);
             } else {
                 openWebView(WEB_LINK_NO_COLLATERAL + LOAN_AMOUNT_QUERY_PARAM +
@@ -179,6 +189,11 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
     }
 
     @Override
+    public void setUserOnGoingLoanStatus(boolean status, int id) {
+
+    }
+
+    @Override
     public void onErrorLoanProfileStatus(String onErrorLoanProfileStatus) {
 
     }
@@ -195,8 +210,9 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = ((InstantLoanRouter) MainApplication.getAppContext()).getLoginIntent(getContext());
-        startActivityForResult(intent, LOGIN_REQUEST_CODE);
+        if (getActivity() != null && getActivity().getApplication() instanceof InstantLoanRouter) {
+            startActivityForResult(((InstantLoanRouter) getActivity().getApplication()).getLoginIntent(getContext()), LOGIN_REQUEST_CODE);
+        }
     }
 
     @Override
@@ -211,9 +227,7 @@ public class TanpaAgunanFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getContext(), url,
-                PINJAMAN_TITLE);
-        startActivity(intent);
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
     }
 
     @Override
