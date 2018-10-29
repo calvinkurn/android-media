@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
 
 /**
  * Created by normansyahputa on 5/22/17.

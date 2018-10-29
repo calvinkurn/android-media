@@ -1,6 +1,6 @@
 package com.tokopedia.gm.statistic.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.datepicker.range.utils.DatePickerUtils;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
@@ -12,9 +14,7 @@ import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerView;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.gm.statistic.view.listener.DatePickerList;
-import com.tokopedia.product.manage.item.common.util.ItemType;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 
 import javax.inject.Inject;

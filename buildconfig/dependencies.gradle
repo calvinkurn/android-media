@@ -410,6 +410,7 @@ ext {
             network           : ":libraries:network",
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
+            baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession       : ":libraries:user_session",
             imagePicker       : ":libraries:image_picker",

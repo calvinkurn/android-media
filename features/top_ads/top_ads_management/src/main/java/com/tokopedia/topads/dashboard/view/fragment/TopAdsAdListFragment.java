@@ -19,13 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.customadapter.NoResultDataBinder;
+import com.tokopedia.base.list.seller.common.util.ItemType;
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.label.DateLabelView;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.product.manage.item.common.util.ItemType;
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.view.presenter.BaseDatePickerPresenter;

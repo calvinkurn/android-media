@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
