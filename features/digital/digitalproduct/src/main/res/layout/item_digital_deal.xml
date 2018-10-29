@@ -70,8 +70,11 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_close"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/dp_26"
+        android:layout_height="@dimen/dp_26"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingStart="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_10"
         android:layout_gravity="top"
         android:src="@drawable/ic_close"
         android:visibility="gone" />

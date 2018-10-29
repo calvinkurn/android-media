@@ -134,4 +134,10 @@ public class DigitalCartDealsListFragment extends BaseListFragment<DealProductVi
     public void notifySelectedDeal() {
         getAdapter().notifyDataSetChanged();
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
+    }
 }

@@ -82,6 +82,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
+    public void detachView() {
+        digitalAddToCartUseCase.unsubscribe();
+        digitalCheckoutUseCase.unsubscribe();
+        digitalInstantCheckoutUseCase.unsubscribe();
+        super.detachView();
+    }
+
+    @Override
     public void onViewCreated() {
         getView().hideContent();
         getView().showLoading();

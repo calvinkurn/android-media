@@ -54,4 +54,10 @@ public class DigitalCartDealsListPresenter extends BaseDaggerPresenter<DigitalCa
     public void onDealDetailClicked(DealProductViewModel productViewModel) {
         getView().navigateToDetailPage(productViewModel);
     }
+
+    @Override
+    public void detachView() {
+        digitalDealGetProductsUseCase.unsubscribe();
+        super.detachView();
+    }
 }

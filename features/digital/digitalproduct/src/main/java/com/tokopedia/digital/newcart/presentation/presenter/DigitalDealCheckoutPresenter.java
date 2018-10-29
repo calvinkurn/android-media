@@ -100,6 +100,11 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
 
     @Override
     public void onNewSelectedDeal(DealProductViewModel viewModel) {
+        if (getView().isCartDetailViewVisible() && !getView().isAlreadyCollapsByUser()){
+            getView().hideCartDetailView();
+            getView().hideDealsContainerView();
+            getView().renderIconToExpand();
+        }
         getView().addSelectedDeal(viewModel);
         getView().renderCartDealListView(viewModel);
         getView().renderCategory(

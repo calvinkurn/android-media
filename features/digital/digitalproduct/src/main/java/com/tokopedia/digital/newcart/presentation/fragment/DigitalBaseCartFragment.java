@@ -405,4 +405,10 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void setCheckoutParameter(CheckoutDataParameter.Builder builder) {
         checkoutDataParameterBuilder = builder;
     }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
+    }
 }
