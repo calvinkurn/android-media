@@ -407,9 +407,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void goToProfile() {
+        String profileApplink = viewModel.isEdit()
+                ? ApplinkConst.PROFILE_AFTER_EDIT
+                : ApplinkConst.PROFILE_AFTER_POST;
+        profileApplink = profileApplink.replace(PARAM_USER_ID, getUserSession().getUserId());
         Intent intent = RouteManager.getIntent(
                 getContext(),
-                ApplinkConst.PROFILE_AFTER_POST.replace(PARAM_USER_ID, getUserSession().getUserId())
+                profileApplink
         );
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

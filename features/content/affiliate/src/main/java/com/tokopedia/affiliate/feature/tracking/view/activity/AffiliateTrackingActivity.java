@@ -69,6 +69,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Override
     public void handleLink(String url) {
         if (!TextUtils.isEmpty(url)) {
+            startHomeActivity();
             ApplinkRouter router = ((ApplinkRouter) getApplicationContext());
             if (router.isSupportApplink(url)) {
                 router.goToApplinkActivity(this, url);
@@ -87,8 +88,12 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
 
     @Override
     public void handleError() {
+        startHomeActivity();
+        finishActivity();
+    }
+
+    private void startHomeActivity() {
         ApplinkRouter router = ((ApplinkRouter) getApplicationContext());
         router.goToApplinkActivity(this, ApplinkConst.HOME);
-        finishActivity();
     }
 }
