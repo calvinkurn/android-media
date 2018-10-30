@@ -31,6 +31,7 @@
     <string name="text_full_affiliate">Kamu sudah memiliki 15 rekomendasi. Silakan hapus salah satu rekomendasimu untuk menambah yang baru</string>
     <string name="text_full_affiliate_ok">Lihat Rekomendasi Saya</string>
     <string name="text_full_affiliate_no">Batal</string>
+    <string name="text_item_commission">Komisi</string>
 
     <!--ONBOARDING-->
     <string name="title_af_onboarding">Tokopedia By Me</string>
