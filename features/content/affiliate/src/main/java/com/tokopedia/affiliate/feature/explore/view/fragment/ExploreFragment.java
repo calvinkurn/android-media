@@ -246,8 +246,8 @@ public class ExploreFragment
             autoCompleteLayout.setVisibility(View.GONE);
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
+            if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
         }
-        if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
     }
 
     @Override
