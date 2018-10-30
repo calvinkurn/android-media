@@ -14,6 +14,7 @@ import com.tokopedia.flashsale.management.util.AppExecutors
 import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductUseCase: GetFlashSaleProductUseCase,
@@ -23,10 +24,10 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
 
     fun getEligibleProductList(campaignId: String, offset: Int, rows: Int, q: String,
                                onSuccess: (FlashSaleProductViewModel) -> Unit, onError: (Throwable) -> Unit) {
-        GlobalScope.async(AppExecutors.networkContext + job) {
-            getFlashSaleProductUseCase.getResponse(campaignId, offset, rows, q)
-        }.thenOnUI {
-            try {
+        GlobalScope.launch(AppExecutors.uiContext + job) {
+            GlobalScope.async(AppExecutors.networkContext) {
+                getFlashSaleProductUseCase.getResponse(campaignId, offset, rows, q)
+            }.thenOnUI {
                 //TODO just test, the object should be in form of list
                 when (it) {
                     is ResponseError -> {
@@ -41,32 +42,32 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
                     }
                     is Success -> onSuccess(it.response.toEligibleSellerProductViewModel())
                 }
-            } catch (e: Throwable) {
-                onError(e)
             }
         }
     }
 
     fun getSellerStatusLabels(onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        GlobalScope.async(AppExecutors.networkContext + job) {
-            getSellerStatusLabelUseCase.getResponse()
-        }.thenOnUI {
-            try {
-                //TODO just test, the object should be in form of list
-                when (it) {
-                    is ResponseError -> {
-                        //TODO use this = onError(it.error)
-                        onSuccess("aaa")
+        GlobalScope.launch(AppExecutors.uiContext + job) {
+            GlobalScope.async(AppExecutors.networkContext + job) {
+                getSellerStatusLabelUseCase.getResponse()
+            }.thenOnUI {
+                try {
+                    //TODO just test, the object should be in form of list
+                    when (it) {
+                        is ResponseError -> {
+                            //TODO use this = onError(it.error)
+                            onSuccess("aaa")
 
+                        }
+                        is RequestError -> {
+                            //TODO use this = onError(it.error)
+                            onSuccess("aaa")
+                        }
+                        is Success -> onSuccess("aaa")
                     }
-                    is RequestError -> {
-                        //TODO use this = onError(it.error)
-                        onSuccess("aaa")
-                    }
-                    is Success -> onSuccess("aaa")
+                } catch (e: Throwable) {
+                    onError(e)
                 }
-            } catch (e: Throwable) {
-                onError(e)
             }
         }
     }

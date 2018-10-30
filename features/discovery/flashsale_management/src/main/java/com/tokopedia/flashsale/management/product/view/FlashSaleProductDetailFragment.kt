@@ -63,7 +63,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         getComponent(CampaignComponent::class.java).inject(this)
     }
 
-    fun onBtnRequestProductClicked(){
+    fun onBtnRequestProductClicked() {
         //TODO
     }
 
