@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
+import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.following_list.view.fragment.KolFollowingListFragment
+import com.tokopedia.kol.feature.following_list.view.listener.KolFollowingListEmptyListener
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.adapter.FollowingListTabAdapter
@@ -16,9 +18,11 @@ import com.tokopedia.profile.view.viewmodel.FollowingListTabItem
 /**
  * @author by milhamj on 30/10/18.
  */
-class FollowingListActivity : BaseTabActivity() {
+class FollowingListActivity : BaseTabActivity(), KolFollowingListEmptyListener {
 
-    private var userId: String? = null
+    private var userId: String = ZERO
+    private var pagerAdapter: FollowingListTabAdapter? = null
+    private var isKolShown = true
 
     companion object {
         const val EXTRA_PARAM_USER_ID = "user_id"
@@ -50,6 +54,7 @@ class FollowingListActivity : BaseTabActivity() {
         super.setupLayout(savedInstanceState)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tabLayout.setupWithViewPager(viewPager)
+        tabLayout.visibility = View.GONE
     }
 
     override fun getViewPagerAdapter(): PagerAdapter {
@@ -57,9 +62,9 @@ class FollowingListActivity : BaseTabActivity() {
         tabList.add(getKolFollowingTabItem())
         tabList.add(getFavoritedShopTabItem())
 
-        val pagerAdapter = FollowingListTabAdapter(supportFragmentManager)
-        pagerAdapter.setItemList(tabList)
-        return pagerAdapter
+        pagerAdapter = FollowingListTabAdapter(supportFragmentManager)
+        pagerAdapter!!.setItemList(tabList)
+        return pagerAdapter!!
     }
 
     override fun getPageLimit(): Int {
@@ -68,7 +73,7 @@ class FollowingListActivity : BaseTabActivity() {
 
     private fun getKolFollowingTabItem(): FollowingListTabItem {
         val bundle = Bundle()
-        bundle.putInt(KolFollowingListActivity.ARGS_USER_ID, userId!!.toInt())
+        bundle.putInt(KolFollowingListActivity.ARGS_USER_ID, userId.toInt())
         return FollowingListTabItem(
                 getString(R.string.fl_toppers_title),
                 KolFollowingListFragment.createInstance(bundle)
@@ -76,10 +81,25 @@ class FollowingListActivity : BaseTabActivity() {
     }
 
     private fun getFavoritedShopTabItem(): FollowingListTabItem {
-        val fragment = (application as ProfileModuleRouter).getFavoritedShopFragment(userId!!)
+        val fragment = (application as ProfileModuleRouter).getFavoritedShopFragment(userId)
         return FollowingListTabItem(
                 getString(R.string.fl_shop_title),
                 fragment
         )
+    }
+
+    override fun onFollowingEmpty() {
+        if (isKolShown) {
+            val tabList = ArrayList<FollowingListTabItem>()
+            tabList.add(getFavoritedShopTabItem())
+
+            pagerAdapter!!.setItemList(tabList)
+            isKolShown = false
+        }
+        tabLayout.visibility = View.GONE
+    }
+
+    override fun onFollowingNotEmpty() {
+        tabLayout.visibility = View.VISIBLE
     }
 }
