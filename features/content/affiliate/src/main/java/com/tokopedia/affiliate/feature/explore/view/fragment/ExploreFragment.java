@@ -72,7 +72,7 @@ public class ExploreFragment
     private static final int LOGIN_CODE = 13;
 
 
-    private static final int TIME_DEBOUNCE_MILIS = 500;
+    private static final int TIME_DEBOUNCE_MILIS = 100;
 
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
