@@ -148,7 +148,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
-    private UserSession userSession = new UserSession(MainApplication.getAppContext());
+    private UserSession userSession;
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -179,9 +179,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         btnSeeAllOfficialBrand.setOnClickListener(new SeeAllOfficialOnClickListener());
 
         presenter.attachView(this);
-        presenter.getIntermediaryCategory(departmentId);
         presenter.setWishlishListener(this);
         return parentView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userSession = new UserSession(getActivity());
+        presenter.getIntermediaryCategory(departmentId);
     }
 
     private void initView(View view) {
