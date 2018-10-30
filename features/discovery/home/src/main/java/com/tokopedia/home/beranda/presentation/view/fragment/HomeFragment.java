@@ -881,10 +881,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if (isVisible()) {
+        if (isResumed()) {
             presenter.hitBannerImpression(bannerSlidesModel);
         }
     }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
