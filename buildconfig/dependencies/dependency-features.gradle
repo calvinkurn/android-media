@@ -185,6 +185,7 @@ ext {
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
             promoCheckout               : ":features:transaction:promo_checkout",
+            loyalty                     : ":features:transaction:loyalty",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
@@ -204,7 +205,6 @@ ext {
             core                        : ":tkpdcore",
             discovery                   : ":tkpddiscovery",
             inbox                       : ":tkpdinbox",
-            loyalty                     : ":tkpdloyalty",
             productDetail               : ":tkpdpdp",
             seller                      : ":tkpdseller",
             session                     : ":tkpdsession",

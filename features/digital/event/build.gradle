@@ -37,7 +37,7 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(path: ':libraries:oms')
-    implementation project(path: ':tkpdloyalty')
+    implementation project(rootProject.ext.features.loyalty)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation 'at.blogc:expandabletextview:1.0.5'
     implementation project(rootProject.ext.features.payment)

@@ -76,6 +76,7 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 include "features:transaction:promo_checkout"
+include 'features:transaction:loyalty'
 
 include "features:user:groupchat"
 include "features:user:profile"
@@ -93,7 +94,6 @@ include "features:user:attachproduct"
 include "features:user:updateinactivephone"
 
 include 'logisticanalytics'
-include 'tkpdloyalty'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
