@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.entity.affiliateProductData.Affiliate;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;

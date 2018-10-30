@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -25,9 +27,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
+import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
@@ -40,9 +44,13 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -63,7 +71,10 @@ public class ExploreFragment
     private static final int SINGLE_SPAN_COUNT = 1;
     private static final int LOGIN_CODE = 13;
 
-    private RecyclerView rvExplore;
+
+    private static final int TIME_DEBOUNCE_MILIS = 500;
+
+    private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
     private SwipeToRefresh swipeRefreshLayout;
     private SearchInputView searchView;
@@ -71,6 +82,8 @@ public class ExploreFragment
     private ImageView ivBack, ivBantuan;
     private ExploreParams exploreParams;
     private EmptyModel emptyResultModel;
+    private FrameLayout autoCompleteLayout;
+    private AutoCompleteSearchAdapter autoCompleteAdapter;
 
     @Inject
     UserSession userSession;
@@ -95,6 +108,8 @@ public class ExploreFragment
         searchView = view.findViewById(R.id.search_input_view);
         ivBack = view.findViewById(R.id.iv_back);
         ivBantuan = view.findViewById(R.id.action_bantuan);
+        autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
+        rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -105,15 +120,18 @@ public class ExploreFragment
         presenter.attachView(this);
         initView();
         initListener();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
     private void initView() {
         dropKeyboard();
         initEmptyResultModel();
+        autoCompleteLayout.setVisibility(View.GONE);
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
         searchView.setResetListener(this);
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
@@ -184,6 +202,7 @@ public class ExploreFragment
     @Override
     public void onRefresh() {
         exploreParams.setFirstData();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
     }
 
@@ -208,20 +227,35 @@ public class ExploreFragment
     @Override
     public void onSearchSubmitted(String text) {
         dropKeyboard();
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
         adapter.clearAllElements();
         exploreParams.setSearchParam(text);
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+        onSearchTextModified(text, false);
+    }
 
+    private void onSearchTextModified(String text, boolean isFromAutoComplete) {
+        if (TextUtils.isEmpty(text)) {
+            onSearchReset();
+        } else {
+            autoCompleteLayout.setVisibility(View.VISIBLE);
+            if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
+        }
     }
 
     @Override
     public void onSearchReset() {
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
         dropKeyboard();
         exploreParams.resetSearch();
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
     }
 
@@ -265,6 +299,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+        exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
             itemList = new ArrayList<>();
@@ -275,10 +310,13 @@ public class ExploreFragment
         }
         adapter.clearAllElements();
         adapter.addElement(itemList);
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void onErrorGetFirstData(String error) {
+        exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
                 getView(),
@@ -296,6 +334,8 @@ public class ExploreFragment
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
+        if (autoCompleteLayout.getVisibility() == View.VISIBLE)
+            autoCompleteLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -309,6 +349,7 @@ public class ExploreFragment
         exploreParams.resetParams();
         searchView.getSearchTextView().setText("");
         searchView.getSearchTextView().setCursorVisible(false);
+        exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, false);
     }
 
@@ -377,6 +418,36 @@ public class ExploreFragment
     @Override
     public void onErrorCheckQuota(String error, String productId, String adId) {
         showError(error, (view) -> presenter.checkAffiliateQuota(productId, adId));
+    }
+
+    @Override
+    public void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList) {
+        if (autoCompleteLayout.getVisibility() == View.GONE)
+            autoCompleteLayout.setVisibility(View.VISIBLE);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
+        rvAutoComplete.setLayoutManager(new LinearLayoutManager(getActivity()));
+        autoCompleteAdapter = new AutoCompleteSearchAdapter(this, modelList);
+        rvAutoComplete.setAdapter(autoCompleteAdapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAutoCompleteItemClicked(String keyword) {
+        clearAutoCompleteAdapter(keyword);
+        onSearchSubmitted(keyword);
+        autoCompleteLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onAutoCompleteIconClicked(String keyword) {
+        clearAutoCompleteAdapter(keyword);
+    }
+
+    private void clearAutoCompleteAdapter(String keyword) {
+        searchView.setDelayTextChanged(0);
+        searchView.getSearchTextView().setText(keyword);
+        onSearchTextModified(keyword, true);
+        autoCompleteAdapter.clearAdapter();
     }
 
     @Override

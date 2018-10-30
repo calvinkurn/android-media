@@ -13,6 +13,7 @@ class DeletePostSubscriber(val view: ProfileContract.View, val id: Int, val rowN
     override fun onNext(isSuccess: Boolean?) {
         if (isSuccess == null || isSuccess.not()) {
             onError(RuntimeException())
+            return
         }
         view.onSuccessDeletePost(rowNumber)
     }

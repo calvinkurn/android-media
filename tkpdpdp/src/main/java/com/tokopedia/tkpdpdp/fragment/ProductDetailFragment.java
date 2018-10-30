@@ -1628,6 +1628,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        if (merchantVoucherViewModelList.size() == 0) {
+            merchantVoucherListWidget.setData(null);
+            promoWidgetView.setVisibility(View.GONE);
+            promoContainer.setVisibility(View.GONE);
+            return;
+        }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
         promoWidgetView.setVisibility(View.GONE);
         promoContainer.setVisibility(View.VISIBLE);
