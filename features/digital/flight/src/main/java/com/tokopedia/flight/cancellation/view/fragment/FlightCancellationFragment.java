@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     private LinearLayout btnContainer;
     private AppCompatButton btnSubmit;
-    private AppCompatTextView txtCancellationSteps;
 
     public static FlightCancellationFragment createInstance(String invoiceId,
                                                             List<FlightCancellationJourney> flightCancellationJourneyList) {
@@ -79,7 +77,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
 
         btnContainer = view.findViewById(R.id.btn_container);
-        txtCancellationSteps = view.findViewById(R.id.txt_cancellation_steps);
         btnSubmit = view.findViewById(R.id.button_submit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -154,10 +151,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         renderList(flightCancellationViewModelList);
 
         if (flightCancellationViewModelList.size() > 0) {
-            txtCancellationSteps.setVisibility(View.VISIBLE);
             btnContainer.setVisibility(View.VISIBLE);
         } else {
-            txtCancellationSteps.setVisibility(View.GONE);
             btnContainer.setVisibility(View.GONE);
         }
     }
@@ -211,7 +206,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void showGetListError(Throwable throwable) {
         hideLoading();
-        txtCancellationSteps.setVisibility(View.GONE);
         btnContainer.setVisibility(View.GONE);
         super.showGetListError(throwable);
     }
@@ -276,7 +270,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
 
     @Override
     public void onRetryClicked() {
-        txtCancellationSteps.setVisibility(View.VISIBLE);
         showLoading();
         flightCancellationPresenter.onViewCreated();
     }
