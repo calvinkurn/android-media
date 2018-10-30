@@ -5,7 +5,7 @@ package com.tokopedia.loginphone.common.data;
  */
 public class LoginRegisterPhoneUrl {
 
-    public static final String BASE_DOMAIN = "https://www.tokocash.com/";
+    public static String BASE_DOMAIN = "https://www.tokocash.com/";
 
     public static final String REQUEST_OTP_LOGIN = "oauth/otp";
     public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
