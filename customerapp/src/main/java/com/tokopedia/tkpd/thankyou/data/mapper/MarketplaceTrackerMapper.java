@@ -27,7 +27,7 @@ import rx.functions.Func1;
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
-    public static final String DEFAULT_SHOP_TYPE = "DEFAULT";
+    public static final String DEFAULT_SHOP_TYPE = "default";
     
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
