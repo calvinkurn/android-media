@@ -39,12 +39,10 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private LinearLayout containerButtonBuy;
     private ProgressBar variantProgressBar;
     public View containerNewButtonBuy;
-    public View btnCart;
     public View btnChat;
     public View btnByMe;
-    public View btnNewBuy;
-    private ProgressBar progressBarVariant;
-    private TextView tvNewBuy;
+    private TextView tvBuyNow;
+    private TextView tvAddToCart;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -83,12 +81,10 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         containerButtonBuy =  findViewById(R.id.container_btn_buy);
         variantProgressBar = findViewById(R.id.variant_progress_bar);
         containerNewButtonBuy = findViewById(R.id.container_new_checkout_flow);
-        btnCart = findViewById(R.id.action_button_cart);
         btnChat = findViewById(R.id.action_button_chat);
-        btnNewBuy = findViewById(R.id.container_new_button_buy);
-        progressBarVariant = findViewById(R.id.new_variant_progress_bar);
-        tvNewBuy = findViewById(R.id.tv_new_buy);
         btnByMe = findViewById(R.id.action_button_by_me);
+        tvBuyNow = findViewById(R.id.tv_buy_now);
+        tvAddToCart = findViewById(R.id.tv_add_to_cart);
     }
 
     @Override
@@ -129,11 +125,11 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+                tvBuyNow.setText(getContext().getString(R.string.title_pre_order));
             } else {
-                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+                tvBuyNow.setText(getContext().getString(R.string.title_buy));
             }
-            btnNewBuy.setOnClickListener(new OnClickListener() {
+            tvBuyNow.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -153,7 +149,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
-            btnCart.setOnClickListener(new OnClickListener() {
+            tvAddToCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -199,16 +195,16 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     }
 
     public void changeToLoading() {
-        progressBarVariant.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-        progressBarVariant.setVisibility(VISIBLE);
-        btnNewBuy.setEnabled(false);
-        btnCart.setEnabled(false);
+//        progressBarVariant.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+//        progressBarVariant.setVisibility(VISIBLE);
+        tvBuyNow.setEnabled(false);
+        tvAddToCart.setEnabled(false);
     }
 
     public void removeLoading() {
-        progressBarVariant.setVisibility(GONE);
-        btnNewBuy.setEnabled(true);
-        btnCart.setEnabled(true);
+//        progressBarVariant.setVisibility(GONE);
+        tvBuyNow.setEnabled(true);
+        tvAddToCart.setEnabled(true);
     }
 
     public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
@@ -218,11 +214,11 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+                tvBuyNow.setText(getContext().getString(R.string.title_pre_order));
             } else {
-                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+                tvBuyNow.setText(getContext().getString(R.string.title_buy));
             }
-            btnNewBuy.setOnClickListener(new OnClickListener() {
+            tvBuyNow.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -242,7 +238,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
-            btnCart.setOnClickListener(new OnClickListener() {
+            tvAddToCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
