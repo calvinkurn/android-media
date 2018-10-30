@@ -97,8 +97,7 @@ public class ProfileCompletionPhoneVerificationFragment extends PhoneVerificatio
         verifyButton.setVisibility(View.GONE);
 
         skipFragment = (TextView) parentView.getView().findViewById(R.id.skip);
-        skipFragment.setVisibility(View.VISIBLE);
-        skipFragment.setEnabled(true);
+        skipFragment.setVisibility(View.GONE);
 
         if (data.getPhone() != null) {
             phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(data.getPhone()));
