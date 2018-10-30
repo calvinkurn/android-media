@@ -72,7 +72,7 @@ public class ExploreFragment
     private static final int LOGIN_CODE = 13;
 
 
-    private static final int TIME_DEBOUNCE_MILIS = 100;
+    private static final int TIME_DEBOUNCE_MILIS = 500;
 
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
@@ -425,6 +425,7 @@ public class ExploreFragment
     public void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList) {
         if (autoCompleteLayout.getVisibility() == View.GONE)
             autoCompleteLayout.setVisibility(View.VISIBLE);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
         rvAutoComplete.setLayoutManager(new LinearLayoutManager(getActivity()));
         autoCompleteAdapter = new AutoCompleteSearchAdapter(this, modelList);
         rvAutoComplete.setAdapter(autoCompleteAdapter);
@@ -444,6 +445,7 @@ public class ExploreFragment
     }
 
     private void clearAutoCompleteAdapter(String keyword) {
+        searchView.setDelayTextChanged(0);
         searchView.getSearchTextView().setText(keyword);
         onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
