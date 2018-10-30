@@ -119,11 +119,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void goToEtalaseList(Context context) {
-
-    }
-
-    @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
         return null;
     }
