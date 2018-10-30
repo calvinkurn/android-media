@@ -24,7 +24,6 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateClickListener;
@@ -47,6 +46,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private TopAdsBannerView topAdsBannerView;
     private RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
+    private UserSessionInterface userSession;
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
@@ -83,6 +85,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
         this.clickListener = clickListener;
         context = itemView.getContext();
+        userSession = new UserSession(context);
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
         selectedFilterRecyclerView = itemView.findViewById(R.id.selectedFilterRecyclerView);
@@ -107,7 +110,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void loadProductAds() {
         Config productAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
@@ -122,7 +125,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
     private void loadBannerAds() {
         Config bannerAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(params)
                 .setEndpoint(Endpoint.CPM)

@@ -14,7 +14,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
@@ -26,6 +25,8 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -51,10 +52,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
     private final String searchQuery;
+    private UserSessionInterface userSession;
 
     public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener, String searchQuery) {
         super(parent);
         context = parent.getContext();
+        userSession = new UserSession(context);
         this.mItemClickListener = mItemClickListener;
         this.searchQuery = searchQuery;
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
@@ -73,10 +76,10 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         adsParams.getParam().put(TopAdsParams.KEY_SRC, HOTLIST_ADS_SRC);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(context));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();

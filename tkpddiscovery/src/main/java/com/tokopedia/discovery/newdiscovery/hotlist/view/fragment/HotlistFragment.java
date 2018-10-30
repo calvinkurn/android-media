@@ -37,7 +37,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -75,6 +74,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,6 +133,8 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Inject
     HotlistFragmentPresenter presenter;
+    @Inject
+    UserSessionInterface userSession;
     private String trackerAttribution;
 
 
@@ -492,7 +494,7 @@ public class HotlistFragment extends BrowseSectionFragment
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), hotlistAdapter);
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
@@ -637,13 +639,13 @@ public class HotlistFragment extends BrowseSectionFragment
         HotlistParameter parameter = new HotlistParameter();
         parameter.setHotlistAlias(getHotlistAlias());
         parameter.setUniqueID(
-                SessionHandler.isV4Login(getActivity()) ?
-                        SessionHandler.getLoginID(getActivity()) :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         GCMHandler.getRegistrationId(getActivity())
         );
         parameter.setUserID(
-                SessionHandler.isV4Login(getActivity()) ?
-                        SessionHandler.getLoginID(getActivity()) :
+                userSession.isLoggedIn() ?
+                        userSession.getUserId() :
                         null
         );
         parameter.setSource(HotlistParameter.SOURCE_HOTLIST);
@@ -848,7 +850,7 @@ public class HotlistFragment extends BrowseSectionFragment
 
     @Override
     public void onWishlistClicked(int position, String productName, String productID, boolean wishlist) {
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (userSession.isLoggedIn()) {
             hotlistAdapter.disableWishlistButton(productID);
             if (wishlist) {
                 presenter.removeWishlist(productID);

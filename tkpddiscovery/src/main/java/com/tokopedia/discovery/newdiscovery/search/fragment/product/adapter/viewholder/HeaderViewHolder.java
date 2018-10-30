@@ -23,7 +23,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
@@ -35,6 +34,8 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +59,13 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
+    private UserSessionInterface userSession;
     private boolean isAdsBannerLoaded = false;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
+        userSession = new UserSession(context);
         this.clickListener = clickListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
@@ -92,7 +95,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         Config newConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(newParam)
                 .build();

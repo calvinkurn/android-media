@@ -20,7 +20,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -31,6 +30,8 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -57,11 +58,13 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
     private final SubCategoryLifestyleItemDecoration itemDecoration;
+    private UserSessionInterface userSession;
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
         super(itemView);
         this.context = itemView.getContext();
+        userSession = new UserSession(context);
         this.imageHeader = (ImageView) itemView.findViewById(R.id.image_header);
         this.titleHeader = (TextView) itemView.findViewById(R.id.title_header);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
@@ -78,11 +81,11 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(context));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();

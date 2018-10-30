@@ -19,7 +19,6 @@ import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -35,6 +34,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.Favori
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameterBuilder;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Inject
     ShopListPresenter presenter;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSession;
     private GCMHandler gcmHandler;
     private int lastSelectedItemPosition = -1;
     private boolean isLoadingData;
@@ -88,7 +89,7 @@ public class ShopListFragment extends SearchSectionFragment
         } else {
             loadDataFromArguments();
         }
-        sessionHandler = new SessionHandler(getContext());
+        userSession = new UserSession(getContext());
         gcmHandler = new GCMHandler(getContext());
     }
 
@@ -219,12 +220,12 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : null;
     }
 
     private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
@@ -343,12 +344,12 @@ public class ShopListFragment extends SearchSectionFragment
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override

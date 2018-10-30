@@ -24,7 +24,6 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -36,6 +35,8 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private Handler bannerHandler;
     private Runnable incrementPage;
     private RevampCategoryAdapter categoryAdapter;
+    private UserSessionInterface userSession;
 
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private boolean isUsedUnactiveChildren = false;
@@ -79,6 +81,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     public CategoryRevampHeaderViewHolder(View itemView, RevampCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
         this.context = itemView.getContext();
+        userSession = new UserSession(context);
         this.imageHeader = (ImageView) itemView.findViewById(R.id.image_header);
         this.expandLayout = (LinearLayout) itemView.findViewById(R.id.expand_layout);
         this.hideLayout = (LinearLayout) itemView.findViewById(R.id.hide_layout);
@@ -101,7 +104,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();

@@ -13,7 +13,10 @@ import com.tokopedia.discovery.newdiscovery.di.module.AttributeModule;
 import com.tokopedia.discovery.newdiscovery.di.module.BannerModule;
 import com.tokopedia.discovery.newdiscovery.di.module.CatalogModule;
 import com.tokopedia.discovery.newdiscovery.di.module.ProductModule;
+import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -47,4 +50,9 @@ public class CategoryModule {
         return new CategoryPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
+    @CategoryScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }
