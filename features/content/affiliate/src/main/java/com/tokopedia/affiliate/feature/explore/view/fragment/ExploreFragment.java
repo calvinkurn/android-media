@@ -44,8 +44,13 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -65,6 +70,9 @@ public class ExploreFragment
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
     private static final int LOGIN_CODE = 13;
+
+
+    private static final int TIME_DEBOUNCE_SECOND = 1;
 
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
@@ -228,7 +236,13 @@ public class ExploreFragment
 
     @Override
     public void onSearchTextChanged(String text) {
-        onSearchTextModified(text, false);
+        Observable.just(text).debounce(TIME_DEBOUNCE_SECOND, TimeUnit.SECONDS).subscribe(new Action1<String>() {
+            @Override
+            public void call(String s) {
+                onSearchTextModified(s, false);
+            }
+        });
+//        onSearchTextModified(text, false);
     }
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
