@@ -22,7 +22,12 @@ import rx.schedulers.Schedulers;
  * Core Feature : WebSocket will be auto reconnection onFailed.
  */
 public class RxWebSocketUtil {
+    private static final int DEFAULT_PING = 10000;
+    private static final int DEFAULT_MAX_RETRIES = 3;
+    private static final int DEFAULT_DELAY = 5;
     private static RxWebSocketUtil instance;
+    private int delay;
+    private int maxRetries;
 
     private OkHttpClient client;
 
@@ -31,27 +36,33 @@ public class RxWebSocketUtil {
     private boolean showLog = true;
     private String logTag = "MainActivity RxWebSocket";
 
-    private RxWebSocketUtil() {
+    private RxWebSocketUtil(int delay, int maxRetries, int pingInterval) {
         observableMap = new ArrayMap<>();
         webSocketMap = new ArrayMap<>();
-        client = new OkHttpClient.Builder().pingInterval(10, TimeUnit.SECONDS).build();
+        client = new OkHttpClient.Builder().pingInterval(pingInterval, TimeUnit.MILLISECONDS).build();
+        this.delay = delay;
+        this.maxRetries = maxRetries;
     }
 
-    public static RxWebSocketUtil getInstance() {
+    public static RxWebSocketUtil getInstance(int delay, int maxRetries, int pingInterval) {
         if (instance == null) {
             synchronized (RxWebSocketUtil.class) {
                 if (instance == null) {
-                    instance = new RxWebSocketUtil();
+                    instance = new RxWebSocketUtil(delay, maxRetries, pingInterval);
                 }
             }
         }
         return instance;
     }
 
+    public static RxWebSocketUtil getInstance() {
+        return getInstance(DEFAULT_DELAY, DEFAULT_MAX_RETRIES, DEFAULT_PING);
+    }
+
     public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken) {
         Observable<WebSocketInfo> observable = observableMap.get(url);
         if (observable == null) {
-            RetryObservable retryObservable = new RetryObservable(3, 5);
+            RetryObservable retryObservable = new RetryObservable(maxRetries, delay);
             observable = Observable.create(new WebSocketOnSubscribe(client, url, accessToken, webSocketMap))
                     .retryWhen(retryObservable)
                     .doOnUnsubscribe(new Action0() {

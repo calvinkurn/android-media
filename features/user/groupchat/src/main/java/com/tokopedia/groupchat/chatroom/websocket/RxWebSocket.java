@@ -9,8 +9,9 @@ import rx.Observable;
  */
 public final class RxWebSocket {
 
-    public static Observable<WebSocketInfo> get(String url, String accessToken) {
-        return RxWebSocketUtil.getInstance().getWebSocketInfo(url, accessToken);
+    public static Observable<WebSocketInfo> get(String channelUrl, String accessToken
+                                                , int delay, int maxRetries, int pingInterval) {
+        return RxWebSocketUtil.getInstance(delay, maxRetries, pingInterval).getWebSocketInfo(channelUrl, accessToken);
     }
 
     public static void send(String url, String msg) {
@@ -20,4 +21,5 @@ public final class RxWebSocket {
     public static void asyncSend(String url, String msg) {
         RxWebSocketUtil.getInstance().asyncSend(url, msg);
     }
+
 }

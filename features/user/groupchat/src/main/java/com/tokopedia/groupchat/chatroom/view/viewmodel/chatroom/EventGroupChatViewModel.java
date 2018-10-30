@@ -10,11 +10,15 @@ public class EventGroupChatViewModel implements Visitable<GroupChatTypeFactory> 
 
     boolean isFreeze;
     boolean isBanned;
+    String channelId;
+    String userId;
 
-    public EventGroupChatViewModel(boolean isFreeze, boolean isBanned) {
+    public EventGroupChatViewModel(boolean isFreeze, boolean isBanned, String channelId, String userId) {
         super();
         this.isFreeze = isFreeze;
         this.isBanned = isBanned;
+        this.channelId = channelId;
+        this.userId = userId;
     }
 
     public boolean isFreeze() {
@@ -31,6 +35,14 @@ public class EventGroupChatViewModel implements Visitable<GroupChatTypeFactory> 
 
     public void setBanned(boolean banned) {
         isBanned = banned;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     @Override

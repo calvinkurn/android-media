@@ -17,6 +17,12 @@ public class EventHandlerPojo {
     @SerializedName("is_banned")
     @Expose
     private boolean isBanned;
+    @SerializedName("channel_id")
+    @Expose
+    private String channelId;
+    @SerializedName("user_id")
+    @Expose
+    private String userId;
 
     public boolean isFreeze() {
         return isFreeze;
@@ -24,5 +30,13 @@ public class EventHandlerPojo {
 
     public boolean isBanned() {
         return isBanned;
+    }
+
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 }

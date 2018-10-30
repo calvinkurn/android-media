@@ -101,7 +101,7 @@ public class Channel {
     @SerializedName("video_id")
     @Expose
     private String videoId;
-    @SerializedName("setting")
+    @SerializedName("settings")
     @Expose
     private SettingGroupChat settingGroupChat;
 

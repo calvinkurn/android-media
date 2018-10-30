@@ -11,12 +11,28 @@ import com.google.gson.annotations.SerializedName;
  */
 public class SettingGroupChat implements Parcelable{
 
+    public static final int DEFAULT_PING = 10000;
+    public static final int DEFAULT_MAX_RETRIES = 3;
+    public static final int DEFAULT_DELAY = 5;
+
     @SerializedName("ping_interval")
     @Expose
     private int pingInterval;
-    @SerializedName("max_char")
+    @SerializedName("max_chars")
     @Expose
     private int maxChar;
+    @SerializedName("max_retries")
+    @Expose
+    private int maxRetries;
+    @SerializedName("min_reconnect_delay")
+    @Expose
+    private int delay;
+
+    public SettingGroupChat() {
+        pingInterval = DEFAULT_PING;
+        maxRetries = DEFAULT_MAX_RETRIES;
+        delay = DEFAULT_DELAY;
+    }
 
     public int getPingInterval() {
         return pingInterval;
@@ -26,9 +42,19 @@ public class SettingGroupChat implements Parcelable{
         return maxChar;
     }
 
-    protected SettingGroupChat(Parcel in) {
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public SettingGroupChat(Parcel in) {
         pingInterval = in.readInt();
         maxChar = in.readInt();
+        maxRetries = in.readInt();
+        delay = in.readInt();
     }
 
     public static final Creator<SettingGroupChat> CREATOR = new Creator<SettingGroupChat>() {
@@ -52,5 +78,7 @@ public class SettingGroupChat implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(pingInterval);
         dest.writeInt(maxChar);
+        dest.writeInt(maxRetries);
+        dest.writeInt(delay);
     }
 }

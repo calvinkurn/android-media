@@ -128,7 +128,7 @@ public class WebSocketInfo {
     private Visitable mapToEventHandler(JsonObject data) {
         Gson gson = new Gson();
         EventHandlerPojo pojo = gson.fromJson(data, EventHandlerPojo.class);
-        return new EventGroupChatViewModel(pojo.isFreeze(), pojo.isBanned());
+        return new EventGroupChatViewModel(pojo.isFreeze(), pojo.isBanned(), pojo.getChannelId(), pojo.getUserId());
     }
 
     private Visitable mapToGeneratedMessage(JsonObject data) {
@@ -466,6 +466,8 @@ public class WebSocketInfo {
         } else if (mappedMessage instanceof GroupChatQuickReplyViewModel) {
             return true;
         } else if (mappedMessage instanceof VideoViewModel) {
+            return true;
+        } else if (mappedMessage instanceof EventGroupChatViewModel) {
             return true;
         } else {
             return false;

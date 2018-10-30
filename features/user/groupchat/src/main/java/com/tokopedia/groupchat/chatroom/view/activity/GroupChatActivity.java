@@ -481,11 +481,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-//                        userSession.getName(), userSession.getProfilePicture(),
-//                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getGroupChatToken()
-//                        , userSession.getDeviceId(), userSession.getAccessToken());
-                presenter.connectWebSocket(userSession, viewModel.getChannelUuid(), viewModel.getChannelInfoViewModel().getGroupChatToken());
+                presenter.connectWebSocket(userSession, viewModel.getChannelUuid()
+                        , viewModel.getChannelInfoViewModel().getGroupChatToken()
+                        , viewModel.getChannelInfoViewModel().getSettingGroupChat());
                 setSnackBarErrorLoading();
             }
         });
@@ -946,7 +944,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                 userSession = ((AbstractionRouter) getApplication()).getSession();
             }
             onSuccessEnterChannel();
-            presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl(), channelInfoViewModel.getGroupChatToken());
+            presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl()
+                    , channelInfoViewModel.getGroupChatToken()
+                    , viewModel.getChannelInfoViewModel().getSettingGroupChat());
             Intent intent = new Intent();
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
             intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
@@ -1188,7 +1188,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
-            presenter.connectWebSocket(userSession, viewModel.getChannelUrl(), viewModel.getChannelInfoViewModel().getGroupChatToken());
+            presenter.getChannelInfo(viewModel.getChannelUuid());
         }
 
         if (notifReceiver == null) {
@@ -1394,17 +1394,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
-        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-//                presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
-//                        userSession.getName(), userSession.getProfilePicture(),
-//                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getGroupChatToken()
-//                        , userSession.getDeviceId(), userSession.getAccessToken());
-                presenter.connectWebSocket(userSession, viewModel.getChannelUuid(), viewModel.getChannelInfoViewModel().getGroupChatToken());
-            }
-        });
+        NetworkErrorHelper.showEmptyState(this, rootView, errorMessage
+                , () -> presenter.connectWebSocket(userSession, viewModel.getChannelUuid()
+                        , viewModel.getChannelInfoViewModel().getGroupChatToken()
+                        , viewModel.getChannelInfoViewModel().getSettingGroupChat()));
     }
 
     public void onChannelNotFound(String errorMessage) {
@@ -1517,10 +1510,13 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void handleEvent(EventGroupChatViewModel event) {
-        if(event.isBanned()){
-            onUserBanned();
-        }else if(event.isFreeze()){
-            onChannelFrozen();
+        if(event.getUserId().equals(userSession.getUserId())
+                && event.getChannelId().equals(viewModel.getChannelInfoViewModel().getChannelId())) {
+            if(event.isBanned()){
+                onUserBanned();
+            }else if(event.isFreeze()){
+                onChannelFrozen();
+            }
         }
     }
 
@@ -1598,7 +1594,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void onUserBanned() {
         hideLoading();
-        String errorMessage = getString(R.string.user_is_banned);
+        String errorMessage = getResources().getString(R.string.user_is_banned);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.default_banned_title);
         if (viewModel != null

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.groupchat.R;
+import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
@@ -52,16 +53,16 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         localCacheHandler = new LocalCacheHandler(getView().getContext(), GroupChatPresenter.class.getName());
     }
 
-    public void connectWebSocket(UserSession userSession, String channelUrl, String groupChatToken) {
+    public void connectWebSocket(UserSession userSession, String channelUrl, String groupChatToken
+            , SettingGroupChat settingGroupChat) {
         setUrlWebSocket(channelUrl);
-        String magicString = "ws://172.28.0.12/ws/groupchat?channel_id=96";
-        magicString = "ws://172.31.4.23:8000/";
+        String magicString = "ws://172.31.4.23:8000/";
 
         magicString = getView().getContext().getSharedPreferences
                 ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
         magicString = magicString.concat("/ws/groupchat?channel_id=96&token=").concat(groupChatToken);
         setUrlWebSocket(magicString);
-        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), urlWebSocket);
+        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), urlWebSocket, settingGroupChat);
     }
 
     private void setUrlWebSocket(String channelUrl) {
@@ -114,12 +115,19 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
 
-    private void connect(String userId, String deviceId, String accessToken, String channelUrl) {
+    private void connect(String userId, String deviceId, String accessToken, String channelUrl
+            , SettingGroupChat settingGroupChat) {
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
         }
+
+        if(settingGroupChat == null){
+            settingGroupChat = new SettingGroupChat();
+        }
+
         getView().setSnackBarErrorLoading();
 
+        SettingGroupChat finalSettingGroupChat = settingGroupChat;
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
@@ -131,8 +139,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             protected void onMessage(@NonNull String text) {
-                showDummy(text, "logger message");
                 Log.d("RxWebSocket Presenter", text);
+                showDummy(text, "logger message");
             }
 
             @Override
@@ -158,7 +166,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 Log.d("RxWebSocket Presenter", "onClose");
                 showDummy("onClose", "logger close");
                 destroyWebSocket();
-                connect(userId, deviceId, accessToken, channelUrl);
+                connect(userId, deviceId, accessToken, channelUrl, finalSettingGroupChat);
             }
 
             @Override
@@ -170,7 +178,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 reportWebSocket(e);
             }
         };
-        Subscription subscription = RxWebSocket.get(channelUrl, accessToken).subscribe(subscriber);
+        Subscription subscription = RxWebSocket.get(channelUrl, accessToken,
+                    settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
+                , settingGroupChat.getPingInterval()).subscribe(subscriber);
 
 
         if (subscriber != null) {
