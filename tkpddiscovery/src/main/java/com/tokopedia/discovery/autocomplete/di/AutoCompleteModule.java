@@ -17,6 +17,7 @@ import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.domain.interactor.SearchMapper;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -80,7 +81,7 @@ public class AutoCompleteModule {
 
     @AutoCompleteScope
     @Provides
-    UserSession provideUserSession(@ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 }

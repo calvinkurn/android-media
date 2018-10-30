@@ -23,6 +23,7 @@ import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedExc
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,7 +53,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
     private ImageProductMapper productMapper;
     private ImageSearchService imageSearchService;
     private Context context;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     private final int OPTIMUM_WIDTH = 300;
     private final int OPTIMUM_HEIGHT = 300;
@@ -72,7 +73,7 @@ public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
                                  ImageSearchService imageSearchService,
                                  ImageProductMapper imageProductMapper,
                                  MojitoApi service,
-                                 UserSession userSession) {
+                                 UserSessionInterface userSession) {
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.service = service;

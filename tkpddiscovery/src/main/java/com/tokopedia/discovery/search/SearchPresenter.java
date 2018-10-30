@@ -13,6 +13,7 @@ import com.tokopedia.discovery.autocomplete.usecase.DeleteRecentSearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     DeleteRecentSearchUseCase deleteRecentSearchUseCase;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     public SearchPresenter(Context context) {
         this.context = context;

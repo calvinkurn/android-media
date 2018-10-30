@@ -56,6 +56,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Inject
     ImageProductListPresenter presenter;
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
