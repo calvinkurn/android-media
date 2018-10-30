@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 
@@ -50,6 +51,12 @@ public interface ExploreContract {
 
         void onErrorCheckQuota(String error, String productId, String adId);
 
+        void onAutoCompleteItemClicked(String keyword);
+
+        void onAutoCompleteIconClicked(String keyword);
+
+        void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -61,5 +68,7 @@ public interface ExploreContract {
         void checkIsAffiliate(String productId, String adId);
 
         void checkAffiliateQuota(String productId, String adId);
+
+        void getAutoComplete(String keyword);
     }
 }
