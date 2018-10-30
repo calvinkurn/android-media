@@ -68,8 +68,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class VerificationFragment extends BaseDaggerFragment implements Verification.View,
         IncomingSmsReceiver.ReceiveSMSListener {
 
-    private static final String ARGS_DATA = "ARGS_DATA";
-    private static final String ARGS_PASS_DATA = "pass_data";
+    protected static final String ARGS_DATA = "ARGS_DATA";
+    protected static final String ARGS_PASS_DATA = "pass_data";
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;

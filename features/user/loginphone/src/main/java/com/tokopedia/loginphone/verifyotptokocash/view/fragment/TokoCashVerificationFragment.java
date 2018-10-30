@@ -26,6 +26,7 @@ import com.tokopedia.loginphone.verifyotptokocash.view.viewlistener.TokoCashVeri
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -54,8 +55,10 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
     @Inject
     UserSessionInterface userSessionInterface;
 
-    public static Fragment createInstance(Bundle bundle) {
+    public static Fragment createInstance(VerificationViewModel passModel) {
         Fragment fragment = new TokoCashVerificationFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARGS_PASS_DATA, passModel);
         fragment.setArguments(bundle);
         return fragment;
     }
