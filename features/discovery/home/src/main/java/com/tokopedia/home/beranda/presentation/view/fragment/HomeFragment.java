@@ -129,6 +129,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
+    private boolean isVisible;
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     private MainToolbar mainToolbar;
@@ -890,6 +891,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        isVisible = isVisibleToUser;
         trackScreen(isVisibleToUser);
         restartBanner(isVisibleToUser);
     }
@@ -920,7 +922,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isMainViewVisible() {
-        return getUserVisibleHint();
+        return getUserVisibleHint() && isVisible && isResumed();
     }
 
     @Override
