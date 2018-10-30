@@ -96,6 +96,12 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     }
 
     private boolean isBannerVisible() {
+        if (bannerView == null) {
+            return false;
+        }
+        if (!bannerView.isShown()) {
+            return false;
+        }
         Rect actualPosition = new Rect();
         bannerView.getGlobalVisibleRect(actualPosition);
         Rect screen = new Rect(0, 0,
