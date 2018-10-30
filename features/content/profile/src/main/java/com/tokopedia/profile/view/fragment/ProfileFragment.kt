@@ -308,11 +308,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
-        if (TextUtils.isEmpty(uniqueTrackingId) || userId.toString() == userSession.userId) {
-            profileRouter.openRedirectUrl(activity as Activity, url)
-        } else {
+        if (!TextUtils.isEmpty(uniqueTrackingId) && userId.toString() != userSession.userId) {
             presenter.trackPostClick(uniqueTrackingId, url)
         }
+
+        profileRouter.openRedirectUrl(activity as Activity, url)
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
@@ -445,17 +445,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 RouteManager.getIntent(context!!, ApplinkConst.SETTING_PROFILE),
                 SETTING_PROFILE_CODE
         )
-    }
-
-    override fun onSuccessTrackPostClick(redirectLink: String) {
-        profileRouter.openRedirectUrl(activity as Activity, redirectLink)
-    }
-
-    override fun onErrorTrackPostClick(errorMessage: String, uniqueTrackingId: String,
-                                       redirectLink: String) {
-        showError(errorMessage, View.OnClickListener {
-            presenter.trackPostClick(uniqueTrackingId, redirectLink)
-        })
     }
 
     override fun showLoadingLayout() {

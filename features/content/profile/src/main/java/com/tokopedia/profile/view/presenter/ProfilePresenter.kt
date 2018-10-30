@@ -88,14 +88,13 @@ class ProfilePresenter @Inject constructor(
     }
 
     override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
-        view.showLoadingLayout()
         trackAffiliateClickUseCase.execute(
                 TrackAffiliateClickUseCase.createRequestParams(
                         uniqueTrackingId,
                         view.getUserSession().deviceId,
                         if (view.getUserSession().isLoggedIn) view.getUserSession().userId else "0"
                 ),
-                TrackPostClickSubscriber(view, uniqueTrackingId, redirectLink)
+                TrackPostClickSubscriber()
         )
     }
 }

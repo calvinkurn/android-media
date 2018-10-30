@@ -5,6 +5,8 @@ import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartRespon
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.usecase.RequestParams;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
