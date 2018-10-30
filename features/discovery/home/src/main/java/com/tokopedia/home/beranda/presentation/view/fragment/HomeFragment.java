@@ -920,7 +920,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public boolean isMainViewVisible() {
-        return getUserVisibleHint();
+        return getUserVisibleHint() && !isHidden();
     }
 
     @Override

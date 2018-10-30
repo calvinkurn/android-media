@@ -88,7 +88,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoScrolled(int position) {
-        if (isBannerVisible()) {
+        if (listener.isMainViewVisible()) {
             HomePageTracking.eventPromoImpression(getPromotion(position));
             HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
             listener.onPromoScrolled(slidesList.get(position));
