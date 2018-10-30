@@ -38,8 +38,9 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
     private TextView mTvCashback;
     private TextView mTvNoteToSellerLabel;
     private LinearLayout mLlShippingWarningContainer;
-    private TextView mTvShippingWarning;
     private View mSeparatorMultipleProductSameStore;
+    private TextView tvErrorShipmentItemTitle;
+    private TextView tvErrorShipmentItemDescription;
 
     public ShipmentCartItemViewHolder(View itemView) {
         super(itemView);
@@ -57,14 +58,15 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         mTvCashback = itemView.findViewById(R.id.tv_cashback);
         mTvNoteToSellerLabel = itemView.findViewById(R.id.tv_note_to_seller_label);
         mLlShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
-        mTvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
         mSeparatorMultipleProductSameStore = itemView.findViewById(R.id.v_separator_multiple_product_same_store);
+        tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
+        tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
 
     }
 
     public void bindViewHolder(CartItemModel cartItem) {
         if (cartItem.isError()) {
-            showShipmentWarning(cartItem.getErrorMessage());
+            showShipmentWarning(cartItem);
         } else {
             hideShipmentWarning();
         }
@@ -97,10 +99,17 @@ public class ShipmentCartItemViewHolder extends ShipmentItemViewHolder {
         }
     }
 
-    private void showShipmentWarning(String message) {
-        if (!TextUtils.isEmpty(message)) {
-            mTvShippingWarning.setText(message);
+    private void showShipmentWarning(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
+            tvErrorShipmentItemTitle.setText(cartItemModel.getErrorMessage());
+            tvErrorShipmentItemTitle.setVisibility(View.VISIBLE);
             mLlShippingWarningContainer.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(cartItemModel.getErrorMessageDescription())) {
+                tvErrorShipmentItemDescription.setText(cartItemModel.getErrorMessageDescription());
+                tvErrorShipmentItemDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvErrorShipmentItemDescription.setVisibility(View.GONE);
+            }
         } else {
             mLlShippingWarningContainer.setVisibility(View.GONE);
         }

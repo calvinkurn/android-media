@@ -1,59 +1,20 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.View;
 
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 
 /**
  * Created by normansyahputa on 12/5/17.
  */
-public class SellerInfoWebViewFragment extends BaseWebViewFragment {
+public class SellerInfoWebViewFragment extends BaseSessionWebViewFragment {
 
-    public static final String EXTRA_URL = "EXTRA_URL";
-    private String extraUrl;
-
-    private UserSession userSession;
-
-    public static Fragment newInstance(String url) {
-        Fragment fragment = new SellerInfoWebViewFragment();
+    public static SellerInfoWebViewFragment newInstance(String url) {
+        SellerInfoWebViewFragment fragment = new SellerInfoWebViewFragment();
         Bundle argument = new Bundle();
-        argument.putString(EXTRA_URL, url);
+        argument.putString(BaseSessionWebViewFragment.ARGS_URL, url);
         fragment.setArguments(argument);
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        extraUrl = getArguments().getString(EXTRA_URL);
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    protected String getUrl() {
-        return URLGenerator.generateURLSessionLogin(Uri.encode(extraUrl), getActivity());
-    }
-
-    @Override
-    protected String getUserIdForHeader() {
-        return userSession.getUserId();
-    }
-
-    @Nullable
-    @Override
-    protected String getAccessToken() {
-        return userSession.getAccessToken();
-    }
 }

@@ -7,10 +7,6 @@ public class TransactionDataApiUrl {
     public static class Cart {
         static public String BASE_URL = "https://api.tokopedia.com/";
 
-        public static final String LIVE_BASE_URL = "https://api.tokopedia.com/";
-        public static final String STAGING_BASE_URL = "https://api-staging.tokopedia.com/";
-        public static final String ALPHA_BASE_URL = "https://api-alpha.tokopedia.com/";
-
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION_1 = "v1";
         public static final String VERSION_2 = "v2";
@@ -33,14 +29,11 @@ public class TransactionDataApiUrl {
         public static final String PATH_COUPON_LIST = BASE_PATH + VERSION_2 + "/coupon_list";
         public static final String PATH_SAVE_PICKUP_STORE_POINT = BASE_PATH + VERSION_2 + "/save_pickup_store_point";
         public static final String PATH_CANCEL_AUTO_APPLY_COUPON = BASE_PATH + VERSION_2 + "/auto_applied_kupon/clear";
+        public static final String PATH_SAVE_SHIPMENT = BASE_PATH + VERSION_2 + "/save_shipment";
     }
 
     public static class TransactionAction {
         static public String BASE_URL = "https://ws.tokopedia.com/";
-
-        public static final String LIVE_BASE_URL = "https://ws.tokopedia.com/";
-        public static final String STAGING_BASE_URL = "https://ws-staging.tokopedia.com/";
-        public static final String ALPHA_BASE_URL = "https://ws-alpha.tokopedia.com/";
 
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v4/";

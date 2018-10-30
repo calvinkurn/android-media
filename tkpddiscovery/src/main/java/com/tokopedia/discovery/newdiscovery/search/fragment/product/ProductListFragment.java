@@ -235,6 +235,9 @@ public class ProductListFragment extends SearchSectionFragment
             list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
         }
         list.addAll(productViewModel.getProductList());
+        if (productViewModel.getRelatedSearchModel() != null) {
+            list.add(productViewModel.getRelatedSearchModel());
+        }
         return list;
     }
 
@@ -408,6 +411,7 @@ public class ProductListFragment extends SearchSectionFragment
             @Override
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
+                        adapter.isRelatedSearch(position) ||
                         adapter.isHeaderBanner(position) ||
                         adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
@@ -514,7 +518,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistButtonClicked(ProductItem productItem) {
+    public void onWishlistButtonClicked(final ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }
 
@@ -537,6 +541,12 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSearchGuideClicked(String keyword) {
+        performNewProductSearch(keyword, true);
+    }
+
+    @Override
+    public void onRelatedSearchClicked(String keyword) {
+        SearchTracking.eventClickRelatedSearch(getContext(), getQueryKey(), keyword);
         performNewProductSearch(keyword, true);
     }
 
@@ -608,6 +618,11 @@ public class ProductListFragment extends SearchSectionFragment
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override

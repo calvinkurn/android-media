@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -20,6 +21,7 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tokocash.CacheUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -58,6 +60,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         reactInstanceManager = ((ReactApplication) getApplication())
                 .getReactNativeHost().getReactInstanceManager();
         PurchaseNotifier.notify(this, getIntent().getExtras());
+        resetWalletCache();
     }
 
     @Override
@@ -170,6 +173,12 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
             }
         }
         return false;
+    }
+
+    private void resetWalletCache() {
+        if (getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
+            ((AbstractionRouter) getApplicationContext()).getGlobalCacheManager().delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+        }
     }
 
     private void closeThankyouPage() {

@@ -26,6 +26,16 @@ public class BalanceTokoCash implements Parcelable {
     private long rawThreshold;
     private String threshold;
     private List<String> abTags;
+    private String pointBalance;
+    private int rawPointBalance;
+    private String cashBalance;
+    private int rawCashBalance;
+    private String walletType;
+    private String pendingCashback;
+    private int amountPendingCashback;
+    private String helpApplink;
+    private String tncApplink;
+    private boolean showAnnouncement;
 
     public BalanceTokoCash() {
     }
@@ -46,6 +56,16 @@ public class BalanceTokoCash implements Parcelable {
         rawThreshold = in.readLong();
         threshold = in.readString();
         abTags = in.createStringArrayList();
+        pointBalance = in.readString();
+        rawPointBalance = in.readInt();
+        cashBalance = in.readString();
+        rawCashBalance = in.readInt();
+        walletType = in.readString();
+        pendingCashback = in.readString();
+        amountPendingCashback = in.readInt();
+        helpApplink = in.readString();
+        tncApplink = in.readString();
+        showAnnouncement = in.readByte() != 0;
     }
 
     @Override
@@ -64,6 +84,16 @@ public class BalanceTokoCash implements Parcelable {
         dest.writeLong(rawThreshold);
         dest.writeString(threshold);
         dest.writeStringList(abTags);
+        dest.writeString(pointBalance);
+        dest.writeInt(rawPointBalance);
+        dest.writeString(cashBalance);
+        dest.writeInt(rawCashBalance);
+        dest.writeString(walletType);
+        dest.writeString(pendingCashback);
+        dest.writeInt(amountPendingCashback);
+        dest.writeString(helpApplink);
+        dest.writeString(tncApplink);
+        dest.writeByte((byte) (showAnnouncement ? 1 : 0));
     }
 
     @Override
@@ -193,5 +223,85 @@ public class BalanceTokoCash implements Parcelable {
 
     public void setAbTags(List<String> abTags) {
         this.abTags = abTags;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public void setPointBalance(String pointBalance) {
+        this.pointBalance = pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public void setRawPointBalance(int rawPointBalance) {
+        this.rawPointBalance = rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public void setRawCashBalance(int rawCashBalance) {
+        this.rawCashBalance = rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(String walletType) {
+        this.walletType = walletType;
+    }
+
+    public String getPendingCashback() {
+        return pendingCashback;
+    }
+
+    public void setPendingCashback(String pendingCashback) {
+        this.pendingCashback = pendingCashback;
+    }
+
+    public int getAmountPendingCashback() {
+        return amountPendingCashback;
+    }
+
+    public void setAmountPendingCashback(int amountPendingCashback) {
+        this.amountPendingCashback = amountPendingCashback;
+    }
+
+    public String getHelpApplink() {
+        return helpApplink;
+    }
+
+    public void setHelpApplink(String helpApplink) {
+        this.helpApplink = helpApplink;
+    }
+
+    public String getTncApplink() {
+        return tncApplink;
+    }
+
+    public void setTncApplink(String tncApplink) {
+        this.tncApplink = tncApplink;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
+    }
+
+    public void setShowAnnouncement(boolean showAnnouncement) {
+        this.showAnnouncement = showAnnouncement;
     }
 }

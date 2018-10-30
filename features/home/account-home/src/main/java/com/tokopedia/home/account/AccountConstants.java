@@ -1,7 +1,5 @@
 package com.tokopedia.home.account;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
-
 /**
  * @author okasurya on 7/20/18.
  */
@@ -27,6 +25,7 @@ public class AccountConstants {
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
         public static final String PEMBELI = "pembeli";
+        public static final String CLICK_CHALLENGE = "challenge";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -76,6 +75,14 @@ public class AccountConstants {
         public static final String EVENT_LABEL = "eventLabel";
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_ACCOUNT = "/account";
+        public static final String MY_ACCOUNT = "my account page";
+        public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
+        public static final String EVENT_SALDO_OVO = "clickSaldo";
+    }
+
+    public class ImageUrl {
+        public static final String OVO_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_ovo_circle.png";
+        public static final String TOKOCASH_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokocash_circle.png";
     }
 
     public interface VccStatus {

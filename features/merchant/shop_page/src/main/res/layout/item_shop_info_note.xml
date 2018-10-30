@@ -8,17 +8,11 @@
 
     <com.tokopedia.design.label.LabelView
         android:id="@+id/label_view"
-        style="@style/LabelLayout"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        android:paddingRight="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_8"
         app:lv_title_text_size="@dimen/sp_14"
         app:lv_content_text_size="@dimen/sp_14"
         app:lv_content_color="@color/tkpd_main_green"
         app:lv_content="@string/read"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:background="@drawable/bg_list_separator"/>
 </LinearLayout>

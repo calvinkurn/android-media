@@ -26,7 +26,7 @@ public class CpmShop implements Parcelable {
     private static final String KEY_PRODUCT = "product";
 
     @SerializedName(KEY_ID)
-    private int id;
+    private String id;
     @SerializedName(KEY_NAME)
     private String name;
     @SerializedName(KEY_DOMAIN)
@@ -40,7 +40,7 @@ public class CpmShop implements Parcelable {
 
     public CpmShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
-            setId(object.getInt(KEY_ID));
+            setId(object.getString(KEY_ID));
         }
         if(!object.isNull(KEY_NAME)){
             setName(object.getString(KEY_NAME));
@@ -63,7 +63,7 @@ public class CpmShop implements Parcelable {
     }
 
     protected CpmShop(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         name = in.readString();
         domain = in.readString();
         tagline = in.readString();
@@ -73,7 +73,7 @@ public class CpmShop implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(domain);
         dest.writeString(tagline);
@@ -106,11 +106,11 @@ public class CpmShop implements Parcelable {
         this.products = products;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

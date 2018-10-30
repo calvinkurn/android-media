@@ -259,6 +259,11 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
@@ -267,7 +272,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         } else {
             hideSaldoPrioritasFragment();
         }
-
     }
 
     @Override
@@ -446,13 +450,15 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     public void hideSaldoPrioritasFragment() {
-        saldoFrameLayout.setVisibility(View.GONE);
+        if (saldoFrameLayout != null) {
+            saldoFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
 
-        if(sellerDetails != null &&
+        if (sellerDetails != null &&
                 sellerDetails.isIsEligible()) {
             if (depositScreenListener != null) {
                 depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);

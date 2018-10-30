@@ -12,6 +12,7 @@ public class GmProductDomainModel {
     private String lastPrice;
     private String name;
     private String notes;
+    private String timeRange;
 
     public Integer getProductId() {
         return productId;
@@ -75,5 +76,13 @@ public class GmProductDomainModel {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public String getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(String timeRange) {
+        this.timeRange = timeRange;
     }
 }

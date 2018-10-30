@@ -21,7 +21,6 @@ import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolde
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.shoptalk.di.DaggerShopTalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
@@ -31,6 +30,7 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.shoptalk.di.DaggerShopTalkComponent
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.shoptalk.view.listener.ShopTalkContract
 import com.tokopedia.talk.shoptalk.view.presenter.ShopTalkPresenter
@@ -511,6 +511,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
             if (adapter.getCommentById(talkId, commentId) != null) {
                 adapter.deleteComment(talkId, commentId)
             } else if (adapter.getItemById(talkId) != null
+                    && !(adapter.getItemById(talkId) as InboxTalkItemViewModel).talkThread
+                            .listChild.isEmpty()
                     && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
                             .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
                 ((adapter.getItemById(talkId) as

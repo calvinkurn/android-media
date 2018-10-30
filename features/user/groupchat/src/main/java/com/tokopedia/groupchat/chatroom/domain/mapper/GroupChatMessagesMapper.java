@@ -28,6 +28,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageVie
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
@@ -90,6 +91,8 @@ public class GroupChatMessagesMapper {
             return true;
         } else if (mappedMessage instanceof GroupChatQuickReplyViewModel) {
             return true;
+        } else if (mappedMessage instanceof VideoViewModel) {
+            return true;
         } else {
             return false;
         }
@@ -142,9 +145,20 @@ public class GroupChatMessagesMapper {
                 return mapToAds(message, message.getData());
             case GroupChatQuickReplyViewModel.TYPE:
                 return mapToQuickReply(message, message.getData());
+            case VideoViewModel.TYPE:
+                return mapToVideo(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
+    }
+
+    private Visitable mapToVideo(UserMessage message, String data) {
+        if(TextUtils.isEmpty(data)){
+            return new VideoViewModel("");
+        }
+        Gson gson = new Gson();
+        VideoViewModel videoViewModel = gson.fromJson(data, VideoViewModel.class);
+        return videoViewModel;
     }
 
     private Visitable mapToQuickReply(UserMessage message, String json) {

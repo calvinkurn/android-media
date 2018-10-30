@@ -70,5 +70,6 @@
     <string name="success_delete_comment_talk">Diskusi berhasil dihapus</string>
     <string name="success_unfollow_talk">Berhasil berhenti mengikuti diskusi</string>
     <string name="success_follow_talk">Berhasil mengikuti diskusi</string>
+    <string name="send">Kirim</string>
 
 </resources>

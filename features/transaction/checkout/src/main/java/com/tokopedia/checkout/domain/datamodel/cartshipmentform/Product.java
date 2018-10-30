@@ -13,6 +13,7 @@ public class Product implements Parcelable {
 
     private boolean isError;
     private String errorMessage;
+    private String errorMessageDescription;
 
     private long cartId;
     private int productId;
@@ -29,6 +30,7 @@ public class Product implements Parcelable {
     private boolean productReturnable;
     private boolean productIsFreeReturns;
     private boolean productIsPreorder;
+    private int preOrderDurationDay;
     private String productCashback;
     private int productMinOrder;
     private int productInvenageValue;
@@ -311,6 +313,22 @@ public class Product implements Parcelable {
         this.cartId = cartId;
     }
 
+    public int getPreOrderDurationDay() {
+        return preOrderDurationDay;
+    }
+
+    public void setPreOrderDurationDay(int preOrderDurationDay) {
+        this.preOrderDurationDay = preOrderDurationDay;
+    }
+
+    public String getErrorMessageDescription() {
+        return errorMessageDescription;
+    }
+
+    public void setErrorMessageDescription(String errorMessageDescription) {
+        this.errorMessageDescription = errorMessageDescription;
+    }
+
     public Product() {
     }
 
@@ -323,6 +341,7 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
+        dest.writeString(this.errorMessageDescription);
         dest.writeInt(this.productId);
         dest.writeLong(this.cartId);
         dest.writeString(this.productName);
@@ -353,11 +372,13 @@ public class Product implements Parcelable {
         dest.writeTypedList(this.productShipmentMapping);
         dest.writeInt(this.productCatId);
         dest.writeInt(this.productCatalogId);
+        dest.writeInt(this.preOrderDurationDay);
     }
 
     protected Product(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
+        this.errorMessageDescription = in.readString();
         this.productId = in.readInt();
         this.cartId = in.readLong();
         this.productName = in.readString();
@@ -388,6 +409,7 @@ public class Product implements Parcelable {
         this.productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
         this.productCatId = in.readInt();
         this.productCatalogId = in.readInt();
+        this.preOrderDurationDay = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

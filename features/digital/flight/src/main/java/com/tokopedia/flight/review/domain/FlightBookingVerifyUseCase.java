@@ -87,7 +87,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
         for (FlightBookingPassengerViewModel flightPassengerViewModel : flightPassengerViewModels) {
             Passenger passenger = new Passenger();
             if (!TextUtils.isEmpty(flightPassengerViewModel.getPassengerBirthdate()))
-                passenger.setDob(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassengerBirthdate()));
+                passenger.setDob(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, flightPassengerViewModel.getPassengerBirthdate()));
             passenger.setFirstName(flightPassengerViewModel.getPassengerFirstName());
             passenger.setLastName(flightPassengerViewModel.getPassengerLastName());
             passenger.setTitle(flightPassengerViewModel.getPassengerTitleId());
@@ -98,7 +98,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
                 passenger.setPassportNo(flightPassengerViewModel.getPassportNumber());
             }
             if (flightPassengerViewModel.getPassportExpiredDate() != null) {
-                passenger.setPassportExpiry(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.FORMAT_DATE_API, flightPassengerViewModel.getPassportExpiredDate()));
+                passenger.setPassportExpiry(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, flightPassengerViewModel.getPassportExpiredDate()));
             }
             if (flightPassengerViewModel.getPassportNationality() != null) {
                 passenger.setNationality(flightPassengerViewModel.getPassportNationality().getCountryId());

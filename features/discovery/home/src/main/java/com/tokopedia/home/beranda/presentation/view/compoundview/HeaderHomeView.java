@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.compoundview;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,12 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -27,6 +33,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 
 public class HeaderHomeView extends BaseCustomView {
     private static final String TITLE_HEADER_WEBSITE = "TokoPoints";
+    private static final String TITLE_OVO = "OVO";
+    private static final String WALLET_TYPE = "OVO";
     private HomeCategoryListener listener;
     private HeaderViewModel headerViewModel;
 
@@ -40,6 +48,7 @@ public class HeaderHomeView extends BaseCustomView {
     private ProgressBar tokocashProgressBar;
     private LinearLayout tokocashActionContainer;
     private ImageView imageInfoBtn;
+    private TextView pointsOvo;
 
     private View tokoPointHolder;
     private TextView tvTitleTokoPoint;
@@ -48,6 +57,8 @@ public class HeaderHomeView extends BaseCustomView {
     private ImageView ivLogoTokoPoint;
     private LinearLayout tokopointProgressBarLayout;
     private LinearLayout tokopointActionContainer;
+    private WalletAnalytics walletAnalytics;
+    private TextView mTextCouponCount;
 
     public HeaderHomeView(@NonNull Context context, HeaderViewModel headerViewModel, HomeCategoryListener listener) {
         super(context);
@@ -71,6 +82,11 @@ public class HeaderHomeView extends BaseCustomView {
             return;
         if (listener == null)
             return;
+
+        if (getContext().getApplicationContext() instanceof IHomeRouter) {
+            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
+            walletAnalytics = new WalletAnalytics(analyticTracker);
+        }
 
         if (headerViewModel.getTokoPointDrawerData() != null && headerViewModel.getTokoPointDrawerData().getOffFlag() == 1) {
             renderHeaderOnlyTokocash();
@@ -98,6 +114,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
             tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
             imageInfoBtn = view.findViewById(R.id.info_button);
+            pointsOvo = view.findViewById(R.id.tv_ovo_point);
 
             tokoPointHolder = view.findViewById(R.id.container_tokopoint);
             tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
@@ -106,6 +123,7 @@ public class HeaderHomeView extends BaseCustomView {
             ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
             tokopointProgressBarLayout = view.findViewById(R.id.progress_bar_tokopoint_layout);
             tokopointActionContainer = view.findViewById(R.id.container_action_tokopoint);
+            mTextCouponCount = view.findViewById(R.id.text_coupon_count);
         }
         renderTokocashLayoutListener();
         renderTokoPointLayoutListener();
@@ -138,6 +156,12 @@ public class HeaderHomeView extends BaseCustomView {
             //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
             tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
             tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+
+            if (headerViewModel.getTokoPointDrawerData().getSumCoupon() > 0) {
+                mTextCouponCount.setVisibility(VISIBLE);
+                mTextCouponCount.setText(headerViewModel.getTokoPointDrawerData().getSumCouponStr());
+            }
+
             tokoPointHolder.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -188,13 +212,13 @@ public class HeaderHomeView extends BaseCustomView {
     private void renderTokocashLayoutListener() {
         HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
+        pointsOvo.setVisibility(GONE);
         if (headerViewModel.getHomeHeaderWalletActionData() == null && headerViewModel.isWalletDataError()) {
             tokoCashHolder.setOnClickListener(getOnClickRefreshTokocash());
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(R.string.home_header_tokocash_unable_to_load_label);
             tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
-            tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
             tvActionTokocash.setText(R.string.home_header_tokocash_refresh_label);
             tvActionTokocash.setVisibility(VISIBLE);
             tvTitleTokocash.setVisibility(GONE);
@@ -205,52 +229,102 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashProgressBar.setVisibility(VISIBLE);
             tokocashActionContainer.setVisibility(GONE);
         } else {
-            tokocashProgressBar.setVisibility(GONE);
-            tokocashActionContainer.setVisibility(VISIBLE);
-            tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
-            tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
-            tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
-            tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
-
-            if (homeHeaderWalletAction.isLinked()) {
-                tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                tvBalanceTokocash.setVisibility(VISIBLE);
-                tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
-                tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
-                tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
-
-                tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
-                tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
-                imageInfoBtn.setVisibility(GONE);
+            if (!TextUtils.isEmpty(homeHeaderWalletAction.getWalletType()) && homeHeaderWalletAction.getWalletType().equals(WALLET_TYPE)) {
+                successRenderOvo(homeHeaderWalletAction);
             } else {
-                imageInfoBtn.setVisibility(GONE);
-                tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
-                tvBalanceTokocash.setVisibility(GONE);
-                tvActionTokocash.setVisibility(VISIBLE);
-                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                if (headerViewModel.isPendingTokocashChecked()
-                        && headerViewModel.getCashBackData() != null) {
-                    if (headerViewModel.getCashBackData().getAmount() > 0) {
-                        tvActionTokocash.setVisibility(GONE);
-                        tvBalanceTokocash.setVisibility(VISIBLE);
-                        tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
-                        tvBalanceTokocash.setTextColor(
-                                getContext().getResources().getColor(R.color.black_38)
-                        );
-                        imageInfoBtn.setVisibility(VISIBLE);
-                        imageInfoBtn.setOnClickListener(
-                                getOnClickPendingCashBackListener(homeHeaderWalletAction)
-                        );
-                        tvBalanceTokocash.setOnClickListener(
-                                getOnClickPendingCashBackListener(homeHeaderWalletAction)
-                        );
-                    }
-                } else {
-                    listener.onRequestPendingCashBack();
-                }
+                successRenderTokoCash(homeHeaderWalletAction);
             }
+
         }
 
+    }
+
+    private void successRenderTokoCash(HomeHeaderWalletAction homeHeaderWalletAction) {
+        tokocashProgressBar.setVisibility(GONE);
+        tokocashActionContainer.setVisibility(VISIBLE);
+        tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
+        tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
+        tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
+        tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+        ivLogoTokocash.setImageResource(R.drawable.ic_tokocash);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
+
+        if (homeHeaderWalletAction.isLinked()) {
+            tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvBalanceTokocash.setVisibility(VISIBLE);
+            tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
+            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+
+            tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
+            tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
+            imageInfoBtn.setVisibility(GONE);
+        } else {
+            imageInfoBtn.setVisibility(GONE);
+            tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
+            tvBalanceTokocash.setVisibility(GONE);
+            tvActionTokocash.setVisibility(VISIBLE);
+            tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (headerViewModel.isPendingTokocashChecked()
+                    && headerViewModel.getCashBackData() != null) {
+                if (headerViewModel.getCashBackData().getAmount() > 0) {
+                    tvActionTokocash.setVisibility(GONE);
+                    tvBalanceTokocash.setVisibility(VISIBLE);
+                    tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
+                    tvBalanceTokocash.setTextColor(
+                            getContext().getResources().getColor(R.color.font_black_disabled_38)
+                    );
+                    imageInfoBtn.setVisibility(VISIBLE);
+                    imageInfoBtn.setOnClickListener(
+                            getOnClickPendingCashBackListener(homeHeaderWalletAction)
+                    );
+                    tvBalanceTokocash.setOnClickListener(
+                            getOnClickPendingCashBackListener(homeHeaderWalletAction)
+                    );
+                }
+            } else {
+                listener.onRequestPendingCashBack();
+            }
+        }
+    }
+
+    private void successRenderOvo(HomeHeaderWalletAction homeHeaderWalletAction) {
+        tokocashProgressBar.setVisibility(GONE);
+        tokocashActionContainer.setVisibility(VISIBLE);
+        tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
+        tvActionTokocash.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkActionButton()));
+        tokoCashHolder.setOnClickListener(getOnclickOvoApplink(homeHeaderWalletAction.isLinked(), homeHeaderWalletAction.getAppLinkBalance()));
+        ivLogoTokocash.setImageResource(R.drawable.wallet_ic_ovo_home);
+        tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_disabled_38));
+
+        if (homeHeaderWalletAction.isLinked()) {
+            pointsOvo.setVisibility(VISIBLE);
+            tvTitleTokocash.setText(homeHeaderWalletAction.getCashBalance());
+            tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+            tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tvBalanceTokocash.setVisibility(VISIBLE);
+            tvBalanceTokocash.setText(homeHeaderWalletAction.getPointBalance());
+            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+            tvBalanceTokocash.setTypeface(null, Typeface.NORMAL);
+
+            tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
+            tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
+            imageInfoBtn.setVisibility(GONE);
+        } else {
+            tvTitleTokocash.setText(TITLE_OVO);
+            tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
+            tvActionTokocash.setVisibility(VISIBLE);
+            tvBalanceTokocash.setVisibility(GONE);
+            imageInfoBtn.setVisibility(GONE);
+            tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            if (headerViewModel.isPendingTokocashChecked()
+                    && headerViewModel.getCashBackData() != null) {
+                if (headerViewModel.getCashBackData().getAmount() > 0) {
+                    tvTitleTokocash.setText("(+ " + headerViewModel.getCashBackData().getAmountText() + ")");
+                }
+            } else {
+                listener.onRequestPendingCashBack();
+            }
+        }
     }
 
 
@@ -279,7 +353,6 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View view) {
                 listener.actionInfoPendingCashBackTokocash(
                         headerViewModel.getCashBackData(),
-                        homeHeaderWalletAction.getRedirectUrlActionButton(),
                         homeHeaderWalletAction.getAppLinkActionButton()
                 );
             }
@@ -296,12 +369,31 @@ public class HeaderHomeView extends BaseCustomView {
                     UnifyTracking.eventTokoCashActivateClick();
                 }
 
-                listener.actionAppLinkWalletHeader(
-                        homeHeaderWalletAction.getRedirectUrlActionButton(),
-                        homeHeaderWalletAction.getAppLinkActionButton()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
                 );
             }
         };
+    }
+
+    private OnClickListener getOnclickOvoApplink(boolean linkedOvo, String applinkString) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (RouteManager.isSupportApplink(getContext(), applinkString)) {
+                    Intent intentBalanceWalet = RouteManager.getIntent(getContext(), applinkString);
+                    getContext().startActivity(intentBalanceWalet);
+                    if (!linkedOvo) {
+                        showAnimationBottomSheetActivation();
+                        walletAnalytics.eventClickActivationOvoHomepage();
+                    }
+                }
+            }
+        };
+    }
+
+    private void showAnimationBottomSheetActivation() {
+        Activity activity = (Activity) getContext();
+        activity.overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
     }
 
     @NonNull
@@ -315,9 +407,7 @@ public class HeaderHomeView extends BaseCustomView {
                     UnifyTracking.eventTokoCashCheckSaldoClick();
                 }
 
-                listener.actionAppLinkWalletHeader(
-                        homeHeaderWalletAction.getRedirectUrlBalance(),
-                        homeHeaderWalletAction.getAppLinkBalance()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
                 );
             }
         };

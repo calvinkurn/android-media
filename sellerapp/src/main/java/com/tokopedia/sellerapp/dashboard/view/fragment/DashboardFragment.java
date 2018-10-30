@@ -210,8 +210,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             public void onClick(View v) {
                 UnifyTracking.eventSellerHomeDashboardClick(AppEventTracking.EventLabel.DASHBOARD_MAIN_INBOX,
                         AppEventTracking.EventLabel.DASHBOARD_ITEM_DISKUSI_PRODUK);
-                Intent intent = InboxRouter.getInboxTalkActivityIntent(getActivity());
-                startActivity(intent);
+                if(MainApplication.getAppContext() instanceof SellerModuleRouter){
+                    startActivity(((SellerModuleRouter)MainApplication.getAppContext())
+                            .getInboxTalkCallingIntent(getActivity()));
+                }
             }
         });
         reviewLabelView.setOnClickListener(new View.OnClickListener() {
@@ -432,6 +434,11 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
+        if (tickers.length < 1){
+            tickerView.setVisibility(View.GONE);
+            return;
+        }
+
         tickerView.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         final ArrayList<String> backgrounds = new ArrayList<>();

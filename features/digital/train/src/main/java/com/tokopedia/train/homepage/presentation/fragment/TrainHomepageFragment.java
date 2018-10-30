@@ -193,6 +193,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
         trainHomepagePresenterImpl.attachView(this);
         trainHomepagePresenterImpl.initialize();
+        initializePromoList();
     }
 
     private void initializePromoList() {
@@ -207,14 +208,14 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
             @Override
             public void navigateToPromoPage() {
-                Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity());
+                Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity(), TrainUrl.PARAM_TRAIN_MENU_ID, TrainUrl.PARAM_TRAIN_SUBMENU_ID);
                 startActivity(intentToPromoList);
             }
 
             @Override
             public void navigateToPromoDetail(int position) {
                 if (trainPromoViewModelList.size() > position && trainPromoViewModelList.get(position).getAttributes() != null) {
-                    String url = trainPromoViewModelList.get(position).getAttributes().getImageUrl();
+                    String url = trainPromoViewModelList.get(position).getAttributes().getLinkUrl();
                     Uri uri = Uri.parse(url);
                     boolean isPromoNativeActive = isPromoNativeActive();
                     if (isPromoNativeActive && uri != null
@@ -444,6 +445,11 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
     @Override
     public void hidePromoList() {
         trainPromoView.hidePromoList();
+    }
+
+    @Override
+    public void showPromoList() {
+        trainPromoView.showPromoList();
     }
 
     @Override

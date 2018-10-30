@@ -130,4 +130,9 @@ class AddTalkFragment : BaseDaggerFragment(),
         KeyboardHandler.hideSoftKeyboard(activity)
         super.onDestroyView()
     }
+                
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }            
 }

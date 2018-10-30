@@ -2,6 +2,8 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -10,6 +12,10 @@ import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,16 +40,31 @@ public class KolModule {
 
     @KolScope
     @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @KolScope
+    @Provides
+    public AnalyticTracker provideAnalyticTracker(AbstractionRouter abstractionRouter) {
+        return abstractionRouter.getAnalyticTracker();
+    }
+
+    @KolScope
+    @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
-                                                        httpLoggingInterceptor,
+                                                    httpLoggingInterceptor,
                                             KolAuthInterceptor kolAuthInterceptor,
                                             @KolQualifier OkHttpRetryPolicy retryPolicy,
-                                            @KolChuckQualifier Interceptor chuckInterceptor) {
+                                            @KolChuckQualifier Interceptor chuckInterceptor,
+                                            @ApplicationContext Context context) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(kolAuthInterceptor);
+                .addInterceptor(kolAuthInterceptor)
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context,
+                        new UserSession(context)));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
@@ -57,7 +78,7 @@ public class KolModule {
     @Provides
     @KolQualifier
     public Retrofit provideKolRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(KolUrl.BASE_URL).client(okHttpClient).build();
     }
 
@@ -86,4 +107,5 @@ public class KolModule {
         }
         throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
     }
+
 }

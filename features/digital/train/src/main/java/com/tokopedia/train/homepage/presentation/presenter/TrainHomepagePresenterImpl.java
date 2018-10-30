@@ -335,22 +335,28 @@ public class TrainHomepagePresenterImpl extends BaseDaggerPresenter<TrainHomepag
 
     @Override
     public void getTrainPromoList() {
-        getTrainPromoUseCase.execute(new Subscriber<List<TrainPromoViewModel>>() {
-            @Override
-            public void onCompleted() {
+        getTrainPromoUseCase.execute(getTrainPromoUseCase.create(),
+                new Subscriber<List<TrainPromoViewModel>>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().hidePromoList();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().hidePromoList();
+                    }
 
-            @Override
-            public void onNext(List<TrainPromoViewModel> trainPromoViewModelList) {
-                getView().renderPromoList(trainPromoViewModelList);
-            }
-        });
+                    @Override
+                    public void onNext(List<TrainPromoViewModel> trainPromoViewModelList) {
+                        if (trainPromoViewModelList.size() > 0) {
+                            getView().showPromoList();
+                            getView().renderPromoList(trainPromoViewModelList);
+                        } else {
+                            getView().hidePromoList();
+                        }
+                    }
+                });
     }
 
     @Override
