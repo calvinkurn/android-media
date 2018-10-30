@@ -80,4 +80,5 @@
     <string name="promo">Promo</string>
     <string name="title_wishlist_pdp">Wishlist</string>
     <string name="button_add_to_affiliate">Tambah ke ByMe</string>
+    <string name="label_atc_open_cart">Lihat</string>
 </resources>

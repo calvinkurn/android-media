@@ -499,7 +499,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             merchantVoucherViewModel.getVoucherId());
                 }*/
                 //TOGGLE_MVC_OFF
-                if (getActivity()!= null) {
+                if (getActivity() != null) {
                     showSnackBarClose(getActivity().getString(R.string.title_voucher_code_copied));
                 }
             }
@@ -544,7 +544,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private void showUseMerchantVoucherLoading(){
+    private void showUseMerchantVoucherLoading() {
         if (loading == null) {
             loading = new ProgressDialog(getActivity());
             loading.setCancelable(false);
@@ -556,7 +556,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         loading.show();
     }
 
-    private void hideUseMerchantVoucherLoading(){
+    private void hideUseMerchantVoucherLoading() {
         if (loading != null) {
             loading.dismiss();
         }
@@ -1041,7 +1041,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showErrorAffiliate(String message) {
         if (getActivity() != null && isFromExploreAffiliate()) {
-            if (TextUtils.isEmpty(message)) message = getActivity().getString(R.string.error_no_connection2);
+            if (TextUtils.isEmpty(message))
+                message = getActivity().getString(R.string.error_no_connection2);
             Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
                     .setAction(
                             getString(R.string.title_try_again),
@@ -1063,7 +1064,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         float weight = 0f;
         try {
             weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())) {
             weight /= 1000;
@@ -2235,7 +2237,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void showSnackbarSuccessAtc(String message) {
-        ToasterNormal.make(getView(), message, ToasterNormal.LENGTH_LONG).show();
+        if (getActivity() != null && getView() != null) {
+            if (TextUtils.isEmpty(message)) {
+                message = getString(R.string.default_request_error_unknown_short);
+            }
+            ToasterNormal.make(getView(), message.replace("\n", " "), BaseToaster.LENGTH_LONG)
+                    .setAction(getString(R.string.label_atc_open_cart), v -> {
+                        if (getActivity().getApplication() != null) {
+                            getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+                                    .getCartIntent(getActivity()));
+                        }
+                    }).show();
+        }
     }
 
     private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {
