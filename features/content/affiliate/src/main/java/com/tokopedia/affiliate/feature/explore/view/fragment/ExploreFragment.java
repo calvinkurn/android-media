@@ -72,7 +72,7 @@ public class ExploreFragment
     private static final int LOGIN_CODE = 13;
 
 
-    private static final int TIME_DEBOUNCE_SECOND = 1;
+    private static final int TIME_DEBOUNCE_MILIS = 500;
 
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
@@ -131,6 +131,7 @@ public class ExploreFragment
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
         searchView.setResetListener(this);
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
@@ -236,13 +237,7 @@ public class ExploreFragment
 
     @Override
     public void onSearchTextChanged(String text) {
-        Observable.just(text).debounce(TIME_DEBOUNCE_SECOND, TimeUnit.SECONDS).subscribe(new Action1<String>() {
-            @Override
-            public void call(String s) {
-                onSearchTextModified(s, false);
-            }
-        });
-//        onSearchTextModified(text, false);
+        onSearchTextModified(text, false);
     }
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
