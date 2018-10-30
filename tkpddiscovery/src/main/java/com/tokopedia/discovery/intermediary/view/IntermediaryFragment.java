@@ -716,7 +716,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public boolean isUserHasLogin() {
-        return userSession.isLoggedIn()
+        return userSession.isLoggedIn();
     }
 
     @Override
@@ -729,7 +729,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public String getUserId() {
-        return userSession.getUserId()
+        return userSession.getUserId();
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
