@@ -3,13 +3,11 @@ package com.tokopedia.profile.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
 
@@ -26,6 +24,7 @@ class ProfileActivity : BaseSimpleActivity() {
         const val EXTRA_PARAM_USER_ID = "user_id"
         const val EXTRA_PARAM_POST_ID = "post_id"
         const val EXTRA_PARAM_AFTER_POST = "after_post"
+        const val EXTRA_PARAM_AFTER_EDIT = "after_edit"
         const val TRUE = "true"
         const val ZERO = "0"
 

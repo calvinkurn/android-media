@@ -64,6 +64,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
+    private var afterEdit: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var resultIntent: Intent? = null
@@ -241,6 +242,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     }
                     .show()
             afterPost = false
+        } else if (afterEdit) {
+            ToasterNormal
+                    .make(view,
+                            getString(R.string.profile_edit_success),
+                            BaseToaster.LENGTH_LONG
+                    )
+                    .setAction(getString(R.string.af_title_ok)) {}
+                    .show()
+            afterEdit = false
         }
     }
 
@@ -469,6 +479,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO).toInt()
             afterPost = TextUtils.equals(
                     it.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
+                    ProfileActivity.TRUE
+            )
+            afterEdit = TextUtils.equals(
+                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
                     ProfileActivity.TRUE
             )
         }
