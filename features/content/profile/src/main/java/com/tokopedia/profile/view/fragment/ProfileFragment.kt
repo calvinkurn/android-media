@@ -434,6 +434,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+
+        if (adapter.data.last() is ProfileHeaderViewModel) {
+            onSwipeRefresh()
+        }
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -484,7 +488,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted)) {
                 recommendationQuota.visibility = View.VISIBLE
                 recommendationQuota.text = affiliatePostQuota.formatted
             } else {
