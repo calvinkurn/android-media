@@ -124,37 +124,66 @@
 
             </FrameLayout>
 
-            <TextView
-                android:id="@+id/tv_buy_now"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/bg_button_buy"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                android:textColor="@color/orange_red"
-                android:textSize="@dimen/sp_12"
-                tools:text="Beli Sekarang" />
+                android:layout_height="@dimen/dp_40"
+                android:background="@drawable/bg_button_buy">
+
+                <TextView
+                    android:id="@+id/tv_buy_now"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    android:textColor="@color/orange_red"
+                    android:textSize="@dimen/sp_12"
+                    android:visibility="invisible"
+                    tools:text="Beli Sekarang" />
+
+                <ProgressBar
+                    android:id="@+id/pb_buy_now"
+                    android:layout_width="19dp"
+                    android:layout_height="19dp"
+                    android:layout_gravity="center"
+                    android:visibility="visible" />
+
+            </FrameLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_add_to_cart"
+        <FrameLayout
             android:layout_width="144dp"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_toEndOf="@id/container_btn"
-            android:layout_toRightOf="@id/container_btn"
-            android:background="@drawable/orange_button_rounded"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_12"
-            tools:text="Tambah Ke Keranjang" />
+            android:background="@drawable/orange_button_rounded">
+
+            <TextView
+                android:id="@+id/tv_add_to_cart"
+                android:layout_width="144dp"
+                android:layout_height="@dimen/dp_40"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_toEndOf="@id/container_btn"
+                android:layout_toRightOf="@id/container_btn"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:text="@string/title_add_to_cart"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/pb_buy_now"
+                style="?android:progressBarStyleInverse"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+        </FrameLayout>
 
     </LinearLayout>
 
