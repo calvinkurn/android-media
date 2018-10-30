@@ -382,14 +382,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorGetOTP(String errorMessage) {
-        if (errorMessage.contains(getString(R.string.limit_otp_reached_many_times))) {
-            tvLimitOtp.setText(errorMessage);
-            limitOtp.setVisibility(View.VISIBLE);
-            setLimitReachedCountdownText();
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
-            setFinishedCountdownText();
-        }
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        setFinishedCountdownText();
+    }
+
+    @Override
+    public void onLimitOTPReached(String errorMessage) {
+        tvLimitOtp.setText(errorMessage);
+        limitOtp.setVisibility(View.VISIBLE);
+        setLimitReachedCountdownText();
     }
 
     @Override

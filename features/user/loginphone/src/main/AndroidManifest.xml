@@ -1,2 +1,38 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.loginphone"/>
+          package="com.tokopedia.loginphone">
+
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".checkphone.view.activity.CheckPhoneNumberActivity"
+            android:label="@string/login"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity
+            android:name=".choosetokocashaccount.view.activity.ChooseTokocashAccountActivity"
+            android:label=""
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".checkphone.view.activity.NotConnectedTokocashActivity"
+            android:label=""
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".verifyotptokocash.view.activity.TokoCashOtpActivity"
+            android:label="@string/title_verify"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
+    </application>
+</manifest>

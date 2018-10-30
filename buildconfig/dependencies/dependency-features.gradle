@@ -41,6 +41,7 @@ ext {
     tkpdSessionVersion = '2.22'
     tkpdShopVersion = '2.22'
     tkpdTalkVersion = '2.22'
+    tkpdLoginPhoneVersion = '2.22'
     tkpdLoginRegisterVersion = '2.22'
     tkpdSessionCommonVersion = '2.22'
     tkpdTokocashVersion = '2.22'
@@ -57,8 +58,9 @@ ext {
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
             attachproduct          : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}",
+            loginphone             : "com.tokopedia.loginphone:loginphone:${tkpdLoginPhoneVersion}",
             loginregister          : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}",
-            sessioncommon          : "com.tokopedia.loginregistercommon:loginregistercommon:${tkpdSessionCommonVersion}",
+            sessioncommon          : "com.tokopedia.sessioncommon:sessioncommon:${tkpdSessionCommonVersion}",
             challenges             : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
             core                   : "com.tokopedia.core:core:${tkpdCoreVersion}",
             digital                : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
@@ -185,7 +187,9 @@ ext {
             checkout               : ":features:transaction:checkout",
             transactiondata        : ":features:transaction:transactiondata",
             transactionanalytics   : ":features:transaction:transactionanalytics",
+
             attachproduct          : ":features:user:attachproduct",
+            loginphone             : ":features:user:loginphone",
             loginregister          : ":features:user:loginregister",
             sessioncommon          : ":features:user:sessioncommon",
             bankdb                 : ":features:user:bankdb",

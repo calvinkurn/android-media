@@ -1,6 +1,7 @@
-package com.tokopedia.loginregister.forbidden.fragment;
+package com.tokopedia.sessioncommon.view.forbidden.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.forbidden.activity.ServiceActivity;
+import com.tokopedia.sessioncommon.R;
+import com.tokopedia.sessioncommon.view.forbidden.activity.ServiceActivity;
 
 /**
  * Created by meyta on 2/22/18.
@@ -31,12 +32,12 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_forbidden, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         TextView title = view.findViewById(R.id.tv_title);
         TextView desc = view.findViewById(R.id.tv_message);
@@ -45,20 +46,10 @@ public class ForbiddenFragment extends TkpdBaseV4Fragment {
         title.setText(MethodChecker.fromHtml(getString(R.string.forbidden_title)));
         desc.setText(MethodChecker.fromHtml(getString(R.string.forbidden_msg)));
 
-        desc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ServiceActivity.startActivity(getActivity(), URL);
-            }
-        });
+        desc.setOnClickListener(v -> ServiceActivity.startActivity(getActivity(), URL));
 
         btnRetry.setText(R.string.forbidden_button);
-        btnRetry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
+        btnRetry.setOnClickListener(v -> getActivity().finish());
 
     }
 

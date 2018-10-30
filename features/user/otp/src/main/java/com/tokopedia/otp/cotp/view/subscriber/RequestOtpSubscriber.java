@@ -3,7 +3,7 @@ package com.tokopedia.otp.cotp.view.subscriber;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
-
+import com.tokopedia.otp.R;
 import rx.Subscriber;
 
 /**
@@ -27,7 +27,13 @@ public class RequestOtpSubscriber extends Subscriber<RequestOtpViewModel> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorGetOTP(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
+        String errorMessage = OtpErrorHandler.getErrorMessage(e, view.getContext(), true);
+        if(errorMessage.contains(view.getContext().getString(R.string
+                .limit_otp_reached_many_times))){
+            view.onLimitOTPReached(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
+        }else{
+            view.onErrorGetOTP(errorMessage);
+        }
     }
 
     @Override

@@ -40,7 +40,6 @@ import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -64,9 +63,6 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     @Inject
     OTPAnalytics analytics;
-
-    @Inject
-    UserSession userSession;
 
     VerificationMethodAdapter adapter;
     VerificationPassModel passModel;
@@ -156,7 +152,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && passModel != null) {
             analytics.eventClickMethodOtp(passModel.getOtpType(), methodItem.getModeName());
         }
-        if (methodItem.isUsingPopUp()
+        if (methodItem != null
+                && methodItem.isUsingPopUp()
                 && !TextUtils.isEmpty(methodItem.getPopUpHeader())
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);

@@ -24,7 +24,7 @@ public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_UUID = "uuid";
-    private static final String PARAM_DEVICE_ID = "device_id";
+    public static final String PARAM_DEVICE_ID = "device_id";
     private static final String PARAM_HASH = "hash";
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";

@@ -1,11 +1,11 @@
-package com.tokopedia.loginregister.forbidden.activity;
+package com.tokopedia.sessioncommon.view.forbidden.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.loginregister.forbidden.fragment.ServiceFragment;
+import com.tokopedia.sessioncommon.view.forbidden.fragment.ServiceFragment;
 
 /**
  * Created by nakama on 28/02/18.

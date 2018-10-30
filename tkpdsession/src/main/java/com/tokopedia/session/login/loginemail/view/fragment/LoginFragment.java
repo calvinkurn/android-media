@@ -91,7 +91,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 /**
  * @author by nisie on 12/18/17.
  */
-
+@Deprecated
 public class LoginFragment extends BaseDaggerFragment
         implements Login.View {
 

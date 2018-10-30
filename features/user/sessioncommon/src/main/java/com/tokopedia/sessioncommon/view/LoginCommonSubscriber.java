@@ -16,7 +16,7 @@ import rx.Subscriber;
  * @author by nisie on 12/19/17.
  */
 
-public class LoginCommonSubscriber<T> extends Subscriber<LoginEmailDomain> {
+public abstract class LoginCommonSubscriber<T> extends Subscriber<T> {
     private static final String NOT_ACTIVATED = "belum diaktivasi";
     protected final LoginSuccessRouter router;
     protected final String email;
@@ -70,7 +70,17 @@ public class LoginCommonSubscriber<T> extends Subscriber<LoginEmailDomain> {
     }
 
     @Override
-    public void onNext(LoginEmailDomain loginEmailDomain) {
+    public void onNext(T result) {
+        if (canRouteLogin(result)) {
+            routeLogin((LoginEmailDomain) result);
+        }
+    }
+
+    protected boolean canRouteLogin(T result) {
+        return result != null;
+    }
+
+    protected void routeLogin(LoginEmailDomain loginEmailDomain) {
         if (isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
             goToSecurityQuestion(loginEmailDomain);
         } else if (isGoToCreatePassword(loginEmailDomain)) {

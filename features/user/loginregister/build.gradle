@@ -17,6 +17,7 @@ buildscript {
 }
 
 dependencies {
+    //google login
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.plus
 
@@ -49,4 +50,6 @@ dependencies {
 
     //test
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+
 }

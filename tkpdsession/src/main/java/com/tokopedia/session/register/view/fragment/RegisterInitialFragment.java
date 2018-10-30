@@ -90,7 +90,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 /**
  * @author by nisie on 10/10/17.
  */
-
+@Deprecated
 public class RegisterInitialFragment extends BaseDaggerFragment
         implements RegisterInitial.View {
 
