@@ -1,11 +1,8 @@
 package com.tokopedia.flight.searchV2.data.repository
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
-import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
+import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.searchV2.data.api.single.response.Meta
-import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.db.*
 import com.tokopedia.flight.searchV2.data.repository.mapper.FlightSearchMapper
 import com.tokopedia.flight.searchV2.data.repository.util.createFlightDataResponse
@@ -42,9 +39,6 @@ class FlightSearchRepositoryTest {
     @Mock
     private lateinit var flightSearchDataCloudSource: FlightSearchDataCloudSource
 
-    @Mock
-    private lateinit var flightAirportDataListDBSource: FlightAirportDataListDBSource
-
     @Before
     fun setup() {
         flightSearchRepository = FlightSearchRepository(
@@ -53,14 +47,6 @@ class FlightSearchRepositoryTest {
                 flightSearchCombinedDataDbSource,
                 flightSearchSingleDataDbSource,
                 FlightSearchMapper())
-
-        `when`(flightAirportDataListDBSource.getAirport(Matchers.anyString())).thenReturn(
-                Observable.just(FlightAirportDB())
-        )
-
-        val flightAirlineDB = FlightAirlineDB()
-        flightAirlineDB.id = "JT"
-        flightAirlineDB.logo = "Logo Lion Air"
     }
 
     @Test

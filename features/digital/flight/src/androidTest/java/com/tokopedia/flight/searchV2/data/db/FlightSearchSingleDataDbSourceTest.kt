@@ -3,14 +3,12 @@ package com.tokopedia.flight.searchV2.data.db
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
-import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV2.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.util.createRoutes
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -18,11 +16,7 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import rx.Observable
 import rx.observers.TestSubscriber
 import java.io.IOException
 
@@ -37,9 +31,6 @@ class FlightSearchSingleDataDbSourceTest {
     private lateinit var flightJourneyDao: FlightJourneyDao
     private lateinit var flightRouteDao: FlightRouteDao
 
-    @Mock
-    private lateinit var flightAirportDataListDBSource: FlightAirportDataListDBSource
-
     private lateinit var flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource
 
     @Before
@@ -49,11 +40,7 @@ class FlightSearchSingleDataDbSourceTest {
         flightSearchRoomDb = Room.inMemoryDatabaseBuilder(context, FlightSearchRoomDb::class.java).build()
         flightJourneyDao = flightSearchRoomDb.flightJourneyDao()
         flightRouteDao = flightSearchRoomDb.flightRouteDao()
-        flightSearchSingleDataDbSource = FlightSearchSingleDataDbSource(flightJourneyDao, flightRouteDao,
-                flightAirportDataListDBSource)
-
-        `when`(flightAirportDataListDBSource.getAirport(Mockito.anyString()))
-                .thenReturn(Observable.just(FlightAirportDB()))
+        flightSearchSingleDataDbSource = FlightSearchSingleDataDbSource(flightJourneyDao, flightRouteDao)
     }
 
     @Test

@@ -1,14 +1,13 @@
 package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
-import android.util.Log
 import com.tokopedia.flight.searchV2.constant.FlightSortOption
-import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportViewModel
+import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import rx.Observable
 import javax.inject.Inject
 
@@ -127,8 +126,6 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
         val simpleSQLiteQuery = SimpleSQLiteQuery(sqlStringBuilder.toString())
 
-        Log.d("FlightSearchCount: ", simpleSQLiteQuery.sql.toString())
-
         return simpleSQLiteQuery
     }
 
@@ -211,7 +208,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                         DepartureTimeEnum._00 -> "FlightJourneyTable.departureTimeInt BETWEEN 0 AND 599 "
                         DepartureTimeEnum._06 -> "FlightJourneyTable.departureTimeInt BETWEEN 600 AND 1200 "
                         DepartureTimeEnum._12 -> "FlightJourneyTable.departureTimeInt BETWEEN 1200 AND 1800 "
-                        DepartureTimeEnum._18 -> "FlightJourneyTable.departureTimeInt BETWEEN 1800 AND 2400 "
+                        DepartureTimeEnum._18 ->  "FlightJourneyTable.departureTimeInt BETWEEN 1800 AND 2400"
                     }
             )
             if (i < departureTimeEnumList.size-1) {
