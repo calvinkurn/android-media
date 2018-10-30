@@ -85,6 +85,8 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
 
+    private boolean isCanDoAction;
+
     @Inject
     UserSession userSession;
 
@@ -277,24 +279,30 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
-        if (userSession.isLoggedIn()) {
-            presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
-        } else {
-            startActivityForResult(
-                    RouteManager.getIntent(
-                            getContext(),
-                            ApplinkConst.LOGIN
-                    ),
-                    LOGIN_CODE);
+        if (isCanDoAction) {
+            isCanDoAction = false;
+            if (userSession.isLoggedIn()) {
+                presenter.checkIsAffiliate(model.getProductId(), model.getAdId());
+            } else {
+                startActivityForResult(
+                        RouteManager.getIntent(
+                                getContext(),
+                                ApplinkConst.LOGIN
+                        ),
+                        LOGIN_CODE);
+            }
         }
     }
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
-        RouteManager.route(
-                getContext(),
-                ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
-        );
+        if (isCanDoAction) {
+            isCanDoAction = false;
+            RouteManager.route(
+                    getContext(),
+                    ApplinkConst.AFFILIATE_PRODUCT.replace(PRODUCT_ID_PARAM, model.getProductId())
+            );
+        }
     }
 
     @Override
@@ -448,6 +456,12 @@ public class ExploreFragment
         searchView.getSearchTextView().setText(keyword);
         onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isCanDoAction = true;
     }
 
     @Override
