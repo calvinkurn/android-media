@@ -38,7 +38,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public View btnChat;
     public View btnByMe;
     private TextView tvBuyNow;
-    private TextView tvAddToCart;
+    public TextView tvAddToCart;
 
     public ButtonBuyView(Context context) {
         super(context);

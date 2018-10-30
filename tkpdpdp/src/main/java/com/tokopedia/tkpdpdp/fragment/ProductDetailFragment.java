@@ -2362,7 +2362,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
-                buttonBuyView.btnCart,
+                buttonBuyView.tvAddToCart,
                 getResources().getString(R.string.title_show_case_pdp),
                 getResources().getString(R.string.desc_show_case_pdp),
                 ShowCaseContentPosition.TOP,
