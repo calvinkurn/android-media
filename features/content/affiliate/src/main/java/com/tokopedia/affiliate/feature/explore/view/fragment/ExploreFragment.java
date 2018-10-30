@@ -242,8 +242,7 @@ public class ExploreFragment
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
         if (TextUtils.isEmpty(text)) {
-            autoCompleteAdapter.clearAdapter();
-            autoCompleteLayout.setVisibility(View.GONE);
+            onSearchReset();
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
             if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
