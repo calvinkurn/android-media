@@ -2233,16 +2233,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
-        showSnackbarSuccessAtc(addToCartResult.getMessage());
+        showSnackbarSuccessAtc(addToCartResult.getMessage(), String.valueOf(productData.getInfo().getProductId()));
     }
 
-    private void showSnackbarSuccessAtc(String message) {
+    private void showSnackbarSuccessAtc(String message, String productId) {
         if (getActivity() != null && getView() != null) {
             if (TextUtils.isEmpty(message)) {
                 message = getString(R.string.default_request_error_unknown_short);
             }
             ToasterNormal.make(getView(), message.replace("\n", " "), BaseToaster.LENGTH_LONG)
                     .setAction(getActivity().getString(R.string.label_atc_open_cart), v -> {
+                        checkoutAnalyticsAddToCart.eventAtcClickLihat(productId);
                         Intent intent = ((PdpRouter) getActivity().getApplicationContext())
                                 .getCartIntent(getActivity());
                         startActivity(intent);
