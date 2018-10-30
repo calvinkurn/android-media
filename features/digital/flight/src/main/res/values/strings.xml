@@ -465,5 +465,5 @@
     <string name="flight_search_choose_best_pairing_dialog_description"><![CDATA[Dengan memilih kombinasi Best Pairing, harga penerbangan pergi Anda berubah dari <b>%1$s</b> menjadi <font color="#ff5722">%2$s</font>.]]></string>
     <string name="flight_search_best_pairing_label">Lihat Penerbangan Best Pairing</string>
     <string name="flight_search_return_dialog_abort">Batal</string>
-    <string name="flight_cancellation_reason_title">Alasan Pembatalan</string>
+    <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
 </resources>

@@ -3,13 +3,16 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationReasonAdapterTypeFactory;
+
 import java.util.List;
 
 /**
  * @author by furqan on 26/10/18.
  */
 
-public class FlightCancellationReasonViewModel implements Parcelable {
+public class FlightCancellationReasonViewModel implements Parcelable, Visitable<FlightCancellationReasonAdapterTypeFactory> {
 
     private String id;
     private String detail;
@@ -71,5 +74,10 @@ public class FlightCancellationReasonViewModel implements Parcelable {
 
     public void setRequiredDocs(List<String> requiredDocs) {
         this.requiredDocs = requiredDocs;
+    }
+
+    @Override
+    public int type(FlightCancellationReasonAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 }

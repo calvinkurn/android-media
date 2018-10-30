@@ -21,14 +21,17 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachmentTypeFactory;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
@@ -46,18 +49,22 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private static final String EXTRA_ATTACHMENT_VIEW_MODEL = "EXTRA_ATTACHMENT_VIEW_MODEL";
     private static final String EXTRA_IMAGE_LOCAL = "EXTRA_IMAGE_LOCAL";
     private static final int REQUEST_CODE_IMAGE = 1001;
+    private static final int CHOOSE_REASON_REQUEST_CODE = 1111;
     private ProgressBar progressBar;
 
     private LinearLayout container;
     private AppCompatEditText etReason;
     private RecyclerView rvAttachments;
     private AppCompatButton btnNext;
+    private EditTextCompat tvChooseReason;
 
     private List<FlightCancellationAttachmentViewModel> attachments;
     private FlightCancellationAttachmentAdapter adapter;
     private FlightCancellationWrapperViewModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
     private String fileFromCameraLocTemp;
+
+    private FlightCancellationReasonViewModel selectedReason;
 
     @Inject
     FlightCancellationReasonAndProofPresenter presenter;
@@ -116,6 +123,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     private void buildView(View view) {
+        tvChooseReason = view.findViewById(R.id.et_saved_passenger);
+
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         container = (LinearLayout) view.findViewById(R.id.container);
         etReason = (AppCompatEditText) view.findViewById(R.id.et_reason);
@@ -133,6 +142,15 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 presenter.onNextButtonClicked();
+            }
+        });
+
+        tvChooseReason.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(FlightCancellationChooseReasonActivity.createIntent(getContext(), selectedReason),
+                        CHOOSE_REASON_REQUEST_CODE);
+                getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
             }
         });
     }
@@ -272,6 +290,9 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             if (!TextUtils.isEmpty(imagePath)) {
                 presenter.onSuccessGetImage(imagePath);
             }
+        } else if (requestCode == CHOOSE_REASON_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            selectedReason = data.getParcelableExtra(FlightCancellationChooseReasonFragment.EXTRA_SELECTED_REASON);
+            renderSelectedReason();
         }
     }
 
@@ -297,5 +318,9 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         super.onResume();
         etReason.clearFocus();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+    }
+
+    private void renderSelectedReason() {
+        tvChooseReason.setText(selectedReason.getDetail());
     }
 }
