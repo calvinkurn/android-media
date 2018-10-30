@@ -1,8 +1,9 @@
 package com.tokopedia.flight.search.data.db;
 
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
-import com.tokopedia.flight.search.data.db.model.FlightSearchReturnRouteDB;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight.searchV2.data.db.mapper.FlightSearchDataMapper;
+import com.tokopedia.flight_dbflow.FlightSearchReturnRouteDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 
 import javax.inject.Inject;
 
@@ -23,7 +24,8 @@ public class FlightSearchReturnDataDBSource extends AbsFlightSearchDataDBSource 
 
     @Override
     protected void insertSingleFlightData(FlightSearchData flightSearchData) {
-        FlightSearchReturnRouteDB flightSearchReturnRouteDB = new FlightSearchReturnRouteDB(flightSearchData);
+        FlightSearchDataMapper flightSearchDataMapper = new FlightSearchDataMapper();
+        FlightSearchReturnRouteDB flightSearchReturnRouteDB = flightSearchDataMapper.mapToFlightSearchReturnRouteDB(flightSearchData);
         flightSearchReturnRouteDB.insert();
     }
 }

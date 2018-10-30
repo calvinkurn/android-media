@@ -26,6 +26,7 @@ public class ShipmentDetailData implements Parcelable {
     private String dropshipperPhone;
     private boolean dropshipperNameValid;
     private boolean dropshipperPhoneValid;
+    private boolean courierPromoApplied;
     private String shopId;
     private List<ShippingCourierViewModel> shippingCourierViewModels;
 
@@ -48,6 +49,7 @@ public class ShipmentDetailData implements Parcelable {
         dropshipperPhone = in.readString();
         dropshipperNameValid = in.readByte() != 0;
         dropshipperPhoneValid = in.readByte() != 0;
+        courierPromoApplied = in.readByte() != 0;
         shopId = in.readString();
         shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
     }
@@ -184,6 +186,14 @@ public class ShipmentDetailData implements Parcelable {
         this.shippingCourierViewModels = shippingCourierViewModels;
     }
 
+    public boolean isCourierPromoApplied() {
+        return courierPromoApplied;
+    }
+
+    public void setCourierPromoApplied(boolean courierPromoApplied) {
+        this.courierPromoApplied = courierPromoApplied;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -204,6 +214,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(dropshipperPhone);
         dest.writeByte((byte) (dropshipperNameValid ? 1 : 0));
         dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
+        dest.writeByte((byte) (courierPromoApplied ? 1 : 0));
         dest.writeString(shopId);
         dest.writeTypedList(shippingCourierViewModels);
     }

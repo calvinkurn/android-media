@@ -41,10 +41,10 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
+import com.tokopedia.flight_dbflow.TkpdFlight;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
-import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -187,6 +187,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void generateConsumerAppBaseUrl() {
         TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
+        InstantLoanUrl.BaseUrl.WEB_DOMAIN= ConsumerAppBaseUrl.BASE_INSTANT_LOAN_URL;
         TkpdBaseURL.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -227,6 +228,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AbstractionBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
+        FlightUrl.CONTACT_US_FLIGHT = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_HOME_PREFIX;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
         TransactionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -255,6 +257,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FingerprintConstantRegister.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         FingerprintConstantRegister.TOP_PAY_DOMAIN = ConsumerAppBaseUrl.TOP_PAY_DOMAIN;
         OmsUrl.OMS_DOMAIN = ConsumerAppBaseUrl.OMS_DOMAIN;
+        EventsUrl.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
         DealsUrl.DEALS_DOMAIN = ConsumerAppBaseUrl.DEALS_DOMAIN;
         LogisticDataConstantUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_GQL;
