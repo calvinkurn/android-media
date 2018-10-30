@@ -1,7 +1,10 @@
-package com.tokopedia.flashsale.management.coroutineGraphql
+package com.tokopedia.graphql.coroutines.data.repository
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
+import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
+import com.tokopedia.graphql.coroutines.domain.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,28 +15,23 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 import kotlin.Exception
 
-class GraphqlRepositoryImplKt @Inject constructor(): GraphqlRepositoryKt {
-    private val mGraphqlCloudDataStore: GraphqlCloudDataStoreKt
-    private val mGraphqlCache: GraphqlCacheDataStoreKt
+class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
+                            private val graphqlCacheDataStore: GraphqlCacheDataStore): GraphqlRepository {
 
-    init {
-        mGraphqlCloudDataStore = GraphqlCloudDataStoreKt()
-        mGraphqlCache = GraphqlCacheDataStoreKt()
-    }
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
                 :GraphqlResponse {
         return when(cacheStrategy.type){
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                mGraphqlCloudDataStore.getResponse(requests, cacheStrategy)
+                graphqlCloudDataStore.getResponse(requests, cacheStrategy)
             }
-            CacheType.CACHE_ONLY -> mGraphqlCache.getResponse(requests, cacheStrategy)
+            CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(requests, cacheStrategy)
             else -> {
                 try {
-                    mGraphqlCache.getResponse(requests, cacheStrategy)
+                    graphqlCacheDataStore.getResponse(requests, cacheStrategy)
                 } catch (e: Exception){
                     e.printStackTrace()
-                    mGraphqlCloudDataStore.getResponse(requests, cacheStrategy)
+                    graphqlCloudDataStore.getResponse(requests, cacheStrategy)
                 }
             }
         }.toGraphqlResponse(requests)
