@@ -28,6 +28,7 @@ public interface SessionComponent {
 
     Retrofit.Builder getRetrofitBuilder();
 
+    @Named(SessionModule.SESSION_MODULE)
     UserSessionInterface provideUserSession();
 
     TkpdOldAuthInterceptor provideTkpdAuthInterceptor();

@@ -2,12 +2,14 @@ package com.tokopedia.sessioncommon.domain.usecase;
 
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.domain.mapper.GetUserInfoMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -24,7 +26,8 @@ public class GetUserInfoUseCase extends UseCase<GetUserInfoData> {
     @Inject
     public GetUserInfoUseCase(GetProfileApi sessionCommonApi,
                               GetUserInfoMapper mapper,
-                              UserSessionInterface userSession) {
+                              @Named(SessionModule.SESSION_MODULE)
+                                          UserSessionInterface userSession) {
         this.sessionCommonApi = sessionCommonApi;
         this.mapper = mapper;
         this.userSession = userSession;

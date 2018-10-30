@@ -40,9 +40,11 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by nisie on 1/31/17.
@@ -65,6 +67,7 @@ public class ActivationFragment extends BaseDaggerFragment
     private String email = "";
     private String password = "";
 
+    @Named(SessionModule.SESSION_MODULE)
     @Inject
     UserSessionInterface userSession;
 

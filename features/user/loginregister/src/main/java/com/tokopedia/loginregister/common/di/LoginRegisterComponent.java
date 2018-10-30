@@ -38,6 +38,7 @@ public interface LoginRegisterComponent {
 
     LoginRegisterApi provideLoginRegisterApi();
 
+    @Named(SessionModule.SESSION_MODULE)
     UserSessionInterface provideUserSession();
 
     TkpdOldAuthInterceptor provideTkpdAuthInterceptor();

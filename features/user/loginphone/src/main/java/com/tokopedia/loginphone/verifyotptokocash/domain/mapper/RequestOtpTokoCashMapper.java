@@ -2,6 +2,7 @@ package com.tokopedia.loginphone.verifyotptokocash.domain.mapper;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.common.network.TokoCashErrorException;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.requestotp.RequestOtpTokoCashPojo;
@@ -22,7 +23,7 @@ public class RequestOtpTokoCashMapper implements Func1<Response<DataResponse<Req
     private final Context context;
 
     @Inject
-    public RequestOtpTokoCashMapper(Context context) {
+    public RequestOtpTokoCashMapper(@ApplicationContext Context context) {
         this.context = context;
     }
 

@@ -20,8 +20,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.loginphone.R;
+import com.tokopedia.loginphone.checkphone.di.DaggerCheckPhoneComponent;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.checkphone.view.activity.CheckPhoneNumberActivity;
 import com.tokopedia.loginphone.checkphone.view.activity.NotConnectedTokocashActivity;
@@ -29,6 +32,8 @@ import com.tokopedia.loginphone.checkphone.view.listener.CheckPhoneNumberContrac
 import com.tokopedia.loginphone.checkphone.view.presenter.CheckPhoneNumberPresenter;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
+import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
@@ -73,14 +78,23 @@ public class CheckPhoneNumberFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-//        AppComponent appComponent = getComponent(AppComponent.class);
-//
-//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-//                DaggerSessionComponent.builder()
-//                        .appComponent(appComponent)
-//                        .build();
-//
-//        daggerSessionComponent.inject(this);
+        if (getActivity() != null) {
+
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+
+            LoginRegisterPhoneComponent loginRegisterPhoneComponent =
+                    DaggerLoginRegisterPhoneComponent.builder()
+                            .baseAppComponent(appComponent).build();
+
+            DaggerCheckPhoneComponent daggerCheckPhoneComponent = (DaggerCheckPhoneComponent)
+                    DaggerCheckPhoneComponent.builder()
+                            .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                            .build();
+
+            daggerCheckPhoneComponent.inject(this);
+
+        }
 
     }
 

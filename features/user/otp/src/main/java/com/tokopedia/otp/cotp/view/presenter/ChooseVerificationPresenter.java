@@ -5,7 +5,7 @@ import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -19,10 +19,10 @@ public class ChooseVerificationPresenter extends BaseDaggerPresenter<SelectVerif
         implements SelectVerification.Presenter {
 
     private final GetVerificationMethodListUseCase getVerificationMethodListUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ChooseVerificationPresenter(UserSession userSession,
+    public ChooseVerificationPresenter(UserSessionInterface userSession,
                                        GetVerificationMethodListUseCase
                                                getVerificationMethodListUseCase) {
         this.getVerificationMethodListUseCase = getVerificationMethodListUseCase;

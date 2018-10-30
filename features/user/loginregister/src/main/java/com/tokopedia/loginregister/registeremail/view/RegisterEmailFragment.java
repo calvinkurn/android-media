@@ -42,6 +42,7 @@ import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
@@ -63,6 +64,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -111,6 +113,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Inject
     LoginRegisterAnalytics analytics;
 
+    @Named(SessionModule.SESSION_MODULE)
     @Inject
     UserSessionInterface userSession;
 

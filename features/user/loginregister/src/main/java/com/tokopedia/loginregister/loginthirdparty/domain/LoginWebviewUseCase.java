@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.loginthirdparty.domain;
 
 
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.domain.usecase.GetTokenUseCase;
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoUseCase;
 import com.tokopedia.sessioncommon.domain.usecase.MakeLoginUseCase;
@@ -9,6 +10,7 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -23,7 +25,8 @@ public class LoginWebviewUseCase extends LoginWithSosmedUseCase {
     public LoginWebviewUseCase(GetTokenUseCase getTokenUseCase,
                                GetUserInfoUseCase getUserInfoUseCase,
                                MakeLoginUseCase makeLoginUseCase,
-                               UserSessionInterface userSessionInterface) {
+                               @Named(SessionModule.SESSION_MODULE)
+                                           UserSessionInterface userSessionInterface) {
         super(getTokenUseCase, getUserInfoUseCase, makeLoginUseCase, userSessionInterface);
     }
 

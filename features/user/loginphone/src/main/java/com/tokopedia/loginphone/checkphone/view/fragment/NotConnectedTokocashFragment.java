@@ -11,14 +11,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.loginphone.R;
+import com.tokopedia.loginphone.checkphone.di.DaggerCheckPhoneComponent;
 import com.tokopedia.loginphone.checkphone.view.activity.NotConnectedTokocashActivity;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.data.LoginRegisterPhoneUrl;
+import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
+import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 
@@ -55,7 +60,23 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
 
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+
+            LoginRegisterPhoneComponent loginRegisterPhoneComponent =
+                    DaggerLoginRegisterPhoneComponent.builder()
+                            .baseAppComponent(appComponent).build();
+
+            DaggerCheckPhoneComponent daggerCheckPhoneComponent = (DaggerCheckPhoneComponent)
+                    DaggerCheckPhoneComponent.builder()
+                            .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                            .build();
+
+            daggerCheckPhoneComponent.inject(this);
+
+        }
     }
 
 

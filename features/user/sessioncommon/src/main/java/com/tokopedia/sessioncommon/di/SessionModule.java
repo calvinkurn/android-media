@@ -41,6 +41,9 @@ public class SessionModule {
     public static final String PROFILE = "PROFILE";
     private static final String SESSION_COMMON = "Session";
 
+    public static final String SESSION_MODULE = "Session";
+
+    @Named(SESSION_MODULE)
     @SessionCommonScope
     @Provides
     UserSessionInterface provideUserSession(@ApplicationContext Context context) {
@@ -57,7 +60,7 @@ public class SessionModule {
     @Provides
     TkpdOldAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
                                                       NetworkRouter networkRouter,
-                                                      UserSessionInterface userSession) {
+                                                      @Named(SESSION_MODULE) UserSessionInterface userSession) {
         return new TkpdOldAuthInterceptor(context, networkRouter, userSession);
     }
 
@@ -69,7 +72,7 @@ public class SessionModule {
 
     @SessionCommonScope
     @Provides
-    FingerprintInterceptor provideFingerprintInterceptor(UserSessionInterface userSessionInterface,
+    FingerprintInterceptor provideFingerprintInterceptor(@Named(SESSION_MODULE) UserSessionInterface userSessionInterface,
                                                          NetworkRouter networkRouter) {
         return new FingerprintInterceptor(networkRouter, userSessionInterface);
     }
@@ -77,14 +80,14 @@ public class SessionModule {
     @SessionCommonScope
     @Provides
     BasicInterceptor provideBasicInterceptor(@ApplicationContext Context context,
-                                             UserSessionInterface userSessionInterface,
+                                             @Named(SESSION_MODULE) UserSessionInterface userSessionInterface,
                                              NetworkRouter networkRouter) {
         return new BasicInterceptor(context, networkRouter, userSessionInterface);
     }
 
     @SessionCommonScope
     @Provides
-    AccountsBearerInterceptor provideAccountsBearerInterceptor(UserSessionInterface userSessionInterface) {
+    AccountsBearerInterceptor provideAccountsBearerInterceptor(@Named(SESSION_MODULE) UserSessionInterface userSessionInterface) {
         return new AccountsBearerInterceptor(userSessionInterface);
     }
 

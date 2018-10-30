@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.inject.Named;
+
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -78,7 +80,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     public TkpdAuthInterceptor(Context context,
                                NetworkRouter networkRouter,
-                               UserSessionInterface userSession) {
+                               @Named("Session") UserSessionInterface userSession) {
         this.context = context;
         this.networkRouter = networkRouter;
         this.userSession = userSession;

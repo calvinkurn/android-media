@@ -45,6 +45,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
@@ -66,6 +67,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
@@ -110,6 +112,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Inject
     RegisterInitialPresenter presenter;
 
+    @Named(SessionModule.SESSION_MODULE)
     @Inject
     UserSessionInterface userSession;
 

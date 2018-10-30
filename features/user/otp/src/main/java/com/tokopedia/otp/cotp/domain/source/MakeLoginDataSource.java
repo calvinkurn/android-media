@@ -4,7 +4,7 @@ import com.tokopedia.otp.cotp.data.SQLoginApi;
 import com.tokopedia.otp.cotp.di.CotpScope;
 import com.tokopedia.otp.cotp.domain.mapper.MakeLoginMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.OtpLoginDomain;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class MakeLoginDataSource {
     private final MakeLoginMapper makeLoginMapper;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     public MakeLoginDataSource(@CotpScope SQLoginApi otpLoginApi,

@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 1/5/18.
@@ -16,8 +16,9 @@ public class LoginPhoneNumberAnalytics {
 
     private AnalyticTracker tracker;
 
-    public LoginPhoneNumberAnalytics(Context context) {
-        this.tracker = ((AbstractionRouter) context).getAnalyticTracker();
+    @Inject
+    public LoginPhoneNumberAnalytics(AnalyticTracker tracker) {
+        this.tracker = tracker;
     }
 
     public void eventSuccessLoginPhoneNumber() {
@@ -25,6 +26,12 @@ public class LoginPhoneNumberAnalytics {
                 Category.LOGIN_WITH_PHONE,
                 Action.LOGIN_SUCCESS,
                 Label.TOKOCASH);
+    }
+
+    public static class Screen {
+        public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
+        public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
+        public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
     }
 
     public static class Event {
@@ -65,57 +72,52 @@ public class LoginPhoneNumberAnalytics {
                 ""
         );
     }
+//
+//    public static EventTracking getVerifyTracking(int type) {
+//        return new EventTracking(
+//                Event.EVENT_CLICK_LOGIN,
+//                Category.PHONE_VERIFICATION,
+//                Action.CLICK_ON_VERIFICATION,
+//                getTypeLabel(type)
+//        );
+//    }
+//
+//    private static String getTypeLabel(int type) {
+//        switch (type) {
+//            case VerificationActivity.TYPE_SMS:
+//                return Label.SMS;
+//            case VerificationActivity.TYPE_PHONE_CALL:
+//                return Label.PHONE;
+//            default:
+//                return "";
+//        }
+//    }
+//
+//    public static EventTracking getResendVerificationTracking(int type) {
+//        return new EventTracking(
+//                Event.EVENT_CLICK_LOGIN,
+//                Category.PHONE_VERIFICATION,
+//                Action.CLICK_ON_RESEND_VERIFICATION,
+//                getTypeLabel(type)
+//        );
+//    }
+//
+//    public static EventTracking getSuccessLoginTracking() {
+//        return new EventTracking(
+//                Event.EVENT_CLICK_LOGIN,
+//                Category.LOGIN_WITH_PHONE,
+//                Action.LOGIN_SUCCESS,
+//                Label.TOKOCASH
+//        );
+//    }
+//
+//    public static EventTracking getChooseVerificationMethodTracking(int type) {
+//        return new EventTracking(
+//                Event.EVENT_CLICK_LOGIN,
+//                Category.PHONE_VERIFICATION,
+//                Action.CHANGE_METHOD,
+//                getTypeLabel(type)
+//        );
+//    }
 
-    public static EventTracking getVerifyTracking(int type) {
-        return new EventTracking(
-                Event.EVENT_CLICK_LOGIN,
-                Category.PHONE_VERIFICATION,
-                Action.CLICK_ON_VERIFICATION,
-                getTypeLabel(type)
-        );
-    }
-
-    private static String getTypeLabel(int type) {
-        switch (type) {
-            case VerificationActivity.TYPE_SMS:
-                return Label.SMS;
-            case VerificationActivity.TYPE_PHONE_CALL:
-                return Label.PHONE;
-            default:
-                return "";
-        }
-    }
-
-    public static EventTracking getResendVerificationTracking(int type) {
-        return new EventTracking(
-                Event.EVENT_CLICK_LOGIN,
-                Category.PHONE_VERIFICATION,
-                Action.CLICK_ON_RESEND_VERIFICATION,
-                getTypeLabel(type)
-        );
-    }
-
-    public static EventTracking getSuccessLoginTracking() {
-        return new EventTracking(
-                Event.EVENT_CLICK_LOGIN,
-                Category.LOGIN_WITH_PHONE,
-                Action.LOGIN_SUCCESS,
-                Label.TOKOCASH
-        );
-    }
-
-    public static EventTracking getChooseVerificationMethodTracking(int type) {
-        return new EventTracking(
-                Event.EVENT_CLICK_LOGIN,
-                Category.PHONE_VERIFICATION,
-                Action.CHANGE_METHOD,
-                getTypeLabel(type)
-        );
-    }
-
-    public static class Screen {
-        public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
-        public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
-        public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
-    }
 }

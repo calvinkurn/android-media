@@ -3,6 +3,7 @@ package com.tokopedia.sessioncommon.domain.usecase;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.domain.mapper.MakeLoginMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -12,6 +13,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -37,7 +39,7 @@ public class MakeLoginUseCase extends UseCase<MakeLoginPojo> {
 
     @Inject
     public MakeLoginUseCase(MakeLoginApi api,
-                            UserSessionInterface userSession,
+                            @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSession,
                             MakeLoginMapper mapper) {
         this.api = api;
         this.userSession = userSession;

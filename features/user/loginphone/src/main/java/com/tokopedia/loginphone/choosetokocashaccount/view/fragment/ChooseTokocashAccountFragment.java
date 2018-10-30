@@ -20,7 +20,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
@@ -29,12 +31,15 @@ import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokocashAccountPresenter;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
+import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
+import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
@@ -80,7 +85,23 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
 
+            BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication())
+                    .getBaseAppComponent();
+
+            LoginRegisterPhoneComponent loginRegisterPhoneComponent =
+                    DaggerLoginRegisterPhoneComponent.builder()
+                            .baseAppComponent(appComponent).build();
+
+            DaggerChooseAccountComponent daggerChooseAccountComponent = (DaggerChooseAccountComponent)
+                    DaggerChooseAccountComponent.builder()
+                            .loginRegisterPhoneComponent(loginRegisterPhoneComponent)
+                            .build();
+
+            daggerChooseAccountComponent.inject(this);
+
+        }
     }
 
     @Override

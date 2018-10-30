@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import javax.inject.Inject;
+
 /**
  * @author by milhamj on 04/04/18.
  * Please avoid using this class to get data. Use {@link UserSessionInterface} instead.

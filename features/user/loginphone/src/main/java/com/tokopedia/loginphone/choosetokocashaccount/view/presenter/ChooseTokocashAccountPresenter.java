@@ -5,11 +5,13 @@ import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.domain.LoginPhoneNumberUseCase;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.subscriber.LoginPhoneNumberSubscriber;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author by nisie on 12/4/17.
@@ -24,7 +26,7 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
 
     @Inject
     public ChooseTokocashAccountPresenter(LoginPhoneNumberUseCase loginTokoCashUseCase,
-                                          UserSessionInterface userSessionInterface) {
+                                          @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
         this.loginTokoCashUseCase = loginTokoCashUseCase;
         this.userSessionInterface = userSessionInterface;
     }

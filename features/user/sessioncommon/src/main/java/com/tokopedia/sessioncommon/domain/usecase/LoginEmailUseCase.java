@@ -4,11 +4,13 @@ import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -27,7 +29,7 @@ public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
     public LoginEmailUseCase(GetTokenUseCase getTokenUseCase,
                              GetUserInfoUseCase getUserInfoUseCase,
                              MakeLoginUseCase makeLoginUseCase,
-                             UserSessionInterface userSessionInterface) {
+                             @Named(SessionModule.SESSION_MODULE) UserSessionInterface userSessionInterface) {
         this.getTokenUseCase = getTokenUseCase;
         this.getUserInfoUseCase = getUserInfoUseCase;
         this.makeLoginUseCase = makeLoginUseCase;

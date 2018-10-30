@@ -48,6 +48,7 @@ import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent;
@@ -69,6 +70,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
@@ -126,6 +128,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Inject
     LoginPresenter presenter;
 
+    @Named(SessionModule.SESSION_MODULE)
     @Inject
     UserSessionInterface userSession;
 
