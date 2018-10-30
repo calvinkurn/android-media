@@ -16,7 +16,7 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;

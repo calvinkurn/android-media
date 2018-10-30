@@ -1,9 +1,8 @@
 package com.tokopedia.flight.searchV2.presentation.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight_dbflow.FlightAirlineDB;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.data.api.single.response.Route;
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 
 import java.util.List;
@@ -24,9 +23,9 @@ public class FlightJourneyViewModel implements Visitable<FlightSearchAdapterType
     private String departureTime; //ini waktu berangkat 2018-01-01T14:45:00Z
     private int departureTimeInt; //1450
     private String arrivalAirport;
-    private String arrivalTime;
     private String arrivalAirportName; // merge result
     private String arrivalAirportCity; // merge result
+    private String arrivalTime;
     private int arrivalTimeInt; //1450
     private int totalTransit;
     private int addDayArrival;

@@ -2,7 +2,7 @@ package com.tokopedia.flight.searchV2.data.db;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum;
 
 /**
  * Created by Rizky on 09/10/18.

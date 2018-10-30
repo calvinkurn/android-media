@@ -9,10 +9,9 @@ import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
-import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.constant.FlightSortOption;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchApiRequestModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightDeleteFlightSearchReturnDataUseCase;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchCombinedUseCase;
@@ -29,7 +28,6 @@ import com.tokopedia.flight.searchV2.presentation.model.FlightRouteModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiRequestModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +55,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
 
     private FlightSearchV2UseCase flightSearchV2UseCase;
     private FlightSortAndFilterUseCase flightSortAndFilterUseCase;
-    private FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase;
     private FlightSearchCombinedUseCase flightSearchCombinedUseCase;
     private FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase;
     private FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase;
@@ -68,7 +65,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Inject
     public FlightSearchPresenter(FlightSearchV2UseCase flightSearchV2UseCase,
                                  FlightSortAndFilterUseCase flightSortAndFilterUseCase,
-                                 FlightAirlineHardRefreshUseCase flightAirlineHardRefreshUseCase,
                                  FlightSearchCombinedUseCase flightSearchCombinedUseCase,
                                  FlightDeleteAllFlightSearchDataUseCase flightDeleteAllFlightSearchDataUseCase,
                                  FlightDeleteFlightSearchReturnDataUseCase flightDeleteFlightSearchReturnDataUseCase,
@@ -76,7 +72,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
                                  FlightAnalytics flightAnalytics) {
         this.flightSearchV2UseCase = flightSearchV2UseCase;
         this.flightSortAndFilterUseCase = flightSortAndFilterUseCase;
-        this.flightAirlineHardRefreshUseCase = flightAirlineHardRefreshUseCase;
         this.flightSearchCombinedUseCase = flightSearchCombinedUseCase;
         this.flightDeleteAllFlightSearchDataUseCase = flightDeleteAllFlightSearchDataUseCase;
         this.flightDeleteFlightSearchReturnDataUseCase = flightDeleteFlightSearchReturnDataUseCase;
@@ -86,29 +81,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     }
 
     @Override
-    public void initialize() {
-        if (!getView().isReturning()) {
-            flightAirlineHardRefreshUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                    if (isViewAttached()) {
-                        getView().showGetListError(e);
-                    }
-                }
-
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    getView().setNeedRefreshAirline(false);
-                }
-            });
-        }
-    }
+    public void initialize() {}
 
     @Override
     public void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
@@ -406,7 +379,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
         flightDeleteFlightSearchReturnDataUseCase.unsubscribe();
         flightSearchCombinedUseCase.unsubscribe();
         flightSortAndFilterUseCase.unsubscribe();
-        flightAirlineHardRefreshUseCase.unsubscribe();
         flightSearchV2UseCase.unsubscribe();
 
         super.detachView();

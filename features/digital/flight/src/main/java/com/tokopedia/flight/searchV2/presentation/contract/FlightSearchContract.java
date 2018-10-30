@@ -3,8 +3,8 @@ package com.tokopedia.flight.searchV2.presentation.contract;
 import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.constant.FlightSortOption;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirportCombineModelList;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;

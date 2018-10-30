@@ -13,7 +13,7 @@ import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.passenger.domain.FlightPassengerDeleteAllListUseCase;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 import javax.inject.Inject;

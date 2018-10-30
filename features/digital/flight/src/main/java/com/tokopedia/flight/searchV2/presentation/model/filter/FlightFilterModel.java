@@ -3,10 +3,7 @@ package com.tokopedia.flight.searchV2.presentation.model.filter;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
-import com.tokopedia.flight.search.view.model.filter.TransitEnum;
-import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.searchV2.presentation.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
 import java.util.List;

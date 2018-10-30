@@ -1,6 +1,6 @@
 package com.tokopedia.flight.searchV2.data.repository.util
 
-import com.tokopedia.flight.search.data.cloud.model.response.*
+import com.tokopedia.flight.searchV2.data.api.single.response.*
 import java.util.ArrayList
 
 /**

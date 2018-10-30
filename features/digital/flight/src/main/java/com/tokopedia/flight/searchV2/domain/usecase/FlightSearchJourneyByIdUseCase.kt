@@ -2,10 +2,10 @@ package com.tokopedia.flight.searchV2.domain.usecase
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.flight.search.data.cloud.model.response.Amenity
-import com.tokopedia.flight.search.data.cloud.model.response.Info
-import com.tokopedia.flight.search.data.cloud.model.response.Route
-import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity
+import com.tokopedia.flight.searchV2.data.api.single.response.Amenity
+import com.tokopedia.flight.searchV2.data.api.single.response.Info
+import com.tokopedia.flight.searchV2.data.api.single.response.Route
+import com.tokopedia.flight.searchV2.data.api.single.response.StopDetailEntity
 import com.tokopedia.flight.searchV2.data.db.JourneyAndRoutes
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel

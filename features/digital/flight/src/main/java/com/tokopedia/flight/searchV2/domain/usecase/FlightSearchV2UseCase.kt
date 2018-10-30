@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV2.domain.usecase
 
-import com.tokopedia.flight.search.data.cloud.model.response.Meta
-import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel
+import com.tokopedia.flight.searchV2.data.api.single.response.Meta
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchApiRequestModel
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel
 import com.tokopedia.usecase.RequestParams

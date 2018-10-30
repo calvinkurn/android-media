@@ -5,7 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.util.List;

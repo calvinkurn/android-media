@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
-import com.tokopedia.flight.search.util.DurationUtil;
-import com.tokopedia.flight.search.view.model.Duration;
+import com.tokopedia.flight.searchV2.util.DurationUtil;
+import com.tokopedia.flight.searchV2.presentation.model.Duration;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;

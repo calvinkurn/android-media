@@ -2,7 +2,7 @@ package com.tokopedia.flight.searchV2.data.api.combined;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
-import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
+import com.tokopedia.flight.searchV2.data.api.single.response.FlightDataResponse;
 import com.tokopedia.flight.searchV2.data.api.combined.request.AttributesRequestData;
 import com.tokopedia.flight.searchV2.data.api.combined.request.FlightSearchCombinedRequestData;
 import com.tokopedia.flight.searchV2.data.api.combined.request.RouteRequestData;

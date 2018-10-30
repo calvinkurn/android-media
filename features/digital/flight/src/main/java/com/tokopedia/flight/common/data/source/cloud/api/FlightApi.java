@@ -22,9 +22,8 @@ import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
-import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
-import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
-import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.flight.searchV2.data.api.single.request.FlightSearchSingleRequestData;
+import com.tokopedia.flight.searchV2.data.api.single.response.FlightDataResponse;
 import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.searchV2.data.api.combined.request.FlightSearchCombinedRequestData;
 

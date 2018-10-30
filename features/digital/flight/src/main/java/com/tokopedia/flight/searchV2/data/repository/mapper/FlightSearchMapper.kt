@@ -2,10 +2,10 @@ package com.tokopedia.flight.searchV2.data.repository.mapper
 
 import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.search.data.cloud.model.response.Attributes
-import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
-import com.tokopedia.flight.search.data.cloud.model.response.Route
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.data.api.single.response.Attributes
+import com.tokopedia.flight.searchV2.data.api.single.response.FlightSearchData
+import com.tokopedia.flight.searchV2.data.api.single.response.Route
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.FlightRouteTable

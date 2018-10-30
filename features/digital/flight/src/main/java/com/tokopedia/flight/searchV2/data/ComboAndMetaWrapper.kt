@@ -1,6 +1,6 @@
 package com.tokopedia.flight.searchV2.data
 
-import com.tokopedia.flight.search.data.cloud.model.response.Meta
+import com.tokopedia.flight.searchV2.data.api.single.response.Meta
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 
 /**

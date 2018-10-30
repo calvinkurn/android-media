@@ -32,9 +32,9 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.constant.FlightSortOption;
+import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchFilterActivity;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
@@ -290,9 +290,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightJourneyViewMode
     }
 
     @Override
-    public void loadInitialData() {
-        flightSearchPresenter.initialize();
-    }
+    public void loadInitialData() {}
 
     @Override
     public void loadData(int page) {

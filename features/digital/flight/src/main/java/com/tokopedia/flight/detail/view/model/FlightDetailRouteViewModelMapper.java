@@ -1,8 +1,8 @@
 package com.tokopedia.flight.detail.view.model;
 
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity;
+import com.tokopedia.flight.searchV2.data.api.single.response.Route;
+import com.tokopedia.flight.searchV2.data.api.single.response.StopDetailEntity;
 import com.tokopedia.flight.searchV2.presentation.model.FlightAirlineViewModel;
 
 import java.util.ArrayList;

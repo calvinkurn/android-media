@@ -1,10 +1,10 @@
 package com.tokopedia.flight.searchV2.data.repository
 
-import com.tokopedia.flight.search.constant.FlightSortOption
-import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
-import com.tokopedia.flight.search.data.cloud.model.response.AttributesInc
-import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
-import com.tokopedia.flight.search.data.cloud.model.response.Meta
+import com.tokopedia.flight.searchV2.constant.FlightSortOption
+import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
+import com.tokopedia.flight.searchV2.data.api.single.response.AttributesInc
+import com.tokopedia.flight.searchV2.data.api.single.response.FlightSearchData
+import com.tokopedia.flight.searchV2.data.api.single.response.Meta
 import com.tokopedia.flight.searchV2.data.ComboAndMetaWrapper
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.api.single.response.AttributesAirline
@@ -205,16 +205,12 @@ open class FlightSearchRepository @Inject constructor(
     }
 
     private fun getAirlineById(airlineId: String, included: List<Included<AttributesInc>>): Observable<FlightAirlineViewModel> {
-        val foundAirline = included.find {
-            it.type == "airline" && it.id == airlineId
-        } as Included<AttributesAirline>?
-        val flightAirlineViewModel = if (foundAirline != null) {
-            FlightAirlineViewModel(foundAirline.id, foundAirline.attributes.name,
-                    foundAirline.attributes.shortName, foundAirline.attributes.logo)
-        } else {
-            FlightAirlineViewModel("", "", "", "")
-        }
-        return Observable.just(flightAirlineViewModel)
+        return Observable.from(included)
+                .filter { it.type == "airline" && it.id == airlineId }
+                .map {
+                    FlightAirlineViewModel(it.id, (it.attributes as AttributesAirline).name,
+                            (it.attributes as AttributesAirline).shortName, (it.attributes as AttributesAirline).logo)
+                }
     }
 
     fun deleteFlightSearchReturnData(): Observable<Unit> {

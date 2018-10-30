@@ -5,8 +5,8 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum
-import com.tokopedia.flight.search.view.model.filter.TransitEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV2.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.util.createRoutes

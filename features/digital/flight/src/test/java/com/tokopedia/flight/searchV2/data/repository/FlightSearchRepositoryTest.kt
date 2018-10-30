@@ -3,8 +3,8 @@ package com.tokopedia.flight.searchV2.data.repository
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
-import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
-import com.tokopedia.flight.search.data.cloud.model.response.Meta
+import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
+import com.tokopedia.flight.searchV2.data.api.single.response.Meta
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.db.*
 import com.tokopedia.flight.searchV2.data.repository.mapper.FlightSearchMapper

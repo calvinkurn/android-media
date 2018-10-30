@@ -2,8 +2,8 @@ package com.tokopedia.flight.searchV2.data.db.mapper
 
 import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.data.api.single.response.FlightSearchData
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight_dbflow.FlightSearchReturnRouteDB
 import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB
 

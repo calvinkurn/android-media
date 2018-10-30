@@ -66,7 +66,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 import java.util.ArrayList;

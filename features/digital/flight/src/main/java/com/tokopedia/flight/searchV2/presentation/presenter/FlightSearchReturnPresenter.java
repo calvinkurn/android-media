@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.search.data.cloud.model.response.Route;
+import com.tokopedia.flight.searchV2.data.api.single.response.Route;
 import com.tokopedia.flight.searchV2.domain.usecase.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.flight.searchV2.presentation.contract.FlightSearchReturnContract;
 import com.tokopedia.flight.searchV2.presentation.model.FlightFareViewModel;

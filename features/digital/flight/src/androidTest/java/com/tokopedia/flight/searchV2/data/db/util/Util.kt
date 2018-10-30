@@ -1,6 +1,6 @@
 package com.tokopedia.flight.searchV2.data.db.util
 
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.FlightRouteTable

@@ -2,10 +2,10 @@ package com.tokopedia.flight.searchV2.domain.usecase
 
 import android.text.TextUtils
 import android.util.SparseIntArray
-import com.tokopedia.flight.search.constant.FlightSortOption
-import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.view.model.filter.TransitEnum
-import com.tokopedia.flight.search.view.model.resultstatistics.*
+import com.tokopedia.flight.searchV2.constant.FlightSortOption
+import com.tokopedia.flight.searchV2.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV2.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV2.presentation.model.resultstatistics.*
 import com.tokopedia.flight.searchV2.data.db.JourneyAndRoutes
 import com.tokopedia.flight.searchV2.data.repository.FlightSearchRepository
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
