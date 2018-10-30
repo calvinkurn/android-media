@@ -30,7 +30,7 @@ public final class RetryObservable implements Func1<Observable<? extends Throwab
         return attempts.flatMap((Func1<Throwable, Observable<?>>) throwable -> {
             if (++retryCount <= maxRetries) {
                 Log.d(logTag, "retry " + retryCount + " " + delay * retryCount);
-                return Observable.timer(delay * retryCount, TimeUnit.SECONDS);
+                return Observable.timer(delay * retryCount, TimeUnit.MILLISECONDS);
             } else {
                 return Observable.error(throwable);
             }

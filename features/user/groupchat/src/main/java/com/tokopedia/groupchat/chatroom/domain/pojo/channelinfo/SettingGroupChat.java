@@ -13,7 +13,7 @@ public class SettingGroupChat implements Parcelable{
 
     public static final int DEFAULT_PING = 10000;
     public static final int DEFAULT_MAX_RETRIES = 3;
-    public static final int DEFAULT_DELAY = 5;
+    public static final int DEFAULT_DELAY = 5000;
 
     @SerializedName("ping_interval")
     @Expose

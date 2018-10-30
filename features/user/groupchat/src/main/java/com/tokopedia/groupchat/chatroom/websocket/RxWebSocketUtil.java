@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
 public class RxWebSocketUtil {
     private static final int DEFAULT_PING = 10000;
     private static final int DEFAULT_MAX_RETRIES = 3;
-    private static final int DEFAULT_DELAY = 5;
+    private static final int DEFAULT_DELAY = 5000;
     private static RxWebSocketUtil instance;
     private int delay;
     private int maxRetries;
