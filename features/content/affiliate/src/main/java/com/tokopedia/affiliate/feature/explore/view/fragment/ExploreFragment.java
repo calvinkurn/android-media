@@ -44,8 +44,13 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -65,6 +70,9 @@ public class ExploreFragment
     private static final int IMAGE_SPAN_COUNT = 2;
     private static final int SINGLE_SPAN_COUNT = 1;
     private static final int LOGIN_CODE = 13;
+
+
+    private static final int TIME_DEBOUNCE_MILIS = 500;
 
     private RecyclerView rvExplore, rvAutoComplete;
     private GridLayoutManager layoutManager;
@@ -123,6 +131,7 @@ public class ExploreFragment
         exploreParams = new ExploreParams();
         swipeRefreshLayout.setOnRefreshListener(this);
         searchView.setListener(this);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
         searchView.setResetListener(this);
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
@@ -233,12 +242,11 @@ public class ExploreFragment
 
     private void onSearchTextModified(String text, boolean isFromAutoComplete) {
         if (TextUtils.isEmpty(text)) {
-            autoCompleteAdapter.clearAdapter();
-            autoCompleteLayout.setVisibility(View.GONE);
+            onSearchReset();
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
+            if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
         }
-        if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
     }
 
     @Override
@@ -416,6 +424,7 @@ public class ExploreFragment
     public void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList) {
         if (autoCompleteLayout.getVisibility() == View.GONE)
             autoCompleteLayout.setVisibility(View.VISIBLE);
+        searchView.setDelayTextChanged(TIME_DEBOUNCE_MILIS);
         rvAutoComplete.setLayoutManager(new LinearLayoutManager(getActivity()));
         autoCompleteAdapter = new AutoCompleteSearchAdapter(this, modelList);
         rvAutoComplete.setAdapter(autoCompleteAdapter);
@@ -435,6 +444,7 @@ public class ExploreFragment
     }
 
     private void clearAutoCompleteAdapter(String keyword) {
+        searchView.setDelayTextChanged(0);
         searchView.getSearchTextView().setText(keyword);
         onSearchTextModified(keyword, true);
         autoCompleteAdapter.clearAdapter();
