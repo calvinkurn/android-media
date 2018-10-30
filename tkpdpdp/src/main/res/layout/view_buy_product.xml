@@ -68,25 +68,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:orientation="horizontal"
         android:paddingBottom="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8"
-        android:orientation="horizontal"
-        tools:visibility="visible"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <LinearLayout
             android:id="@+id/container_btn"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <FrameLayout
-                android:visibility="gone"
                 android:id="@+id/action_button_by_me"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -95,7 +94,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/white_button_rounded"
-                android:padding="@dimen/dp_4">
+                android:padding="@dimen/dp_4"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -125,10 +125,10 @@
             </FrameLayout>
 
             <TextView
-                android:layout_weight="1"
                 android:id="@+id/tv_buy_now"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:background="@drawable/bg_button_buy"
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_8"
@@ -155,43 +155,6 @@
             android:textColor="@color/white"
             android:textSize="@dimen/sp_12"
             tools:text="Tambah Ke Keranjang" />
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/container_new_button_buy"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_toEndOf="@id/container_btn"
-            android:layout_toRightOf="@id/container_btn"
-            android:background="@drawable/orange_button_rounded"
-            android:gravity="center_vertical|center_horizontal"
-            android:orientation="horizontal">
-
-            <ProgressBar
-                android:id="@+id/new_variant_progress_bar"
-                style="?android:attr/progressBarStyleInverse"
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_new_buy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:lineSpacingExtra="6sp"
-                android:textColor="@color/href_link_rev"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="normal"
-                tools:text="Tambah Ke Keranjang" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

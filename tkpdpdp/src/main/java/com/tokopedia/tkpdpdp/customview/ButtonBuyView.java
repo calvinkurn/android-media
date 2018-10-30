@@ -2,8 +2,6 @@ package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -12,17 +10,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
@@ -78,7 +74,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         tvBuy = findViewById(R.id.tv_buy);
         tvPromoTopAds = findViewById(R.id.tv_promote_topads);
         tvpPromoHour = findViewById(R.id.tv_promo_hour);
-        containerButtonBuy =  findViewById(R.id.container_btn_buy);
+        containerButtonBuy = findViewById(R.id.container_btn_buy);
         variantProgressBar = findViewById(R.id.variant_progress_bar);
         containerNewButtonBuy = findViewById(R.id.container_new_checkout_flow);
         btnChat = findViewById(R.id.action_button_chat);
@@ -92,7 +88,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         if (data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_warehouse));
             tvBuy.setEnabled(false);
             containerButtonBuy.setEnabled(false);
@@ -264,7 +260,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             containerButtonBuy.setVisibility(VISIBLE);
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_warehouse));
             tvBuy.setEnabled(false);
             containerButtonBuy.setEnabled(false);
@@ -274,7 +270,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             containerButtonBuy.setVisibility(VISIBLE);
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -303,15 +299,17 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    public void showByMeButton(boolean show){
-        if (show){
+    public void showByMeButton(boolean show) {
+        if (show) {
             btnByMe.setVisibility(VISIBLE);
-        } else{
+            tvBuyNow.setText(getContext().getString(R.string.title_buy_now_simple));
+        } else {
             btnByMe.setVisibility(GONE);
+            tvBuyNow.setText(getContext().getString(R.string.title_buy_now));
         }
     }
 
-    public void setByMeButtonListener(AffiliateInfoViewModel affiliate){
+    public void setByMeButtonListener(AffiliateInfoViewModel affiliate) {
         btnByMe.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
