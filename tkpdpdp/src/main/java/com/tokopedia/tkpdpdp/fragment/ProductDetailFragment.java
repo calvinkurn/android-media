@@ -880,7 +880,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onCourierClicked(@NonNull String productId,
                                  @Nullable ArrayList<CourierViewData> arrayList) {
-        startActivity(CourierActivity.createIntent(getActivity(), arrayList));
+        startActivity(CourierActivity.createIntent(getActivity(), productId, arrayList));
         getActivity().overridePendingTransition(0, 0);
 
     }
