@@ -181,7 +181,6 @@ public class CheckPhoneNumberFragment extends BaseDaggerFragment
         startActivityForResult(TokoCashOtpActivity.getCallingIntent(
                 getActivity(),
                 phoneNumber,
-                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
                 true,
                 RequestOtpUseCase.MODE_SMS
         ), REQUEST_VERIFY_PHONE);
