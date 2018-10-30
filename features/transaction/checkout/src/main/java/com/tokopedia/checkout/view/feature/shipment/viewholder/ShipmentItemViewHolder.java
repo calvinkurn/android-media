@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -988,6 +989,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             final CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 llInsurance.setVisibility(View.VISIBLE);
+                llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
                 tvLabelInsurance.setText(R.string.label_must_insurance);
                 cbInsurance.setVisibility(View.GONE);
@@ -1002,6 +1004,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_NO) {
                 cbInsurance.setChecked(false);
                 llInsurance.setVisibility(View.GONE);
+                llInsurance.setBackground(null);
                 llInsurance.setOnClickListener(null);
                 shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
             } else if (courierItemData.getInsuranceType() == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
@@ -1009,6 +1012,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 llInsurance.setVisibility(View.VISIBLE);
                 cbInsuranceDisabled.setVisibility(View.GONE);
                 cbInsurance.setVisibility(View.VISIBLE);
+                TypedValue outValue = new TypedValue();
+                llInsurance.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+                llInsurance.setBackgroundResource(outValue.resourceId);
                 llInsurance.setOnClickListener(getInsuranceClickListener());
                 if (useInsurance == null) {
                     if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
