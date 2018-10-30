@@ -5,10 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
-import com.tokopedia.loginphone.choosetokocashaccount.data.LoginTokoCashViewModel;
+import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 12/4/17.
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public interface ChooseTokocashAccountContract {
     interface View extends CustomerView {
 
-        void onSuccessLogin();
+        void onSuccessLogin(String userId);
 
         void showLoadingProgress();
 
@@ -29,14 +30,14 @@ public interface ChooseTokocashAccountContract {
     }
 
     public interface ViewAdapter {
-        void onSelectedTokocashAccount(AccountTokocash accountTokocash);
+        void onSelectedTokocashAccount(UserDetail accountTokocash);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loginWithTokocash(String accessToken, AccountTokocash accountTokocash);
+        void loginWithTokocash(String key, UserDetail accountTokocash);
 
-        void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list);
+        void checkAutoLogin(String key, int itemCount, List<UserDetail> list);
 
     }
 }

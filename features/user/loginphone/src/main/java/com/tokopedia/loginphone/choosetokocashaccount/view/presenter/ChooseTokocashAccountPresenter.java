@@ -5,10 +5,12 @@ import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.domain.LoginPhoneNumberUseCase;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
 import com.tokopedia.loginphone.choosetokocashaccount.view.subscriber.LoginPhoneNumberSubscriber;
+import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,12 +40,12 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void loginWithTokocash(String key, AccountTokocash accountTokocash) {
+    public void loginWithTokocash(String key, UserDetail accountTokocash) {
         getView().showLoadingProgress();
         loginTokoCashUseCase.execute(LoginPhoneNumberUseCase.getParam(
                 key,
                 accountTokocash.getEmail(),
-                String.valueOf(accountTokocash.getUserId()),
+                String.valueOf(accountTokocash.getTkpdUserId()),
                 userSessionInterface.getDeviceId()
         ), new LoginPhoneNumberSubscriber(getView().getContext(),
                 getView().getLoginRouter(),
@@ -51,9 +53,9 @@ public class ChooseTokocashAccountPresenter extends BaseDaggerPresenter<ChooseTo
     }
 
     @Override
-    public void checkAutoLogin(String key, int itemCount, ArrayList<AccountTokocash> list) {
+    public void checkAutoLogin(String key, int itemCount, List<UserDetail> list) {
         if (itemCount == ONLY_ONE) {
-            AccountTokocash accountTokocash = list.get(0);
+            UserDetail accountTokocash = list.get(0);
             loginWithTokocash(key, accountTokocash);
         }
     }

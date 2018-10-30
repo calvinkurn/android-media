@@ -58,5 +58,6 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
     <string name="action_logout">Keluar</string>
+    <string name="success_get_otp">Berhasil mengirim OTP</string>
 
 </resources>

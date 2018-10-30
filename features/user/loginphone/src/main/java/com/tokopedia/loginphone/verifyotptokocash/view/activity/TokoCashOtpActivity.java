@@ -1,5 +1,7 @@
 package com.tokopedia.loginphone.verifyotptokocash.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -64,5 +66,42 @@ public class TokoCashOtpActivity extends VerificationActivity {
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void goToSelectVerificationMethod() {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                ChooseTokocashVerificationMethodFragment)) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment fragment = ChooseTokocashVerificationMethodFragment.createInstance(getIntent().getExtras());
+            fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
+    }
+
+    /**
+     * @param context            either activity context or fragment context
+     * @param phoneNumber        user phone number
+     * @param canUseOtherMethod  set true if user can use other method for otp.
+     * @param defaultRequestMode default mode (sms/etc).Use MODE from@see{@link RequestOtpUseCase}.
+     * @return Intent
+     */
+    public static Intent getCallingIntent(Context context, String phoneNumber,
+                                          boolean canUseOtherMethod,
+                                          String defaultRequestMode) {
+        VerificationPassModel passModel = new VerificationPassModel(phoneNumber,
+                RequestOtpUseCase.OTP_TYPE_TOKOCASH,
+                canUseOtherMethod);
+
+        Intent intent = new Intent(context, TokoCashOtpActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PASS_MODEL, passModel);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, defaultRequestMode);
+        bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
+        intent.putExtras(bundle);
+        return intent;
     }
 }

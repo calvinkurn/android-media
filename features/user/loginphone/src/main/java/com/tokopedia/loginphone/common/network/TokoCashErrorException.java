@@ -9,4 +9,8 @@ public class TokoCashErrorException extends RuntimeException {
     public TokoCashErrorException(String errorMessage) {
         this.errorMessage = errorMessage;
     }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 }

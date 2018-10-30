@@ -1,10 +1,13 @@
 
 package com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class UserDetail {
+public class UserDetail implements Parcelable{
 
     @SerializedName("name")
     @Expose
@@ -18,6 +21,25 @@ public class UserDetail {
     @SerializedName("tkpd_user_id")
     @Expose
     private int tkpdUserId;
+
+    protected UserDetail(Parcel in) {
+        name = in.readString();
+        email = in.readString();
+        image = in.readString();
+        tkpdUserId = in.readInt();
+    }
+
+    public static final Creator<UserDetail> CREATOR = new Creator<UserDetail>() {
+        @Override
+        public UserDetail createFromParcel(Parcel in) {
+            return new UserDetail(in);
+        }
+
+        @Override
+        public UserDetail[] newArray(int size) {
+            return new UserDetail[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -51,4 +73,16 @@ public class UserDetail {
         this.tkpdUserId = tkpdUserId;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(image);
+        dest.writeInt(tkpdUserId);
+    }
 }

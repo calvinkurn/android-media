@@ -1,8 +1,10 @@
 package com.tokopedia.loginphone.verifyotptokocash.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.loginphone.R;
+import com.tokopedia.loginphone.common.network.TokoCashErrorException;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.requestotp.RequestOtpTokoCashPojo;
 import com.tokopedia.loginphone.verifyotptokocash.view.viewlistener.TokoCashVerificationContract;
+import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 
 import rx.Subscriber;
@@ -28,7 +30,22 @@ public class RequestOtpTokoCashSubscriber extends Subscriber<RequestOtpTokoCashP
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
+        String errorMessage = getErrorMessage(e);
+        if (errorMessage.contains(view.getContext().getString(R.string
+                .limit_otp_reached_many_times))) {
+            view.onLimitOTPReached(OtpErrorHandler.getErrorMessage(e, view.getContext(), false));
+        } else {
+            view.onErrorGetOTP(errorMessage);
+        }
         view.onErrorGetOTP(ErrorHandlerSession.getErrorMessage(view.getContext(), e));
+    }
+
+    private String getErrorMessage(Throwable e) {
+        if (e instanceof TokoCashErrorException) {
+            return ((TokoCashErrorException) e).getErrorMessage();
+        } else {
+            return OtpErrorHandler.getErrorMessage(e, view.getContext(), true);
+        }
     }
 
     @Override

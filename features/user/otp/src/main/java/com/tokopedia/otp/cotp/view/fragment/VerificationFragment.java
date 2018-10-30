@@ -73,31 +73,31 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
-    private static final int MAX_OTP_LENGTH = 6;
+    protected static final int MAX_OTP_LENGTH = 6;
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
 
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
 
-    ImageView icon;
-    TextView message;
-    PinInputEditText inputOtp;
-    TextView countdownText;
-    TextView verifyButton;
-    TextView errorOtp;
-    View limitOtp;
-    TextView tvLimitOtp;
-    View finishCountdownView;
-    TextView noCodeText;
-    ImageView errorImage;
+    protected ImageView icon;
+    protected TextView message;
+    protected PinInputEditText inputOtp;
+    protected TextView countdownText;
+    protected TextView verifyButton;
+    protected TextView errorOtp;
+    protected View limitOtp;
+    protected TextView tvLimitOtp;
+    protected View finishCountdownView;
+    protected TextView noCodeText;
+    protected ImageView errorImage;
 
     CountDownTimer countDownTimer;
     ProgressBar progressDialog;
 
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
-    private VerificationViewModel viewModel;
+    protected VerificationViewModel viewModel;
 
     @Inject
     VerificationPresenter presenter;
@@ -249,7 +249,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         return view;
     }
 
-    private void prepareView() {
+    protected void prepareView() {
         if (!isCountdownFinished()) {
             startTimer();
         } else {
@@ -272,45 +272,38 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void afterTextChanged(Editable s) {
                 if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
                     enableVerifyButton();
-                    presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
-                            .getEmail(), inputOtp.getText().toString());
+                    verifyOtp();
                 } else {
                     disableVerifyButton();
                 }
             }
         });
 
-        inputOtp.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                        && inputOtp.length() == MAX_OTP_LENGTH) {
-                    presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
-                            .getEmail(), inputOtp.getText().toString());
-                    return true;
-                }
-                return false;
+        inputOtp.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                    && inputOtp.length() == MAX_OTP_LENGTH) {
+                verifyOtp();
+                return true;
             }
+            return false;
         });
 
-        verifyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (analytics != null && viewModel != null) {
-                    analytics.eventClickVerifyButton(viewModel.getOtpType());
-                }
-                presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
-                        .getEmail(), inputOtp.getText().toString());
+        verifyButton.setOnClickListener(v -> {
+            if (analytics != null && viewModel != null) {
+                analytics.eventClickVerifyButton(viewModel.getOtpType());
             }
+            verifyOtp();
         });
 
-        errorImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputOtp.setText("");
-                removeErrorOtp();
-            }
+        errorImage.setOnClickListener(v -> {
+            inputOtp.setText("");
+            removeErrorOtp();
         });
+    }
+
+    protected void verifyOtp() {
+        presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
+                .getEmail(), inputOtp.getText().toString());
     }
 
     private void disableVerifyButton() {
@@ -333,6 +326,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
+       requestOtp();
+    }
+
+    protected void requestOtp() {
         presenter.requestOTP(viewModel);
     }
 
@@ -375,7 +372,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
     }
 
-    private void resetCountDown() {
+    protected void resetCountDown() {
         cacheHandler.putBoolean(HAS_TIMER, false);
         cacheHandler.applyEditor();
     }
@@ -476,7 +473,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         inputOtp.requestFocus();
     }
 
-    private void setFinishedCountdownText() {
+    protected void setFinishedCountdownText() {
         countdownText.setVisibility(View.GONE);
         finishCountdownView.setVisibility(View.VISIBLE);
         noCodeText.setVisibility(View.VISIBLE);
@@ -490,7 +487,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 }
                 inputOtp.setText("");
                 removeErrorOtp();
-                presenter.requestOTP(viewModel);
+                requestOtp();
             }
         });
 
@@ -515,7 +512,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
     }
 
-    private void removeErrorOtp() {
+    protected void removeErrorOtp() {
         inputOtp.setError(false);
         errorOtp.setVisibility(View.INVISIBLE);
         errorImage.setVisibility(View.INVISIBLE);
@@ -562,7 +559,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     }
 
-    private void goToOtherVerificationMethod() {
+    protected void goToOtherVerificationMethod() {
         if (getActivity() instanceof VerificationActivity) {
             ((VerificationActivity) getActivity()).goToSelectVerificationMethod();
         }
@@ -591,8 +588,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void processOTPSMS(String otpCode) {
         if (inputOtp != null)
             inputOtp.setText(otpCode);
-        presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel.getEmail(),
-                otpCode);
+        verifyOtp();
     }
 
     @NeedsPermission(Manifest.permission.RECEIVE_SMS)

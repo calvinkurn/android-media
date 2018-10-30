@@ -18,7 +18,7 @@ public interface TokoCashVerificationContract {
 
         void onErrorGetOTP(String errorMessage);
 
-        void onErrorVerifyOtp(String errorMessage);
+        void onErrorVerifyOtpCode(String errorMessage);
 
         void showLoadingProgress();
 
@@ -31,6 +31,9 @@ public interface TokoCashVerificationContract {
         void dropKeyboard();
 
         Context getContext();
+
+        void onLimitOTPReached(String errorMessage);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

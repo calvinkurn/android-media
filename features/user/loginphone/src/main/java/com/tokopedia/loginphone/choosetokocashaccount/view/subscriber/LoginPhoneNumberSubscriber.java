@@ -30,7 +30,7 @@ public class LoginPhoneNumberSubscriber extends LoginCommonSubscriber<LoginTokoC
         super.onNext(loginEmailDomain);
 
         if (loginEmailDomain.getLoginResult().getIsLogin().equals("1")) {
-            view.onSuccessLogin();
+            view.onSuccessLogin(String.valueOf(loginEmailDomain.getLoginResult().getUserId()));
         } else {
             router.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage
                     (ErrorHandlerSession.ErrorCode

@@ -3,19 +3,21 @@ package com.tokopedia.loginphone.choosetokocashaccount.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
+import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
+
+import java.util.List;
 
 /**
  * @author by nisie on 12/5/17.
  */
 
-public class ChooseTokoCashAccountViewModel implements Parcelable{
+public class ChooseTokoCashAccountViewModel implements Parcelable {
 
-    private ArrayList<AccountTokocash> listAccount;
+    private List<UserDetail> listAccount;
     private String phoneNumber;
     private String accessToken;
 
-    public ChooseTokoCashAccountViewModel(ArrayList<AccountTokocash> listAccount,
+    public ChooseTokoCashAccountViewModel(List<UserDetail> listAccount,
                                           String phoneNumber,
                                           String accessToken) {
         this.listAccount = listAccount;
@@ -24,7 +26,7 @@ public class ChooseTokoCashAccountViewModel implements Parcelable{
     }
 
     protected ChooseTokoCashAccountViewModel(Parcel in) {
-        listAccount = in.createTypedArrayList(AccountTokocash.CREATOR);
+        listAccount = in.createTypedArrayList(UserDetail.CREATOR);
         phoneNumber = in.readString();
         accessToken = in.readString();
     }
@@ -53,7 +55,7 @@ public class ChooseTokoCashAccountViewModel implements Parcelable{
         dest.writeString(accessToken);
     }
 
-    public ArrayList<AccountTokocash> getListAccount() {
+    public List<UserDetail> getListAccount() {
         return listAccount;
     }
 

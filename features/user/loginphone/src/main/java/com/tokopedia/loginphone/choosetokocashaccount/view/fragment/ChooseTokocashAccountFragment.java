@@ -29,7 +29,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
@@ -40,14 +39,18 @@ import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
+import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author by nisie on 12/4/17.
@@ -71,6 +74,10 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Inject
     LoginPhoneNumberAnalytics analytics;
+
+    @Named(SessionModule.SESSION_MODULE)
+    @Inject
+    UserSessionInterface userSessionInterface;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new ChooseTokocashAccountFragment();
@@ -184,16 +191,16 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
 
     @Override
-    public void onSelectedTokocashAccount(AccountTokocash accountTokocash) {
+    public void onSelectedTokocashAccount(UserDetail accountTokocash) {
         presenter.loginWithTokocash(viewModel.getKey(),
                 accountTokocash);
     }
 
     @Override
-    public void onSuccessLogin() {
+    public void onSuccessLogin(String userId) {
         if (getActivity() != null) {
             analytics.eventSuccessLoginPhoneNumber();
-            ((LoginPhoneNumberRouter) getActivity().getApplicationContext()).setTrackingUserId("",
+            ((LoginPhoneNumberRouter) getActivity().getApplicationContext()).setTrackingUserId(userId,
                     getActivity().getApplicationContext());
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
@@ -271,7 +278,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            onSuccessLogin();
+            onSuccessLogin(userSessionInterface.getTemporaryUserId());
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.loginphone.choosetokocashaccount.data.AccountTokocash;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
+import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.UserDetail;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 12/4/17.
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccountAdapter.ViewHolder> {
 
     private ChooseTokocashAccountContract.ViewAdapter viewListener;
-    private ArrayList<AccountTokocash> list;
+    private List<UserDetail> list;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,11 +44,11 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
 
     }
     public static TokocashAccountAdapter createInstance(ChooseTokocashAccountContract.ViewAdapter
-                                                                viewListener, ArrayList<AccountTokocash> listAccount) {
+                                                                viewListener, List<UserDetail> listAccount) {
         return new TokocashAccountAdapter(viewListener, listAccount);
     }
 
-    private TokocashAccountAdapter(ChooseTokocashAccountContract.ViewAdapter viewListener, ArrayList<AccountTokocash> listAccount) {
+    private TokocashAccountAdapter(ChooseTokocashAccountContract.ViewAdapter viewListener, List<UserDetail> listAccount) {
         this.list = listAccount;
         this.viewListener = viewListener;
     }
@@ -62,7 +62,7 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.avatar, list.get(position).getAvatarUrl());
+        ImageHandler.LoadImage(holder.avatar, list.get(position).getImage());
         holder.name.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.email.setText(list.get(position).getEmail());
     }
@@ -70,10 +70,6 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     @Override
     public int getItemCount() {
         return list.size();
-    }
-
-    public ArrayList<AccountTokocash> getList() {
-        return list;
     }
 
 }

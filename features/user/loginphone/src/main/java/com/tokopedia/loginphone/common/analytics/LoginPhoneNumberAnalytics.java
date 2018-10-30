@@ -6,6 +6,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
+
 import javax.inject.Inject;
 
 /**
@@ -19,13 +21,6 @@ public class LoginPhoneNumberAnalytics {
     @Inject
     public LoginPhoneNumberAnalytics(AnalyticTracker tracker) {
         this.tracker = tracker;
-    }
-
-    public void eventSuccessLoginPhoneNumber() {
-        tracker.sendEventTracking(Event.EVENT_CLICK_LOGIN,
-                Category.LOGIN_WITH_PHONE,
-                Action.LOGIN_SUCCESS,
-                Label.TOKOCASH);
     }
 
     public static class Screen {
@@ -72,44 +67,32 @@ public class LoginPhoneNumberAnalytics {
                 ""
         );
     }
-//
-//    public static EventTracking getVerifyTracking(int type) {
-//        return new EventTracking(
-//                Event.EVENT_CLICK_LOGIN,
-//                Category.PHONE_VERIFICATION,
-//                Action.CLICK_ON_VERIFICATION,
-//                getTypeLabel(type)
-//        );
-//    }
-//
-//    private static String getTypeLabel(int type) {
-//        switch (type) {
-//            case VerificationActivity.TYPE_SMS:
-//                return Label.SMS;
-//            case VerificationActivity.TYPE_PHONE_CALL:
-//                return Label.PHONE;
-//            default:
-//                return "";
-//        }
-//    }
-//
-//    public static EventTracking getResendVerificationTracking(int type) {
-//        return new EventTracking(
-//                Event.EVENT_CLICK_LOGIN,
-//                Category.PHONE_VERIFICATION,
-//                Action.CLICK_ON_RESEND_VERIFICATION,
-//                getTypeLabel(type)
-//        );
-//    }
-//
-//    public static EventTracking getSuccessLoginTracking() {
-//        return new EventTracking(
-//                Event.EVENT_CLICK_LOGIN,
-//                Category.LOGIN_WITH_PHONE,
-//                Action.LOGIN_SUCCESS,
-//                Label.TOKOCASH
-//        );
-//    }
+    public void eventSuccessLoginPhoneNumber() {
+        tracker.sendEventTracking(Event.EVENT_CLICK_LOGIN,
+                Category.LOGIN_WITH_PHONE,
+                Action.LOGIN_SUCCESS,
+                Label.TOKOCASH);
+    }
+
+
+    public void trackVerifyOtpClick(String mode) {
+        tracker.sendEventTracking(
+                Event.EVENT_CLICK_LOGIN,
+                Category.PHONE_VERIFICATION,
+                Action.CLICK_ON_VERIFICATION,
+                mode
+        );
+    }
+
+    public void trackResendVerification(String mode) {
+        tracker.sendEventTracking(
+                Event.EVENT_CLICK_LOGIN,
+                Category.PHONE_VERIFICATION,
+                Action.CLICK_ON_RESEND_VERIFICATION,
+                mode
+        );
+    }
+
 //
 //    public static EventTracking getChooseVerificationMethodTracking(int type) {
 //        return new EventTracking(

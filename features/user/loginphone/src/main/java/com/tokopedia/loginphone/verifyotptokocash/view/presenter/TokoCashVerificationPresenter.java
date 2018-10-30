@@ -87,7 +87,7 @@ public class TokoCashVerificationPresenter extends BaseDaggerPresenter<TokoCashV
                     @Override
                     public void onError(Throwable e) {
                         getView().dismissLoadingProgress();
-                        getView().onErrorVerifyOtp(ErrorHandlerSession.getErrorMessage
+                        getView().onErrorVerifyOtpCode(ErrorHandlerSession.getErrorMessage
                                 (getView().getContext(), e));
 
                     }
@@ -123,4 +123,6 @@ public class TokoCashVerificationPresenter extends BaseDaggerPresenter<TokoCashV
                 accountTokocash.getEmail(),
                 getView()));
     }
+
+
 }
