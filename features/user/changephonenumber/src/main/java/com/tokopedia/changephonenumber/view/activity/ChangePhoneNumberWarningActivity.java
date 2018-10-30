@@ -7,11 +7,9 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
-import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningActivityListener;
 
 
-public class ChangePhoneNumberWarningActivity extends BaseSimpleActivity
-        implements ChangePhoneNumberWarningActivityListener.View{
+public class ChangePhoneNumberWarningActivity extends BaseSimpleActivity {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_PHONE_NUMBER = "phone_number";
 

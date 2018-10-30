@@ -7,12 +7,10 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
-import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberInputActivityListener;
 
 import java.util.ArrayList;
 
-public class ChangePhoneNumberInputActivity extends BaseSimpleActivity
-        implements ChangePhoneNumberInputActivityListener.View {
+public class ChangePhoneNumberInputActivity extends BaseSimpleActivity {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     public static final String PARAM_WARNING_LIST = "warning_list";
     public static final String PARAM_EMAIL = "email";
