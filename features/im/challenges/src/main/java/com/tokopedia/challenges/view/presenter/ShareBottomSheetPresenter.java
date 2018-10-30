@@ -121,9 +121,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
-                    // getView().setNewUrl(shareUri);
                     postMapBranchUrl(submissionItem.getId(), shareUri, packageName, submissionItem.getTitle(), false);
-
                 }
             });
         }

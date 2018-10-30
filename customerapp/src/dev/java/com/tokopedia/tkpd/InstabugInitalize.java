@@ -2,6 +2,7 @@ package com.tokopedia.tkpd;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Build;
 import android.view.MotionEvent;
 
 import com.instabug.library.Instabug;
@@ -39,7 +40,9 @@ public class InstabugInitalize {
         //setting user attributes
         Instabug.setUserAttribute("USER_TYPE", "instabug user");
 
-        Instabug.setAutoScreenRecordingEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Instabug.setAutoScreenRecordingEnabled(true);
+        }
     }
 
     public static void dispatchTouchEvent(Activity context, MotionEvent ev) {

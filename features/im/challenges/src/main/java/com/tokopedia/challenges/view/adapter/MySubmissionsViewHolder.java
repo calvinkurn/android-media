@@ -50,18 +50,17 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes.setVisibility(View.GONE);
         imgShare.setVisibility(View.VISIBLE);
 
-        if (Utils.STATUS_APPROVED.equalsIgnoreCase(submissionsResult.getStatus())) {
+        if (Utils.STATUS_DECLINED.equalsIgnoreCase(submissionsResult.getStatus()) ||
+                Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate())) {
+            imgShare.setVisibility(View.GONE);
+            imgLikes.setVisibility(View.GONE);
+        } else if (Utils.STATUS_APPROVED.equalsIgnoreCase(submissionsResult.getStatus())) {
             imgLikes.setVisibility(View.VISIBLE);
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
             } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
             }
-        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(submissionsResult.getStatus())) {
-            imgShare.setVisibility(View.GONE);
-        }
-        if(Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate())){
-            imgShare.setVisibility(View.GONE);
         }
 
         itemView.setOnClickListener(view1 -> {
@@ -83,18 +82,23 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
                     challengesResult.getCollection().getTitle());
         });
         imgLikes.setOnClickListener(v -> {
-            String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
-            if (submissionsResult.getMe().isLiked())
-                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
-                    action,
-                    challengesResult.getCollection().getTitle());
+            String action;
+
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
+                submissionsResult.getMe().setLiked(false);
             } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
+                submissionsResult.getMe().setLiked(true);
+            }
+            if (challengesResult.getCollection() != null) {
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                        action,
+                        challengesResult.getCollection().getTitle());
             }
         });
     }

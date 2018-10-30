@@ -47,7 +47,6 @@ import io.branch.referral.BranchError;
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver {
 
-
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";

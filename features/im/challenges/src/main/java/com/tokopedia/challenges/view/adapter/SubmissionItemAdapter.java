@@ -220,17 +220,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if (productItem.getMe() != null) {
                 setLikes(productItem.getMe().isLiked());
-            }else{
+            } else {
                 setLikes(false);
             }
             tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
             if (isWinner) {
                 int position = Utils.getWinnerPosition(productItem.getAwards());
-                if (position != -1){
+                if (position != -1) {
                     tvWinnerNumber.setVisibility(View.VISIBLE);
                     tvWinnerNumber.setText(String.valueOf(position));
                 }
-            }else{
+            } else {
                 tvWinnerNumber.setVisibility(View.GONE);
                 tvWinnerNumber.setText("");
 
@@ -241,7 +241,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         void setLikes(boolean isLiked) {
-            if(categoryItems.get(getIndex()).getMe()!=null) {
+            if (categoryItems.get(getIndex()).getMe() != null) {
                 categoryItems.get(getIndex()).getMe().setLiked(isLiked);
                 if (isLiked) {
                     ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
@@ -271,15 +271,12 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
-                String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
                 if (categoryItems.get(getIndex()).getMe() != null) {
-                    if (categoryItems.get(getIndex()).getMe().isLiked()) {
-                        setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
-                        action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
-                    } else {
-                        setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
-                        action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
-                    }
+                    setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
+                    String action = categoryItems.get(getIndex()).getMe().isLiked() ?
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE :
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
+
                     if (categoryItems.get(getIndex()).getCollection() != null) {
                         analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
                                 ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,

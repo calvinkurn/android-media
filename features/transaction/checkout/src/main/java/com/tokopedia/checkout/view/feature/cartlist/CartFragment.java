@@ -166,13 +166,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onStop() {
         boolean hasChanges = dPresenter.dataHasChanged();
 
-        if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
-            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
-            service.putParcelableArrayListExtra(
-                    UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
-            );
-            getActivity().startService(service);
+        try {
+            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+                Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+                service.putParcelableArrayListExtra(
+                        UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
+                );
+                getActivity().startService(service);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
+
         super.onStop();
     }
 
@@ -770,7 +775,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        refreshHandler.finishRefresh();
+        sendAnalyticsScreenName(getScreenName());
+        if (refreshHandler != null) {
+            refreshHandler.finishRefresh();
+        }
         this.cartListData = cartListData;
         cartAdapter.resetData();
 
@@ -1111,7 +1119,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
-            sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
                 if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
@@ -1123,6 +1130,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 } else {
                     if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
                         dPresenter.processInitialGetCartData(false);
+                    } else {
+                        CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
+                        dPresenter.setCartListData(cartListData);
+                        renderLoadGetCartDataFinish();
+                        renderInitialGetCartListDataSuccess(cartListData);
                     }
                 }
             }
@@ -1179,15 +1191,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void showToastMessageRed(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if (view != null) {
+            NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        } else if (getActivity() != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void showToastMessageGreen(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if (view != null) {
+            NetworkErrorHelper.showGreenCloseSnackbar(view, message);
+        } else if (getActivity() != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -1226,7 +1244,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderCancelAutoApplyCouponError() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        if (getActivity() != null) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        }
     }
 
     @Override
@@ -1313,10 +1333,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().finish();
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
+            sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         }
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        sendAnalyticsScreenName(getScreenName());
         if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {

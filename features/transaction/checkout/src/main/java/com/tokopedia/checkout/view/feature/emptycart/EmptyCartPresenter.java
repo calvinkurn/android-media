@@ -212,7 +212,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         EnhancedECommerceEmptyCartProductData enhancedECommerceEmptyCartProductData =
                 new EnhancedECommerceEmptyCartProductData();
         enhancedECommerceEmptyCartProductData.setBrand(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceEmptyCartProductData.setCategory(product.getCategory().getId());
+        enhancedECommerceEmptyCartProductData.setCategory(EnhancedECommerceEmptyCartProductData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceEmptyCartProductData.setPosition(String.valueOf(index));
         enhancedECommerceEmptyCartProductData.setPrice(String.valueOf(product.getPriceFormat()
                 .replace("Rp", "")

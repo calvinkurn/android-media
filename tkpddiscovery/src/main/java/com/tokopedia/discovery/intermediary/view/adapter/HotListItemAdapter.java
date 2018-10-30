@@ -14,22 +14,16 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.TopPicksWebView;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
 import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
@@ -178,13 +172,15 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     class HotListItemRowHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.product_image_hoth)
-        ImageView itemImage;
+        private ImageView itemImage;
 
         HotListItemRowHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            initView(view);
+        }
 
+        private void initView(View view) {
+            itemImage = view.findViewById(R.id.product_image_hoth);
         }
     }
 

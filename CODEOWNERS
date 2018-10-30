@@ -104,3 +104,5 @@
 /features/user/updateinactivephone      @tokopedia/india-android-team
 /features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
+/features/im/challenges                 @ashwanitp
+/libraries/pagination                   @lavekush-t
