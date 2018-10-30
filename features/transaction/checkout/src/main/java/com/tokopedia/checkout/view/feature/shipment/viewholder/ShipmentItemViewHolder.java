@@ -580,7 +580,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel.getShopShipmentList(), false);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), false);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             llCourierStateLoading.setVisibility(View.VISIBLE);
@@ -632,7 +632,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
-                        currentAddress, getAdapterPosition());
+                        currentAddress, shipmentCartItemModel, shopShipmentList, getAdapterPosition());
             }
         });
 
@@ -689,7 +689,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel.getShopShipmentList(), true);
+                                    shipmentCartItemModel, shipmentCartItemModel.getShopShipmentList(), true);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);

@@ -8,6 +8,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 
 /**
@@ -22,6 +23,8 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(GuidedSearchViewModel guidedSearchViewModel);
 
     int type(TopAdsViewModel topAdsViewModel);
+
+    int type(RelatedSearchModel relatedSearchModel);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

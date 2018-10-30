@@ -57,7 +57,7 @@ public class DeepLinkChecker {
     public static final int WALLET_OVO = 23;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
-    private static final String FLIGHT_SEGMENT = "pesawat";
+    private static final String FLIGHT_SEGMENT = "flight";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
