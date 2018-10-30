@@ -358,11 +358,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
         val menus = Menus(context!!)
-        val menuList = ArrayList<String>()
+        val menuList = ArrayList<Menus.ItemMenus>()
         if (element.isDeletable) {
-            menuList.add(getString(R.string.profile_delete_post))
+            menuList.add(
+                    Menus.ItemMenus(
+                            getString(R.string.profile_delete_post),
+                            R.drawable.ic_af_trash
+                    )
+            )
         }
-        menus.setItemMenuList(menuList.toTypedArray())
+        menus.itemMenuList = menuList
         menus.setActionText(getString(R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { itemMenus, _ ->
