@@ -89,8 +89,6 @@
                 android:id="@+id/action_button_by_me"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/white_button_rounded"
@@ -109,9 +107,6 @@
                 android:id="@+id/action_button_chat"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dp_8"
                 android:background="@drawable/white_button_rounded"
                 android:padding="@dimen/dp_4">
@@ -125,21 +120,21 @@
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/dp_40"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_weight="1"
                 android:background="@drawable/bg_button_buy">
 
                 <TextView
                     android:id="@+id/tv_buy_now"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
                     android:textColor="@color/orange_red"
                     android:textSize="@dimen/sp_12"
-                    android:visibility="invisible"
                     tools:text="Beli Sekarang" />
 
                 <ProgressBar
@@ -147,7 +142,8 @@
                     android:layout_width="19dp"
                     android:layout_height="19dp"
                     android:layout_gravity="center"
-                    android:visibility="visible" />
+                    android:indeterminateTint="@color/orange_red"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
@@ -160,28 +156,21 @@
 
             <TextView
                 android:id="@+id/tv_add_to_cart"
-                android:layout_width="144dp"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_toEndOf="@id/container_btn"
-                android:layout_toRightOf="@id/container_btn"
-                android:gravity="center_vertical|center_horizontal"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text="@string/title_add_to_cart"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_12"
-                android:visibility="gone" />
+                android:textSize="@dimen/sp_12" />
 
             <ProgressBar
-                android:id="@+id/pb_buy_now"
+                android:id="@+id/pb_add_to_cart"
                 style="?android:progressBarStyleInverse"
                 android:layout_width="19dp"
                 android:layout_height="19dp"
                 android:layout_gravity="center"
-                android:visibility="visible" />
+                android:indeterminateTint="@color/white"
+                android:visibility="gone" />
 
         </FrameLayout>
 

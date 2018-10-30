@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -39,6 +40,8 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public View btnByMe;
     private TextView tvBuyNow;
     public TextView tvAddToCart;
+    private ProgressBar pbBuyNow;
+    private ProgressBar pbAddToCart;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -81,6 +84,12 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         btnByMe = findViewById(R.id.action_button_by_me);
         tvBuyNow = findViewById(R.id.tv_buy_now);
         tvAddToCart = findViewById(R.id.tv_add_to_cart);
+        pbBuyNow = findViewById(R.id.pb_buy_now);
+        pbAddToCart = findViewById(R.id.pb_add_to_cart);
+        pbBuyNow.getIndeterminateDrawable()
+                .setColorFilter(ContextCompat.getColor(getContext(), R.color.orange_red), PorterDuff.Mode.SRC_IN);
+        pbAddToCart.getIndeterminateDrawable()
+                .setColorFilter(ContextCompat.getColor(getContext(), R.color.white), PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -191,14 +200,39 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     }
 
     public void changeToLoading() {
-//        progressBarVariant.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-//        progressBarVariant.setVisibility(VISIBLE);
         tvBuyNow.setEnabled(false);
         tvAddToCart.setEnabled(false);
     }
 
+    public void showLoadingBuyNow() {
+        pbBuyNow.setVisibility(VISIBLE);
+        tvBuyNow.setVisibility(GONE);
+        tvBuyNow.setClickable(false);
+        tvAddToCart.setClickable(false);
+    }
+
+    public void hideLoadingBuyNow() {
+        pbBuyNow.setVisibility(GONE);
+        tvBuyNow.setVisibility(VISIBLE);
+        tvBuyNow.setClickable(true);
+        tvAddToCart.setClickable(true);
+    }
+
+    public void showLoadingAddToCart() {
+        pbAddToCart.setVisibility(VISIBLE);
+        tvAddToCart.setVisibility(GONE);
+        tvAddToCart.setClickable(false);
+        tvBuyNow.setClickable(false);
+    }
+
+    public void hideLoadingAddToCart() {
+        pbAddToCart.setVisibility(GONE);
+        tvAddToCart.setVisibility(VISIBLE);
+        tvAddToCart.setClickable(true);
+        tvBuyNow.setClickable(true);
+    }
+
     public void removeLoading() {
-//        progressBarVariant.setVisibility(GONE);
         tvBuyNow.setEnabled(true);
         tvAddToCart.setEnabled(true);
     }
