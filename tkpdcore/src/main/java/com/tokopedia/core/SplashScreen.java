@@ -102,7 +102,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         handleBranchDefferedDeeplink();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -222,20 +222,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         }
 
                         if (error == null) {
-                            try {
-                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
-
-                                String deeplink = referringParams.getString("$android_deeplink_path");
-                                Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(uri);
-                                startActivity(intent);
-                                finish();
-
-                            } catch (JSONException e) {
-                                moveToHome();
-
-                            }
+                            handlingInitBranchSession(referringParams);
                         } else {
                             moveToHome();
                         }
@@ -245,6 +232,23 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             } catch (Exception e) {
                 // Do nothing
             }
+        }
+    }
+
+    protected void handlingInitBranchSession(JSONObject referringParams){
+        try {
+            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+
+            String deeplink = referringParams.getString("$android_deeplink_path");
+            Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            startActivity(intent);
+            finish();
+
+        } catch (JSONException e) {
+            moveToHome();
+
         }
     }
 
