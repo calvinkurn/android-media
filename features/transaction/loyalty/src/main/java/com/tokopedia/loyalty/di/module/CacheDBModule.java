@@ -1,7 +1,8 @@
 package com.tokopedia.loyalty.di.module;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.domain.repository.ITokoPointDBService;
@@ -26,14 +27,8 @@ public class CacheDBModule {
 
     @Provides
     @LoyaltyScope
-    GlobalCacheManager provideGlobalCacheManager() {
-        return new GlobalCacheManager();
-    }
-
-    @Provides
-    @LoyaltyScope
     ITokoPointDBService provideITokoPointDBService(@LoyaltyModuleQualifier Gson gson,
-                                                   GlobalCacheManager globalCacheManager) {
-        return new TokoPointDBService(globalCacheManager, gson);
+                                                   AbstractionRouter abstractionRouter) {
+        return new TokoPointDBService(abstractionRouter.getGlobalCacheManager(), gson);
     }
 }

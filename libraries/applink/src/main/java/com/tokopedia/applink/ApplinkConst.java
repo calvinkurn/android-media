@@ -52,6 +52,7 @@ public interface ApplinkConst {
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
+    String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String DISCOVERY_CATEGORY = "tokopedia://category";
     String DISCOVERY_CATEGORY_DETAIL = "tokopedia://category/{DEPARTMENT_ID}";
     String DISCOVERY_SEARCH = "tokopedia://search";

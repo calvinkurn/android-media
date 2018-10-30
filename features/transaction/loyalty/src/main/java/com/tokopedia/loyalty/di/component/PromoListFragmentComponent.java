@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.di.component;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.loyalty.di.PromoFragmentScope;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
@@ -11,7 +12,7 @@ import dagger.Component;
  * @author anggaprasetiyo on 03/01/18.
  */
 @PromoFragmentScope
-@Component(modules = PromoListFragmentModule.class, dependencies = AppComponent.class)
+@Component(modules = PromoListFragmentModule.class, dependencies = BaseAppComponent.class)
 public interface PromoListFragmentComponent {
 
     void inject(PromoListFragment promoListFragment);

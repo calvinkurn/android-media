@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -90,7 +91,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     protected void initInjector() {
         super.initInjector();
         PromoListFragmentComponent promoListComponent = DaggerPromoListFragmentComponent.builder()
-                .appComponent((AppComponent) getComponent(AppComponent.class))
+                .baseAppComponent(((BaseMainApplication) getActivityContext().getApplicationContext()).getBaseAppComponent())
                 .promoListFragmentModule(new PromoListFragmentModule(this))
                 .build();
         promoListComponent.inject(this);

@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
@@ -37,6 +38,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
         TokoPointBroadcastComponent tokoPointBroadcastComponent = DaggerTokoPointBroadcastComponent
                 .builder()
+                .baseAppComponent(((BaseMainApplication)context.getApplicationContext()).getBaseAppComponent())
                 .serviceApiModule(new ServiceApiModule())
                 .build();
         tokoPointBroadcastComponent.inject(this);
@@ -44,7 +46,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(
-                tokoplusRepository.getPointDrawer(CommonUtils.loadRawString(context.getResources(), R.raw.tokopoints_query))
+                tokoplusRepository.getPointDrawer(GraphqlHelper.loadRawString(context.getResources(), R.raw.tokopoints_query))
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

@@ -1,5 +1,6 @@
 package com.tokopedia.loyalty.view.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -123,7 +125,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @Override
     protected void initialPresenter() {
         PromoListActivityComponent promoListActivityComponent = DaggerPromoListActivityComponent.builder()
-                .appComponent(getComponent())
+                .baseAppComponet(((BaseMainApplication)getApplicationContext()).getBaseAppComponent())
                 .promoListActivityModule(new PromoListActivityModule(this))
                 .build();
         promoListActivityComponent.inject(this);

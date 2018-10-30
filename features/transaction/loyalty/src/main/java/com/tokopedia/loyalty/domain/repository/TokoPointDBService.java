@@ -3,8 +3,8 @@ package com.tokopedia.loyalty.domain.repository;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
 import com.tokopedia.loyalty.domain.entity.response.HachikoDrawerDataResponse;
 import com.tokopedia.loyalty.domain.exception.TokoPointDBServiceException;
@@ -21,11 +21,11 @@ import rx.functions.Func1;
 
 public class TokoPointDBService implements ITokoPointDBService {
 
-    private final GlobalCacheManager globalCacheManager;
+    private final CacheManager globalCacheManager;
     private final Gson gson;
 
     @Inject
-    public TokoPointDBService(GlobalCacheManager globalCacheManager, Gson gson) {
+    public TokoPointDBService(CacheManager globalCacheManager, Gson gson) {
         this.globalCacheManager = globalCacheManager;
         this.gson = gson;
     }
@@ -37,7 +37,7 @@ public class TokoPointDBService implements ITokoPointDBService {
                     @Override
                     public HachikoDrawerDataResponse call(String s) {
                         try {
-                            String cacheStr = globalCacheManager.getValueString(s);
+                            String cacheStr = globalCacheManager.get(s);
                             if (cacheStr != null && !cacheStr.isEmpty()) {
                                 HachikoDrawerDataResponse tokoPointDrawerDataResponse =
                                         gson.fromJson(cacheStr, HachikoDrawerDataResponse.class);
@@ -72,10 +72,7 @@ public class TokoPointDBService implements ITokoPointDBService {
                 if (tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif() == null ||
                         (tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif() != null &&
                                 TextUtils.isEmpty(tokoPointDrawerDataResponse.getGqlTokoPointDrawerDataResponse().getGqlTokoPointPopupNotif().getTitle()))) {
-                    globalCacheManager.setCacheDuration(60);
-                    globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
-                    globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
-                    globalCacheManager.store();
+                    globalCacheManager.save(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA, gson.toJson(tokoPointDrawerDataResponse), 60);
                 }
             }
         });
