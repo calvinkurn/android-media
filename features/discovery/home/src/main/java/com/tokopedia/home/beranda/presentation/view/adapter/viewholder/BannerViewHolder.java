@@ -2,6 +2,8 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
@@ -86,11 +88,20 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoScrolled(int position) {
-        if (listener.isMainViewVisible()) {
+        if (isBannerVisible()) {
             HomePageTracking.eventPromoImpression(getPromotion(position));
             HomeTrackingUtils.homeSlidingBannerImpression(slidesList.get(position), position);
             listener.onPromoScrolled(slidesList.get(position));
         }
+    }
+
+    private boolean isBannerVisible() {
+        Rect actualPosition = new Rect();
+        bannerView.getGlobalVisibleRect(actualPosition);
+        Rect screen = new Rect(0, 0,
+                Resources.getSystem().getDisplayMetrics().widthPixels,
+                Resources.getSystem().getDisplayMetrics().heightPixels);
+        return actualPosition.intersect(screen);
     }
 
     @Override
