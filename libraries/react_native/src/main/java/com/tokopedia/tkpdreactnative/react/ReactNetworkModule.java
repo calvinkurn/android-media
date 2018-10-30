@@ -211,7 +211,7 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } else if (param.equals("tokopedia")) {
             promise.resolve(TkpdBaseURL.WEB_DOMAIN);
         } else {
-            promise.reject("Base API Url param is not found!");
+            promise.reject("Base api url param is not found!");
         }
     }
 
