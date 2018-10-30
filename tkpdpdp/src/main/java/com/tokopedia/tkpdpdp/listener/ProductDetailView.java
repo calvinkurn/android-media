@@ -171,8 +171,9 @@ public interface ProductDetailView extends ViewListener {
      * user dalam keadaan login
      *
      * @param data model yang dikirim
+     * @param source button mana yg mentrigger
      */
-    void onProductBuySessionLogin(@NonNull ProductCartPass data);
+    void onProductBuySessionLogin(@NonNull ProductCartPass data, String source);
 
     /**
      * Pada saat tombol beli di klik

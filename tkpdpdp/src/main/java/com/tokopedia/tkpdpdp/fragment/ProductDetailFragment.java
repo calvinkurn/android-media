@@ -719,7 +719,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             } else {
                 onClickBuyWhileRequestingVariant = true;
                 lastStateOnClickBuyWhileRequestVariant = source;
-                buttonBuyView.changeToLoading();
+                if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
+                    buttonBuyView.showLoadingBuyNow();
+                } else if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP)) {
+                    buttonBuyView.showLoadingAddToCart();
+                }
             }
         } else {
             openProductModalActivity(generateStateVariant(source));
@@ -980,8 +984,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        buttonBuyView.changeToLoading();
+    public void onProductBuySessionLogin(@NonNull ProductCartPass data, String source) {
+        if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP) || source.equals(ProductDetailView.SOURCE_BUTTON_CART_VARIANT)) {
+            buttonBuyView.showLoadingAddToCart();
+        } else if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP) || source.equals(ProductDetailView.SOURCE_BUTTON_BUY_VARIANT)) {
+            buttonBuyView.showLoadingBuyNow();
+        }
         presenter.processToCart(getActivity(), data);
     }
 
@@ -1525,12 +1533,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     switch (data.getIntExtra(ARGS_STATE_RESULT_PDP_MODAL, 0)) {
                         case ConstantKey.SELECTED_VARIANT_RESULT_SKIP_TO_CART:
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_PDP));
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_PDP),
+                                        SOURCE_BUTTON_BUY_PDP);
                             }
                             break;
                         case ConstantKey.SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP));
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP),
+                                        SOURCE_BUTTON_CART_PDP);
                             }
                             break;
                         case ConstantKey.KILL_PDP_BACKGROUND:
@@ -1579,7 +1589,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
                             case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
                                 if (SessionHandler.isV4Login(getActivity())) {
-                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT),
+                                            SOURCE_BUTTON_BUY_VARIANT);
                                 } else {
                                     ProductPageTracking.eventClickBuyInVariantNotLogin(
                                             getActivity(),
@@ -1590,7 +1601,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 break;
                             case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                 if (SessionHandler.isV4Login(getActivity())) {
-                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT),
+                                            SOURCE_BUTTON_BUY_VARIANT);
                                 } else {
                                     ProductPageTracking.eventClickAtcInVariantNotLogin(
                                             getActivity(),
