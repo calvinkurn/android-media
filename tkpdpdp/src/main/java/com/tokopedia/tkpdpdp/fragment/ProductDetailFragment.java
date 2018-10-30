@@ -2242,12 +2242,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 message = getString(R.string.default_request_error_unknown_short);
             }
             ToasterNormal.make(getView(), message.replace("\n", " "), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.label_atc_open_cart), v -> {
-                        if (getActivity().getApplication() != null) {
-                            getActivity().startActivity(((PdpRouter) getActivity().getApplication())
-                                    .getCartIntent(getActivity()));
+                    .setAction(getActivity().getString(R.string.label_atc_open_cart), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+//                            if (getActivity().getApplication() != null) {
+//                                getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+//                                        .getCartIntent(getActivity()));
+//                            }
                         }
-                    }).show();
+                    })
+                    .show();
         }
     }
 
