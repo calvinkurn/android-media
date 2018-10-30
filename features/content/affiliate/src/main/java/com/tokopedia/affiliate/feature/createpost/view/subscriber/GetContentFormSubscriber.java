@@ -67,14 +67,17 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
             return;
         }
 
-        CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
-        if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
-            onError(new RuntimeException());
-            return;
-        }
-        if (checkQuotaQuery.getData().getNumber() == 0) {
-            view.onErrorNoQuota();
-            return;
+        if (!isEdit) {
+            CheckQuotaQuery checkQuotaQuery = graphqlResponse.getData(CheckQuotaQuery.class);
+            if (checkQuotaQuery == null || checkQuotaQuery.getData() == null) {
+                onError(new RuntimeException());
+                return;
+            }
+            if (checkQuotaQuery.getData().getNumber() == 0) {
+                view.onErrorNoQuota();
+                return;
+            }
+
         }
 
         if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
