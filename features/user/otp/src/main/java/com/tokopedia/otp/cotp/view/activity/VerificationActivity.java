@@ -189,7 +189,7 @@ public class VerificationActivity extends BaseSimpleActivity {
         );
     }
 
-    private VerificationViewModel createDynamicBundle(MethodItem methodItem) {
+    protected VerificationViewModel createDynamicBundle(MethodItem methodItem) {
 
 
         return new VerificationViewModel(

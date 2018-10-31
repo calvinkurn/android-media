@@ -80,6 +80,8 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
                             .build();
 
             daggerOtpTokoCashComponent.inject(this);
+            presenter.attachView(this);
+
         }
     }
 

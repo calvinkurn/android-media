@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
@@ -12,6 +13,7 @@ import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerifica
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.loginphone.R;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 
 /**
@@ -103,5 +105,25 @@ public class TokoCashOtpActivity extends VerificationActivity {
         bundle.putBoolean(IS_SHOW_CHOOSE_METHOD, false);
         intent.putExtras(bundle);
         return intent;
+    }
+
+
+    /**
+     * @param methodItem should be from {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     *                   Use this for dynamic otp.
+     */
+    public void goToVerificationPage(MethodItem methodItem) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                TokoCashVerificationFragment)) {
+
+            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment fragment = TokoCashVerificationFragment.createInstance(createDynamicBundle(methodItem));
+            fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
     }
 }

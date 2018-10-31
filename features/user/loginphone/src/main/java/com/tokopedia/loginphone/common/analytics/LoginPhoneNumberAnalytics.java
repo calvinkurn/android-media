@@ -93,14 +93,13 @@ public class LoginPhoneNumberAnalytics {
         );
     }
 
-//
-//    public static EventTracking getChooseVerificationMethodTracking(int type) {
-//        return new EventTracking(
-//                Event.EVENT_CLICK_LOGIN,
-//                Category.PHONE_VERIFICATION,
-//                Action.CHANGE_METHOD,
-//                getTypeLabel(type)
-//        );
-//    }
+    public void eventChooseVerificationMethodTracking(String modeName) {
+        tracker.sendEventTracking(
+                Event.EVENT_CLICK_LOGIN,
+                Category.PHONE_VERIFICATION,
+                Action.CHANGE_METHOD,
+                modeName
+        );
+    }
 
 }

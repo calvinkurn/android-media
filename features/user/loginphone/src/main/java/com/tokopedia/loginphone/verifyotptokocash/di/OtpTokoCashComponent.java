@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginphone.choosetokocashaccount.view.fragment.ChooseTokocashAccountFragment;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
+import com.tokopedia.loginphone.verifyotptokocash.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.otp.common.di.OtpModule;
 import com.tokopedia.otp.common.di.OtpScope;
@@ -30,7 +30,7 @@ public interface OtpTokoCashComponent {
 
     void inject(TokoCashVerificationFragment fragment);
 
-    void inject(ChooseTokocashAccountFragment fragment);
+    void inject(ChooseTokocashVerificationMethodFragment fragment);
 
     UserSession provideUserSession();
 

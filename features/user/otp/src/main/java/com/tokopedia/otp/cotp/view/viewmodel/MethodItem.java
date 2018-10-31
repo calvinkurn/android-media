@@ -21,6 +21,18 @@ public class MethodItem implements Parcelable {
     private String popUpHeader;
     private String popUpBody;
 
+    /**
+     * Use this constructor for getting method item from ws.
+     * @param mode should be aligned with
+     * {@link com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase}'s mode list
+     * @param imageUrl icon url
+     * @param methodText description of method, used in {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     * @param verificationText description of method, used in
+     * {@link com.tokopedia.otp.cotp.view.fragment.VerificationFragment}.
+     * @param usingPopUp if there is interrupt pop up
+     * @param popUpHeader title of pop up
+     * @param popUpBody message of pop up. E.g : "Dengan verifikasi anda akan mengaktifkan ..."
+     */
     public MethodItem(String mode, String imageUrl, String methodText, String verificationText,
                       boolean usingPopUp, String popUpHeader, String popUpBody) {
         this.modeName = mode;
@@ -33,6 +45,18 @@ public class MethodItem implements Parcelable {
         this.popUpBody = popUpBody;
     }
 
+    /**
+     * Use this constructor for using local list of verification method.
+     * @param mode should be aligned with
+     * {@link com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase}'s mode list
+     * @param iconResId icon res id
+     * @param methodText description of method, used in {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     * @param verificationText description of method, used in
+     * {@link com.tokopedia.otp.cotp.view.fragment.VerificationFragment}.
+     * @param usingPopUp if there is interrupt pop up
+     * @param popUpHeader title of pop up
+     * @param popUpBody message of pop up. E.g : "Dengan verifikasi anda akan mengaktifkan ..."
+     */
     public MethodItem(String mode, int iconResId, String methodText, String verificationText,
                       boolean usingPopUp, String popUpHeader, String popUpBody) {
         this.modeName = mode;
@@ -43,6 +67,26 @@ public class MethodItem implements Parcelable {
         this.usingPopUp = usingPopUp;
         this.popUpHeader = popUpHeader;
         this.popUpBody = popUpBody;
+    }
+
+    /**
+     * Use this constructor for using local list of verification method without pop up header.
+     * @param mode should be aligned with
+     * {@link com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase}'s mode list
+     * @param iconResId icon res id
+     * @param methodText description of method, used in {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     * @param verificationText description of method, used in
+     * {@link com.tokopedia.otp.cotp.view.fragment.VerificationFragment}.
+     */
+    public MethodItem(String mode, int iconResId, String methodText, String verificationText) {
+        this.modeName = mode;
+        this.iconResId = iconResId;
+        this.imageUrl = "";
+        this.methodText = methodText;
+        this.verificationText = verificationText;
+        this.usingPopUp = false;
+        this.popUpHeader = "";
+        this.popUpBody = "";
     }
 
     public String getModeName() {

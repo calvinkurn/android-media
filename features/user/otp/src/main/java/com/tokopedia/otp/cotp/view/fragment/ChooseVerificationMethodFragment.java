@@ -50,25 +50,23 @@ import javax.inject.Inject;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    private static final String PASS_MODEL = "pass_model";
+    protected static final String PASS_MODEL = "pass_model";
+
     private static final int TYPE_HIDE_LINK = 0;
     private static final int TYPE_CHANGE_PHONE_UPLOAD_KTP = 1;
     private static final int TYPE_PROFILE_SETTING = 2;
-    private RecyclerView methodListRecyclerView;
-    TextView changePhoneNumberButton;
 
-
+    protected RecyclerView methodListRecyclerView;
+    protected TextView changePhoneNumberButton;
+    protected VerificationMethodAdapter adapter;
+    protected VerificationPassModel passModel;
+    protected View mainView;
+    protected ProgressBar loadingView;
     @Inject
     ChooseVerificationPresenter presenter;
 
     @Inject
     OTPAnalytics analytics;
-
-    VerificationMethodAdapter adapter;
-    VerificationPassModel passModel;
-
-    View mainView;
-    ProgressBar loadingView;
 
     @Override
     protected String getScreenName() {
@@ -130,7 +128,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         return view;
     }
 
-    private void prepareView() {
+    protected void prepareView() {
         adapter = VerificationMethodAdapter.createInstance(this);
         methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
@@ -140,6 +138,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initList();
+    }
+
+    protected void initList() {
         presenter.getMethodList(passModel.getPhoneNumber(),
                 passModel.getOtpType());
     }
