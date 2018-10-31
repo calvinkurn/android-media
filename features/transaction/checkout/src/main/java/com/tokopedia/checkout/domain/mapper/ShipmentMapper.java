@@ -53,18 +53,18 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
 
-        CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
+            CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
             cartPromoSuggestion.setCta(shipmentAddressFormDataResponse.getPromoSuggestion().getCta());
             cartPromoSuggestion.setCtaColor(shipmentAddressFormDataResponse.getPromoSuggestion().getCtaColor());
             cartPromoSuggestion.setPromoCode(shipmentAddressFormDataResponse.getPromoSuggestion().getPromoCode());
             cartPromoSuggestion.setText(shipmentAddressFormDataResponse.getPromoSuggestion().getText());
             cartPromoSuggestion.setVisible(shipmentAddressFormDataResponse.getPromoSuggestion().getIsVisible() == 1);
+            dataResult.setCartPromoSuggestion(cartPromoSuggestion);
         }
-        dataResult.setCartPromoSuggestion(cartPromoSuggestion);
 
-        AutoApplyData autoApplyData = new AutoApplyData();
         if (shipmentAddressFormDataResponse.getAutoApply() != null) {
+            AutoApplyData autoApplyData = new AutoApplyData();
             autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoApply().getCode());
             autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
             autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoApply().getIsCoupon());
@@ -72,8 +72,8 @@ public class ShipmentMapper implements IShipmentMapper {
             autoApplyData.setPromoId(shipmentAddressFormDataResponse.getAutoApply().getPromoId());
             autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
             autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoApply().getTitleDescription());
+            dataResult.setAutoApplyData(autoApplyData);
         }
-        dataResult.setAutoApplyData(autoApplyData);
 
         if (shipmentAddressFormDataResponse.getDonation() != null) {
             Donation donation = new Donation();
