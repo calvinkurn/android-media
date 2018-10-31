@@ -36,7 +36,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticaddaddress.domain.LocationPassMapper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
@@ -58,13 +57,11 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.domain.LocationPassMapper.bundleLocationMap;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
@@ -226,10 +223,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    LocationPass locationPass = bundle.getSerializable(EXTRA_HASH_LOCATION) != null ?
-                            LocationPassMapper.unBundleLocationMap(
-                                    (HashMap<String, String>) bundle.getSerializable(EXTRA_HASH_LOCATION)
-                            ) : bundle.getParcelable(EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = bundle.getParcelable(EXTRA_EXISTING_LOCATION);
                     if (locationPass != null) {
                         String latitude = locationPass.getLatitude();
                         String longitude = locationPass.getLongitude();
