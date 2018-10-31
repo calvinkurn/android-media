@@ -1033,11 +1033,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
         if (isFromExploreAffiliate()) {
             buttonAffiliate.renderView(affiliate);
+            buttonBuyView.setBuyNowLabel(true);
         } else {
             if (affiliate != null) {
                 buttonBuyView.showByMeButton(true);
                 buttonBuyView.setByMeButtonListener(affiliate);
-                buttonBuyView.setBuyNowLabel(false);
             } else {
                 buttonBuyView.setBuyNowLabel(true);
             }
