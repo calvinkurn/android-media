@@ -35,6 +35,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
+    private static final int DEALS_CATEGORY_ID = 35;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -96,7 +97,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == 35) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
             else
