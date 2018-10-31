@@ -30,8 +30,10 @@
     <string name="profile_recommend_get_commission">Rekomendasikan Produk ke Teman, Bisa Dapat Komisi!</string>
     <string name="profile_tokopedia_app">Segera coba fiturnya di aplikasi Tokopedia versi terbaru.</string>
     <string name="profile_try_now">Coba Sekarang</string>
+    <string name="profile_surprise">Ssst, Akan Ada Kejutan di Profilmu!</string>
 
     <string name="title_profile_following">Following</string>
     <string name="fl_toppers_title">Toppers</string>
     <string name="fl_shop_title">Toko</string>
+    <string name="profile_wait_soon">Penasaran? Nantikan kabar selanjutnya!</string>
 </resources>

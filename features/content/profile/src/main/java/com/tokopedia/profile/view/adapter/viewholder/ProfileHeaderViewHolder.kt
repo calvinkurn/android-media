@@ -27,6 +27,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_header
+
         const val PAYLOAD_FOLLOW = 13
         const val TEXT_LENGTH_MIN = 3
     }
