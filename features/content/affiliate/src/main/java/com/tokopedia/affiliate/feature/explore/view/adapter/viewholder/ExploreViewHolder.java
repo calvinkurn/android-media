@@ -49,7 +49,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
         tvTitle.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(
                 mainView.getContext().getResources().getString(R.string.text_item_commission)
-                        + MethodChecker.fromHtml(element.getCommissionString()));
+                        + " "+ MethodChecker.fromHtml(element.getCommissionString()));
     }
 
     private void initViewListener(ExploreViewModel element) {

@@ -385,7 +385,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorCheckAffiliate(String error, String productId, String adId) {
-
+        isCanDoAction = true;
     }
 
     @Override
@@ -400,6 +400,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessCheckQuotaButEmpty() {
+        isCanDoAction = true;
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
             RouteManager.route(
@@ -425,6 +426,7 @@ public class ExploreFragment
 
     @Override
     public void onErrorCheckQuota(String error, String productId, String adId) {
+        isCanDoAction = true;
         showError(error, (view) -> presenter.checkAffiliateQuota(productId, adId));
     }
 
