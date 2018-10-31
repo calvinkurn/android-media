@@ -57,7 +57,6 @@ public class ImageSearchModule {
         return new ImageSearchPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
-    @SearchScope
     @Provides
     UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);

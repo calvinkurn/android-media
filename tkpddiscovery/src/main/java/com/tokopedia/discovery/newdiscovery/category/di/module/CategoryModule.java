@@ -31,8 +31,7 @@ import dagger.Provides;
         AttributeModule.class,
         ImageSearchModule.class,
         CatalogModule.class,
-        CategoryHeaderModule.class,
-        ImageSearchModule.class
+        CategoryHeaderModule.class
 })
 public class CategoryModule {
 
@@ -48,11 +47,5 @@ public class CategoryModule {
                                                GetProductUseCase getProductUseCase,
                                                GetImageSearchUseCase getImageSearchUseCase) {
         return new CategoryPresenter(context, getProductUseCase, getImageSearchUseCase);
-    }
-
-    @CategoryScope
-    @Provides
-    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
     }
 }

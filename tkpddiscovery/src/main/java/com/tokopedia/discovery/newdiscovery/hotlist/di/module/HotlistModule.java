@@ -79,10 +79,4 @@ public class HotlistModule {
                 productRepository
         );
     }
-
-    @HotlistScope
-    @Provides
-    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
 }

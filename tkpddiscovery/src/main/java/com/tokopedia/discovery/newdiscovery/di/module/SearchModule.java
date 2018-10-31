@@ -60,10 +60,4 @@ public class SearchModule {
     SearchPresenter provideSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         return new SearchPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
-
-    @SearchScope
-    @Provides
-    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
 }
