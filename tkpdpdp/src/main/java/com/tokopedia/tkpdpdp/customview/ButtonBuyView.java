@@ -202,15 +202,15 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public void showLoadingBuyNow() {
         pbBuyNow.setVisibility(VISIBLE);
         tvBuyNow.setVisibility(GONE);
-        tvBuyNow.setEnabled(false);
-        tvAddToCart.setEnabled(false);
+        tvBuyNow.setClickable(false);
+        tvAddToCart.setClickable(false);
     }
 
     public void showLoadingAddToCart() {
         pbAddToCart.setVisibility(VISIBLE);
         tvAddToCart.setVisibility(GONE);
-        tvAddToCart.setEnabled(false);
-        tvBuyNow.setEnabled(false);
+        tvAddToCart.setClickable(false);
+        tvBuyNow.setClickable(false);
     }
 
     public void removeLoading() {
@@ -218,8 +218,8 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         tvAddToCart.setVisibility(VISIBLE);
         pbBuyNow.setVisibility(GONE);
         tvBuyNow.setVisibility(VISIBLE);
-        tvBuyNow.setEnabled(true);
-        tvAddToCart.setEnabled(true);
+        tvBuyNow.setClickable(true);
+        tvAddToCart.setClickable(true);
     }
 
     public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
