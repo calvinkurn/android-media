@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -101,6 +102,7 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
                 return GoogleMapFragment.newInstance(locationPass);
             } else {
+                Toast.makeText(this, "No location Provided", Toast.LENGTH_SHORT).show();
                 // todo : generate longlat geocode by network here
             }
         }
