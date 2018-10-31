@@ -121,7 +121,7 @@ public class TokoCashOtpActivity extends VerificationActivity {
 
             Fragment fragment = TokoCashVerificationFragment.createInstance(createDynamicBundle(methodItem));
             fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
-            fragmentTransaction.add(R.id.parent_view, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }

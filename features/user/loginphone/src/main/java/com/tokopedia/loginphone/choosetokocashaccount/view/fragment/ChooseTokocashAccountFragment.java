@@ -136,7 +136,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_choose_tokocash_account, parent, false);
+        View view = inflater.inflate(R.layout.fragment_choose_login_phone_account, parent, false);
         setHasOptionsMenu(true);
         message = view.findViewById(R.id.message);
         listAccount = view.findViewById(R.id.list_account);
