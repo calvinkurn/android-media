@@ -8,14 +8,10 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.loyalty.R;
-import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author anggaprasetiyo on 08/01/18.
@@ -23,9 +19,7 @@ import butterknife.ButterKnife;
 
 public class MenuPromoTab extends BaseCustomView {
 
-    @BindView(R2.id.iv_icon)
     ImageView ivIcon;
-    @BindView(R2.id.tv_title)
     TextView tvTitle;
     private PromoMenuData promoMenuData;
 
@@ -48,7 +42,8 @@ public class MenuPromoTab extends BaseCustomView {
         LayoutInflater.from(context).inflate(
                 R.layout.holder_menu_promo_tab, this, true
         );
-        ButterKnife.bind(this);
+        ivIcon = findViewById(R.id.iv_icon);
+        tvTitle = findViewById(R.id.tv_title);
     }
 
     public void renderData(PromoMenuData promoMenuData) {

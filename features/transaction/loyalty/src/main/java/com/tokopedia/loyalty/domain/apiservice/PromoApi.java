@@ -1,8 +1,8 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.List;
 import java.util.Map;

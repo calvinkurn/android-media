@@ -5,16 +5,20 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.webkit.WebViewFragment;
 
-import com.tokopedia.core.app.TkpdCoreWebViewActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.loyalty.view.fragment.TokoPointWebViewFragment;
 
 /**
  * @author okasurya on 1/29/18.
  */
 
-public class TokoPointWebviewActivity extends TkpdCoreWebViewActivity {
+public class TokoPointWebviewActivity extends BaseSimpleActivity {
     public static final String EXTRA_URL = "url";
+    private static final String EXTRA_TITLE = "title";
     private TokoPointWebViewFragment fragment;
 
     public static Intent getIntent(Context context, String url) {
@@ -33,21 +37,21 @@ public class TokoPointWebviewActivity extends TkpdCoreWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(com.tokopedia.core.R.layout.activity_webview_container);
-        String url = getIntent().getExtras().getString(EXTRA_URL);
-        fragment = TokoPointWebViewFragment.createInstance(url);
-        if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(com.tokopedia.core.R.id.container, fragment);
-            fragmentTransaction.commit();
+        if(!TextUtils.isEmpty(getIntent().getStringExtra(Intent.EXTRA_TITLE))){
+            updateTitle(getIntent().getStringExtra(Intent.EXTRA_TITLE));
         }
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        fragment = TokoPointWebViewFragment.createInstance(getIntent().getStringExtra(EXTRA_URL));
+        return fragment;
     }
 
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebview().canGoBack()) {
+            if (fragment!= null && fragment.isAdded() && fragment.getWebview().canGoBack()) {
                 fragment.getWebview().goBack();
             } else {
                 super.onBackPressed();

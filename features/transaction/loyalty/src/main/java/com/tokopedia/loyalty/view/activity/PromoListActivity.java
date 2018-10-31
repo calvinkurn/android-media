@@ -1,27 +1,20 @@
 package com.tokopedia.loyalty.view.activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.ticker.TouchViewPager;
 import com.tokopedia.loyalty.R;
-import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.applink.LoyaltyAppLink;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
@@ -29,23 +22,20 @@ import com.tokopedia.loyalty.di.module.PromoListActivityModule;
 import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
-import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
 import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
+import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-
 /**
  * @author anggaprasetiyo on 02/01/18.
  */
 
-public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>,
-        IPromoListActivityView, PromoListFragment.OnFragmentInteractionListener {
+public class PromoListActivity extends BaseActivity implements IPromoListActivityView, PromoListFragment.OnFragmentInteractionListener {
 
     private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
     private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
@@ -53,11 +43,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
 
-    @BindView(R2.id.view_pager)
     TouchViewPager viewPager;
-    @BindView(R2.id.tab_layout)
     TabLayout tabLayout;
-    @BindView(R2.id.container_error)
     View containerError;
 
     private PromoPagerAdapter adapter;
@@ -67,6 +54,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Inject
     IPromoListActivityPresenter dPresenter;
+
+    @Inject
+    PromoTrackingUtil promoTrackingUtil;
 
     public static Intent newInstance(Context context, String menuId, String categoryId) {
         return new Intent(context, PromoListActivity.class)
@@ -107,62 +97,40 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().getExtras() != null) {
+            setupBundlePass(getIntent().getExtras());
+        }
+        setContentView(getContentId());
+        initialPresenter();
+        initView();
+        setActionVar();
     }
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         autoSelectedMenuId = extras.getString(EXTRA_AUTO_SELECTED_MENU_ID);
         autoSelectedCategoryId = extras.getString(EXTRA_AUTO_SELECTED_CATEGORY_ID);
     }
 
-    @Override
     protected void initialPresenter() {
         PromoListActivityComponent promoListActivityComponent = DaggerPromoListActivityComponent.builder()
-                .baseAppComponet(((BaseMainApplication)getApplicationContext()).getBaseAppComponent())
+                .baseAppComponet(((BaseMainApplication) getApplicationContext()).getBaseAppComponent())
                 .promoListActivityModule(new PromoListActivityModule(this))
                 .build();
         promoListActivityComponent.inject(this);
     }
 
-    @Override
     protected int getContentId() {
         return R.layout.activity_promo_list;
     }
 
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
     protected void initView() {
-        if (isLightToolbarThemes())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                toolbar.setElevation(0);
-                toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-            } else {
-                toolbar.setBackgroundColor(getResources().getColor(R.color.white));
-            }
+        viewPager = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tab_layout);
+        containerError = findViewById(R.id.container_error);
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
     protected void setActionVar() {
         dPresenter.processGetPromoMenu();
     }
@@ -170,7 +138,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @Override
     public void renderPromoMenuDataList(final List<PromoMenuData> promoMenuDataList) {
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
-        adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
+        adapter = new PromoPagerAdapter(getSupportFragmentManager(), promoMenuDataList, autoSelectedCategoryId);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -194,9 +162,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
                     autoSelectedMenuId = String.valueOf(tab.getPosition());
                 }
-                UnifyTracking.eventPromoListClickCategory(
-                        promoMenuDataList.get(tab.getPosition()).getTitle()
-                );
+                promoTrackingUtil.eventPromoListClickCategory(promoMenuDataList.get(tab.getPosition()).getTitle());
             }
 
             @Override
@@ -219,7 +185,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         if (firstTab != null) {
             firstTab.select();
             ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
-            UnifyTracking.eventPromoListClickCategory(
+            promoTrackingUtil.eventPromoListClickCategory(
                     promoMenuDataList.get(firstTab.getPosition()).getTitle()
             );
         }
@@ -313,11 +279,6 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @Override
     public void closeView() {
 
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 
     @Override

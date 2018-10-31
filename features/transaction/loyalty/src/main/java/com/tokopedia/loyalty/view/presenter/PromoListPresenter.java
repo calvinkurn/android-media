@@ -3,12 +3,12 @@ package com.tokopedia.loyalty.view.presenter;
 import android.util.Log;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
+import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 
 import java.net.ConnectException;
@@ -28,12 +28,14 @@ import rx.Subscriber;
 public class PromoListPresenter implements IPromoListPresenter {
     private final IPromoInteractor promoInteractor;
     private final IPromoListView view;
+    private PromoTrackingUtil promoTrackingUtil;
     private int page = 1;
 
     @Inject
-    public PromoListPresenter(IPromoInteractor promoInteractor, IPromoListView view) {
+    public PromoListPresenter(IPromoInteractor promoInteractor, IPromoListView view, PromoTrackingUtil promoTrackingUtil) {
         this.promoInteractor = promoInteractor;
         this.view = view;
+        this.promoTrackingUtil = promoTrackingUtil;
     }
 
     @Override
@@ -98,7 +100,8 @@ public class PromoListPresenter implements IPromoListPresenter {
                     "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
             );
         }
-        TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, "");
+
+        promoTrackingUtil.eventImpressionPromoList(dataLayerSinglePromoCodeList, "");
         Log.d("TOTOT", "sendImpressionTrackingData: ");
     }
 
@@ -112,7 +115,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                 "promo_id", "0",
                 "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
         );
-        TrackingUtils.eventClickPromoListItem(dataLayerSinglePromoCodeList, promoData.getTitle());
+        promoTrackingUtil.eventClickPromoListItem(dataLayerSinglePromoCodeList, promoData.getTitle());
     }
 
 

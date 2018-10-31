@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.view.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.ArrayList;

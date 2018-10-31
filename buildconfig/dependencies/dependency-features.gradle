@@ -76,6 +76,7 @@ ext {
             kol                         : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon                   : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
             loyalty                     : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            loyaltyCommon               : "com.tokopedia.loyalty.common:loyalti_common:${tkpdLoyaltyVersion}",
             mitraToppers                : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             payment                     : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting              : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
@@ -186,6 +187,7 @@ ext {
             transactionanalytics        : ":features:transaction:transactionanalytics",
             promoCheckout               : ":features:transaction:promo_checkout",
             loyalty                     : ":features:transaction:loyalty",
+            loyaltyCommon               : ":features:transaction:loyalty_common",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",

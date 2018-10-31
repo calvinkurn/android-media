@@ -1,13 +1,16 @@
 package com.tokopedia.loyalty.domain.apiservice;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.network.exception.HttpErrorException;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,8 +24,8 @@ import okhttp3.Response;
 public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = TokoPointAuthInterceptor.class.getSimpleName();
 
-    TokoPointAuthInterceptor(String hmacKey) {
-        super(hmacKey);
+    public TokoPointAuthInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
+        super(context, networkRouter, userSession);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
         return AuthUtil.generateHeadersWithPath(
-                path, strParam, method, authKey, contentTypeHeader
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId()
         );
     }
 }

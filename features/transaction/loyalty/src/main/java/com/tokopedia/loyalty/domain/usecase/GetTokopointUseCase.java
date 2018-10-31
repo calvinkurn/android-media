@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.domain.usecase;
 
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

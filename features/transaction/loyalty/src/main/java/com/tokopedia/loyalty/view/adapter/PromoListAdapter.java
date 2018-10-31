@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.compoundview.PromoImageView;
 import com.tokopedia.loyalty.view.data.PromoData;

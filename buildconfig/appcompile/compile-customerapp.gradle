@@ -76,7 +76,8 @@ include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 include "features:transaction:promo_checkout"
-include 'features:transaction:loyalty'
+include "features:transaction:loyalty"
+include "features:transaction:loyalty_common"
 
 include "features:user:groupchat"
 include "features:user:profile"

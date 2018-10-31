@@ -42,7 +42,7 @@ public class AuthUtil {
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
-    private static final String HEADER_PATH = "x-tkpd-path";
+    private static final String HEADER_PATH = "X-Tkpd-Path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
@@ -155,6 +155,17 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateHeadersWithPath(
+            String path, String strParam, String method, String authKey, String contentType, String userId
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT, userId
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_PATH, path);
+        return finalHeader;
+    }
 
     public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
         String hash = md5(userId + "~" + deviceId);

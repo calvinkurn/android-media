@@ -2,32 +2,33 @@ package com.tokopedia.loyalty.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.IntentService;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.loyalty.R;
-import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
@@ -37,6 +38,7 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.data.PromoSubMenuData;
 import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
+import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 
 import java.util.ArrayList;
@@ -44,14 +46,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 03/01/18.
  */
 
-public class PromoListFragment extends BasePresenterFragment implements IPromoListView,
+public class PromoListFragment extends BaseDaggerFragment implements IPromoListView,
         PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
     private static final String ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID = "ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID";
@@ -62,17 +63,16 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private static final int PROMO_DETAIL_REQUEST_CODE = 0;
 
     private static final String TYPE_FILTER_ALL = "all";
-    @BindView(R2.id.quick_filter)
     QuickSingleFilterView quickSingleFilterView;
-    @BindView(R2.id.rv_promo_list)
     RecyclerView rvPromoList;
-    @BindView(R2.id.container_list)
     View containerList;
 
     @Inject
     IPromoListPresenter dPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
+    @Inject
+    PromoTrackingUtil promoTrackingUtil;
 
     private RefreshHandler refreshHandler;
 
@@ -83,13 +83,12 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private BottomSheetView bottomSheetViewInfoPromoCode;
     private boolean isLoadMore;
     private String filterSelected = "";
-    private EndlessRecyclerviewListener endlessRecyclerviewListener;
+    private EndlessRecyclerViewScrollListener endlessRecyclerviewListener;
 
     private String autoSelectedCategoryId;
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         PromoListFragmentComponent promoListComponent = DaggerPromoListFragmentComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getActivityContext().getApplicationContext()).getBaseAppComponent())
                 .promoListFragmentModule(new PromoListFragmentModule(this))
@@ -98,9 +97,34 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            setupArguments(getArguments());
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_promo_list, container, false);
+        quickSingleFilterView = view.findViewById(R.id.quick_filter);
+        rvPromoList = view.findViewById(R.id.rv_promo_list);
+        containerList = view.findViewById(R.id.container_list);
+        initView(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initialVar();
+    }
+
+    @Override
     public void renderPromoDataList(List<PromoData> promoDataList, boolean firstTimeLoad) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
-        View errorView = containerList.findViewById(com.tokopedia.core.R.id.main_retry);
+        View errorView = containerList.findViewById(R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
             adapter.addAllItems(promoDataList);
@@ -238,60 +262,32 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(EXTRA_STATE_PROMO_MENU_DATA, promoMenuData);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            promoMenuData = savedInstanceState.getParcelable(EXTRA_STATE_PROMO_MENU_DATA);
+        }
+        super.onViewStateRestored(savedInstanceState);
     }
 
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putParcelable(EXTRA_STATE_PROMO_MENU_DATA, promoMenuData);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        promoMenuData = savedState.getParcelable(EXTRA_STATE_PROMO_MENU_DATA);
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
     protected void setupArguments(Bundle arguments) {
         this.promoMenuData = arguments.getParcelable(ARG_EXTRA_PROMO_MENU_DATA);
         this.autoSelectedCategoryId = arguments.getString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, "0");
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_promo_list;
-    }
-
-    @Override
     protected void initView(View view) {
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvPromoList.setLayoutManager(layoutManager);
-        endlessRecyclerviewListener = new EndlessRecyclerviewListener(layoutManager) {
+        endlessRecyclerviewListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
                 }
@@ -301,12 +297,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         rvPromoList.setAdapter(adapter);
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
     protected void initialVar() {
         int indexAutoSelectCategoryFilter = 0;
 
@@ -325,7 +315,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             @Override
             public void selectFilter(String typeFilter) {
                 String subCategoryName = getSubCategoryNameById(typeFilter);
-                UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
+                promoTrackingUtil.eventPromoListClickSubCategory(subCategoryName);
 
                 actionListener.onChangeFilter(typeFilter);
 
@@ -362,10 +352,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         return quickFilterItemList;
     }
 
-    @Override
-    protected void setActionVar() {
-
-    }
 
     public static Fragment newInstance(PromoMenuData promoMenuData, String autoSelectCategoryId) {
         Fragment fragment = new PromoListFragment();
@@ -374,6 +360,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         bundle.putString(ARG_EXTRA_AUTO_SELECT_FILTER_CATEGORY_ID, autoSelectCategoryId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -409,9 +400,9 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
-        UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoName);
+        promoTrackingUtil.eventPromoListClickCopyToClipboardPromoCode(promoName);
         ClipboardManager clipboard = (ClipboardManager)
-                context.getSystemService(Context.CLIPBOARD_SERVICE);
+                getActivityContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
                 "CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode
         );
@@ -438,7 +429,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoCodeTooltipClicked() {
-        UnifyTracking.eventPromoTooltipClickOpenTooltip();
+        promoTrackingUtil.eventPromoTooltipClickOpenTooltip();
         if (bottomSheetViewInfoPromoCode == null) {
             bottomSheetViewInfoPromoCode = new BottomSheetView(getActivity());
             bottomSheetViewInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -451,7 +442,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             bottomSheetViewInfoPromoCode.setBtnCloseOnClick(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                    promoTrackingUtil.eventPromoTooltipClickCloseTooltip();
                     bottomSheetViewInfoPromoCode.dismiss();
                 }
             });

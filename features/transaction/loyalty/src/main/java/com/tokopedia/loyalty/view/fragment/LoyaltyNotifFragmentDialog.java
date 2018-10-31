@@ -13,12 +13,11 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 
 /**
  * @author anggaprasetiyo on 07/12/17.
@@ -27,11 +26,12 @@ import com.tokopedia.loyalty.R;
 public class LoyaltyNotifFragmentDialog extends DialogFragment {
     public static final String ARG_EXTRA_POP_UP_NOTIFICATION = "ARG_EXTRA_POP_UP_NOTIFICATION";
 
-
     TextView tvTitle;
     TextView tvDesc;
     TextView tvAction;
     ImageView ivPic;
+
+    private PromoTrackingUtil promoTrackingUtil;
 
     public static DialogFragment newInstance(PopUpNotif popUpNotifData) {
         Bundle bundle = new Bundle();
@@ -46,6 +46,9 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getActivity().getApplication() instanceof LoyaltyModuleRouter) {
+            promoTrackingUtil = new PromoTrackingUtil((LoyaltyModuleRouter)getActivity().getApplication());
+        }
         this.popUpNotifData = getArguments().getParcelable(ARG_EXTRA_POP_UP_NOTIFICATION);
     }
 
@@ -54,7 +57,9 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.fragment_dialog_notify_loyalty, container, false);
-        UnifyTracking.eventViewTokopointPopup();
+        if(promoTrackingUtil!= null){
+            promoTrackingUtil.eventViewTokopointPopup();
+        }
         tvTitle = view.findViewById(R.id.tv_tokopoint_notif_title);
         tvDesc = view.findViewById(R.id.tv_tokopoint_notif_desc);
         ivPic = view.findViewById(R.id.iv_tokopoint_notif_image);
@@ -68,17 +73,14 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
         tvAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickTokoPointPopup();
+                promoTrackingUtil.eventClickTokoPointPopup();
                 dismiss();
 
                 if (!TextUtils.isEmpty(popUpNotifData.getAppLink())) {
-                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) getActivity().getApplication())
-                                .actionAppLink(getActivity(), popUpNotifData.getAppLink());
-                    }
+                    RouteManager.route(getActivity(), popUpNotifData.getAppLink());
                 } else if (!TextUtils.isEmpty(popUpNotifData.getButtonUrl())) {
-                    if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) getActivity().getApplication())
+                    if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
+                        ((LoyaltyModuleRouter) getActivity().getApplication())
                                 .actionOpenGeneralWebView(getActivity(), popUpNotifData.getButtonUrl());
                     }
                 }

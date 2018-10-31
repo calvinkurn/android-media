@@ -1,11 +1,16 @@
 package com.tokopedia.loyalty.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.PromoActivityScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.presenter.PromoListActivityPresenter;
+import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
 import javax.inject.Inject;
@@ -43,5 +48,14 @@ public class PromoListActivityModule {
     @PromoActivityScope
     IPromoListActivityPresenter provideIPromoListActivityPresenter(IPromoInteractor promoInteractor) {
         return new PromoListActivityPresenter(promoInteractor, view);
+    }
+
+    @Provides
+    @PromoActivityScope
+    PromoTrackingUtil providePromoTrackingUtil(@ApplicationContext Context context){
+        if(context instanceof LoyaltyModuleRouter) {
+            return new PromoTrackingUtil((LoyaltyModuleRouter) context);
+        }
+        return null;
     }
 }

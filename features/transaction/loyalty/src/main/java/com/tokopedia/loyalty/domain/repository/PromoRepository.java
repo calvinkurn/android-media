@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.loyalty.domain.apiservice.PromoEndpointService;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.loyalty.domain.apiservice.PromoApi;
 import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -21,18 +21,18 @@ import rx.functions.Func1;
 
 public class PromoRepository implements IPromoRepository {
 
-    private final PromoEndpointService promoEndpointService;
+    private final PromoApi promoApi;
     private final IPromoResponseMapper mapper;
 
     @Inject
-    public PromoRepository(PromoEndpointService promoEndpointService, IPromoResponseMapper mapper) {
-        this.promoEndpointService = promoEndpointService;
+    public PromoRepository(PromoApi promoApi, IPromoResponseMapper mapper) {
+        this.promoApi = promoApi;
         this.mapper = mapper;
     }
 
     @Override
     public Observable<List<PromoMenuData>> getPromoMenuDataList(final TKPDMapParam<String, String> param) {
-        return promoEndpointService.getApi().getMenuIndexList(param).map(
+        return promoApi.getMenuIndexList(param).map(
                 new Func1<Response<List<MenuPromoResponse>>, List<PromoMenuData>>() {
                     @Override
                     public List<PromoMenuData> call(Response<List<MenuPromoResponse>> listResponse) {
@@ -43,7 +43,7 @@ public class PromoRepository implements IPromoRepository {
 
     @Override
     public Observable<List<PromoData>> getPromoDataList(final TKPDMapParam<String, String> param) {
-        return promoEndpointService.getApi().getPromoList(param).map(
+        return promoApi.getPromoList(param).map(
                 new Func1<Response<List<PromoResponse>>, List<PromoData>>() {
                     @Override
                     public List<PromoData> call(Response<List<PromoResponse>> listResponse) {

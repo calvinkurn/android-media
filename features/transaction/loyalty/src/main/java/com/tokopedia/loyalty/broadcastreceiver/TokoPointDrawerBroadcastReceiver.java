@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
-import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.common.DrawerActivityBroadcastReceiverConstant;
+import com.tokopedia.loyalty.common.HomeFragmentBroadcastReceiverConstant;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.loyalty.di.component.DaggerTokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.component.TokoPointBroadcastComponent;
 import com.tokopedia.loyalty.di.module.ServiceApiModule;

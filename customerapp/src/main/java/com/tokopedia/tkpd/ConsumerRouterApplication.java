@@ -76,8 +76,8 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.PopUpNotif;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.loyalty.common.PopUpNotif;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
@@ -98,7 +98,6 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -234,6 +233,7 @@ import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
@@ -402,9 +402,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
@@ -1096,6 +1094,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
+    }
+
+    @Override
+    public void sendEventImpressionPromoList(List<Object> dataLayerSinglePromoCodeList, String title) {
+        TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, title);
+    }
+
+    @Override
+    public void eventClickPromoListItem(List<Object> dataLayerSinglePromoCodeList, String title) {
+        TrackingUtils.eventClickPromoListItem(dataLayerSinglePromoCodeList, title);
     }
 
     @Override
@@ -2379,6 +2387,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
         return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
                 .verifyPromo(requestParams);
+    }
+
+    @Override
+    public void sharePromoLoyalty(Activity activity,PromoData promoData) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.PROMO_TYPE)
+                .setId(promoData.getSlug())
+                .setName(promoData.getTitle())
+                .setTextContent(promoData.getTitle()
+                        + getString(com.tokopedia.loyalty.R.string.share_promo_additional_text))
+                .setUri(promoData.getLink())
+                .build();
+        new DefaultShare(activity, shareData).show();
     }
 
     @Override

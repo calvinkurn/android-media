@@ -341,6 +341,7 @@ dependencies {
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
     implementation project(rootProject.ext.features.promoCheckout)
+    implementation project(rootProject.ext.features.loyaltyCommon)
 
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)

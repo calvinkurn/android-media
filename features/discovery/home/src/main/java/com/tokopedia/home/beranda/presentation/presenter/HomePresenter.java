@@ -1,13 +1,11 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
@@ -39,7 +37,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;

@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +20,18 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
+import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;
+import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 import com.tokopedia.loyalty.view.data.mapper.PromoDataMapper;
 import com.tokopedia.loyalty.view.presenter.PromoDetailPresenter;
-import com.tokopedia.loyalty.view.analytics.PromoDetailAnalytics;
 import com.tokopedia.loyalty.view.view.IPromoDetailView;
 
 import java.util.ArrayList;
@@ -73,10 +73,14 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
     private int page = 0;
     private int position = 0;
 
-    @Inject PromoDetailAnalytics promoDetailAnalytics;
-    @Inject PromoDetailPresenter promoDetailPresenter;
-    @Inject PromoDetailAdapter promoDetailAdapter;
-    @Inject PromoDataMapper promoDataMapper;
+    @Inject
+    PromoDetailAnalytics promoDetailAnalytics;
+    @Inject
+    PromoDetailPresenter promoDetailPresenter;
+    @Inject
+    PromoDetailAdapter promoDetailAdapter;
+    @Inject
+    PromoDataMapper promoDataMapper;
     @Inject
     CompositeSubscription compositeSubscription;
 
@@ -199,7 +203,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
         this.refreshHandler.finishRefresh();
 
-        View errorView = this.rlContainerLayout.findViewById(com.tokopedia.core.R.id.main_retry);
+        View errorView = this.rlContainerLayout.findViewById(R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
 
         this.promoDetailAdapter.setPromoDetail(promoDataMapper.convert(promoData));
@@ -278,9 +282,9 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
-            tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), url);
+        if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
+            LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
+            loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), url);
         }
     }
 
@@ -305,13 +309,13 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 String appLink = promoData.getAppLink();
                 String redirectUrl = promoData.getPromoLink();
 
-                if (getActivity().getApplication() instanceof TkpdCoreRouter) {
-                    TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+                if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
+                    LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
 
-                    if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink)) {
-                        tkpdCoreRouter.actionApplinkFromActivity(getActivity(), appLink);
+                    if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(),appLink)) {
+                        RouteManager.route(getActivity(), appLink);
                     } else {
-                        tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+                        loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
                     }
                 }
             }
