@@ -1,7 +1,5 @@
 package com.tokopedia.tkpdpdp.constant;
 
-import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
-
 public class ConstantKey {
 
     public static final String ARGS_STATE_RESULT_PDP_MODAL = "ARGS_STATE_RESULT_PDP_MODAL";
