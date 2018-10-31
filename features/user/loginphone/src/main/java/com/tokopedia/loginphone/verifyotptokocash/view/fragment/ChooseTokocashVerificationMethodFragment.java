@@ -69,6 +69,7 @@ public class ChooseTokocashVerificationMethodFragment extends ChooseVerification
 
     @Override
     protected void initList() {
+        dismissLoading();
         adapter.setList(getList());
     }
 
