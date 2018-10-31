@@ -322,6 +322,37 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
+        if (cartShipmentAddressFormData.getAutoApplyData() != null && cartShipmentAddressFormData.getAutoApplyData().isSuccess()) {
+            cartItemPromoHolderData = CartItemPromoHolderData.createInstanceFromAutoApply(
+                    cartShipmentAddressFormData.getAutoApplyData());
+            if (cartItemPromoHolderData.getTypePromo() == PromoCodeAppliedData.TYPE_COUPON) {
+                promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_COUPON)
+                        .promoCode(cartItemPromoHolderData.getCouponCode())
+                        .couponTitle(cartItemPromoHolderData.getCouponTitle())
+                        .description(cartItemPromoHolderData.getCouponMessage())
+                        .amount((int) cartItemPromoHolderData.getCouponDiscountAmount())
+                        .fromAutoApply(true)
+                        .build();
+            } else {
+                promoCodeAppliedData = new PromoCodeAppliedData.Builder()
+                        .typeVoucher(PromoCodeAppliedData.TYPE_VOUCHER)
+                        .promoCode(cartItemPromoHolderData.getVoucherCode())
+                        .description(cartItemPromoHolderData.getVoucherMessage())
+                        .amount((int) cartItemPromoHolderData.getVoucherDiscountAmount())
+                        .fromAutoApply(true)
+                        .build();
+            }
+        } else {
+            cartItemPromoHolderData = new CartItemPromoHolderData();
+            cartItemPromoHolderData.setPromoNotActive();
+            promoCodeAppliedData = null;
+        }
+
+        if (cartShipmentAddressFormData.getCartPromoSuggestion() != null) {
+            setCartPromoSuggestion(cartShipmentAddressFormData.getCartPromoSuggestion());
+        }
+
         setShipmentCartItemModelList(getView()
                 .getShipmentDataConverter().getShipmentItems(cartShipmentAddressFormData));
     }
