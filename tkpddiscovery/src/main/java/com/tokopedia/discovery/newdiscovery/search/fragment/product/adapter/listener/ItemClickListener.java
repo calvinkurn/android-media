@@ -23,5 +23,7 @@ public interface ItemClickListener extends EmptyStateClickListener {
 
     void onSearchGuideClicked(String keyword);
 
+    void onRelatedSearchClicked(String keyword);
+
     void onQuickFilterSelected(Option option);
 }

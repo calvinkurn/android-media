@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
+import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 
 /**
@@ -22,6 +24,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     lateinit var shopId: String
     var shopInfo: ShopInfo? = null
     var shopName: String? = null
+    lateinit var merchantVoucherTracking: MerchantVoucherTracking
 
     override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance(shopId)
 
@@ -43,6 +46,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
         shopName = intent.getStringExtra(SHOP_NAME)
         GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
+        merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
         if (!shopName.isNullOrEmpty()) {
             supportActionBar?.title = getString(R.string.merchant_voucher_x, shopName)
         }
@@ -78,6 +82,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
         if (fragment!= null && fragment is MerchantVoucherListFragment){
             val shopInfo: ShopInfo? = (fragment as MerchantVoucherListFragment).shopInfo
             if (shopInfo!= null) {
+                merchantVoucherTracking.clickShare()
                 (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
                 shopId, shopInfo.info.shopUrl, getString(R.string.shop_label_share_formatted,
                 MethodChecker.fromHtml(shopInfo.info.shopName).toString(), shopInfo.info.shopLocation))
