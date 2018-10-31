@@ -46,7 +46,7 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     }
 
     private void initView(DashboardItemViewModel element) {
-        ImageHandler.LoadImage(ivItem, element.getImageUrl());
+        ImageHandler.loadImageRounded2(ivItem.getContext(), ivItem, element.getImageUrl());
         tvName.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(element.getValue());
         tvClickCount.setText(element.getItemClicked());
