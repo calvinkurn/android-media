@@ -285,7 +285,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FeedUrl.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         FeedUrl.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         FeedUrl.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN
+        RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
 
 
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
