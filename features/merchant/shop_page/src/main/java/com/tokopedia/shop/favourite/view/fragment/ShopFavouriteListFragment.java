@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
@@ -12,7 +13,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.analytic.ShopPageTracking;
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -22,9 +24,6 @@ import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView;
 import com.tokopedia.shop.favourite.view.model.ShopFavouriteViewModel;
 import com.tokopedia.shop.favourite.view.presenter.ShopFavouriteListPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,14 +46,15 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Inject
     ShopFavouriteListPresenter shopFavouriteListPresenter;
-    @Inject
-    ShopPageTracking shopPageTracking;
+
+    ShopPageTrackingBuyer shopPageTracking;
     private ShopInfo shopInfo;
     private String shopId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getContext().getApplicationContext());
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
     }
@@ -75,9 +75,6 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-        if (shopInfo != null) {
-            shopPageTracking.eventClickUserFavouritingShop(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
         ((ShopModuleRouter) getActivity().getApplication()).goToProfileShop(getActivity(), shopFavouriteViewModel.getId());
     }
 
@@ -131,14 +128,12 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
             emptyModel.setTitle(getString(R.string.shop_product_my_empty_follower_title));
             emptyModel.setContent("");
             emptyModel.setButtonTitle("");
-        } else{
+        } else {
             emptyModel.setTitle(getString(R.string.shop_product_empty_follower_title));
             emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getInfo().getShopName()));
             emptyModel.setButtonTitle(getString(R.string.shop_page_label_follow));
             if (shopInfo != null) {
-                shopPageTracking.eventImpressionFavouriteShopFromZero(shopId,
-                        shopFavouriteListPresenter.isMyShop(shopId),
-                        ShopPageTracking.getShopType(shopInfo.getInfo()));
+                shopPageTracking.impressionFollowFromZeroFollower(CustomDimensionShopPage.create(shopInfo));
             }
         }
         return emptyModel;
@@ -157,9 +152,6 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (shopInfo != null) {
-            shopPageTracking.eventCloseListFavourite(shopId, shopFavouriteListPresenter.isMyShop(shopId), ShopPageTracking.getShopType(shopInfo.getInfo()));
-        }
         if (shopFavouriteListPresenter != null) {
             shopFavouriteListPresenter.detachView();
         }
@@ -173,9 +165,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onEmptyButtonClicked() {
         if (shopInfo != null) {
-            shopPageTracking.eventClickFavouriteShopFromZero(shopId,
-                    shopFavouriteListPresenter.isMyShop(shopId),
-                    ShopPageTracking.getShopType(shopInfo.getInfo()));
+            shopPageTracking.followFromZeroFollower(CustomDimensionShopPage.create(shopInfo));
             shopFavouriteListPresenter.toggleFavouriteShop(shopId);
         }
     }

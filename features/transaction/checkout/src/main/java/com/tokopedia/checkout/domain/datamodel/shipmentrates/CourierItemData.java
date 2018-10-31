@@ -31,10 +31,10 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private boolean selected;
     private String shipmentItemDataEtd;
     private String shipmentItemDataType;
+    private String promoCode;
 
     public CourierItemData() {
     }
-
 
     public int getShipperId() {
         return shipperId;
@@ -204,6 +204,14 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipperFormattedPrice = shipperFormattedPrice;
     }
 
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -232,6 +240,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.shipmentItemDataEtd);
         dest.writeString(this.shipmentItemDataType);
         dest.writeString(this.shipperFormattedPrice);
+        dest.writeString(this.promoCode);
     }
 
     protected CourierItemData(Parcel in) {
@@ -256,6 +265,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.shipmentItemDataEtd = in.readString();
         this.shipmentItemDataType = in.readString();
         this.shipperFormattedPrice = in.readString();
+        this.promoCode = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

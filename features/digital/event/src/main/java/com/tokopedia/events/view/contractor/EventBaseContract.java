@@ -35,7 +35,7 @@ public interface EventBaseContract {
 
         void onBackPressed();
 
-        void onActivityResult(int requestCode);
+        void onActivityResult(int requestCode,int resultCode);
 
         void onDestroy();
     }

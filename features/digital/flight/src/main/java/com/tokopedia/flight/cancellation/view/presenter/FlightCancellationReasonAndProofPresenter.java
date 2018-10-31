@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;

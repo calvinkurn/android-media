@@ -1,7 +1,7 @@
 package com.tokopedia.flight.searchV2.presentation.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
