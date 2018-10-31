@@ -142,6 +142,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     protected void initList() {
+        dismissLoading();
         presenter.getMethodList(passModel.getPhoneNumber(),
                 passModel.getOtpType());
     }
