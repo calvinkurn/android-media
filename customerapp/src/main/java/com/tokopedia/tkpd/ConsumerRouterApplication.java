@@ -276,6 +276,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
@@ -484,6 +485,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalBrowseRouter,
         TalkRouter, TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
+        RecentViewRouter,
         MerchantVoucherModuleRouter {
 
 
