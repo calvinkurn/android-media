@@ -85,7 +85,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isFromMultipleAddress);
+                view.renderCheckoutPage(!isFromMultipleAddress, isFromPdp);
             }
         }
     }
