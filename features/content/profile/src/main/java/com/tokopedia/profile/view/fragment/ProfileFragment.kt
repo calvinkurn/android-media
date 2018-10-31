@@ -44,6 +44,7 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.showcase.ShowCaseBuilder
@@ -209,7 +210,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-        setHasOptionsMenu(true)
+
+        setHasOptionsMenu(firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -225,6 +227,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             visitables.addAll(firstPageViewModel.visitableList)
         } else {
             visitables.add(getEmptyModel(
+                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
                     firstPageViewModel.profileHeaderViewModel.isOwner,
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
@@ -582,7 +585,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun getEmptyModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
+    private fun getEmptyModel(isShowAffiliateContent: Boolean,
+                              isOwner: Boolean,
+                              isAffiliate: Boolean): Visitable<*> {
+        return if (isShowAffiliateContent) getEmptyResultModel(isOwner, isAffiliate)
+        else ProfileEmptyViewModel()
+    }
+
+    private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_af_empty
         if (isOwner) {

@@ -59,6 +59,8 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
         return when(type) {
             ProfileHeaderViewHolder.LAYOUT ->
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
+            ProfileEmptyViewHolder.LAYOUT ->
+                ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             KolPostViewHolder.LAYOUT ->
                     KolPostViewHolder(parent,
                             kolPostViewListener,

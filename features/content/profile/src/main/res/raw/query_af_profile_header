@@ -8,6 +8,7 @@ query ProfileHeader ($userIDTarget: Int!) {
         affiliateName
         link
         isAffiliate
+        isShowAffiliateContent
         isFollowed
         totalFollowing {
           formatted
