@@ -25,7 +25,6 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -40,6 +39,7 @@ import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PR
 import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
+import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
@@ -64,6 +64,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
+    private var afterEdit: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var resultIntent: Intent? = null
@@ -241,6 +242,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     }
                     .show()
             afterPost = false
+        } else if (afterEdit) {
+            ToasterNormal
+                    .make(view,
+                            getString(R.string.profile_edit_success),
+                            BaseToaster.LENGTH_LONG
+                    )
+                    .setAction(getString(R.string.af_title_ok)) {}
+                    .show()
+            afterEdit = false
         }
     }
 
@@ -250,7 +260,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun goToFollowing() {
-        startActivity(KolFollowingListActivity.getCallingIntent(context, userId))
+        startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
@@ -358,11 +368,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
         val menus = Menus(context!!)
-        val menuList = ArrayList<String>()
+        val menuList = ArrayList<Menus.ItemMenus>()
         if (element.isDeletable) {
-            menuList.add(getString(R.string.profile_delete_post))
+            menuList.add(
+                    Menus.ItemMenus(
+                            getString(R.string.profile_delete_post),
+                            R.drawable.ic_af_trash
+                    )
+            )
         }
-        menus.setItemMenuList(menuList.toTypedArray())
+        menus.itemMenuList = menuList
         menus.setActionText(getString(R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { itemMenus, _ ->
@@ -434,6 +449,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+
+        if (adapter.data.last() is ProfileHeaderViewModel) {
+            onSwipeRefresh()
+        }
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -462,6 +481,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     it.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
                     ProfileActivity.TRUE
             )
+            afterEdit = TextUtils.equals(
+                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
+                    ProfileActivity.TRUE
+            )
         }
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter
@@ -484,7 +507,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted)) {
                 recommendationQuota.visibility = View.VISIBLE
                 recommendationQuota.text = affiliatePostQuota.formatted
             } else {

@@ -10,8 +10,7 @@
     <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
         android:id="@+id/imageViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_10" />
+        android:layout_height="match_parent"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabLayout"

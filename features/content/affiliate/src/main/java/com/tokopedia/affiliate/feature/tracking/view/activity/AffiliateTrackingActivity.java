@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -14,7 +13,7 @@ import com.tokopedia.affiliate.feature.tracking.di.AffTrackingModule;
 import com.tokopedia.affiliate.feature.tracking.di.DaggerAffTrackingComponent;
 import com.tokopedia.affiliate.feature.tracking.view.contract.AffContract;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AffiliateTrackingActivity extends BaseActivity implements AffContract.View {
+
+    private static final String EXTRA_APPLINK = "EXTRA_APPLINK";
+    private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
 
     @Inject
     AffContract.Presenter presenter;
@@ -52,7 +54,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
         }
     }
 
-    protected void initInjector(){
+    protected void initInjector() {
         AffTrackingComponent component = DaggerAffTrackingComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .affTrackingModule(new AffTrackingModule())
@@ -69,9 +71,8 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     @Override
     public void handleLink(String url) {
         if (!TextUtils.isEmpty(url)) {
-            ApplinkRouter router = ((ApplinkRouter) getApplicationContext());
-            if (router.isSupportApplink(url)) {
-                router.goToApplinkActivity(this, url);
+            if (RouteManager.isSupportApplink(this, url)) {
+                startHomeActivity(url);
             } else {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
@@ -87,8 +88,17 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
 
     @Override
     public void handleError() {
-        ApplinkRouter router = ((ApplinkRouter) getApplicationContext());
-        router.goToApplinkActivity(this, ApplinkConst.HOME);
+        startHomeActivity(null);
         finishActivity();
+    }
+
+    private void startHomeActivity(String applink) {
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
+        if (!TextUtils.isEmpty(applink)) {
+            intent.putExtra(EXTRA_APPLINK, applink);
+        } else {
+            intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
+        }
+        startActivity(intent);
     }
 }

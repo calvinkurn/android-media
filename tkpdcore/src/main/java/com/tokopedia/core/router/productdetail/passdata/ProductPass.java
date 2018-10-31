@@ -238,7 +238,7 @@ public class ProductPass implements Parcelable {
         countCourrier = in.readInt();
         cashback = in.readString();
         isOfficial = in.readByte() != 0x00;
-
+        fromExploreAffiliate = in.readByte() != 0x00;
     }
 
     @Override
@@ -272,6 +272,7 @@ public class ProductPass implements Parcelable {
         dest.writeInt(countCourrier);
         dest.writeString(cashback);
         dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
+        dest.writeByte((byte) (fromExploreAffiliate ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")

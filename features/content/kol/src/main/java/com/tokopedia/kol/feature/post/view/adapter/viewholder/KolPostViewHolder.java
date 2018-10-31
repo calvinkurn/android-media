@@ -46,6 +46,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
     private final Context context;
+    private PostImageAdapter adapter;
     private BaseKolView baseKolView;
     private FrameLayout containerView;
     private ViewPager imageViewPager;
@@ -55,10 +56,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private View addImageBtn;
     private View bottomSpace;
     private Type type;
-
-    public enum Type {
-        PROFILE, FEED, EXPLORE, SHOP_PAGE
-    }
 
     public KolPostViewHolder(View itemView,
                              KolPostListener.View.ViewHolder viewListener,
@@ -246,7 +243,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     }
 
     private void setUpViewPager(List<String> images) {
-        PostImageAdapter adapter = new PostImageAdapter();
+        adapter = new PostImageAdapter();
         adapter.setList(new ArrayList<>(images));
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
@@ -257,10 +254,13 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private void setListener(final KolPostViewModel element) {
         tooltip.setOnClickListener(v -> tooltipAreaClicked(element));
 
-        imageViewPager.setOnClickListener(v -> {
-            if (tooltip.getVisibility() == View.VISIBLE)
-                tooltipAreaClicked(element);
-        });
+        adapter.setClickListener(
+                position -> {
+                    if (tooltip.getVisibility() == View.VISIBLE) {
+                        tooltipAreaClicked(element);
+                    }
+                }
+        );
 
         addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
     }
@@ -376,5 +376,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
             }
         };
+    }
+
+    public enum Type {
+        PROFILE, FEED, EXPLORE, SHOP_PAGE
     }
 }
