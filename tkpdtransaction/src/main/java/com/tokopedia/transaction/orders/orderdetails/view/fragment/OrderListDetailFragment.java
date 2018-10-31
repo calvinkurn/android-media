@@ -59,6 +59,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
+    public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -175,7 +176,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             try {
                 startActivity(((UnifiedOrderListRouter)getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(invoice.invoiceUrl(), "UTF-8")));
+                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -258,7 +259,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 try {
                     startActivity(((UnifiedOrderListRouter)getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(contactUs.helpUrl(), "UTF-8")));
+                            URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -336,7 +337,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(uri, "UTF-8")));
+                            URLEncoder.encode(uri, ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }

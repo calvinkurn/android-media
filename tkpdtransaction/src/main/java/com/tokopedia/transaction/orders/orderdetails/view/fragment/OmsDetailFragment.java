@@ -50,6 +50,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.ORDER_LIST_URL_ENCODING;
+
 /**
  * Created by baghira on 09/05/18.
  */
@@ -247,7 +249,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     try {
                         startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
                                 .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
-                                        getResources().getString(R.string.contact_us_applink), "UTF-8")));
+                                        getResources().getString(R.string.contact_us_applink), ORDER_LIST_URL_ENCODING)));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -316,7 +318,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     try {
                         startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
                                 .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
-                                        uri, "UTF-8")));
+                                        uri, ORDER_LIST_URL_ENCODING)));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
