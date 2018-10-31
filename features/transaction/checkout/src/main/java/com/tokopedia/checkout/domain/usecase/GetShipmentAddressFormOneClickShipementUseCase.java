@@ -35,7 +35,7 @@ public class GetShipmentAddressFormOneClickShipementUseCase extends UseCase<Cart
     public Observable<CartShipmentAddressFormData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS);
-        return cartRepository.getShipmentAddressForm(param)
+        return cartRepository.getShipmentAddressFormOneClickCheckout(param)
                 .map(new Func1<ShipmentAddressFormDataResponse, CartShipmentAddressFormData>() {
                     @Override
                     public CartShipmentAddressFormData call(ShipmentAddressFormDataResponse shipmentAddressFormDataResponse) {
