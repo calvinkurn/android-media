@@ -34,11 +34,6 @@
             android:label="@string/title_activity_input_shipping"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".inboxtalk.activity.InboxTalkActivity"
-            android:label="@string/title_activity_inbox_talk"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".rescenter.player.VideoPlayerActivity"
             android:label="@string/title_video_player"
             android:screenOrientation="portrait" />
@@ -131,9 +126,6 @@
             android:exported="false" />
         <service
             android:name=".rescenter.create.service.CreateResCenterService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
 
     </application>
