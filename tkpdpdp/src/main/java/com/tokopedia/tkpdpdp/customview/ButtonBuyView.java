@@ -321,10 +321,16 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public void showByMeButton(boolean show) {
         if (show) {
             btnByMe.setVisibility(VISIBLE);
-            tvBuyNow.setText(getContext().getString(R.string.title_buy_now_simple));
         } else {
             btnByMe.setVisibility(GONE);
+        }
+    }
+
+    public void setBuyNowLabel(boolean isFullLabel) {
+        if (isFullLabel) {
             tvBuyNow.setText(getContext().getString(R.string.title_buy_now));
+        } else {
+            tvBuyNow.setText(getContext().getString(R.string.title_buy_now_simple));
         }
     }
 
