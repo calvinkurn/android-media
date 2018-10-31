@@ -18,10 +18,7 @@ import android.widget.Toast
 
 import com.tokopedia.kelontongapp.firebase.Preference
 import com.tokopedia.kelontongapp.helper.ConnectionManager
-import com.tokopedia.kelontongapp.webview.KelontongWebChromeClient
-import com.tokopedia.kelontongapp.webview.FilePickerInterface
-import com.tokopedia.kelontongapp.webview.KelontongWebview
-import com.tokopedia.kelontongapp.webview.KelontongWebviewClient
+import com.tokopedia.kelontongapp.webview.*
 
 import java.util.HashMap
 
@@ -30,19 +27,19 @@ import java.util.HashMap
  */
 class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
-    private var webViewChromeClient: KelontongWebChromeClient? = null
-    private var webviewClient: KelontongWebviewClient? = null
-    private var webView: KelontongWebview? = null
+    private lateinit var webViewChromeClient: KelontongWebChromeClient
+    private lateinit var webviewClient: KelontongWebviewClient
+    private lateinit var webView: KelontongWebview
 
     private var doubleTapExit = false
 
     private val headers = HashMap<String, String>()
 
     private val isHome: Boolean
-        get() = webView!!.url.equals(KelontongBaseUrl.BASE_URL, ignoreCase = true)
+        get() = webView.url.equals(KelontongBaseUrl.BASE_URL, ignoreCase = true)
 
     private val isMitraUrl: Boolean
-        get() = webView!!.url.contains(KelontongBaseUrl.TOKOPEDIA_URL, ignoreCase = true)
+        get() = webView.url.contains(KelontongBaseUrl.TOKOPEDIA_URL, ignoreCase = true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,15 +68,16 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)
+        webView.addJavascriptInterface(MainJsInterface(applicationContext), JS_INTERFACE_NAME)
 
         webViewChromeClient = KelontongWebChromeClient(this, this)
         webviewClient = KelontongWebviewClient(this)
 
         headers[X_REQUESTED_WITH] = ""
-        webView!!.settings.javaScriptEnabled = true
-        webView!!.settings.domStorageEnabled = true
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
 
-        webViewChromeClient!!.setWebviewListener(object : KelontongWebChromeClient.WebviewListener {
+        webViewChromeClient.setWebviewListener(object : KelontongWebChromeClient.WebviewListener {
             override fun onComplete() {
                 if (Preference.isFirstTime(this@KelontongMainActivity)) {
                     showAlertDialog()
@@ -88,17 +86,17 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
             }
         })
 
-        webView!!.webChromeClient = webViewChromeClient
-        webView!!.webViewClient = webviewClient
-        webView!!.settings.allowFileAccess = true
+        webView.webChromeClient = webViewChromeClient
+        webView.webViewClient = webviewClient
+        webView.settings.allowFileAccess = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView!!.settings.mixedContentMode = 0
-            webView!!.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            webView.settings.mixedContentMode = 0
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         } else if (Build.VERSION.SDK_INT >= 19) {
-            webView!!.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         } else {
-            webView!!.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -109,7 +107,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         var userAgent = System.getProperty("http.agent")
         userAgent += String.format(" %s-%s %s", ANDROID, BuildConfig.VERSION_NAME, MOBILE)
-        webView!!.settings.userAgentString = userAgent
+        webView.settings.userAgentString = userAgent
 
         val fcmToken = Preference.getFcmToken(this)
         CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken))
@@ -122,13 +120,13 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     }
 
     private fun loadHome() {
-        webView!!.loadUrl(KelontongBaseUrl.BASE_URL, headers)
+        webView.loadUrl(KelontongBaseUrl.BASE_URL, headers)
     }
 
     private fun requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (!webviewClient!!.checkPermission()) {
-                webviewClient!!.requestPermission()
+            if (!webviewClient.checkPermission()) {
+                webviewClient.requestPermission()
             }
         }
     }
@@ -149,12 +147,12 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
                 KeyEvent.KEYCODE_BACK -> {
                     if (isHome) {
                         onBackPressed()
-                    } else if (webView!!.canGoBack()) {
+                    } else if (webView.canGoBack()) {
                         if (!isMitraUrl) {
-                            webView!!.clearHistory()
+                            webView.clearHistory()
                             loadHome()
                         } else {
-                            webView!!.goBack()
+                            webView.goBack()
                         }
                     }
                     return true
@@ -166,14 +164,14 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        webviewClient!!.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        webviewClient.onRequestPermissionsResult(requestCode, permissions, grantResults)
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewChromeClient != null) {
-            webViewChromeClient!!.onActivityResult(requestCode, resultCode, data)
+            webViewChromeClient.onActivityResult(requestCode, resultCode, data)
         }
     }
 
