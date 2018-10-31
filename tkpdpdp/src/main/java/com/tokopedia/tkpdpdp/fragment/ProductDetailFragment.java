@@ -2208,7 +2208,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
+    public void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         String productName = "";
         if (productData.getInfo() != null) {
@@ -2227,7 +2227,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                    .getCartIntent(getActivity());
+                    .getCheckoutIntent(getActivity());
             startActivity(intent);
         }
     }

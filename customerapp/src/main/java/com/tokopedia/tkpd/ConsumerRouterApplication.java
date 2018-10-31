@@ -53,6 +53,7 @@ import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
+import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -393,6 +394,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
+import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -1627,7 +1629,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
                 }
             }
@@ -1847,32 +1849,48 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
 
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-        return CartComponentInjector.newInstance(this).getAddToCartUseCase()
-                .createObservable(requestParams)
-                .map(addToCartDataResponse -> {
-                    List<String> messageList = addToCartDataResponse.getMessage();
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (int i = 0; i < messageList.size(); i++) {
-                        String string = messageList.get(i);
-                        stringBuilder.append(string);
-                        stringBuilder.append(" ");
-                    }
-                    return new AddToCartResult.Builder()
-                            .message(stringBuilder.toString())
-                            .success(addToCartDataResponse.getSuccess() == 1)
-                            .cartId(addToCartDataResponse.getData() != null
-                                    ? String.valueOf(addToCartDataResponse.getData().getCartId())
-                                    : "")
-                            .build();
-                });
+        if (isOneClickShipment) {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCaseOneClickShipment()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResult);
+        } else {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCase()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResult);
+        }
+    }
+
+    @NonNull
+    private AddToCartResult mapAddToCartResult(AddToCartDataResponse addToCartDataResponse) {
+        List<String> messageList = addToCartDataResponse.getMessage();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < messageList.size(); i++) {
+            String string = messageList.get(i);
+            stringBuilder.append(string);
+            stringBuilder.append(" ");
+        }
+        return new AddToCartResult.Builder()
+                .message(stringBuilder.toString())
+                .success(addToCartDataResponse.getSuccess() == 1)
+                .cartId(addToCartDataResponse.getData() != null
+                        ? String.valueOf(addToCartDataResponse.getData().getCartId())
+                        : "")
+                .build();
     }
 
     @Override
     public Intent getCartIntent(Activity activity) {
         Intent intent = new Intent(activity, CartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Activity activity) {
+        Intent intent = new Intent(activity, ShipmentActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
@@ -3178,18 +3196,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getSession().getUserId();
     }
 
-    public void sendAFCompleteRegistrationEvent(int userId,String methodName) {
-        UnifyTracking.sendAFCompleteRegistrationEvent(userId,methodName);
+    public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+        UnifyTracking.sendAFCompleteRegistrationEvent(userId, methodName);
     }
 
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
+
     public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
         InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
-    public String getDefferedDeeplinkPathIfExists(){
+    public String getDefferedDeeplinkPathIfExists() {
         return AppsflyerContainer.getDefferedDeeplinkPathIfExists();
     }
 }

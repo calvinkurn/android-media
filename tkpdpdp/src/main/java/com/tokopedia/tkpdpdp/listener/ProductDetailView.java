@@ -331,7 +331,7 @@ public interface ProductDetailView extends ViewListener {
 
     void renderAddToCartSuccess(AddToCartResult addToCartResult);
 
-    void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult);
+    void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult);
 
     void openLoginPage();
 

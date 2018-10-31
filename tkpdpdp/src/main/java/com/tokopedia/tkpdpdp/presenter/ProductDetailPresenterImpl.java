@@ -232,7 +232,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToCart(@NonNull Activity context, @NonNull ProductCartPass data) {
         sendAppsFlyerCheckout(context, data);
-        routeToNewCheckout(context, data, data.isSkipToCart() ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()));
+        boolean skipToCart = data.isSkipToCart();
+        routeToNewCheckout(context, data, skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc()), skipToCart);
         UnifyTracking.eventPDPCart();
     }
 
@@ -304,7 +305,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 viewListener.hideProgressLoading();
                 if (addToCartResult.isSuccess()) {
                     addToCartResult.setSource(sourceAtc);
-                    viewListener.renderAddToCartSuccessOpenCart(addToCartResult);
+                    viewListener.renderAddToCartSuccessOpenCheckout(addToCartResult);
                 } else {
                     viewListener.showToastMessage(addToCartResult.getMessage());
                 }
@@ -318,7 +319,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         );
     }
 
-    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data, Subscriber subscriber) {
+    private void routeToNewCheckout(@NonNull Activity context, @NonNull ProductCartPass data,
+                                    Subscriber subscriber, boolean isOneClickShipment) {
         if (context.getApplication() instanceof PdpRouter) {
             viewListener.showProgressLoading();
             ((PdpRouter) context.getApplication()).addToCartProduct(
@@ -329,7 +331,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             .trackerAttribution(data.getTrackerAttribution())
                             .trackerListName(data.getListName())
                             .shopId(Integer.parseInt(data.getShopId()))
-                            .build()
+                            .build(), isOneClickShipment
             ).subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -703,52 +705,52 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         cacheInteractor.getPromoWidgetCache(generatePromoTargetType(productDetailData, context),
                 SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
                 shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
-            @Override
-            public void onSuccess(PromoAttributes result) {
-                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
-                        && result.getShortDescHtml() != null) {
-                    viewListener.showPromoWidget(result);
-                    ProductPageTracking.eventImpressionWidgetPromo(
-                            context,
-                            result.getShortDesc(),
-                            result.getCustomPromoId(),
-                            result.getCode()
-                    );
-                }
-            }
+                    @Override
+                    public void onSuccess(PromoAttributes result) {
+                        if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
+                                && result.getShortDescHtml() != null) {
+                            viewListener.showPromoWidget(result);
+                            ProductPageTracking.eventImpressionWidgetPromo(
+                                    context,
+                                    result.getShortDesc(),
+                                    result.getCustomPromoId(),
+                                    result.getCode()
+                            );
+                        }
+                    }
 
-            @Override
-            public void onError() {
-                retrofitInteractor.getPromo(context,
-                        generatePromoTargetType(productDetailData, context),
-                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
-                        new RetrofitInteractor.PromoListener() {
-                            @Override
-                            public void onSucccess(DataPromoWidget dataPromoWidget) {
-                                cacheInteractor.storePromoWidget(
-                                        generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
-                                        shopType, dataPromoWidget);
-                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
-                                    PromoAttributes attributes = item.getPromoAttributes();
-                                    attributes.setCustomPromoId(item.getId());
-                                    viewListener.showPromoWidget(attributes);
-                                    ProductPageTracking.eventImpressionWidgetPromo(
-                                            context,
-                                            attributes.getShortDesc(),
-                                            attributes.getCustomPromoId(),
-                                            attributes.getCode()
-                                    );
-                                }
-                            }
+                    @Override
+                    public void onError() {
+                        retrofitInteractor.getPromo(context,
+                                generatePromoTargetType(productDetailData, context),
+                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
+                                new RetrofitInteractor.PromoListener() {
+                                    @Override
+                                    public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                        cacheInteractor.storePromoWidget(
+                                                generatePromoTargetType(productDetailData, context),
+                                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                                                shopType, dataPromoWidget);
+                                        if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                            PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                            PromoAttributes attributes = item.getPromoAttributes();
+                                            attributes.setCustomPromoId(item.getId());
+                                            viewListener.showPromoWidget(attributes);
+                                            ProductPageTracking.eventImpressionWidgetPromo(
+                                                    context,
+                                                    attributes.getShortDesc(),
+                                                    attributes.getCustomPromoId(),
+                                                    attributes.getCode()
+                                            );
+                                        }
+                                    }
 
-                            @Override
-                            public void onError(String error) {
-                            }
-                        });
-            }
-        });
+                                    @Override
+                                    public void onError(String error) {
+                                    }
+                                });
+                    }
+                });
     }
 
     public String generatePromoTargetType(ProductDetailData productData, Context context) {
