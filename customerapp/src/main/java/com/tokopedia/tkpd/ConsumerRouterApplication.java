@@ -1854,7 +1854,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, com.tokopedia.core.geolocation.model.autocomplete.LocationPass locationPass) {
+    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, HashMap<String, String> locationPass) {
         Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
         fragment.startActivityForResult(intent, requestCode);
     }

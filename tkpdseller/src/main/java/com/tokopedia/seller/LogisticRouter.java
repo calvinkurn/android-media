@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.district_recommendation.domain.model.Token;
 
+import java.util.HashMap;
+
 /**
  * Created by normansyahputa on 12/20/17.
  */
@@ -13,5 +15,5 @@ import com.tokopedia.district_recommendation.domain.model.Token;
 public interface LogisticRouter {
     void navigateToChooseAddressActivityRequest(Fragment fragment, Intent intent, int requestCode);
     void navigateToEditAddressActivityRequest(Fragment fragment, int requestCode, Token token);
-    void navigateToGeoLocationActivityRequest(Fragment fragment, int requestCode, String generatedAddress, LocationPass locationPass);
+    void navigateToGeoLocationActivityRequest(Fragment fragment, int requestCode, String generatedAddress, HashMap<String, String> locationHashMap);
 }

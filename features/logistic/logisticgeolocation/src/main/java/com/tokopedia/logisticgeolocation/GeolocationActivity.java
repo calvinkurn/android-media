@@ -27,6 +27,7 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
 
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
+    public static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     // todo : put screen analytics
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
 
@@ -56,14 +57,15 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
     }
 
     // Shop open
-    public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
+    public static Intent createInstanceIntent(@NonNull Context context, @Nullable HashMap<String, String> locationHash) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putSerializable(EXTRA_HASH_LOCATION, locationHash);
         intent.putExtras(bundle);
         return intent;
     }
 
+    // Checkout
     public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
@@ -102,6 +104,11 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
     protected Fragment getNewFragment() {
         if(mBundle != null) {
             LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
+            // handle from shop open unresolved shared data
+            if (locationPass == null) {
+                locationPass = LocationPassMapper.unBundleLocationMap(
+                        (HashMap<String, String>) mBundle.getSerializable(EXTRA_HASH_LOCATION));
+            }
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
                 return GoogleMapFragment.newInstance(locationPass);
             } else {

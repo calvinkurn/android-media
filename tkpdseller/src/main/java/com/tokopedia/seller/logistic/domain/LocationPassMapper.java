@@ -1,11 +1,11 @@
-package com.tokopedia.core.geolocation.utils;
+package com.tokopedia.seller.logistic.domain;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 
 import java.util.HashMap;
 
 /**
- * Created by Fajar Ulin Nuha on 16/10/18.
+ * Created by Fajar Ulin Nuha on 31/10/18.
  */
 public class LocationPassMapper {
 
@@ -39,4 +39,5 @@ public class LocationPassMapper {
         result.put("manual_address", locationPass.getManualAddress());
         return result;
     }
+
 }

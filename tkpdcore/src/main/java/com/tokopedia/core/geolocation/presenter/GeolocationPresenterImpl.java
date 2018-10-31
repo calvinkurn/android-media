@@ -20,7 +20,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.HashMap;
 
-import static com.tokopedia.core.geolocation.utils.LocationPassMapper.unBundleLocationMap;
 
 /**
  * Created by hangnadi on 1/29/16.
@@ -35,12 +34,10 @@ public class GeolocationPresenterImpl implements GeolocationPresenter {
 
     @Override
     public void initFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-        LocationPass locationPass = bundle
-                .getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION) != null ?
-                bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION) :
-                unBundleLocationMap(
-                        (HashMap<String, String>) bundle.getSerializable(GeolocationActivity.EXTRA_HASH_LOCATION)
-                );
+        LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+//                unBundleLocationMap(
+//                        (HashMap<String, String>) bundle.getSerializable(GeolocationActivity.EXTRA_HASH_LOCATION)
+//                );
 
         if (locationPass != null) {
             if (locationPass.getLatitude() != null && !locationPass.getLatitude().isEmpty())

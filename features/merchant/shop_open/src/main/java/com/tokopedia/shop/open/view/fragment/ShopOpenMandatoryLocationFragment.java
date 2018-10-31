@@ -29,6 +29,7 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.logistic.domain.LocationPassMapper;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.Shipment;
@@ -76,6 +77,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     RequestParams requestParams;
     private TkpdProgressDialog tkpdProgressDialog;
+    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -237,11 +239,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
+        HashMap<String, String> locationHashMap = LocationPassMapper.bundleLocationMap(locationPass);
         logisticRouter.navigateToGeoLocationActivityRequest(
                 ShopOpenMandatoryLocationFragment.this,
                 REQUEST_CODE_GOOGLE_MAP,
                 generatedMap,
-                locationPass
+                locationHashMap
         );
     }
 
@@ -317,7 +320,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                     }
                     break;
                 case REQUEST_CODE_GOOGLE_MAP:
-                    LocationPass locationPass = data.getParcelableExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = data.getSerializableExtra(EXTRA_HASH_LOCATION) != null ?
+                            LocationPassMapper.unBundleLocationMap(
+                                    (HashMap<String, String>) data.getSerializableExtra(EXTRA_HASH_LOCATION)
+                            ) : null;
                     if (locationPass != null && locationPass.getLatitude() != null) {
 
                         GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();

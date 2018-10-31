@@ -39,6 +39,8 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
+import com.tokopedia.logisticgeolocation.LocationPassMapper;
+
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
  */
@@ -363,7 +365,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
-//            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, bundleLocationMap(locationPass));
+            // Pass to shop open module which still depend on LocationPass core
+            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, LocationPassMapper.bundleLocationMap(locationPass));
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }
