@@ -76,7 +76,7 @@ public class TokoCashOtpActivity extends VerificationActivity {
                 ChooseTokocashVerificationMethodFragment)) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            Fragment fragment = ChooseTokocashVerificationMethodFragment.createInstance(getIntent().getExtras());
+            Fragment fragment = ChooseTokocashVerificationMethodFragment.createInstance(passModel);
             fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, 0, 0, R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
