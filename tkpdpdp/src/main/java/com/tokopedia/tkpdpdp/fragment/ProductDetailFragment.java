@@ -1605,7 +1605,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                 if (SessionHandler.isV4Login(getActivity())) {
                                     onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT),
-                                            SOURCE_BUTTON_BUY_VARIANT);
+                                            SOURCE_BUTTON_CART_VARIANT);
                                 } else {
                                     ProductPageTracking.eventClickAtcInVariantNotLogin(
                                             getActivity(),

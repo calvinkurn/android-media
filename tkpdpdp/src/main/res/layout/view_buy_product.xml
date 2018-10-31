@@ -152,7 +152,7 @@
         <FrameLayout
             android:layout_width="144dp"
             android:layout_height="@dimen/dp_40"
-            android:background="@drawable/orange_button_rounded">
+            android:background="@drawable/bg_button_atc">
 
             <TextView
                 android:id="@+id/tv_add_to_cart"
