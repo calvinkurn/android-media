@@ -37,7 +37,6 @@ public class RequestOtpTokoCashSubscriber extends Subscriber<RequestOtpTokoCashP
         } else {
             view.onErrorGetOTP(errorMessage);
         }
-        view.onErrorGetOTP(ErrorHandlerSession.getErrorMessage(view.getContext(), e));
     }
 
     private String getErrorMessage(Throwable e) {

@@ -92,6 +92,9 @@ public class MakeLoginPojo {
         this.fullName = fullName;
     }
 
+    /**
+     * @return "true" or "false"
+     */
     public String getIsLogin() {
         return isLogin;
     }

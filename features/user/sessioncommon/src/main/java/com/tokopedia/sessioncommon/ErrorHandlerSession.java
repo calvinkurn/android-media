@@ -1,6 +1,9 @@
 package com.tokopedia.sessioncommon;
 
 import android.content.Context;
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.sessioncommon.R;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -28,6 +31,7 @@ public class ErrorHandlerSession extends ErrorHandler {
 
     public interface ErrorForbiddenListener {
         void onForbidden();
+
         void onError(String errorMessage);
     }
 
@@ -44,6 +48,22 @@ public class ErrorHandlerSession extends ErrorHandler {
     public static String getDefaultErrorCodeMessage(int errorCode, Context context) {
         return context.getString(R.string.default_request_error_unknown)
                 + " (" + errorCode + ")";
+    }
+
+    public static String getErrorMessage(Throwable e, final Context context, boolean
+            showErrorCode) {
+
+        if (e instanceof MessageErrorException
+                && !TextUtils.isEmpty(e.getLocalizedMessage())) {
+            return showErrorCode ? formatString(e.getLocalizedMessage(), ((MessageErrorException)
+                    e).getErrorCode()) : e.getLocalizedMessage();
+        } else {
+            return ErrorHandler.getErrorMessage(context, e);
+        }
+    }
+
+    private static String formatString(String message, String errorCode) {
+        return String.format("%s ( %s )", message, String.valueOf(errorCode));
     }
 
 }

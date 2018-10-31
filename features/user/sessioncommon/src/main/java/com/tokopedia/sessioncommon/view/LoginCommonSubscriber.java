@@ -103,7 +103,7 @@ public abstract class LoginCommonSubscriber<T> extends Subscriber<T> {
 
     protected boolean isGoToSecurityQuestion(MakeLoginPojo makeLoginPojo) {
         return makeLoginPojo.getSecurityPojo().getAllowLogin() == 0
-                && !makeLoginPojo.getIsLogin().equals("1");
+                && !makeLoginPojo.getIsLogin().equals("true");
     }
 
 
