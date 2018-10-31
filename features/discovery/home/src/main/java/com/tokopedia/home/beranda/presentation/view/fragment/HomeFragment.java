@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -925,6 +926,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public boolean isHomeFragment() {
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
+        return (fragment instanceof HomeFragment);
+    }
+
+    @Override
     public void onScrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
@@ -1037,6 +1044,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         setUserVisibleHint(!hidden);
-        Log.d(TAG, "onHiddenChanged "+hidden);
     }
+
 }
