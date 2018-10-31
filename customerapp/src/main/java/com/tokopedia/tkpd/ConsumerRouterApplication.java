@@ -89,8 +89,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -230,6 +228,8 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -1854,9 +1854,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
+    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, com.tokopedia.core.geolocation.model.autocomplete.LocationPass locationPass) {
         Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
+        return GeolocationActivity.createInstanceFromMarketplaceCart(context, locationPass);
     }
 
     @Override
@@ -2658,8 +2663,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGeoLocationActivityIntent(Context context, HashMap<String, String> locationMap, boolean isFromMarketplaceCart) {
-        return GeolocationActivity.createInstanceFromAddress(context, locationMap, isFromMarketplaceCart);
+    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
+        return GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
     }
 
     @Override

@@ -61,7 +61,7 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -682,7 +682,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
         if (getActivity() != null) {
-            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
+            Intent intent = checkoutModuleRouter.getGeolocationIntent(getActivity(), locationPass);
             startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         }
     }
@@ -1464,7 +1464,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
-        Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
+        Intent intent = checkoutModuleRouter.getGeolocationIntent(getActivity(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
 

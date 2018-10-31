@@ -46,11 +46,11 @@ import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
-import com.tokopedia.logisticdata.data.entity.address.LocationPass;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.District;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
@@ -1122,10 +1122,9 @@ public class AddAddressFragment extends BaseDaggerFragment
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
 
-            HashMap<String, String> locationMap = bundleLocationMap(locationPass);
             Intent intent = ((IAddressRouter) getActivity().getApplication())
                     .getGeoLocationActivityIntent(
-                            getActivity(), locationMap,
+                            getActivity(), locationPass,
                             isAddAddressFromCartCheckoutMarketplace()
                     );
             startActivityForResult(intent, REQUEST_CODE);

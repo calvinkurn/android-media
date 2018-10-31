@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -45,8 +46,7 @@ public interface GeolocationContract {
 
         void prepareDetailDestination(View view);
 
-        void initAutoCompleteAdapter(CompositeSubscription compositeSubscription,
-                                     MapService service, IMapsRepository repository,
+        void initAutoCompleteAdapter(CompositeSubscription compositeSubscription, IMapsRepository repository,
                                      GoogleApiClient googleApiClient, LatLngBounds latLngBounds);
 
         void setAutoCompleteAdaoter();
@@ -81,6 +81,8 @@ public interface GeolocationContract {
         long DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
         long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
                 DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+        void setUpVariables(LocationPass locationPass, boolean hasLocation);
 
         void onGoogleApiConnected(Bundle bundle);
 

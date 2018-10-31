@@ -1,5 +1,6 @@
 package com.tokopedia.logisticgeolocation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,18 +22,27 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.logisticdata.data.entity.address.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticgeolocation.di.GeolocationScope;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
  */
+@GeolocationScope
 public class GeolocationPresenter implements GeolocationContract.GeolocationPresenter, LocationListener {
 
     private static final String TAG = GeolocationPresenter.class.getSimpleName();
@@ -46,23 +56,23 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private final RetrofitInteractor retrofitInteractor;
     private final GoogleApiClient googleApiClient;
     private final LocationRequest locationRequest;
-    private final boolean hasLocation;
+    private UserSession userSession;
 
     private Context context;
 
     private boolean isUseExistingLocation;
     private boolean isAllowGenerateAddress;
 
+    private boolean hasLocation;
     private LocationPass locationPass;
 
-    public GeolocationPresenter(
-            Context context,
-            GeolocationContract.GeolocationView googleMapFragment,
-            LocationPass locationPass,
-            boolean hasLocation) {
+    @Inject
+    public GeolocationPresenter(Context context, RetrofitInteractorImpl retrofitInteractor,
+            UserSession userSession, GoogleMapFragment googleMapFragment) {
         this.context = context;
+        this.userSession = userSession;
         this.view = googleMapFragment;
-        this.retrofitInteractor = new RetrofitInteractorImpl();
+        this.retrofitInteractor = retrofitInteractor;
         this.locationRequest = LocationRequest.create()
                 .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
@@ -74,6 +84,18 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                 .addOnConnectionFailedListener(googleMapFragment)
                 .build();
         this.isAllowGenerateAddress = true;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "PORING onLocationChanged");
+        view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
+        LocationCache.saveLocation(context, location);
+        removeLocationUpdate();
+    }
+
+    @Override
+    public void setUpVariables(LocationPass locationPass, boolean hasLocation) {
         this.locationPass = locationPass;
         this.hasLocation = hasLocation;
         if(hasLocation)
@@ -83,14 +105,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
             location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
             LocationCache.saveLocation(context, location);
         }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "PORING onLocationChanged");
-        view.moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
-        LocationCache.saveLocation(context, location);
-        removeLocationUpdate();
     }
 
     @Override
@@ -152,6 +166,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public LatLng getLastLocation() {
         try {
@@ -181,6 +196,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void requestLocationUpdate() {
         if (googleApiClient.isConnected()) {
@@ -291,7 +307,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     @Override
     public void prepareAutoCompleteView() {
         view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
-                retrofitInteractor.getMapService(),
                 retrofitInteractor.getMapRepository(),
                 googleApiClient, setDefaultBoundsJakarta());
         view.setAutoCompleteAdaoter();
@@ -336,7 +351,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("placeid", placeID);
         retrofitInteractor.generateLatLng(context,
-                AuthUtil.generateParamsNetwork(context, param),
+                AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 latLongListener());
     }
 
@@ -348,7 +363,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
-            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, bundleLocationMap(locationPass));
+//            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, bundleLocationMap(locationPass));
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }

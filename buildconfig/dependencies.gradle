@@ -411,6 +411,7 @@ ext {
             logisticdata                : ":features:logistic:logisticdata",
             logisticanalytics           : ":features:logistic:logisticanalytics",
             logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
+            logisticgeolocation         : ":features:logistic:logisticgeolocation",
             logisticlistaddress         : ":features:logistic:logisticlistaddress",
             logisticaddaddress          : ":features:logistic:logisticaddaddress",
             logisticCommon              : ":features:logistic:logisticcommon",

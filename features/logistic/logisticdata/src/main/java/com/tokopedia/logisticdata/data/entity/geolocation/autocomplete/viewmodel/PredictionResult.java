@@ -1,9 +1,11 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel;
 
 /**
- * Created by Fajar Ulin Nuha on 29/10/18.
+ * Created by kris on 9/18/17. Tokopedia
  */
+
 public class PredictionResult {
+
     private String mainText;
 
     private String secondaryText;

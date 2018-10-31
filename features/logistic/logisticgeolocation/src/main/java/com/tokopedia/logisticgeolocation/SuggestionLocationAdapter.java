@@ -17,14 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.common.data.DataBufferUtils;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.AutocompletePredictionBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.user.session.UserSession;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -50,8 +58,6 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
      */
     private List<PredictionResult> mResultList;
 
-    private MapService mapService;
-
     private CompositeSubscription compositeSubscription;
 
     private OnQueryListener queryListener;
@@ -67,6 +73,7 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
      * The bounds used for Places Geo Data autocomplete API requests.
      */
     private LatLngBounds mBounds;
+    private UserSession mUser;
 
     /**
      * The autocomplete filter used to restrict queries to a specific set of place types.
@@ -80,16 +87,16 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
      */
     public SuggestionLocationAdapter(Context context, GoogleApiClient googleApiClient,
                                      LatLngBounds bounds, AutocompleteFilter filter,
-                                     MapService mapService,
+                                     UserSession userSession,
                                      CompositeSubscription compositeSubscription,
                                      IMapsRepository repository) {
         super(context, R.layout.layout_autocomplete_search_location, android.R.id.text1);
         mGoogleApiClient = googleApiClient;
         mBounds = bounds;
+        mUser = userSession;
         mPlaceFilter = filter;
         mResultList = new ArrayList<>();
         this.mapsRepository = repository;
-        this.mapService = mapService;
         this.compositeSubscription = compositeSubscription;
         this.compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
 
@@ -103,8 +110,9 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
                 };
             }
         }).debounce(700, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.from(new JobExecutor()))
-                .observeOn(new UIThread().getScheduler()).subscribe(queryAutoCompleteSubscriber()));
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(queryAutoCompleteSubscriber()));
     }
 
     private interface  OnQueryListener {
@@ -278,13 +286,13 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             public void onNext(String query) {
                 CommonUtils.dumper("PORING Kirim Data " + query);
                 TKPDMapParam<String, String> temp = new TKPDMapParam<>();
-                temp = AuthUtil.generateParamsNetwork(getContext(), temp);
+                temp = AuthUtil.generateParamsNetwork(mUser.getUserId(), mUser.getDeviceId(), temp);
                 TKPDMapParam<String, Object> params = new TKPDMapParam<>();
                 params.put("input", query);
                 params.putAll(temp);
 
                 compositeSubscription.add(mapsRepository
-                        .getAutoCompleteList(mapService, params, query)
+                        .getAutoCompleteList(params, query)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

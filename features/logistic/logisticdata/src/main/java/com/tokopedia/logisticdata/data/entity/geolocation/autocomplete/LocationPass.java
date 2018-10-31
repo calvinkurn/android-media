@@ -1,4 +1,4 @@
-package com.tokopedia.logisticdata.data.entity.address;
+package com.tokopedia.logisticdata.data.entity.geolocation.autocomplete;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -37,11 +37,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.logisticdata.data.entity.address.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.di.GeolocationModule;
+import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -62,8 +67,6 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
 
     private static final boolean HAS_LOCATION = true;
-
-    private GeolocationContract.GeolocationPresenter presenter;
     private ITransactionAnalyticsGeoLocationPinPoint analyticsGeoLocationListener;
     private GoogleMap googleMap;
     private LocationPass locationPass;
@@ -78,6 +81,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     TextView textPointer;
     View submitPointer;
     FloatingActionButton fab;
+    @Inject GeolocationContract.GeolocationPresenter presenter;
+    @Inject UserSession mUser;
 
     public GoogleMapFragment() {
         // Required empty public constructor
@@ -114,7 +119,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         analyticsGeoLocationListener = (ITransactionAnalyticsGeoLocationPinPoint) getActivity();
-        presenter = new GeolocationPresenter(getContext(), this, locationPass, hasLocation);
+        presenter.setUpVariables(locationPass, hasLocation);
     }
 
     @Override
@@ -197,7 +202,12 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent appComponent = ((BaseMainApplication) getActivity()
+                .getApplication()).getBaseAppComponent();
+        DaggerGeolocationComponent.builder()
+                .baseAppComponent(appComponent)
+                .geolocationModule(new GeolocationModule(getActivity(), this))
+                .build().inject(this);
     }
 
     @Override
@@ -292,9 +302,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void initAutoCompleteAdapter(CompositeSubscription compositeSubscription, MapService service, IMapsRepository repository, GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
+    public void initAutoCompleteAdapter(CompositeSubscription compositeSubscription, IMapsRepository repository, GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
         adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds,
-                null, service, compositeSubscription, repository);
+                null, mUser, compositeSubscription, repository);
     }
 
     @Override
