@@ -234,6 +234,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
             @Override
             public void onErrorLogin(String errorMessage) {
+                dismissLoadingProgress();
                 NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
             }
 

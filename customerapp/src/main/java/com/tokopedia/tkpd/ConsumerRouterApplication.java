@@ -3254,7 +3254,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void setTrackingUserId(String userId, Context applicationContext) {
         onAppsFlyerInit();
         TrackingUtils.eventPushUserID();
-        if (Crashlytics.getInstance() != null)
+        if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
             Crashlytics.setUserIdentifier(userSession.getUserId());
         BranchSdkUtils.sendIdentityEvent(userSession.getUserId());
         BranchSdkUtils.sendLoginEvent(applicationContext);
