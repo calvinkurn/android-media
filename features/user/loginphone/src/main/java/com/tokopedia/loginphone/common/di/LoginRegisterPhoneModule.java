@@ -44,17 +44,16 @@ public class LoginRegisterPhoneModule {
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      FingerprintInterceptor fingerprintInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(fingerprintInterceptor);
+        builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
+        builder.addInterceptor(new ErrorResponseInterceptor(TokoCashErrorResponse.class));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
             builder.addInterceptor(debugInterceptor);
             builder.addInterceptor(httpLoggingInterceptor);
         }
-
-        builder.addInterceptor(fingerprintInterceptor);
-        builder.addInterceptor(tkpdAuthInterceptor);
-        builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
-        builder.addInterceptor(new ErrorResponseInterceptor(TokoCashErrorResponse.class));
 
         return builder.build();
     }
