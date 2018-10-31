@@ -481,7 +481,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.connectWebSocket(userSession, viewModel.getChannelUuid()
+                presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
                         , viewModel.getChannelInfoViewModel().getGroupChatToken()
                         , viewModel.getChannelInfoViewModel().getSettingGroupChat());
                 setSnackBarErrorLoading();
@@ -944,7 +944,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 userSession = ((AbstractionRouter) getApplication()).getSession();
             }
             onSuccessEnterChannel();
-            presenter.connectWebSocket(userSession, channelInfoViewModel.getChannelUrl()
+            presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
                     , channelInfoViewModel.getGroupChatToken()
                     , viewModel.getChannelInfoViewModel().getSettingGroupChat());
             Intent intent = new Intent();
@@ -1395,7 +1395,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage
-                , () -> presenter.connectWebSocket(userSession, viewModel.getChannelUuid()
+                , () -> presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
                         , viewModel.getChannelInfoViewModel().getGroupChatToken()
                         , viewModel.getChannelInfoViewModel().getSettingGroupChat()));
     }

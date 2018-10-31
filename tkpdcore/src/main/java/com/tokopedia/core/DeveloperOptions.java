@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -27,6 +28,7 @@ import com.tokopedia.core.util.SessionHandler;
 @DeepLink("tokopedia://setting/dev-opts")
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
+    public static final String GROUPCHAT_PREF = "com.tokopedia.groupchat.chatroom.view.presenter.GroupChatPresenter";
     public static final String IS_CHUCK_ENABLED = "is_enable";
     public static final String SP_REACT_DEVELOPMENT_MODE = "SP_REACT_DEVELOPMENT_MODE";
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -212,21 +214,28 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 actionLogGroupChat(isChecked);
             }
         });
+
+
+        LocalCacheHandler groupChatPreference = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
         ipGroupChat.setText(sharedPreferences.getString(IP_GROUPCHAT,""));
         groupChatLogToggle.setChecked(sharedPreferences.getBoolean(LOG_GROUPCHAT, false));
     }
 
     private void actionLogGroupChat(boolean check) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        LocalCacheHandler editor = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
         editor.putBoolean(LOG_GROUPCHAT, check);
-        editor.apply();
+        editor.applyEditor();
     }
 
     private void actionSaveIpGroupChat() {
         String ip = ipGroupChat.getText().toString();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(IP_GROUPCHAT, ip);
-        editor.apply();
+        LocalCacheHandler editor = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
+        if(TextUtils.isEmpty(ip)){
+            editor.putString(IP_GROUPCHAT, null);
+        }else {
+            editor.putString(IP_GROUPCHAT, ip);
+        }
+        editor.applyEditor();
         Toast.makeText(this, ip + " saved", Toast.LENGTH_SHORT).show();
     }
 

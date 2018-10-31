@@ -11,4 +11,5 @@ public class ChatroomUrl {
     public static final String DESKTOP_URL = "https://www.tokopedia.com/blog/chat-group";
 
     public static final String GROUP_CHAT_URL = "https://tokopedia.com/groupchat/{channel_url}";
+    public static final String PATH_WEB_SOCKET_GROUP_CHAT_URL = "/ws/groupchat?channel_id=";
 }

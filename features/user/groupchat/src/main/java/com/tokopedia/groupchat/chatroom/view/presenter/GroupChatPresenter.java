@@ -1,6 +1,5 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.groupchat.R;
+import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
@@ -20,6 +20,7 @@ import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketException;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import javax.inject.Inject;
 
@@ -38,8 +39,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private final GetChannelInfoUseCase getChannelInfoUseCase;
     private CompositeSubscription mSubscription;
-    private String urlWebSocket;
+    private String webSocketUrl;
     private LocalCacheHandler localCacheHandler;
+    private String channelId;
 
     @Inject
     public GroupChatPresenter(
@@ -53,20 +55,14 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         localCacheHandler = new LocalCacheHandler(getView().getContext(), GroupChatPresenter.class.getName());
     }
 
-    public void connectWebSocket(UserSession userSession, String channelUrl, String groupChatToken
+    public void connectWebSocket(UserSession userSession, String channelId, String groupChatToken
             , SettingGroupChat settingGroupChat) {
-        setUrlWebSocket(channelUrl);
-        String magicString = "ws://172.31.4.23:8000/";
+        String magicString = TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN;
+        magicString = localCacheHandler.getString("ip_groupchat", magicString);
 
-        magicString = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getString("ip_groupchat", magicString);
-        magicString = magicString.concat("/ws/groupchat?channel_id=96&token=").concat(groupChatToken);
-        setUrlWebSocket(magicString);
-        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), urlWebSocket, settingGroupChat);
-    }
-
-    private void setUrlWebSocket(String channelUrl) {
-        urlWebSocket = channelUrl;
+        this.webSocketUrl = (String.format("%s%s%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId, "&token=", groupChatToken));
+        this.channelId = channelId;
+        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), settingGroupChat);
     }
 
     @Override
@@ -115,7 +111,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
 
-    private void connect(String userId, String deviceId, String accessToken, String channelUrl
+    private void connect(String userId, String deviceId, String accessToken
             , SettingGroupChat settingGroupChat) {
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
@@ -131,7 +127,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
-                showDummy("onOpened ".concat(channelUrl), "logger open");
+                showDummy("onOpened ".concat(webSocketUrl), "logger open");
                 getView().onOpenWebSocket();
                 Log.d("RxWebSocket Presenter", " on WebSocket open");
                 setReportWebSocket(false);
@@ -166,7 +162,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 Log.d("RxWebSocket Presenter", "onClose");
                 showDummy("onClose", "logger close");
                 destroyWebSocket();
-                connect(userId, deviceId, accessToken, channelUrl, finalSettingGroupChat);
+                connect(userId, deviceId, accessToken, finalSettingGroupChat);
             }
 
             @Override
@@ -178,20 +174,18 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 reportWebSocket(e);
             }
         };
-        Subscription subscription = RxWebSocket.get(channelUrl, accessToken,
+        Subscription subscription = RxWebSocket.get(webSocketUrl, accessToken,
                     settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
                 , settingGroupChat.getPingInterval()).subscribe(subscriber);
 
 
-        if (subscriber != null) {
-            mSubscription.add(subscription);
-        }
+        mSubscription.add(subscription);
     }
 
     public void testSendReply(PendingChatViewModel pendingChatViewModel) {
         Exception errorSendIndicator = null;
         try {
-            RxWebSocket.send(urlWebSocket, GroupChatWebSocketParam.getParamSend("96", pendingChatViewModel.getMessage()));
+            RxWebSocket.send(webSocketUrl, GroupChatWebSocketParam.getParamSend(channelId, pendingChatViewModel.getMessage()));
         } catch (WebSocketException e) {
             errorSendIndicator = e;
             showDummy(e.toString(), "error logger send");
@@ -208,8 +202,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     private void showDummy(String message, String senderName) {
-        boolean showLog = getView().getContext().getSharedPreferences
-                ("SP_REACT_DEVELOPMENT_MODE", Context.MODE_PRIVATE).getBoolean("log_groupchat", false);
+        boolean showLog = localCacheHandler.getBoolean("log_groupchat", false);
         if (showLog) {
             ChatViewModel dummy = new ChatViewModel(
                     message,
@@ -237,7 +230,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private void reportWebSocket(Throwable e) {
         if(shouldReportWebSocket()){
-            getView().reportWebSocket(urlWebSocket, e.toString());
+            getView().reportWebSocket(webSocketUrl, e.toString());
             setReportWebSocket(false);
         }
     }
