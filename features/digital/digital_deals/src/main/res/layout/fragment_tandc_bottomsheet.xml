@@ -39,6 +39,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
+            android:textIsSelectable="true"
             android:textColor="@color/expandable_text_color"
             tools:text="@string/bigcontent" />
     </ScrollView>

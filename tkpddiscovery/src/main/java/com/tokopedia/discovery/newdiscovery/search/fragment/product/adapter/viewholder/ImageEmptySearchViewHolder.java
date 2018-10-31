@@ -21,6 +21,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.list
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -31,6 +32,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
+
+import java.util.List;
 
 public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> implements TopAdsItemClickListener {
     public static final String SEARCH_NF_VALUE = "1";
@@ -94,7 +97,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         });
         topAdsBannerView.setAdsListener(new TopAdsListener() {
             @Override
-            public void onTopAdsLoaded() {
+            public void onTopAdsLoaded(List<Item> list) {
                 loadProductAds();
             }
 
@@ -112,7 +115,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

@@ -25,6 +25,8 @@ import com.tokopedia.flight.review.domain.verifybooking.model.response.DataRespo
 import com.tokopedia.flight.search.data.cloud.model.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData;
+import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse;
+import com.tokopedia.flight.searchV2.data.api.combined.request.FlightSearchCombinedRequestData;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,11 @@ public interface FlightApi {
     @POST(FlightUrl.FLIGHT_SEARCH_SINGLE)
     Observable<Response<FlightDataResponse<List<FlightSearchData>>>> searchFlightSingle(@Body DataRequest<FlightSearchSingleRequestData> flightSearchRequest);
 
+    @Headers({"Content-Type: application/json"})
+    @POST(FlightUrl.FLIGHT_SEARCH_COMBINED)
+    Observable<Response<FlightDataResponse<List<FlightSearchCombinedResponse>>>> searchFlightCombined(
+            @Body DataRequest<FlightSearchCombinedRequestData> flightSearchCombinedRequestDataDataRequest);
+
     @Headers({"Accept-Encoding: gzip"})
     @GET(FlightUrl.FLIGHT_AIRPORT_PATH)
     Observable<Response<DataResponse<List<FlightAirportCountry>>>> getFlightAirportList(@QueryMap Map<String, String> keyword);
@@ -67,8 +74,8 @@ public interface FlightApi {
     @Headers({"Content-Type: application/json"})
     @POST(FlightUrl.FLIGHT_CART_PATH)
     Observable<Response<String>> addCart(@Body DataRequest<FlightCartRequest> request,
-                                                           @Header("Idempotency-Key") String idemPotencyKeyHeader,
-                                                           @Header("x-tkpd-userid") String userId
+                                         @Header("Idempotency-Key") String idemPotencyKeyHeader,
+                                         @Header("x-tkpd-userid") String userId
     );
 
     @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -47,8 +48,12 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     private TextView reviewCount;
     private int clickPosition;
     private ImageView btnWishList;
+    private RelativeLayout wishlistBtnContainer;
 
-    public ProductListViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+    public ProductListViewHolder(View itemView, ImageLoader imageLoader,
+                                 LocalAdsClickListener itemClickListener,
+                                 int clickPosition,
+                                 boolean enableWishlist) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
@@ -64,7 +69,9 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         reviewCount = (TextView) itemView.findViewById(R.id.review_count);
         btnWishList = itemView.findViewById(R.id.wishlist_button);
         ((LinearLayout) itemView.findViewById(R.id.container)).setOnClickListener(this);
-        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
+        wishlistBtnContainer = itemView.findViewById(R.id.wishlist_button_container);
+        wishlistBtnContainer.setVisibility(enableWishlist ? View.VISIBLE : View.GONE);
+        wishlistBtnContainer.setOnClickListener(this);
     }
 
     @Override
@@ -72,7 +79,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         data = element.getData();
         Product product = data.getProduct();
         if (product != null) {
-            imageLoader.loadImage(product, productImage, clickPosition);
+            imageLoader.loadImage(product, productImage, (clickPosition < 0 ? getAdapterPosition() : clickPosition));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productName.setText(Html.fromHtml(product.getName(),
                         Html.FROM_HTML_MODE_LEGACY));
@@ -155,12 +162,12 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public void onClick(View v) {
         if (itemClickListener != null) {
             if (v.getId() == R.id.container) {
-                itemClickListener.onProductItemClicked(clickPosition, data);
+                itemClickListener.onProductItemClicked((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
             }
             if (v.getId() == R.id.wishlist_button_container) {
-                itemClickListener.onAddWishLish(clickPosition, data);
-                data.setWislished(!data.isWislished());
-                renderWishlistButton(data.isWislished());
+                itemClickListener.onAddWishLish((clickPosition < 0 ? getAdapterPosition() : clickPosition), data);
+                data.getProduct().setWishlist(!data.getProduct().isWishlist());
+                renderWishlistButton(data.getProduct().isWishlist());
             }
         }
     }

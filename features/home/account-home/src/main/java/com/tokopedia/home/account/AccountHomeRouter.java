@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
+import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 
 import rx.Observable;
@@ -70,4 +72,6 @@ public interface AccountHomeRouter {
     boolean isEnableInterestPick();
   
     Intent getMitraToppersActivityIntent(Context context);
+
+    Intent getAddPasswordIntent(Context context);
 }

@@ -267,16 +267,17 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     override fun onSearchSubmitted(text: String) {
         shopEtalaseAdapter!!.clearAllElements()
         isLoadingInitialData = true
-        val shopEtalaseViewModels = ArrayList<BaseShopEtalaseViewModel>()
-        if (this.shopEtalaseViewModels!!.size > 0) {
+        val tempShopEtalaseViewModels = ArrayList<BaseShopEtalaseViewModel>()
+        if (this.shopEtalaseViewModels!= null &&
+                this.shopEtalaseViewModels!!.size > 0) {
             val textLowerCase = text.toLowerCase()
             for (shopEtalaseViewModel in this.shopEtalaseViewModels!!) {
                 if (shopEtalaseViewModel.name.toLowerCase().contains(textLowerCase)) {
-                    shopEtalaseViewModels.add(shopEtalaseViewModel)
+                    tempShopEtalaseViewModels.add(shopEtalaseViewModel)
                 }
             }
         }
-        renderList(shopEtalaseViewModels, false)
+        renderList(tempShopEtalaseViewModels, false)
         showSearchViewWithDataSizeCheck()
     }
 

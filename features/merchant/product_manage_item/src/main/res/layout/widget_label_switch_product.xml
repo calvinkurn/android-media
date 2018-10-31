@@ -45,7 +45,7 @@
             android:textSize="14sp"
             tools:text="@string/app_name"/>
 
-        <android.support.v7.widget.SwitchCompat
+        <Switch
             android:id="@+id/switch_status"
             style="@style/Switch"/>
 

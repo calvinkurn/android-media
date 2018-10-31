@@ -100,7 +100,9 @@ public class Channel {
     @SerializedName("quick_reply")
     @Expose
     private List<String> listQuickReply = null;
-
+    @SerializedName("video_id")
+    @Expose
+    private String videoId;
 
     public int getChannelId() {
         return channelId;
@@ -274,4 +276,7 @@ public class Channel {
         return listQuickReply;
     }
 
+    public String getVideoId() {
+        return videoId;
+    }
 }

@@ -1,10 +1,13 @@
 package com.tokopedia.graphql.domain;
 
 
-import com.tokopedia.graphql.data.ObservableFactory;
+import com.tokopedia.graphql.FingerprintManager;
+import com.tokopedia.graphql.GraphqlCacheManager;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.data.repository.GraphqlRepositoryImpl;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -22,10 +25,15 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
 
     private List<GraphqlRequest> mRequests;
     private GraphqlCacheStrategy mCacheStrategy;
+    private GraphqlRepositoryImpl graphqlRepository;
+
+    private GraphqlCacheManager mCacheManager;
+    private FingerprintManager mFingerprintManager;
 
     @Inject
     public GraphqlUseCase() {
         this.mRequests = new ArrayList<>();
+        graphqlRepository = new GraphqlRepositoryImpl();
     }
 
     /**
@@ -67,12 +75,33 @@ public class GraphqlUseCase extends UseCase<GraphqlResponse> {
         this.mCacheStrategy = cacheStrategy;
     }
 
+    public void clearCache() {
+        try {
+            initCacheManager();
+            if (mRequests != null && !mRequests.isEmpty() && mCacheStrategy != null) {
+                mCacheManager.delete(mFingerprintManager.generateFingerPrint(mRequests.toString(),
+                        mCacheStrategy.isSessionIncluded()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initCacheManager() {
+        if (mCacheManager == null) {
+            mCacheManager = new GraphqlCacheManager();
+        }
+        if (mFingerprintManager == null) {
+            mFingerprintManager = GraphqlClient.getFingerPrintManager();
+        }
+    }
+
     @Override
     public Observable<GraphqlResponse> createObservable(RequestParams params) {
         if (mRequests == null || mRequests.isEmpty()) {
             throw new RuntimeException("Please set valid request parameter before executing the use-case");
         }
 
-        return ObservableFactory.create(mRequests, mCacheStrategy);
+        return graphqlRepository.getResponse(mRequests, mCacheStrategy);
     }
 }

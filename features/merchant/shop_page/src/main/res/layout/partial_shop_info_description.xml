@@ -4,17 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16"
-    android:orientation="vertical">
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_24"
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <TextView
         style="@style/TextView.Title.Bold"
-        android:text="@string/shop_page_label_description"/>
+        android:text="@string/shop_page_label_description"
+        android:paddingBottom="@dimen/dp_16"/>
     
     <TextView
         style="@style/TextView.Micro.BlackSecondary"
         android:id="@+id/shopInfoDescription"
-        android:layout_marginTop="@dimen/dp_8"
         tools:text="@string/shop_page_label_favorite"/>
 
     <LinearLayout

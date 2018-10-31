@@ -3,4 +3,8 @@
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="VerticalRecyclerView">
+        <attr name="has_divider_left_padding" format="boolean" />
+    </declare-styleable>
 </resources>

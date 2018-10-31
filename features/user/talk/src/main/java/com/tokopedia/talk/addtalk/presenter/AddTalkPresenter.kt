@@ -45,4 +45,8 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
         })
     }
 
+    override fun detachView() {
+        super.detachView()
+        createTalkUsecase.unsubscribe()
+    }
 }

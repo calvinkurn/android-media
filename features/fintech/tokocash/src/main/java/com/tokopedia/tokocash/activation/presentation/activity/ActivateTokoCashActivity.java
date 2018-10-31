@@ -9,9 +9,9 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
-import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
@@ -51,9 +51,10 @@ public class ActivateTokoCashActivity extends BaseSimpleActivity
     }
 
     private void sendBroadcastTokocash() {
-        Intent intent = new Intent(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        Intent intent = new Intent(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
         Bundle extras = new Bundle();
-        extras.putString(TokocashPendingDataBroadcastReceiver.class.getSimpleName(), TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        extras.putString(((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet(),
+                ((TokoCashRouter)getApplicationContext()).getExtraBroadcastReceiverWallet());
         intent.putExtras(extras);
         sendBroadcast(intent);
     }

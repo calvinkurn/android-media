@@ -2,16 +2,14 @@ package com.tokopedia.shop.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
-import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
-import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.etalase.view.listener.ShopEtalaseView;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,52 +21,43 @@ import rx.Subscriber;
 
 public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
 
-    private final GetShopEtalaseUseCase getShopEtalaseUseCase;
+    private final GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase;
     private final UserSession userSession;
 
     @Inject
-    public ShopEtalasePresenter(GetShopEtalaseUseCase getShopEtalaseUseCase, UserSession userSession) {
-        this.getShopEtalaseUseCase = getShopEtalaseUseCase;
+    public ShopEtalasePresenter(GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase, UserSession userSession) {
+        this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.userSession = userSession;
     }
 
     public void getShopEtalase(String shopId) {
-        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(shopId, userSession.getUserId(), userSession.getDeviceId());
-        RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
-        getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
+        RequestParams params = GetShopEtalaseByShopUseCase.createRequestParams(
+                shopId, true, false, shopId.equalsIgnoreCase(userSession.getShopId()));
+        getShopEtalaseByShopUseCase.execute(params, new Subscriber<ArrayList<ShopEtalaseModel>>() {
             @Override
             public void onCompleted() {
 
             }
 
             @Override
-            public void onError(Throwable throwable) {
+            public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showGetListError(throwable);
+                    getView().showGetListError(e);
                 }
             }
 
             @Override
-            public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
+            public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
                 if (isViewAttached()) {
-                    getView().renderList(mergeListOther(pagingListOther), false);
+                    ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.map(shopEtalaseModels);
+                    getView().renderList(shopEtalaseViewModelList, false);
                 }
             }
         });
     }
 
-    private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther) {
-        if (pagingListOther.getList() != null && !pagingListOther.getList().isEmpty()) {
-            pagingListOther.getListOther().addAll(pagingListOther.getList());
-        }
-        List<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
-        for (EtalaseModel etalaseModel : pagingListOther.getListOther()) {
-            ShopEtalaseViewModel model = new ShopEtalaseViewModel(etalaseModel);
-            shopEtalaseViewModels.add(model);
-        }
-
-        return shopEtalaseViewModels;
-
+    public void clearEtalaseCache(){
+        getShopEtalaseByShopUseCase.clearCache();
     }
 
 }

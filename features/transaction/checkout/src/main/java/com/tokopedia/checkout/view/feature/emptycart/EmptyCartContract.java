@@ -9,9 +9,12 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Irfan Khoirul on 14/09/18.
@@ -66,6 +69,20 @@ public interface EmptyCartContract {
         void setRecentViewListModels(List<RecentView> recentViewList);
 
         List<RecentViewViewModel> getRecentViewListModels();
+
+        void setRecommendationList(List<Item> list);
+
+        Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(Wishlist wishlist, int index);
+
+        Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(RecentView recentView, int index);
+
+        Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(Product product, int index);
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductWishlistDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecentViewDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecommendationDataLayer();
 
     }
 

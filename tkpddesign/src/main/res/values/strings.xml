@@ -10,6 +10,9 @@
     <string name="label_close">Tutup</string>
 
     <string name="label_browse_file">Browse File</string>
+    <string name="label_see_all">Lihat Semua</string>
+
+    <string name="label_share">Bagikan</string>
 
     <string name="product_default_counter_text">0</string>
     <string name="text_ticker_action_close">Tutup</string>

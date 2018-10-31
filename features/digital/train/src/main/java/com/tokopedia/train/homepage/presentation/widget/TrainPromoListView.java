@@ -128,6 +128,10 @@ public class TrainPromoListView extends FrameLayout {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
     }
 
+    public void showPromoList() {
+        layoutTrainPromo.setVisibility(View.VISIBLE);
+    }
+
     public interface ActionListener {
         void showToastMessage(String message);
 

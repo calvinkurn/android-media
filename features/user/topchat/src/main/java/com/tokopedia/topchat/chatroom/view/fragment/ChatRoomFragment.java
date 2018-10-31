@@ -40,7 +40,12 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -59,9 +64,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachinvoice.view.activity.AttachInvoiceActivity;
 import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
-import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
@@ -336,7 +338,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (needCreateWebSocket()) {
                         maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
                     }
-                    pickerButton.setVisibility(View.GONE);
+                    pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
                     attachButton.setVisibility(View.GONE);
                 }
             }
@@ -493,11 +495,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onGoToWebView(String url, String id) {
         if (!TextUtils.isEmpty(url)) {
-            UnifyTracking.eventClickThumbnailMarketing(TopChatAnalytics.Category.INBOX_CHAT,
-                    TopChatAnalytics.Action.CLICK_THUMBNAIL,
-                    TopChatAnalytics.Name.INBOX_CHAT,
-                    id
-            );
 
             Uri uri = Uri.parse(url);
             KeyboardHandler.DropKeyboard(getActivity(), getView());
@@ -688,12 +685,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
-                    if(TextUtils.isEmpty(senderId)) {
+                    if (TextUtils.isEmpty(senderId)) {
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - shop icon",
+                                    ""
+                            ).getEvent()
+                    );
                     presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
-                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
                 }
             });
 
@@ -749,6 +754,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 }
             });
         }
+        setResult();
     }
 
     @Override
@@ -1564,14 +1570,39 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     showDeleteChatDialog();
                 } else if (pos == 0) {
                     String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
-                    if(TextUtils.isEmpty(senderId)) {
+                    if (TextUtils.isEmpty(senderId)) {
                         senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
                     }
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - three bullet",
+                                    "lihat profile"
+                            ).getEvent()
+                    );
                     presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
-                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
-                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
-                        itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE, ""));
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store))) {
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - three bullet",
+                                    "follow shop"
+                            ).getEvent()
+                    );
+                    presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
+                    TrackingUtils.sendGTMEvent(
+                            new EventTracking(
+                                    "clickInboxChat",
+                                    "message room",
+                                    "click header - three bullet",
+                                    "unfollow shop"
+                            ).getEvent()
+                    );
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
                 }
                 headerMenu.dismiss();

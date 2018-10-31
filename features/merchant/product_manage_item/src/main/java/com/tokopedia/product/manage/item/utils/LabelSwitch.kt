@@ -1,14 +1,13 @@
 package com.tokopedia.product.manage.item.utils
 
 import android.content.Context
-import android.support.v7.widget.SwitchCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.CompoundButton
+import android.widget.Switch
 import android.widget.TextView
-
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.item.R
 
@@ -19,7 +18,7 @@ import com.tokopedia.product.manage.item.R
 class LabelSwitch : BaseCustomView {
     private lateinit var titleTextView: TextView
     private lateinit var switchTextView: TextView
-    private lateinit var switchStatus: SwitchCompat
+    private lateinit var switchStatus: Switch
     private lateinit var summaryTextView: TextView
 
     private var listener: CompoundButton.OnCheckedChangeListener? = null

@@ -125,12 +125,13 @@ public class Config {
         private boolean withPreferedCategory;
         private boolean withMerlinCategory;
         private DisplayMode displayMode;
-        private TopAdsParams topAdsParams = new TopAdsParams();
+        private TopAdsParams topAdsParams;
 
         public Builder() {
             baseUrl = TOPADS_URL;
             device = DEFAULT_DEVICE;
             clientId = DEFAULT_CLIENT_ID;
+            topAdsParams = new TopAdsParams();
         }
 
         public Builder setUserId(String userId) {
@@ -164,7 +165,7 @@ public class Config {
         }
 
         public Builder topAdsParams(TopAdsParams topAdsParams){
-            this.topAdsParams = topAdsParams;
+            this.topAdsParams.getParam().putAll(topAdsParams.getParam());
             return this;
         }
 

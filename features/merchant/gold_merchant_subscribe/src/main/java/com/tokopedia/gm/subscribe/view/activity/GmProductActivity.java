@@ -165,7 +165,7 @@ public class GmProductActivity extends BasePresenterActivity implements GmProduc
                 SELECT_PRODUCT_TAG);
     }
 
-    private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
+    public void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.parent_view, fragment, tag);
         if (isAddToBackStack) {

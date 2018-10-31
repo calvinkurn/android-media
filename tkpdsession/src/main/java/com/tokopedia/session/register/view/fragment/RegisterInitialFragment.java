@@ -371,12 +371,10 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-            UnifyTracking.sendAFCompleteRegistrationEvent();
         } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
                 .RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
-            UnifyTracking.sendAFCompleteRegistrationEvent();
         } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                 .RESULT_CANCELED) {
             dismissProgressBar();

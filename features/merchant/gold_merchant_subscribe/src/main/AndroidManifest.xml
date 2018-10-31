@@ -12,11 +12,27 @@
         <activity
             android:name=".view.activity.GmProductActivity"
             android:label="@string/gmsubscribe_current_product_selector"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".membership.view.activity.GmMembershipActivity"
+            android:label="@string/gm_membership_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".membership.view.activity.GmMembershipInfoActivity"
+            android:label="@string/gm_home_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
+            android:name=".membership.view.activity.GmMembershipProductActivity"
+            android:label="@string/gm_membership_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>
