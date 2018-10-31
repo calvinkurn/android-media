@@ -82,7 +82,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.gcm.Constants;
@@ -100,7 +99,6 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -145,7 +143,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
@@ -205,7 +202,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -280,14 +276,12 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -299,7 +293,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -385,7 +378,6 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.addtocart.activity.AddToCartActivity;
-import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
@@ -411,9 +403,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
@@ -1890,9 +1880,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getCheckoutIntent(Activity activity) {
-        Intent intent = new Intent(activity, ShipmentActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
+        return ShipmentActivity.createInstanceFromPdp(activity);
     }
 
     @Override

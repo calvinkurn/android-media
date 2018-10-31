@@ -36,12 +36,14 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
@@ -104,6 +106,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetThanksToppayUseCase getThanksToppayUseCase;
     private final CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase;
     private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
+    private final GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
@@ -136,6 +139,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetThanksToppayUseCase getThanksToppayUseCase,
                              CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                              GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                             GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              EditAddressUseCase editAddressUseCase,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
@@ -150,6 +154,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.getThanksToppayUseCase = getThanksToppayUseCase;
         this.checkPromoCodeCartShipmentUseCase = checkPromoCodeCartShipmentUseCase;
         this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
+        this.getShipmentAddressFormOneClickShipementUseCase = getShipmentAddressFormOneClickShipementUseCase;
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
@@ -271,7 +276,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress) {
+    public void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isFromPdp) {
         if (isFromMultipleAddress) {
             getView().showLoading();
         } else {
@@ -284,70 +289,28 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
                 getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-        compositeSubscription.add(
-                getShipmentAddressFormUseCase.createObservable(requestParams)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.io())
-                        .subscribe(new Subscriber<CartShipmentAddressFormData>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                                if (isFromMultipleAddress) {
-                                    getView().hideLoading();
-                                } else {
-                                    getView().hideInitialLoading();
-                                }
-                                if (e instanceof UnknownHostException) {
-                                    getView().showToastError(
-                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                                    );
-                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                                    getView().showToastError(
-                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                                    );
-                                } else if (e instanceof CartResponseErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof CartResponseDataNullException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof CartHttpErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else if (e instanceof ResponseCartApiErrorException) {
-                                    getView().showToastError(e.getMessage());
-                                } else {
-                                    getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                }
-                            }
-
-                            @Override
-                            public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-                                if (isFromMultipleAddress) {
-                                    getView().hideLoading();
-                                } else {
-                                    getView().hideInitialLoading();
-                                }
-
-                                if (cartShipmentAddressFormData.isError()) {
-                                    getView().showToastError(cartShipmentAddressFormData.getErrorMessage());
-                                } else {
-                                    if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
-                                        getView().renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
-                                    } else {
-                                        initializePresenterData(cartShipmentAddressFormData);
-                                        getView().renderCheckoutPage(!isFromMultipleAddress);
-                                    }
-                                }
-                            }
-                        })
-        );
+        if (isFromPdp) {
+            compositeSubscription.add(
+                    getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.io())
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    isFromMultipleAddress, true))
+            );
+        } else {
+            compositeSubscription.add(
+                    getShipmentAddressFormUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.io())
+                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                    isFromMultipleAddress, false))
+            );
+        }
     }
 
-    private void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
+    public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (!cartShipmentAddressFormData.isMultiple()) {
             setRecipientAddressModel(getView().getShipmentDataConverter()
                     .getRecipientAddressModel(cartShipmentAddressFormData));

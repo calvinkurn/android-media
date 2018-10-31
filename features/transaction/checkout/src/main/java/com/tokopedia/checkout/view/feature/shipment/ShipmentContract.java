@@ -50,7 +50,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(boolean isInitialRender);
+        void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -171,7 +171,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isFromPdp);
 
         void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData cartItemPromoHolderData,
                                                           CartPromoSuggestion cartPromoSuggestion,
