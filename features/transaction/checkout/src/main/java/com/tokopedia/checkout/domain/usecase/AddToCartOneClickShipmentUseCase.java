@@ -36,7 +36,7 @@ public class AddToCartOneClickShipmentUseCase extends UseCase<AddToCartDataRespo
         TKPDMapParam<String, String> paramRequest = new TKPDMapParam<>();
         String addToCartRequestString = gson.toJson(addToCartRequest);
         paramRequest.put(KEY_PARAM_PARAMS, addToCartRequestString);
-        return iCartRepository.addToCartData(paramRequest);
+        return iCartRepository.addToCartDataOneClickShipment(paramRequest);
     }
 
 }
