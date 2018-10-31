@@ -39,14 +39,17 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
+import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
+import com.tokopedia.loginphone.checkregisterphone.view.activity.CheckRegisterPhoneNumberActivity;
+import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
-import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
@@ -61,7 +64,9 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
+import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -87,7 +92,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private static final int REQUEST_CREATE_PASSWORD = 102;
     private static final int REQUEST_SECURITY_QUESTION = 103;
     private static final int REQUEST_REGISTER_PHONE_NUMBER = 104;
-    private static final int REQUEST_VERIFY_PHONE = 105;
+    private static final int REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105;
     private static final int REQUEST_WELCOME_PAGE = 106;
     private static final int REQUEST_ADD_NAME_REGISTER_PHONE = 107;
     private static final int REQUEST_VERIFY_PHONE_TOKOCASH = 108;
@@ -272,8 +277,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             registerPhoneNumberButton.setImageResource(R.drawable.ic_phone);
             registerPhoneNumberButton.setOnClickListener(v -> {
                 showProgressBar();
-//                Intent intent = RegisterPhoneNumberActivity.getCallingIntent(getActivity());
-//                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
+                Intent intent = CheckRegisterPhoneNumberActivity.getCallingIntent(getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER_PHONE_NUMBER);
             });
             String sourceString = getActivity().getResources().getString(R.string
                     .span_already_have_tokopedia_account);
@@ -341,7 +346,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 true,
                 RequestOtpUseCase.MODE_SMS
         );
-        startActivityForResult(intent, REQUEST_VERIFY_PHONE);
+        startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE);
     }
 
 
@@ -362,8 +367,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 getActivity().finish();
             } else if (requestCode == REQUEST_REGISTER_PHONE_NUMBER && resultCode == Activity
                     .RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
+                goToAddName();
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                     .RESULT_CANCELED) {
                 dismissProgressBar();
@@ -387,29 +391,28 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     .RESULT_CANCELED) {
                 dismissProgressBar();
                 getActivity().setResult(Activity.RESULT_CANCELED);
-            } else if (requestCode == REQUEST_VERIFY_PHONE && resultCode == Activity.RESULT_OK) {
-//                startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber),
-//                        REQUEST_ADD_NAME_REGISTER_PHONE);
+            } else if (requestCode == REQUEST_VERIFY_PHONE_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                goToAddName();
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                         REQUEST_WELCOME_PAGE);
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
-//                if (resultCode == Activity.RESULT_OK) {
-//                    goToProfileCompletionPage();
-//                } else {
-//                    getActivity().setResult(Activity.RESULT_OK);
-//                    getActivity().finish();
-//                }
+                if (resultCode == Activity.RESULT_OK) {
+                    goToProfileCompletionPage();
+                } else {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                }
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH && resultCode == Activity
                     .RESULT_OK) {
-//                ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData
-//                        (data);
-//                if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-//                        .getListAccount().isEmpty()) {
-//                    goToChooseAccountPage(chooseTokoCashAccountViewModel);
-//                } else {
-//                    goToNoTokocashAccountPage(phoneNumber);
-//                }
+                ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData
+                        (data);
+                if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
+                        .getListAccount().isEmpty()) {
+                    goToChooseAccountPage(chooseTokoCashAccountViewModel);
+                } else {
+                    goToNoTokocashAccountPage(phoneNumber);
+                }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
                 getActivity().setResult(Activity.RESULT_OK);
@@ -426,6 +429,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 super.onActivityResult(requestCode, resultCode, data);
             }
         }
+    }
+
+    private void goToAddName() {
+//TODO
+        //                startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber),
+//                        REQUEST_ADD_NAME_REGISTER_PHONE);
     }
 
     private void handleRegisterWebview(int resultCode, Intent data) {
@@ -728,32 +737,32 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToVerifyAccountPage(String phoneNumber) {
-//        startActivityForResult(com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity
-//                        .getLoginTokoCashVerificationIntent(
-//                                getActivity(),
-//                                phoneNumber,
-//                                getListVerificationMethod(phoneNumber)),
-//                REQUEST_VERIFY_PHONE_TOKOCASH);
+        startActivityForResult(TokoCashOtpActivity.getCallingIntent(
+                getActivity(),
+                phoneNumber,
+                true,
+                RequestOtpUseCase.MODE_SMS),
+                REQUEST_VERIFY_PHONE_TOKOCASH);
     }
 
 
     private void goToNoTokocashAccountPage(String phoneNumber) {
-//        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
-//                getActivity(),
-//                phoneNumber),
-//                REQUEST_NO_TOKOCASH_ACCOUNT);
+        startActivityForResult(NotConnectedTokocashActivity.getNoTokocashAccountIntent(
+                getActivity(),
+                phoneNumber),
+                REQUEST_NO_TOKOCASH_ACCOUNT);
     }
 
-//    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
-//        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
-//                getActivity(),
-//                data),
-//                REQUEST_CHOOSE_ACCOUNT);
-//    }
+    private void goToChooseAccountPage(ChooseTokoCashAccountViewModel data) {
+        startActivityForResult(ChooseTokocashAccountActivity.getCallingIntent(
+                getActivity(),
+                data),
+                REQUEST_CHOOSE_ACCOUNT);
+    }
 
-//    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
-//        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
-//    }
+    private ChooseTokoCashAccountViewModel getChooseAccountData(Intent data) {
+        return data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
+    }
 
 
     @Override

@@ -1,6 +1,6 @@
 package com.tokopedia.loginphone.common.data;
 
-import com.tokopedia.loginphone.checkphone.domain.pojo.CheckMsisdnTokoCashPojo;
+import com.tokopedia.loginphone.checkloginphone.domain.pojo.CheckMsisdnTokoCashPojo;
 import com.tokopedia.loginphone.choosetokocashaccount.data.GetCodeTokoCashPojo;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.requestotp.RequestOtpTokoCashPojo;
 import com.tokopedia.loginphone.verifyotptokocash.domain.pojo.verifyotp.VerifyOtpTokoCashPojo;

@@ -42,7 +42,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.loginphone.checkphone.view.activity.CheckPhoneNumberActivity;
+import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
@@ -596,7 +596,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private void onLoginPhoneNumberClick() {
         if (getActivity() != null) {
             analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
-            Intent intent = CheckPhoneNumberActivity.getCallingIntent(getActivity());
+            Intent intent = CheckLoginPhoneNumberActivity.getCallingIntent(getActivity());
             startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
         }
 

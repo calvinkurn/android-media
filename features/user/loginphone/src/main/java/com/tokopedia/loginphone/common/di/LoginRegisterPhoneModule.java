@@ -29,7 +29,6 @@ import retrofit2.Retrofit;
 @Module
 public class LoginRegisterPhoneModule {
 
-
     @LoginRegisterPhoneScope
     @Provides
     LoginPhoneNumberAnalytics provideLoginAnalytics(@ApplicationContext Context context) {

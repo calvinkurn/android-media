@@ -54,7 +54,7 @@ import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailCont
 import com.tokopedia.loginregister.registeremail.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.loginregister.registeremail.view.util.CustomPhoneNumberUtil;
 import com.tokopedia.loginregister.registeremail.view.util.RegisterUtil;
-import com.tokopedia.loginregister.registeremail.view.util.ViewUtil;
+import com.tokopedia.design.utils.StripedUnderlineUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -190,7 +190,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-        ViewUtil.stripUnderlines(registerNextTAndC);
+        StripedUnderlineUtil.stripUnderlines(registerNextTAndC);
 
         showPasswordHint();
         showEmailHint();

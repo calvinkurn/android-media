@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".checkphone.view.activity.CheckPhoneNumberActivity"
+            android:name=".checkloginphone.view.activity.CheckLoginPhoneNumberActivity"
             android:label="@string/login"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
@@ -22,7 +22,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name=".checkphone.view.activity.NotConnectedTokocashActivity"
+            android:name=".checkloginphone.view.activity.NotConnectedTokocashActivity"
             android:label=""
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait"

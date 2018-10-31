@@ -60,4 +60,28 @@
     <string name="action_logout">Keluar</string>
     <string name="success_get_otp">Berhasil mengirim OTP</string>
 
+    <!--REGISTER PHONE NUMBER-->
+    <string name="register_with_phone_number">Daftar dengan Nomor Ponsel</string>
+    <string name="register_with_phone_number_button">Nomor Ponsel</string>
+    <string name="register_with_email">Email</string>
+    <string name="register_we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
+    <string name="error_field_required_phone">Masukkan nomor ponsel untuk mendaftar</string>
+    <string name="error_char_count_under">Nomor ponsel terlalu pendek, minimum 8 angka</string>
+    <string name="error_char_count_over">Nomor ponsel terlalu panjang, maksimal 15 angka</string>
+    <string name="error_input_phone_number">Masukkan nomor ponsel untuk mendaftar</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \n<a href="https://m.tokopedia.com/terms.pl">Syarat dan Ketentuan</a> serta <a href="https://m.tokopedia.com/privacy.pl">Kebijakan Privasi</a>.</string>
+    <string name="phone_number_already_registered_info">Masuk dengan nomor %1$s?</string>
+    <string name="phone_number_not_registered_info">Apakah nomor ponsel yang Anda masukkan sudah benar?</string>
+    <string name="phone_number_already_registered_no">Ubah</string>
+    <string name="phone_number_already_registered_yes">Masuk</string>
+    <string name="phone_number_not_registered_no">Ubah</string>
+    <string name="phone_number_not_registered_yes">Ya, Lanjut</string>
+    <string name="activation_title">Masukkan Kode Aktivasi</string>
+    <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
+    <string name="link_term_condition">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="link_privacy_policy">&lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
+    <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
+    <string name="term_pl">https://m.tokopedia.com/terms.pl?device=android&amp;flag_app=1</string>
+
 </resources>
