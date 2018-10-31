@@ -7,21 +7,9 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/app_bar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="top"
-        android:minHeight="?attr/actionBarSize"
-        app:contentInsetEnd="0dp"
-        app:contentInsetEndWithActions="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:elevation="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:subtitleTextAppearance="@style/EventToolbarTextStyle"
-        app:titleTextAppearance="@style/EventToolbarTextStyle" />
+        android:layout_height="?attr/actionBarSize" />
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/htab_maincontent"
@@ -65,7 +53,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_scrollFlags="scroll" />
 
-                <com.tkpd.library.ui.widget.TouchViewPager
+                <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                     android:id="@+id/event_bannerpager"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dp_120"

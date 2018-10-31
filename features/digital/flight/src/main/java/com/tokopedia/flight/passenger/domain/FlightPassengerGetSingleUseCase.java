@@ -2,8 +2,8 @@ package com.tokopedia.flight.passenger.domain;
 
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.passenger.data.db.model.FlightPassengerDb;
 import com.tokopedia.flight.passenger.domain.model.ListPassengerViewModelMapper;
+import com.tokopedia.flight_dbflow.FlightPassengerDB;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -35,9 +35,9 @@ public class FlightPassengerGetSingleUseCase extends UseCase<FlightBookingPassen
     public Observable<FlightBookingPassengerViewModel> createObservable(RequestParams requestParams) {
         return flightRepository.getSinglePassengerById(
                 requestParams.getString(PARAM_PASSENGER_ID, DEFAULT_STRING_VALUE))
-                .map(new Func1<FlightPassengerDb, FlightBookingPassengerViewModel>() {
+                .map(new Func1<FlightPassengerDB, FlightBookingPassengerViewModel>() {
                     @Override
-                    public FlightBookingPassengerViewModel call(FlightPassengerDb flightPassengerDb) {
+                    public FlightBookingPassengerViewModel call(FlightPassengerDB flightPassengerDb) {
                         return listPassengerViewModelMapper.transform(flightPassengerDb);
                     }
                 });
