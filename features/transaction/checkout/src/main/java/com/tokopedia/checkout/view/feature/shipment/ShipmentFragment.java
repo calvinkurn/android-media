@@ -573,8 +573,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData
-                                                                      promoCodeCartListData) {
+    public void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData) {
         setAppliedPromoCodeData(promoCodeCartListData);
     }
 
@@ -1456,6 +1455,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           String selectedServiceName, boolean flagNeedToSetPinpoint,
                                           boolean hasCourierPromo) {
         sendAnalyticsOnClickChecklistShipmentRecommendationDuration(selectedServiceName);
+        // Has courier promo means that one of duration has promo, not always current selected duration.
+        // It's for analytics purpose
+        if (shippingCourierViewModels.size() > 0) {
+            sendAnalyticsOnClickDurationThatContainPromo(
+                    shippingCourierViewModels.get(0).getServiceData().getIsPromo() == 1,
+                    shippingCourierViewModels.get(0).getServiceData().getServiceName()
+            );
+        }
         if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
             if (getActivity() != null) {
@@ -1485,16 +1492,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
                 setPinpoint(cartItemPosition);
             } else {
-                // Has courier promo means that one of duration has promo, not always current selected duration.
-                // It's for analytics purpose
-                if (isToogleYearEndPromoOn() && hasCourierPromo) {
-                    if (shippingCourierViewModels.size() > 0) {
-                        sendAnalyticsOnClickDurationThatContainPromo(
-                                shippingCourierViewModels.get(0).getServiceData().getIsPromo() == 1,
-                                shippingCourierViewModels.get(0).getServiceData().getServiceName()
-                        );
-                    }
-                }
                 sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
                 if (isToogleYearEndPromoOn()) {
                     sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(recommendedCourier.getShipperProductId());
@@ -1563,17 +1560,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
                                  int cartItemPosition, boolean hasCourierPromo, boolean isPromoCourier, boolean isNeedPinpoint) {
-        sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());
+        sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId());
         if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
                 recipientAddressModel.getLongitude() == null ||
                 recipientAddressModel.getLongitude().equalsIgnoreCase("0")))) {
             setPinpoint(cartItemPosition);
         } else {
-            sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());
-            if (isToogleYearEndPromoOn() && hasCourierPromo) {
-                sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId());
-            }
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
             checkCourierPromo(courierItemData, cartItemPosition);
@@ -1716,8 +1709,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCourierPromoCanceled(String shipperName) {
-        onRemovePromoCode();
-        showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+        if (shipmentAdapter.isCourierPromoStillExist()) {
+            shipmentAdapter.cancelAutoApplyCoupon();
+            shipmentAdapter.updatePromo(null);
+            onRemovePromoCode();
+            showToastError(String.format(getString(R.string.message_cannot_apply_courier_promo), shipperName));
+        }
     }
 
     @Override

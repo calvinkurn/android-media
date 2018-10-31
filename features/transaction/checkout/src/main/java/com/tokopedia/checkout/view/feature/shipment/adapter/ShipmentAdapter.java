@@ -520,8 +520,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 // If courier promo not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
-                    cancelAutoApplyCoupon();
-                    updatePromo(null);
                     shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName());
                 }
             }
