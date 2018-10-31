@@ -115,30 +115,6 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         } else return shortName;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setFullname(String name) {
-        this.name = name;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    public void setMandatoryDob(int mandatoryDob) {
-        this.mandatoryDob = mandatoryDob;
-    }
-
-    public void setMandatoryRefundAttachment(int mandatoryRefundAttachment) {
-        this.mandatoryRefundAttachment = mandatoryRefundAttachment;
-    }
-
     @Override
     public int describeContents() {
         return 0;

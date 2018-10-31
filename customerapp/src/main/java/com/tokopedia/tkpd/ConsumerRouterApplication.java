@@ -1913,6 +1913,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
+    @Override
+    public Intent getAddToCartIntent(Context context, String productId, String price, String
+            imageSource) {
+        String EXTRA_PRODUCT_CART = "EXTRA_PRODUCT_CART";
+
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setProductId(productId)
+                .setPrice(price)
+                .setImageUri(imageSource)
+                .build();
+
+        Intent intent = new Intent(context, AddToCartActivity.class);
+        intent.putExtra(EXTRA_PRODUCT_CART, pass);
+        return intent;
+    }
+
     public Observable<String> getAtcObsr() {
         FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
         return useCase.createObservable(null)
@@ -3146,20 +3162,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
         return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
-    }
-
-    @Override
-    public void startTrace(String traceName) {
-        if (traceName.equals("feed_trace")) {
-            this.feedTrace = TrackingUtils.startTrace(traceName);
-        }
-    }
-
-    @Override
-    public void stopTrace(String traceName) {
-        if (traceName.equals("feed_trace") && feedTrace != null) {
-            feedTrace.stop();
-        }
     }
 
     @Override

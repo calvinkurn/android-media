@@ -21,8 +21,6 @@ public interface ShippingDurationBottomsheetListener {
 
     void onNoCourierAvailable(String message);
 
-    void onNoCourierAvailable(String message);
-
     void onShippingDurationButtonCloseClicked();
 
     void onShippingDurationButtonShowCaseDoneClicked();
