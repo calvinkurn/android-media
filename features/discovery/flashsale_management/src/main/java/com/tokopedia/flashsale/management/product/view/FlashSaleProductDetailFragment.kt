@@ -69,7 +69,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         //TODO
     }
 
-    fun onSuccessGetFlashSaleProductDetail(string: String) {
+    fun onSuccessGetFlashSaleProductDetail() {
         hideLoading()
         btnContainer.visibility = View.VISIBLE
     }
@@ -101,7 +101,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         showLoading()
         presenter.getFlashSaleDetail(
                 onSuccess = {
-                    onSuccessGetFlashSaleProductDetail(it)
+                    onSuccessGetFlashSaleProductDetail()
                 },
                 onError = {
                     hideLoading()
