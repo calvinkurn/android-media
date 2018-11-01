@@ -87,6 +87,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val SETTING_PROFILE_CODE = 83
         private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
+        private const val LOGIN_CODE = 1383
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -138,7 +139,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
-            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE -> {
+            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
             }
         }
@@ -274,7 +275,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.unfollowKol(userId)
             }
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -340,7 +341,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -348,7 +349,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -697,6 +698,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
+    }
+
+    private fun goToLogin() {
+        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
     }
 
     private fun showError(message: String) {
