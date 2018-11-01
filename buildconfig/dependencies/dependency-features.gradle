@@ -53,6 +53,37 @@ ext {
     transactionCheckoutVersion = '2.22'
 
 
+
+    //SCOPE TRANSACTION
+    groupIdTransaction = 'com.tokopedia.transaction'
+    artifactIdCheckout = 'checkout'
+    artifactIdTransactionAnalytics = 'transactionanalytics'
+    artifactIdTransactionData = 'transactiondata'
+    artifactIdTransactionInvoice = 'transactioninvoice'
+    transactionGroupVersion = '2.22'
+
+    //SCOPE LOGISTIC
+    groupIdLogistic = 'com.tokopedia.logistic'
+    artifactIdDistrictRecommendation = 'district_recommendation'
+    artifactIdLogisticAnalytics = 'logisticanalytics'
+    artifactIdLogisticData = 'logisticdata'
+    artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
+    artifactIdLogisticUploadAwb = 'logisticuploadawb'
+    artifactIdLogisticTracking = 'tracking'
+    artifactIdLogisticAddAddress = 'logisticaddaddress'
+    artifactIdLogisticListAddress = 'logisticlistaddress'
+    artifactIdLogisticGeoLocation = 'logisticgeolocation'
+    artifactIdLogisticCommon = 'logisticcommon'
+    logisticGroupVersion = '2.22'
+
+    groupIdPayment = 'com.tokopedia.payment'
+    artifactIdPayment = 'payment'
+    artifactIdPaymentSetting = 'payment_setting'
+    artifactIdPaymentManagementSystem = 'pms'
+    artifactIdWithdraw = 'withdraw'
+    paymentGroupVersion = '2.22'
+
+
     // Sort alphabetically by package name
     tkpdFeatureDependencies = [
             attachproduct               : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}",
@@ -141,12 +172,19 @@ ext {
 
             challenges                  : ":features:im:challenges",
 
-            districtRecommendation      : ":features:logistic:district_recommendation",
-            logisticaddaddress          : ":features:logistic:logisticaddaddress",
-            logisticanalytics           : ":features:logistic:logisticanalytics",
+
+
             logisticdata                : ":features:logistic:logisticdata",
-            logisticuploadawb           : ":features:logistic:logisticuploadawb",
+            logisticanalytics           : ":features:logistic:logisticanalytics",
+            logisticinputreceiptshipment: ":features:logistic:logisticinputreceiptshipment",
+            logisticlistaddress         : ":features:logistic:logisticlistaddress",
+            logisticaddaddress          : ":features:logistic:logisticaddaddress",
+            logisticCommon              : ":features:logistic:logisticcommon",
             tracking                    : ":features:logistic:tracking",
+            logisticuploadawb           : ":features:logistic:logisticuploadawb",
+            districtrecommendation      : ":features:logistic:district_recommendation",
+            districtRecommendation      : ":features:logistic:district_recommendation",
+
 
             goldMerchant                : ":features:merchant:gold_merchant",
             goldMerchantCommon          : ":features:merchant:gold_merchant_common",
@@ -166,10 +204,10 @@ ext {
 
             contactUs                   : ":features:operational:contact_us",
 
-            payment                     : ":features:payment:payment",
-            paymentSetting              : ":features:payment:payment_setting",
-            paymentManagementSystem     : ":features:payment:pms",
             withdraw                    : ":features:payment:withdraw",
+            paymentManagementSystem     : ":features:payment:pms",
+            paymentSetting              : ":features:payment:payment_setting",
+            payment                     : ":features:payment:payment",
 
             gamification                : ":features:promo:gamification",
             merchantVoucher             : ":features:promo:merchant_voucher",
@@ -180,9 +218,10 @@ ext {
             topAdsManagementCommon      : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging         : ":features:top_ads:top_ads_management_sourcetagging",
 
-            checkout                    : ":features:transaction:checkout",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
+            checkout                    : ":features:transaction:checkout",
+            transactionInvoice          : ":features:transaction:transactioninvoice",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
