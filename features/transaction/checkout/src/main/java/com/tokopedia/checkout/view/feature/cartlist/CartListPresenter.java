@@ -146,6 +146,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void setCartListData(CartListData cartListData) {
+        this.cartListData = cartListData;
+    }
+
+    @Override
     public void processInitialGetCartData(boolean initialLoad) {
         if (initialLoad) {
             view.renderLoadGetCartData();

@@ -5,13 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.purchase.adapter.viewholder.MessageViewHolder;
 
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<MessageViewHolder> {
 
     private List<String> message;
 
@@ -36,13 +36,4 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return message.size();
     }
 
-    public class MessageViewHolder extends RecyclerView.ViewHolder {
-
-        TextView textView;
-
-        public MessageViewHolder(View itemView) {
-            super(itemView);
-            textView = itemView.findViewById(R.id.tv_message);
-        }
-    }
 }

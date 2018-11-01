@@ -14,4 +14,5 @@ public interface ITransactionOrderDetailRouter {
     void sendEventTrackingOrderDetail(Map<String, Object> eventTracking);
 
     void sendEventTracking(String event, String category, String action, String label);
+
 }

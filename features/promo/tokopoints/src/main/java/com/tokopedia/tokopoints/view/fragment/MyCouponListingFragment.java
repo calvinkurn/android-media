@@ -16,14 +16,16 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
-import com.tokopedia.tokopoints.view.adapter.CouponListAdapter;
+import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -33,14 +35,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public class MyCouponListingFragment extends BaseDaggerFragment implements MyCouponListingContract.View, View.OnClickListener {
+public class MyCouponListingFragment extends BaseDaggerFragment implements MyCouponListingContract.View, View.OnClickListener, AdapterCallback {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
-    private CouponListAdapter mAdapter;
+    private CouponListBaseAdapter mAdapter;
 
     @Inject
     public MyCouponListingPresenter mPresenter;
@@ -63,7 +65,9 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        mPresenter.getCoupons();
+        mAdapter = new CouponListBaseAdapter(mPresenter, this, getAppContext());
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -122,7 +126,8 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         if (source.getId() == R.id.text_see_membership_status) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
         } else if (source.getId() == R.id.text_failed_action) {
-            mPresenter.getCoupons();
+            showLoader();
+            mAdapter.loadData(mAdapter.getCurrentPageIndex());
         }
     }
 
@@ -154,9 +159,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     @Override
     public void populateCoupons(List<CouponValueEntity> coupons) {
         hideLoader();
-        mAdapter = new CouponListAdapter(mPresenter, coupons);
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -165,16 +167,17 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     }
 
     @Override
-    public void emptyCoupons(Map<String,String> errors) {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
-
-        if(getView() == null || errors == null){
+    public void emptyCoupons(Map<String, String> errors) {
+        if (getView() == null || errors == null) {
             return;
         }
 
-        ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-        ((TextView) getView().findViewById(R.id.text_title_error)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
-        ((TextView) getView().findViewById(R.id.text_label_error)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+        ((ImageView) getView().findViewById(R.id.img_error2)).setImageResource(R.drawable.ic_tp_empty_pages);
+        ((TextView) getView().findViewById(R.id.text_title_error2)).setText(errors.get(CommonConstant.CouponMapKeys.TITLE));
+        ((TextView) getView().findViewById(R.id.text_label_error2)).setText(errors.get(CommonConstant.CouponMapKeys.SUB_TITLE));
+        getView().findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
+
+        mContainerMain.setDisplayedChild(CONTAINER_EMPTY);
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
@@ -222,6 +225,46 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
                     R.color.grey_warm));
+        }
+    }
+
+    @Override
+    public void onRetryPageLoad(int pageNumber) {
+    }
+
+    @Override
+    public void onEmptyList(Object rawObject) {
+        hideLoader();
+        emptyCoupons(((TokoPointPromosEntity) rawObject).getCoupon().getEmptyMessage());
+    }
+
+    @Override
+    public void onStartFirstPageLoad() {
+        showLoader();
+    }
+
+    @Override
+    public void onFinishFirstPageLoad(int count, @Nullable Object rawObject) {
+        getView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideLoader();
+            }
+        }, CommonConstant.UI_SETTLING_DELAY_MS);
+    }
+
+    @Override
+    public void onStartPageLoad(int pageNumber) {
+    }
+
+    @Override
+    public void onFinishPageLoad(int itemCount, int pageNumber, @Nullable Object rawObject) {
+    }
+
+    @Override
+    public void onError(int pageNumber) {
+        if (pageNumber == 1) {
+            mContainerMain.setDisplayedChild(CONTAINER_ERROR);
         }
     }
 }

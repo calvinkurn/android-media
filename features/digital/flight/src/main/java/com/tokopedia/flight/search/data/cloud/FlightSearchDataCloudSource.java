@@ -39,23 +39,17 @@ public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataRespo
         DataRequest<FlightSearchSingleRequestData> dataRequest = new DataRequest<>(flightSearchSingleRequestData);
 
         return flightApi.searchFlightSingle(dataRequest).zipWith(Observable.just(flightSearchSingleRequestData),
-                new Func2<Response<FlightDataResponse<List<FlightSearchData>>>,
-                        FlightSearchSingleRequestData,
-                        FlightDataResponse<List<FlightSearchData>>>() {
-                    @Override
-                    public FlightDataResponse<List<FlightSearchData>> call(Response<FlightDataResponse<List<FlightSearchData>>> flightDataResponseResponse,
-                                                                           FlightSearchSingleRequestData flightSearchSingleRequestData) {
-                        FlightDataResponse<List<FlightSearchData>> flightDataResponse = flightDataResponseResponse.body();
-                        if (flightDataResponse != null) {
-                            Meta meta = flightDataResponse.getMeta();
-                            Attributes attribute = flightSearchSingleRequestData.getAttributes();
-                            meta.setArrivalAirport(attribute.getArrival());
-                            meta.setDepartureAirport(attribute.getDeparture());
-                            meta.setTime(attribute.getDate());
-                            return flightDataResponse;
-                        } else {
-                            return null;
-                        }
+                (flightDataResponseResponse, flightSearchSingleRequestData1) -> {
+                    FlightDataResponse<List<FlightSearchData>> flightDataResponse = flightDataResponseResponse.body();
+                    if (flightDataResponse != null) {
+                        Meta meta = flightDataResponse.getMeta();
+                        Attributes attribute = flightSearchSingleRequestData1.getAttributes();
+                        meta.setArrivalAirport(attribute.getArrival());
+                        meta.setDepartureAirport(attribute.getDeparture());
+                        meta.setTime(attribute.getDate());
+                        return flightDataResponse;
+                    } else {
+                        return null;
                     }
                 });
     }

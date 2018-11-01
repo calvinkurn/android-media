@@ -94,7 +94,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
-    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
@@ -149,8 +149,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     private String extraPlatformPage;
     private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject AddAddressPresenter mPresenter;
-    @Inject UserSession userSession;
+    @Inject
+    AddAddressPresenter mPresenter;
+    @Inject
+    UserSession userSession;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -725,14 +727,13 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            if (success) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
-            } else {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
-            }
+        if (success) {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+        } else {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+        }
     }
 
     @Override

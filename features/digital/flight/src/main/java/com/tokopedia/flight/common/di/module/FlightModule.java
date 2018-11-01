@@ -41,6 +41,10 @@ import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
+import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
+import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
+import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
+import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
 
 import java.util.concurrent.TimeUnit;
 
@@ -185,9 +189,34 @@ public class FlightModule {
                 .create();
     }
 
+    @Provides
+    @FlightScope
+    FlightSearchRoomDb provideFlightSearchRoomDb(@ApplicationContext Context context) {
+        return FlightSearchRoomDb.getInstance(context);
+    }
+
+    @Provides
+    @FlightScope
+    FlightComboDao provideComboDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboDao();
+    }
+
+    @Provides
+    @FlightScope
+    FlightJourneyDao provideFlightJourneyDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightJourneyDao();
+    }
+
+    @Provides
+    @FlightScope
+    FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightRouteDao();
+    }
+
     @FlightScope
     @Provides
     public FlightDateUtil provideFlightDateUtil(){
         return new FlightDateUtil();
     }
+
 }

@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
@@ -23,18 +20,18 @@ import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFilterActivity;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.contractor.EventsContract;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -51,8 +48,8 @@ import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_RANG
  */
 
 public class EventSearchPresenter
-        extends BaseDaggerPresenter<EventSearchContract.IEventSearchView>
-        implements EventSearchContract.IEventSearchPresenter {
+        extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
+        implements EventSearchContract.EventSearchPresenter {
 
     private GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
@@ -74,14 +71,16 @@ public class EventSearchPresenter
     private String searchTag;
     private List<EventsContract.AdapterCallbacks> adapterCallbacks;
     private RequestParams searchNextParams = RequestParams.create();
+    private EventSearchContract.EventSearchView mView;
+    private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase) {
+                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         adapterCallbacks = new ArrayList<>();
+        this.eventsAnalytics = eventsAnalytics;
     }
 
 
@@ -96,7 +95,7 @@ public class EventSearchPresenter
             long start = startDate / 1000;
             requestParams.putString(getSearchEventsListRequestUseCase.START_DATE, String.valueOf(start));
         }
-        getView().showProgressBar();
+        mView.showProgressBar();
         getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
             public void onCompleted() {
@@ -105,18 +104,18 @@ public class EventSearchPresenter
 
             @Override
             public void onError(Throwable e) {
-                getView().hideProgressBar();
+                mView.hideProgressBar();
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), () -> getEventsListBySearch(highlight));
+                NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                        mView.getRootView(), () -> getEventsListBySearch(highlight));
             }
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                getView().setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards);
-                checkIfToLoad(getView().getLayoutManager());
-                getView().hideProgressBar();
+                mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards);
+                checkIfToLoad(mView.getLayoutManager());
+                mView.hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -128,16 +127,19 @@ public class EventSearchPresenter
     }
 
     @Override
-    public void initialize() {
-        isEventCalendar = getView().getActivity().getIntent().
-                getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
-        mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
-        //getLikedEvents();
-        if (isEventCalendar) {
-            searchSubmitted("");
-        } else {
-            getView().setTopEvents(mTopEvents);
-        }
+    public boolean onClickOptionMenu(int id) {
+        mView.getActivity().onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
+
     }
 
     @Override
@@ -173,7 +175,7 @@ public class EventSearchPresenter
                     adapterCallback.notifyDatasetChanged(position);
             }
         };
-        Utils.getSingletonInstance().setEventLike(getView().getActivity(), model, postUpdateEventLikesUseCase, subscriber);
+        Utils.getSingletonInstance().setEventLike(mView.getActivity(), model, postUpdateEventLikesUseCase, subscriber);
     }
 
     @Override
@@ -183,13 +185,13 @@ public class EventSearchPresenter
                 showCards = false;
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
             }
             if (searchText.length() == 0) {
-                getView().setTopEvents(mTopEvents);
+                mView.setTopEvents(mTopEvents);
             }
         } else {
-            getView().setTopEvents(mTopEvents);
+            mView.setTopEvents(mTopEvents);
         }
     }
 
@@ -198,7 +200,7 @@ public class EventSearchPresenter
         showCards = true;
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
     }
 
     @Override
@@ -206,7 +208,7 @@ public class EventSearchPresenter
         if (id == R.id.action_filter) {
 
         } else {
-            getView().getActivity().onBackPressed();
+            mView.getActivity().onBackPressed();
             return true;
         }
         return true;
@@ -214,7 +216,7 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
                 searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
@@ -228,10 +230,10 @@ public class EventSearchPresenter
         detailsViewModel.setIsTop(searchViewModel.getIsTop());
         detailsViewModel.setLongRichDesc("Fetching Description");
         detailsViewModel.setTnc("Fetching TnC");
-        Intent detailsIntent = new Intent(getView().getActivity(), EventDetailsActivity.class);
+        Intent detailsIntent = new Intent(mView.getActivity(), EventDetailsActivity.class);
         detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
         detailsIntent.putExtra("homedata", detailsViewModel);
-        getView().getActivity().startActivity(detailsIntent);
+        mView.getActivity().startActivity(detailsIntent);
     }
 
     @Override
@@ -246,11 +248,11 @@ public class EventSearchPresenter
 
     @Override
     public void openFilters() {
-        Intent filterIntent = EventFilterActivity.getCallingIntent(getView().getActivity());
+        Intent filterIntent = EventFilterActivity.getCallingIntent(mView.getActivity());
         filterIntent.putExtra(TIME_RANGE, timeFilter);
         filterIntent.putExtra(START_DATE, startDate);
         filterIntent.putExtra(CATEGORY, catgoryFilter);
-        getView().navigateToActivityRequest(filterIntent, REQ_OPEN_FILTER);
+        mView.navigateToActivityRequest(filterIntent, REQ_OPEN_FILTER);
     }
 
     @Override
@@ -264,9 +266,9 @@ public class EventSearchPresenter
                 date = data.getLongExtra(START_DATE, 0);
                 category = data.getStringExtra(CATEGORY);
                 if (!category.isEmpty() || date != 0 || !time.isEmpty()) {
-                    getView().setFilterActive();
+                    mView.setFilterActive();
                 } else
-                    getView().setFilterInactive();
+                    mView.setFilterInactive();
                 if (!category.equals(catgoryFilter) || date != startDate || !time.equals(timeFilter)) {
                     catgoryFilter = category;
                     startDate = date;
@@ -295,9 +297,9 @@ public class EventSearchPresenter
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
                 isLoading = false;
-                getView().removeFooter();
-                getView().addEvents(processSearchResponse(searchDomainModel));
-                checkIfToLoad(getView().getLayoutManager());
+                mView.removeFooter();
+                mView.addEvents(processSearchResponse(searchDomainModel));
+                checkIfToLoad(mView.getLayoutManager());
             }
         });
     }
@@ -313,7 +315,7 @@ public class EventSearchPresenter
                     && totalItemCount >= PAGE_SIZE) {
                 loadMoreItems();
             } else {
-                getView().addFooter();
+                mView.addFooter();
             }
         }
     }
@@ -332,7 +334,7 @@ public class EventSearchPresenter
     }
 
     private void getLikedEvents() {
-        SharedPreferences preferences = getView().getActivity().getSharedPreferences(Utils.Constants.EVENTS_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences preferences = mView.getActivity().getSharedPreferences(Utils.Constants.EVENTS_PREFS, Context.MODE_PRIVATE);
         String rawLikes = preferences.getString(Utils.Constants.LIKED_EVENTS, "");
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(rawLikes, JsonObject.class);
@@ -340,6 +342,20 @@ public class EventSearchPresenter
         likedEvents = new ArrayList<>();
         for (JsonElement aJsonArray : jsonArray) {
             likedEvents.add(aJsonArray.getAsInt());
+        }
+    }
+
+    @Override
+    public void attachView(EventBaseContract.EventBaseView view) {
+        super.attachView(view);
+        mView = (EventSearchContract.EventSearchView) view;
+        isEventCalendar = mView.getActivity().getIntent().
+                getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
+        mTopEvents = mView.getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
+        if (isEventCalendar) {
+            searchSubmitted("");
+        } else {
+            mView.setTopEvents(mTopEvents);
         }
     }
 }

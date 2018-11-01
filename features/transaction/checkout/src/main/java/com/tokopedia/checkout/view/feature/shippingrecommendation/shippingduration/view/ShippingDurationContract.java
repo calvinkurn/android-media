@@ -27,6 +27,8 @@ public interface ShippingDurationContract {
 
         void showData(List<ShippingDurationViewModel> serviceDataList);
 
+        void showNoCourierAvailable(String message);
+
         Activity getActivity();
     }
 

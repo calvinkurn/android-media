@@ -15,27 +15,31 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
 
     public static final int BARCODE_WIDTH = 256;
     public static final int BARCODE_HEIGHT = 61;
+    private static final String API_BARCODE_TYPE128 = "128b";
+    private static final String API_BARCODE_TYPE39 = "39";
+    private static final String API_BARCODE_TYPE93 = "93";
+    private static final String COPY_LABEL = "booking code";
 
     BookingCodeContract.BookingView mView;
 
     @Override
     public Bitmap generateBarcode(String code, String type) {
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         Bitmap bitmap = null;
         BarcodeFormat format = null;
         switch (type) {
-            case "128b":
+            case API_BARCODE_TYPE128:
                 format = BarcodeFormat.CODE_128;
                 break;
-            case "39":
+            case API_BARCODE_TYPE39:
                 format = BarcodeFormat.CODE_39;
                 break;
-            case "93":
+            case API_BARCODE_TYPE93:
                 format = BarcodeFormat.CODE_93;
                 break;
         }
         if (format != null) {
             try {
+                MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                 BitMatrix bitMatrix = multiFormatWriter
                         .encode(code, format, BARCODE_WIDTH, BARCODE_HEIGHT);
                 BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -50,7 +54,7 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
     @Override
     public void sendClipboard(ClipboardManager clipboardManager, String text) {
         clipboardManager.setPrimaryClip(
-                ClipData.newPlainText("booking code", text)
+                ClipData.newPlainText(COPY_LABEL, text)
         );
         mView.showSuccessOnCopy();
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 
@@ -35,4 +36,6 @@ public interface IHomeRouter {
     Observable<HomeHeaderWalletAction> getWalletBalanceHomeHeader();
 
     String getExtraBroadcastReceiverWallet();
+
+    AnalyticTracker getAnalyticTracker();
 }

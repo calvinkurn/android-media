@@ -19,11 +19,16 @@
     id
     rates_id
     type
+    error {
+        error_id
+        error_message
+    }
     services {
         service_name
         service_id
         service_order
         status
+        is_promo
         range_price {
             min_price
             max_price
@@ -37,6 +42,11 @@
             text_etd
             text_notes
         }
+        error {
+            error_id
+            error_message
+        }
+        status
         products {
             shipper_name
             shipper_id
@@ -49,6 +59,7 @@
             recommend
             checksum
             ut
+            promo_code
             price {
                 price
                 formatted_price
@@ -73,36 +84,6 @@
                 error_id
                 error_message
             }
-        }
-    }
-    recommendations {
-        service_name
-        shipping_id
-        shipping_product_id
-        price {
-            price
-            formatted_price
-        }
-        etd {
-            min_etd
-            max_etd
-        }
-        texts {
-            text_range_price
-            text_etd
-            text_notes
-        }
-        insurance {
-            insurance_price
-            insurance_type
-            insurance_type_info
-            insurance_used_type
-            insurance_used_info
-            insurance_used_default
-        }
-        error {
-            error_id
-            error_message
         }
     }
   }

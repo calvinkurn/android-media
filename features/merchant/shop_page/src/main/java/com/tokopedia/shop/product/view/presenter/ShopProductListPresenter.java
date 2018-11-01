@@ -207,7 +207,7 @@ public class ShopProductListPresenter extends BaseDaggerPresenter<ShopProductDed
 
     public void clearCache() {
         deleteShopProductUseCase.executeSync();
-        getShopEtalaseByShopUseCase.setForceNetwork(true);
+        getShopEtalaseByShopUseCase.clearCache();
     }
 
     @Override

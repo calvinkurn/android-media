@@ -110,6 +110,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
+    private static final String BERANDA_TRACE = "beranda_trace";
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
     @Inject
     HomePresenter presenter;
@@ -148,7 +149,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trace = TrackingUtils.startTrace("beranda_trace");
+        trace = TrackingUtils.startTrace(BERANDA_TRACE);
     }
 
     @Override

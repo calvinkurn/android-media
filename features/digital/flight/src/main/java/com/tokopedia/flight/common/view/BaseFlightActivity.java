@@ -17,6 +17,8 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.flight.common.constant.FlightUrl.CONTACT_US_FLIGHT;
+
 /**
  * Created by alvarisi on 12/5/17.
  */
@@ -75,7 +77,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
                     && ((FlightModuleRouter) getApplication())
                     .getDefaultContactUsIntent(this) != null) {
                 startActivity(((FlightModuleRouter) getApplication())
-                        .getDefaultContactUsIntent(this));
+                        .getDefaultContactUsIntent(this, CONTACT_US_FLIGHT));
             }
 
             return true;

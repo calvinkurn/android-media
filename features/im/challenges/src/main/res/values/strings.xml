@@ -99,7 +99,7 @@
     <string name="ch_upload_not_allowed_text">pengunggahan tidak diperbolehkan untuk</string>
     <string name="ch_insta_instruction_text">~Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan.</string>
     <string name="ch_share_your_content_msg">Bagikan konten milikmu di media sosial dan dapatkan skor lebih untuk menang!</string>
-    <string name="action_settings">Pengaturan</string>
     <string name="ch_resubmit_text">Kirim ulang konten lain</string>
+    <string name="action_settings">Pengaturan</string>
 
 </resources>

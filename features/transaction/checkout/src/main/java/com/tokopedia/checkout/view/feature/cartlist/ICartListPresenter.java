@@ -42,6 +42,8 @@ public interface ICartListPresenter {
 
     CartListData getCartListData();
 
+    void setCartListData(CartListData cartListData);
+
     void processAddToWishlist(String productId, String userId, WishListActionListener wishListActionListener);
 
     void processRemoveFromWishlist(String productId, String userId, WishListActionListener wishListActionListener);

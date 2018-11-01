@@ -14,7 +14,7 @@
     <color name="card_title_red">#fdebec</color>
     <color name="card_title_green">#f3fef3</color>
     <color name="flight_chips_danger_text">#ea212d</color>
-
+    <color name="flight_chips_info_text">#16c1cd</color>
 
     <color name="flightPriceColor">#ff5722</color>
 </resources>

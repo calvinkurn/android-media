@@ -18,6 +18,8 @@ public interface BookingCodeContract {
 
         void showSuccessOnCopy();
 
+        void changeBarcodeSize(int dp);
+
     }
 
      interface BookingPresenter {

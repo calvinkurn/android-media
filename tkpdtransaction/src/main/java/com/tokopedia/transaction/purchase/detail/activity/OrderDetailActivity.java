@@ -44,6 +44,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
@@ -60,11 +61,13 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
+import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
@@ -91,6 +94,7 @@ public class OrderDetailActivity extends TActivity
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
+    private OrderDetailAnalytics orderDetailAnalytics;
 
     @Inject
     OrderDetailPresenterImpl presenter;
@@ -132,6 +136,8 @@ public class OrderDetailActivity extends TActivity
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+        orderDetailAnalytics =
+                new OrderDetailAnalytics(this);
     }
 
     private void initInjector() {
@@ -150,11 +156,31 @@ public class OrderDetailActivity extends TActivity
         setItemListView(data);
         setAwbLayout(data);
         setInvoiceView(data);
+        setBookingCode(data);
         setDescriptionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
         setUploadAwb(data);
+    }
+
+    private void setBookingCode(OrderDetailData data) {
+        ViewGroup layout = findViewById(R.id.booking_code_layout);
+        if (data.getBookingCode() != null && getExtraUserMode() == SELLER_MODE) {
+            TextView text = findViewById(R.id.booking_code);
+            text.setText(data.getBookingCode());
+            BookingCodeData codeData = new BookingCodeData(
+                    data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
+            );
+            layout.setOnClickListener(view -> {
+                orderDetailAnalytics.sendAnalyticsClickShipping(
+                        OrderDetailConstant.VALUE_CLICK_BUTTON_DETAIL,
+                        OrderDetailConstant.VALUE_EMPTY);
+                startActivity(BookingCodeActivity.createInstance(this, codeData));
+            });
+        } else {
+            layout.setVisibility(View.GONE);
+        }
     }
 
     private void setUploadAwb(final OrderDetailData data) {
@@ -516,7 +542,7 @@ public class OrderDetailActivity extends TActivity
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
-        ;
+
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
