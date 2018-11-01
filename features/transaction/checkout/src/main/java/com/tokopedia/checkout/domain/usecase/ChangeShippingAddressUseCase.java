@@ -7,6 +7,8 @@ import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -30,10 +32,10 @@ public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData
     @Override
     @SuppressWarnings("unchecked")
     public Observable<SetShippingAddressData> createObservable(RequestParams requestParams) {
-        TKPDMapParam<String, String> param = (TKPDMapParam<String, String>) requestParams.getParamsAllValueInString();
-        param.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(PARAM_ONE_CLICK_SHIPMENT, false)));
+        Map<String, String> params = requestParams.getParamsAllValueInString();
+        params.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(PARAM_ONE_CLICK_SHIPMENT, false)));
 
-        return repository.setShippingAddress(requestParams.getParamsAllValueInString())
+        return repository.setShippingAddress(params)
                 .map(new Func1<ShippingAddressDataResponse, SetShippingAddressData>() {
                     @Override
                     public SetShippingAddressData call(ShippingAddressDataResponse shippingAddressDataResponse) {
