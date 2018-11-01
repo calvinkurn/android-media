@@ -120,7 +120,6 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         analyticsGeoLocationListener = (ITransactionAnalyticsGeoLocationPinPoint) getActivity();
-        presenter.setUpVariables(locationPass, hasLocation);
     }
 
     @Override
@@ -139,6 +138,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         submitPointer = view.findViewById(R.id.pointer_submit);
         fab = view.findViewById(R.id.fab);
 
+        presenter.setUpVariables(locationPass, hasLocation);
         initActionBarView();
         prepareActionBarView();
         prepareAutoCompleteView();
