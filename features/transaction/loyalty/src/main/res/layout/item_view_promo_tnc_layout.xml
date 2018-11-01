@@ -13,7 +13,7 @@
         android:gravity="center"
         android:text="@string/syarat_amp_ketentuan"
         android:textColor="@color/black_70"
-        android:textSize="@dimen/fontl" />
+        android:textSize="@dimen/sp_18" />
 
     <com.tokopedia.abstraction.base.view.webview.TkpdWebView
         android:id="@+id/webview"

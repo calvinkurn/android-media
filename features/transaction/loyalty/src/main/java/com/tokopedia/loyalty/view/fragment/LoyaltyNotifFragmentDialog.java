@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 

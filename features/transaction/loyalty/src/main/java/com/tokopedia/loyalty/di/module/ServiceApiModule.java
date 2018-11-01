@@ -42,19 +42,16 @@ import retrofit2.Retrofit;
 public class ServiceApiModule {
 
     @Provides
-    @LoyaltyScope
     ITokoPointResponseMapper provideITokoPointResponseMapper() {
         return new TokoPointResponseMapper();
     }
 
     @Provides
-    @LoyaltyScope
     IPromoResponseMapper provideIPromoResponseMapper() {
         return new PromoResponseMapper();
     }
 
     @Provides
-    @LoyaltyScope
     @TokopointGqlQualifier
     Retrofit provideRetrofitTokopointGQL(@ApplicationContext Context context,
                                          @LoyaltyModuleQualifier NetworkRouter networkRouter,
@@ -72,7 +69,6 @@ public class ServiceApiModule {
     }
 
     @Provides
-    @LoyaltyScope
     @PromoQualifier
     Retrofit provideRetrofitLoyalty(@ApplicationContext Context context,
                                          @LoyaltyModuleQualifier NetworkRouter networkRouter,
@@ -90,7 +86,6 @@ public class ServiceApiModule {
     }
 
     @Provides
-    @LoyaltyScope
     @TxPaymentQualifier
     Retrofit provideRetrofitTxPayment(@ApplicationContext Context context,
                                     @LoyaltyModuleQualifier NetworkRouter networkRouter,
@@ -108,7 +103,6 @@ public class ServiceApiModule {
     }
 
     @Provides
-    @LoyaltyScope
     @LoyaltyModuleQualifier
     NetworkRouter provideNetworkRouter(@ApplicationContext Context context){
         if(context instanceof NetworkRouter){
@@ -118,32 +112,27 @@ public class ServiceApiModule {
     }
 
     @Provides
-    @LoyaltyScope
     @LoyaltyModuleQualifier
     UserSession provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
     }
 
     @Provides
-    @LoyaltyScope
     TokoPointGqlApi provideTokoPointGqlApi(@TokopointGqlQualifier Retrofit retrofit){
         return retrofit.create(TokoPointGqlApi.class);
     }
 
     @Provides
-    @LoyaltyScope
     PromoApi providePromoApi(@PromoQualifier Retrofit retrofit){
         return retrofit.create(PromoApi.class);
     }
 
     @Provides
-    @LoyaltyScope
     TXPaymentVoucherApi provideTxPaymentVoucherApi(@TxPaymentQualifier Retrofit retrofit){
         return retrofit.create(TXPaymentVoucherApi.class);
     }
 
     @Provides
-    @LoyaltyScope
     ITokoPointRepository provideITokoPointRepository(TokoPointGqlApi tokoPointGqlApi,
                                                      ITokoPointDBService tokoPointDBService,
                                                      TokoPointResponseMapper tokoPointResponseMapper,
@@ -157,7 +146,6 @@ public class ServiceApiModule {
     }
 
     @Provides
-    @LoyaltyScope
     IPromoRepository provideIPromoRepository(PromoApi promoApi,
                                              IPromoResponseMapper iPromoResponseMapper) {
         return new PromoRepository(promoApi, iPromoResponseMapper);

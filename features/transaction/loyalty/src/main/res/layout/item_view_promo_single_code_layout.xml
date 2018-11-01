@@ -6,13 +6,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_below="@id/tv_promo_code_label"
-    android:paddingTop="@dimen/padding_small_sm">
+    android:paddingTop="@dimen/dp_12">
 
     <RelativeLayout
         android:layout_width="@dimen/code_container_multiple_width"
         android:layout_height="@dimen/code_container_multiple_height"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_5"
         android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/round_button">
 

@@ -10,12 +10,11 @@
               android:paddingStart="1dp"
               android:paddingTop="10dp">
 
-    <com.tokopedia.core.customwidget.SquareImageView
+    <com.tokopedia.design.image.SquareImageView
         android:id="@+id/iv_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_gravity="center"
-        tools:src="@drawable/ic_tokocash_icon"/>
+        android:layout_gravity="center"/>
 
     <TextView
         android:id="@+id/tv_title"

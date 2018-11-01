@@ -115,7 +115,7 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
 
     protected void initialPresenter() {
         PromoListActivityComponent promoListActivityComponent = DaggerPromoListActivityComponent.builder()
-                .baseAppComponet(((BaseMainApplication) getApplicationContext()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) getApplicationContext()).getBaseAppComponent())
                 .promoListActivityModule(new PromoListActivityModule(this))
                 .build();
         promoListActivityComponent.inject(this);

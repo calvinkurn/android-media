@@ -15,7 +15,5 @@ public interface ITkpdLoyaltyModuleRouter {
 
     ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor();
 
-    FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor();
-
     Converter.Factory loyaltyModuleRouterGetStringResponseConverter();
 }
