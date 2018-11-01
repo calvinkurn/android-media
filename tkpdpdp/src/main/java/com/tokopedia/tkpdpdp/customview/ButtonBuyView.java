@@ -233,7 +233,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
                 tvBuyNow.setText(getContext().getString(R.string.title_pre_order));
             } else {
-                tvBuyNow.setText(getContext().getString(R.string.title_buy));
+                setBuyNowLabelFull(btnByMe.getVisibility() != View.VISIBLE);
             }
             tvBuyNow.setOnClickListener(new OnClickListener() {
                 @Override
