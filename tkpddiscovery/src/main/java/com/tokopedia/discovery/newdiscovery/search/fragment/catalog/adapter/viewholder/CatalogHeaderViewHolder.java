@@ -8,15 +8,13 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * @author by errysuprayogi on 11/7/17.
@@ -31,14 +29,12 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
     private Context context;
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
-    private ItemClickListener clickListener;
-    private UserSessionInterface userSession;
+    private CatalogListener catalogListener;
 
-    public CatalogHeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
+    public CatalogHeaderViewHolder(View itemView, CatalogListener catalogListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
-        this.clickListener = clickListener;
-        userSession = new UserSession(context);
+        this.catalogListener = catalogListener;
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         initTopAds(topAdsConfig);
     }
@@ -50,7 +46,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(userSession.getUserId())
+                .setUserId(catalogListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();
@@ -59,7 +55,7 @@ public class CatalogHeaderViewHolder extends AbstractViewHolder<CatalogHeaderVie
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String applink) {
-                clickListener.onBannerAdsClicked(applink);
+                catalogListener.onBannerAdsClicked(applink);
             }
         });
     }

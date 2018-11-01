@@ -36,7 +36,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.CatalogAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 import com.tokopedia.topads.sdk.base.Config;
@@ -57,7 +57,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class CategoryCatalogFragment extends BrowseSectionFragment implements
-        CatalogFragmentContract.View, ItemClickListener, TopAdsItemClickListener,
+        CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
 
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
@@ -236,6 +236,16 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
+    }
+
+    @Override
+    public boolean isUserHasLogin() {
+        return userSession.isLoggedIn();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
     }
 
     @Override

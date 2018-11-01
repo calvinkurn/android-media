@@ -35,8 +35,6 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -72,7 +70,6 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private Handler bannerHandler;
     private Runnable incrementPage;
     private RevampCategoryAdapter categoryAdapter;
-    private UserSessionInterface userSession;
 
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private boolean isUsedUnactiveChildren = false;
@@ -81,7 +78,6 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     public CategoryRevampHeaderViewHolder(View itemView, RevampCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
         this.context = itemView.getContext();
-        userSession = new UserSession(context);
         this.imageHeader = (ImageView) itemView.findViewById(R.id.image_header);
         this.expandLayout = (LinearLayout) itemView.findViewById(R.id.expand_layout);
         this.hideLayout = (LinearLayout) itemView.findViewById(R.id.hide_layout);
@@ -104,7 +100,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(userSession.getUserId())
+                .setUserId(categoryListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsParams)
                 .build();

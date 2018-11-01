@@ -769,6 +769,8 @@ public class ProductFragment extends BrowseSectionFragment
         }
     }
 
+
+
     @Override
     public void setTopAdsEndlessListener() {
         topAdsRecyclerAdapter.setEndlessScrollListener();

@@ -35,7 +35,6 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
@@ -49,7 +48,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.di.component.HotlistComponen
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistAdapter;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistAdapterTypeFactory;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.factory.HotlistTypeFactory;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -57,7 +56,6 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductVie
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
@@ -94,7 +92,7 @@ public class HotlistFragment extends BrowseSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
-        ItemClickListener, TopAdsListener, TopAdsItemClickListener,
+        HotlistListener, TopAdsListener, TopAdsItemClickListener,
         HotlistActivity.FragmentListener {
 
     private static final String HOTLIST_DETAIL_ENHANCE_ANALYTIC = "HOTLIST_DETAIL_ENHANCE_ANALYTIC";
@@ -1001,5 +999,15 @@ public class HotlistFragment extends BrowseSectionFragment
     @Override
     public void stopScroll() {
         recyclerView.stopScroll();
+    }
+
+    @Override
+    public String getUserId() {
+        return userSession.getUserId();
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return userSession.isLoggedIn();
     }
 }

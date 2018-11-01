@@ -26,7 +26,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.topads.sdk.base.Config;
@@ -34,8 +34,6 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,23 +53,21 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private Context context;
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
-    private ItemClickListener clickListener;
+    private ProductListener productListener;
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
-    private UserSessionInterface userSession;
     private boolean isAdsBannerLoaded = false;
 
-    public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
+    public HeaderViewHolder(View itemView, ProductListener productListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
-        userSession = new UserSession(context);
-        this.clickListener = clickListener;
+        this.productListener = productListener;
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
-        guidedSearchAdapter = new GuidedSearchAdapter(clickListener);
+        guidedSearchAdapter = new GuidedSearchAdapter(productListener);
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
@@ -83,7 +79,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String applink) {
-                clickListener.onBannerAdsClicked(applink);
+                productListener.onBannerAdsClicked(applink);
             }
         });
     }
@@ -95,7 +91,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         Config newConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(userSession.getUserId())
+                .setUserId(productListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(newParam)
                 .build();
@@ -104,7 +100,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void initQuickFilterRecyclerView() {
-        quickFilterAdapter = new QuickFilterAdapter(clickListener);
+        quickFilterAdapter = new QuickFilterAdapter(productListener);
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
         quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
@@ -129,7 +125,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(element.getSuggestionModel().getSuggestedQuery())) {
-                            clickListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
+                            productListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
                         }
                     }
                 });
@@ -201,10 +197,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         private static final int HEADER_COUNT = 1;
 
         private List<Option> optionList = new ArrayList<>();
-        private ItemClickListener clickListener;
+        private ProductListener clickListener;
         private String formattedResultCount;
 
-        public QuickFilterAdapter(ItemClickListener clickListener) {
+        public QuickFilterAdapter(ProductListener clickListener) {
             this.clickListener = clickListener;
         }
 
@@ -261,9 +257,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
         private TextView quickFilterText;
-        private final ItemClickListener clickListener;
+        private final ProductListener clickListener;
 
-        public QuickFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
+        public QuickFilterItemViewHolder(View itemView, ProductListener clickListener) {
             super(itemView);
             quickFilterText = itemView.findViewById(R.id.quick_filter_text);
             this.clickListener = clickListener;
@@ -306,9 +302,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private static class GuidedSearchAdapter extends RecyclerView.Adapter<GuidedSearchViewHolder> {
 
         List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public GuidedSearchAdapter(ItemClickListener itemClickListener) {
+        public GuidedSearchAdapter(ProductListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
 
@@ -346,9 +342,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
         TextView textView;
         ImageView imageView;
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public GuidedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
+        public GuidedSearchViewHolder(View itemView, ProductListener itemClickListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.guided_search_text);
             imageView = itemView.findViewById(R.id.guided_search_background);

@@ -28,8 +28,6 @@ import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -57,12 +55,10 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
     private Context context;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private boolean isUsedUnactiveChildren = false;
-    private UserSessionInterface userSession;
 
     public CategoryDefaultHeaderViewHolder(View itemView, DefaultCategoryAdapter.CategoryListener categoryListener) {
         super(itemView);
         this.context = itemView.getContext();
-        this.userSession = new UserSession(context);
         this.categoryListener = categoryListener;
         this.defaultCategoriesRecyclerView = (RecyclerView) itemView.findViewById(R.id.recycler_view_default_categories);
         this.expandLayout = (LinearLayout) itemView.findViewById(R.id.expand_layout);
@@ -77,12 +73,12 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, categoryListener.getUserId());
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .topAdsParams(adsParams)
-                .setUserId(userSession.getUserId())
+                .setUserId(categoryListener.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .build();
         this.topAdsBannerView.setConfig(config);
