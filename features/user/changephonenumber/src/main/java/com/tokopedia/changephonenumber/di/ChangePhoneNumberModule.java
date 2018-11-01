@@ -41,7 +41,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author by alvinatin on 25/09/18.
  */
 
-@ChangePhoneNumberScope
 @Module
 public class ChangePhoneNumberModule {
 
@@ -51,6 +50,7 @@ public class ChangePhoneNumberModule {
     private static final int NET_RETRY = 1;
 
     @Provides
+    @ChangePhoneNumberScope
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
                                      TkpdAuthInterceptor tkpdAuthInterceptor,
@@ -77,6 +77,7 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(ChangePhoneNumberUrl.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
@@ -88,11 +89,13 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     ChangePhoneNumberApi provideChangePhoneNumberApi(Retrofit retrofit) {
         return retrofit.create(ChangePhoneNumberApi.class);
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
                 NET_WRITE_TIMEOUT,
@@ -101,6 +104,7 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public FingerprintInterceptor provideFingerPrintInterceptor(@ApplicationContext Context context,
                                                                 UserSession userSession) {
         return new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
@@ -108,6 +112,7 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
                                                           NetworkRouter networkRouter,
                                                           UserSession userSession) {
@@ -115,22 +120,26 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
     @Provides
+    @ChangePhoneNumberScope
     ChangePhoneNumberAnalytics provideChangePhoneNumberAnalytics(@ApplicationContext Context
                                                                          context) {
         return new ChangePhoneNumberAnalytics(context);
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @Provides
+    @ChangePhoneNumberScope
     ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource
                                                                            cloudGetWarningSource,
                                                                    CloudValidateNumberSource
@@ -142,6 +151,7 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         if (context instanceof NetworkRouter) {
             return ((NetworkRouter) context);
@@ -151,11 +161,13 @@ public class ChangePhoneNumberModule {
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public ChangePhoneNumberInterceptor provideChangePhoneNumberInterceptor(UserSession userSession) {
         return new ChangePhoneNumberInterceptor(userSession);
     }
 
     @Provides
+    @ChangePhoneNumberScope
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
         if (context instanceof ChangePhoneNumberRouter) {
             return ((ChangePhoneNumberRouter) context).getChuckInterceptor();

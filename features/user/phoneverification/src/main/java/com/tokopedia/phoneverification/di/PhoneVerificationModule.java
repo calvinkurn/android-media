@@ -35,7 +35,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author by alvinatin on 12/10/18.
  */
 
-@PhoneVerificationScope
 @Module
 public class PhoneVerificationModule {
     private static final int NET_READ_TIMEOUT = 60;
@@ -44,6 +43,7 @@ public class PhoneVerificationModule {
     private static final int NET_RETRY = 1;
 
     @Provides
+    @PhoneVerificationScope
     OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
                                              httpLoggingInterceptor,
                                      PhoneVerificationInterceptor phoneVerificationInterceptor,
@@ -71,6 +71,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder().baseUrl(PhoneVerificationConst.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
@@ -82,6 +83,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     PhoneVerificationInterceptor providePhoneVerificationInterceptor(@ApplicationContext Context context,
                                                    NetworkRouter networkRouter,
                                                    UserSession userSession){
@@ -89,16 +91,19 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     PhoneVerificationBearerInterceptor providePhoneVerificationBearerInterceptor(UserSession userSession){
         return new PhoneVerificationBearerInterceptor(userSession);
     }
 
     @Provides
+    @PhoneVerificationScope
     PhoneVerificationApi provideChangePhoneNumberApi(Retrofit retrofit) {
         return retrofit.create(PhoneVerificationApi.class);
     }
 
     @Provides
+    @PhoneVerificationScope
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(NET_READ_TIMEOUT,
                 NET_WRITE_TIMEOUT,
@@ -107,6 +112,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     public FingerprintInterceptor provideFingerPrintInterceptor(@ApplicationContext Context context,
                                                                 UserSession userSession) {
         return new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(),
@@ -114,16 +120,19 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
     @Provides
+    @PhoneVerificationScope
     public UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @Provides
+    @PhoneVerificationScope
     public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         if (context instanceof NetworkRouter) {
             return ((NetworkRouter) context);
@@ -133,6 +142,7 @@ public class PhoneVerificationModule {
     }
 
     @Provides
+    @PhoneVerificationScope
     public Interceptor provideChuckInterceptor(@ApplicationContext Context context) {
         if (context instanceof PhoneVerificationRouter) {
             return ((PhoneVerificationRouter) context).getChuckInterceptor();

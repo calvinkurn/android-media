@@ -35,7 +35,7 @@
             android:layout_height="@dimen/btn_height"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/bg_textview_rounded"
+            android:background="@drawable/bg_button_green_enabled"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="@string/change_number"
