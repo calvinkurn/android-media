@@ -34,7 +34,7 @@ public class HockeyAppHelper {
     }
 
     private static Boolean isAllow() {
-        return true;
+        return ENABLE_DISTRIBUTION;
     }
 
     public static void setEnableDistribution(Boolean enableDistribution) {

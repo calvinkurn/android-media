@@ -10,5 +10,5 @@ public interface ShopProductClickedListener {
 
     void onWishListClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
 
-    void onProductClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
+    void onProductClicked(ShopProductViewModel shopProductViewModel, int shopTrackType, int productPosition);
 }

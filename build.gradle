@@ -149,6 +149,8 @@ subprojects {
                 substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:27.1.1')
                 substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:27.1.1')
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
+                substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
+                substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
             }
         }
     }
