@@ -44,6 +44,7 @@ import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.showcase.ShowCaseBuilder
@@ -86,6 +87,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val SETTING_PROFILE_CODE = 83
         private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
+        private const val LOGIN_CODE = 1383
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -137,7 +139,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
-            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE -> {
+            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
             }
         }
@@ -209,7 +211,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-        setHasOptionsMenu(true)
+
+        setHasOptionsMenu(firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -225,6 +228,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             visitables.addAll(firstPageViewModel.visitableList)
         } else {
             visitables.add(getEmptyModel(
+                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
                     firstPageViewModel.profileHeaderViewModel.isOwner,
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
@@ -271,7 +275,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.unfollowKol(userId)
             }
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -337,7 +341,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -345,7 +349,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -582,7 +586,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun getEmptyModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
+    private fun getEmptyModel(isShowAffiliateContent: Boolean,
+                              isOwner: Boolean,
+                              isAffiliate: Boolean): Visitable<*> {
+        return if (isShowAffiliateContent) getEmptyResultModel(isOwner, isAffiliate)
+        else ProfileEmptyViewModel()
+    }
+
+    private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_af_empty
         if (isOwner) {
@@ -687,6 +698,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
+    }
+
+    private fun goToLogin() {
+        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
     }
 
     private fun showError(message: String) {

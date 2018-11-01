@@ -11,9 +11,10 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
+import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
-import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
+import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 
 /**
@@ -25,6 +26,10 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
 
     override fun type(viewModel: ProfileHeaderViewModel): Int {
         return ProfileHeaderViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: ProfileEmptyViewModel): Int {
+        return ProfileEmptyViewHolder.LAYOUT
     }
 
     override fun type(kolPostViewModel: KolPostViewModel): Int {
@@ -54,6 +59,8 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileEmptyContract.View,
         return when(type) {
             ProfileHeaderViewHolder.LAYOUT ->
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
+            ProfileEmptyViewHolder.LAYOUT ->
+                ProfileEmptyViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             KolPostViewHolder.LAYOUT ->
                     KolPostViewHolder(parent,
                             kolPostViewListener,
