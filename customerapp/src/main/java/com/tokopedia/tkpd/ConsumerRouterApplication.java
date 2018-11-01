@@ -230,7 +230,6 @@ import com.tokopedia.loyalty.di.module.ServiceApiModule;
 import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 import com.tokopedia.loyalty.router.ITkpdLoyaltyModuleRouter;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.activity.PromoDetailActivity;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -276,6 +275,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.promocheckout.list.PromoCheckoutListActivity;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
@@ -972,8 +972,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
                                                        String reservationId, String reservationCode) {
-        return LoyaltyActivity.newInstanceTrainCouponActive(activity, platform, "11",
-                reservationId, reservationCode);
+        return PromoCheckoutListActivity.Companion.newInstanceTrain(context,platform, "11", reservationId, reservationCode, true);
     }
 
     @Override
@@ -1001,12 +1000,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
-        return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
+        return PromoCheckoutListActivity.Companion.newInstance(context,platform, categoryId, cartId, true);
     }
 
     @Override
     public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
-        return LoyaltyActivity.newInstanceCouponActiveAndSelected(activity, platform, categoryId, cartId);
+        return PromoCheckoutListActivity.Companion.newInstance(context,platform, categoryId, cartId, true);
     }
 
     @Override
@@ -1215,6 +1214,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         intent.putExtra(ContactUsActivity.PARAM_TOOLBAR_TITLE, toolbarTitle);
         return intent;
+    }
+
+    @Override
+    public Intent getLoyaltyActivity(Context context, String platform, String categoryId) {
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", true);
+    }
+
+    @Override
+    public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", true);
     }
 
     @Override
@@ -1922,38 +1931,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
             Context context, String platform, String category, String defaultSelectedTab
     ) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", true);
     }
 
     @Override
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
             Context context, String platform, String category
     ) {
-        return LoyaltyActivity.newInstanceCouponNotActive(context, platform, category);
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", false);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(
-                getAppContext(), additionalStringData, defaultSelectedTab
-        )
-                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(
-                getAppContext(), additionalStringData
-        );
+        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(context,couponActive);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
-                getAppContext(), additionalStringData, defaultSelectedTab
-        )
-                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
-                getAppContext(), additionalStringData
-        );
+        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(context,additionalStringData, couponActive);
     }
 
     @Override

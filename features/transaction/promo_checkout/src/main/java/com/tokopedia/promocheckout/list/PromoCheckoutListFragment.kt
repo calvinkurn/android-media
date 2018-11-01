@@ -117,13 +117,24 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
 
     override fun loadData(page: Int) {
         promoCheckoutListPresenter.getListPromo(page, resources)
+        /* hold cos api not ready yet
         promoCheckoutListPresenter.getListLastSeen(resources)
+        */
     }
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
 
-        fun createInstance():PromoCheckoutListFragment{
+        fun createInstance(isCouponActive: Boolean?,
+                           platform: String?,
+                           category: String?,
+                           cartId: String?,
+                           trainReservationCode: String?,
+                           trainReservationId: String?,
+                           platformPage: String?,
+                           additionalData: String?):PromoCheckoutListFragment{
+
+
             return PromoCheckoutListFragment()
         }
     }
