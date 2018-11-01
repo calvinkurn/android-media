@@ -350,7 +350,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber, this)
+            presenter.unlikeKol(id, rowNumber, this)
         } else {
             goToLogin()
         }
