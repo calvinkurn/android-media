@@ -14,6 +14,7 @@ import android.webkit.CookieManager
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.tokopedia.kelontongapp.firebase.Preference
@@ -33,6 +34,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     private var webViewChromeClient: KelontongWebChromeClient? = null
     private var webviewClient: KelontongWebviewClient? = null
     private var webView: KelontongWebview? = null
+    private var progressBar: ProgressBar? = null
 
     private var doubleTapExit = false
 
@@ -71,6 +73,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)
+        progressBar = findViewById(R.id.progressbar)
 
         webViewChromeClient = KelontongWebChromeClient(this, this)
         webviewClient = KelontongWebviewClient(this)
@@ -79,8 +82,15 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView!!.settings.javaScriptEnabled = true
         webView!!.settings.domStorageEnabled = true
 
+        webviewClient!!.setProgressInterface(object: KelontongWebviewClient.ProgressInterface {
+            override fun onPageVisible() {
+                progressBar!!.visibility = View.GONE
+            }
+        })
+
         webViewChromeClient!!.setWebviewListener(object : KelontongWebChromeClient.WebviewListener {
             override fun onComplete() {
+                progressBar!!.visibility = View.GONE
                 if (Preference.isFirstTime(this@KelontongMainActivity)) {
                     showAlertDialog()
                     Preference.saveFirstTime(this@KelontongMainActivity)

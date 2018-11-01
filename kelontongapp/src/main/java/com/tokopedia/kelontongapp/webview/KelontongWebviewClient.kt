@@ -72,6 +72,22 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
         }
     }
 
+    private var progressInterface: ProgressInterface? = null
+
+    fun setProgressInterface(progressInterface: ProgressInterface) {
+        this.progressInterface = progressInterface;
+    }
+
+    override fun onPageCommitVisible(view: WebView?, url: String?) {
+        super.onPageCommitVisible(view, url)
+        if (progressInterface != null)
+            progressInterface!!.onPageVisible()
+    }
+
+    interface ProgressInterface {
+        fun onPageVisible()
+    }
+
     private fun showMessageOKCancel(message: String, okListener: DialogInterface.OnClickListener) {
         AlertDialog.Builder(activity)
                 .setMessage(message)
