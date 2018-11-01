@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'changephonenumber'
+    groupId = 'com.tokopedia.changephonenumber'
+    versionName = "${tkpdChangePhoneNumberVersion}"
+    artifactName ="change_phone_number-release"
+}
+
 buildscript {
     repositories {
         mavenCentral()

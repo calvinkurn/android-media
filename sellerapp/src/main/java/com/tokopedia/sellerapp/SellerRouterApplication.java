@@ -223,12 +223,6 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FR
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter
         .ARG_PARAM_PRODUCT_PASS_DATA;
 
-//import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-//import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-
-//import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-//import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-
 /**
  * Created by normansyahputa on 12/15/16.
  */

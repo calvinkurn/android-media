@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
+project.ext {
+    artifactId = 'phoneverification'
+    groupId = 'com.tokopedia.phoneverification'
+    versionName = "${tkpdPhoneVerificationVersion}"
+    artifactName ="phone_verification-release"
+}
+
 dependencies {
     implementation project(rootProject.ext.features.otp)
 
@@ -9,8 +16,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
-
-    implementation rootProject.ext.miscDependencies.multiDex
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
