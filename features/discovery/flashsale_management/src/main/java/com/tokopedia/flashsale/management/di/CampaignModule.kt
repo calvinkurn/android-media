@@ -28,10 +28,6 @@ class CampaignModule {
     fun provideGqlRawString(@ApplicationContext context: Context) =
         GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_campaign_label)
 
-    @CampaignScope
-    @Provides
-    fun provideGraphqlMultiUseCase() = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LABEL)
     fun provideGetCampaignLabelUseCase() =

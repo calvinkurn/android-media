@@ -10,8 +10,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetFlashSaleProductUseCase @Inject
-constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String,
-            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): UseCase<FlashSaleProduct>() {
+constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String): UseCase<FlashSaleProduct>() {
 
     private val params = mutableMapOf<String, Any>()
 

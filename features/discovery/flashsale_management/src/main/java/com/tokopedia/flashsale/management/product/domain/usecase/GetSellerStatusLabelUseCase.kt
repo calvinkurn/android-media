@@ -7,8 +7,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetSellerStatusLabelUseCase @Inject
-constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String,
-            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase)
+constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String)
     : UseCase<String>() {
 
     override suspend fun executeOnBackground(): String {
