@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*

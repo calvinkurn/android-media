@@ -24,7 +24,7 @@ class PromoCheckoutListActivity : BaseSimpleActivity() {
 
     companion object {
 
-        fun newInstance(activity: Activity, platform: String, categoryId: String, cartId: String, isCouponActive: Boolean): Intent {
+        fun newInstance(activity: Context, platform: String, categoryId: String, cartId: String, isCouponActive: Boolean): Intent {
             val intent = Intent(activity, PromoCheckoutListActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(EXTRA_COUPON_ACTIVE, isCouponActive)
