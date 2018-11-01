@@ -20,6 +20,12 @@ public class FlightSearchCombinedResponse {
     @Expose
     private AttributesResponse attributes;
 
+    public FlightSearchCombinedResponse(String type, String id, AttributesResponse attributes) {
+        this.type = type;
+        this.id = id;
+        this.attributes = attributes;
+    }
+
     public String getType() {
         return type;
     }
@@ -32,15 +38,4 @@ public class FlightSearchCombinedResponse {
         return attributes;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setAttributes(AttributesResponse attributes) {
-        this.attributes = attributes;
-    }
 }

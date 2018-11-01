@@ -102,27 +102,4 @@ public class Fare implements Parcelable {
         }
     };
 
-    public void setAdult(String adult) {
-        this.adult = adult;
-    }
-
-    public void setChild(String child) {
-        this.child = child;
-    }
-
-    public void setInfant(String infant) {
-        this.infant = infant;
-    }
-
-    public void setAdultNumeric(int adultNumeric) {
-        this.adultNumeric = adultNumeric;
-    }
-
-    public void setChildNumeric(int childNumeric) {
-        this.childNumeric = childNumeric;
-    }
-
-    public void setInfantNumeric(int infantNumeric) {
-        this.infantNumeric = infantNumeric;
-    }
 }

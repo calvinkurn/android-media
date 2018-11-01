@@ -36,6 +36,17 @@ public class ComboResponse {
     @Expose
     private int infantPriceNumeric;
 
+    public ComboResponse(String id, String adultPrice, String childPrice, String infantPrice,
+                         int adultPriceNumeric, int childPriceNumeric, int infantPriceNumeric) {
+        this.id = id;
+        this.adultPrice = adultPrice;
+        this.childPrice = childPrice;
+        this.infantPrice = infantPrice;
+        this.adultPriceNumeric = adultPriceNumeric;
+        this.childPriceNumeric = childPriceNumeric;
+        this.infantPriceNumeric = infantPriceNumeric;
+    }
+
     public String getId() {
         return id;
     }
@@ -64,31 +75,4 @@ public class ComboResponse {
         return infantPriceNumeric;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setAdultPrice(String adultPrice) {
-        this.adultPrice = adultPrice;
-    }
-
-    public void setChildPrice(String childPrice) {
-        this.childPrice = childPrice;
-    }
-
-    public void setInfantPrice(String infantPrice) {
-        this.infantPrice = infantPrice;
-    }
-
-    public void setAdultPriceNumeric(int adultPriceNumeric) {
-        this.adultPriceNumeric = adultPriceNumeric;
-    }
-
-    public void setChildPriceNumeric(int childPriceNumeric) {
-        this.childPriceNumeric = childPriceNumeric;
-    }
-
-    public void setInfantPriceNumeric(int infantPriceNumeric) {
-        this.infantPriceNumeric = infantPriceNumeric;
-    }
 }

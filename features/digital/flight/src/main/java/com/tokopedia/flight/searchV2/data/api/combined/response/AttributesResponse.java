@@ -18,6 +18,11 @@ public class AttributesResponse {
     @Expose
     private boolean isBestPairing;
 
+    public AttributesResponse(List<ComboResponse> combos, boolean isBestPairing) {
+        this.combos = combos;
+        this.isBestPairing = isBestPairing;
+    }
+
     public List<ComboResponse> getCombos() {
         return combos;
     }
@@ -26,11 +31,4 @@ public class AttributesResponse {
         return isBestPairing;
     }
 
-    public void setCombos(List<ComboResponse> combos) {
-        this.combos = combos;
-    }
-
-    public void setBestPairing(boolean bestPairing) {
-        isBestPairing = bestPairing;
-    }
 }

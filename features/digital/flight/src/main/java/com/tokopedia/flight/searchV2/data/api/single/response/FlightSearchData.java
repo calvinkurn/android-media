@@ -18,6 +18,12 @@ public class FlightSearchData {
     @Expose
     private Attributes attributes;
 
+    public FlightSearchData(String type, String id, Attributes attributes) {
+        this.type = type;
+        this.id = id;
+        this.attributes = attributes;
+    }
+
     public String getId() {
         return id;
     }
@@ -30,15 +36,4 @@ public class FlightSearchData {
         return attributes;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setAttributes(Attributes attributes) {
-        this.attributes = attributes;
-    }
 }
