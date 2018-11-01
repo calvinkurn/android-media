@@ -1038,6 +1038,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             if (affiliate != null) {
                 buttonBuyView.showByMeButton(true);
                 buttonBuyView.setByMeButtonListener(affiliate);
+                buttonBuyView.setBuyNowLabelFull(false);
             } else {
                 buttonBuyView.setBuyNowLabelFull(true);
             }
