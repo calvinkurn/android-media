@@ -18,8 +18,6 @@ import rx.functions.Func1;
  */
 
 public class GetShipmentAddressFormOneClickShipementUseCase extends UseCase<CartShipmentAddressFormData> {
-    public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS
-            = "PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS";
 
     private final ICartRepository cartRepository;
     private final IShipmentMapper shipmentMapper;
@@ -34,7 +32,7 @@ public class GetShipmentAddressFormOneClickShipementUseCase extends UseCase<Cart
     @SuppressWarnings("unchecked")
     public Observable<CartShipmentAddressFormData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
-                requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS);
+                requestParams.getObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS);
         return cartRepository.getShipmentAddressFormOneClickCheckout(param)
                 .map(new Func1<ShipmentAddressFormDataResponse, CartShipmentAddressFormData>() {
                     @Override

@@ -90,6 +90,8 @@ public interface ShipmentContract {
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
+        boolean isOneClickCheckout();
+
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
         ShipmentDataConverter getShipmentDataConverter();
@@ -171,18 +173,19 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isFromPdp);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
 
         void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData cartItemPromoHolderData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel);
+                                                          ShipmentDonationModel shipmentDonationModel,
+                                                          boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError();
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickCheckout);
 
-        void processCheckShipmentPrepareCheckout();
+        void processCheckShipmentPrepareCheckout(boolean isOneClickShipment);
 
         void processCheckout();
 

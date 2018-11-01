@@ -250,8 +250,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
-            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-            shipmentPresenter.processInitialLoadCheckoutPage(false, isFromPdp);
+            shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickCheckout());
         } else {
             swipeToRefresh.setEnabled(false);
         }
@@ -285,11 +284,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
                 shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
                 shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-                boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-                renderCheckoutPage(true, isFromPdp);
+                renderCheckoutPage(true, isOneClickCheckout());
             } else {
-                boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-                shipmentPresenter.processInitialLoadCheckoutPage(false, isFromPdp);
+                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickCheckout());
             }
         }
     }
@@ -297,6 +294,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     protected void setViewListener() {
 
+    }
+
+    @Override
+    public boolean isOneClickCheckout() {
+        return getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
     }
 
     private void initRecyclerViewData(PromoCodeAppliedData promoCodeAppliedData,
@@ -440,8 +442,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
-                        boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-                        shipmentPresenter.processInitialLoadCheckoutPage(false, isFromPdp);
+                        shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickCheckout());
                     }
                 });
 
@@ -763,8 +764,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-            shipmentPresenter.checkPromoShipment(isFromPdp);
+            shipmentPresenter.checkPromoShipment(isOneClickCheckout());
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -804,12 +804,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentDonationModel shipmentDonationModel = data.getParcelableExtra(MultipleAddressFormActivity.EXTRA_SHIPMENT_DONATION_DATA);
             shipmentPresenter.processReloadCheckoutPageFromMultipleAddress(
                     cartItemPromoHolderData, cartPromoSuggestion, recipientAddressModel, shipmentCartItemModels,
-                    shipmentCostModel, shipmentDonationModel
+                    shipmentCostModel, shipmentDonationModel, isOneClickCheckout()
             );
         } else {
             shipmentSelectionStateDataHashSet.clear();
-            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-            shipmentPresenter.processInitialLoadCheckoutPage(true, isFromPdp);
+            shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickCheckout());
         }
     }
 
@@ -830,8 +829,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
             if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
-                boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-                shipmentPresenter.processInitialLoadCheckoutPage(true, isFromPdp);
+                shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickCheckout());
             } else {
                 getActivity().setResult(resultCode);
                 getActivity().finish();
@@ -933,8 +931,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 break;
 
             case CartAddressChoiceActivity.RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS:
-                boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-                shipmentPresenter.processInitialLoadCheckoutPage(false, isFromPdp);
+                shipmentPresenter.processInitialLoadCheckoutPage(false, isOneClickCheckout());
                 break;
 
             case Activity.RESULT_CANCELED:
@@ -1197,8 +1194,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
         if (shipmentPresenter.getPromoCodeAppliedData() != null &&
                 shipmentAdapter.hasAppliedPromoCode()) {
-            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-            shipmentPresenter.checkPromoShipment(isFromPdp);
+            shipmentPresenter.checkPromoShipment(isOneClickCheckout());
         }
     }
 
@@ -1211,8 +1207,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion,
                                                    int position) {
-        boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
-        shipmentPresenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode(), isFromPdp);
+        shipmentPresenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode(), isOneClickCheckout());
     }
 
     @Override
@@ -1226,12 +1221,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo,
                                                   int position) {
         sendAnalyticsOnClickUsePromoCodeAndCoupon();
-        boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
                                 true, "",
-                                cartPromo.getDefaultSelectedTabString(), isFromPdp
+                                cartPromo.getDefaultSelectedTabString(), isOneClickCheckout()
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
 
@@ -1268,7 +1262,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDropshipperValidationResult(boolean result, ShipmentData shipmentData,
                                               int errorPosition) {
         if (shipmentData == null && result) {
-            shipmentPresenter.processCheckShipmentPrepareCheckout();
+            shipmentPresenter.processCheckShipmentPrepareCheckout(isOneClickCheckout());
             shipmentPresenter.processSaveShipmentState();
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
