@@ -25,7 +25,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_toRightOf="@id/barcode_label"
+        android:layout_toRightOf="@+id/barcode_label"
         android:text="@string/barcode_label_two"
         android:textColor="@color/green_300"
         android:textSize="@dimen/sp_12" />
@@ -35,7 +35,7 @@
         android:id="@+id/ll_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_barcode"
+        android:layout_below="@+id/card_barcode"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         android:padding="4dp">
@@ -64,7 +64,7 @@
         android:id="@+id/barcode_helper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_code"
+        android:layout_below="@+id/ll_code"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/dp_16"
         android:background="@drawable/rect_yellow"
@@ -75,7 +75,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/barcode_helper"
+        android:layout_below="@+id/barcode_helper"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
@@ -90,8 +90,8 @@
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_toEndOf="@id/ic_message"
-            android:layout_toRightOf="@id/ic_message"
+            android:layout_toEndOf="@+id/ic_message"
+            android:layout_toRightOf="@+id/ic_message"
             android:background="@color/transparent"
             android:text="@string/message_label"
             android:textColor="@color/black_40"
@@ -110,7 +110,7 @@
             android:id="@+id/rv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ic_message"
+            android:layout_below="@+id/ic_message"
             android:layout_margin="@dimen/dp_16" />
     </RelativeLayout>
 
@@ -125,7 +125,7 @@
         android:id="@+id/card_barcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/barcode_label"
+        android:layout_below="@+id/barcode_label"
         android:layout_margin="@dimen/dp_16"
         app:cardCornerRadius="3dp"
         app:cardElevation="@dimen/dp_2"

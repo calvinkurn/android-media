@@ -392,6 +392,7 @@ import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
@@ -2422,6 +2423,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             }
         });
     }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+            Context context, String platform, String category, String defaultSelectedTab
+    ) {
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
+    }
+
 
     @Override
     public String getUserPhoneNumber() {
