@@ -31,7 +31,8 @@ ext {
     libraries = [
             analytics         : ":libraries:analytics",
             applink           : ":libraries:applink",
-            baseAdapter           : ":libraries:base_adapter",
+            baseAdapter       : ":libraries:base_adapter",
+            baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
             cameraView        : ":libraries:camera_view",

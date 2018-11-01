@@ -101,7 +101,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         handleBranchDefferedDeeplink();
     }
 
-    private void moveToHome() {
+    protected void moveToHome() {
 //        new android.os.Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -221,10 +221,24 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         }
 
                         if (error == null) {
-                            try {
-                                BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+                            handlingInitBranchSession(referringParams);
+                        } else {
+                            moveToHome();
+                        }
 
-                                String deeplink = referringParams.getString("$android_deeplink_path");
+                    }
+                }, this.getIntent().getData(), this);
+            } catch (Exception e) {
+                // Do nothing
+            }
+        }
+    }
+
+    protected void handlingInitBranchSession(JSONObject referringParams){
+        try {
+            BranchSdkUtils.storeWebToAppPromoCodeIfExist(referringParams, SplashScreen.this);
+
+            String deeplink = referringParams.getString("$android_deeplink_path");
                                 if (deeplink == null) {
                                     moveToHome();
                                 } else {
@@ -241,19 +255,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
                                 }
 
-                            } catch (JSONException e) {
-                                moveToHome();
+        } catch (JSONException e) {
+            moveToHome();
 
-                            }
-                        } else {
-                            moveToHome();
-                        }
-
-                    }
-                }, this.getIntent().getData(), this);
-            } catch (Exception e) {
-                // Do nothing
-            }
         }
     }
 

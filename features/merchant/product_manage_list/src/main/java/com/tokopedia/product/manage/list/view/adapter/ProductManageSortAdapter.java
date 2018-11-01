@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.list.view.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 

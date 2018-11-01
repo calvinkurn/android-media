@@ -11,12 +11,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.TopAdsFilterListFragment;
 import com.tokopedia.topads.R;
-import com.tokopedia.topads.keyword.view.presenter.TopAdsOldKeywordListPresenterImpl;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
@@ -34,6 +32,8 @@ import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordOldNewChooseGroup
 import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.topads.keyword.view.presenter.TopAdsOldKeywordListPresenterImpl;
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.util.List;
 
