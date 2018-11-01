@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
-import com.tokopedia.graphql.coroutines.domain.GraphqlRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,7 +12,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
 import java.lang.reflect.Type
-import javax.inject.Inject
 import kotlin.Exception
 
 class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,

@@ -1,4 +1,4 @@
-package com.tokopedia.graphql.coroutines.domain
+package com.tokopedia.graphql.coroutines.domain.repository
 
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

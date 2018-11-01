@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 
 dependencies {
@@ -11,14 +11,12 @@ dependencies {
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.adapterCoroutines
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

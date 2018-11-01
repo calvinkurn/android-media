@@ -31,7 +31,7 @@ class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
     override fun getComponent(): CampaignComponent {
         return DaggerCampaignComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .campaignModule(CampaignModule()).build()
+                .build()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {

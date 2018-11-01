@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
+import com.tokopedia.kotlin.extensions.coroutines.AppExecutors
 import kotlinx.coroutines.experimental.Dispatchers
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
@@ -17,11 +18,11 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
 
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
-        return withContext(Dispatchers.Default) {
+        return withContext(AppExecutors.bgContext) {
             val result = api.getResponseDeferred(requests).await()
                     .run{ GraphqlResponseInternal(this, false) }
 
-            launch(Dispatchers.IO) {
+            launch(AppExecutors.ioContext) {
                 when (cacheStrategy.type) {
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
                         cacheManager.save(fingerprintManager.generateFingerPrint(requests.toString(),
@@ -29,8 +30,7 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
                                 result.originalResponse.toString(),
                                 cacheStrategy.expiryTime)
                     }
-                    else -> {
-                    }
+                    else -> { }
                 }
             }
             result

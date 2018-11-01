@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductDetailPresenter
+import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_product_detail.*
 import kotlinx.android.synthetic.main.partial_flash_sale_product_detail_loading.*
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        context?.let { GraphqlClient.init(it) }
         super.onCreate(savedInstanceState)
     }
 

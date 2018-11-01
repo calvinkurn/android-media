@@ -25,9 +25,9 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     lateinit var presenter: CampaignPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        GraphqlClient.init(context!!)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        GraphqlClient.init(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

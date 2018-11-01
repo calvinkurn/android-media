@@ -1,28 +1,23 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant.NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT
-import com.tokopedia.flashsale.management.data.Result
-import com.tokopedia.flashsale.management.domain.SingleGraphqlUseCaseKt
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
 class GetSellerStatusLabelUseCase @Inject
-constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) gqlRawString: String) {
-    private val graphQLUseCase: SingleGraphqlUseCaseKt<String>
-    private var gqlRawString:String? = null
+constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String,
+            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase)
+    : UseCase<String>() {
 
-    init {
-        graphQLUseCase = SingleGraphqlUseCaseKt(String::class.java)
-        this.gqlRawString = gqlRawString
+    private val graphQLUseCase: GraphqlUseCase<String> = GraphqlUseCase(multiRequestGraphqlUseCase, String::class.java).apply {
+        setGraphqlQuery(gqlRawString)
     }
 
-    fun getResponse(): Result<String> {
-        graphQLUseCase.setRequest(GraphqlRequest(
-                gqlRawString,
-                String::class.java,
-                null))
-        return graphQLUseCase.getResponse()
+    override suspend fun executeOnBackground(): String {
+        return graphQLUseCase.executeOnBackground()
     }
 
 }

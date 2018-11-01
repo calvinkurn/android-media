@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseDao;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseModel;
 

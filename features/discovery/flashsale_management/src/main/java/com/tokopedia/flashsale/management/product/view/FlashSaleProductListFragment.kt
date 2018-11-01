@@ -40,6 +40,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
     override fun getAdapterTypeFactory() = FlashSaleProductAdapterTypeFactory()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        context?.let { GraphqlClient.init(it) }
         campaignId = arguments?.getString(EXTRA_PARAM_CAMPAIGN_ID, "") ?: ""
         super.onCreate(savedInstanceState)
         sellerStatusListAdapter = SellerStatusListAdapter(arrayListOf(), this)
