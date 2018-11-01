@@ -24,7 +24,7 @@ import rx.functions.Func1;
  */
 
 public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, BalanceTokoCash> {
-
+    private static final String OVO_TYPE = "OVO";
     private Context context;
     private UserSession userSession;
 
@@ -41,7 +41,9 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
 
             LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
             boolean popupHasShown = true;
-            if (userSession.isLoggedIn()){
+            if (userSession.isLoggedIn() && 
+                balanceTokoCashEntity.getWalletType() != null && 
+                balanceTokoCashEntity.getWalletType().equalsIgnoreCase(OVO_TYPE)){
                 popupHasShown = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, false);
                 if (!popupHasShown) {
                     localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, true);
