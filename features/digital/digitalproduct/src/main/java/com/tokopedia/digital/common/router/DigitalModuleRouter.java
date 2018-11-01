@@ -13,4 +13,8 @@ public interface DigitalModuleRouter {
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
 
     Intent getLoginIntent(Context activity);
+
+    Intent getLoyaltyActivity(Context context, String platform, String categoryId);
+
+    Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId);
 }
