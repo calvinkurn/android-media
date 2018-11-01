@@ -1,17 +1,19 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.flashsale.management.data.FlashSaleConstant
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 import javax.inject.Named
 
 class GetSellerStatusLabelUseCase @Inject
-constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String)
-    : UseCase<String>() {
+constructor(@Named(FlashSaleConstant.NAMED_REQUEST_SELLER_STATUS_CHIP) private val gqlRawString: String,
+            graphqlRepository: GraphqlRepository): GraphqlUseCase<String>(graphqlRepository) {
 
-    override suspend fun executeOnBackground(): String {
-        return ""
+    init {
+        setTypeClass(String::class.java)
+        setGraphqlQuery(gqlRawString)
     }
 
 }
+

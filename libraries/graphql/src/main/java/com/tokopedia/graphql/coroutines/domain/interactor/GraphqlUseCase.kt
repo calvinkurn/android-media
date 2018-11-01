@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
+open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null
