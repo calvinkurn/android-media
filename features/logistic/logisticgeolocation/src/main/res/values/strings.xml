@@ -13,4 +13,5 @@
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
     <string name="wait_generate_address">Harap Tunggu . . .</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
+    <string name="hint_gojek_pick_address">Cari Lokasi</string>
 </resources>
