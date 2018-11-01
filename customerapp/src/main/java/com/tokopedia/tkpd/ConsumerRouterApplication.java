@@ -1164,7 +1164,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
-        return DigitalCartActivity.newInstance(this, passData);
+        if (getBooleanRemoteConfig(DigitalRouter.MULTICHECKOUT_CART_REMOTE_CONFIG, false)){
+            return DigitalCartActivity.newInstance(this, passData);
+        }else {
+            return CartDigitalActivity.newInstance(this, passData);
+        }
     }
 
     @Override
