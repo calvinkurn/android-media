@@ -5,8 +5,11 @@ import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
 import com.tokopedia.flight.searchV2.data.api.single.response.Meta
 import com.tokopedia.flight.searchV2.data.db.*
 import com.tokopedia.flight.searchV2.data.repository.mapper.FlightSearchMapper
+import com.tokopedia.flight.searchV2.data.repository.util.createCombine
 import com.tokopedia.flight.searchV2.data.repository.util.createFlightDataResponse
 import com.tokopedia.flight.searchV2.data.repository.util.createFlightListSearchDataResponse
+import com.tokopedia.flight.searchV2.presentation.model.FlightRouteModel
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiRequestModel
 import com.tokopedia.usecase.RequestParams
 import org.junit.Before
 import org.junit.Test
@@ -54,12 +57,6 @@ class FlightSearchRepositoryTest {
         val journeyAndRoutes = JourneyAndRoutes()
         journeyAndRoutes.flightJourneyTable = FlightJourneyTable()
         journeyAndRoutes.routes = arrayListOf()
-        val journeyAndRoutesList = listOf<JourneyAndRoutes>()
-        val observable = Observable.create<List<JourneyAndRoutes>> {
-            it.onNext(journeyAndRoutesList)
-        }
-
-        `when`(flightSearchSingleDataDbSource.findAllJourneys()).thenReturn(observable)
 
         val flightDataResponse = createFlightDataResponse("1")
 
@@ -100,6 +97,9 @@ class FlightSearchRepositoryTest {
                 .insertList(Matchers.anyListOf(JourneyAndRoutes::class.java))
     }
 
+    // onwardJourneyId = 1
+    // returnJourneys  = 2, 3
+    // combo = {1, 2}
     @Test
     fun `get search return combined`() {
         val flightDataResponse = createFlightListSearchDataResponse("2", "3")
@@ -126,6 +126,23 @@ class FlightSearchRepositoryTest {
 
         verify(flightSearchSingleDataDbSource, times(1))
                 .insertList(Matchers.anyListOf(JourneyAndRoutes::class.java))
+    }
+
+    @Test
+    fun `get search combined`() {
+        val flightDataResponse = createCombine()
+
+        `when`(flightSearchCombinedDataApiSource.getData(Mockito.any(FlightSearchCombinedApiRequestModel::class.java)))
+                .thenReturn(Observable.just(flightDataResponse))
+
+        val testSubscriber = TestSubscriber<Meta>()
+
+        val routes = listOf<FlightRouteModel>()
+        flightSearchRepository.getSearchCombined(FlightSearchCombinedApiRequestModel(routes, 0, 0, 0, 0))
+                .subscribe(testSubscriber)
+
+        verify(flightSearchCombinedDataDbSource, times(1))
+                .insert(Matchers.anyListOf(FlightComboTable::class.java))
     }
 
 }

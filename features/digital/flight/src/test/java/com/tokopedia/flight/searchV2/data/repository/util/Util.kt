@@ -1,5 +1,8 @@
 package com.tokopedia.flight.searchV2.data.repository.util
 
+import com.tokopedia.flight.searchV2.data.api.combined.response.AttributesResponse
+import com.tokopedia.flight.searchV2.data.api.combined.response.ComboResponse
+import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse
 import com.tokopedia.flight.searchV2.data.api.single.response.*
 import java.util.ArrayList
 
@@ -8,11 +11,19 @@ import java.util.ArrayList
  */
 fun createFlightDataResponse(journeyId: String): FlightDataResponse<List<FlightSearchData>> {
     val flightDataResponse = FlightDataResponse<List<FlightSearchData>>()
+
     val flightSearchDataList = ArrayList<FlightSearchData>()
     val flightSearchData = createFlightSearchData(journeyId)
     flightSearchDataList.add(flightSearchData)
+    val included1 = Included("airline", "JT",
+            AttributesAirline("Lion Air", "Lion", "logo", ""))
+    val included2 = Included("airport", "CGK",
+            AttributesAirport("Cengkareng", "Jakarta"))
+    val included3 = Included("airport", "DPS",
+            AttributesAirport("Denpasar", "Denpasar"))
     flightDataResponse.data = flightSearchDataList
     flightDataResponse.meta = Meta()
+    flightDataResponse.included = listOf(included1, included2, included3)
     return flightDataResponse
 }
 
@@ -23,8 +34,15 @@ fun createFlightListSearchDataResponse(journeyId1: String, journeyId2: String): 
     val flightSearchData2 = createFlightSearchData(journeyId2)
     flightSearchDataList.add(flightSearchData1)
     flightSearchDataList.add(flightSearchData2)
+    val included1 = Included("airline", "JT",
+            AttributesAirline("Lion Air", "Lion", "logo", ""))
+    val included2 = Included("airport", "CGK",
+            AttributesAirport("Cengkareng", "Jakarta"))
+    val included3 = Included("airport", "DPS",
+            AttributesAirport("Denpasar", "Denpasar"))
     flightDataResponse.data = flightSearchDataList
     flightDataResponse.meta = Meta()
+    flightDataResponse.included = listOf(included1, included2, included3)
     return flightDataResponse
 }
 
@@ -66,4 +84,45 @@ private fun createFlightSearchData(journeyId: String): FlightSearchData {
     flightSearchData.id = journeyId
     flightSearchData.attributes = attributes
     return flightSearchData
+}
+
+fun createCombine(): FlightDataResponse<List<FlightSearchCombinedResponse>> {
+    val flightDataResponse = FlightDataResponse<List<FlightSearchCombinedResponse>>()
+    val flightSearchCombinedList = arrayListOf<FlightSearchCombinedResponse>()
+    val flightSearchCombined = FlightSearchCombinedResponse()
+    flightSearchCombined.id = "combined id"
+    flightSearchCombined.type = "combined"
+    val attributesResponse = AttributesResponse()
+
+    val combos = arrayListOf<ComboResponse>()
+    val comboResponse1 = ComboResponse()
+    comboResponse1.id = "1"
+    comboResponse1.adultPrice = "Rp 500.000"
+    comboResponse1.adultPriceNumeric = 500000
+    comboResponse1.childPrice = "Rp. 250.000"
+    comboResponse1.childPriceNumeric = 250000
+    comboResponse1.infantPrice = "Rp 0"
+    comboResponse1.infantPriceNumeric = 0
+    combos.add(comboResponse1)
+    val comboResponse2 = ComboResponse()
+    comboResponse2.id = "1"
+    comboResponse2.adultPrice = "Rp 500.000"
+    comboResponse2.adultPriceNumeric = 500000
+    comboResponse2.childPrice = "Rp. 250.000"
+    comboResponse2.childPriceNumeric = 250000
+    comboResponse2.infantPrice = "Rp 0"
+    comboResponse2.infantPriceNumeric = 0
+    combos.add(comboResponse2)
+
+    attributesResponse.combos = combos
+    attributesResponse.isBestPairing = true
+
+    flightSearchCombined.attributes = attributesResponse
+
+    flightSearchCombinedList.add(flightSearchCombined)
+
+    flightDataResponse.data = flightSearchCombinedList
+    flightDataResponse.meta = Meta()
+
+    return flightDataResponse
 }

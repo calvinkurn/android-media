@@ -1,10 +1,7 @@
 package com.tokopedia.flight.searchV2.data.repository.mapper
 
-import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.searchV2.data.api.single.response.Attributes
-import com.tokopedia.flight.searchV2.data.api.single.response.FlightSearchData
-import com.tokopedia.flight.searchV2.data.api.single.response.Route
+import com.tokopedia.flight.searchV2.data.api.single.response.*
 import com.tokopedia.flight.searchV2.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightJourneyTable
@@ -84,7 +81,7 @@ class FlightSearchMapper @Inject constructor() {
                     fare.adultNumeric,
                     isReturn,
                     isRefundable,
-                    !TextUtils.isEmpty(beforeTotal),
+                    !beforeTotal.isNullOrEmpty(),
                     ""
             )
         }
@@ -178,6 +175,15 @@ class FlightSearchMapper @Inject constructor() {
             }
         }
         return airlines
+    }
+
+    fun extractAirportFromIncluded(included: Included<AttributesInc>): FlightAirportViewModel {
+        return if (included.attributes is AttributesAirport) {
+            FlightAirportViewModel(included.id, (included.attributes as AttributesAirport).name,
+                    (included.attributes as AttributesAirport).city)
+        } else {
+            FlightAirportViewModel("", "", "")
+        }
     }
 
 }

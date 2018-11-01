@@ -20,7 +20,7 @@ open class FlightSearchCombinedDataDbSource @Inject constructor(private val flig
         }
     }
 
-    fun insert(item: List<FlightComboTable>) {
+    open fun insert(item: List<FlightComboTable>) {
         flightComboDao.insert(item)
     }
 

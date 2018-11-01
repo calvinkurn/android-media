@@ -1,15 +1,9 @@
 package com.tokopedia.flight.searchV2.data.repository
 
 import com.tokopedia.flight.searchV2.constant.FlightSortOption
-import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
-import com.tokopedia.flight.searchV2.data.api.single.response.AttributesInc
-import com.tokopedia.flight.searchV2.data.api.single.response.FlightSearchData
-import com.tokopedia.flight.searchV2.data.api.single.response.Meta
-import com.tokopedia.flight.searchV2.data.ComboAndMetaWrapper
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
-import com.tokopedia.flight.searchV2.data.api.single.response.AttributesAirline
-import com.tokopedia.flight.searchV2.data.api.single.response.AttributesAirport
-import com.tokopedia.flight.searchV2.data.api.single.response.Included
+import com.tokopedia.flight.searchV2.data.api.single.FlightSearchDataCloudSource
+import com.tokopedia.flight.searchV2.data.api.single.response.*
 import com.tokopedia.flight.searchV2.data.db.FlightComboTable
 import com.tokopedia.flight.searchV2.data.db.FlightSearchCombinedDataDbSource
 import com.tokopedia.flight.searchV2.data.db.FlightSearchSingleDataDbSource
@@ -35,13 +29,7 @@ open class FlightSearchRepository @Inject constructor(
     private fun generateJourneyAndRoutesObservable(journeyResponse: FlightSearchData, included: List<Included<AttributesInc>>, isReturnTrip: Boolean):
             Observable<JourneyAndRoutes> {
         return Observable.from(journeyResponse.attributes.routes)
-                .flatMap { route ->
-                    getAirlineById(route.airline, included)
-                            .zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) {
-                                airline: FlightAirlineViewModel, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
-                                Pair(airline, airport)
-                            }
-                }
+                .flatMap { route -> getRouteAirlineByIdAndAirports(route, included) }
                 .toList()
                 .zipWith(getAirports(journeyResponse.attributes.departureAirport, journeyResponse.attributes.arrivalAirport, included)) {
                     routesAirlinesAndAirports: List<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>,
@@ -107,9 +95,9 @@ open class FlightSearchRepository @Inject constructor(
             Observable.from(response.data).flatMap { journeyResponse ->
                 generateJourneyAndRoutesObservable(journeyResponse, response.included, isReturn)
                         .zipWith(flightSearchCombinedDataDbSource.getSearchReturnCombined(journeyResponse.id)
-                                .flatMap { it ->
-                                    if (it != null && !it.isEmpty()) {
-                                        Observable.from(it)
+                                .flatMap { combos ->
+                                    if (combos != null && !combos.isEmpty()) {
+                                        Observable.from(combos)
                                                 .takeFirst { it.onwardJourneyId == onwardJourneyId }
                                                 .defaultIfEmpty(null)
                                     } else {
@@ -117,14 +105,10 @@ open class FlightSearchRepository @Inject constructor(
                                     }
                                 }) {
                             journeyAndRoutes: JourneyAndRoutes, combo: FlightComboTable? ->
-                            if (combo != null) {
-                                val journeyTable = journeyAndRoutes.flightJourneyTable
-                                journeyAndRoutes.flightJourneyTable =
-                                        flightSearchMapper.createJourneyWithCombo(journeyTable, combo)
-                                journeyAndRoutes
-                            } else {
-                                journeyAndRoutes
-                            }
+                            val journeyTable = journeyAndRoutes.flightJourneyTable
+                            journeyAndRoutes.flightJourneyTable =
+                                    combo?.let { flightSearchMapper.createJourneyWithCombo(journeyTable, it) }
+                            journeyAndRoutes
                         }
             }.toList().map { journeyAndRoutesList ->
                 flightSearchSingleDataDbSource.insertList(journeyAndRoutesList)
@@ -138,32 +122,33 @@ open class FlightSearchRepository @Inject constructor(
     fun getSearchCombined(flightSearchCombinedApiRequestModel: FlightSearchCombinedApiRequestModel):
             Observable<Meta> {
         return flightSearchCombinedDataApiSource.getData(flightSearchCombinedApiRequestModel)
-                .map { response ->
-                    val combosTable = arrayListOf<FlightComboTable>()
-                    for (comboResponse in response.data) {
-                        with(comboResponse) {
-                            with(attributes) {
-                                val onwardJourney = combos[0]
-                                val returnJourney = combos[1]
-                                combosTable.add(FlightComboTable(
-                                        onwardJourney.id,
-                                        returnJourney.id,
-                                        id,
-                                        onwardJourney.adultPrice,
-                                        onwardJourney.childPrice,
-                                        onwardJourney.infantPrice,
-                                        onwardJourney.adultPriceNumeric,
-                                        onwardJourney.childPriceNumeric,
-                                        onwardJourney.infantPriceNumeric,
-                                        isBestPairing
-                                ))
+                .flatMap { response ->
+                    Observable.from(response.data)
+                            .map { comboResponse ->
+                                with(comboResponse) {
+                                    with(comboResponse.attributes) {
+                                        val onwardJourney = combos[0]
+                                        val returnJourney = combos[1]
+                                        FlightComboTable(
+                                                onwardJourney.id,
+                                                returnJourney.id,
+                                                id,
+                                                onwardJourney.adultPrice,
+                                                onwardJourney.childPrice,
+                                                onwardJourney.infantPrice,
+                                                onwardJourney.adultPriceNumeric,
+                                                onwardJourney.childPriceNumeric,
+                                                onwardJourney.infantPriceNumeric,
+                                                isBestPairing
+                                        )
+                                    }
+                                }
                             }
-                        }
-                    }
-                    ComboAndMetaWrapper(combosTable, response.meta)
-                }.flatMap { comboAndMetaWrapper ->
-                    Observable.just(flightSearchCombinedDataDbSource.insert(comboAndMetaWrapper.flightComboTables))
-                            .map { comboAndMetaWrapper.meta }
+                            .toList()
+                            .flatMap { combosTable ->
+                                Observable.just(flightSearchCombinedDataDbSource.insert(combosTable))
+                                        .map { response.meta }
+                            }
                 }
     }
 
@@ -180,33 +165,33 @@ open class FlightSearchRepository @Inject constructor(
         return flightSearchSingleDataDbSource.getSearchCount(filterModel)
     }
 
+    private fun getRouteAirlineByIdAndAirports(route: Route, included: List<Included<AttributesInc>>):
+            Observable<Pair<FlightAirlineViewModel, Pair<FlightAirportViewModel, FlightAirportViewModel>>>? {
+        return getAirlineById(route.airline, included)
+                .zipWith(getAirports(route.departureAirport, route.arrivalAirport, included)) {
+                    airline: FlightAirlineViewModel, airport: Pair<FlightAirportViewModel, FlightAirportViewModel> ->
+                    Pair(airline, airport)
+                }
+    }
+
     private fun getAirports(departureAirport: String, arrivalAirport: String, included: List<Included<AttributesInc>>) :
             Observable<Pair<FlightAirportViewModel, FlightAirportViewModel>> {
-        val foundDepartureAirport = included.find {
-            it.type == "airport" && it.id == departureAirport
-        } as Included<AttributesAirport>?
-        val foundDepartureAirportViewModel = if (foundDepartureAirport != null) {
-            FlightAirportViewModel(foundDepartureAirport.id, foundDepartureAirport.attributes.name,
-                    foundDepartureAirport.attributes.city)
-        } else {
-            FlightAirportViewModel("", "", "")
-        }
 
-        val foundArrivalAirport = included.find {
-            it.type == "airport" && it.id == arrivalAirport
-        } as Included<AttributesAirport>?
-        val foundArrivalAirportViewModel = if (foundArrivalAirport != null) {
-            FlightAirportViewModel(foundArrivalAirport.id, foundArrivalAirport.attributes.name,
-                    foundArrivalAirport.attributes.city)
-        } else {
-            FlightAirportViewModel("", "", "")
+        val foundDepAirportObservable = Observable.from(included)
+                .takeFirst { it.type == "airport" && it.id == departureAirport }
+                .map { flightSearchMapper.extractAirportFromIncluded(it) }
+        val foundArrAirportObservable = Observable.from(included)
+                .takeFirst { it.type == "airport" && it.id == arrivalAirport }
+                .map { flightSearchMapper.extractAirportFromIncluded(it) }
+
+        return Observable.zip(foundDepAirportObservable, foundArrAirportObservable) { t1, t2 ->
+            Pair(t1, t2)
         }
-        return Observable.just(Pair(foundDepartureAirportViewModel, foundArrivalAirportViewModel))
     }
 
     private fun getAirlineById(airlineId: String, included: List<Included<AttributesInc>>): Observable<FlightAirlineViewModel> {
         return Observable.from(included)
-                .filter { it.type == "airline" && it.id == airlineId }
+                .takeFirst { it.type == "airline" && it.id == airlineId }
                 .map {
                     FlightAirlineViewModel(it.id, (it.attributes as AttributesAirline).name,
                             (it.attributes as AttributesAirline).shortName, (it.attributes as AttributesAirline).logo)

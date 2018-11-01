@@ -64,4 +64,31 @@ public class ComboResponse {
         return infantPriceNumeric;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAdultPrice(String adultPrice) {
+        this.adultPrice = adultPrice;
+    }
+
+    public void setChildPrice(String childPrice) {
+        this.childPrice = childPrice;
+    }
+
+    public void setInfantPrice(String infantPrice) {
+        this.infantPrice = infantPrice;
+    }
+
+    public void setAdultPriceNumeric(int adultPriceNumeric) {
+        this.adultPriceNumeric = adultPriceNumeric;
+    }
+
+    public void setChildPriceNumeric(int childPriceNumeric) {
+        this.childPriceNumeric = childPriceNumeric;
+    }
+
+    public void setInfantPriceNumeric(int infantPriceNumeric) {
+        this.infantPriceNumeric = infantPriceNumeric;
+    }
 }

@@ -32,4 +32,15 @@ public class FlightSearchCombinedResponse {
         return attributes;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAttributes(AttributesResponse attributes) {
+        this.attributes = attributes;
+    }
 }

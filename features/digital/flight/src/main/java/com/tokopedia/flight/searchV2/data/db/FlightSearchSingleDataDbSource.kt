@@ -249,8 +249,8 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 //    private fun getAirports(departureAirport: String, arrivalAirport: String) :
 //            Observable<Pair<FlightAirportDB, FlightAirportDB>> {
 //        return Observable.zip(
-//                flightAirportDataListDBSource.getAirport(departureAirport),
-//                flightAirportDataListDBSource.getAirport(arrivalAirport),
+//                flightAirportDataListDBSource.extractAirportFromIncluded(departureAirport),
+//                flightAirportDataListDBSource.extractAirportFromIncluded(arrivalAirport),
 //                Func2<FlightAirportDB, FlightAirportDB, Pair<FlightAirportDB, FlightAirportDB>>
 //                { t1, t2 ->
 //                    return@Func2 Pair(t1, t2)

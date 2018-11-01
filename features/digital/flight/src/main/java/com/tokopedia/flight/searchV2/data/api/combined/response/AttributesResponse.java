@@ -25,4 +25,12 @@ public class AttributesResponse {
     public boolean isBestPairing() {
         return isBestPairing;
     }
+
+    public void setCombos(List<ComboResponse> combos) {
+        this.combos = combos;
+    }
+
+    public void setBestPairing(boolean bestPairing) {
+        isBestPairing = bestPairing;
+    }
 }
