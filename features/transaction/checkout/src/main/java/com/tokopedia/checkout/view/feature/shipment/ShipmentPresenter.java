@@ -446,7 +446,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickCheckout) {
+    public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment) {
         getView().showLoading();
         com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm =
                 new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
@@ -456,7 +456,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS,
                 getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
-        if (isOneClickCheckout) {
+        if (isOneClickShipment) {
             compositeSubscription.add(
                     getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -483,7 +483,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void processCheckShipmentPrepareCheckout(boolean isOneClickShipment) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
-            processCheckout();
+            processCheckout(isOneClickShipment);
         } else {
             getView().showLoading();
             com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
@@ -535,7 +535,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout() {
+    public void processCheckout(boolean isOneClickShipment) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
                         promoCodeAppliedData.getPromoCode() : "",
@@ -546,6 +546,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showLoading();
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject(CheckoutUseCase.PARAM_CARTS, checkoutRequest);
+            requestParams.putBoolean(CheckoutUseCase.PARAM_ONE_CLICK_SHIPMENT, isOneClickShipment);
             compositeSubscription.add(
                     checkoutUseCase.createObservable(requestParams)
                             .subscribeOn(Schedulers.io())
@@ -740,7 +741,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                processReloadCheckoutPageBecauseOfError(getView().isOneClickCheckout());
+                processReloadCheckoutPageBecauseOfError(getView().isOneClickShipment());
             }
 
             @Override

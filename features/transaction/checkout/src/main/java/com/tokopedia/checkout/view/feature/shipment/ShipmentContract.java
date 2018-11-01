@@ -90,7 +90,7 @@ public interface ShipmentContract {
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
-        boolean isOneClickCheckout();
+        boolean isOneClickShipment();
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
@@ -183,11 +183,11 @@ public interface ShipmentContract {
                                                           ShipmentDonationModel shipmentDonationModel,
                                                           boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError(boolean isOneClickCheckout);
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
         void processCheckShipmentPrepareCheckout(boolean isOneClickShipment);
 
-        void processCheckout();
+        void processCheckout(boolean isOneClickShipment);
 
         void processVerifyPayment(String transactionId);
 

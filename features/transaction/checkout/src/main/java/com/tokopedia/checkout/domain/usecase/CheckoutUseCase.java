@@ -30,6 +30,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     private static final String PARAM_IS_THANKYOU_NATIVE_NEW = "is_thankyou_native_new";
     private static final String PARAM_FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
     private static final String PARAM_FINGERPRINT_SUPPORT = "fingerprint_support";
+    public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
