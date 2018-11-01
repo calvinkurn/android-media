@@ -308,11 +308,11 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
-        <activity
+        <!--<activity
             android:name="com.tokopedia.saldodetails.activity.SaldoLoyaltyDetailActivity"
             android:label="@string/title_activity_people_deposit"
             android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />-->
 
         <activity
             android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"

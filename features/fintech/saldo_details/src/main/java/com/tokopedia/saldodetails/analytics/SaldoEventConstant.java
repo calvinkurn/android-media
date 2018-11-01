@@ -23,6 +23,6 @@ public interface SaldoEventConstant {
 
     public interface ScreenName {
 
-        public static final String SCREEN_LOYALTY = "Loyalty page";
+//        public static final String SCREEN_LOYALTY = "Loyalty page";
     }
 }

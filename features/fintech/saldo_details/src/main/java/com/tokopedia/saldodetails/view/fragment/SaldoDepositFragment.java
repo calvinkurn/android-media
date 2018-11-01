@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
@@ -20,8 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,13 +29,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.activity.SaldoLoyaltyDetailActivity;
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter;
 import com.tokopedia.saldodetails.adapter.SaldoDetailTransactionFactory;
 import com.tokopedia.saldodetails.analytics.SaldoEventAnalytics;
@@ -56,7 +53,7 @@ import javax.inject.Inject;
 import static android.content.ContentValues.TAG;
 
 public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailTransactionFactory>
-        implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback {
+        implements SaldoDetailContract.View, SaldoItemListener, EmptyResultViewHolder.Callback, RefreshHandler.OnRefreshHandlerListener {
 
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
@@ -67,16 +64,19 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     SaldoEventAnalytics saldoEventAnalytics;
 
     TextView totalBalance;
-    EditText startDate;
-    EditText endDate;
-    TextView searchButton;
+    RelativeLayout startDateLayout;
+    RelativeLayout endDateLayout;
+    TextView startDateTV;
+    TextView endDateTV;
+    //    EditText startDate;
+//    EditText endDate;
+//    TextView searchButton;
     TextView drawButton;
     RecyclerView recyclerView;
-    View mainView;
     RelativeLayout topSlideOffBar;
     RelativeLayout reviewWarning;
     TextView amountBeingReviewed;
-    TextView topupButton;
+    //    TextView topupButton;
     FrameLayout saldoFrameLayout;
     SaldoDatePickerUtil datePicker;
     SaldoDepositAdapter adapter;
@@ -155,28 +155,22 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
     private void initViews(View view) {
 
         totalBalance = view.findViewById(R.id.total_balance);
-        startDate = view.findViewById(R.id.start_date);
-        endDate = view.findViewById(R.id.end_date);
-        searchButton = view.findViewById(R.id.search_button);
+        startDateLayout = view.findViewById(R.id.start_date_layout);
+        endDateLayout = view.findViewById(R.id.end_date_layout);
+        startDateTV = view.findViewById(R.id.start_date_tv);
+        endDateTV = view.findViewById(R.id.end_date_tv);
+//        startDate = view.findViewById(R.id.start_date);
+//        endDate = view.findViewById(R.id.end_date);
+//        searchButton = view.findViewById(R.id.search_button);
         drawButton = view.findViewById(R.id.withdraw_button);
-        mainView = view.findViewById(R.id.main_view);
         topSlideOffBar = view.findViewById(R.id.deposit_header);
         reviewWarning = view.findViewById(R.id.review_warning_layout);
         amountBeingReviewed = view.findViewById(R.id.amount_review);
-        topupButton = view.findViewById(R.id.topup_button);
+//        topupButton = view.findViewById(R.id.topup_button);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
 
-        this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
+        this.refreshHandler = new RefreshHandler(getActivity(), view, this);
         snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_SHORT);
-    }
-
-    private RefreshHandler.OnRefreshHandlerListener onRefresh() {
-        return new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                saldoDetailsPresenter.onRefresh();
-            }
-        };
     }
 
     @Override
@@ -199,11 +193,13 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
             }
         });
-        startDate.setOnClickListener(onStartDateClicked());
-        endDate.setOnClickListener(onEndDateClicked());
-        searchButton.setOnClickListener(onSearchClicked());
+        startDateLayout.setOnClickListener(onStartDateClicked());
+        endDateLayout.setOnClickListener(onEndDateClicked());
+//        startDate.setOnClickListener(onStartDateClicked());
+//        endDate.setOnClickListener(onEndDateClicked());
+//        searchButton.setOnClickListener(onSearchClicked());
         recyclerView.addOnScrollListener(onScroll());
-        topupButton.setOnClickListener(onTopupSaldoClickedListener(generateTopupUrl()));
+//        topupButton.setOnClickListener(onTopupSaldoClickedListener(generateTopupUrl()));
     }
 
     protected void initialVar() {
@@ -236,7 +232,7 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         };
     }
 
-    private Button.OnClickListener onTopupSaldoClickedListener(final String url) {
+    /*private Button.OnClickListener onTopupSaldoClickedListener(final String url) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,21 +243,17 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
                 context.startActivity(SaldoLoyaltyDetailActivity.createInstance(context, bundle));
             }
         };
-    }
+    }*/
 
 
-    private String generateTopupUrl() {
+    /*private String generateTopupUrl() {
         return "https://pulsa.tokopedia.com/" +
                 "saldo/" +
                 "?utm_source=android" +
                 "&utm_medium=link" +
                 "&utm_campaign=top%20up%20saldo";
-    }
+    }*/
 
-
-    private void populateData() {
-
-    }
 
     @Override
     protected void initInjector() {
@@ -339,22 +331,32 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     @Override
     public void setStartDate(String date) {
-        startDate.setText(date);
+
+        // TODO: 29/10/18 set search query
+
+        startDateTV.setText(date);
+//        startDate.setText(date);
     }
 
     @Override
     public void setEndDate(String date) {
-        endDate.setText(date);
+
+        // TODO: 29/10/18 setsearchquery
+        endDateTV.setText(date);
+
+//        endDate.setText(date);
     }
 
     @Override
     public String getStartDate() {
-        return startDate.getText().toString();
+        return startDateTV.getText().toString();
+//        return startDate.getText().toString();
     }
 
     @Override
     public String getEndDate() {
-        return endDate.getText().toString();
+        return endDateTV.getText().toString();
+//        return endDate.getText().toString();
     }
 
     @Override
@@ -467,13 +469,13 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     @Override
     public void setActionsEnabled(Boolean isEnabled) {
-        if (!isAdded() || startDate == null || endDate == null || drawButton == null || searchButton == null) {
+        if (!isAdded() || startDateTV == null || endDateTV == null || drawButton == null /*|| searchButton == null*/) {
             return;
         }
-        startDate.setEnabled(isEnabled);
-        endDate.setEnabled(isEnabled);
+        startDateLayout.setEnabled(isEnabled);
+        endDateLayout.setEnabled(isEnabled);
         drawButton.setEnabled(isEnabled);
-        searchButton.setEnabled(isEnabled);
+//        searchButton.setEnabled(isEnabled);
     }
 
     @Override
@@ -597,4 +599,8 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
 
     }
 
+    @Override
+    public void onRefresh(View view) {
+        saldoDetailsPresenter.onRefresh();
+    }
 }

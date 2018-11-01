@@ -197,6 +197,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 @Override
                 public void onTimeout(String message) {
                     getView().finishLoading();
+                    getView().hideRefreshing();
                     if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState();
                     } else {
@@ -208,7 +209,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 public void onError(String error) {
                     getView().finishLoading();
                     getView().setActionsEnabled(true);
-
+                    getView().hideRefreshing();
                     if (getView().getAdapter().getItemCount() == 0) {
                         getView().showEmptyState(error);
                     } else {
@@ -220,6 +221,7 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
                 public void onNullData() {
                     getView().finishLoading();
                     getView().setActionsEnabled(true);
+                    getView().getAdapter().addElement(getView().getDefaultEmptyViewModel());
 //                    getView().getAdapter().showEmpty(true);
                 }
 

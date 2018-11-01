@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractor;
 import com.tokopedia.core.deposit.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.core.deposit.interactor.DepositRetrofitInteractor;
@@ -52,8 +51,15 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter, M
     String paramStartDate;
     String paramEndDate;
 
-    public DepositFragmentPresenterImpl(DepositFragment viewListener) {
+    /*public DepositFragmentPresenterImpl(DepositFragment viewListener) {
         this.viewListener = viewListener;
+        this.networkInteractor = new DepositRetrofitInteractorImpl();
+        this.paging = new PagingHandler();
+        this.depositCacheInteractor = new DepositCacheInteractorImpl();
+    }*/
+
+    public DepositFragmentPresenterImpl() {
+//        this.viewListener = viewListener;
         this.networkInteractor = new DepositRetrofitInteractorImpl();
         this.paging = new PagingHandler();
         this.depositCacheInteractor = new DepositCacheInteractorImpl();

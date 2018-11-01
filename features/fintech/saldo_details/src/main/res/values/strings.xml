@@ -12,8 +12,8 @@
     <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
     <string name="sp_prompt_search">Cari</string>
     <string name="sp_topup_saldo">Isi Saldo</string>
-    <string name="sp_title_withdraw">Penarikan</string>
-    <string name="sp_title_remaining_tokopedia">Saldo tersedia</string>
+    <string name="sp_title_withdraw">Tarik Saldo</string>
+    <string name="sp_title_remaining_tokopedia">Saldo Aktif</string>
     <string name="title_max_day">\"Rentang waktu maksimal adalah 31 hari.\"</string>
     <string name="error_invalid_date">Tanggal tidak valid</string>
     <string name="error_no_amount_deposit">Maaf, Anda tidak memiliki saldo pada akun Anda saat ini.</string>
