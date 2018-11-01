@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.Toast
@@ -90,6 +91,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView!!.webChromeClient = webViewChromeClient
         webView!!.webViewClient = webviewClient
         webView!!.settings.allowFileAccess = true
+        webView!!.settings.pluginState = WebSettings.PluginState.ON;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView!!.settings.mixedContentMode = 0
