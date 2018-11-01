@@ -24,7 +24,7 @@ import rx.functions.Func1;
  */
 
 public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, BalanceTokoCash> {
-
+    private static final String OVO_TYPE = "OVO";
     private Context context;
     private UserSession userSession;
 
@@ -39,18 +39,19 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
         if (balanceTokoCashEntity != null) {
             BalanceTokoCash balanceTokoCash = new BalanceTokoCash();
 
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
-            boolean popupHasShown = true;
-            if (userSession.isLoggedIn()){
-                popupHasShown = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, false);
-                if (!popupHasShown) {
-                    localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, true);
-                    localCacheHandler.applyEditor();
-                }
-            }
-
             //create an object if tokocash is not activated
             if (!balanceTokoCashEntity.getLinked()) {
+                LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE);
+                boolean popupHasShown = true;
+                if (userSession.isLoggedIn() && 
+                    balanceTokoCashEntity.getWalletType() != null && 
+                    balanceTokoCashEntity.getWalletType().equalsIgnoreCase(OVO_TYPE)){
+                    popupHasShown = localCacheHandler.getBoolean(CacheUtil.FIRST_TIME_POPUP, false);
+                    if (!popupHasShown) {
+                        localCacheHandler.putBoolean(CacheUtil.FIRST_TIME_POPUP, true);
+                        localCacheHandler.applyEditor();
+                    }
+                }
                 balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement() && !popupHasShown);
 
                 String applinkActivation = ((TokoCashRouter) context).getStringRemoteConfig(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_APPLINK_REGISTER);
