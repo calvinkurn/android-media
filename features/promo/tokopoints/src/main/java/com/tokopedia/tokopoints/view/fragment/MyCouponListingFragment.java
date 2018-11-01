@@ -26,6 +26,7 @@ import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
+import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
 import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -43,6 +44,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
     private CouponListBaseAdapter mAdapter;
+    private SpacesItemDecoration mItemDecoration;
 
     @Inject
     public MyCouponListingPresenter mPresenter;
@@ -65,9 +67,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        mAdapter = new CouponListBaseAdapter(mPresenter, this, getAppContext());
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -134,6 +133,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
+        mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small));
     }
 
     private void initListener() {
@@ -157,8 +157,16 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     }
 
     @Override
-    public void populateCoupons(List<CouponValueEntity> coupons) {
-        hideLoader();
+    public void populateCoupons(int categoryId) {
+        mAdapter = new CouponListBaseAdapter(mPresenter, this, getAppContext(), categoryId);
+
+        if (mRecyclerView.getItemDecorationCount() > 0) {
+            mRecyclerView.removeItemDecoration(mItemDecoration);
+        }
+
+        mRecyclerView.addItemDecoration(mItemDecoration);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.startDataLoading();
     }
 
     @Override
@@ -267,4 +275,9 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
             mContainerMain.setDisplayedChild(CONTAINER_ERROR);
         }
     }
+
+    public MyCouponListingPresenter getPresenter() {
+        return this.mPresenter;
+    }
+
 }
