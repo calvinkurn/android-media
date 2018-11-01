@@ -19,6 +19,7 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.detail.PromoCheckoutDetailActivity
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
@@ -55,13 +56,13 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
 
     fun initView(view: View) {
         val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
         view.recyclerViewLastSeenPromo.addItemDecoration(dividerItemDecoration)
         view.recyclerViewLastSeenPromo.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
 
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.line_divider)!!)
+        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.line_divider)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
         populateLastSeen()
@@ -109,7 +110,7 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
     override fun initInjector() {
         DaggerPromoCheckoutListComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutDetailModule())
+                .promoCheckoutListModule(PromoCheckoutListModule())
                 .build()
                 .inject(this)
         promoCheckoutListPresenter.attachView(this)

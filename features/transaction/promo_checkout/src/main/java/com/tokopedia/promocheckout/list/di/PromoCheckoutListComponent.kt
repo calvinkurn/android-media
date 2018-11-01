@@ -6,8 +6,8 @@ import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailScope
 import com.tokopedia.promocheckout.list.PromoCheckoutListFragment
 import dagger.Component
 
-@PromoCheckoutDetailScope
-@Component(modules = arrayOf(PromoCheckoutDetailModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@PromoCheckoutListScope
+@Component(modules = arrayOf(PromoCheckoutListModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface PromoCheckoutListComponent{
     fun inject(promoCheckoutListFragment: PromoCheckoutListFragment)
 }

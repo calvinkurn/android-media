@@ -563,6 +563,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .build();
 
         tokopointComponent = DaggerTokopointComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
                 .serviceApiModule(new ServiceApiModule())
                 .build();
 
@@ -972,7 +973,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getIntentOfLoyaltyActivityWithCoupon(Activity activity, String platform,
                                                        String reservationId, String reservationCode) {
-        return PromoCheckoutListActivity.Companion.newInstanceTrain(context,platform, "11", reservationId, reservationCode, true);
+        return PromoCheckoutListActivity.Companion.newInstanceTrain(activity,platform, "11", reservationId, reservationCode, true);
     }
 
     @Override
@@ -1000,12 +1001,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
-        return PromoCheckoutListActivity.Companion.newInstance(context,platform, categoryId, cartId, true);
+        return PromoCheckoutListActivity.Companion.newInstance(activity,platform, categoryId, cartId, true);
     }
 
     @Override
     public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
-        return PromoCheckoutListActivity.Companion.newInstance(context,platform, categoryId, cartId, true);
+        return PromoCheckoutListActivity.Companion.newInstance(activity,platform, categoryId, cartId, true);
     }
 
     @Override
@@ -1931,28 +1932,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
             Context context, String platform, String category, String defaultSelectedTab
     ) {
-        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", true);
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, category, "", true);
     }
 
     @Override
     public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponNotActiveIntent(
             Context context, String platform, String category
     ) {
-        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", false);
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, category, "", false);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(context,couponActive);
+        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(getAppContext(),additionalStringData,couponActive);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(context,additionalStringData, couponActive);
+        return PromoCheckoutListActivity.Companion.newInstanceWithAdditionalData(getAppContext(),additionalStringData, couponActive);
     }
 
     @Override
@@ -1963,11 +1964,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
-    }
-
-    @Override
-    public FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor() {
-        return getAppComponent().fingerprintInterceptor();
     }
 
     @Override

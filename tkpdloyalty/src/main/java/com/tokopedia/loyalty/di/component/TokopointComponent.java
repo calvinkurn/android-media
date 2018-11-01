@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.di.component;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.di.module.TokopointModule;
 import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 
 import dagger.Component;
 
@@ -11,7 +12,7 @@ import dagger.Component;
  */
 
 @LoyaltyScope
-@Component(modules = TokopointModule.class)
+@Component(modules = TokopointModule.class, dependencies = BaseAppComponent.class)
 public interface TokopointComponent {
     GetTokopointUseCase getTokopointUseCase();
 }
