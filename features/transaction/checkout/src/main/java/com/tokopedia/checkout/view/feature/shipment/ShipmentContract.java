@@ -90,8 +90,6 @@ public interface ShipmentContract {
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
-        boolean isOneClickShipment();
-
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
 
         ShipmentDataConverter getShipmentDataConverter();
@@ -241,7 +239,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon();
 
-        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 

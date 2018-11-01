@@ -552,7 +552,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .unsubscribeOn(Schedulers.io())
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest))
+                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment))
             );
         } else {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -730,7 +730,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest) {
+    private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
+                                                               boolean isOneClickShipment) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -741,7 +742,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed();
-                processReloadCheckoutPageBecauseOfError(getView().isOneClickShipment());
+                processReloadCheckoutPageBecauseOfError(isOneClickShipment);
             }
 
             @Override
@@ -1179,7 +1180,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel) {
+    public void changeShippingAddress(final RecipientAddressModel recipientAddressModel,
+                                      boolean isOneClickShipment) {
         getView().showLoading();
         String changeAddressRequestJsonString = new Gson().toJson(changeAddressRequestList);
 
@@ -1193,6 +1195,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 GCMHandler.getRegistrationId(getView().getActivityContext()));
 
         requestParam.putAllString(authParam);
+        requestParam.putBoolean(ChangeShippingAddressUseCase.PARAM_ONE_CLICK_SHIPMENT,
+                isOneClickShipment);
 
         compositeSubscription.add(
                 changeShippingAddressUseCase.createObservable(requestParam)

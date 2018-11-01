@@ -296,8 +296,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     }
 
-    @Override
-    public boolean isOneClickShipment() {
+    private boolean isOneClickShipment() {
         return getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
     }
 
@@ -925,7 +924,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             !currentAddress.getCityId().equals(newAddress.getCityId()) ||
                             !currentAddress.getProvinceId().equals(newAddress.getProvinceId())) {
                         shipmentPresenter.setDataChangeAddressRequestList(shipmentAdapter.getRequestData(newAddress, null).getChangeAddressRequestData());
-                        shipmentPresenter.changeShippingAddress(newAddress);
+                        shipmentPresenter.changeShippingAddress(newAddress, isOneClickShipment());
                     }
                 }
                 break;

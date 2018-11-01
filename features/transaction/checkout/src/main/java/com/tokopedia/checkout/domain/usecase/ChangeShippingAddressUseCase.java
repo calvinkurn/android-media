@@ -16,7 +16,8 @@ import rx.functions.Func1;
  */
 
 public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData> {
-    public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
+
+    public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
 
     private ICartRepository repository;
 
