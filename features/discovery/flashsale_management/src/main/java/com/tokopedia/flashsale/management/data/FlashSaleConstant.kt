@@ -11,4 +11,7 @@ object FlashSaleConstant {
     const val PARAM_CAMPAIGN_URL = "camp_url"
 
     const val NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT = "mojito_eligible_seller_product"
+    const val NAMED_REQUEST_CAMPAIGN_LABEL = "request_campaign_label"
+    const val NAMED_REQUEST_CAMPAIGN_LIST = "request_campaign_list"
+    const val NAMED_REQUEST_CAMPAIGN = "request_campaign"
 }

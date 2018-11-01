@@ -45,12 +45,12 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
             try {
                 val typeOfT = requests[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-                if (!data.isJsonNull){
+                if (data!= null && !data.isJsonNull){
                     results.put(typeOfT, gson.fromJson(data, typeOfT))
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
-                if (!error.isJsonNull){
+                if (error != null && !error.isJsonNull){
                     errors.put(typeOfT, gson.fromJson(error, Array<GraphqlError>::class.java).toList())
                 }
             } catch (e: Exception){ e.printStackTrace()}

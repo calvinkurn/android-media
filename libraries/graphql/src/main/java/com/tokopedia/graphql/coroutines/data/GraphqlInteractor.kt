@@ -15,7 +15,7 @@ class GraphqlInteractor private constructor(){
             GraphqlClient.getFingerPrintManager()) }
     private val graphqlCloudDataStore by lazy { GraphqlCloudDataStore(GraphqlClient.getApiInterface(),
             graphqlCacheManager, GraphqlClient.getFingerPrintManager()) }
-    private val graphqlRepository: GraphqlRepository by lazy {
+    val graphqlRepository: GraphqlRepository by lazy {
         GraphqlRepositoryImpl(graphqlCloudDataStore, graphqlCacheDataStore)
     }
 

@@ -10,13 +10,14 @@ import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.ekstension.toListCampaignInfoViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
 class CampaignDetailInfoPresenter @Inject
 constructor(private @ApplicationContext val context: Context,
-            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) {
+            @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN)
+            private val useCase: GraphqlUseCase<Campaign>) {
 
     private val useCases = mutableListOf<UseCase<Any>>()
 
@@ -29,7 +30,7 @@ constructor(private @ApplicationContext val context: Context,
 
 
         val parameters = mapOf(FlashSaleConstant.PARAM_CAMPAIGN_URL to campaignUrl)
-        val useCase = GraphqlUseCase(multiRequestGraphqlUseCase, Campaign::class.java)
+
         useCase.setGraphqlQuery(rawQuery)
         useCase.setRequestParams(parameters)
         useCase.execute({onSuccess(it.toListCampaignInfoViewModel())}){

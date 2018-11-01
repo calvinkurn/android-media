@@ -20,20 +20,20 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(AppExecutors.bgContext) {
             val result = api.getResponseDeferred(requests).await()
-                    .run{ GraphqlResponseInternal(this, false) }
+            val graphqlResponseInternal = GraphqlResponseInternal(result, false)
 
             launch(AppExecutors.ioContext) {
                 when (cacheStrategy.type) {
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
                         cacheManager.save(fingerprintManager.generateFingerPrint(requests.toString(),
                                 cacheStrategy.isSessionIncluded),
-                                result.originalResponse.toString(),
+                                graphqlResponseInternal.originalResponse.toString(),
                                 cacheStrategy.expiryTime)
                     }
                     else -> { }
                 }
             }
-            result
+            graphqlResponseInternal
         }
     }
 }

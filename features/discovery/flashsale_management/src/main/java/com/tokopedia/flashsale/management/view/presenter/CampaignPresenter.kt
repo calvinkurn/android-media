@@ -9,22 +9,23 @@ import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
 /* context for dummy data */
 class CampaignPresenter @Inject
 constructor(private @ApplicationContext val context: Context,
-            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase)  {
+            @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LABEL)
+            private val getCampaignLabelUseCase: GraphqlUseCase<DataCampaignLabel>,
+            @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LIST)
+            private val getCampaignListUseCase: GraphqlUseCase<DataCampaignList>)  {
 
     private val useCases = mutableListOf<UseCase<Any>>()
 
     fun getCampaignList(rawQuery: String, all: String, offset: Int, rows: Int,
                                  campaign_type: Int, q: String, status: String,
                         onSuccess: (DataCampaignList)-> Unit, onError: (Throwable)-> Unit) {
-
-        val useCase = GraphqlUseCase(multiRequestGraphqlUseCase, DataCampaignList::class.java)
 
         val parameters = mapOf(FlashSaleConstant.PARAM_ALL to all,
                 FlashSaleConstant.PARAM_OFFSET to offset,
@@ -33,25 +34,25 @@ constructor(private @ApplicationContext val context: Context,
                 FlashSaleConstant.PARAM_ROWS to rows,
                 FlashSaleConstant.PARAM_STATUS to status)
 
-        useCase.setGraphqlQuery(rawQuery)
-        useCase.setRequestParams(parameters)
-        useCase.execute(onSuccess){
+        getCampaignListUseCase.setGraphqlQuery(rawQuery)
+        getCampaignListUseCase.setRequestParams(parameters)
+        getCampaignListUseCase.execute(onSuccess){
             onSuccess(Gson()
                     .fromJson(GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign),
                             DataCampaignList::class.java))
         }
-        useCases.add(useCase)
+        useCases.add(getCampaignListUseCase)
     }
 
     fun getCampaignLabel(rawQuery: String, onSuccess: (DataCampaignLabel) -> Unit, onError: (Throwable) -> Unit) {
-        val useCase = GraphqlUseCase(multiRequestGraphqlUseCase, DataCampaignLabel::class.java)
-        useCase.setGraphqlQuery(rawQuery)
-        useCase.execute(onSuccess){
+
+        getCampaignLabelUseCase.setGraphqlQuery(rawQuery)
+        getCampaignLabelUseCase.execute(onSuccess){
             onSuccess(Gson()
                     .fromJson(GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_label),
                             DataCampaignLabel::class.java))
         }
-        useCases.add(useCase)
+        useCases.add(getCampaignLabelUseCase)
     }
 
     fun detachView() {
