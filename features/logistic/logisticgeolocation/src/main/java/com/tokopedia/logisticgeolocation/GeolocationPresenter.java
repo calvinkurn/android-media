@@ -32,6 +32,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticgeolocation.di.ActivityContext;
 import com.tokopedia.logisticgeolocation.di.GeolocationScope;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
@@ -69,8 +70,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     private LocationPass locationPass;
 
     @Inject
-    public GeolocationPresenter(Context context, RetrofitInteractorImpl retrofitInteractor,
-            UserSession userSession, GoogleMapFragment googleMapFragment) {
+    public GeolocationPresenter(@ActivityContext Context context, RetrofitInteractorImpl retrofitInteractor,
+                                UserSession userSession, GoogleMapFragment googleMapFragment) {
         this.context = context;
         this.userSession = userSession;
         this.view = googleMapFragment;

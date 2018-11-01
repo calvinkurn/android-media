@@ -5,6 +5,8 @@ import android.content.Context;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
 import com.tokopedia.logisticdata.data.apiservice.MapsApi;
+import com.tokopedia.logisticgeolocation.GeolocationContract;
+import com.tokopedia.logisticgeolocation.GeolocationPresenter;
 import com.tokopedia.logisticgeolocation.GoogleMapFragment;
 import com.tokopedia.logisticgeolocation.model.IMapsMapper;
 import com.tokopedia.logisticgeolocation.model.MapsMapper;
@@ -128,5 +130,11 @@ public class GeolocationModule {
     @ActivityContext
     Context provideAppContext() {
         return this.context;
+    }
+
+    @Provides
+    @GeolocationScope
+    GeolocationContract.GeolocationPresenter provideGeolocationPresenter(GeolocationPresenter presenter) {
+        return presenter;
     }
 }

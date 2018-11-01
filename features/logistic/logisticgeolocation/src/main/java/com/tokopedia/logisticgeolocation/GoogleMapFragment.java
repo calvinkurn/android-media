@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticgeolocation.di.GeolocationModule;
 import com.tokopedia.user.session.UserSession;
 
