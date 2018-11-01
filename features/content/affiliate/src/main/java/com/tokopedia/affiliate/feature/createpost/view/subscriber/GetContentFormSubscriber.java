@@ -56,7 +56,6 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
-        view.hideLoading();
         ContentFormData data = graphqlResponse.getData(ContentFormData.class);
         if (data == null || data.getFeedContentForm() == null || data.getAffiliateCheck() == null) {
             onError(new RuntimeException());
@@ -80,6 +79,7 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
 
         }
 
+        view.hideLoading();
         if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
             view.onErrorGetContentForm(data.getFeedContentForm().getError());
             return;
