@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.main.draft.data.model;
 
-import com.tokopedia.product.manage.item.common.util.ItemType;
+import com.tokopedia.base.list.seller.common.util.ItemType;
 
 /**
  * Created by User on 6/21/2017.
