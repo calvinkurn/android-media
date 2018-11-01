@@ -825,7 +825,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoShipment() {
+    public void checkPromoShipment(boolean isOneClickShipment) {
         CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder()
                         .promoCode(promoCodeAppliedData.getPromoCode())
@@ -839,6 +839,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_LANG_ID);
         param.put(CheckPromoCodeCartShipmentUseCase.PARAM_PROMO_SUGGESTED,
                 CheckPromoCodeCartShipmentUseCase.PARAM_VALUE_NOT_SUGGESTED);
+        param.put(CheckPromoCodeCartShipmentUseCase.PARAM_ONE_CLICK_SHIPMENT,
+                String.valueOf(isOneClickShipment));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartShipmentUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
@@ -987,11 +989,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckPromoCodeFromSuggestedPromo(String promoCode) {
+    public void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment) {
         getView().showLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("promo_code", promoCode);
-        param.put("lang", "id");
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_CODE, promoCode);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_PROMO_LANG, CheckPromoCodeCartListUseCase.PARAM_VALUE_LANG_ID);
+        param.put(CheckPromoCodeCartListUseCase.PARAM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,

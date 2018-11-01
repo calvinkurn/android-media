@@ -60,7 +60,8 @@ public class LoyaltyViewModule {
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),
-                                activity.getTrainReservationCode())
+                                activity.getTrainReservationCode(),
+                                activity.isOneClickShipment())
                         ).position(0)
                         .tabTitle("Kode Promo")
                         .build()
@@ -103,7 +104,8 @@ public class LoyaltyViewModule {
                                     activity.getCategoryString(),
                                     activity.getCartIdString(),
                                     activity.getCategoryId(),
-                                    activity.getProductId()))
+                                    activity.getProductId(),
+                                    activity.isOneClickShipment()))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()
@@ -126,7 +128,8 @@ public class LoyaltyViewModule {
                                 activity.getCartIdString(),
                                 activity.getAdditionalDataString(),
                                 activity.getTrainReservationId(),
-                                activity.getTrainReservationCode()))
+                                activity.getTrainReservationCode(),
+                                activity.isOneClickShipment()))
                         .position(0)
                         .tabTitle("Kode Promo")
                         .build()

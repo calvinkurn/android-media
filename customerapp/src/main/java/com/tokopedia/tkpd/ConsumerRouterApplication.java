@@ -1938,13 +1938,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment
     ) {
         return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
-                getAppContext(), additionalStringData, defaultSelectedTab
+                getAppContext(), additionalStringData, defaultSelectedTab, isOneClickShipment
         )
                 : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
-                getAppContext(), additionalStringData
+                getAppContext(), additionalStringData, isOneClickShipment
         );
     }
 

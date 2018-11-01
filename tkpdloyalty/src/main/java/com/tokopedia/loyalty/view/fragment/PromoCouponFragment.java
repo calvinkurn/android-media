@@ -76,6 +76,8 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     private static final String CHECKOUT = "checkoutdata";
 
+    private static final String ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT";
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -394,7 +396,7 @@ public class PromoCouponFragment extends BasePresenterFragment
     public static PromoCouponFragment newInstance(
             String platformString, String platformPageString, String additionalDataString,
             String categoryKey, String cartIdString,
-            int categoryId, int productId) {
+            int categoryId, int productId, boolean oneClickShipment) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platformString);
@@ -404,6 +406,7 @@ public class PromoCouponFragment extends BasePresenterFragment
         bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
         bundle.putInt(DIGITAL_PRODUCT_ID, productId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
+        bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -451,7 +454,8 @@ public class PromoCouponFragment extends BasePresenterFragment
             dPresenter.submitFlightVoucher(data, getArguments().getString(CART_ID_KEY));
         } else {
             dPresenter.processCheckMarketPlaceCartListPromoCode(
-                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, "")
+                    getActivity(), data, getArguments().getString(ADDITIONAL_DATA_KEY, ""),
+                    getArguments().getBoolean(ONE_CLICK_SHIPMENT)
             );
         }
     }

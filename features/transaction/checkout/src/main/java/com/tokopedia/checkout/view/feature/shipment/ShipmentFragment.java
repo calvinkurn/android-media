@@ -763,7 +763,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentAdapter.RequestData requestData =
                     shipmentAdapter.getRequestData(null, null);
             shipmentPresenter.setPromoCodeCartShipmentRequestData(requestData.getPromoRequestData());
-            shipmentPresenter.checkPromoShipment();
+            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
+            shipmentPresenter.checkPromoShipment(isFromPdp);
 
             shipmentAdapter.notifyDataSetChanged();
         }
@@ -1196,7 +1197,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setDataCheckoutRequestList(checkoutRequestData);
         if (shipmentPresenter.getPromoCodeAppliedData() != null &&
                 shipmentAdapter.hasAppliedPromoCode()) {
-            shipmentPresenter.checkPromoShipment();
+            boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
+            shipmentPresenter.checkPromoShipment(isFromPdp);
         }
     }
 
@@ -1209,7 +1211,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoSuggestionActionClicked(CartPromoSuggestion cartPromoSuggestion,
                                                    int position) {
-        shipmentPresenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode());
+        boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
+        shipmentPresenter.processCheckPromoCodeFromSuggestedPromo(cartPromoSuggestion.getPromoCode(), isFromPdp);
     }
 
     @Override
@@ -1223,11 +1226,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo,
                                                   int position) {
         sendAnalyticsOnClickUsePromoCodeAndCoupon();
+        boolean isFromPdp = getArguments() != null && getArguments().getBoolean(ARG_IS_FROM_PDP);
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
                                 true, "",
-                                cartPromo.getDefaultSelectedTabString()
+                                cartPromo.getDefaultSelectedTabString(), isFromPdp
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
 

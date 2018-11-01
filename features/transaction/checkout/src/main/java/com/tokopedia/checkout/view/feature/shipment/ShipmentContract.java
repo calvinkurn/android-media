@@ -188,9 +188,9 @@ public interface ShipmentContract {
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment();
+        void checkPromoShipment(boolean isOneClickShipment);
 
-        void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+        void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
