@@ -3,26 +3,27 @@ package com.tokopedia.usecase.coroutines
 import com.tokopedia.kotlin.extensions.coroutines.AppExecutors
 import kotlinx.coroutines.experimental.*
 
-abstract class UseCase<out T: Any> {
+abstract class UseCase<out T : Any> {
 
     protected var parentJob: Job = Job()
 
     abstract suspend fun executeOnBackground(): T
 
-    private suspend fun executeCatchError(): Result<T>{
+    private suspend fun executeCatchError(): Result<T> {
         return try {
             Success(executeOnBackground())
-        } catch (throwable: Throwable){
+        } catch (throwable: Throwable) {
             Fail(throwable)
         }
     }
 
-    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit){
+    fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit) {
         parentJob.cancel()
-        parentJob = Job()
-        GlobalScope.launch(AppExecutors.uiContext + parentJob) {
+        parentJob = GlobalScope.launch(AppExecutors.uiContext) {
             try {
-                val result = async(AppExecutors.bgContext) { executeCatchError() }.await()
+                val result = async(AppExecutors.bgContext) {
+                    executeCatchError()
+                }.await()
                 when(result){
                     is Success -> onSuccess.invoke(result.data)
                     is Fail -> onError(result.throwable)
@@ -33,7 +34,7 @@ abstract class UseCase<out T: Any> {
         }
     }
 
-    fun unsubscribe(){
+    fun unsubscribe() {
         parentJob.cancel()
     }
 }

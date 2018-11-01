@@ -76,7 +76,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     private fun showProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = ProgressDialog(activity)
+            progressDialog = ProgressDialog(context)
             progressDialog!!.setCancelable(false)
             progressDialog!!.setMessage(getString(R.string.title_loading))
         }
