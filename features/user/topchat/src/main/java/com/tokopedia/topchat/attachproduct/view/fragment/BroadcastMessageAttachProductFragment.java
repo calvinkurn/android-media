@@ -9,12 +9,13 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter;
+import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
+import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
+import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
+import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.activity.BroadcastMessageAttachProductActivity;
-import com.tokopedia.topchat.attachproduct.view.adapter.AttachProductListAdapter;
-import com.tokopedia.topchat.attachproduct.view.adapter.AttachProductListAdapterTypeFactory;
-import com.tokopedia.topchat.attachproduct.view.presenter.AttachProductContract;
-import com.tokopedia.topchat.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
         try {
             if (activity != null && activity.getIntent() != null){
                 Intent intent = activity.getIntent();
+                String shopName = intent.getStringExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
                 List<Integer> ids = intent.getIntegerArrayListExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_IDS_KEY);
                 List<HashMap<String, String>> products =
                         (List<HashMap<String, String>>) intent.getSerializableExtra(BroadcastMessageAttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_HASH_KEY);
@@ -49,8 +51,14 @@ public class BroadcastMessageAttachProductFragment extends AttachProductFragment
                 productIds.addAll(ids);
                 updateButtonBasedOnChecked(productIds.size());
                 for (HashMap<String, String> product: products){
-                    checkedList.add(new AttachProductItemViewModel(product.get("url"), product.get("name"),
-                            Integer.parseInt(product.get("id")), null, product.get("thumbnail"), product.get("price")));
+                    checkedList.add(new AttachProductItemViewModel(
+                            product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_URL),
+                            product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_NAME),
+                            Integer.parseInt(product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_ID)),
+                            null,
+                            product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_THUMBNAIL),
+                            product.get(BroadcastMessageAttachProductActivity.PARAM_PRODUCT_PRICE),
+                            shopName));
                 }
             }
         } catch (Throwable t){}
