@@ -18,7 +18,8 @@
             android:layout_weight="1"
             android:layout_marginTop="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_64"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_af_dashboard"/>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <android.support.v7.widget.CardView
