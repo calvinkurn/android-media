@@ -26,7 +26,9 @@ object NotificationFactory {
 
     fun allowToShow(notificationModel: NotificationModel): Boolean {
         val notificationCode: Boolean = KelontongConstant.NotificationConstant.LOWER_CODE <= notificationModel.tkpCode && notificationModel.tkpCode <= KelontongConstant.NotificationConstant.UPPER_CODE
-        val targetApp: Boolean = notificationModel.targetApp != null && notificationModel.targetApp.equals(KelontongConstant.NotificationConstant.TARGET_APP)
-        return notificationCode && targetApp
+        // still on progress
+//        val targetApp: Boolean = notificationModel.targetApp != null && notificationModel.targetApp.equals(KelontongConstant.NotificationConstant.TARGET_APP)
+        return notificationCode
+                //&& targetApp
     }
 }
