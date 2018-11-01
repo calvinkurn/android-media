@@ -42,7 +42,6 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     @Override
     public void bind(DashboardItemViewModel element) {
         initView(element);
-        initViewListener();
     }
 
     private void initView(DashboardItemViewModel element) {
@@ -67,9 +66,5 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
                         R.color.font_black_secondary_54
                 )
         );
-    }
-
-    private void initViewListener() {
-
     }
 }
