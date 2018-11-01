@@ -225,6 +225,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(firstPageViewModel.profileHeaderViewModel)
         if (!firstPageViewModel.visitableList.isEmpty()) {
+            firstPageViewModel.visitableList
+                    .filterIsInstance<BaseKolViewModel>()
+                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
             visitables.addAll(firstPageViewModel.visitableList)
         } else {
             visitables.add(getEmptyModel(

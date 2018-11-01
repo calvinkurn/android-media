@@ -29,6 +29,7 @@ public class BaseKolViewModel {
     private boolean isShowLike;
     private boolean editable;
     private boolean deletable;
+    private boolean isKol = true;
 
     public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
@@ -222,5 +223,13 @@ public class BaseKolViewModel {
 
     public void setDeletable(boolean deletable) {
         this.deletable = deletable;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
     }
 }
