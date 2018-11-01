@@ -1,7 +1,6 @@
 package com.tokopedia.usecase.coroutines
 
 import com.tokopedia.kotlin.extensions.coroutines.AppExecutors
-import com.tokopedia.kotlin.extensions.coroutines.thenOnUI
 import kotlinx.coroutines.experimental.*
 
 abstract class UseCase<out T: Any> {
@@ -10,25 +9,27 @@ abstract class UseCase<out T: Any> {
 
     abstract suspend fun executeOnBackground(): T
 
-    /*private suspend fun executeCatchError(): Result<T>{
+    private suspend fun executeCatchError(): Result<T>{
         return try {
             Success(executeOnBackground())
         } catch (throwable: Throwable){
-            RequestError(throwable)
+            Fail(throwable)
         }
-    }*/
+    }
 
     fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit){
         parentJob.cancel()
         parentJob = Job()
         GlobalScope.launch(AppExecutors.uiContext + parentJob) {
             try {
-                async(AppExecutors.bgContext) { executeOnBackground() }
-                        .thenOnUI(this){ onSuccess.invoke(it) }
+                val result = async(AppExecutors.bgContext) { executeCatchError() }.await()
+                when(result){
+                    is Success -> onSuccess.invoke(result.data)
+                    is Fail -> onError(result.throwable)
+                }
             } catch (throwable: Throwable){
                 onError(throwable)
             }
-
         }
     }
 

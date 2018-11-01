@@ -1,20 +1,25 @@
 package com.tokopedia.graphql.coroutines.domain.interactor
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GraphqlUseCase<out T: Any>(private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
-                                 private val tClass: Class<T>): UseCase<T>() {
+class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null
     private var requestParams = mapOf<String, Any>()
+    private var tClass: Class<T>? = null
 
     fun setCacheStrategy(cacheStrategy: GraphqlCacheStrategy){
         this.cacheStrategy = cacheStrategy
+    }
+
+    fun setTypeClass(tClass: Class<T>){
+        this.tClass = tClass
     }
 
     fun setGraphqlQuery(query: String){
@@ -27,13 +32,13 @@ class GraphqlUseCase<out T: Any>(private val multiRequestGraphqlUseCase: MultiRe
 
     override suspend fun executeOnBackground(): T {
         if (graphqlQuery == null){
-            throw RuntimeException("Please set valid GraphQL query parameter before executing the use-case");
+            throw RuntimeException("Please set valid GraphQL query parameter before executing the use-case")
         }
 
-        multiRequestGraphqlUseCase.clearRequest()
-        multiRequestGraphqlUseCase.addRequest(GraphqlRequest(graphqlQuery, tClass, requestParams))
-        multiRequestGraphqlUseCase.setCacheStrategy(cacheStrategy)
-        val response = multiRequestGraphqlUseCase.executeOnBackground()
+        val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
+        val request = GraphqlRequest(graphqlQuery, type, requestParams)
+        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+
         val error = response.getError(tClass)
 
         if (error == null || error.isEmpty()){
