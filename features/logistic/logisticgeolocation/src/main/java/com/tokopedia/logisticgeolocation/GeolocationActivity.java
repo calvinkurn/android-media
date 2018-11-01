@@ -75,7 +75,6 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
                             ((AbstractionRouter) getApplication()).getAnalyticTracker()
                     );
         }
-        setContentView(R.layout.activity_geolocation);
     }
 
     @Override
