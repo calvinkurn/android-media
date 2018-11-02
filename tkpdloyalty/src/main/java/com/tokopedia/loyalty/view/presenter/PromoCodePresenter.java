@@ -91,7 +91,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         paramCheckPromo.put(PARAM_PROMO_CODE, voucherCode);
         paramCheckPromo.put(PARAM_SUGGESTED, "0");
         paramCheckPromo.put(PARAM_LANG, "id");
-        paramCheckPromo.put(PAREM_ONE_CLICK_SHIPMENT, String.valueOf(PAREM_ONE_CLICK_SHIPMENT));
+        paramCheckPromo.put(PAREM_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
 
         promoCodeInteractor.submitCheckPromoCodeMarketPlace(
                 paramUpdateCart != null ? AuthUtil.generateParamsNetwork(activity, paramUpdateCart) : null,
