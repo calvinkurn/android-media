@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.scanticket.CheckScanOption;
 import com.tokopedia.usecase.RequestParams;
@@ -31,7 +30,7 @@ public class CheckScanOptionUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = TkpdBaseURL.EVENTS_DOMAIN + EventsUrl.EVENT_SCAN_TICKET_URL;
+        String url = EventsUrl.EVENTS_DOMAIN + EventsUrl.EVENT_SCAN_TICKET_URL;
         //Request 1
         Type token = new TypeToken<DataResponse<CheckScanOption>>() {
         }.getType();

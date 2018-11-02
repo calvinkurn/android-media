@@ -166,13 +166,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onStop() {
         boolean hasChanges = dPresenter.dataHasChanged();
 
-        if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
-            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
-            service.putParcelableArrayListExtra(
-                    UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
-            );
-            getActivity().startService(service);
+        try {
+            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+                Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+                service.putParcelableArrayListExtra(
+                        UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
+                );
+                getActivity().startService(service);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
+
         super.onStop();
     }
 
@@ -771,7 +776,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
         sendAnalyticsScreenName(getScreenName());
-        refreshHandler.finishRefresh();
+        if (refreshHandler != null) {
+            refreshHandler.finishRefresh();
+        }
         this.cartListData = cartListData;
         cartAdapter.resetData();
 
@@ -1194,8 +1201,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void showToastMessageGreen(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if (view != null) {
+            NetworkErrorHelper.showGreenCloseSnackbar(view, message);
+        } else if (getActivity() != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -1234,7 +1244,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderCancelAutoApplyCouponError() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        if (getActivity() != null) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        }
     }
 
     @Override
@@ -1324,6 +1336,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             sendAnalyticsScreenName(getScreenName());
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         }
     }
 

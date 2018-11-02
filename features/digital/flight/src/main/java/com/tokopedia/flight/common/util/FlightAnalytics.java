@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
