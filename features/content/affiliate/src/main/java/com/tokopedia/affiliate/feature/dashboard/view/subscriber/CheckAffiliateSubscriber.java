@@ -13,7 +13,7 @@ import rx.Subscriber;
 public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
     private final DashboardContract.View view;
 
-    public CheckAffiliateSubscriber(DashboardContract.View view, String productId, String adId) {
+    public CheckAffiliateSubscriber(DashboardContract.View view) {
         this.view = view;
     }
 

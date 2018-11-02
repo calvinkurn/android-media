@@ -5,9 +5,9 @@ import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardLoadMoreUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseCase;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
+import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber;
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardSubscriber;
-import com.tokopedia.affiliate.feature.explore.view.subscriber.CheckAffiliateSubscriber;
 
 import javax.inject.Inject;
 
