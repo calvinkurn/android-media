@@ -35,6 +35,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardVi
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,9 @@ public class DashboardFragment
 
     @Inject
     DashboardPresenter presenter;
+
+    @Inject
+    UserSession userSession;
 
 
     public static DashboardFragment getInstance(Bundle bundle) {
@@ -106,8 +110,9 @@ public class DashboardFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cvRecommendation.setVisibility(View.GONE);
-        initView();
         initViewListener();
+        if (!userSession.isLoggedIn()) getActivity().finish();
+        else presenter.checkAffiliate();
     }
 
     @Override
@@ -258,6 +263,23 @@ public class DashboardFragment
                 () -> {
                     presenter.loadMoreDashboardItem(cursor);
         });
+    }
+
+    @Override
+    public void onSuccessCheckAffiliate(boolean isAffiliate) {
+        if (isAffiliate) initView();
+        else getActivity().finish();
+    }
+
+    @Override
+    public void onErrorCheckAffiliate(String error) {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getView().getRootView(),
+                error,
+                () -> {
+                    presenter.checkAffiliate();
+                }
+        );
     }
 
     @Override
