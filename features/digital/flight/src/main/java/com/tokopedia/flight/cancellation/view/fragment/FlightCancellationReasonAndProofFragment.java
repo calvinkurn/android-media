@@ -227,8 +227,9 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     @Override
     public void updateUploadingProgress(long percentage) {
-        /*adapter.getData().get(positionUploading).setPercentageUpload(percentage);
-        renderAttachment();*/
+        attachments.get(positionUploading).setPercentageUpload(percentage);
+        adapter.setElement(positionUploading, attachments.get(positionUploading));
+        renderAttachment();
     }
 
     @Override

@@ -264,7 +264,6 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     }
 
     private void actionUploadImageAndBuildModel() {
-        getView().hideAttachmentContainer();
         List<FlightCancellationAttachmentViewModel> attachments = getView().getAttachments();
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<FlightCancellationAttachmentViewModel, Observable<FlightCancellationAttachmentViewModel>>() {

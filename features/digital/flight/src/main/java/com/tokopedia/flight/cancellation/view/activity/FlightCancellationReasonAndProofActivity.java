@@ -16,6 +16,7 @@ import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonA
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.imageuploader.data.ProgressResponseBody;
+import com.tokopedia.imageuploader.di.ImageUploaderModule;
 
 /**
  * @author by alvarisi on 3/26/18.
@@ -65,6 +66,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
         if (getApplication() instanceof FlightModuleRouter) {
             cancellationComponent = DaggerFlightCancellationComponent.builder()
                     .flightComponent(getFlightComponent())
+                    .imageUploaderModule(new ImageUploaderModule(this))
                     .build();
         } else {
             throw new RuntimeException("Application must implement FlightModuleRouter");
@@ -116,6 +118,8 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     @Override
     public void update(long bytesRead, long contentLength, boolean done) {
-        fragment.updateUploadingProgress(bytesRead / contentLength);
+        if (contentLength > 0) {
+            fragment.updateUploadingProgress(bytesRead / contentLength);
+        }
     }
 }
