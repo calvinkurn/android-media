@@ -16,14 +16,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -47,6 +47,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     private String highLightText;
     private boolean showCards;
     private boolean isFooterAdded = false;
+    private EventsAnalytics eventsAnalytics;
 
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
@@ -65,6 +66,8 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder;
+        this.mContext = parent.getContext();
+        eventsAnalytics = new EventsAnalytics(mContext.getApplicationContext());
         View v;
         switch (viewType) {
             case ITEM:
@@ -188,7 +191,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             if (!titleHolder.isShown()) {
                 titleHolder.setShown(true);
                 categoryItems.get(titleHolder.getAdapterPosition()).setTrack(true);
-                UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION,
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_IMPRESSION,
                         highLightText
                                 + " - " + categoryItems.get(titleHolder.getAdapterPosition()).getTitle()
                                 + " - " + titleHolder.getAdapterPosition());
@@ -327,7 +330,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
             detailsIntent.putExtra("homedata", categoryItems.get(index));
             mContext.startActivity(detailsIntent);
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
                     highLightText
                             + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
                             + " - " + getAdapterPosition());
@@ -341,7 +344,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 like = "like";
             else
                 like = "unlike";
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition())
                             + " - " + like);
@@ -351,7 +354,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         public void shareEvent() {
             CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
             Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl());
-            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
                     categoryItems.get(getAdapterPosition()).getTitle()
                             + " - " + String.valueOf(getAdapterPosition()));
         }

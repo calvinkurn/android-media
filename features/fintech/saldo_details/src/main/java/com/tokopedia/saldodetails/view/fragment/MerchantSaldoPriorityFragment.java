@@ -233,7 +233,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
             spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_green));
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corners_green));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.sp_bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
             spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_yellow));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
