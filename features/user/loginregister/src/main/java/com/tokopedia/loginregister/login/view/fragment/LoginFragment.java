@@ -730,23 +730,22 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
             @Override
             public void onGoToCreatePasswordPage(GetUserInfoData info) {
-//        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
-//                new CreatePasswordViewModel(
-//                        info.getEmail(),
-//                        info.getFullName(),
-//                        info.getBdayYear(),
-//                        info.getBdayMonth(),
-//                        info.getBdayDay(),
-//                        info.getCreatePasswordList(),
-//                        String.valueOf(info.getUserId())));
-//        startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
+                if (getActivity() != null) {
+                    Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                            (), ApplinkConst.CREATE_PASSWORD);
+                    intent.putExtra("name", info.getFullName());
+                    intent.putExtra("user_id", String.valueOf(info.getUserId()));
+                    startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
+                }
             }
 
             @Override
             public void onGoToPhoneVerification() {
-//        startActivityForResult(
-//                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
-//                REQUEST_VERIFY_PHONE);
+                if (getActivity() != null) {
+                   Intent intent =  ((ApplinkRouter) getActivity().getApplicationContext())
+                            .getApplinkIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
+                   startActivityForResult(intent, REQUEST_VERIFY_PHONE);
+                }
             }
 
             @Override

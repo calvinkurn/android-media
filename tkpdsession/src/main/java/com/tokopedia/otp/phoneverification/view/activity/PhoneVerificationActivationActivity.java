@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -33,6 +36,13 @@ public class PhoneVerificationActivationActivity extends TActivity implements Ha
     private boolean canSkip = false;
     private boolean isLogoutOnBack = false;
     PhoneVerificationAnalytics analytics;
+
+    @DeepLink({ApplinkConst.PHONE_VERIFICATION})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        Intent intent = getCallingIntent(context);
+        return intent.setData(uri.build());
+    }
 
     public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
         Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);

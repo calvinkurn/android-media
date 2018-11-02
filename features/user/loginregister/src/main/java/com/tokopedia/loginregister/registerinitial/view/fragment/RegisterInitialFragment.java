@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -617,8 +616,11 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToAddName() {
-//        Intent intent = AddNameActivity.newInstance(getActivity());
-//        startActivityForResult(intent, REQUEST_ADD_NAME);
+        if (getActivity() != null) {
+            Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                    (), ApplinkConst.ADD_NAME_PROFILE);
+            startActivityForResult(intent, REQUEST_ADD_NAME);
+        }
     }
 
     @Override
@@ -641,24 +643,21 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
             @Override
             public void onGoToCreatePasswordPage(GetUserInfoData info) {
-//                Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
-//                        new CreatePasswordViewModel(
-//                                userInfoDomainData.getEmail(),
-//                                userInfoDomainData.getFullName(),
-//                                userInfoDomainData.getBdayYear(),
-//                                userInfoDomainData.getBdayMonth(),
-//                                userInfoDomainData.getBdayDay(),
-//                                userInfoDomainData.getCreatePasswordList(),
-//                                String.valueOf(userInfoDomainData.getUserId())));
-//                startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
+                if (getActivity() != null) {
+                    Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                            (), ApplinkConst.CREATE_PASSWORD);
+                    intent.putExtra("name", info.getFullName());
+                    intent.putExtra("user_id", String.valueOf(info.getUserId()));
+                    startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
+                }
             }
 
             @Override
             public void onGoToPhoneVerification() {
-//                getActivity().setResult(Activity.RESULT_OK);
-//                startActivity(
-//                        PhoneVerificationActivationActivity.getCallingIntent(getActivity()));
-//                getActivity().finish();
+                if (getActivity() != null) {
+                    ((ApplinkRouter) getActivity().getApplicationContext())
+                            .goToApplinkActivity(getActivity(), ApplinkConst.PHONE_VERIFICATION);
+                }
             }
 
             @Override

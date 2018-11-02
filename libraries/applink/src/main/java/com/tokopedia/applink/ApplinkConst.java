@@ -164,6 +164,8 @@ public interface ApplinkConst {
     String CHALLENGE = "tokopedia://challenges";
     String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
     String ADD_NAME_PROFILE = "tokopedia://addname";
+    String CREATE_PASSWORD = "tokopedia://createpassword";
+    String PHONE_VERIFICATION = "tokopedia://phoneverification";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
