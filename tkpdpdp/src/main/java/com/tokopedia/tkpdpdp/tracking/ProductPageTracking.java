@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -34,7 +35,7 @@ public class ProductPageTracking {
     public static final String VIEW_PDP = "viewPDP";
     public static final String CLICK_PDP = "clickPDP";
     public static final String LANDSCAPE_VIEW = "landscape view";
-  
+
     public static final String PRODUCT_DETAIL_PAGE = "product detail page";
     public static final String CLICK_OS_PROMO = "clickOSPromo";
     public static final String PDP_PROMO_WIDGET_PROMO = "pdp promo widget - promo";
@@ -67,6 +68,7 @@ public class ProductPageTracking {
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
     }
+
     private static String joinSpace(String... s) {
         return TextUtils.join(" ", s);
     }
@@ -233,7 +235,7 @@ public class ProductPageTracking {
         );
     }
 
-    public static void eventAppsFlyer(String productId, String priceItem, int quantity,String productName, String category) {
+    public static void eventAppsFlyer(String productId, String priceItem, int quantity, String productName, String category) {
         Map<String, Object> values = new HashMap<>();
 
         values.put(AFInAppEventParameterName.CONTENT_ID, productId);
@@ -241,8 +243,8 @@ public class ProductPageTracking {
         values.put(AFInAppEventParameterName.PRICE,
                 CurrencyFormatHelper.convertRupiahToInt(priceItem));
         values.put(AFInAppEventParameterName.QUANTITY, quantity);
-        values.put(AFInAppEventParameterName.DESCRIPTION,productName);
-        values.put(Jordan.AF_KEY_CATEGORY_NAME,category);
+        values.put(AFInAppEventParameterName.DESCRIPTION, productName);
+        values.put(Jordan.AF_KEY_CATEGORY_NAME, category);
 
         PaymentTracking.atcAF(values);
     }
@@ -260,16 +262,16 @@ public class ProductPageTracking {
                         "ecommerce", DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/productdetail - top ads'"),
                                         "products", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", product.getName(),
-                                                "id", product.getId(),
-                                                "price", product.getPriceFormat(),
-                                                "brand", "none / other",
-                                                "category", product.getCategory().getId(),
-                                                "variant", "none / other",
-                                                "position", (position + 1)
-                                        )
-                                ))
+                                                DataLayer.mapOf(
+                                                        "name", product.getName(),
+                                                        "id", product.getId(),
+                                                        "price", product.getPriceFormat(),
+                                                        "brand", "none / other",
+                                                        "category", product.getCategory().getId(),
+                                                        "variant", "none / other",
+                                                        "position", (position + 1)
+                                                )
+                                        ))
                         )
                 )
         );
@@ -352,16 +354,21 @@ public class ProductPageTracking {
     }
 
     private static HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
-                                                           List<MerchantVoucherViewModel> viewModelList) {
-        HashMap<String, Object> eventMap = createMap(event, category, action, label);
-        eventMap.put(ECOMMERCE, DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
-                        PROMOTIONS, createMvcListMap(viewModelList, 0))));
-        return eventMap;
+                                                                  List<MerchantVoucherViewModel> viewModelList) {
+        List<Object> mvcListMap = createMvcListMap(viewModelList, 0);
+        if (mvcListMap.size() > 0) {
+            HashMap<String, Object> eventMap = createMap(event, category, action, label);
+            eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
+                            PROMOTIONS, mvcListMap)));
+            return eventMap;
+        } else {
+            return null;
+        }
     }
 
     private static HashMap<String, Object> createMvcClickMap(String event, String category, String action,
-                                                      MerchantVoucherViewModel viewModel, int positionIndex) {
+                                                             MerchantVoucherViewModel viewModel, int positionIndex) {
         ArrayList<MerchantVoucherViewModel> viewModelList = new ArrayList<>();
         viewModelList.add(viewModel);
         HashMap<String, Object> eventMap = createMap(event, category, action, viewModel.getVoucherName());
@@ -375,17 +382,21 @@ public class ProductPageTracking {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < viewModelList.size(); i++) {
             MerchantVoucherViewModel viewModel = viewModelList.get(i);
-            list.add(
-                    DataLayer.mapOf(
-                            ID, viewModel.getVoucherId(),
-                            NAME, joinDash(viewModel.getVoucherName()),
-                            POSITION, String.valueOf(startIndex + i + 1),
-                            PROMO_ID, viewModel.getVoucherId(),
-                            PROMO_CODE, viewModel.getVoucherId()
-                    )
-            );
+            if (viewModel.isAvailable()) {
+                list.add(
+                        DataLayer.mapOf(
+                                ID, viewModel.getVoucherId(),
+                                NAME, joinDash(viewModel.getVoucherName()),
+                                POSITION, String.valueOf(startIndex + i + 1),
+                                PROMO_ID, viewModel.getVoucherId(),
+                                PROMO_CODE, viewModel.getVoucherId()
+                        )
+                );
+            }
         }
-
+        if (list.size() == 0) {
+            return new ArrayList<>();
+        }
         return DataLayer.listOf(list.toArray(new Object[list.size()]));
     }
 
@@ -407,11 +418,13 @@ public class ProductPageTracking {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
-                createMvcImpressionMap(PROMO_VIEW,
-                        PRODUCT_DETAIL_PAGE,
-                        joinSpace(PROMO_BANNER, IMPRESSION),
-                        USE_VOUCHER,
-                        merchantVoucherViewModelList));
+        HashMap<String, Object> map = createMvcImpressionMap(PROMO_VIEW,
+                PRODUCT_DETAIL_PAGE,
+                joinSpace(PROMO_BANNER, IMPRESSION),
+                USE_VOUCHER,
+                merchantVoucherViewModelList);
+        if (map != null) {
+            tracker.sendEventTracking(map);
+        }
     }
 }

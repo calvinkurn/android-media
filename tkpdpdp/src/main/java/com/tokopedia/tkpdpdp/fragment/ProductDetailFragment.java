@@ -1583,7 +1583,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             promoContainer.setVisibility(View.GONE);
             return;
         }
-        if (getActivity() != null && productData != null) {
+        if (getActivity() != null && productData != null &&
+                !voucherListPresenter.isMyShop(productData.getShopInfo().getShopId())){
             ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), merchantVoucherViewModelList);
         }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);

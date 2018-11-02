@@ -94,11 +94,16 @@ public class ShopPageTrackingUser {
 
     private HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
                                                            List<MerchantVoucherViewModel> viewModelList) {
-        HashMap<String, Object> eventMap = createMap(event, category, action, label, null);
-        eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
-                ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
-                        ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, 0))));
-        return eventMap;
+        List<Object> mvcListMap = createMvcListMap(viewModelList, 0);
+        if (mvcListMap.size() > 0) {
+            HashMap<String, Object> eventMap = createMap(event, category, action, label, null);
+            eventMap.put(ShopPageTrackingConstant.ECOMMERCE, DataLayer.mapOf(
+                    ShopPageTrackingConstant.PROMO_VIEW, DataLayer.mapOf(
+                            ShopPageTrackingConstant.PROMOTIONS, createMvcListMap(viewModelList, 0))));
+            return eventMap;
+        } else {
+            return null;
+        }
     }
 
     private HashMap<String, Object> createMvcClickMap(String event, String category, String action,
@@ -117,15 +122,20 @@ public class ShopPageTrackingUser {
         List<Object> list = new ArrayList<>();
         for (int i = 0; i < viewModelList.size(); i++) {
             MerchantVoucherViewModel viewModel = viewModelList.get(i);
-            list.add(
-                    DataLayer.mapOf(
-                            ShopPageTrackingConstant.ID, viewModel.getVoucherId(),
-                            ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, viewModel.getVoucherName()),
-                            ShopPageTrackingConstant.POSITION, String.valueOf(startIndex + i + 1),
-                            ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(),
-                            ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherId()
-                    )
-            );
+            if (viewModel.isAvailable()) {
+                list.add(
+                        DataLayer.mapOf(
+                                ShopPageTrackingConstant.ID, viewModel.getVoucherId(),
+                                ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, viewModel.getVoucherName()),
+                                ShopPageTrackingConstant.POSITION, String.valueOf(startIndex + i + 1),
+                                ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(),
+                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherId()
+                        )
+                );
+            }
+        }
+        if (list.size() == 0) {
+            return new ArrayList<>();
         }
 
         return DataLayer.listOf(list.toArray(new Object[list.size()]));
@@ -408,21 +418,27 @@ public class ShopPageTrackingUser {
     }
 
     public void clickUseMerchantVoucher(boolean isOwner, MerchantVoucherViewModel viewModel, int positionIndex) {
-        sendDataLayerEvent(
-                createMvcClickMap(PROMO_CLICK,
-                        shopPageBuyerOrSeller(isOwner),
-                        joinSpace(PROMO_BANNER, CLICK),
-                        viewModel,
-                        positionIndex));
+        if (!isOwner) {
+            sendDataLayerEvent(
+                    createMvcClickMap(PROMO_CLICK,
+                            SHOP_PAGE_BUYER,
+                            joinSpace(PROMO_BANNER, CLICK),
+                            viewModel,
+                            positionIndex));
+        }
     }
 
     public void impressionUseMerchantVoucher(boolean isOwner, List<MerchantVoucherViewModel> merchantVoucherViewModelList) {
-        sendDataLayerEvent(
-                createMvcImpressionMap(PROMO_VIEW,
-                        shopPageBuyerOrSeller(isOwner),
-                        joinSpace(PROMO_BANNER, IMPRESSION),
-                        USE_VOUCHER,
-                        merchantVoucherViewModelList));
+        if (!isOwner) {
+            HashMap<String, Object> map = createMvcImpressionMap(PROMO_VIEW,
+                    SHOP_PAGE_BUYER,
+                    joinSpace(PROMO_BANNER, IMPRESSION),
+                    USE_VOUCHER,
+                    merchantVoucherViewModelList);
+            if (map != null) {
+                sendDataLayerEvent(map);
+            }
+        }
     }
 
 }
