@@ -1,4 +1,4 @@
-package com.tokopedia.core.remoteconfig;
+package com.tokopedia.remoteconfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,9 +10,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tokopedia.core.R;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.concurrent.TimeUnit;
 
