@@ -27,7 +27,6 @@ public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
-        view.hideLoading();
         view.onErrorCheckAffiliate(
                 ErrorHandler.getErrorMessage(view.getContext(), e)
         );
@@ -35,7 +34,6 @@ public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onNext(Boolean isAffiliate) {
-        view.hideLoading();
         view.onSuccessCheckAffiliate(isAffiliate);
     }
 }

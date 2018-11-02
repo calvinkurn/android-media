@@ -110,6 +110,7 @@ public class DashboardFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cvRecommendation.setVisibility(View.GONE);
+        initView();
         initViewListener();
         if (!userSession.isLoggedIn()) getActivity().finish();
         else presenter.checkAffiliate();
@@ -138,7 +139,6 @@ public class DashboardFragment
         rvHistory.setLayoutManager(layoutManager);
         rvHistory.setAdapter(adapter);
         rvHistory.addOnScrollListener(onScrollListener());
-        loadFirstData(false);
     }
 
     private void loadFirstData(boolean isPullToRefresh) {
@@ -267,7 +267,7 @@ public class DashboardFragment
 
     @Override
     public void onSuccessCheckAffiliate(boolean isAffiliate) {
-        if (isAffiliate) initView();
+        if (isAffiliate) loadFirstData(false);
         else getActivity().finish();
     }
 
