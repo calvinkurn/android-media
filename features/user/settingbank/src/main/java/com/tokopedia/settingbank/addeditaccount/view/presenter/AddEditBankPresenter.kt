@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.settingbank.addeditaccount.domain.pojo.AddBankAccountPojo
 import com.tokopedia.settingbank.addeditaccount.domain.usecase.AddBankUseCase
 import com.tokopedia.settingbank.addeditaccount.domain.usecase.EditBankUseCase
 import com.tokopedia.settingbank.addeditaccount.domain.usecase.ValidateBankUseCase
@@ -101,7 +102,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
 
     override fun addBank(bankFormModel: BankFormModel) {
         view.showLoading()
-        addBankUseCase.execute(object : Subscriber<Boolean>() {
+        addBankUseCase.execute(object : Subscriber<AddBankAccountPojo>() {
             override fun onCompleted() {
 
             }
@@ -112,10 +113,10 @@ class AddEditBankPresenter(private val userSession: UserSession,
                 view.onErrorAddBank(errorMessage)
             }
 
-            override fun onNext(isSuccess: Boolean) {
+            override fun onNext(pojo: AddBankAccountPojo) {
                 view.hideLoading()
-                if (isSuccess) {
-                    view.onSuccessAddEditBank()
+                if (pojo.is_success) {
+                    view.onSuccessAddEditBank(pojo.acc_id)
                 } else {
                     view.onErrorAddBank("")
                 }
@@ -140,7 +141,7 @@ class AddEditBankPresenter(private val userSession: UserSession,
             override fun onNext(isSuccess: Boolean) {
                 view.hideLoading()
                 if (isSuccess) {
-                    view.onSuccessAddEditBank()
+                    view.onSuccessAddEditBank("")
                 } else {
                     view.onErrorEditBank("")
                 }
