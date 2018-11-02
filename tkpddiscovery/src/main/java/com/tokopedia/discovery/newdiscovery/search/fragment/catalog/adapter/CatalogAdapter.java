@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -118,9 +119,19 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(INSTANCE_NEXT_PAGE, hasNextPage());
-        outState.putInt(INSTANCE_START_FROM, getStartFrom());
-        outState.putParcelableArrayList(INSTANCE_LIST_DATA, mappingIntoParcelableArrayList(getElements()));
+        //assume that 12 object is potential crash
+        if ((getElements() != null && getElements().size() > 12)) {
+            return;
+        }
+        ArrayList<Parcelable> parcelables = mappingIntoParcelableArrayList(getElements());
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(INSTANCE_LIST_DATA, parcelables);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putBoolean(INSTANCE_NEXT_PAGE, hasNextPage());
+            outState.putInt(INSTANCE_START_FROM, getStartFrom());
+            outState.putParcelableArrayList(INSTANCE_LIST_DATA, parcelables);
+        }
+        bundle.clear();
     }
 
     private ArrayList<Parcelable> mappingIntoParcelableArrayList(List<Visitable> elements) {
@@ -134,10 +145,12 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        setNextPage(savedInstanceState.getBoolean(INSTANCE_NEXT_PAGE));
-        setStartFrom(savedInstanceState.getInt(INSTANCE_START_FROM));
-        setElement(mappingIntoVisitable(savedInstanceState.getParcelableArrayList(INSTANCE_LIST_DATA)));
-        notifyDataSetChanged();
+        if (savedInstanceState.containsKey(INSTANCE_LIST_DATA)) {
+            setNextPage(savedInstanceState.getBoolean(INSTANCE_NEXT_PAGE));
+            setStartFrom(savedInstanceState.getInt(INSTANCE_START_FROM));
+            setElement(mappingIntoVisitable(savedInstanceState.getParcelableArrayList(INSTANCE_LIST_DATA)));
+            notifyDataSetChanged();
+        }
     }
 
     private List<Visitable> mappingIntoVisitable(ArrayList<Parcelable> parcelableArrayList) {

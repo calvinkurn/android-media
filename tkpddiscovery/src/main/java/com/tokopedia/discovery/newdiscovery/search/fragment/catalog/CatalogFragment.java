@@ -343,7 +343,6 @@ public class CatalogFragment extends SearchSectionFragment implements
         setQueryKey(savedInstanceState.getString(EXTRA_QUERY));
         setDepartmentId(savedInstanceState.getString(EXTRA_DEPARTMENT_ID));
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-
     }
 
     @Override
