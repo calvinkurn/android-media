@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.updateinactivephone.R;
@@ -22,10 +24,16 @@ public class ChangeInactivePhoneActivity extends BaseSimpleActivity implements H
 
     private final static String TITLE = "title";
 
+    @DeepLink({ApplinkConst.CHANGE_INACTIVE_PHONE})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        Intent intent = getChangeInactivePhoneIntent(context);
+        return intent.setData(uri.build());
+    }
+
     public static Intent getChangeInactivePhoneIntent(Context context) {
         return new Intent(context, ChangeInactivePhoneActivity.class);
     }
-
 
     @Override
     protected Fragment getNewFragment() {

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -39,6 +40,8 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
     EditText newEmailEditText;
     EditText passwordEditText;
     TextView changeEmailButton;
+    View mainView;
+    ProgressBar progressBar;
 
     @Inject
     ChangeEmailPresenter presenter;
@@ -84,6 +87,8 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
         newEmailEditText = view.findViewById(R.id.new_email);
         passwordEditText = view.findViewById(R.id.password);
         changeEmailButton = view.findViewById(R.id.change_email_button);
+        progressBar = view.findViewById(R.id.progress_bar);
+        mainView = view.findViewById(R.id.main_view);
         presenter.attachView(this);
         return view;
 
@@ -138,18 +143,14 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
     }
 
     private void finishLoadingProgress() {
-//        if (progressDialog != null)
-//            progressDialog.dismiss();
+        progressBar.setVisibility(View.GONE);
+        mainView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showLoadingProgress() {
-//        if (progressDialog == null && getActivity() != null)
-//            progressDialog = new TkpdProgressDialog(getActivity(),
-//                    TkpdProgressDialog.NORMAL_PROGRESS);
-//
-//        if (progressDialog != null)
-//            progressDialog.showDialog();
+        progressBar.setVisibility(View.VISIBLE);
+        mainView.setVisibility(View.GONE);
     }
 
     @Override

@@ -41,6 +41,7 @@ public class LoginRegisterAnalytics {
     private static final String CATEGORY_REGISTER = "Register";
     private static final String CATEGORY_REGISTER_PAGE = "register page";
     private static final String CATEGORY_WELCOME_PAGE = "welcome page";
+    private static final String CATEGORY_LOGIN_PAGE = "login page";
 
     private static final String ACTION_CLICK = "Click";
     private static final String ACTION_REGISTER = "Register";
@@ -49,8 +50,12 @@ public class LoginRegisterAnalytics {
     private static final String ACTION_SUCCESS = "Success";
     private static final String ACTION_CLICK_CHANNEL = "Click Channel";
     public static final String ACTION_REGISTER_SUCCESS = "Register Success";
+    public static final String ACTION_LOGIN_EMAIL = "click on button masuk";
+    public static final String ACTION_LOGIN_FACEBOOK = "click on button facebook";
+    public static final String ACTION_LOGIN_GOOGLE = "click on button google";
+    public static final String ACTION_LOGIN_WEBVIEW = "click on button ";
+    public static final String ACTION_LOGIN_PHONE = "click on masuk phone number";
 
-    private static final String LABEL_CTA = "CTA";
     private static final String LABEL_REGISTER = "Register";
     private static final String LABEL_PASSWORD = "Kata Sandi";
     public static final String LABEL_EMAIL = "Email";
@@ -77,12 +82,6 @@ public class LoginRegisterAnalytics {
     }
 
     public void eventClickLoginButton(Context applicationContext) {
-        analyticTracker.sendEventTracking(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                LABEL_CTA
-        );
 
         Map<String, Object> map = new HashMap<>();
         TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN,
@@ -147,9 +146,9 @@ public class LoginRegisterAnalytics {
     public void eventClickLoginPhoneNumber(Context applicationContext) {
         analyticTracker.sendEventTracking(
                 EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                LABEL_PHONE_NUMBER
+                CATEGORY_LOGIN_PAGE,
+                "click on button phone number",
+                ""
         );
 
         Map<String, Object> map = new HashMap<>();
@@ -159,12 +158,6 @@ public class LoginRegisterAnalytics {
     }
 
     public void eventClickLoginGoogle(Context applicationContext) {
-        analyticTracker.sendEventTracking(
-                EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                LABEL_GPLUS
-        );
 
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "GoogleSignInActivity");
@@ -173,12 +166,6 @@ public class LoginRegisterAnalytics {
     }
 
     public void eventClickLoginFacebook(Context applicationContext) {
-        analyticTracker.sendEventTracking(
-                EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN,
-                ACTION_CLICK,
-                LABEL_FACEBOOK
-        );
 
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, "Facebook");
@@ -394,4 +381,21 @@ public class LoginRegisterAnalytics {
     }
 
 
+    public void eventSuccessLogin(String actionLoginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                actionLoginMethod,
+                "success"
+        );
+    }
+
+    public void eventFailedLogin(String actionLoginMethod) {
+        analyticTracker.sendEventTracking(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                actionLoginMethod,
+                "failed"
+        );
+    }
 }

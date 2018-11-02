@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.loginphone.R;
 import com.tokopedia.loginphone.checkloginphone.di.DaggerCheckLoginPhoneComponent;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
@@ -31,6 +33,7 @@ import com.tokopedia.loginphone.checkloginphone.view.listener.CheckLoginPhoneNum
 import com.tokopedia.loginphone.checkloginphone.view.presenter.CheckLoginPhoneNumberPresenter;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
+import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
@@ -151,9 +154,11 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-//                Intent intent;
-//                intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
-//                startActivity(intent);
+                if (getActivity() != null) {
+                    Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                            (), ApplinkConst.CHANGE_INACTIVE_PHONE);
+                    startActivity(intent);
+                }
             }
 
             @Override

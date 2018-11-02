@@ -138,6 +138,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Inject
     LoginRegisterAnalytics analytics;
 
+    //*For analytics
+    private String actionLoginMethod;
+
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
@@ -157,18 +160,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
         daggerLoginComponent.inject(this);
     }
-
-//    public void initOuterInjector(SessionModule sessionModule) {
-//        AppComponent appComponent = getComponent(AppComponent.class);
-//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-//                DaggerSessionComponent.builder()
-//                        .appComponent(appComponent)
-//                        .sessionModule(sessionModule)
-//                        .build();
-//        daggerSessionComponent.inject(this);
-//
-//        presenter.attachView(this);
-//    }
 
     @Override
     public void onStart() {
@@ -251,6 +242,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         passwordEditText.setOnEditorActionListener(
                 (textView, id, keyEvent) -> {
                     if (id == R.id.ime_login || id == EditorInfo.IME_NULL) {
+                        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL;
                         presenter.login(emailEditText.getText().toString().trim(),
                                 passwordEditText.getText().toString());
                         return true;
@@ -264,6 +256,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
         loginButton.setOnClickListener(v -> {
             if (getActivity() != null) {
+                actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL;
                 KeyboardHandler.hideSoftKeyboard(getActivity());
                 presenter.saveLoginEmail(emailEditText.getText().toString());
                 presenter.login(emailEditText.getText().toString().trim(),
@@ -333,6 +326,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                         }
                         break;
                     case LoginActivity.METHOD_EMAIL:
+                        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL;
                         String email = getArguments().getString(AUTO_LOGIN_EMAIL, "");
                         String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
                         emailEditText.setText(email);
@@ -445,6 +439,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
 
+            analytics.eventSuccessLogin(actionLoginMethod);
             ((LoginRegisterRouter) getActivity().getApplicationContext()).setTrackingUserId
                     (userSession.getUserId(), getActivity().getApplicationContext());
         }
@@ -452,6 +447,10 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onErrorLogin(String errorMessage) {
+        if(!TextUtils.isEmpty(actionLoginMethod)) {
+            analytics.eventFailedLogin(actionLoginMethod);
+        }
+
         dismissLoadingLogin();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
@@ -583,6 +582,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     private void onLoginWebviewClick(String name, String url) {
+        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name;
+
         analytics.eventClickLoginWebview(name);
 
         if (getFragmentManager() != null && getActivity() != null) {
@@ -600,6 +601,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     private void onLoginPhoneNumberClick() {
         if (getActivity() != null) {
+            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_PHONE;
+
             analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
             Intent intent = CheckLoginPhoneNumberActivity.getCallingIntent(getActivity());
             startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
@@ -609,6 +612,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     private void onLoginGoogleClick() {
         if (getActivity() != null) {
+            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_GOOGLE;
+
             analytics.eventClickLoginGoogle(getActivity().getApplicationContext());
             Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
             startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
@@ -618,6 +623,8 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     private void onLoginFacebookClick() {
         if (getActivity() != null) {
+            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_FACEBOOK;
+
             analytics.eventClickLoginFacebook(getActivity().getApplicationContext());
             presenter.getFacebookCredential(this, callbackManager);
         }

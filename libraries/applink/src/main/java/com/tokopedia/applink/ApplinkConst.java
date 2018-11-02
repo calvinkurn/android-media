@@ -166,6 +166,7 @@ public interface ApplinkConst {
     String ADD_NAME_PROFILE = "tokopedia://addname";
     String CREATE_PASSWORD = "tokopedia://createpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
+    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
