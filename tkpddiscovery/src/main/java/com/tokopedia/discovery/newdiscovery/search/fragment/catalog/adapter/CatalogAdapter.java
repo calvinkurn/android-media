@@ -35,6 +35,7 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
     private static final String INSTANCE_NEXT_PAGE = "INSTANCE_NEXT_PAGE";
     private static final String INSTANCE_LIST_DATA = "INSTANCE_LIST_DATA";
     private static final String INSTANCE_START_FROM = "INSTANCE_START_FROM";
+    public static final int THRESHOLD_CRASH_LIST_COUNT = 12;
 
     private List<Visitable> mVisitables;
     private final CatalogTypeFactory typeFactory;
@@ -120,7 +121,7 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
 
     public void onSaveInstanceState(Bundle outState) {
         //assume that 12 object is potential crash
-        if ((getElements() != null && getElements().size() > 12)) {
+        if ((getElements() != null && getElements().size() > THRESHOLD_CRASH_LIST_COUNT)) {
             return;
         }
         ArrayList<Parcelable> parcelables = mappingIntoParcelableArrayList(getElements());
