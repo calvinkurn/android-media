@@ -48,7 +48,7 @@ import javax.inject.Inject;
  */
 public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter>
         implements DigitalDealCheckoutContract.View, DigitalDealActionListener {
-    private static final long ANIMATION_DURATION = TimeUnit.MILLISECONDS.toMillis(300);
+    private static final long ANIMATION_DURATION = TimeUnit.MILLISECONDS.toMillis(800);
     private LinearLayout containerLayout;
     private LinearLayout containerSelectedDeals;
     private LinearLayout containerDetail;
