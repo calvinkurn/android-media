@@ -2,7 +2,9 @@ package com.tokopedia.logisticgeolocation.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.logisticdata.data.apiservice.AddressApi;
 import com.tokopedia.logisticdata.data.apiservice.MapsApi;
 import com.tokopedia.logisticgeolocation.GeolocationContract;
@@ -25,6 +27,8 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Fajar Ulin Nuha on 30/10/18.
@@ -86,19 +90,19 @@ public class GeolocationModule {
     @Provides
     @GeolocationScope
     Retrofit provideGeolocationRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder,
-                                    TkpdAuthInterceptor tkpdAuthInterceptor,
-                                    FingerprintInterceptor fingerprintInterceptor,
-                                    StringResponseConverter stringResponseConverter,
-                                    GsonBuilder gsonBuilder
+                                        TkpdAuthInterceptor tkpdAuthInterceptor,
+                                        FingerprintInterceptor fingerprintInterceptor,
+                                        StringResponseConverter stringResponseConverter
     ) {
-        return CommonNetwork.createRetrofit(
-                TkpdBaseURL.MAPS_DOMAIN,
-                tkpdOkHttpBuilder,
-                tkpdAuthInterceptor,
-                fingerprintInterceptor,
-                stringResponseConverter,
-                gsonBuilder
-        );
+        tkpdOkHttpBuilder.addInterceptor(tkpdAuthInterceptor);
+        tkpdOkHttpBuilder.addInterceptor(fingerprintInterceptor);
+        return new Retrofit.Builder()
+                .baseUrl(TkpdBaseURL.MAPS_DOMAIN)
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
+                .addConverterFactory(stringResponseConverter)
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(tkpdOkHttpBuilder.build()).build();
     }
 
     @Provides
