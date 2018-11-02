@@ -68,7 +68,6 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBundle = getIntent().getExtras();
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
                     new CheckoutAnalyticsChangeAddress(
@@ -91,6 +90,7 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
 
     @Override
     protected Fragment getNewFragment() {
+        mBundle = getIntent().getExtras();
         if(mBundle != null) {
             LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
             // handle from shop open unresolved shared data
