@@ -1913,22 +1913,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
-    @Override
-    public Intent getAddToCartIntent(Context context, String productId, String price, String
-            imageSource) {
-        String EXTRA_PRODUCT_CART = "EXTRA_PRODUCT_CART";
-
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setProductId(productId)
-                .setPrice(price)
-                .setImageUri(imageSource)
-                .build();
-
-        Intent intent = new Intent(context, AddToCartActivity.class);
-        intent.putExtra(EXTRA_PRODUCT_CART, pass);
-        return intent;
-    }
-
     public Observable<String> getAtcObsr() {
         FlightAddToCartUseCase useCase = new FlightAddToCartUseCase(null, null);
         return useCase.createObservable(null)
