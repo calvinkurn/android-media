@@ -109,6 +109,8 @@ import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
 import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
+import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -160,7 +162,8 @@ import io.branch.referral.BranchError;
         ChallengesDeepLinkModule.class,
         InboxTalkApplinkModule.class,
         ProductManageApplinkModule.class,
-        LoginRegisterApplinkModule.class
+        LoginRegisterApplinkModule.class,
+        ChangeInactivePhoneApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -215,7 +218,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                     new ChallengesDeepLinkModuleLoader(),
                     new InboxTalkApplinkModuleLoader(),
                     new ProductManageApplinkModuleLoader(),
-                    new LoginRegisterApplinkModuleLoader()
+                    new LoginRegisterApplinkModuleLoader(),
+                    new ChangeInactivePhoneApplinkModuleLoader()
             );
         }
 
