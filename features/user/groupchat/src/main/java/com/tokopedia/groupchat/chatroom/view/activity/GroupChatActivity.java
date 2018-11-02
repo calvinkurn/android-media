@@ -1505,17 +1505,22 @@ public class GroupChatActivity extends BaseSimpleActivity
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map, hideMessage);
         } else {
-            listMessage.add(map);
+            if(!hideMessage) {
+                listMessage.add(map);
+            }
         }
     }
 
     private void handleEvent(EventGroupChatViewModel event) {
-        if(event.getUserId().equals(userSession.getUserId())
-                && event.getChannelId().equals(viewModel.getChannelInfoViewModel().getChannelId())) {
-            if(event.isBanned()){
-                onUserBanned();
-            }else if(event.isFreeze()){
+        if(!TextUtils.isEmpty(event.getChannelId()) && event.getChannelId().equals(viewModel.getChannelInfoViewModel().getChannelId())) {
+            if(event.isFreeze()){
                 onChannelFrozen();
+                return;
+            }
+            if(event.isBanned()){
+                if(!TextUtils.isEmpty(event.getUserId()) && event.getUserId().equals(userSession.getUserId())){
+                    onUserBanned();
+                }
             }
         }
     }

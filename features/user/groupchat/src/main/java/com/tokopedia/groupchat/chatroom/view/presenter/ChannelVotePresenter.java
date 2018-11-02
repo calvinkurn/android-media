@@ -27,7 +27,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
     }
 
     @Override
-    public void sendVote(UserSession userSession, String pollId, boolean voted, final VoteViewModel element) {
+    public void sendVote(UserSession userSession, String pollId, boolean voted, final VoteViewModel element, String groupChatToken) {
 
         if(userSession == null || !userSession.isLoggedIn()) {
             getView().redirectToLogin();
@@ -37,7 +37,7 @@ public class ChannelVotePresenter extends BaseDaggerPresenter<ChannelVoteContrac
             getView().showHasVoted();
         } else {
             sendVoteUseCase.execute(SendVoteUseCase.createParams(pollId,
-                    element.getOptionId(),""), new Subscriber<VoteStatisticDomainModel>() {
+                    element.getOptionId(), groupChatToken), new Subscriber<VoteStatisticDomainModel>() {
                 @Override
                 public void onCompleted() {
 
