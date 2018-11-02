@@ -30,6 +30,7 @@
             android:visibility="gone"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabMode="scrollable"
+            android:background="@color/white"
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextAppearance="@style/TokoPointsTabs"
             app:tabTextColor="@color/black_38" />
