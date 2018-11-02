@@ -332,7 +332,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         }
     }
 
-    private void renderCouponAndVoucher(VoucherDigital voucherDigital) {
+    protected void renderCouponAndVoucher(VoucherDigital voucherDigital) {
         if (voucherDigital.getAttributeVoucher().getIsCoupon() == 1) {
             renderCouponInfoData(voucherDigital);
         } else {

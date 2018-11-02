@@ -8,6 +8,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
@@ -21,9 +23,9 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
     private VoucherCartHachikoView voucherCartHachikoView;
     private AppCompatTextView totalPaymentTextView;
     private AppCompatButton checkoutButton;
+    private LinearLayout checkoutContainer;
 
     private ActionListener actionListener;
-    private VoucherCartHachikoView.ActionListener voucherActionListener;
 
     private long pricePlain = 0;
     private long voucherDiscount = 0;
@@ -51,6 +53,7 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         voucherCartHachikoView = view.findViewById(R.id.voucher_cart_holder_view);
         totalPaymentTextView = view.findViewById(R.id.tv_total_payment);
         checkoutButton = view.findViewById(R.id.btn_checkout);
+        checkoutContainer = view.findViewById(R.id.container_checkout);
 
         initViewListener();
     }
@@ -76,7 +79,6 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
     }
 
     public void setVoucherActionListener(VoucherCartHachikoView.ActionListener voucherActionListener) {
-        this.voucherActionListener = voucherActionListener;
         voucherCartHachikoView.setActionListener(voucherActionListener);
     }
 
@@ -135,6 +137,16 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         long resultPrice = pricePlain - voucherDiscount;
         totalPaymentTextView.setText(getStringIdrFormat((double) resultPrice));
     }
+
+    public int getVoucherViewHeight() {
+        return voucherCartHachikoView.getMeasuredHeight();
+    }
+
+
+    public int getCheckoutViewHeight() {
+        return checkoutContainer.getHeight();
+    }
+
 
     public void enableCheckoutButton() {
         checkoutButton.setEnabled(true);

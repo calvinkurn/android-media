@@ -17,11 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
@@ -43,7 +46,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter> implements DigitalDealCheckoutContract.View, DigitalDealActionListener {
+public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<DigitalDealCheckoutContract.Presenter>
+        implements DigitalDealCheckoutContract.View, DigitalDealActionListener {
     private static final long ANIMATION_DURATION = TimeUnit.MILLISECONDS.toMillis(300);
     private LinearLayout containerLayout;
     private LinearLayout containerSelectedDeals;
@@ -87,7 +91,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         // Required empty public constructor
     }
 
-    public static DigitalDealCheckoutFragment newInstance(DigitalCheckoutPassData cartPassData, CartDigitalInfoData cartInfoData) {
+    public static DigitalDealCheckoutFragment newInstance(DigitalCheckoutPassData cartPassData,
+                                                          CartDigitalInfoData cartInfoData) {
         DigitalDealCheckoutFragment fragment = new DigitalDealCheckoutFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PASS_DATA, cartPassData);
@@ -130,7 +135,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         inputPriceHolderView = view.findViewById(R.id.input_price_holder_view);
         categoryNameTextView = view.findViewById(R.id.tv_category_name);
         selectedDealsRecyclerView = view.findViewById(R.id.rv_selected_deals);
-        DigitalDealsAdapterTypeFactory adapterTypeFactory = new DigitalDealsAdapterTypeFactory(this, true);
+        DigitalDealsAdapterTypeFactory adapterTypeFactory =
+                new DigitalDealsAdapterTypeFactory(this, true);
         List<Visitable> visitables = new ArrayList<>(selectedDeals);
         adapter = new DigitalDealsAdapter(adapterTypeFactory, visitables);
         selectedDealsRecyclerView.setNestedScrollingEnabled(false);
@@ -211,13 +217,13 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         expandCheckoutView(containerLayout);
     }
 
-    public void expandCheckoutView(final View v) {
+    public void expandCheckoutView(final View containerLayout) {
         containerScroll.setVisibility(View.VISIBLE);
-        int currentHeight = v.getHeight();
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int currentHeight = containerLayout.getHeight();
+        containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lastCollapseHeight = currentHeight;
         final int targetHeight = interactionListener.getParentMeasuredHeight();
-        v.getLayoutParams().height = currentHeight;
+        containerLayout.getLayoutParams().height = currentHeight;
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -230,8 +236,8 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     }
                 }
 
-                v.getLayoutParams().height = height;
-                v.requestLayout();
+                containerLayout.getLayoutParams().height = height;
+                containerLayout.requestLayout();
             }
 
             @Override
@@ -241,15 +247,21 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         };
 
         a.setDuration(ANIMATION_DURATION);
-        v.startAnimation(a);
+        containerLayout.startAnimation(a);
     }
 
-    public void collapseCheckoutView(final View v) {
-        int currentHeight = v.getHeight();
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ? v.getMeasuredHeight() : lastCollapseHeight;
-        v.getLayoutParams().height = currentHeight;
-        v.setVisibility(View.VISIBLE);
+    public void collapseCheckoutView(final View containerLayout) {
+        int currentHeight = containerLayout.getHeight();
+        containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lastCollapseHeight = checkoutHolderView.getVoucherViewHeight() +
+                checkoutHolderView.getCheckoutViewHeight() +
+                containerCategoryLabel.getMeasuredHeight() +
+                getResources().getDimensionPixelOffset(R.dimen.dp_2);
+        checkoutHolderView.measure(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = lastCollapseHeight == 0 || lastCollapseHeight >= currentHeight ?
+                containerLayout.getMeasuredHeight() : lastCollapseHeight;
+        containerLayout.getLayoutParams().height = currentHeight;
+        containerLayout.setVisibility(View.VISIBLE);
         Animation a = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
@@ -259,12 +271,15 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
                     if (measureWithInterpolate > targetHeight) {
                         height = measureWithInterpolate;
                     }
+                    containerLayout.getLayoutParams().height = height;
+                    containerLayout.requestLayout();
                 } else {
+                    containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                    );
                     containerScroll.setVisibility(View.GONE);
                 }
-
-                v.getLayoutParams().height = height;
-                v.requestLayout();
             }
 
             @Override
@@ -273,19 +288,25 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
             }
         };
         a.setDuration(ANIMATION_DURATION);
-        v.startAnimation(a);
+        containerLayout.startAnimation(a);
     }
 
     @Override
     public void renderIconToExpand() {
-        if (getContext() != null)
-            expandCollapseView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey));
+        if (getContext() != null) {
+            expandCollapseView.setImageDrawable(
+                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_up_grey)
+            );
+        }
     }
 
     @Override
     public void renderIconToCollapse() {
-        if (getContext() != null)
-            expandCollapseView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey));
+        if (getContext() != null) {
+            expandCollapseView.setImageDrawable(
+                    ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_down_grey)
+            );
+        }
     }
 
     @Override
@@ -401,5 +422,34 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     @Override
     public long getCheckoutDiscountPricePlain() {
         return checkoutHolderView.getDiscountPricePlain();
+    }
+
+    @Override
+    public void disableVoucherDiscount() {
+        super.disableVoucherDiscount();
+        if (!isCartDetailViewVisible()) {
+            containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            );
+        }
+    }
+
+    @Override
+    public void setHachikoCoupon(String title, String message, String voucherCode) {
+        super.setHachikoCoupon(title, message, voucherCode);
+        if (!isCartDetailViewVisible()) {
+            containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    @Override
+    public void setHachikoVoucher(String voucherCode, String message) {
+        super.setHachikoVoucher(voucherCode, message);
+        if (!isCartDetailViewVisible()) {
+            containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
     }
 }
