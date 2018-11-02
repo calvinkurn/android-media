@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -86,6 +87,16 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     public void onBackPressed() {
         super.onBackPressed();
         sendAnalyticsOnBackPressClicked();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
