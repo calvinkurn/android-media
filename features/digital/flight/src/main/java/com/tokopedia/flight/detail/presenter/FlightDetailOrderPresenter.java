@@ -102,8 +102,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
-    public void onHelpButtonClicked() {
-        getView().navigateToWebview(FlightUrl.CONTACT_US);
+    public void onHelpButtonClicked(String invoiceId, int status) {
+        StringBuilder result = new StringBuilder(FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL);
+        result.append("&iv=" + invoiceId);
+        result.append("&ostat=" + status);
+        String url = result.toString();
+        getView().navigateToWebview(url);
     }
 
     @Override

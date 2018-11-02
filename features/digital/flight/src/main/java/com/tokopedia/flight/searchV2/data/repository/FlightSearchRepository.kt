@@ -1,9 +1,9 @@
 package com.tokopedia.flight.searchV2.data.repository
 
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
+import com.tokopedia.flight_dbflow.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
+import com.tokopedia.flight_dbflow.FlightAirportDB
 import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
