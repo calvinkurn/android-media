@@ -58,8 +58,9 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -1646,7 +1647,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getResourceUrlAssetPayment() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+        String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
                 TkpdBaseURL.Payment.DEFAULT_HOST);
 
         final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
