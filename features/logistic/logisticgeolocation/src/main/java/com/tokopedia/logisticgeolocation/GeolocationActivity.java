@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
@@ -24,8 +24,9 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class GeolocationActivity extends BaseSimpleActivity implements ITransactionAnalyticsGeoLocationPinPoint{
+public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint{
 
+    private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
     public static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
@@ -68,11 +69,16 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_geolocation);
+        GeolocationActivityPermissionsDispatcher.inflateFragmentWithCheck(this);
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
                     new CheckoutAnalyticsChangeAddress(
                             ((AbstractionRouter) getApplication()).getAnalyticTracker()
                     );
+        }
+        if(savedInstanceState == null) {
+           inflateFragment();
         }
     }
 
@@ -82,14 +88,9 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
         sendAnalyticsOnBackPressClicked();
     }
 
-    @Override
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    protected void inflateFragment() {
-        super.inflateFragment();
-    }
-
-    @Override
-    protected Fragment getNewFragment() {
+    public void inflateFragment() {
+        Fragment fragment = null;
         mBundle = getIntent().getExtras();
         if(mBundle != null) {
             LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
@@ -99,14 +100,19 @@ public class GeolocationActivity extends BaseSimpleActivity implements ITransact
                         (HashMap<String, String>) mBundle.getSerializable(EXTRA_HASH_LOCATION));
             }
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
-                return GoogleMapFragment.newInstance(locationPass);
+                fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
                 Toast.makeText(this, "No location Provided", Toast.LENGTH_SHORT).show();
                 // todo : generate longlat geocode by network here
             }
+        } else {
+            fragment = GoogleMapFragment.newInstanceNoLocation();
         }
-        return GoogleMapFragment.newInstanceNoLocation();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment, TAG_FRAGMENT)
+                .commit();
     }
+
 
     @Override
     public void sendAnalyticsOnDropdownSuggestionItemClicked() {
