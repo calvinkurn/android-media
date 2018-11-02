@@ -10,9 +10,12 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +23,11 @@ import java.util.Map;
  */
 
 public class ProductPageTracking {
+
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
 
     public static final String CLICK = "click";
     public static final String IMPRESSION = "impression";
@@ -43,9 +51,24 @@ public class ProductPageTracking {
     public static final String SEE_ALL = "see all";
     public static final String MVC_DETAIL = "mvc detail";
     public static final String USE_VOUCHER = "use voucher";
+    public static final String PROMO_BANNER = "promo banner";
+
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String PROMO_CLICK = "promoClick";
+
+    public static final String PROMOTIONS = "promotions";
+    public static final String NAME = "name";
+    public static final String PROMO_ID = "promo_id";
+    public static final String PROMO_CODE = "promo_code";
+    public static final String ID = "id";
+    public static final String POSITION = "position";
 
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
+    }
+    private static String joinSpace(String... s) {
+        return TextUtils.join(" ", s);
     }
 
     public static void eventEnhanceProductDetail(Context context, Map<String, Object> maps) {
@@ -319,29 +342,76 @@ public class ProductPageTracking {
         );
     }
 
-    public static void eventClickMerchantVoucherUse(Context context, String productId) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(
-                CLICK_PDP,
-                PRODUCT_DETAIL_PAGE,
-                joinDash(CLICK, MERCHANT_VOUCHER, USE_VOUCHER),
-                productId
-        );
+    private static HashMap<String, Object> createMap(String event, String category, String action, String label) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put(EVENT, event);
+        eventMap.put(EVENT_CATEGORY, category);
+        eventMap.put(EVENT_ACTION, action);
+        eventMap.put(EVENT_LABEL, label);
+        return eventMap;
     }
 
-    public static void eventImpressionMerchantVoucherUse(Context context, String productId) {
+    private static HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
+                                                           List<MerchantVoucherViewModel> viewModelList) {
+        HashMap<String, Object> eventMap = createMap(event, category, action, label);
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                        PROMOTIONS, createMvcListMap(viewModelList, 0))));
+        return eventMap;
+    }
+
+    private static HashMap<String, Object> createMvcClickMap(String event, String category, String action,
+                                                      MerchantVoucherViewModel viewModel, int positionIndex) {
+        ArrayList<MerchantVoucherViewModel> viewModelList = new ArrayList<>();
+        viewModelList.add(viewModel);
+        HashMap<String, Object> eventMap = createMap(event, category, action, viewModel.getVoucherName());
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, createMvcListMap(viewModelList, positionIndex))));
+        return eventMap;
+    }
+
+    private static List<Object> createMvcListMap(List<MerchantVoucherViewModel> viewModelList, int startIndex) {
+        List<Object> list = new ArrayList<>();
+        for (int i = 0; i < viewModelList.size(); i++) {
+            MerchantVoucherViewModel viewModel = viewModelList.get(i);
+            list.add(
+                    DataLayer.mapOf(
+                            ID, viewModel.getVoucherId(),
+                            NAME, joinDash(viewModel.getVoucherName()),
+                            POSITION, String.valueOf(startIndex + i + 1),
+                            PROMO_ID, viewModel.getVoucherId(),
+                            PROMO_CODE, viewModel.getVoucherId()
+                    )
+            );
+        }
+
+        return DataLayer.listOf(list.toArray(new Object[list.size()]));
+    }
+
+    public static void eventClickMerchantVoucherUse(Context context, MerchantVoucherViewModel viewModel, int positionIndex) {
         if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         tracker.sendEventTracking(
-                VIEW_PDP,
-                PRODUCT_DETAIL_PAGE,
-                joinDash(IMPRESSION, MERCHANT_VOUCHER, USE_VOUCHER),
-                productId
-        );
+                createMvcClickMap(PROMO_CLICK,
+                        PRODUCT_DETAIL_PAGE,
+                        joinSpace(PROMO_BANNER, CLICK),
+                        viewModel,
+                        positionIndex));
+    }
+
+    public static void eventImpressionMerchantVoucherUse(Context context, List<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(
+                createMvcImpressionMap(PROMO_VIEW,
+                        PRODUCT_DETAIL_PAGE,
+                        joinSpace(PROMO_BANNER, IMPRESSION),
+                        USE_VOUCHER,
+                        merchantVoucherViewModelList));
     }
 }
