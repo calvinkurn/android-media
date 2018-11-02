@@ -138,6 +138,14 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         submitPointer = view.findViewById(R.id.pointer_submit);
         fab = view.findViewById(R.id.fab);
 
+        submitPointer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onSubmitPointer(getActivity());
+                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
+            }
+        });
+
         presenter.setUpVariables(locationPass, hasLocation);
         initActionBarView();
         prepareActionBarView();
