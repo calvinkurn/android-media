@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_4"
     android:paddingTop="@dimen/padding_4">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/image_container"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -20,28 +21,63 @@
             android:layout_height="60dp"
             app:srcCompat="@drawable/ic_flight_camera" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_toEndOf="@+id/image_container"
-         android:layout_toRightOf="@+id/image_container"
-         android:orientation="horizontal"
-         android:padding="@dimen/padding_16">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/image_container"
+        android:layout_toRightOf="@+id/image_container"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/padding_16"
+        android:paddingRight="@dimen/padding_16">
 
-         <android.support.v7.widget.AppCompatTextView
-             android:id="@+id/tv_filename"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:drawablePadding="@dimen/padding_16"
-             android:drawableRight="@drawable/ic_flight_cross"
-             android:drawableEnd="@drawable/ic_flight_cross"
-             android:layout_gravity="center_vertical"
-             android:lines="1"
-             android:ellipsize="end"
-             tools:text="3341aaaa3asdfa12313143413.JPG" />
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_passenger_name"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Nama Penumpang" />
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_filename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:lines="1"
+            android:visibility="gone"
+            tools:text="3341aaaa3asdfa12313143413.JPG"
+            tools:visibility="visible" />
 
-     </LinearLayout>
+        <com.tokopedia.flight.common.view.HorizontalProgressBar
+            android:id="@+id/progress_upload"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/progress_bar_height"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_percentage_upload"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dp_10"
+            android:visibility="gone"
+            tools:text="@string/flight_cancellation_upload_percentage_label"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_change_image"
+        style="@style/TextView.Micro.Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/flight_booking_passenger_change_label"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </LinearLayout>

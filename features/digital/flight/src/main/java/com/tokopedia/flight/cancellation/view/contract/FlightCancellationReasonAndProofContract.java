@@ -24,6 +24,8 @@ public interface FlightCancellationReasonAndProofContract {
 
         List<FlightCancellationAttachmentViewModel> getAttachments();
 
+        void setAttachment(FlightCancellationAttachmentViewModel attachment, int position);
+
         void showRequiredMinimalOneAttachmentErrorMessage(int resId);
 
         FlightCancellationWrapperViewModel getCancellationViewModel();
@@ -40,26 +42,32 @@ public interface FlightCancellationReasonAndProofContract {
 
         void navigateToNextStep(FlightCancellationWrapperViewModel viewModel);
 
-        void hideFullPageContainer();
+        void hideAttachmentContainer();
 
-        void showLoading();
-
-        void showFullPageContainer();
-
-        void hideLoading();
+        void showAttachmentContainer();
 
         void showAttachmentMinDimensionErrorMessage(int resId);
 
         void showAttachmentMaxSizeErrorMessage(int resId);
 
         void addAttachments(List<FlightCancellationAttachmentViewModel> attachments);
+
+        void renderAttachment();
+
+        void setUploadingPosition(int position);
+
+        int getUploadingPosition();
+
+        void updateUploadingProgress(long percentage);
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
         void initialize(List<FlightCancellationAttachmentViewModel> attachments);
 
-        void onSuccessGetImage(String filepath);
+        List<FlightCancellationAttachmentViewModel> buildAttachmentList();
+
+        void onSuccessGetImage(String filepath, int position);
 
         void onNextButtonClicked();
 

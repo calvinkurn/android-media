@@ -47,7 +47,8 @@ import rx.subscriptions.CompositeSubscription;
  * @author by alvarisi on 3/26/18.
  */
 
-public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresenter<FlightCancellationReasonAndProofContract.View> implements FlightCancellationReasonAndProofContract.Presenter {
+public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresenter<FlightCancellationReasonAndProofContract.View>
+        implements FlightCancellationReasonAndProofContract.Presenter {
     private static final String DEFAULT_RESOLUTION = "100-square";
     private static final String RESOLUTION_300 = "300";
     private static final String PARAM_ID = "id";
@@ -84,7 +85,21 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         if (attachments != null && attachments.size() > 0) {
             getView().addAttachments(attachments);
         }
-        getView().showUploadAttachmentView();
+    }
+
+    @Override
+    public List<FlightCancellationAttachmentViewModel> buildAttachmentList() {
+        List<FlightCancellationAttachmentViewModel> attachmentViewModelList = new ArrayList<>();
+
+        for (String passenger : getUniquePassenger(getView().getCancellationViewModel())) {
+            FlightCancellationAttachmentViewModel item = new FlightCancellationAttachmentViewModel();
+            item.setPassengerName(passenger);
+            item.setPercentageUpload(0);
+
+            attachmentViewModelList.add(item);
+        }
+
+        return attachmentViewModelList;
     }
 
     private boolean validateImageAttachment(String uri) {
@@ -110,14 +125,15 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     }
 
     @Override
-    public void onSuccessGetImage(String filepath) {
+    public void onSuccessGetImage(String filepath, int position) {
         if (validateImageAttachment(filepath)) {
-            FlightCancellationAttachmentViewModel viewModel = new FlightCancellationAttachmentViewModel();
+            FlightCancellationAttachmentViewModel viewModel = getView().getAttachments().get(position);
             viewModel.setFilepath(filepath);
             viewModel.setFilename(Uri.parse(filepath).getLastPathSegment());
+
+            getView().setAttachment(viewModel, position);
             getView().hideUploadAttachmentView();
-            getView().addAttachment(viewModel);
-            getView().showUploadAttachmentView();
+            getView().renderAttachment();
         }
     }
 
@@ -244,13 +260,11 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
     @Override
     public void onComeFromEstimateRefundScreen() {
-        getView().hideLoading();
-        getView().showFullPageContainer();
+        getView().showAttachmentContainer();
     }
 
     private void actionUploadImageAndBuildModel() {
-        getView().hideFullPageContainer();
-        getView().showLoading();
+        getView().hideAttachmentContainer();
         List<FlightCancellationAttachmentViewModel> attachments = getView().getAttachments();
         compositeSubscription.add(Observable.from(attachments)
                 .flatMap(new Func1<FlightCancellationAttachmentViewModel, Observable<FlightCancellationAttachmentViewModel>>() {
@@ -262,6 +276,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                                 ), new Func2<FlightCancellationAttachmentViewModel, ImageUploadDomainModel<AttachmentImageModel>, FlightCancellationAttachmentViewModel>() {
                                     @Override
                                     public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
+                                        getView().setUploadingPosition(getView().getUploadingPosition() + 1);
                                         String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
                                         if (url.contains(DEFAULT_RESOLUTION)) {
                                             url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
@@ -297,8 +312,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (isViewAttached() && !isUnsubscribed()) {
-                            getView().showFullPageContainer();
-                            getView().hideLoading();
+                            getView().showAttachmentContainer();
                             getView().showFailedToNextStepErrorMessage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
                         }
                     }
@@ -311,6 +325,20 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         );
     }
 
+    private List<String> getUniquePassenger(FlightCancellationWrapperViewModel cancellationWrapperViewModel) {
+        List<String> uniquePassengers = new ArrayList<>();
+
+        for (FlightCancellationViewModel viewModel : cancellationWrapperViewModel.getGetCancellations()) {
+            for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
+                if (!uniquePassengers.contains(getPassengerName(passengerViewModel))) {
+                    uniquePassengers.add(getPassengerName(passengerViewModel));
+                }
+            }
+        }
+
+        return uniquePassengers;
+    }
+
     private int calculateTotalPassenger(FlightCancellationWrapperViewModel cancellationViewModel) {
         List<String> uniquePassengers = new ArrayList<>();
         for (FlightCancellationViewModel viewModel : cancellationViewModel.getGetCancellations()) {
@@ -321,6 +349,18 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
             }
         }
         return uniquePassengers.size();
+    }
+
+    private String getPassengerName(FlightCancellationPassengerViewModel passengerViewModel) {
+        String name = "";
+
+        name += passengerViewModel.getTitleString() + " ";
+        name += passengerViewModel.getFirstName().substring(0,1).toUpperCase() +
+                passengerViewModel.getFirstName().substring(1) + " ";
+        name += passengerViewModel.getLastName().substring(0,1).toUpperCase() +
+                passengerViewModel.getLastName().substring(1);
+
+        return name;
     }
 
     private RequestParams createParam(String cameraLoc) {

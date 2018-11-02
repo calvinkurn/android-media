@@ -16,7 +16,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 public class FlightCancellationAttachementAdapterTypeFactory extends BaseAdapterTypeFactory implements FlightCancellationAttachmentTypeFactory {
 
     public interface OnAdapterInteractionListener{
-        void onUploadAttachmentButtonClicked();
+        void onUploadAttachmentButtonClicked(int positionIndex);
 
         void deleteAttachement(FlightCancellationAttachmentViewModel element);
     }

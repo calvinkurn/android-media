@@ -228,7 +228,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void onUploadAttachmentButtonClicked() {
+    public void onUploadAttachmentButtonClicked(int positionIndex) {
 
     }
 

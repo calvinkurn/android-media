@@ -13,7 +13,7 @@ public class ReasonAttributes {
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("RequiredDocs")
+    @SerializedName("required_docs")
     @Expose
     private List<String> requiredDocs;
 

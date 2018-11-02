@@ -8,7 +8,6 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.common.view.HorizontalProgressBar;
 
 import java.io.File;
 
@@ -32,7 +32,10 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
     private AppCompatImageView ivAttachment;
     private AppCompatTextView tvFilename;
-    private AppCompatImageView ivCross;
+    private AppCompatTextView tvPassengerName;
+    private HorizontalProgressBar progressBar;
+    private AppCompatTextView tvPercentageUpload;
+    private AppCompatTextView tvChangeImage;
     private FlightCancellationAttachmentViewModel element;
 
     private boolean showDeleteButton = true;
@@ -43,14 +46,19 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     public FlightCancellationAttachmentViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener, boolean showDeleteButton) {
         super(itemView);
         setupView(itemView);
+
         this.interactionListener = interactionListener;
         this.showDeleteButton = showDeleteButton;
     }
 
     private void setupView(View view) {
         context = view.getContext();
-        ivAttachment = (AppCompatImageView) view.findViewById(R.id.iv_attachment);
-        tvFilename = (AppCompatTextView) view.findViewById(R.id.tv_filename);
+        ivAttachment = view.findViewById(R.id.iv_attachment);
+        tvFilename = view.findViewById(R.id.tv_filename);
+        tvPassengerName = view.findViewById(R.id.tv_passenger_name);
+        progressBar = view.findViewById(R.id.progress_upload);
+        tvPercentageUpload = view.findViewById(R.id.tv_percentage_upload);
+        tvChangeImage = view.findViewById(R.id.tv_change_image);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -58,7 +66,12 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     public void bind(FlightCancellationAttachmentViewModel element) {
         this.element = element;
         tvFilename.setText(element.getFilename());
-        tvFilename.setOnTouchListener(new View.OnTouchListener() {
+        tvPassengerName.setText(element.getPassengerName());
+        tvPercentageUpload.setText(String.format(getString(R.string
+                        .flight_cancellation_upload_percentage_label),
+                Long.toString(element.getPercentageUpload())));
+
+/*        tvFilename.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -71,18 +84,55 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
                 return false;
             }
-        });
+        });*/
 
         if (!showDeleteButton) {
             tvFilename.setCompoundDrawables(null, null, null, null);
         }
 
-        if (element.getFilepath() != null)
+        if (element.getFilepath() != null) {
             Glide.with(itemView.getContext())
                     .load(new File(element.getFilepath()))
                     .asBitmap()
                     .centerCrop()
                     .into(getRoundedImageViewTarget(ivAttachment, 5.0f));
+
+            ivAttachment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // do nothing
+                }
+            });
+
+            tvChangeImage.setVisibility(View.VISIBLE);
+            tvChangeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (FlightCancellationAttachmentViewHolder.this.interactionListener != null) {
+                        FlightCancellationAttachmentViewHolder.this.interactionListener.onUploadAttachmentButtonClicked(getAdapterPosition());
+                    }
+                }
+            });
+        } else {
+            ivAttachment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (FlightCancellationAttachmentViewHolder.this.interactionListener != null) {
+                        FlightCancellationAttachmentViewHolder.this.interactionListener.onUploadAttachmentButtonClicked(getAdapterPosition());
+                    }
+                }
+            });
+
+            tvChangeImage.setVisibility(View.GONE);
+        }
+
+        if (element.getPercentageUpload() > 0) {
+            progressBar.setVisibility(View.VISIBLE);
+            tvPercentageUpload.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            tvPercentageUpload.setVisibility(View.GONE);
+        }
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
