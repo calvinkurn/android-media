@@ -32,6 +32,7 @@ import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
@@ -45,6 +46,7 @@ import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -220,8 +222,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
         AttachProductUrl.URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
-
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
+        LoginRegisterUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionCommonUrl.BASE_WS_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+
     }
 
     private void generateSellerAppNetworkKeys() {

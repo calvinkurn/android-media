@@ -13,7 +13,6 @@ import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.withdraw.domain.model.WSErrorResponse;
 
 import dagger.Module;

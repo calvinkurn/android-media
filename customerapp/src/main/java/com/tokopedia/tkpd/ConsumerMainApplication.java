@@ -55,6 +55,7 @@ import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.loginphone.checkregisterphone.data.CheckMsisdnUrl;
 import com.tokopedia.loginphone.common.data.LoginRegisterPhoneUrl;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
@@ -292,7 +293,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionCommonUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         LoginRegisterPhoneUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
-
+        CheckMsisdnUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
