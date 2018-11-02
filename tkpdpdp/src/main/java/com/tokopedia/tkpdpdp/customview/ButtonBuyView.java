@@ -13,14 +13,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
 import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
 
@@ -28,6 +29,8 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
  * @author by Angga.Prasetiyo on 02/11/2015.
  */
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
+
+
     private TextView tvBuy;
     private TextView tvPromoTopAds;
     private TextView tvpPromoHour;
@@ -36,6 +39,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     public View containerNewButtonBuy;
     public View btnCart;
     public View btnChat;
+    public View btnByMe;
     public View btnNewBuy;
     private ProgressBar progressBarVariant;
     private TextView tvNewBuy;
@@ -82,6 +86,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         btnNewBuy = findViewById(R.id.container_new_button_buy);
         progressBarVariant = findViewById(R.id.new_variant_progress_bar);
         tvNewBuy = findViewById(R.id.tv_new_buy);
+        btnByMe = findViewById(R.id.action_button_by_me);
     }
 
     @Override
@@ -300,4 +305,20 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
+    public void showByMeButton(boolean show){
+        if (show){
+            btnByMe.setVisibility(VISIBLE);
+        } else{
+            btnByMe.setVisibility(GONE);
+        }
+    }
+
+    public void setByMeButtonListener(AffiliateInfoViewModel affiliate){
+        btnByMe.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onByMeClicked(affiliate);
+            }
+        });
+    }
 }

@@ -23,6 +23,8 @@ ext {
     tkpdInterestPickVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdAffiliateVersion = '2.22'
+    tkpdAffiliateCommonVersion = '2.22'
     tkpdLoyaltyVersion = '2.22'
     tkpdMerchantVoucherVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
@@ -65,6 +67,8 @@ ext {
             explore                     : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                      : "com.tokopedia.events:events:${tkpdEventVersion}",
             feed                        : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
+            affiliate                   : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
+            affiliateCommon             : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             flight                      : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             gamification                : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
             goldMerchantCommon          : "com.tokopedia.gm:gold_merchant-common:${tkpdGoldMerchantVersion}",
@@ -114,6 +118,9 @@ ext {
             interestPick                : ":features:content:interest_pick",
             kol                         : ":features:content:kol",
             kolCommon                   : ":features:content:kol_common",
+            affiliate                   : ":features:content:affiliate",
+            affiliateCommon             : ":features:content:affiliate_common",
+            profile                     : ":features:content:profile",
 
             browse                      : ":features:digital:digital_browse",
             digitalDeals                : ":features:digital:digital_deals",
@@ -191,7 +198,6 @@ ext {
             logout                      : ":features:user:logout",
             notifCenter                 : ":features:user:notifcenter",
             otp                         : ":features:user:otp",
-            profile                     : ":features:user:profile",
             settingbank                 : ":features:user:settingbank",
             talk                        : ":features:user:talk",
             topchat                     : ":features:user:topchat",

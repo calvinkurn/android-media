@@ -40,8 +40,8 @@ import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
@@ -546,7 +546,9 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onGoToProfile() {
-        context.startActivity(TopProfileActivity.newInstance(context, SessionHandler.getLoginID(context)));
+        context.startActivity(
+                ProfileActivity.Companion.createIntent(context, SessionHandler.getLoginID(context))
+        );
         sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
     }
 

@@ -29,11 +29,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.affiliate.AffiliateRouter;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.applink.ApplinkConst;
@@ -98,7 +98,6 @@ import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -106,6 +105,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
+import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
@@ -198,7 +198,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
-import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
@@ -214,9 +213,7 @@ import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivity;
@@ -270,12 +267,11 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbycat.Product
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.SearchBarRouter;
@@ -403,9 +399,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
@@ -442,6 +436,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DiscoveryRouter,
         DigitalModuleRouter,
         TokoCashRouter,
+        AffiliateRouter,
         KolRouter,
         GroupChatModuleRouter,
         ApplinkRouter,
@@ -480,13 +475,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         EventModuleRouter,
         ChallengesModuleRouter,
         TravelCalendarRouter,
+        com.tokopedia.tkpdpdp.ProductDetailRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
         DigitalBrowseRouter,
-        TalkRouter, TkpdAppsFlyerRouter,
+        TalkRouter,TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
         MerchantVoucherModuleRouter {
-
 
     private static final String EXTRA = "extra";
 
@@ -1124,17 +1119,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProfileCompletionIntent(Context context) {
-        Intent intent = new Intent(context, ProfileCompletionActivity.class);
-        return intent;
-    }
-
-    @Override
-    public Intent getManagePeopleIntent(Context context) {
-        return new Intent(context, AccountSettingActivity.class);
-    }
-
-    @Override
     public void sendEventTracking(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
@@ -1178,14 +1162,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getReferralIntent(Context context) {
         return ReferralActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public BaseDaggerFragment getKolPostFragment(String userId,
-                                                 int postId,
-                                                 Intent resultIntent,
-                                                 Bundle bundle) {
-        return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
     }
 
     @Override
@@ -2184,16 +2160,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getKolCommentArgsPosition() {
-        return KolCommentActivity.ARGS_POSITION;
-    }
-
-    @Override
-    public String getKolCommentArgsTotalComment() {
-        return KolCommentFragment.ARGS_TOTAL_COMMENT;
-    }
-
-    @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
         return GroupChatActivity.getCallingIntent(context, channelUrl);
     }
@@ -2567,7 +2533,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
+        return ProfileActivity.Companion.createIntent(context, userId);
     }
 
     @Override
@@ -3155,6 +3121,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (traceName.equals("feed_trace") && feedTrace != null) {
             feedTrace.stop();
         }
+    }
+
+    @Override
+    public Fragment getFavoritedShopFragment(String userId) {
+        return PeopleFavoritedShopFragment.createInstance(userId);
     }
 
     @Override

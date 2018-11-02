@@ -43,7 +43,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -101,6 +100,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
