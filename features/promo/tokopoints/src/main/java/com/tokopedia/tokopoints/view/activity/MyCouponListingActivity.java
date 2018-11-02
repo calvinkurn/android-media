@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponFilterPagerAdapter;
@@ -36,7 +38,6 @@ import static com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_
 public class MyCouponListingActivity extends BaseSimpleActivity implements CouponActivityContract.View, HasComponent<TokoPointComponent> {
     private static final int REQUEST_CODE_LOGIN = 1;
     private TokoPointComponent tokoPointComponent;
-    private UserSession mUserSession;
     private ViewFlipper mContainerMain;
     private ViewPager mPagerFilter;
     private Tabs mTabsFilter;
@@ -48,14 +49,17 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mUserSession = new UserSession(getApplicationContext());
         updateTitle(getString(R.string.tp_label_my_coupon));
         getComponent().inject(this);
         mPresenter.attachView(this);
         mContainerMain = findViewById(R.id.container);
         initViews();
-        mPresenter.getFilter("");
-        showLoading();
+        if (((TokopointRouter) getApplicationContext()).getSession().isLoggedIn()) {
+            mPresenter.getFilter("");
+            showLoading();
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
+        }
     }
 
     @Override
@@ -89,7 +93,8 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
+            mPresenter.getFilter("");
+            showLoading();
         } else {
             finish();
         }

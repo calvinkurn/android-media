@@ -122,9 +122,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_see_membership_status) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
-        } else if (source.getId() == R.id.text_failed_action) {
+        if (source.getId() == R.id.text_failed_action) {
             showLoader();
             mAdapter.loadData(mAdapter.getCurrentPageIndex());
         }
