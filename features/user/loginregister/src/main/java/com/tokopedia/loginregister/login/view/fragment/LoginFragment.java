@@ -40,18 +40,18 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.view.LoginTextView;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
-import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
@@ -65,7 +65,9 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
+import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
+import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -534,8 +536,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onGoToAddName() {
-//        Intent intent = AddNameActivity.newInstance(getActivity());
-//        startActivityForResult(intent, REQUEST_ADD_NAME);
+        if (getActivity() != null) {
+            Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                    (), ApplinkConst.ADD_NAME_PROFILE);
+            startActivityForResult(intent, REQUEST_ADD_NAME);
+        }
     }
 
     @Override

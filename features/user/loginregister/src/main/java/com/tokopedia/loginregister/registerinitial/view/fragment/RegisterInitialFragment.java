@@ -453,16 +453,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     private void goToProfileCompletionPage() {
         if (getActivity() != null) {
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity());
-            Intent parentIntent = ((LoginRegisterRouter) getActivity().getApplicationContext())
-                    .getHomeIntent(getActivity());
-            parentIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            Intent childIntent = new Intent(getActivity(), ProfileCompletionActivity.class);
-//            stackBuilder.addNextIntent(parentIntent);
-//            stackBuilder.addNextIntent(childIntent);
-            getActivity().startActivities(stackBuilder.getIntents());
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            ((ApplinkRouter) getActivity().getApplicationContext()).goToApplinkActivity(getActivity
+                    (), ApplinkConst.PROFILE_COMPLETION);
         }
     }
 
