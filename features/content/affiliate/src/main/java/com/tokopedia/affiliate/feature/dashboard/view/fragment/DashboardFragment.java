@@ -134,6 +134,7 @@ public class DashboardFragment
     private void initView() {
         initDefaultValue();
         swipeToRefresh.setOnRefreshListener(this);
+        adapter = new DashboardAdapter(new DashboardItemTypeFactoryImpl(this), new ArrayList());
         layoutManager = new LinearLayoutManager(getActivity());
         rvHistory.setLayoutManager(layoutManager);
         rvHistory.setAdapter(adapter);
