@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardLoadMoreUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseCase;
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.DashboardPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -24,4 +25,9 @@ public class DashboardModule {
                 new GetDashboardLoadMoreUseCase(context));
     }
 
+    @DashboardScope
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

@@ -34,6 +34,10 @@ public interface DashboardContract {
 
         void onErrorLoadMoreDashboardItem(String error);
 
+        void onSuccessCheckAffiliate(boolean isAffiliate);
+
+        void onErrorCheckAffiliate(String error);
+
         void goToAffiliateExplore();
     }
 
@@ -42,5 +46,7 @@ public interface DashboardContract {
         void loadDashboardItem(boolean isPullToRefresh);
 
         void loadMoreDashboardItem(String cursor);
+
+        void checkAffiliate();
     }
 }
