@@ -129,7 +129,7 @@ public class ShopPageTrackingUser {
                                 ShopPageTrackingConstant.NAME, joinDash(SHOPPAGE, viewModel.getVoucherName()),
                                 ShopPageTrackingConstant.POSITION, String.valueOf(startIndex + i + 1),
                                 ShopPageTrackingConstant.PROMO_ID, viewModel.getVoucherId(),
-                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherId()
+                                ShopPageTrackingConstant.PROMO_CODE, viewModel.getVoucherCode()
                         )
                 );
             }

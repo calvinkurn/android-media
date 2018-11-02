@@ -389,7 +389,7 @@ public class ProductPageTracking {
                                 NAME, joinDash(viewModel.getVoucherName()),
                                 POSITION, String.valueOf(startIndex + i + 1),
                                 PROMO_ID, viewModel.getVoucherId(),
-                                PROMO_CODE, viewModel.getVoucherId()
+                                PROMO_CODE, viewModel.getVoucherCode()
                         )
                 );
             }
