@@ -25,7 +25,6 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
-import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -40,10 +39,12 @@ import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PR
 import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
+import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import com.tokopedia.showcase.ShowCaseBuilder
@@ -64,6 +65,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
+    private var afterEdit: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
     private var resultIntent: Intent? = null
@@ -85,6 +87,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val SETTING_PROFILE_CODE = 83
         private const val ONBOARDING_CODE = 10
         private const val EDIT_POST_CODE = 1310
+        private const val LOGIN_CODE = 1383
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -136,7 +139,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0))
                 }
             }
-            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE -> {
+            SETTING_PROFILE_CODE, ONBOARDING_CODE, EDIT_POST_CODE, LOGIN_CODE -> {
                 onSwipeRefresh()
             }
         }
@@ -208,7 +211,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
-        setHasOptionsMenu(true)
+
+        setHasOptionsMenu(firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -221,9 +225,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         visitables.add(firstPageViewModel.profileHeaderViewModel)
         if (!firstPageViewModel.visitableList.isEmpty()) {
+            firstPageViewModel.visitableList
+                    .filterIsInstance<BaseKolViewModel>()
+                    .forEach { it.isKol = firstPageViewModel.profileHeaderViewModel.isKol }
             visitables.addAll(firstPageViewModel.visitableList)
         } else {
             visitables.add(getEmptyModel(
+                    firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent,
                     firstPageViewModel.profileHeaderViewModel.isOwner,
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
@@ -241,6 +249,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     }
                     .show()
             afterPost = false
+        } else if (afterEdit) {
+            ToasterNormal
+                    .make(view,
+                            getString(R.string.profile_edit_success),
+                            BaseToaster.LENGTH_LONG
+                    )
+                    .setAction(getString(R.string.af_title_ok)) {}
+                    .show()
+            afterEdit = false
         }
     }
 
@@ -250,7 +267,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun goToFollowing() {
-        startActivity(KolFollowingListActivity.getCallingIntent(context, userId))
+        startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
@@ -261,7 +278,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 presenter.unfollowKol(userId)
             }
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -327,15 +344,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
     override fun onUnlikeKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
-            presenter.likeKol(id, rowNumber, this)
+            presenter.unlikeKol(id, rowNumber, this)
         } else {
-            startActivity(profileRouter.getLoginIntent(context!!))
+            goToLogin()
         }
     }
 
@@ -358,11 +375,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
         val menus = Menus(context!!)
-        val menuList = ArrayList<String>()
+        val menuList = ArrayList<Menus.ItemMenus>()
         if (element.isDeletable) {
-            menuList.add(getString(R.string.profile_delete_post))
+            menuList.add(
+                    Menus.ItemMenus(
+                            getString(R.string.profile_delete_post),
+                            R.drawable.ic_af_trash
+                    )
+            )
         }
-        menus.setItemMenuList(menuList.toTypedArray())
+        menus.itemMenuList = menuList
         menus.setActionText(getString(R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { itemMenus, _ ->
@@ -434,6 +456,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+
+        if (adapter.data.last() is ProfileHeaderViewModel) {
+            onSwipeRefresh()
+        }
     }
 
     override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
@@ -462,6 +488,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     it.getString(ProfileActivity.EXTRA_PARAM_AFTER_POST, ""),
                     ProfileActivity.TRUE
             )
+            afterEdit = TextUtils.equals(
+                    it.getString(ProfileActivity.EXTRA_PARAM_AFTER_EDIT, ""),
+                    ProfileActivity.TRUE
+            )
         }
         if (context!!.applicationContext is ProfileModuleRouter) {
             profileRouter = context!!.applicationContext as ProfileModuleRouter
@@ -484,7 +514,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOwn.visibility = View.VISIBLE
             footerOther.visibility = View.GONE
 
-            if (!TextUtils.isEmpty(affiliatePostQuota.formatted) && affiliatePostQuota.number > 0) {
+            if (!TextUtils.isEmpty(affiliatePostQuota.formatted)) {
                 recommendationQuota.visibility = View.VISIBLE
                 recommendationQuota.text = affiliatePostQuota.formatted
             } else {
@@ -559,7 +589,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    private fun getEmptyModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
+    private fun getEmptyModel(isShowAffiliateContent: Boolean,
+                              isOwner: Boolean,
+                              isAffiliate: Boolean): Visitable<*> {
+        return if (isShowAffiliateContent) getEmptyResultModel(isOwner, isAffiliate)
+        else ProfileEmptyViewModel()
+    }
+
+    private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
         emptyResultViewModel.iconRes = R.drawable.ic_af_empty
         if (isOwner) {
@@ -664,6 +701,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
+    }
+
+    private fun goToLogin() {
+        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
     }
 
     private fun showError(message: String) {

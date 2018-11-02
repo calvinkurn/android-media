@@ -584,11 +584,11 @@ public class LoyaltyActivity extends BasePresenterActivity
         return intent;
     }
 
-    public static Intent newInstanceTrainCouponNotActive(Context context, String platform, String category,
-                                                         String trainReservationId, String trainReservationCode) {
+    public static Intent newInstanceTrainCouponActive(Context context, String platform, String category,
+                                                      String trainReservationId, String trainReservationCode) {
         Intent intent = new Intent(context, LoyaltyActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(EXTRA_COUPON_ACTIVE, false);
+        bundle.putBoolean(EXTRA_COUPON_ACTIVE, true);
         bundle.putString(EXTRA_PLATFORM, platform);
         bundle.putString(EXTRA_CATEGORY, category);
         bundle.putString(EXTRA_TRAIN_RESERVATION_ID, trainReservationId);

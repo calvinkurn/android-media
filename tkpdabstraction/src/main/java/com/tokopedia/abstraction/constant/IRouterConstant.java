@@ -33,6 +33,8 @@ public interface IRouterConstant {
             String VOUCHER_CODE = "voucher_code";
             String VOUCHER_MESSAGE = "voucher_message";
             String VOUCHER_AMOUNT = "voucher_amount";
+            String CATEGORY_ID = "category_id";
+            String TYPE ="type";
 
             String COUPON_CODE = "coupon_code";
             String COUPON_MESSAGE = "coupon_message";
@@ -47,6 +49,7 @@ public interface IRouterConstant {
             String EVENT_STRING = "events";
             String DEALS_STRING = "deals";
             String TRAIN_STRING = "train";
+            String KAI = "kai";
 
             String COUPON_STATE = "coupon";
             int VOUCHER_TAB = 0;

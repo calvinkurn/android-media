@@ -39,6 +39,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddressFormPrepareCheckoutSubscriber;
@@ -129,6 +130,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
+    private boolean couponStateChanged;
+    private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
@@ -700,6 +703,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().renderErrorCheckPromoShipmentData(
                                             promoCodeCartShipmentData.getErrorMessage()
                                     );
+                                    getView().cancelAllCourierPromo();
                                 }
                             }
                         })
@@ -857,6 +861,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                         })
+        );
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                getGeneratedAuthParamNetwork(param));
+
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView(), itemPosition, noToast))
         );
     }
 
@@ -1169,6 +1192,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (resultSuccess) {
+                                    setCouponStateChanged(true);
                                     getView().renderCancelAutoApplyCouponSuccess();
                                 } else {
                                     getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -1260,11 +1284,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
                                                 ShipmentDetailData shipmentDetailData,
-                                                List<ShopShipment> shopShipmentList) {
+                                                ShipmentCartItemModel shipmentCartItemModel,
+                                                List<ShopShipment> shopShipmentList,
+                                                boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
-                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter));
+                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
+                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
     }
 
     @Override
@@ -1282,5 +1309,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             this.shippingCourierViewModelsState = new HashMap<>();
         }
         this.shippingCourierViewModelsState.put(itemPosition, shippingCourierViewModelsState);
+    }
+
+    @Override
+    public void setCouponStateChanged(boolean couponStateChanged) {
+        this.couponStateChanged = couponStateChanged;
+    }
+
+    @Override
+    public boolean getCouponStateChanged() {
+        return couponStateChanged;
+    }
+
+    @Override
+    public void setHasDeletePromoAfterChecKPromoCodeFinal(boolean hasDeletePromoAfterChecKPromoCodeFinal) {
+        this.hasDeletePromoAfterChecKPromoCodeFinal = hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
+        return hasDeletePromoAfterChecKPromoCodeFinal;
     }
 }

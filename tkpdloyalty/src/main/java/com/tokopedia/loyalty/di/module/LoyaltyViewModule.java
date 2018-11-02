@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.adapter.LoyaltyPagerAdapter;
@@ -67,8 +68,8 @@ public class LoyaltyViewModule {
                         .build()
         );
         String events = "events";
-        String deals="deals";
-        if (activity.getPlatformString().equals(events)) {
+        String deals = "deals";
+        if (activity.getPlatformString().equals(events) || activity.getPlatformString().equals(deals)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstanceEvent(
@@ -80,21 +81,19 @@ public class LoyaltyViewModule {
                             .tabTitle("Kupon Saya")
                             .build()
             );
-        }
-        else if (activity.getPlatformString().equals(deals)) {
+        } else if (activity.getPlatformString().equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.TRAIN_STRING)) {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
-                            .fragment(PromoCouponFragment.newInstanceEvent(
+                            .fragment(PromoCouponFragment.newInstanceTrain(
                                     activity.getPlatformString(),
                                     activity.getCategoryString(),
-                                    activity.getCategoryId(),
-                                    activity.getProductId()))
+                                    activity.getTrainReservationId(),
+                                    activity.getTrainReservationCode()))
                             .position(0)
                             .tabTitle("Kupon Saya")
                             .build()
             );
-        }
-        else {
+        } else {
             loyaltyPagerItemList.add(
                     new LoyaltyPagerItem.Builder()
                             .fragment(PromoCouponFragment.newInstance(

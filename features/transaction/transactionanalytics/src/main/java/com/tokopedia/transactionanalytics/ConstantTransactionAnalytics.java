@@ -191,6 +191,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
         String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
         String CLICK_UBAH_DURASI = "click ubah durasi";
+        String VIEW_DURATION = "view duration";
+        String VIEW_COURIER_OPTION = "view courier option";
 
         //EMPTY CART
         String CLICK_LIHAT_LAINNYA = "click lihat lainnya on empty cart";

@@ -51,16 +51,17 @@ ext {
     ]
 
     supportLibDependencies = [
-            recyclerViewV7  : "com.android.support:recyclerview-v7:${supportLibraryVersion}",
-            supportV4       : "com.android.support:support-v4:${supportLibraryVersion}",
-            appCompactV7    : "com.android.support:appcompat-v7:${supportLibraryVersion}",
-            supportV13      : "com.android.support:support-v13:${supportLibraryVersion}",
-            design          : "com.android.support:design:${supportLibraryVersion}",
-            cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
-            exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
-            constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
-            preferenceV7    : "com.android.support:preference-v7:${supportLibraryVersion}",
-            kotlinSupport   : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+            recyclerViewV7      : "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            supportV4           : "com.android.support:support-v4:${supportLibraryVersion}",
+            appCompactV7        : "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            supportV13          : "com.android.support:support-v13:${supportLibraryVersion}",
+            design              : "com.android.support:design:${supportLibraryVersion}",
+            cardViewV7          : "com.android.support:cardview-v7:${supportLibraryVersion}",
+            exifinterface       : "com.android.support:exifinterface:${supportLibraryVersion}",
+            constraintLayout    : "com.android.support.constraint:constraint-layout:1.0.2",
+            preferenceV7        : "com.android.support:preference-v7:${supportLibraryVersion}",
+            kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
+            kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}"
     ]
 
     playServicesDependencies = [

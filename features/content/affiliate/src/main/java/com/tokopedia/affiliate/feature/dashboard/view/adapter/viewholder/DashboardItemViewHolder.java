@@ -42,11 +42,10 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     @Override
     public void bind(DashboardItemViewModel element) {
         initView(element);
-        initViewListener();
     }
 
     private void initView(DashboardItemViewModel element) {
-        ImageHandler.LoadImage(ivItem, element.getImageUrl());
+        ImageHandler.loadImageRounded2(ivItem.getContext(), ivItem, element.getImageUrl(), 6.0f);
         tvName.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(element.getValue());
         tvClickCount.setText(element.getItemClicked());
@@ -67,9 +66,5 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
                         R.color.font_black_secondary_54
                 )
         );
-    }
-
-    private void initViewListener() {
-
     }
 }
