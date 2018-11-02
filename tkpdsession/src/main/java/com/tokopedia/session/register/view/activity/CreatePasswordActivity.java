@@ -92,6 +92,7 @@ public class CreatePasswordActivity extends TActivity implements HasComponent {
         bundle.putParcelable(ARGS_FORM_DATA, createPasswordViewModel);
         Intent intent = new Intent(context, CreatePasswordActivity.class);
         intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
