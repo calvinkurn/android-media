@@ -486,7 +486,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter)getAppContext()).getHomeIntent(getActivityContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -564,11 +564,15 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
         mToolTip.show();
 
-        mToolTip.setBtnCloseOnClick(view -> AnalyticsTrackerUtil.sendEvent(getContext(),
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
-                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL));
+        mToolTip.setBtnCloseOnClick(view -> {
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
+                    AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL);
+        mToolTip.cancel();
+        });
+
     }
 
     @Override

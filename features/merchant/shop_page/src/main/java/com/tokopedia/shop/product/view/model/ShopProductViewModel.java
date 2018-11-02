@@ -42,7 +42,6 @@ public class ShopProductViewModel implements BaseShopProductViewModel {
     private String productUrl;
     private boolean showWishList;
     private boolean isSoldOut;
-    private int positionTracking;
 
     public ShopProductViewModel() {
     }
@@ -242,14 +241,6 @@ public class ShopProductViewModel implements BaseShopProductViewModel {
 
     public void setSoldOut(boolean soldOut) {
         isSoldOut = soldOut;
-    }
-
-    public int getPositionTracking() {
-        return positionTracking;
-    }
-
-    public void setPositionTracking(int positionTracking) {
-        this.positionTracking = positionTracking;
     }
 
 

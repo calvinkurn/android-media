@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
 import com.tokopedia.loyalty.domain.entity.response.GqlTokoPointDrawerDataResponse;
+import com.tokopedia.loyalty.domain.entity.response.HachikoDrawerDataResponse;
 
 import rx.Observable;
 
@@ -10,7 +11,7 @@ import rx.Observable;
 
 public interface ITokoPointDBService {
 
-    Observable<GqlTokoPointDrawerDataResponse> getPointDrawer();
+    Observable<HachikoDrawerDataResponse> getPointDrawer();
 
-    Observable<GqlTokoPointDrawerDataResponse> storePointDrawer(GqlTokoPointDrawerDataResponse gqlTokoPointDrawerDataResponse);
+    Observable<HachikoDrawerDataResponse> storePointDrawer(HachikoDrawerDataResponse gqlTokoPointDrawerDataResponse);
 }

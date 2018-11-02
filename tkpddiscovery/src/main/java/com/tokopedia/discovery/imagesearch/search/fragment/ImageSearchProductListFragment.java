@@ -633,6 +633,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onRelatedSearchClicked(String keyword) {
+
+    }
+
+    @Override
     public void onQuickFilterSelected(Option option) {
 
     }

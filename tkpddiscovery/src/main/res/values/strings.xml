@@ -62,4 +62,5 @@
     <string name="similar_product_not_found">Hasil produk serupa tidak dapat ditemukan. Silahkan pilih produk lain.</string>
     <string name="title_product_not_found">Produk serupa tidak ditemukan</string>
     <string name="empty_state_selected_filter_price_name">Filter Harga</string>
+    <string name="related_search_title">Mungkin maksud Anda :</string>
 </resources>

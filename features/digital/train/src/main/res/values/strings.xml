@@ -210,5 +210,7 @@
     <string name="travel_homepage_promo_code_label">Kode Promo:</string>
     <string name="travel_homepage_promo_label">Promo</string>
     <string name="travel_homepage_promo_see_all_label">Lihat Semua</string>
+    <string name="train_search_available_seat_label">Kursi Tersedia</string>
+    <string name="train_search_remain_seat_upper_label" formatted="false">Sisa %d Kursi</string>
 
 </resources>
