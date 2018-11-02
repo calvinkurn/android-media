@@ -37,6 +37,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.checkloginphone.view.activity.NotConnectedTokocashActivity;
@@ -432,9 +434,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void goToAddName() {
-//TODO
-        //                startActivityForResult(AddNameRegisterPhoneActivity.newInstance(getActivity(), phoneNumber),
-//                        REQUEST_ADD_NAME_REGISTER_PHONE);
+        if (getActivity() != null) {
+            String applink = ApplinkConst.ADD_NAME_REGISTER;
+            applink = applink.replace("{phone}", phoneNumber);
+            Intent intent = ((ApplinkRouter) getActivity().getApplicationContext()).getApplinkIntent(getActivity
+                    (), applink);
+            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE);
+        }
     }
 
     private void handleRegisterWebview(int resultCode, Intent data) {

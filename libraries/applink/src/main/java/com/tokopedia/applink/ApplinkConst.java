@@ -15,7 +15,7 @@ public interface ApplinkConst {
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
-    String MESSAGE = "tokopedia://message";
+    String MESSAGE = "tokopedia://mesApplinkConstsage";
     String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
     String TALK = "tokopedia://talk";
     String TALK_DETAIL = "tokopedia://talk/{talk_id}";
@@ -162,6 +162,7 @@ public interface ApplinkConst {
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     String CHALLENGE = "tokopedia://challenges";
+    String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
