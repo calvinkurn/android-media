@@ -502,8 +502,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
                             Campaign campaign = productDetailData.getCampaign();
-                            campaign.setActive(false);
-                            productDetailData.setCampaign(campaign);
                             viewListener.onProductDetailLoaded(productDetailData);
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
@@ -532,7 +530,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             }
                             validateProductDataWithProductPassAndShowMessage(productDetailData, productPass, context);
 
-                            getProductDetailFromNetwork(context, productPass, useVariant);
+                            if(campaign.getActive()){
+                                getProductDetailFromNetwork(context, productPass, useVariant);
+                            }
                         }
 
                         @Override
