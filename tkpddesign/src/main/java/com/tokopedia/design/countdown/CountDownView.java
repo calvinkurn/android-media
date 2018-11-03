@@ -139,7 +139,6 @@ public class CountDownView extends FrameLayout {
             }
         };
         startAutoRefreshCounter();
-        isTimerActive = true;
     }
 
     private void handleExpiredTime(CountDownListener listener) {
@@ -175,8 +174,11 @@ public class CountDownView extends FrameLayout {
     }
 
     private void startAutoRefreshCounter() {
-        if (refreshCounterHandler != null && runnableRefreshCounter != null) {
+        if (refreshCounterHandler != null &&
+                runnableRefreshCounter != null &&
+                !isTimerActive) {
             refreshCounterHandler.postDelayed(runnableRefreshCounter, REFRESH_DELAY_MS);
+            isTimerActive = true;
         }
     }
 
