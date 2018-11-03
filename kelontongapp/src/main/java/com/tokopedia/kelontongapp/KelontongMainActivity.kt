@@ -11,16 +11,16 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.Toast
-
 import com.tokopedia.kelontongapp.firebase.Preference
 import com.tokopedia.kelontongapp.helper.ConnectionManager
-import com.tokopedia.kelontongapp.webview.*
-
-import java.util.HashMap
+import com.tokopedia.kelontongapp.webview.FilePickerInterface
+import com.tokopedia.kelontongapp.webview.KelontongWebChromeClient
+import com.tokopedia.kelontongapp.webview.KelontongWebview
+import com.tokopedia.kelontongapp.webview.KelontongWebviewClient
+import java.util.*
 
 /**
  * Created by meta on 02/10/18.
@@ -68,7 +68,6 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)
-        webView.addJavascriptInterface(MainJsInterface(applicationContext), JS_INTERFACE_NAME)
 
         webViewChromeClient = KelontongWebChromeClient(this, this)
         webviewClient = KelontongWebviewClient(this)
