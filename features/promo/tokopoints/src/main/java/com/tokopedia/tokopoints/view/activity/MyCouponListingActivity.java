@@ -195,13 +195,15 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements Coupo
 
     private int[] getSelectedCategoryId(List<CouponFilterItem> data) {
         int[] ids = {0, 0};
+        int counter = 0;
 
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).isSelected()) {
-                ids[0] = data.get(i).getId();
-                ids[1] = i;
+        for (CouponFilterItem item : data) {
+            if (item.isSelected()) {
+                ids[0] = item.getId();
+                ids[1] = counter;
                 break;
             }
+            counter++;
         }
 
         return ids;
