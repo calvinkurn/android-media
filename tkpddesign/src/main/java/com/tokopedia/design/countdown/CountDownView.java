@@ -115,9 +115,9 @@ public class CountDownView extends FrameLayout {
         isTimerActive = true;
     }
 
-    public void setup(final Date serverTime, final Date expiredTime,
+    public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
-        if (isExpired(serverTime, expiredTime)) {
+        if (isExpired(serverTimeOffset, expiredTime)) {
             handleExpiredTime(listener);
             return;
         }
@@ -126,12 +126,14 @@ public class CountDownView extends FrameLayout {
         runnableRefreshCounter = new Runnable() {
             @Override
             public void run() {
-                if (!isExpired(serverTime, expiredTime)) {
-                    serverTime.setTime(
-                            serverTime.getTime() + REFRESH_DELAY_MS
-                    );
+                if (!isExpired(serverTimeOffset, expiredTime)) {
+                    Date serverTime = new Date();
+                    long currentMillisecond = serverTime.getTime() + serverTimeOffset;
+                    serverTime.setTime(currentMillisecond);
+
                     TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
                     setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
+
                     refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
                 } else {
                     handleExpiredTime(listener);
@@ -153,7 +155,10 @@ public class CountDownView extends FrameLayout {
         return new Date().after(expiredTime);
     }
 
-    private boolean isExpired(Date serverTime, Date expiredTime) {
+    private boolean isExpired(long serverTimeOffset, Date expiredTime) {
+        Date serverTime = new Date();
+        long currentMillisecond = serverTime.getTime() + serverTimeOffset;
+        serverTime.setTime(currentMillisecond);
         return serverTime.after(expiredTime);
     }
 

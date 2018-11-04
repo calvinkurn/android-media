@@ -32,6 +32,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.util.ServerTimeOffsetUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -231,13 +232,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
 
                 if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
-                    Date serverDate = new Date();
-                    serverDate.setTime(
-                            serverTimeMillisecond
-                    );
-
                     countDownView.setup(
-                            serverDate,
+                            ServerTimeOffsetUtil.getServerTimeOffset(serverTimeMillisecond),
                             sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
                                 @Override
                                 public void onCountDownFinished() {
