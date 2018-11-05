@@ -6,7 +6,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductVie
  * Created by hangnadi on 10/9/17.
  */
 
-public interface ItemClickListener {
+public interface HotlistListener {
 
     void onHashTagClicked(String name, String url, String departmentID);
 
@@ -17,4 +17,8 @@ public interface ItemClickListener {
     void onProductClicked(HotlistProductViewModel productViewModel, int adapterPosition);
 
     void onBannerAdsClicked(String appLink);
+
+    String getUserId();
+
+    boolean isLoggedIn();
 }
