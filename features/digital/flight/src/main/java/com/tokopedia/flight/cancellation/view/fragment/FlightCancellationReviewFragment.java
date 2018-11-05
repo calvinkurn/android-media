@@ -2,7 +2,7 @@ package com.tokopedia.flight.cancellation.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
@@ -11,11 +11,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,11 +45,12 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
+    private static final int REQUEST_CANCELLATION_TNC = 1;
+
     private LinearLayout containerAdditionalData;
     private LinearLayout containerAdditionalReason;
     private LinearLayout containerAdditionalDocuments;
     private AppCompatButton btnSubmit;
-    private AppCompatTextView txtDescription;
     private AppCompatTextView txtReason;
     private AppCompatTextView txtTotalRefund;
     private RecyclerView rvAttachments;
@@ -89,17 +85,13 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         containerAdditionalReason = view.findViewById(R.id.container_additional_reason);
         containerAdditionalDocuments = view.findViewById(R.id.container_additional_documents);
         txtReason = view.findViewById(R.id.txt_cancellation_reason);
-        txtDescription = view.findViewById(R.id.tv_description);
         txtTotalRefund = view.findViewById(R.id.txt_total_refund);
         btnSubmit = view.findViewById(R.id.button_submit);
-
-        txtDescription.setText(setDescriptionText());
-        txtDescription.setMovementMethod(LinkMovementMethod.getInstance());
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showConfirmationDialog();
+                navigateToTermsAndConditionsPage();
             }
         });
 
@@ -242,32 +234,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         getActivity().finish();
     }
 
-    private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(R.color.green_500);
-        int startIndex = getContext().getString(R.string.flight_cancellation_review_description).indexOf("Syarat");
-        int stopIndex = startIndex + 39;
-        SpannableString description = new SpannableString(getContext().getString(
-                R.string.flight_cancellation_review_description));
-        ClickableSpan clickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                navigateToTermsAndConditionsPage();
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(color);
-                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-            }
-        };
-        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return description;
-    }
-
     private void navigateToTermsAndConditionsPage() {
-        startActivity(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()));
+        startActivityForResult(FlightCancellationTermsAndConditionsActivity.createIntent(getContext()), REQUEST_CANCELLATION_TNC);
     }
 
     private void showConfirmationDialog() {
@@ -290,5 +258,18 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CANCELLATION_TNC :
+                if (resultCode == Activity.RESULT_OK) {
+                    showConfirmationDialog();
+                }
+                break;
+        }
     }
 }

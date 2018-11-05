@@ -69,7 +69,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                         .flight_cancellation_upload_percentage_label),
                 Long.toString(element.getPercentageUpload())));
 
-        if (element.getFilepath() != null) {
+        if (element.getFilepath() != null && element.getFilepath().length() > 0) {
             Glide.with(itemView.getContext())
                     .load(new File(element.getFilepath()))
                     .asBitmap()
@@ -108,6 +108,12 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             });
 
             tvChangeImage.setVisibility(View.GONE);
+        }
+
+        if (element.getFilename() != null && element.getFilename().length() > 0) {
+            tvFilename.setVisibility(View.VISIBLE);
+        } else {
+            tvFilename.setVisibility(View.GONE);
         }
 
         if (element.getPercentageUpload() > 0) {

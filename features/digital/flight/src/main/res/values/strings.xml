@@ -374,7 +374,7 @@
     <string name="flight_cancellation_attachment_more_than_max_error_message">Maksimal lampiran gambar %1$d</string>
     <string name="activity_label_flight_review_cancellation">Rincian Pembatalan Pesanan</string>
     <string name="flight_cancellation_refund_detail_toolbar_title">Pembatalan Pesanan</string>
-    <string name="flight_cancellation_review_description">Saya telah menyetujui Syarat dan Ketentuan Pembatalan Pesanan untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.</string>
+    <string name="flight_cancellation_review_description"><![CDATA[Saya telah menyetujui <b>Syarat dan Ketentuan Pembatalan Pesanan</b> untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.]]></string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
     <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Tiket pesawat yang dibatalkan kemungkinan <b>tidak dapat dikembalikan</b>. Segala ketentuan pembatalan tiket pesawat akan disesuaikan dengan kebijakan maskapai.]]></string>
@@ -384,7 +384,7 @@
     <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pesanan Telah Diterima</string>
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
     <string name="flight_cancellation_review_dialog_refundable_success_description"><![CDATA[Pembatalan pesanan Anda akan segera diproses. Pengembalian dana akan membutuhkan waktu <b>7 hingga 30 hari kerja</b> sesuai dengan ketentuan yang berlaku.]]></string>
-    <string name="flight_label_additional_data">Data Penunjang</string>
+    <string name="flight_label_additional_data">Data Pendukung</string>
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>
     <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
