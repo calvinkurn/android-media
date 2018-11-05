@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -393,6 +394,10 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
 
         registerBroadcastHockeyApp();
+
+        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+            finish();
+        }
     }
 
     @Override
@@ -676,6 +681,8 @@ public class MainParentActivity extends BaseActivity implements
         if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
             if (cartFragment == null) {
                 cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            } else if (bundle != null) {
+                cartFragment.setArguments(bundle);
             }
             fragmentList.set(CART_MENU, cartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));

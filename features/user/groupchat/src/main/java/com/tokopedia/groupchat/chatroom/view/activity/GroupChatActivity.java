@@ -247,8 +247,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
-            viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+            String path = getIntent().getExtras().getString("channel_id", "");
+            if(TextUtils.isEmpty(path)) {
+                path = getIntent().getExtras().getString(GroupChatActivity.EXTRA_CHANNEL_UUID, "");
+            }
+            viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
@@ -272,6 +275,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        if(channelInfoViewModel == null){
+            return;
+        }
         setSponsorData();
 
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
@@ -1425,6 +1431,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+    }
+
+    @Override
+    public void initVideoFragment() {
+        initVideoFragment(getChannelInfoViewModel());
     }
 
     private void setChannelConnectionHandler() {

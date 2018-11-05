@@ -1,7 +1,7 @@
 package com.tokopedia.recentview.view.subscriber;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.recentview.domain.model.RecentViewBadgeDomain;
 import com.tokopedia.recentview.domain.model.RecentViewLabelDomain;
 import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
@@ -36,7 +36,7 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetRecentView(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorGetRecentView(ErrorHandler.getErrorMessage(viewListener.getContext(), e));
 
     }
 
@@ -49,8 +49,7 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
             viewListener.onSuccessGetRecentView(visitableList);
             viewListener.sendRecentViewImpressionTracking(recentsViewModel);
         } else {
-            viewListener.onEmptyGetRecentView()
-            ;
+            viewListener.onEmptyGetRecentView();
         }
     }
 

@@ -27,9 +27,11 @@ import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MA
  */
 public class AddAddressActivity extends BasePresenterActivity {
 
+    private static final String ADD_ADDRESS_SCREENNAME = "/user/address/create";
+
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_ADD_ADDRESS_FORM;
+        return ADD_ADDRESS_SCREENNAME;
     }
 
     @Override
@@ -86,11 +88,12 @@ public class AddAddressActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent createInstance(Activity activity, Token token) {
+    public static Intent createInstance(Activity activity, Token token, boolean isEmpty) {
         Intent intent = new Intent(activity, AddAddressActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_DISTRICT_RECOMMENDATION, true);
         bundle.putBoolean(IS_EDIT, false);
+        bundle.putBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, isEmpty);
         bundle.putParcelable(KERO_TOKEN, token);
         intent.putExtras(bundle);
         return intent;

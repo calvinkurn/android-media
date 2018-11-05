@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.recentview.data.api.RecentViewApi;
+import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.wishlist.common.data.interceptor.MojitoInterceptor;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -55,8 +55,7 @@ public class RecentViewModule {
     @RecentViewScope
     @Provides
     @RecentViewQualifier
-    OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor
-                                                   httpLoggingInterceptor,
+    OkHttpClient provideMojitoOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                            @RecentViewQualifier OkHttpRetryPolicy retryPolicy,
                                            @RecentViewQualifier ChuckInterceptor chuckInterceptor,
                                            HeaderErrorResponseInterceptor errorResponseInterceptor,
@@ -79,13 +78,12 @@ public class RecentViewModule {
 
     @RecentViewScope
     @Provides
-    MojitoService provideRecentProductService(Retrofit.Builder builder,
-                                              @RecentViewQualifier OkHttpClient
-                                                      okHttpClient) {
-        return builder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN)
+    RecentViewApi provideRecentProductService(Retrofit.Builder builder,
+                                              @RecentViewQualifier OkHttpClient okHttpClient) {
+        return builder.baseUrl(RecentViewUrl.MOJITO_DOMAIN)
                 .client(okHttpClient)
                 .build()
-                .create(MojitoService.class);
+                .create(RecentViewApi.class);
     }
 
     @RecentViewScope

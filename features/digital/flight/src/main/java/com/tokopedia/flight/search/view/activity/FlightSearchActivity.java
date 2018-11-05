@@ -87,7 +87,7 @@ public class FlightSearchActivity extends BaseFlightActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightSearchFragment.newInstance(passDataViewModel);
+        return null;
     }
 
     protected String buildPassengerTextFormatted(FlightPassengerViewModel passData) {

@@ -80,6 +80,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private static final int ADDRESS_MAX_CHARACTER = 175;
     private static final int ADDRESS_MIN_CHARACTER = 20;
 
+    private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
+
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
@@ -219,14 +222,15 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (watcher.getVisibility() != View.VISIBLE) watcher.setVisibility(View.VISIBLE);
                 int textLength = charSequence.length();
                 int charLeft;
                 if (textLength < ADDRESS_MIN_CHARACTER) {
                     charLeft = ADDRESS_MIN_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi deperlukan", charLeft));
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING, charLeft));
                 } else {
                     charLeft = ADDRESS_MAX_CHARACTER - textLength;
-                    watcher.setText(String.format(Locale.US, "%1$d karakter tersisa", charLeft));
+                    watcher.setText(String.format(Locale.US, ADDRESS_WATCHER_STRING2, charLeft));
                 }
             }
 
@@ -318,7 +322,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
-        if (!isEdit()) {
+        if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
             UserSession sess = new UserSession(getActivity());
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
             receiverNameEditText.setText(sess.getName());
@@ -821,6 +825,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
             }
 
             addressLayout.setError(errorMessage);
+            addressLabel.setVisibility(View.GONE);
             addressLayout.requestFocus();
             sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
             sendAnalyticsOnErrorInputAddress();
@@ -1153,14 +1158,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            if (success) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
-            } else {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
-            }
+        if (success) {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+        } else {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+        }
     }
 
     @Override

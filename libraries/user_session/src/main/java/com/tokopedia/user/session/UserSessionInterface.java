@@ -1,7 +1,5 @@
 package com.tokopedia.user.session;
 
-import android.content.Context;
-
 /**
  * @author by nisie on 9/25/18.
  */

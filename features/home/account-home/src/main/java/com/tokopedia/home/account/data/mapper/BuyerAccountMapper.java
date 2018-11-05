@@ -72,6 +72,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
+        tokopediaPayViewModel.setWalletType(accountModel.getWallet().getWalletType());
         if (accountModel.getWallet().getWalletType().equals(OVO)) {
             tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.OVO_IMG);
             if (!accountModel.getWallet().isLinked()) {

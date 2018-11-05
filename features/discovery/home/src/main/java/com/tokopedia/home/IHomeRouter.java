@@ -3,10 +3,13 @@ package com.tokopedia.home;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import rx.Observable;
+
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.topads.sdk.domain.model.Product;
+
+import rx.Observable;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -72,4 +75,6 @@ public interface IHomeRouter {
     String getExtraBroadcastReceiverWallet();
 
     Intent getIntentCreateShop(Context context);
+
+    AnalyticTracker getAnalyticTracker();
 }

@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:minHeight="48dp"
-                android:hint="Kata Kunci Pencarian"
+                android:hint="@string/kata_kunci_pencarian"
                 android:id="@+id/search" />
 
         </android.support.design.widget.TextInputLayout>

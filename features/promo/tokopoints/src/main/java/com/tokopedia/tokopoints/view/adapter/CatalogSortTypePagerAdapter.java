@@ -1,21 +1,16 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
-import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogSortType;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.InputFilter;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -42,6 +43,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
@@ -262,5 +264,14 @@ public class TokoCashModule {
     @Provides
     WalletProvider provideWalletScheduler() {
         return new WalletScheduler();
+    }
+
+    @Provides
+    WalletAnalytics provideWalletAnalytics(@ApplicationContext Context context) {
+        if (context instanceof TokoCashRouter) {
+            AnalyticTracker analyticTracker = ((TokoCashRouter) context).getAnalyticTracker();
+            return new WalletAnalytics(analyticTracker);
+        }
+        throw new RuntimeException("App should implement " + TokoCashRouter.class.getSimpleName());
     }
 }

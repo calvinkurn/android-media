@@ -34,16 +34,16 @@ public class ManagePeopleAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public class MPAddressViewHolder extends RecyclerView.ViewHolder
             implements OnMapReadyCallback {
 
-        TextView addressName;
-        TextView addressDetail;
-        MapView mapView;
-        View editBtn;
-        View deleteBtn;
-        View defaultBtn;
-        View layoutMap;
-        View noLocationLabel;
-        View bottomView;
-        GoogleMap googleMap;
+        private TextView addressName;
+        private TextView addressDetail;
+        private MapView mapView;
+        private View editBtn;
+        private View deleteBtn;
+        private View defaultBtn;
+        private View layoutMap;
+        private View noLocationLabel;
+        private View bottomView;
+        private GoogleMap googleMap;
 
         public MPAddressViewHolder(View itemView) {
             super(itemView);

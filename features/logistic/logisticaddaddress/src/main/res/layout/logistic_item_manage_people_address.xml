@@ -28,7 +28,7 @@
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingBottom="@dimen/padding_vs"
                 android:singleLine="true"
-                android:text="Title Address"
+                android:text="@string/title_address"
                 android:textStyle="bold"
                 style="@style/TextAppearance.AppCompat.Body2"
                 />
@@ -42,7 +42,7 @@
                 android:paddingRight="@dimen/padding_small"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingBottom="@dimen/padding_small"
-                android:text="Detail Address"
+                android:text="@string/detail_address"
                 style="@style/TextAppearance.AppCompat.Body1"
                 />
 
@@ -69,7 +69,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:background="#780e0e0e"
-                    android:text="Tentukan lokasi Google Map Anda"
+                    android:text="@string/tentukan_lokasi_google_map_anda"
                     android:textStyle="bold"
                     android:textSize="@dimen/font_large"
                     android:textColor="@color/white"

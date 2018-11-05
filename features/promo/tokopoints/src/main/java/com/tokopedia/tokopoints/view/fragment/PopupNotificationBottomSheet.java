@@ -2,23 +2,17 @@ package com.tokopedia.tokopoints.view.fragment;
 
 import android.app.Dialog;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.tokopoints.view.model.LobDetails;
-import com.tokopedia.tokopoints.view.model.LobItem;
 import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
-import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 public class PopupNotificationBottomSheet extends BottomSheets {
 
@@ -35,7 +29,8 @@ public class PopupNotificationBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
     }
 
 

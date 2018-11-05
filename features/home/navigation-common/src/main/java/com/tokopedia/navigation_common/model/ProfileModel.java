@@ -19,6 +19,9 @@ public class ProfileModel {
     @SerializedName("profilePicture")
     @Expose
     private String profilePicture;
+    @SerializedName("phone_verified")
+    @Expose
+    private boolean isPhoneVerified;
 
     public String getFullName() {
         return fullName;
@@ -50,5 +53,13 @@ public class ProfileModel {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public boolean isPhoneVerified() {
+        return isPhoneVerified;
+    }
+
+    public void setPhoneVerified(boolean phoneVerified) {
+        isPhoneVerified = phoneVerified;
     }
 }

@@ -248,6 +248,7 @@ public class CartAddressChoiceFragment extends BaseCheckoutFragment
                 getString(R.string.checkout_module_subtitle_error_empty_address),
                 getString(R.string.checkout_module_label_button_retry_error_empty_address),
                 R.drawable.ic_empty_state,
+
                 () -> startActivityForResult(
                         ((ICheckoutModuleRouter) getActivity().getApplication())
                                 .getAddAddressIntent(getActivity(), null, token, false, false),
