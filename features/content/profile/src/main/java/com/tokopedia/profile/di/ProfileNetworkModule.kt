@@ -18,7 +18,7 @@ import retrofit2.Retrofit
 class ProfileNetworkModule {
     @ProfileScope
     @Provides
-    fun provideRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
+    fun provideRetrofit(@ApplicationContext context: Context): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "
                     .plus(NetworkRouter::class.java.simpleName)
@@ -29,7 +29,7 @@ class ProfileNetworkModule {
                 context,
                 TOPADS_BASE_URL,
                 context as NetworkRouter,
-                userSession
+                UserSession(context)
         )
     }
 

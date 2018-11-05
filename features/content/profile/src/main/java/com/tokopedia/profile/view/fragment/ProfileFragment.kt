@@ -33,6 +33,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
+import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
 import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
 import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
@@ -75,6 +76,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var presenter: ProfileContract.Presenter
+
+    @Inject
+    lateinit var profileAnalytics: ProfileAnalytics
 
     companion object {
         private const val POST_ID = "{post_id}"

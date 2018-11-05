@@ -1,27 +1,206 @@
 package com.tokopedia.profile.analytics
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
 /**
  * @author by milhamj on 10/10/18.
  */
-class ProfileAnalytics {
+class ProfileAnalytics @Inject constructor(private val analyticTracker: AnalyticTracker,
+                                           private val userSessionInterface: UserSessionInterface) {
+    companion object {
+        private const val EVENT = "event"
+        private const val CATEGORY = "eventCategory"
+        private const val ACTION = "eventAction"
+        private const val LABEL = "eventLabel"
+        private const val USER_ID = "user_id"
+        private const val CONTENT_POSITION = "content_position"
+        private const val USER_NAME = "user_name"
+        private const val SHOP_ID = "shop_id"
+        private const val PRODUCT_ID = "product_id"
+        private const val SINGLE = "single"
+        private const val MULTIPLE = "multiple"
+    }
+
     object Event {
         const val EVENT_CLICK_TOP_PROFILE = "clickTopProfile"
+        const val EVENT_CLICK_PROFILE = "clickProfile"
+        const val EVENT_VIEW_PROFILE = "viewProfile"
     }
 
     object Category {
-        val TOP_PROFILE = "Top Profile"
-        val KOL_TOP_PROFILE = "kol top profile"
+        const val KOL_TOP_PROFILE = "kol top profile"
+        const val USER_PROFILE_PAGE = "user profile page"
     }
 
     object Action {
-        val CLICK_ON_COMPLETE_NOW = "Click on Lengkapi Sekarang"
-        val CLICK_ON_MANAGE_ACCOUNT = "Click on Atur Akun"
-        val CLICK_ON_FAVORITE = "Click on Favoritkan"
-        val CLICK_ON_UNFAVORITE = "Click on Unfavorite"
-        val CLICK_PROMPT = "click prompt"
+        const val CLICK_PROMPT = "click prompt"
+        const val CLICK_FOLLOWING = "click following"
+        const val CLICK_FOLLOWERS = "click followers"
+        const val CLICK_TAG = "click-%s-user-all-%s-tag"
+        const val CLICK_CARD = "click-%s-user-all-%s-card"
+        const val IMPRESSION_CARD = "impression-%s-user-all-%s"
+        const val CLICK_BAGIKAN_PROFILE = "click bagikan profile ini"
+        const val CLICK_LIKE = "click-%s-user-all-%s-like"
+        const val CLICK_UNLIKE = "click-%s-user-all-%s-unlike"
+        const val CLICK_COMMENT = "click-%s-user-all-%s-comment"
     }
 
     object Label {
-        val GO_TO_FEED_FORMAT = "go to feed - %s"
+        const val GO_TO_FEED_FORMAT = "go to feed - %s"
+    }
+
+    private fun getDefaultData(event: String, category: String, action: String, label: String)
+            : MutableMap<String, Any> {
+        val data = HashMap<String, Any>()
+        data.put(EVENT, event)
+        data.put(CATEGORY, category)
+        data.put(ACTION, action)
+        data.put(LABEL, label)
+        data.put(USER_ID, userSessionInterface.userId)
+        return data
+    }
+
+    private fun getDefaultClickData(action: String, label: String): MutableMap<String, Any> {
+        return getDefaultData(Event.EVENT_CLICK_PROFILE, Category.USER_PROFILE_PAGE, action, label)
+    }
+
+    private fun getDefaultViewData(action: String, label: String): MutableMap<String, Any> {
+        return getDefaultData(Event.EVENT_VIEW_PROFILE, Category.USER_PROFILE_PAGE, action, label)
+    }
+
+    private fun setCustomDimensions(data: MutableMap<String, Any>, position: String, shopId: String,
+                                    productId: String): MutableMap<String, Any> {
+        data.put(CONTENT_POSITION, position)
+        data.put(SHOP_ID, shopId)
+        data.put(PRODUCT_ID, productId)
+        return data
+    }
+
+    fun eventClickFollowing(profileId: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(Action.CLICK_FOLLOWING, profileId)
+        )
+    }
+
+    fun eventClickTagSingle(activityId: String, activityType: String, position: String,
+                            shopId: String, productId: String) {
+        val data = getDefaultClickData(
+                String.format(Action.CLICK_TAG, SINGLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventClickTagMultiple(activityId: String, activityType: String, position: String,
+                              shopId: String, productId: String) {
+        val data = getDefaultClickData(
+                String.format(Action.CLICK_TAG, MULTIPLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventClickCardSingle(activityId: String, activityType: String, position: String,
+                             shopId: String, productId: String) {
+        val data = getDefaultClickData(
+                String.format(Action.CLICK_CARD, SINGLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventClickCardMultiple(activityId: String, activityType: String, position: String,
+                               shopId: String, productId: String) {
+        val data = getDefaultClickData(
+                String.format(Action.CLICK_CARD, MULTIPLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventViewCardSingle(activityId: String, activityType: String, position: String,
+                            shopId: String, productId: String) {
+        val data = getDefaultViewData(
+                String.format(Action.IMPRESSION_CARD, SINGLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventViewCardMultiple(activityId: String, activityType: String, position: String,
+                              shopId: String, productId: String) {
+        val data = getDefaultViewData(
+                String.format(Action.IMPRESSION_CARD, MULTIPLE, activityType),
+                activityId
+        )
+        setCustomDimensions(data, position, shopId, productId)
+        analyticTracker.sendEventTracking(data)
+    }
+
+    fun eventClickBagikanProfile(profileId: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(Action.CLICK_BAGIKAN_PROFILE, profileId)
+        )
+    }
+
+    fun eventClickLikeSingle(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_LIKE, SINGLE, activityType),
+                        activityId
+                )
+        )
+    }
+
+    fun eventClickLikeMultiple(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_LIKE, MULTIPLE, activityType),
+                        activityId
+                )
+        )
+    }
+
+    fun eventClickUnlikeSingle(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_UNLIKE, SINGLE, activityType),
+                        activityId
+                )
+        )
+    }
+
+    fun eventClickUnlikeMultiple(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_UNLIKE, MULTIPLE, activityType),
+                        activityId
+                )
+        )
+    }
+
+    fun eventClickCommentSingle(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_COMMENT, SINGLE, activityType),
+                        activityId
+                )
+        )
+    }
+
+    fun eventClickCommentMultiple(activityId: String, activityType: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(
+                        String.format(Action.CLICK_COMMENT, MULTIPLE, activityType),
+                        activityId
+                )
+        )
     }
 }
