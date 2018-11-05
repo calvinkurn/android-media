@@ -62,6 +62,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private static final String CHECKOUT = "checkoutdata";
 
+    private static final String ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT";
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -124,7 +126,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
             submitVoucherButton.setOnClickListener(onSubmitMarketPlaceCartListVoucher(
                     voucherCodeField,
-                    voucherCodeFieldHolder)
+                    voucherCodeFieldHolder, getArguments().getBoolean(ONE_CLICK_SHIPMENT))
             );
         } else if (getArguments().getString(PLATFORM_KEY, "").equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.FLIGHT_STRING)) {
@@ -234,7 +236,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     private View.OnClickListener onSubmitMarketPlaceCartListVoucher(
             final EditText voucherCodeField,
-            final TextInputLayout textHolder) {
+            final TextInputLayout textHolder,
+            boolean isOneClickShipment) {
         return view -> {
             voucherCodeFieldHolder.setError(null);
             if (voucherCodeField.getText().toString().isEmpty()) {
@@ -242,7 +245,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
             } else {
                 dPresenter.processCheckMarketPlaceCartListPromoCode(
                         getActivity(),
-                        voucherCodeField.getText().toString(), getArguments().getString(ADDITIONAL_DATA_KEY, ""));
+                        voucherCodeField.getText().toString(), getArguments().getString(ADDITIONAL_DATA_KEY, ""),
+                        getArguments().getBoolean(ONE_CLICK_SHIPMENT, isOneClickShipment));
             }
             listener.onUsePromoCodeClicked();
         };
@@ -338,7 +342,8 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
 
     public static Fragment newInstance(String platform,String platformPage, String categoryKey,
                                        String cartId, String additionalDataString,
-                                       String trainReservationId, String trainReservartionCode) {
+                                       String trainReservationId, String trainReservartionCode,
+                                       boolean isOneClickShipment) {
         PromoCodeFragment fragment = new PromoCodeFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platform);
@@ -348,6 +353,7 @@ public class PromoCodeFragment extends BasePresenterFragment implements IPromoCo
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         bundle.putString(TRAIN_RESERVATION_ID, trainReservationId);
         bundle.putString(TRAIN_RESERVATION_CODE, trainReservartionCode);
+        bundle.putBoolean(ONE_CLICK_SHIPMENT, isOneClickShipment);
         fragment.setArguments(bundle);
         return fragment;
     }

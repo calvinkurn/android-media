@@ -7,9 +7,9 @@ import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.flight.common.data.db.BaseDataDBSource;
 import com.tokopedia.flight.search.data.cloud.model.response.Meta;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB_Table;
 import com.tokopedia.flight.search.util.FlightSearchMetaParamUtil;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB_Table;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,10 +42,10 @@ public class FlightMetaDataDBSource
         return Observable.just(meta).flatMap(new Func1<Meta, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Meta meta) {
-                        insertFlightMetaData(meta);
-                        return Observable.just(true);
-                    }
-                })
+                insertFlightMetaData(meta);
+                return Observable.just(true);
+            }
+        })
                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean booleen) {
@@ -55,7 +55,10 @@ public class FlightMetaDataDBSource
     }
 
     protected void insertFlightMetaData(Meta meta) {
-        FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(meta);
+        FlightMetaDataDB flightMetaDataDB = new FlightMetaDataDB(
+                meta.getDepartureAirport(), meta.getArrivalAirport(),
+                meta.getTime(), meta.isNeedRefresh(), meta.getRefreshTime(), meta.getMaxRetry(),
+                0, System.currentTimeMillis() / 1000L);
         flightMetaDataDB.insert();
     }
 

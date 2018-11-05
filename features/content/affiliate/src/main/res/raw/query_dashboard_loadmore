@@ -1,0 +1,16 @@
+query GetDashboardLoadMore($cursor: String) {
+  affiliatedProduct(cursor:$cursor) {
+    products {
+      id
+      image
+      name
+      isActive
+      totalSold
+      totalClick
+      commission
+    }
+    pagination {
+      nextCursor
+    }
+  }
+}

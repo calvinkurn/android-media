@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -24,6 +25,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -74,6 +77,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent(activity, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
         }
@@ -227,6 +231,15 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Bundle bundle = new Bundle();
+        super.onSaveInstanceState(bundle);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putAll(bundle);
+        }
     }
 
     private void initInjector() {

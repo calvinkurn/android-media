@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.nps.R;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,13 +36,13 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
         return new AlertDialog.Builder(activity)
                 .setTitle(
                     remoteConfig.getString(
-                        TkpdCache.RemoteConfigKey.MAINAPP_RATING_TITLE,
+                        RemoteConfigKey.MAINAPP_RATING_TITLE,
                         activity.getString(R.string.app_rating_title)
                     )
                 )
                 .setMessage(
                     remoteConfig.getString(
-                        TkpdCache.RemoteConfigKey.MAINAPP_RATING_MESSAGE,
+                        RemoteConfigKey.MAINAPP_RATING_MESSAGE,
                         activity.getString(R.string.app_rating_message)
                     )
                 )
@@ -68,7 +69,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
+        if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
                 && globalCacheManager.isExpired(HIDE_SIMPLE_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;

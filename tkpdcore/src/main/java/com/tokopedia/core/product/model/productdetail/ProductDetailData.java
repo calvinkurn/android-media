@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductDetailData implements Parcelable{
     private static final String TAG = ProductDetailData.class.getSimpleName();
 
@@ -47,6 +48,23 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("product_images")
     @Expose
     private List<ProductImage> productImages = new ArrayList<ProductImage>();
+
+    public long getServerTimeUnix() {
+        return serverTimeUnix;
+    }
+
+    public void setServerTimeUnix(long serverTimeUnix) {
+        this.serverTimeUnix = serverTimeUnix;
+    }
+
+    public static Creator<ProductDetailData> getCREATOR() {
+        return CREATOR;
+    }
+
+    @SerializedName("server_time_unix")
+    @Expose
+    private long serverTimeUnix;
+
     /**
      * this is not supposed to be here
      * because it is ViewModel
@@ -165,6 +183,7 @@ public class ProductDetailData implements Parcelable{
         private ProductRating rating;
         private List<ProductImage> productImages = new ArrayList<ProductImage>();
         private ProductCashback cashBack;
+        private long serverTimeUnix;
 
         private Builder() {
         }
@@ -213,8 +232,13 @@ public class ProductDetailData implements Parcelable{
             return this;
         }
 
+        public Builder setServerTimeUnix(long serverTimeUnix){
+            this.serverTimeUnix = serverTimeUnix;
+            return this;
+        }
+
         public Builder but() {
-            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack);
+            return aProductInfoData().setInfo(info).setStatistic(statistic).setShopInfo(shopInfo).setWholesalePrice(wholesalePrice).setBreadcrumb(breadcrumb).setRating(rating).setProductImages(productImages).setCashBack(cashBack).setServerTimeUnix(serverTimeUnix);
         }
 
         public ProductDetailData build() {
@@ -227,6 +251,7 @@ public class ProductDetailData implements Parcelable{
             productDetailData.setRating(rating);
             productDetailData.setProductImages(productImages);
             productDetailData.setCashBack(cashBack);
+            productDetailData.setServerTimeUnix(serverTimeUnix);
             return productDetailData;
         }
     }
@@ -250,6 +275,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
         dest.writeParcelable(this.campaign,flags);
+        dest.writeLong(this.serverTimeUnix);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -265,6 +291,7 @@ public class ProductDetailData implements Parcelable{
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
         this.campaign = in.readParcelable(Campaign.class.getClassLoader());
+        this.serverTimeUnix = in.readLong();
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {

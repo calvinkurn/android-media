@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -20,8 +21,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
+import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult
@@ -50,6 +52,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: MerchantVoucherDetailPresenter
 
+    var merchantVoucherTracking: MerchantVoucherTracking? = null
+
     companion object {
         const val EXTRA_VOUCHER_ID = "voucher_id"
         const val EXTRA_VOUCHER = "voucher"
@@ -73,6 +77,9 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         merchantVoucherViewModel = arguments!!.getParcelable(MerchantVoucherDetailFragment.EXTRA_VOUCHER)
         voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
+        activity?.run {
+            merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,6 +99,8 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             }
         }
         btnUseVoucher.setOnClickListener { _ ->
+            merchantVoucherTracking?.clickUseVoucherFromDetail()
+
             //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
             /*if (!presenter.isLogin()) {
                 if (RouteManager.isSupportApplink(context!!, ApplinkConst.LOGIN)) {
