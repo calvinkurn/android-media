@@ -36,9 +36,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private HorizontalProgressBar progressBar;
     private AppCompatTextView tvPercentageUpload;
     private AppCompatTextView tvChangeImage;
-    private FlightCancellationAttachmentViewModel element;
 
-    private boolean showChangeButton = true;
+    private boolean showChangeButton;
     private Context context;
 
     private FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener;
@@ -64,33 +63,11 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void bind(FlightCancellationAttachmentViewModel element) {
-        this.element = element;
         tvFilename.setText(element.getFilename());
         tvPassengerName.setText(element.getPassengerName());
         tvPercentageUpload.setText(String.format(getString(R.string
                         .flight_cancellation_upload_percentage_label),
                 Long.toString(element.getPercentageUpload())));
-
-/*        tvFilename.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (event.getRawX() >= (tvFilename.getRight())) {
-                        if (interactionListener != null) {
-                            interactionListener.deleteAttachement(FlightCancellationAttachmentViewHolder.this.element);
-                        }
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });*/
-
-        if (showChangeButton) {
-            tvChangeImage.setVisibility(View.VISIBLE);
-        } else {
-            tvChangeImage.setVisibility(View.GONE);
-        }
 
         if (element.getFilepath() != null) {
             Glide.with(itemView.getContext())
@@ -106,7 +83,12 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
             });
 
-            tvChangeImage.setVisibility(View.VISIBLE);
+            if (showChangeButton) {
+                tvChangeImage.setVisibility(View.VISIBLE);
+            } else {
+                tvChangeImage.setVisibility(View.GONE);
+            }
+
             tvChangeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
