@@ -43,17 +43,12 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -89,16 +84,16 @@ public class ExploreFragment
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
 
-    @Inject
-    private AffiliateAnalytics affiliateAnalytics;
-
     private boolean isCanDoAction;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     @Inject
     ExploreContract.Presenter presenter;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     public static ExploreFragment getInstance(Bundle bundle) {
         ExploreFragment fragment = new ExploreFragment();

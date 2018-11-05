@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.analytics;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -21,14 +21,12 @@ public class AffiliateAnalytics {
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_SHOP_ID = "shop_id";
 
-
-
-
     private AbstractionRouter abstractionRouter;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public AffiliateAnalytics(AbstractionRouter abstractionRouter, UserSession userSession) {
+    public AffiliateAnalytics(AbstractionRouter abstractionRouter,
+                              UserSessionInterface userSession) {
         this.abstractionRouter = abstractionRouter;
         this.userSession = userSession;
     }
@@ -236,6 +234,4 @@ public class AffiliateAnalytics {
                 )
         );
     }
-
-
 }

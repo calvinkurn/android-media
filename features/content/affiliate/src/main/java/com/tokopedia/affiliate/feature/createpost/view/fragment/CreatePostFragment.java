@@ -48,12 +48,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private static final int REQUEST_IMAGE_PICKER = 1234;
     private static final int REQUEST_EXAMPLE = 13;
     private static final int REQUEST_LOGIN = 83;
+
     @Inject
     CreatePostContract.Presenter presenter;
     @Inject
     CreatePostPreference createPostPreference;
     @Inject
     AffiliateAnalytics affiliateAnalytics;
+
     private View mainView;
     private TextView title;
     private TextView seeExample;
