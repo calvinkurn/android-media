@@ -188,6 +188,7 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
     public void onSelesaiCreateButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -199,5 +200,42 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
+    public void onDirectRecommRekomendasikanButtonClicked() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_ADD_RECOMMENDATION,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_DIRECT_RECOMM,
+                        AffiliateEventTracking.Action.CLICK_REKOMENDASIKAN,
+                        ""
+                )
+        );
+    }
+
+
+    public void onDirectRecommProdukLainButtonClicked() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        AffiliateEventTracking.Action.CLICK_LIHAT_PRODUK_LAINNYA,
+                        ""
+                )
+        );
+    }
+    public void onDirectRecommPilihanProdukButtonClicked() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        AffiliateEventTracking.Action.CLICK_LIHAT_PILIHAN_PRODUK,
+                        ""
+                )
+        );
+    }
+
 
 }

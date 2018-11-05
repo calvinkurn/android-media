@@ -171,6 +171,7 @@ public class OnboardingFragment extends BaseDaggerFragment {
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
         goBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onDirectRecommPilihanProdukButtonClicked();
             if (getActivity() != null) {
                 Intent intent = ExploreActivity.getInstance(getActivity());
                 startActivity(intent);
