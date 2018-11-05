@@ -66,6 +66,7 @@ import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
+import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
@@ -280,6 +281,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         ChangePhoneNumberUrl.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PhoneVerificationConst.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
         ProductDetailUrl.WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TopAdsConstantKt.setTOPADS_BASE_URL(ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN);
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
