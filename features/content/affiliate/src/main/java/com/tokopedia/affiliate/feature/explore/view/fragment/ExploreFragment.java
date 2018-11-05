@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
@@ -61,7 +62,6 @@ public class ExploreFragment
         SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
     private static final String PRODUCT_ID_PARAM = "{product_id}";
     private static final String AD_ID_PARAM = "{ad_id}";
     private static final String USER_ID_USER_ID = "{user_id}";
@@ -176,7 +176,7 @@ public class ExploreFragment
         ivBantuan.setOnClickListener(view ->
                 RouteManager.route(
                         getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
                 )
         );
     }
