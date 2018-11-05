@@ -8,6 +8,4 @@ import android.content.Intent;
  */
 public interface LoginPhoneNumberRouter {
     void setTrackingUserId(String userId, Context applicationContext);
-
-    Intent getChangeInactivePhoneIntent(Context context);
 }
