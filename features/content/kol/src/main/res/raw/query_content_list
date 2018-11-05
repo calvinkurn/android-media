@@ -1,27 +1,31 @@
-query ContentList ($limit: Int!, $shopID: Int!, $cursor: String!, $source: String!){
-  feed_content_post(limit:$limit, shopID:$shopID, cursor:$cursor, source:$source){
-    posts{
+query ContentList($limit: Int, $cursor: String, $shopID: Int, $userID: Int, $source: String) {
+  feed_content_post(limit: $limit, cursor: $cursor, shopID: $shopID, userID: $userID, source: $source) {
+    posts {
       id
       createTime
       description
-      content{
+      status
+      content {
         type
         URL
-        tags{
+        tags {
           id
           type
           link
+          affiliateTrackID
           captionEng
           captionInd
         }
       }
-      author{
+      author {
         id
         name
         thumbnail
         url
       }
-      interaction{
+      interaction {
+        deletable
+        editable
         isLiked
         commentCount
         likeCount

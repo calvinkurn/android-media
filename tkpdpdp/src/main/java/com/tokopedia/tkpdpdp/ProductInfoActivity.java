@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -48,6 +49,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         BottomSheets.BottomSheetDismissListener {
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
+    private static final String KEY_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate";
 
     private Uri uriData;
     private Bundle bundleData;
@@ -57,6 +59,15 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     protected void forceRotation() {
 
+    }
+
+    @DeepLink(ApplinkConst.AFFILIATE_PRODUCT)
+    public static Intent getAffiliateIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        extras.putBoolean(KEY_FROM_EXPLORE_AFFILIATE, true);
+        return new Intent(context, ProductInfoActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
     }
 
     @DeepLink(Constants.Applinks.PRODUCT_INFO)

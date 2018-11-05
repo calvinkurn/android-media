@@ -72,11 +72,14 @@
 /features/user/notifcenter/             @tokopedia/minion-kevin
 /features/user/attachproduct/           @tokopedia/minion-kevin
 /features/user/talk/                    @tokopedia/minion-kevin
+/features/content/affiliate/            @tokopedia/minion-kevin
+/features/content/affiliate_common/     @tokopedia/minion-kevin
+/features/content/explore/              @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
+/features/content/interest_pick/        @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin
-/features/content/explore/              @tokopedia/minion-kevin
-/features/content/interest_pick/        @tokopedia/minion-kevin
+/features/content/profile/           @tokopedia/minion-kevin
 /features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
@@ -105,3 +108,4 @@
 /features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
 /features/im/challenges                 @ashwanitp
+/libraries/pagination                   @lavekush-t

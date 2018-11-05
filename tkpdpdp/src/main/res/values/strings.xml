@@ -36,6 +36,7 @@
     <string name="title_all_discussion">Lihat Semua Diskusi</string>
     <string name="title_copy_promo_code">Salin Kode</string>
     <string name="title_copied">Kode Promo Berhasil Disalin</string>
+    <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
     <string name="headerview_label_official_store">Produk dari Brand Resmi</string>
     <string name="per_pcs">/pcs</string>
     <string name="change_variant">Ubah Varian</string>
@@ -75,5 +76,8 @@
     <string name="rates_est_min">Ongkos Kirim %1$s</string>
     <string name="title_activity_product_modal">Detail Produk</string>
     <string name="pdp_label_cart_count_max">99+</string>
+    <string name="format_text_product_po_info_process_time">Waktu Proses %1$s %2$s</string>
+    <string name="promo">Promo</string>
     <string name="title_wishlist_pdp">Wishlist</string>
+    <string name="button_add_to_affiliate">Tambah ke ByMe</string>
 </resources>

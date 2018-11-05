@@ -77,11 +77,6 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
-
-        <meta-data
-            android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="@string/key_truecaller_seller_app" />
-
         <activity
             android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"

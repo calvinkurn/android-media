@@ -22,7 +22,6 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
@@ -40,6 +39,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckPromoCodeFromSelectedCourierSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
@@ -47,7 +47,6 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
@@ -65,10 +64,10 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
-import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductPreorder;
-import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductPreorder;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -126,7 +125,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
-    private List<ShippingCourierViewModel> shippingCourierViewModelsState;
+    private boolean couponStateChanged;
+    private boolean hasDeletePromoAfterChecKPromoCodeFinal;
+    private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
 
@@ -897,6 +898,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().renderErrorCheckPromoShipmentData(
                                             promoCodeCartShipmentData.getErrorMessage()
                                     );
+                                    getView().cancelAllCourierPromo();
                                 }
                             }
                         })
@@ -1052,6 +1054,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                         })
+        );
+    }
+
+    @Override
+    public void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("promo_code", promoCode);
+        param.put("lang", "id");
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CheckPromoCodeCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_CHECK_PROMO,
+                getGeneratedAuthParamNetwork(param));
+
+        compositeSubscription.add(
+                checkPromoCodeCartListUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new CheckPromoCodeFromSelectedCourierSubscriber(getView(), itemPosition, noToast))
         );
     }
 
@@ -1364,6 +1385,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
 
                                 if (resultSuccess) {
+                                    setCouponStateChanged(true);
                                     getView().renderCancelAutoApplyCouponSuccess();
                                 } else {
                                     getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown));
@@ -1452,20 +1474,50 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
                                                 ShipmentDetailData shipmentDetailData,
-                                                List<ShopShipment> shopShipmentList) {
+                                                ShipmentCartItemModel shipmentCartItemModel,
+                                                List<ShopShipment> shopShipmentList,
+                                                boolean isInitialLoad) {
         String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
         getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
-                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter));
+                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
+                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
     }
 
     @Override
-    public List<ShippingCourierViewModel> getShippingCourierViewModelsState() {
-        return shippingCourierViewModelsState;
+    public List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition) {
+        if (shippingCourierViewModelsState != null) {
+            return shippingCourierViewModelsState.get(itemPosition);
+        }
+        return null;
     }
 
     @Override
-    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState) {
-        this.shippingCourierViewModelsState = shippingCourierViewModelsState;
+    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+                                                  int itemPosition) {
+        if (this.shippingCourierViewModelsState == null) {
+            this.shippingCourierViewModelsState = new HashMap<>();
+        }
+        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierViewModelsState);
+    }
+
+    @Override
+    public void setCouponStateChanged(boolean couponStateChanged) {
+        this.couponStateChanged = couponStateChanged;
+    }
+
+    @Override
+    public boolean getCouponStateChanged() {
+        return couponStateChanged;
+    }
+
+    @Override
+    public void setHasDeletePromoAfterChecKPromoCodeFinal(boolean hasDeletePromoAfterChecKPromoCodeFinal) {
+        this.hasDeletePromoAfterChecKPromoCodeFinal = hasDeletePromoAfterChecKPromoCodeFinal;
+    }
+
+    @Override
+    public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
+        return hasDeletePromoAfterChecKPromoCodeFinal;
     }
 }

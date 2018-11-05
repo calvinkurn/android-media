@@ -43,7 +43,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -101,6 +100,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,8 +247,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
-            viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+            String path = getIntent().getExtras().getString("channel_id", "");
+            if(TextUtils.isEmpty(path)) {
+                path = getIntent().getExtras().getString(GroupChatActivity.EXTRA_CHANNEL_UUID, "");
+            }
+            viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
@@ -272,6 +275,9 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        if(channelInfoViewModel == null){
+            return;
+        }
         setSponsorData();
 
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
@@ -1425,6 +1431,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else if (currentFragmentIsInfo()) {
             populateChannelInfoFragment();
         }
+    }
+
+    @Override
+    public void initVideoFragment() {
+        initVideoFragment(getChannelInfoViewModel());
     }
 
     private void setChannelConnectionHandler() {

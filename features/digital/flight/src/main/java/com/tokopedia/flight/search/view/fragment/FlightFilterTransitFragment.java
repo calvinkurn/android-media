@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterTransitAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 import com.tokopedia.flight.search.view.model.resultstatistics.TransitStat;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;

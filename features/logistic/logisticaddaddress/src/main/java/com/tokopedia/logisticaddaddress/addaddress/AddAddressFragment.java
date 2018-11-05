@@ -81,7 +81,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private static final int ADDRESS_MIN_CHARACTER = 20;
 
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
-    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
@@ -1158,14 +1158,13 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            if (success) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
-            } else {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
-            }
+        if (success) {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+        } else {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+        }
     }
 
     @Override
