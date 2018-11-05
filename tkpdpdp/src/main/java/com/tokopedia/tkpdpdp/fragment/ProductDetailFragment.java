@@ -1092,6 +1092,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.productData = successResult;
         this.viewData = viewData;
         this.headerInfoView.renderData(successResult);
+        this.headerInfoView.renderProductCampaign(successResult);
         this.pictureView.renderData(successResult);
         if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
@@ -1580,6 +1581,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
+                            headerInfoView.renderProductCampaign(productData);
                             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
@@ -1673,6 +1675,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onResume() {
         super.onResume();
+
         if (productData != null) {
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
@@ -1839,7 +1842,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showProductCampaign() {
         if (headerInfoView != null && productData != null) {
-            headerInfoView.renderProductCampaign(productData.getCampaign());
+            headerInfoView.renderProductCampaign(productData);
         }
     }
 
