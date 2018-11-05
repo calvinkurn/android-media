@@ -1037,6 +1037,7 @@ public abstract class SellerRouterApplication extends MainApplication
         fragment.startActivityForResult(intent, requestCode);
     }
 
+    @Deprecated
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
