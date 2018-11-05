@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
@@ -73,6 +74,9 @@ public class UsernameInputFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
         UsernameInputFragment fragment = new UsernameInputFragment();
@@ -207,11 +211,13 @@ public class UsernameInputFragment extends BaseDaggerFragment
         suggestionRv.setAdapter(adapter);
         saveBtn.setOnClickListener(getSaveBtnOnClickListener());
         disableSaveBtn();
-        termsAndCondition.setOnClickListener(v ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
-                )
+        termsAndCondition.setOnClickListener(v -> {
+                    affiliateAnalytics.onSKButtonClicked();
+                    RouteManager.route(
+                            getContext(),
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                    );
+                }
         );
     }
 
@@ -260,6 +266,7 @@ public class UsernameInputFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener getSaveBtnOnClickListener() {
+        affiliateAnalytics.onSimpanButtonClicked();
         return view -> registerUsername();
     }
 

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
@@ -46,6 +47,9 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     @Inject
     RecommendProductContract.Presenter presenter;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     private String productId = DEFAULT_PRODUCT_ID;
 
@@ -89,6 +93,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
         name.setText(viewModel.getProductName());
         commission.setText(viewModel.getCommission());
         recommendBtn.setOnClickListener(v -> {
+            affiliateAnalytics.onDirectRecommRekomendasikanButtonClicked();
             if (getActivity() != null) {
                 Intent intent = CreatePostActivity.getInstance(
                         getActivity(),
@@ -144,6 +149,7 @@ public class RecommendProductFragment extends BaseDaggerFragment
 
     private void initView() {
         seeOther.setOnClickListener(v -> {
+            affiliateAnalytics.onDirectRecommProdukLainButtonClicked();
             if (getActivity() != null) {
                 Intent intent = ExploreActivity.getInstance(getActivity());
                 startActivity(intent);

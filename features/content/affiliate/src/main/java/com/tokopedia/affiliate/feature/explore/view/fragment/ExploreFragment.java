@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
@@ -25,6 +26,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.AutoCompleteSearchAdapter;
@@ -84,6 +87,10 @@ public class ExploreFragment
     private EmptyModel emptyResultModel;
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
+    private AbstractionRouter abstractionRouter;
+
+    @Inject
+    private AffiliateAnalytics affiliateAnalytics;
 
     private boolean isCanDoAction;
 
@@ -120,6 +127,12 @@ public class ExploreFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
+        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
+        } else {
+            throw new IllegalStateException("Application must be an instance of " +
+                    "AbstractionRouter!");
+        }
         initView();
         initListener();
         exploreParams.setLoading(true);
@@ -198,7 +211,7 @@ public class ExploreFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE;
     }
 
     @Override
@@ -247,7 +260,10 @@ public class ExploreFragment
             onSearchReset();
         } else {
             autoCompleteLayout.setVisibility(View.VISIBLE);
-            if (!isFromAutoComplete && !exploreParams.isLoading()) presenter.getAutoComplete(text);
+            if (!isFromAutoComplete && !exploreParams.isLoading()) {
+                affiliateAnalytics.onSearchSubmitted(text);
+                presenter.getAutoComplete(text);
+            }
         }
     }
 
@@ -259,6 +275,11 @@ public class ExploreFragment
         exploreParams.resetSearch();
         exploreParams.setLoading(true);
         presenter.getFirstData(exploreParams, true);
+    }
+
+    @Override
+    public AffiliateAnalytics getAffiliateAnalytics() {
+        return affiliateAnalytics;
     }
 
     @Override
@@ -279,6 +300,7 @@ public class ExploreFragment
 
     @Override
     public void onBymeClicked(ExploreViewModel model) {
+        affiliateAnalytics.onByMeButtonClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             if (userSession.isLoggedIn()) {
@@ -296,6 +318,7 @@ public class ExploreFragment
 
     @Override
     public void onProductClicked(ExploreViewModel model) {
+        affiliateAnalytics.onProductClicked(model.getProductId());
         if (isCanDoAction) {
             isCanDoAction = false;
             RouteManager.route(
