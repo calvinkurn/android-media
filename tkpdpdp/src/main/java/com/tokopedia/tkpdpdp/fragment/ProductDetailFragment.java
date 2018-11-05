@@ -490,12 +490,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         });
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(new MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener() {
             @Override
-            public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+            public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel, int position) {
                 if (getContext() == null) {
                     return;
                 }
-                if (productData!=null) {
-                    ProductPageTracking.eventClickMerchantVoucherUse(getActivity(), String.valueOf(productData.getInfo().getProductId()));
+                if (productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherUse(getActivity(), merchantVoucherViewModel, position);
                 }
                 //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
                 /*if (!voucherListPresenter.isLogin()) {
@@ -507,7 +507,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             merchantVoucherViewModel.getVoucherId());
                 }*/
                 //TOGGLE_MVC_OFF
-                if (getActivity()!= null) {
+                if (getActivity() != null) {
                     showSnackBarClose(getActivity().getString(R.string.title_voucher_code_copied));
                 }
             }
@@ -554,7 +554,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private void showUseMerchantVoucherLoading(){
+    private void showUseMerchantVoucherLoading() {
         if (loading == null) {
             loading = new ProgressDialog(getActivity());
             loading.setCancelable(false);
@@ -566,7 +566,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         loading.show();
     }
 
-    private void hideUseMerchantVoucherLoading(){
+    private void hideUseMerchantVoucherLoading() {
         if (loading != null) {
             loading.dismiss();
         }
@@ -1079,7 +1079,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         float weight = 0f;
         try {
             weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())) {
             weight /= 1000;
@@ -1651,8 +1652,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             promoContainer.setVisibility(View.GONE);
             return;
         }
-        if (getActivity()!= null && productData!= null) {
-            ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), String.valueOf(productData.getInfo().getProductId()));
+        if (getActivity() != null && productData != null &&
+                !voucherListPresenter.isMyShop(productData.getShopInfo().getShopId())){
+            ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), merchantVoucherViewModelList);
         }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
         promoWidgetView.setVisibility(View.GONE);
