@@ -37,7 +37,13 @@ public class ListPassengerViewModelMapper {
         }
 
         if (savedPassengerEntity.getPassportExpiry() != null) {
-            flightBookingPassengerViewModel.setPassportExpiredDate(savedPassengerEntity.getPassportExpiry());
+            flightBookingPassengerViewModel.setPassportExpiredDate(
+                    FlightDateUtil.formatDate(
+                            FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                            FlightDateUtil.DEFAULT_FORMAT,
+                            savedPassengerEntity.getPassportExpiry()
+                    )
+            );
         }
 
         if (savedPassengerEntity.getPassportNationality() != null) {
