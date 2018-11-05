@@ -2,7 +2,9 @@ package com.tokopedia.affiliate.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 import com.tokopedia.user.session.UserSession;
 
@@ -26,4 +28,11 @@ public class AffiliateModule {
     UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
+
+    @AffiliateScope
+    @Provides
+    AffiliateAnalytics provideAffiliateAnalytics(@ApplicationContext Context context, UserSession userSession) {
+        return new AffiliateAnalytics((AbstractionRouter)context.getApplicationContext(), userSession);
+    }
+
 }

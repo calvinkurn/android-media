@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.domain.usecase.CheckQuotaUseCase;
 
 import dagger.Component;
@@ -22,4 +23,6 @@ public interface AffiliateComponent {
     CheckQuotaUseCase provideCheckQuotaUseCase();
 
     UserSession provideUserSession();
+
+    AffiliateAnalytics provideAffiliateAnalytics();
 }
