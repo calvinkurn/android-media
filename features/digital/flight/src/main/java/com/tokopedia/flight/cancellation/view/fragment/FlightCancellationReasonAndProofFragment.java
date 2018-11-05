@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -52,9 +53,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_IMAGE = 1001;
     private static final int CHOOSE_REASON_REQUEST_CODE = 1111;
 
+    private LinearLayout container;
     private EditTextCompat tvChooseReason;
     private LinearLayout attachmentContainer;
     private AppCompatTextView attachmentDescription;
+    private ProgressBar progressBar;
     private RecyclerView rvAttachments;
     private AppCompatButton btnNext;
 
@@ -117,6 +120,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             attachments = presenter.buildAttachmentList();
         }
         presenter.initialize(attachments);
+        presenter.setNextButton();
 
         buildAttachmentReasonView();
     }
@@ -135,6 +139,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     private void buildView(View view) {
+        container = view.findViewById(R.id.container);
+        progressBar = view.findViewById(R.id.progress_bar);
         tvChooseReason = view.findViewById(R.id.et_saved_passenger);
         attachmentContainer = view.findViewById(R.id.attachment_container);
         attachmentDescription = view.findViewById(R.id.attachment_description);
@@ -165,6 +171,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
                 getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
             }
         });
+
+        hideProgressBar();
     }
 
     @Override
@@ -191,23 +199,13 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showUploadAttachmentView() {
-        adapter.showAttachmentButton();
-    }
-
-    @Override
-    public void hideUploadAttachmentView() {
-        adapter.hideAttachmentButton();
-    }
-
-    @Override
-    public void addAttachment(FlightCancellationAttachmentViewModel viewModel) {
-        adapter.addElement(viewModel);
-    }
-
-    @Override
     public void addAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
         adapter.addElement(attachments);
+    }
+
+    @Override
+    public void deleteAllAttachments() {
+        adapter.clearAllElements();
     }
 
     @Override
@@ -230,6 +228,16 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         attachments.get(positionUploading).setPercentageUpload(percentage);
         adapter.setElement(positionUploading, attachments.get(positionUploading));
         renderAttachment();
+    }
+
+    @Override
+    public void disableNextButton() {
+        btnNext.setEnabled(false);
+    }
+
+    @Override
+    public void enableNextButton() {
+        btnNext.setEnabled(true);
     }
 
     @Override
@@ -259,8 +267,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public String getReason() {
-        return selectedReason.getDetail();
+    public FlightCancellationReasonViewModel getReason() {
+        return selectedReason;
     }
 
     @Override
@@ -270,7 +278,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     @Override
     public void navigateToNextStep(FlightCancellationWrapperViewModel viewModel) {
-        interactionListener.goToEstimateReview(viewModel);
+        interactionListener.goToReview(viewModel);
     }
 
     @Override
@@ -281,6 +289,20 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     @Override
     public void showAttachmentContainer() {
         attachmentContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showProgressBar() {
+        container.setVisibility(View.GONE);
+        btnNext.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        container.setVisibility(View.VISIBLE);
+        btnNext.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -321,9 +343,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
             if (!TextUtils.isEmpty(imagePath)) {
                 presenter.onSuccessGetImage(imagePath, positionChangedImage);
             }
+            presenter.setNextButton();
         } else if (requestCode == CHOOSE_REASON_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             selectedReason = data.getParcelableExtra(FlightCancellationChooseReasonFragment.EXTRA_SELECTED_REASON);
             renderSelectedReason();
+            presenter.setNextButton();
         }
     }
 
@@ -334,7 +358,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     public interface OnFragmentInteractionListener {
 
-        void goToEstimateReview(FlightCancellationWrapperViewModel viewModel);
+        void goToReview(FlightCancellationWrapperViewModel viewModel);
     }
 
     @Override
@@ -354,6 +378,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private void renderSelectedReason() {
         tvChooseReason.setText(selectedReason.getDetail());
         buildAttachmentReasonView();
+
+        attachments = presenter.buildAttachmentList();
+        deleteAllAttachments();
+        addAttachments(attachments);
+        renderAttachment();
     }
 
     private void buildAttachmentReasonView() {

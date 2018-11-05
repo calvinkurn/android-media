@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.List;
@@ -15,12 +16,6 @@ import java.util.List;
 
 public interface FlightCancellationReasonAndProofContract {
     interface View extends CustomerView{
-
-        void showUploadAttachmentView();
-
-        void hideUploadAttachmentView();
-
-        void addAttachment(FlightCancellationAttachmentViewModel viewModel);
 
         List<FlightCancellationAttachmentViewModel> getAttachments();
 
@@ -34,7 +29,7 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showAttachmentGreaterThanPassengersTotalAndRequiredAttachmentErrorMessage(String errorMessage);
 
-        String getReason();
+        FlightCancellationReasonViewModel getReason();
 
         Activity getActivity();
 
@@ -46,11 +41,17 @@ public interface FlightCancellationReasonAndProofContract {
 
         void showAttachmentContainer();
 
+        void showProgressBar();
+
+        void hideProgressBar();
+
         void showAttachmentMinDimensionErrorMessage(int resId);
 
         void showAttachmentMaxSizeErrorMessage(int resId);
 
         void addAttachments(List<FlightCancellationAttachmentViewModel> attachments);
+
+        void deleteAllAttachments();
 
         void renderAttachment();
 
@@ -59,6 +60,10 @@ public interface FlightCancellationReasonAndProofContract {
         int getUploadingPosition();
 
         void updateUploadingProgress(long percentage);
+
+        void disableNextButton();
+
+        void enableNextButton();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -66,6 +71,8 @@ public interface FlightCancellationReasonAndProofContract {
         void initialize(List<FlightCancellationAttachmentViewModel> attachments);
 
         List<FlightCancellationAttachmentViewModel> buildAttachmentList();
+
+        void setNextButton();
 
         void onSuccessGetImage(String filepath, int position);
 

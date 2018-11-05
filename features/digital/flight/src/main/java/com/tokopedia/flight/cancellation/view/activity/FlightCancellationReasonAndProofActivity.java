@@ -26,8 +26,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
         ProgressResponseBody.ProgressListener{
 
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
-    public static final int REQUEST_REFUND_CANCELLATION = 1;
-    private static final int REFUND_STEPS_NUMBER = 3;
+    private static final int REQUEST_REVIEW_CODE = 1;
     private FlightCancellationWrapperViewModel cancellationWrapperViewModel;
     private FlightCancellationComponent cancellationComponent;
     private FlightCancellationReasonAndProofFragment fragment;
@@ -90,16 +89,18 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     }
 
     @Override
-    public void goToEstimateReview(FlightCancellationWrapperViewModel viewModel) {
-        startActivityForResult(FlightCancellationRefundDetailActivity
-                .getCallingIntent(this, viewModel, REFUND_STEPS_NUMBER), REQUEST_REFUND_CANCELLATION);
+    public void goToReview(FlightCancellationWrapperViewModel viewModel) {
+
+        startActivityForResult(FlightCancellationReviewActivity.createIntent(this,
+                viewModel.getInvoice(), viewModel),
+                REQUEST_REVIEW_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case REQUEST_REFUND_CANCELLATION:
+            case REQUEST_REVIEW_CODE:
                 if (resultCode == Activity.RESULT_OK){
                     closeReasonAndProofPage();
                 }else {

@@ -38,17 +38,17 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private AppCompatTextView tvChangeImage;
     private FlightCancellationAttachmentViewModel element;
 
-    private boolean showDeleteButton = true;
+    private boolean showChangeButton = true;
     private Context context;
 
     private FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener;
 
-    public FlightCancellationAttachmentViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener, boolean showDeleteButton) {
+    public FlightCancellationAttachmentViewHolder(View itemView, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener interactionListener, boolean showChangeButton) {
         super(itemView);
         setupView(itemView);
 
         this.interactionListener = interactionListener;
-        this.showDeleteButton = showDeleteButton;
+        this.showChangeButton = showChangeButton;
     }
 
     private void setupView(View view) {
@@ -86,8 +86,10 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             }
         });*/
 
-        if (!showDeleteButton) {
-            tvFilename.setCompoundDrawables(null, null, null, null);
+        if (showChangeButton) {
+            tvChangeImage.setVisibility(View.VISIBLE);
+        } else {
+            tvChangeImage.setVisibility(View.GONE);
         }
 
         if (element.getFilepath() != null) {
