@@ -241,6 +241,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.datePickerRange)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -264,7 +265,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.districtrecommendation)
+    implementation project(rootProject.ext.features.districtRecommendation)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.logisticuploadawb)
@@ -280,12 +281,17 @@ dependencies {
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.kolCommon)
+    implementation project(rootProject.ext.features.merchantVoucher)
+
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.phoneVerification)
+    implementation project(rootProject.ext.features.updateinactivephone)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

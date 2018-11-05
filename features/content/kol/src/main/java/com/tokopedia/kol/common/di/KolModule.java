@@ -30,7 +30,6 @@ import retrofit2.Retrofit;
  * @author by milhamj on 06/02/18.
  */
 
-@KolScope
 @Module
 public class KolModule {
     private static final int NET_READ_TIMEOUT = 60;

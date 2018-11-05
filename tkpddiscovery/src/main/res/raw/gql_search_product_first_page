@@ -11,6 +11,7 @@ searchProduct(params: $params) {
    isFilter
   count
   count_text
+  additional_params
   redirection {
      redirect_url
      department_id
@@ -23,6 +24,14 @@ searchProduct(params: $params) {
      insteadCount
      text
      query
+   }
+   related{
+     related_keyword
+     other_related {
+       keyword
+       url
+       applink
+     }
    }
    products {
      id

@@ -14,7 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
@@ -41,12 +41,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private ImageView rating;
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
-    private ItemClickListener itemClickListener;
+    private ProductListener itemClickListener;
     protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
 
-    public GridProductItemViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public GridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
         productImage = (ImageView) itemView.findViewById(R.id.product_image);
         title = (TextView) itemView.findViewById(R.id.title);

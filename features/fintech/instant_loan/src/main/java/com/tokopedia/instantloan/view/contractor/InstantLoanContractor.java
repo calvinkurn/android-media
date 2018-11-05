@@ -16,6 +16,8 @@ public interface InstantLoanContractor {
 
         void onSuccessLoanProfileStatus(UserProfileLoanEntity status);
 
+        void setUserOnGoingLoanStatus(boolean status, int loanId);
+
         void onErrorLoanProfileStatus(String onErrorLoanProfileStatus);
 
         void onSuccessPhoneDataUploaded(PhoneDataEntity data);

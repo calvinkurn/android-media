@@ -53,4 +53,6 @@ public interface TokoCashComponent {
     void inject(SetAutoSweepLimitFragment fragment);
 
     void inject(IntroOvoFragment announcementOvoFragment);
+
+    void inject(ActivationOvoFragment activationOvoFragment);
 }

@@ -30,6 +30,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.common.di.TokoCashComponent;
+import com.tokopedia.tokocash.tracker.WalletAnalytics;
 
 import javax.inject.Inject;
 
@@ -51,6 +52,8 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
 
     @Inject
     IntroOvoPresenter presenter;
+    @Inject
+    WalletAnalytics walletAnalytics;
 
     public static IntroOvoFragment newInstance(boolean tokocashActive) {
         IntroOvoFragment fragment = new IntroOvoFragment();
@@ -114,6 +117,7 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
             @Override
             public void onClick(View view) {
                 presenter.checkPhoneNumber();
+                walletAnalytics.eventClickActivationOvoNow();
             }
         });
     }
@@ -123,6 +127,7 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
+                walletAnalytics.eventClickTnc();
                 directHelpPageWithApplink(tncApplink);
             }
 
@@ -146,6 +151,7 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         learnMoreOvoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                walletAnalytics.eventClickOvoLearnMore();
                 directHelpPageWithApplink(helpAllink);
             }
         });
@@ -189,6 +195,7 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                walletAnalytics.eventClickPopupPhoneNumber(phoneActionModel.getLabelBtnPhoneAction());
                 directPageWithApplink(phoneActionModel.getApplinkPhoneAction());
                 dialog.dismiss();
             }
