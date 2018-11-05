@@ -36,7 +36,7 @@ public class ListPassengerViewModelMapper {
             flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
         }
 
-        if (savedPassengerEntity.getPassportExpiry() != null) {
+        if (!savedPassengerEntity.getPassportExpiry().isEmpty()) {
             flightBookingPassengerViewModel.setPassportExpiredDate(
                     FlightDateUtil.formatDate(
                             FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
