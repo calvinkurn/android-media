@@ -1,8 +1,10 @@
 package com.tokopedia.kelontongapp
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -123,7 +125,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView!!.settings.userAgentString = userAgent
 
         val fcmToken = Preference.getFcmToken(this)
-        CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s", GCM_ID, fcmToken))
+        CookieManager.getInstance().setCookie(KelontongBaseUrl.COOKIE_URL, String.format("%s=%s, grosir=true", GCM_ID, fcmToken))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         } else {
@@ -149,7 +151,13 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
             val builder = AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
             builder.setTitle(R.string.dialog_info)
             builder.setMessage(R.string.dialog_msg)
-            builder.setPositiveButton(R.string.dialog_ok, null)
+            builder.setPositiveButton(R.string.dialog_yes, null)
+            builder.setNegativeButton(R.string.dialog_no) { _, _ ->
+                val url = KelontongBaseUrl.BASE_URL
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(url)
+                startActivity(intent)
+            }
             builder.show()
         }
     }

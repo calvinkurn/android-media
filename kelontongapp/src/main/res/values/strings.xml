@@ -3,8 +3,9 @@
     <string name="msg_exit">Tekan sekali lagi untuk keluar</string>
 
     <string name="dialog_info">Info</string>
-    <string name="dialog_msg">Kami mendeteksi bahwa beberapa fitur pada aplikasi akan tidak berfungsi secara fungsional pada device Anda.</string>
-    <string name="dialog_ok">OK, terimakasih</string>
+    <string name="dialog_msg">Beberapa fitur tidak akan berfungsi dengan baik pada HP kamu. Silakan gunakan internet browser untuk penggunaan yang lebih baik.</string>
+    <string name="dialog_no">Lanjut via browser</string>
+    <string name="dialog_yes">Lanjut via app</string>
 
     <string name="title_general_push_notification">Notifikasi Baru dari Mitra Tokopedia</string>
 </resources>
