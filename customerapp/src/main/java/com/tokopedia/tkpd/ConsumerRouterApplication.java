@@ -2304,14 +2304,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
-                               String shareUrl) {
+                               String shareUrl, String userId, String sharing) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setId(channelId)
                 .setName(title)
                 .setTextContent(contentMessage)
                 .setDescription(contentMessage)
                 .setImgUri(imgUrl)
+                .setOgImageUrl(imgUrl)
+                .setOgTitle(title)
                 .setUri(shareUrl)
+                .setSource(userId) // just using existing variable
+                .setPrice(sharing) // here too
                 .setType(ShareData.GROUPCHAT_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();

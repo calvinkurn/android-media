@@ -588,9 +588,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
                 viewModel.getChannelName()), "");
 
+        String userId = "0";
+        if(userSession.isLoggedIn()){
+            userId = userSession.getUserId();
+        }
+
         ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
-                viewModel.getChannelUuid(), viewModel.getChannelName(), description,
-                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+                viewModel.getChannelInfoViewModel().getChannelId(), viewModel.getChannelName(), description,
+                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl(), userId, "sharing");
     }
 
     private void setupViewPager() {

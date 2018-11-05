@@ -3,7 +3,6 @@ package com.tokopedia.core.util;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -37,7 +36,6 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
-import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.
@@ -96,8 +94,23 @@ public class BranchSdkUtils {
 
     private static LinkProperties createLinkProperties(ShareData data, String channel, Activity activity) {
         LinkProperties linkProperties = new LinkProperties();
+
+
+        linkProperties.setCampaign(getCampaignName(data.getType()));
+        linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
+        linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
+        linkProperties.addControlParameter("$og_url", data.getOgUrl());
+        linkProperties.addControlParameter("$og_title", getOgTitle(data));
+        linkProperties.addControlParameter("$og_image_url", getOgImage(data));
+        linkProperties.addControlParameter("$og_description", getOgDesc(data));
+
         String deeplinkPath;
         String desktopUrl = null;
+
+        linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, data.renderShareUri());
+        linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, data.renderShareUri());
+        linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
+
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
         } else if (isAppShowReferralButtonActivated(activity) && ShareData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -115,6 +128,13 @@ public class BranchSdkUtils {
                 desktopUrl = ((TkpdCoreRouter) activity.getApplication())
                         .getDesktopLinkGroupChat();
                 linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addTag(String.format("%s - %s", data.getId(), data.getSource()));
+                linkProperties.setFeature(data.getPrice());
+                linkProperties.setCampaign(String.format("%s - %s", data.getType(), data.getId()));
+                linkProperties.setChannel(String.format("%s - Android", data.getType()));
+                linkProperties.addControlParameter("$uri_redirect_mode","2");
             }
         } else if (ShareData.PROMO_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.PROMO_DETAIL, data.getId());
@@ -130,15 +150,9 @@ public class BranchSdkUtils {
             linkProperties.addControlParameter(BRANCH_IOS_DESKTOP_URL_KEY, data.renderShareUri());
         }
 
-        linkProperties.setCampaign(getCampaignName(data.getType()));
-        linkProperties.setChannel(ShareData.ARG_UTM_SOURCE);
-        linkProperties.setFeature(ShareData.ARG_UTM_MEDIUM);
+
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
-        linkProperties.addControlParameter("$og_url", data.getOgUrl());
-        linkProperties.addControlParameter("$og_title", getOgTitle(data));
-        linkProperties.addControlParameter("$og_image_url", getOgImage(data));
-        linkProperties.addControlParameter("$og_description", getOgDesc(data));
 
         return linkProperties;
     }
