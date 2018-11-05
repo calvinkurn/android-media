@@ -75,7 +75,6 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geolocation);
-        GeolocationActivityPermissionsDispatcher.inflateFragmentWithCheck(this);
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
                     new CheckoutAnalyticsChangeAddress(
@@ -83,7 +82,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                     );
         }
         if(savedInstanceState == null) {
-           inflateFragment();
+            GeolocationActivityPermissionsDispatcher.inflateFragmentWithCheck(this);
         }
     }
 
