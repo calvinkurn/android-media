@@ -27,13 +27,6 @@ import static com.tokopedia.logisticaddaddress.ManageAddressConstant.PLATFORM_MA
  */
 public class AddAddressActivity extends BasePresenterActivity {
 
-    private static final String ADD_ADDRESS_SCREENNAME = "/user/address/create";
-
-    @Override
-    public String getScreenName() {
-        return ADD_ADDRESS_SCREENNAME;
-    }
-
     @Override
     protected void setupURIPass(Uri data) {
 
