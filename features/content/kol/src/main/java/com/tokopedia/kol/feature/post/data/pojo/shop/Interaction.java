@@ -5,6 +5,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Interaction {
+    @SerializedName("deletable")
+    @Expose
+    private boolean deletable;
+    @SerializedName("editable")
+    @Expose
+    private boolean editable;
     @SerializedName("isLiked")
     @Expose
     private boolean isLiked;
@@ -20,6 +26,22 @@ public class Interaction {
     @SerializedName("showLike")
     @Expose
     private boolean showLike;
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
 
     public boolean isLiked() {
         return isLiked;

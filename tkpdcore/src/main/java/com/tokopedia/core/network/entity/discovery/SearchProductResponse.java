@@ -313,6 +313,10 @@ public class SearchProductResponse {
             private List<String> topLabel;
             @SerializedName("bottom_label")
             private List<String> bottomLabel;
+            @SerializedName("category_id")
+            private int categoryId;
+            @SerializedName("category_name")
+            private String categoryName;
 
             public String getId() {
                 return id;
@@ -481,6 +485,22 @@ public class SearchProductResponse {
 
             public void setBottomLabel(List<String> bottomLabel) {
                 this.bottomLabel = bottomLabel;
+            }
+
+            public int getCategoryId() {
+                return categoryId;
+            }
+
+            public void setCategoryId(int categoryId) {
+                this.categoryId = categoryId;
+            }
+
+            public String getCategoryName() {
+                return categoryName;
+            }
+
+            public void setCategoryName(String categoryName) {
+                this.categoryName = categoryName;
             }
 
             public static class Shop {

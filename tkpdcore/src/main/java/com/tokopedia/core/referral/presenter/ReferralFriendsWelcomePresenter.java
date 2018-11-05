@@ -4,11 +4,12 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.referral.listener.FriendsWelcomeView;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 /**
  * Created by ashwanityagi on 04/12/17.
@@ -44,24 +45,24 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     }
 
     public String getHowItWorks() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_TEXT_WELCOME, view.getActivity().getString(R.string.cashback_enter_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_TEXT_WELCOME, view.getActivity().getString(R.string.cashback_enter_tokocash));
     }
 
     @Override
     public String getSubHeaderFromFirebase() {
 
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_WELCOME_MESSAGE, view.getActivity().getString(R.string.referral_welcome_desc));
     }
 
     public String getHelpButtonContentTitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, view.getActivity().getString(R.string.acquisition_referral));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, view.getActivity().getString(R.string.acquisition_referral));
     }
 
     public String getHelpButtonContentSubtitle() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, view.getActivity().getString(R.string.what_is_referral_tokocash));
+        return remoteConfig.getString(RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, view.getActivity().getString(R.string.what_is_referral_tokocash));
     }
 
     public boolean isShowReferralHelpLink() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
     }
 }

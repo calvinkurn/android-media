@@ -16,6 +16,9 @@ public class Post {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("status")
+    @Expose
+    private String status;
     @SerializedName("content")
     @Expose
     private List<Content> content = null;
@@ -48,6 +51,14 @@ public class Post {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public List<Content> getContent() {

@@ -22,6 +22,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.revamp.ProductViewData;
+import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,10 @@ public interface ProductDetailView extends ViewListener {
     String SOURCE_BUTTON_BUY_VARIANT = "BUTTON_BUY_VARIANT";
     String SOURCE_BUTTON_CART_VARIANT = "SOURCE_BUTTON_CART_VARIANT";
     String SOURCE_BUTTON_CHAT_PDP = "SOURCE_BUTTON_CHAT_PDP";
+
+    void onByMeClicked(AffiliateInfoViewModel affiliate);
+
+    void renderAffiliateButton(AffiliateInfoViewModel affiliate);
 
     void onWishlistCountLoaded(String wishlistCountText);
 
@@ -352,5 +357,10 @@ public interface ProductDetailView extends ViewListener {
 
     void moveToEstimationDetail();
 
+    void showErrorAffiliate(String message);
+
     void showPromoWidget(PromoAttributes promoAttributes);
+
+    boolean isFromExploreAffiliate();
+
 }

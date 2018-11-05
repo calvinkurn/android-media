@@ -38,6 +38,7 @@ import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
@@ -217,7 +218,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -248,7 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onOpenKolTooltip(int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -295,6 +296,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEditClicked(int id) {
+
+    }
+
+    @Override
+    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+
+    }
+
+    @Override
     public void onGoToProfile(String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
@@ -321,7 +332,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
 
             if (kolPostViewModel.isFollowed()) {
                 ToasterNormal
