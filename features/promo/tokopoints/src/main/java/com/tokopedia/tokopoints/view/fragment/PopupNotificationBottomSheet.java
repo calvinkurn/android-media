@@ -29,7 +29,8 @@ public class PopupNotificationBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
     }
 
 

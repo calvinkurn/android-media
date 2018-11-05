@@ -159,22 +159,25 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         Calendar calendarMinDate = (Calendar) Calendar.getInstance();
         calendarMinDate.setTime((Date) getIntent().getSerializableExtra(EXTRA_MIN_DATE));
 
+        Calendar loopCalendar = (Calendar) currentCalendar.clone();
+        loopCalendar.set(Calendar.DATE, 1);
         for (int i = 0; i < monthDeviation; i++) {
             fragments.add(TravelCalendarFragment.newInstance(dateFromIntent, month, year, calendarMaxDate, calendarMinDate,
                     (ArrayList) holidayResultList));
 
-            calendarDateUser.set(Calendar.MONTH, month);
-            calendarDateUser.set(Calendar.YEAR, year);
-            String monthName = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(calendarDateUser.getTime());
+            loopCalendar.set(Calendar.MONTH, month);
+            loopCalendar.set(Calendar.YEAR, year);
+            String monthName = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH).format(loopCalendar.getTime());
             titleMonths.add(monthName);
 
-            if (month > 11) {
-                month = 1;
+            if (month > 10) {
+                month = 0;
                 year++;
             } else {
                 month++;
             }
         }
+
         adapter = new CalendarPagerAdapter(getSupportFragmentManager(), fragments, titleMonths);
         viewPager.setAdapter(adapter);
 
