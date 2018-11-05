@@ -59,6 +59,12 @@ public interface KolPostListener {
 
             void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url);
 
+            void trackContentClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
+
+            void trackTooltipClick(boolean hasMultipleContent, String activityId,
+                                   String activityType, String position);
+
             void onFollowKolClicked(int rowNumber, int id);
 
             void onUnfollowKolClicked(int rowNumber, int id);

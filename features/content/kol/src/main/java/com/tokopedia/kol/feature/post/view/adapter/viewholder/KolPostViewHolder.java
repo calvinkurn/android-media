@@ -266,15 +266,27 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     }
 
     private void setListener(final KolPostViewModel element) {
-        tooltip.setOnClickListener(v -> tooltipAreaClicked(element));
+        tooltip.setOnClickListener(v -> {
+            tooltipAreaClicked(element);
+            viewListener.trackTooltipClick(
+                    element.isMultipleContent(),
+                    String.valueOf(element.getContentId()),
+                    element.getActivityType(),
+                    String.valueOf(getAdapterPosition())
+            );
+        });
 
-        adapter.setClickListener(
-                position -> {
-                    if (tooltip.getVisibility() == View.VISIBLE) {
-                        tooltipAreaClicked(element);
-                    }
-                }
-        );
+        adapter.setClickListener(position -> {
+            if (tooltip.getVisibility() == View.VISIBLE) {
+                tooltipAreaClicked(element);
+                viewListener.trackContentClick(
+                        element.isMultipleContent(),
+                        String.valueOf(element.getContentId()),
+                        element.getActivityType(),
+                        String.valueOf(getAdapterPosition())
+                );
+            }
+        });
 
         addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
     }

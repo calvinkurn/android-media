@@ -16,9 +16,6 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         private const val LABEL = "eventLabel"
         private const val USER_ID = "user_id"
         private const val CONTENT_POSITION = "content_position"
-        private const val USER_NAME = "user_name"
-        private const val SHOP_ID = "shop_id"
-        private const val PRODUCT_ID = "product_id"
         private const val SINGLE = "single"
         private const val MULTIPLE = "multiple"
     }
@@ -37,7 +34,6 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     object Action {
         const val CLICK_PROMPT = "click prompt"
         const val CLICK_FOLLOWING = "click following"
-        const val CLICK_FOLLOWERS = "click followers"
         const val CLICK_TAG = "click-%s-user-all-%s-tag"
         const val CLICK_CARD = "click-%s-user-all-%s-card"
         const val IMPRESSION_CARD = "impression-%s-user-all-%s"
@@ -70,11 +66,9 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         return getDefaultData(Event.EVENT_VIEW_PROFILE, Category.USER_PROFILE_PAGE, action, label)
     }
 
-    private fun setCustomDimensions(data: MutableMap<String, Any>, position: String, shopId: String,
-                                    productId: String): MutableMap<String, Any> {
+    private fun setCustomDimensions(data: MutableMap<String, Any>, position: String)
+            : MutableMap<String, Any> {
         data.put(CONTENT_POSITION, position)
-        data.put(SHOP_ID, shopId)
-        data.put(PRODUCT_ID, productId)
         return data
     }
 
@@ -89,7 +83,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     }
 
     fun eventClickTag(hasMultipleContent: Boolean, activityId: String, activityType: String,
-                      position: String, shopId: String, productId: String) {
+                      position: String) {
         val data = getDefaultClickData(
                 String.format(
                         Action.CLICK_TAG,
@@ -98,12 +92,12 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 ),
                 activityId
         )
-        setCustomDimensions(data, position, shopId, productId)
+        setCustomDimensions(data, position)
         analyticTracker.sendEventTracking(data)
     }
 
     fun eventClickCard(hasMultipleContent: Boolean, activityId: String, activityType: String,
-                       position: String, shopId: String, productId: String) {
+                       position: String) {
         val data = getDefaultClickData(
                 String.format(
                         Action.CLICK_CARD,
@@ -112,12 +106,12 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 ),
                 activityId
         )
-        setCustomDimensions(data, position, shopId, productId)
+        setCustomDimensions(data, position)
         analyticTracker.sendEventTracking(data)
     }
 
     fun eventViewCard(hasMultipleContent: Boolean, activityId: String, activityType: String,
-                      position: String, shopId: String, productId: String) {
+                      position: String) {
         val data = getDefaultViewData(
                 String.format(
                         Action.IMPRESSION_CARD,
@@ -126,7 +120,7 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                 ),
                 activityId
         )
-        setCustomDimensions(data, position, shopId, productId)
+        setCustomDimensions(data, position)
         analyticTracker.sendEventTracking(data)
     }
 
@@ -171,6 +165,17 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
                                 activityType
                         ),
                         activityId
+                )
+        )
+    }
+
+    fun eventClickAfterFollow(name: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultData(
+                        Event.EVENT_CLICK_TOP_PROFILE,
+                        Category.KOL_TOP_PROFILE,
+                        Action.CLICK_PROMPT,
+                        String.format(Label.GO_TO_FEED_FORMAT, name)
                 )
         )
     }

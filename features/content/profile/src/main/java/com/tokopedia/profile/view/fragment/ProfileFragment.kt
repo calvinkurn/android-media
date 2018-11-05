@@ -34,10 +34,6 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.
 import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
-import com.tokopedia.profile.analytics.ProfileAnalytics.Action.CLICK_PROMPT
-import com.tokopedia.profile.analytics.ProfileAnalytics.Category.KOL_TOP_PROFILE
-import com.tokopedia.profile.analytics.ProfileAnalytics.Event.EVENT_CLICK_TOP_PROFILE
-import com.tokopedia.profile.analytics.ProfileAnalytics.Label.GO_TO_FEED_FORMAT
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.FollowingListActivity
@@ -240,6 +236,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     firstPageViewModel.profileHeaderViewModel.isAffiliate)
             )
         }
+        trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(firstPageViewModel.lastCursor))
 
         if (afterPost && !onlyOnePost) {
@@ -267,6 +264,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
         presenter.cursor = lastCursor
+        trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(lastCursor))
     }
 
@@ -335,6 +333,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
 
         profileRouter.openRedirectUrl(activity as Activity, url)
+    }
+
+    override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
+                                   activityType: String, position: String) {
+        profileAnalytics.eventClickCard(hasMultipleContent, activityId, activityType, position)
+    }
+
+    override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String,
+                                   activityType: String, position: String) {
+        profileAnalytics.eventClickTag(hasMultipleContent, activityId, activityType, position)
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
@@ -518,6 +526,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
+    private fun trackKolPostImpression(visitableList: List<Visitable<*>>) {
+        visitableList.forEachIndexed { position, model ->
+            val adapterPosition = adapter.data.size + position
+            when (model) {
+                is KolPostViewModel -> {
+                    profileAnalytics.eventViewCard(
+                            model.isMultipleContent,
+                            model.contentId.toString(),
+                            model.activityType,
+                            adapterPosition.toString()
+                    )
+                }
+            }
+        }
+    }
+
     private fun addFooter(headerViewModel: ProfileHeaderViewModel,
                           affiliatePostQuota: AffiliatePostQuota) {
         footer.visibility = View.VISIBLE
@@ -667,12 +691,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             : View.OnClickListener {
         return View.OnClickListener {
             RouteManager.route(context, ApplinkConst.FEED)
-            abstractionRouter.analyticTracker.sendEventTracking(
-                    EVENT_CLICK_TOP_PROFILE,
-                    KOL_TOP_PROFILE,
-                    CLICK_PROMPT,
-                    String.format(GO_TO_FEED_FORMAT, profileHeaderViewModel.name)
-            )
+            profileAnalytics.eventClickAfterFollow(profileHeaderViewModel.name)
         }
     }
 
