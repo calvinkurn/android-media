@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
@@ -33,8 +34,6 @@ public class OnboardingFragment extends BaseDaggerFragment {
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
     private static final String FINISH_IMAGE_NAME = "af_onboarding_finish";
     private static final String START_IMAGE_NAME = "af_onboarding_start";
-    //TODO milhamj change to real url
-    private static final String COMMISSION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
     private static final int LOGIN_CODE = 13;
 
     @Inject
@@ -145,7 +144,11 @@ public class OnboardingFragment extends BaseDaggerFragment {
         commission.setOnClickListener(v ->
                 RouteManager.route(
                         getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, COMMISSION_URL)
+                        String.format(
+                                "%s?url=%s",
+                                ApplinkConst.WEBVIEW,
+                                AffiliateConstant.ABOUT_COMMISSION_URL
+                        )
                 )
         );
     }
