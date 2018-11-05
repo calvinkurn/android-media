@@ -196,6 +196,7 @@ ext {
             talk                        : ":features:user:talk",
             topchat                     : ":features:user:topchat",
             updateinactivephone         : ":features:user:updateinactivephone",
+            userIdentification          : ":features:user:user_identification",
             vote                        : ":features:user:vote",
 
             content                     : ":tkpdcontent",
