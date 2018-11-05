@@ -271,6 +271,7 @@ dependencies {
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
