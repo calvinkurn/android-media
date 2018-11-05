@@ -37,6 +37,9 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private boolean selected;
     private boolean stateExtraPaddingTop;
 
+    // Flag for one click shipment
+    private boolean isFromPdp;
+
     public RecipientAddressModel() {
     }
 
@@ -208,6 +211,14 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.stateExtraPaddingTop = stateExtraPaddingTop;
     }
 
+    public boolean isFromPdp() {
+        return isFromPdp;
+    }
+
+    public void setFromPdp(boolean fromPdp) {
+        isFromPdp = fromPdp;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -289,6 +300,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeParcelable(this.store, flags);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFromPdp ? (byte) 1 : (byte) 0);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -313,6 +325,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.store = in.readParcelable(Store.class.getClassLoader());
         this.selected = in.readByte() != 0;
         this.stateExtraPaddingTop = in.readByte() != 0;
+        this.isFromPdp = in.readByte() != 0;
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

@@ -387,8 +387,8 @@ public class WishListImpl implements WishList {
                         .notes("")
                         .quantity(dataDetail.getMinimumOrder())
                         .shopId(Integer.parseInt(dataDetail.getShop().getId()))
-                        .build()
-        ).subscribeOn(Schedulers.newThread())
+                        .build(),
+                false).subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCartSubscriber(dataDetail));

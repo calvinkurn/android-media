@@ -25,6 +25,10 @@ public interface CartApi {
     Observable<Response<CartResponse>> postAddToCart(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
+    @POST(TransactionDataApiUrl.Cart.PATH_ADD_TO_CART_ONE_CLICK_SHIPMENT)
+    Observable<Response<CartResponse>> postAddToCartOneClickShipment(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_CART_LIST_MULTIPLE_ADDRESS)
     Observable<Response<CartResponse>> getCartList(@FieldMap Map<String, String> params);
 
@@ -45,6 +49,9 @@ public interface CartApi {
 
     @GET(TransactionDataApiUrl.Cart.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
     Observable<Response<CartResponse>> getShipmentAddressForm(@QueryMap Map<String, String> params);
+
+    @GET(TransactionDataApiUrl.Cart.PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT)
+    Observable<Response<CartResponse>> getShipmentAddressFormOneClickCheckout(@QueryMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TransactionDataApiUrl.Cart.PATH_CHECKOUT)
