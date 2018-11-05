@@ -949,8 +949,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
-
-
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
         onLikeKolClicked(rowNumber, id, false, "");

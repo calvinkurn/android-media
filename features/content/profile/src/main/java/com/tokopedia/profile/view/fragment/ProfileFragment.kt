@@ -108,6 +108,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onStart() {
+        super.onStart()
+        profileAnalytics.sendScreen(activity!!, screenName)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         if (userSession.userId == userId.toString()) {
@@ -159,7 +164,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         super.onSwipeRefresh()
     }
 
-    override fun getScreenName(): String? = null
+    override fun getScreenName(): String = ProfileAnalytics.Screen.PROFILE
 
     override fun initInjector() {
         DaggerProfileComponent.builder()

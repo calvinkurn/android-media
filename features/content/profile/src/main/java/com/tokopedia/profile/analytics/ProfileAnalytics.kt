@@ -1,5 +1,6 @@
 package com.tokopedia.profile.analytics
 
+import android.app.Activity
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -18,6 +19,10 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
         private const val CONTENT_POSITION = "content_position"
         private const val SINGLE = "single"
         private const val MULTIPLE = "multiple"
+    }
+
+    object Screen {
+        const val PROFILE = "user profile page"
     }
 
     object Event {
@@ -74,6 +79,10 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
 
     private fun singleOrMultiple(hasMultipleContent: Boolean): String {
         return if (hasMultipleContent) MULTIPLE else SINGLE
+    }
+
+    fun sendScreen(activity: Activity, screenName: String) {
+        analyticTracker.sendScreen(activity, screenName)
     }
 
     fun eventClickFollowing(profileId: String) {
