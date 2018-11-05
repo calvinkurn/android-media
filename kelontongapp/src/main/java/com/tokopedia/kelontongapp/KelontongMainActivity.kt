@@ -51,6 +51,8 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        showAlertDialog()
+
         loadWebViewPage()
     }
 
@@ -94,7 +96,6 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
             override fun onComplete() {
                 progressBar!!.visibility = View.GONE
                 if (Preference.isFirstTime(this@KelontongMainActivity)) {
-                    showAlertDialog()
                     Preference.saveFirstTime(this@KelontongMainActivity)
                 }
             }
