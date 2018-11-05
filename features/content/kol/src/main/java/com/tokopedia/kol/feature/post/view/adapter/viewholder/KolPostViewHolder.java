@@ -208,7 +208,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onUnlikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         } else {
             if (type == Type.FEED) {
                 analyticTracker.sendEventTracking(
@@ -218,8 +223,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                         generateKolEventLabel(element.isFollowed(), element.getCardType())
                 );
             }
-
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onLikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         }
     }
 
@@ -234,7 +243,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
+        viewListener.onGoToKolComment(
+                getAdapterPosition(),
+                element.getContentId(),
+                element.isMultipleContent(),
+                element.getActivityType()
+        );
     }
 
     @Override
@@ -317,26 +331,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
-        } else if (type == Type.PROFILE) {
-            promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getContentId(),
-                    KolEnhancedTracking.Promotion.createContentNameKolPost(
-                            element.getTagsType()),
-                    TextUtils.isEmpty(element.getName()) ? DASH :
-                            element.getName(),
-                    getAdapterPosition(),
-                    TextUtils.isEmpty(element.getLabel()) ? DASH :
-                            element.getLabel(),
-                    element.getTagsId(),
-                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
-                            element.getTagsLink(),
-                    Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
-                            viewListener.getUserSession().getUserId() : "0")
-            ));
-
-            analyticTracker.sendEnhancedEcommerce(
-                    KolEnhancedTracking.getKolClickTracking(promotionList)
-            );
         } else if (type == Type.SHOP_PAGE) {
             analyticTracker.sendEventTracking(
                     KolEventTracking.Event.EVENT_SHOP_PAGE,

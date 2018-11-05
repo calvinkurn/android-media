@@ -271,6 +271,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun goToFollowing() {
+        profileAnalytics.eventClickFollowing(userId.toString())
         startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
@@ -344,27 +345,33 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int) {
+    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+                                  activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
+            profileAnalytics.eventClickLike(hasMultipleContent, id.toString(), activityType)
         } else {
             goToLogin()
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int) {
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+                                    activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
+            profileAnalytics.eventClickUnlike(hasMultipleContent, id.toString(), activityType)
         } else {
             goToLogin()
         }
     }
 
-    override fun onGoToKolComment(rowNumber: Int, id: Int) {
+    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+                                  activityType: String) {
         val intent = KolCommentActivity.getCallingIntent(
                 context, id, rowNumber
         )
         startActivityForResult(intent, KOL_COMMENT_CODE)
+        profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
     }
 
     override fun onEditClicked(id: Int) {
@@ -590,6 +597,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             startActivity(
                     Intent.createChooser(sharingIntent, getString(R.string.profile_share_profile))
             )
+            profileAnalytics.eventClickBagikanProfile(userId.toString())
         }
     }
 

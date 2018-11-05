@@ -63,11 +63,14 @@ public interface KolPostListener {
 
             void onUnfollowKolClicked(int rowNumber, int id);
 
-            void onLikeKolClicked(int rowNumber, int id);
+            void onLikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
 
-            void onUnlikeKolClicked(int rowNumber, int id);
+            void onUnlikeKolClicked(int rowNumber, int id, boolean hasMultipleContent,
+                                    String activityType);
 
-            void onGoToKolComment(int rowNumber, int id);
+            void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
+                                  String activityType);
 
             void onEditClicked(int id);
 
