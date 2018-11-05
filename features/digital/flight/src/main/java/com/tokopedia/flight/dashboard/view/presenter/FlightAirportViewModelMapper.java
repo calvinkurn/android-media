@@ -1,6 +1,6 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 
 import java.util.ArrayList;

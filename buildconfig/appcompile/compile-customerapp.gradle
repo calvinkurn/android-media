@@ -1,10 +1,13 @@
 // Sort alphabetically by name
 include "features:common:nps"
 
-include "features:content:kol"
-include "features:content:kol_common"
+include "features:content:affiliate"
+include "features:content:affiliate_common"
 include "features:content:feed"
 include "features:content:explore"
+include "features:content:kol"
+include "features:content:kol_common"
+include "features:content:profile"
 include "features:content:interest_pick"
 
 include "features:digital:flight_no_op"
@@ -13,6 +16,7 @@ include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
 include "features:digital:flight"
+include "features:digital:flight_dbflow"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
 
@@ -76,7 +80,6 @@ include "features:transaction:transactiondata"
 include "features:transaction:checkout"
 
 include "features:user:groupchat"
-include "features:user:profile"
 include "features:user:otp"
 include "features:user:topchat"
 include "features:user:changepassword"
