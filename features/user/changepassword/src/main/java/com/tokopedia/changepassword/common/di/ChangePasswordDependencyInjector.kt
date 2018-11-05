@@ -60,14 +60,14 @@ class ChangePasswordDependencyInjector {
 
             val builder: OkHttpClient.Builder = OkHttpClient.Builder()
 
+            builder.addInterceptor(fingerprintInterceptor)
+            builder.addInterceptor(tkpdAuthInterceptor)
+
             if (GlobalConfig.isAllowDebuggingTools()) {
                 builder.addInterceptor(chuckInterceptor)
                 builder.addInterceptor(DebugInterceptor())
                 builder.addInterceptor(httpLoggingInterceptor)
             }
-
-            builder.addInterceptor(fingerprintInterceptor)
-            builder.addInterceptor(tkpdAuthInterceptor)
 
             val okHttpClient: OkHttpClient = builder.build()
 
