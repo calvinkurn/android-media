@@ -204,7 +204,6 @@ ext {
             notifCenter                 : ":features:user:notifcenter",
             otp                         : ":features:user:otp",
             phoneVerification           : ":features:user:phoneverification",
-            profile                     : ":features:user:profile",
             settingbank                 : ":features:user:settingbank",
             talk                        : ":features:user:talk",
             topchat                     : ":features:user:topchat",
