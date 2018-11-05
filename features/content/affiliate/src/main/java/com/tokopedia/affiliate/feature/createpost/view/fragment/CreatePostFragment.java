@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Medium;
@@ -51,6 +52,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     CreatePostContract.Presenter presenter;
     @Inject
     CreatePostPreference createPostPreference;
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
     private View mainView;
     private TextView title;
     private TextView seeExample;
@@ -280,6 +283,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void initView() {
         doneBtn.setOnClickListener(view -> {
+            affiliateAnalytics.onSelesaiCreateButtonClicked();
             if (!viewModel.isEdit()) {
                 submitPost();
             } else {
@@ -291,6 +295,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 goToImageExample(true);
                 createPostPreference.setFirstTime(getUserSession().getUserId());
             } else {
+                affiliateAnalytics.onTambahGambarButtonClicked();
                 goToImagePicker();
             }
         });
@@ -330,7 +335,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         this.guide = guide;
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
-        seeExample.setOnClickListener(v -> goToImageExample(false));
+        seeExample.setOnClickListener(v -> {
+            affiliateAnalytics.onLihatContohButtonClicked();
+            goToImageExample(false);
+        });
     }
 
     private void setupViewPager() {

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
@@ -39,6 +40,9 @@ public class OnboardingFragment extends BaseDaggerFragment {
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     private ImageView image;
     private TextView title;
@@ -138,15 +142,19 @@ public class OnboardingFragment extends BaseDaggerFragment {
                 START_IMAGE_NAME
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
-        goBtn.setOnClickListener(view1 ->
-                startActivity(UsernameInputActivity.createIntent(getContext(), productId))
+        goBtn.setOnClickListener(view1 -> {
+                    affiliateAnalytics.onCobaSekarangButtonClicked();
+                    startActivity(UsernameInputActivity.createIntent(getContext(), productId));
+                }
         );
         commission.setVisibility(View.VISIBLE);
-        commission.setOnClickListener(v ->
-                RouteManager.route(
-                        getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, COMMISSION_URL)
-                )
+        commission.setOnClickListener(v -> {
+                    affiliateAnalytics.onTentangKomisiButtonClicked();
+                    RouteManager.route(
+                            getContext(),
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, COMMISSION_URL)
+                    );
+                }
         );
     }
 
