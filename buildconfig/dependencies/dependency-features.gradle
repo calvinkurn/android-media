@@ -4,6 +4,7 @@ ext {
     tkpdAttachProductVersion = '2.22'
     tkpdBankDBVersion = '2.22'
     tkpdChallengesVersion = '2.22'
+    tkpdChangePhoneNumberVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCoreVersion = '2.23'
     tkpdDealsVersion = '2.22'
@@ -31,6 +32,7 @@ ext {
     tkpdNotifCenterVersion = '2.22'
     tkpdPaymentVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
+    tkpdPhoneVerificationVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdProfileVersion = '2.22'
     tkpdReactNativeVersion = '2.22'
@@ -59,6 +61,7 @@ ext {
     tkpdFeatureDependencies = [
             attachproduct               : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}",
             challenges                  : "com.tokopedia.challenges:challenges:${tkpdChallengesVersion}",
+            changePhoneNumber           : "com.tokopedia.changephonenumber:changephonenumber:${tkpdChangePhoneNumberVersion}",
             core                        : "com.tokopedia.core:core:${tkpdCoreVersion}",
             digital                     : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals                : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
@@ -84,6 +87,7 @@ ext {
             payment                     : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
             paymentSetting              : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
             paymentManagementSystem     : "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            phoneVerification           : "com.tokopedia.phoneverification:phoneverification:${tkpdPhoneVerificationVersion}",
             productManageItem           : "com.tokopedia.product:product-manage-item:${tkpdProductVersion}",
             productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             productDraftDatabase        : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
@@ -194,10 +198,13 @@ ext {
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",
             changepassword              : ":features:user:changepassword",
+            changePhoneNumber           : ":features:user:changephonenumber",
             groupchat                   : ":features:user:groupchat",
             logout                      : ":features:user:logout",
             notifCenter                 : ":features:user:notifcenter",
             otp                         : ":features:user:otp",
+            phoneVerification           : ":features:user:phoneverification",
+            profile                     : ":features:user:profile",
             settingbank                 : ":features:user:settingbank",
             talk                        : ":features:user:talk",
             topchat                     : ":features:user:topchat",
