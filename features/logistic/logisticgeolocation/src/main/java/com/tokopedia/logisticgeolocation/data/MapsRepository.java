@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,7 +9,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.CoordinateModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticgeolocation.di.GeolocationScope;
-import com.tokopedia.logisticgeolocation.model.IMapsMapper;
+import com.tokopedia.logisticgeolocation.domain.IMapsMapper;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.TKPDMapParam;
 

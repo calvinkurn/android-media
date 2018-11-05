@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.pinpoint;
 
 
 import android.Manifest;
@@ -43,6 +43,9 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.data.IMapsRepository;
+import com.tokopedia.logisticgeolocation.R;
+import com.tokopedia.logisticgeolocation.util.RequestPermissionUtil;
 import com.tokopedia.logisticgeolocation.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticgeolocation.di.GeolocationModule;
 import com.tokopedia.user.session.UserSession;

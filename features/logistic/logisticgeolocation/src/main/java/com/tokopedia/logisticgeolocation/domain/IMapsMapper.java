@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation.model;
+package com.tokopedia.logisticgeolocation.domain;
 
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Data;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;

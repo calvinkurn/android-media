@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.pinpoint;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,6 +13,10 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivityPermissionsDispatcher;
+import com.tokopedia.logisticgeolocation.domain.LocationPassMapper;
+import com.tokopedia.logisticgeolocation.R;
+import com.tokopedia.logisticgeolocation.util.RequestPermissionUtil;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.HashMap;
@@ -25,7 +29,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint{
+public class GeolocationActivity extends BaseActivity implements ITransactionAnalyticsGeoLocationPinPoint {
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";

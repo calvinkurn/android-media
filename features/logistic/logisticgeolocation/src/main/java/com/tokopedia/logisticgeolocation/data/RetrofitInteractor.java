@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.data;
 
 import android.content.Context;
 

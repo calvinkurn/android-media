@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.pinpoint;
 
 /**
  * @author anggaprasetiyo on 20/07/18.

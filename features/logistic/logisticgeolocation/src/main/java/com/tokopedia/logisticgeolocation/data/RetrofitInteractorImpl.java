@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.data;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticgeolocation.di.GeolocationScope;
+import com.tokopedia.logisticgeolocation.pinpoint.GeolocationPresenter;
 import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.concurrent.TimeUnit;

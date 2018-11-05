@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation.model;
+package com.tokopedia.logisticgeolocation.domain;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Data;

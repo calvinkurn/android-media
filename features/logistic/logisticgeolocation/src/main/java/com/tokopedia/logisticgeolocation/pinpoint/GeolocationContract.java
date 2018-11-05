@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.pinpoint;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.data.IMapsRepository;
 
 import rx.subscriptions.CompositeSubscription;
 

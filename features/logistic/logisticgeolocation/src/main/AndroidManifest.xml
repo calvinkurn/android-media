@@ -3,7 +3,7 @@
     package="com.tokopedia.logisticgeolocation">
 
     <application>
-        <activity android:name=".GeolocationActivity"></activity>
+        <activity android:name=".pinpoint.GeolocationActivity"></activity>
     </application>
 
 </manifest>

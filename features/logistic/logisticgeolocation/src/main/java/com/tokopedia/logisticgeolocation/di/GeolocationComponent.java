@@ -1,7 +1,7 @@
 package com.tokopedia.logisticgeolocation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.logisticgeolocation.GoogleMapFragment;
+import com.tokopedia.logisticgeolocation.pinpoint.GoogleMapFragment;
 
 import dagger.Component;
 

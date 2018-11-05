@@ -1,4 +1,4 @@
-package com.tokopedia.logisticgeolocation;
+package com.tokopedia.logisticgeolocation.domain;
 
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 
