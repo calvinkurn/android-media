@@ -1674,4 +1674,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
 
     }
+
+    @Override
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
+        TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
+    }
 }

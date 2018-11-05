@@ -24,6 +24,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
+            MoEngageEventTracking.sendProductCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
         }
@@ -74,6 +76,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = new Intent(activity, CategoryActivity.class);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId);
             intent.putExtra(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
+            MoEngageEventTracking.sendSubCategory(departmentId, categoryName);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             activity.startActivityForResult(intent, CategoryNavigationActivity.DESTROY_INTERMEDIARY);
         }
