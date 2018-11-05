@@ -117,7 +117,11 @@ public class CountDownView extends FrameLayout {
 
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
-        if (isExpired(serverTimeOffset, expiredTime)) {
+        Date serverTime = new Date();
+        serverTime.setTime(
+                serverTime.getTime() + serverTimeOffset
+        );
+        if (isExpired(serverTime, expiredTime)) {
             handleExpiredTime(listener);
             return;
         }
@@ -126,9 +130,9 @@ public class CountDownView extends FrameLayout {
         runnableRefreshCounter = new Runnable() {
             @Override
             public void run() {
-                if (!isExpired(serverTimeOffset, expiredTime)) {
-                    Date serverTime = new Date();
-                    long currentMillisecond = serverTime.getTime() + serverTimeOffset;
+                if (!isExpired(serverTime, expiredTime)) {
+                    Date currentDate = new Date();
+                    long currentMillisecond = currentDate.getTime() + serverTimeOffset;
                     serverTime.setTime(currentMillisecond);
 
                     TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
@@ -155,10 +159,7 @@ public class CountDownView extends FrameLayout {
         return new Date().after(expiredTime);
     }
 
-    private boolean isExpired(long serverTimeOffset, Date expiredTime) {
-        Date serverTime = new Date();
-        long currentMillisecond = serverTime.getTime() + serverTimeOffset;
-        serverTime.setTime(currentMillisecond);
+    private boolean isExpired(Date serverTime, Date expiredTime) {
         return serverTime.after(expiredTime);
     }
 
