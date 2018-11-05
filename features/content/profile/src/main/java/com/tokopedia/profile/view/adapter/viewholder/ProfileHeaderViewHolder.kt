@@ -12,12 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder.PAYLOAD_FOLLOW
 import com.tokopedia.profile.R
-import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 import kotlinx.android.synthetic.main.item_profile_header.view.*
@@ -31,6 +27,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_header
+
         const val PAYLOAD_FOLLOW = 13
         const val TEXT_LENGTH_MIN = 3
     }
@@ -72,6 +69,9 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
         if (element.isOwner) {
             itemView.changeAvatar.visibility = View.VISIBLE
             itemView.changeAvatar.setOnClickListener {
+                viewListener.onChangeAvatarClicked()
+            }
+            itemView.avatar.setOnClickListener {
                 viewListener.onChangeAvatarClicked()
             }
         } else {

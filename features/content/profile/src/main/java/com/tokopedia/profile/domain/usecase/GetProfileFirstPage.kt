@@ -89,6 +89,7 @@ class GetProfileFirstPage @Inject constructor(
                     userId,
                     profile.isKol,
                     profile.isAffiliate,
+                    profile.isShowAffiliateContent,
                     profile.isFollowed,
                     userId.toString() == userSession.userId
             )

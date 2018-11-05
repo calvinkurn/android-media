@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide;
-import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Medium;
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
@@ -36,8 +34,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -203,6 +199,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             setMain.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.INVISIBLE);
             deleteImageLayout.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.GONE);
         }
+        updateSetMainView();
     }
 
     @Override
@@ -298,6 +295,16 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             }
         });
         deleteImageLayout.setOnClickListener(v -> {
+            if (viewModel.getMainImageIndex() == tabLayout.getSelectedTabPosition()
+                    && tabLayout.getSelectedTabPosition() == adapter.getCount() - 2) {
+                if (tabLayout.getSelectedTabPosition() - 1 > 0) {
+                    viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition() - 1);
+                } else {
+                    viewModel.setMainImageIndex(0);
+                }
+                updateSetMainView();
+            }
+
             if (tabLayout.getSelectedTabPosition() < viewModel.getFileImageList().size()) {
                 viewModel.getFileImageList().remove(tabLayout.getSelectedTabPosition());
             } else {
@@ -313,7 +320,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition());
             updateSetMainView();
         });
-        updateSetMainView();
     }
 
     private boolean shouldShowExample() {
@@ -407,9 +413,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void goToProfile() {
+        String profileApplink = viewModel.isEdit()
+                ? ApplinkConst.PROFILE_AFTER_EDIT
+                : ApplinkConst.PROFILE_AFTER_POST;
+        profileApplink = profileApplink.replace(PARAM_USER_ID, getUserSession().getUserId());
         Intent intent = RouteManager.getIntent(
                 getContext(),
-                ApplinkConst.PROFILE_AFTER_POST.replace(PARAM_USER_ID, getUserSession().getUserId())
+                profileApplink
         );
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

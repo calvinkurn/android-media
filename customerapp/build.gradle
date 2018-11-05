@@ -292,6 +292,7 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.flightDbFlow)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transaction)
@@ -359,6 +360,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro

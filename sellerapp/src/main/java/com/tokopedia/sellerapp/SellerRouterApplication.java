@@ -57,8 +57,9 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -86,9 +87,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
-import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
-import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -120,9 +118,6 @@ import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.kol.KolRouter;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
-import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
@@ -216,7 +211,6 @@ import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -253,7 +247,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ProductEditModuleRouter, TopAdsWebViewRouter, BankRouter, ChangePasswordRouter,
         WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter, PaymentSettingRouter,
         TalkRouter,
-        MerchantVoucherModuleRouter{
+        MerchantVoucherModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -534,7 +528,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
+    public void sendEventTracking(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
@@ -551,7 +545,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return intent;
     }
 
-    @Override
     public void sendScreenName(String screenName) {
         ScreenTracking.screen(screenName);
     }
@@ -1157,7 +1150,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                if (activity != null && !TextUtils.isEmpty(screenName)) {
                     ScreenTracking.sendScreen(activity, () -> screenName);
                 }
             }
@@ -1172,11 +1165,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
         return TkpdReputationInternalRouter.getReviewShopInfoFragment(shopId, shopDomain);
-    }
-
-    @Override
-    public Fragment getShopTalkFragment() {
-        return ShopTalkLimitedFragment.createInstance();
     }
 
     @Override
@@ -1547,49 +1535,23 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getProductTalk(Context context, String productId) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", false))
-            return TalkProductActivity.Companion.createIntent(context, productId);
-        else {
-            Bundle bundle = new Bundle();
-            bundle.putString("product_id", productId);
-            Intent intent = new Intent(context, com.tokopedia.core.talk.talkproduct.activity
-                    .TalkProductActivity.class);
-            intent.putExtras(bundle);
-            return intent;
-        }
+        return TalkProductActivity.Companion.createIntent(context, productId);
     }
 
     @Override
     public Intent getShopTalkIntent(Context context, String shopId) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return ShopTalkActivity.Companion.createIntent(context, shopId);
-        else {
-            return ShopDiscussionActivity.createIntent(context, shopId);
-        }
+        return ShopTalkActivity.Companion.createIntent(context, shopId);
+
     }
 
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true)) {
-            context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
-        } else {
-            context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
-        }
+        context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
     }
 
     @Override
     public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
-
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
-        else {
-            Intent intent = new Intent(context, TalkViewActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("from", TalkViewActivity.INBOX_TALK);
-            intent.putExtras(bundle);
-            return intent;
-
-        }
+        return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
     }
 
     @Override
@@ -1676,7 +1638,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public String getResourceUrlAssetPayment() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
-        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+        String baseUrl = remoteConfig.getString(RemoteConfigKey.IMAGE_HOST,
                 TkpdBaseURL.Payment.DEFAULT_HOST);
 
         final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
@@ -1695,11 +1657,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return InboxTalkActivity.Companion.createIntent(context);
-        else {
-            return InboxRouter.getInboxTalkActivityIntent(context);
-        }
+        return InboxTalkActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -1715,5 +1673,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
 
+    }
+
+    @Override
+    public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
+        TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
     }
 }

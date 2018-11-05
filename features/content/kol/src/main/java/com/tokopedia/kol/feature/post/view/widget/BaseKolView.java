@@ -38,6 +38,7 @@ public class BaseKolView extends BaseCustomView {
     private TextView title;
     private TextView name;
     private ImageView avatar;
+    private ImageView badge;
     private TextView label;
     private TextView followText;
     private View followButton;
@@ -72,6 +73,7 @@ public class BaseKolView extends BaseCustomView {
         title = view.findViewById(R.id.title);
         name = view.findViewById(R.id.name);
         avatar = view.findViewById(R.id.avatar);
+        badge = view.findViewById(R.id.kol_badge);
         label = view.findViewById(R.id.label);
         followText = view.findViewById(R.id.follow_text);
         followButton = view.findViewById(R.id.follow_button);
@@ -117,6 +119,7 @@ public class BaseKolView extends BaseCustomView {
         commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         likeButton.setVisibility(element.isShowLike() ? View.VISIBLE : View.GONE);
         menuButton.setVisibility(element.isDeletable() ? View.VISIBLE : View.GONE);
+        badge.setVisibility(element.isKol() ? View.VISIBLE : View.GONE);
     }
 
     public void setViewListener(final BaseKolListener viewListener, final BaseKolViewModel element) {

@@ -16,12 +16,12 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.library.pagination.PaginationAdapterCallback;
+import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
-import com.tokopedia.tokopoints.view.adapter.CouponListPaginationAdapter;
+import com.tokopedia.tokopoints.view.adapter.CouponListBaseAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
@@ -35,14 +35,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public class MyCouponListingFragment extends BaseDaggerFragment implements MyCouponListingContract.View, View.OnClickListener, PaginationAdapterCallback {
+public class MyCouponListingFragment extends BaseDaggerFragment implements MyCouponListingContract.View, View.OnClickListener, AdapterCallback {
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
     private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
-    private CouponListPaginationAdapter mAdapter;
+    private CouponListBaseAdapter mAdapter;
 
     @Inject
     public MyCouponListingPresenter mPresenter;
@@ -65,7 +65,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         super.onViewCreated(view, savedInstanceState);
         mPresenter.attachView(this);
         initListener();
-        mAdapter = new CouponListPaginationAdapter(mPresenter, this, getAppContext());
+        mAdapter = new CouponListBaseAdapter(mPresenter, this, getAppContext());
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.tp_padding_small)));
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -127,7 +127,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
         } else if (source.getId() == R.id.text_failed_action) {
             showLoader();
-            mAdapter.loadMore(mAdapter.getCurrentPageIndex());
+            mAdapter.loadData(mAdapter.getCurrentPageIndex());
         }
     }
 

@@ -49,6 +49,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
@@ -65,7 +66,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.talk.talkproduct.activity.TalkProductActivity;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.DeepLinkUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -76,6 +76,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
@@ -84,6 +85,7 @@ import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.subscriber.AffiliateProductDataSubscriber;
 import com.tokopedia.tkpdpdp.presenter.subscriber.WishlistCountSubscriber;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -505,7 +507,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new CacheInteractor.GetProductDetailCacheListener() {
                         @Override
                         public void onSuccess(ProductDetailData productDetailData) {
-                            viewListener.onProductDetailLoaded(productDetailData);
+                            viewListener.onProductDetailLoaded(productDetailData, mappingToViewData(productDetailData));
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
 
@@ -703,52 +705,52 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         cacheInteractor.getPromoWidgetCache(generatePromoTargetType(productDetailData, context),
                 SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
                 shopType, new CacheInteractor.GetPromoWidgetCacheListener() {
-            @Override
-            public void onSuccess(PromoAttributes result) {
-                if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
-                        && result.getShortDescHtml() != null) {
-                    viewListener.showPromoWidget(result);
-                    ProductPageTracking.eventImpressionWidgetPromo(
-                            context,
-                            result.getShortDesc(),
-                            result.getCustomPromoId(),
-                            result.getCode()
-                    );
-                }
-            }
+                    @Override
+                    public void onSuccess(PromoAttributes result) {
+                        if (result.getCode() != null && result.getCodeHtml() != null && result.getShortCondHtml() != null
+                                && result.getShortDescHtml() != null) {
+                            viewListener.showPromoWidget(result);
+                            ProductPageTracking.eventImpressionWidgetPromo(
+                                    context,
+                                    result.getShortDesc(),
+                                    result.getCustomPromoId(),
+                                    result.getCode()
+                            );
+                        }
+                    }
 
-            @Override
-            public void onError() {
-                retrofitInteractor.getPromo(context,
-                        generatePromoTargetType(productDetailData, context),
-                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
-                        new RetrofitInteractor.PromoListener() {
-                            @Override
-                            public void onSucccess(DataPromoWidget dataPromoWidget) {
-                                cacheInteractor.storePromoWidget(
-                                        generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
-                                        shopType, dataPromoWidget);
-                                if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
-                                    PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
-                                    PromoAttributes attributes = item.getPromoAttributes();
-                                    attributes.setCustomPromoId(item.getId());
-                                    viewListener.showPromoWidget(attributes);
-                                    ProductPageTracking.eventImpressionWidgetPromo(
-                                            context,
-                                            attributes.getShortDesc(),
-                                            attributes.getCustomPromoId(),
-                                            attributes.getCode()
-                                    );
-                                }
-                            }
+                    @Override
+                    public void onError() {
+                        retrofitInteractor.getPromo(context,
+                                generatePromoTargetType(productDetailData, context),
+                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType,
+                                new RetrofitInteractor.PromoListener() {
+                                    @Override
+                                    public void onSucccess(DataPromoWidget dataPromoWidget) {
+                                        cacheInteractor.storePromoWidget(
+                                                generatePromoTargetType(productDetailData, context),
+                                                SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,
+                                                shopType, dataPromoWidget);
+                                        if (!dataPromoWidget.getPromoWidgetList().isEmpty()) {
+                                            PromoWidget item = dataPromoWidget.getPromoWidgetList().get(0);
+                                            PromoAttributes attributes = item.getPromoAttributes();
+                                            attributes.setCustomPromoId(item.getId());
+                                            viewListener.showPromoWidget(attributes);
+                                            ProductPageTracking.eventImpressionWidgetPromo(
+                                                    context,
+                                                    attributes.getShortDesc(),
+                                                    attributes.getCustomPromoId(),
+                                                    attributes.getCode()
+                                            );
+                                        }
+                                    }
 
-                            @Override
-                            public void onError(String error) {
-                            }
-                        });
-            }
-        });
+                                    @Override
+                                    public void onError(String error) {
+                                    }
+                                });
+                    }
+                });
     }
 
     public String generatePromoTargetType(ProductDetailData productData, Context context) {
@@ -766,7 +768,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processResultTalk(int resultCode, Intent data) {
         if (isResultOK(resultCode) & isIntentOK(data)) {
             if (data.getExtras() != null && data.getBooleanExtra(
-                    TalkProductActivity.RESULT_TALK_HAS_ADDED, false
+                    "RESULT_TALK_HAS_ADDED", false
             )) {
                 viewListener.onProductTalkUpdated();
             }
@@ -958,7 +960,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
-            viewListener.onProductDetailLoaded(productData);
+            viewListener.onProductDetailLoaded(productData, mappingToViewData(productData));
             viewListener.onOtherProductLoaded(productOthers);
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
@@ -1083,7 +1085,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     @Override
                     public void onSuccess(@NonNull ProductDetailData data) {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
-                        viewListener.onProductDetailLoaded(data);
+
+                        viewListener.onProductDetailLoaded(data, mappingToViewData(data));
 
                         checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
@@ -1137,6 +1140,26 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 });
     }
 
+    private ProductViewData mappingToViewData(ProductDetailData data) {
+        ProductViewData viewData = new ProductViewData();
+        viewData.setProductId(String.valueOf(data.getInfo().getProductId()));
+        viewData.setCourierList(mappingToListCourierViewData(data));
+        return viewData;
+    }
+
+    private ArrayList<CourierViewData> mappingToListCourierViewData(ProductDetailData data) {
+        ArrayList<CourierViewData> list = new ArrayList<>();
+        for (ShopShipment shopShipment : data.getShopInfo().getShopShipments()) {
+            CourierViewData items = new CourierViewData();
+            items.setCourierId(shopShipment.getShippingId());
+            items.setLogo(shopShipment.getLogo());
+            items.setPackageName(shopShipment.getPackageNames());
+            items.setCourierName(shopShipment.getShippingName());
+            list.add(items);
+        }
+        return list;
+    }
+
     private void getOtherProductFromNetwork(Context context, final Map<String, String> param) {
         retrofitInteractor.getOtherProducts(context, param,
                 new RetrofitInteractor.OtherProductListener() {
@@ -1166,7 +1189,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
-        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {

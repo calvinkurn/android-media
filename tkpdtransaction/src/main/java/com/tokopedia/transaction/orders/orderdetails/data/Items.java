@@ -46,7 +46,6 @@ public class Items {
 
     private boolean isActionButtonLoaded;
 
-
     public String getTitle() {
         return title;
     }

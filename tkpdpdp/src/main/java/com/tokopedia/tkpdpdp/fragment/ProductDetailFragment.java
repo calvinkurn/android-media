@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -71,8 +72,8 @@ import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -106,6 +107,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter;
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView;
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -126,6 +128,7 @@ import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.constant.ConstantKey;
 import com.tokopedia.tkpdpdp.customview.ButtonAffiliate;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
@@ -153,6 +156,7 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
@@ -318,6 +322,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     private ProductPass productPass;
     private ProductDetailData productData;
+    private ProductViewData viewData;
     private boolean useVariant = true;
     private boolean useMerchantVoucherFeature = true;
     private ProductVariant productVariant;
@@ -485,9 +490,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         });
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(new MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener() {
             @Override
-            public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+            public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel, int position) {
                 if (getContext() == null) {
                     return;
+                }
+                if (productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherUse(getActivity(), merchantVoucherViewModel, position);
                 }
                 //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
                 /*if (!voucherListPresenter.isLogin()) {
@@ -499,7 +507,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                             merchantVoucherViewModel.getVoucherId());
                 }*/
                 //TOGGLE_MVC_OFF
-                if (getActivity()!= null) {
+                if (getActivity() != null) {
                     showSnackBarClose(getActivity().getString(R.string.title_voucher_code_copied));
                 }
             }
@@ -507,6 +515,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             @Override
             public void onItemClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
                 if (getContext() != null && productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherSeeDetail(getActivity(), String.valueOf(productData.getInfo().getProductId()));
                     Intent intent = MerchantVoucherDetailActivity.createIntent(getContext(), merchantVoucherViewModel.getVoucherId(),
                             merchantVoucherViewModel, productData.getShopInfo().getShopId());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER_DETAIL);
@@ -516,6 +525,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             @Override
             public void onSeeAllClicked() {
                 if (getContext() != null && productData != null) {
+                    ProductPageTracking.eventClickMerchantVoucherSeeAll(getActivity(), String.valueOf(productData.getInfo().getProductId()));
                     Intent intent = MerchantVoucherListActivity.createIntent(getContext(), productData.getShopInfo().getShopId(),
                             productData.getShopInfo().getShopName());
                     startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER);
@@ -544,7 +554,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         }
     }
 
-    private void showUseMerchantVoucherLoading(){
+    private void showUseMerchantVoucherLoading() {
         if (loading == null) {
             loading = new ProgressDialog(getActivity());
             loading.setCancelable(false);
@@ -556,7 +566,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         loading.show();
     }
 
-    private void hideUseMerchantVoucherLoading(){
+    private void hideUseMerchantVoucherLoading() {
         if (loading != null) {
             loading.dismiss();
         }
@@ -886,11 +896,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
+    @Deprecated
     public void onCourierClicked(@NonNull Bundle bundle) {
-        Intent intent = new Intent(getActivity(), CourierActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
+
+    }
+
+    @Override
+    public void onCourierClicked(@NonNull String productId,
+                                 @Nullable ArrayList<CourierViewData> arrayList) {
+        startActivity(CourierActivity.createIntent(getActivity(), arrayList));
         getActivity().overridePendingTransition(0, 0);
+
     }
 
     @Override
@@ -1057,13 +1073,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
+    public void onProductDetailLoaded(@NonNull ProductDetailData successResult, ProductViewData viewData) {
         presenter.processGetGTMTicker();
 
         float weight = 0f;
         try {
             weight = getUnformattedWeight(successResult.getInfo().getProductWeight());
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())) {
             weight /= 1000;
@@ -1073,12 +1090,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 weight, successResult.getShopInfo().getShopDomain());
 
         this.productData = successResult;
+        this.viewData = viewData;
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
         if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
         }
-        this.ratingTalkCourierView.renderData(successResult);
+        this.ratingTalkCourierView.renderData(successResult, viewData);
         this.transactionDetailView.renderData(successResult);
         this.detailInfoView.renderData(successResult);
         this.lastUpdateView.renderData(successResult);
@@ -1420,7 +1438,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void onFirstTimeLaunched() {
         if (productData != null) {
-            onProductDetailLoaded(productData);
+            onProductDetailLoaded(productData, viewData);
         } else {
             presenter.processDataPass(productPass);
             presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
@@ -1564,7 +1582,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
                             presenter.updateRecentView(getActivity(), productData.getInfo().getProductId());
-                            ratingTalkCourierView.renderData(productData);
+                            ratingTalkCourierView.renderData(productData, viewData);
                             latestTalkView.renderData(productData);
                             buttonBuyView.updateButtonForVariantProduct(productVariant.getChildFromProductId(
                                     productData.getInfo().getProductId()).isIsBuyable(), productData);
@@ -1628,6 +1646,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
+        if (merchantVoucherViewModelList.size() == 0) {
+            merchantVoucherListWidget.setData(null);
+            promoWidgetView.setVisibility(View.GONE);
+            promoContainer.setVisibility(View.GONE);
+            return;
+        }
+        if (getActivity() != null && productData != null &&
+                !voucherListPresenter.isMyShop(productData.getShopInfo().getShopId())){
+            ProductPageTracking.eventImpressionMerchantVoucherUse(getActivity(), merchantVoucherViewModelList);
+        }
         merchantVoucherListWidget.setData(merchantVoucherViewModelList);
         promoWidgetView.setVisibility(View.GONE);
         promoContainer.setVisibility(View.VISIBLE);
@@ -2416,7 +2444,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     private void renderTopAds(int itemSize) {
-        if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
+        if (!firebaseRemoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
             return;
         try {
             Xparams xparams = new Xparams();

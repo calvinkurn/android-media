@@ -16,6 +16,10 @@ data class Profile(
         @Expose
         val isAffiliate: Boolean = false,
 
+        @SerializedName("isShowAffiliateContent")
+        @Expose
+        val isShowAffiliateContent: Boolean = false,
+
         @SerializedName("totalFollowing")
         @Expose
         val totalFollowing: TotalFollowing = TotalFollowing(),

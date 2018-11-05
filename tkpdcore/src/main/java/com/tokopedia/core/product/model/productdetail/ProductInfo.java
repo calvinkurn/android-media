@@ -115,6 +115,10 @@ public class ProductInfo implements Parcelable {
     @Expose
     private Integer productPriceUnformatted;
 
+    @SerializedName("product_original_price")
+    @Expose
+    private Integer productOriginalPrice;
+
     @SerializedName("has_variant")
     @Expose
     private Boolean hasVariant = false;
@@ -519,6 +523,14 @@ public class ProductInfo implements Parcelable {
 
     public void setLimitedStock(boolean limitedStock) {
         this.limitedStock = limitedStock;
+    }
+
+    public Integer getProductOriginalPrice() {
+        return productOriginalPrice;
+    }
+
+    public void setProductOriginalPrice(Integer productOriginalPrice) {
+        this.productOriginalPrice = productOriginalPrice;
     }
 
 

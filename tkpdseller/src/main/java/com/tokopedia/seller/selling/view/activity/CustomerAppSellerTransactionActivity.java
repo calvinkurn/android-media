@@ -194,8 +194,6 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
         if (fromWidget) {
             UnifyTracking.eventAccessAppViewWidget();
         }
-
-        TrackingUtils.sendMoEngageOpenSellerScreen();
     }
 
     private void setView() {

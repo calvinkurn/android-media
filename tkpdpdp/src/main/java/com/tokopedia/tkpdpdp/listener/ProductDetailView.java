@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -18,9 +19,12 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
+import com.tokopedia.tkpdpdp.courier.CourierViewData;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 import com.tokopedia.tkpdpdp.viewmodel.AffiliateInfoViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -141,7 +145,11 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductRatingClicked(String productId, String shopId, String productName);
 
+    @Deprecated
     void onCourierClicked(@NonNull Bundle bundle);
+
+    void onCourierClicked(@NonNull String productId,
+                          @Nullable ArrayList<CourierViewData> arrayList);
 
     void onWholesaleClicked(@NonNull Bundle bundle);
 
@@ -193,8 +201,9 @@ public interface ProductDetailView extends ViewListener {
      * ngisi/mengupdate UI dari full data product detail yang diterima
      *
      * @param successResult data product detail
+     * @param viewData
      */
-    void onProductDetailLoaded(@NonNull ProductDetailData successResult);
+    void onProductDetailLoaded(@NonNull ProductDetailData successResult, ProductViewData viewData);
 
     /**
      * Megisi/mengupdate UI dengan data product lainnya yang diterima
@@ -351,7 +360,7 @@ public interface ProductDetailView extends ViewListener {
     void showErrorAffiliate(String message);
 
     void showPromoWidget(PromoAttributes promoAttributes);
-  
+
     boolean isFromExploreAffiliate();
-  
+
 }

@@ -13,7 +13,10 @@ import com.tokopedia.affiliatecommon.R
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostImageAdapter : PagerAdapter() {
+class PostImageAdapter(var clickListener: ImageClickListener?) : PagerAdapter() {
+
+    constructor() : this(null)
+
     val imageList: ArrayList<String> = ArrayList()
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
@@ -29,6 +32,7 @@ class PostImageAdapter : PagerAdapter() {
         val imageView = view.findViewById<ImageView>(R.id.image)
         val imageUrl = imageList[position]
 
+        view.setOnClickListener { clickListener?.onImageClick(position) }
         imageView.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
@@ -54,11 +58,15 @@ class PostImageAdapter : PagerAdapter() {
         container.removeView(`object` as View)
     }
 
-    override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE;
+    override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE
 
     fun setList(imageList: ArrayList<String>) {
         this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
+    }
+
+    interface ImageClickListener {
+        fun onImageClick(position: Int)
     }
 }
