@@ -1170,7 +1170,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void finishLoadingWishList() {
-        loading.dismiss();
+        if (getActivity() != null && getView() != null) {
+            loading.dismiss();
+        }
     }
 
     @Override
