@@ -18,7 +18,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
+import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSession
