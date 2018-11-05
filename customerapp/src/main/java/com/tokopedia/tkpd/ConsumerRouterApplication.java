@@ -1224,7 +1224,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoyaltyActivityNoCouponActive(Context context, String platform, String categoryId) {
-        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", true);
+        return PromoCheckoutListActivity.Companion.newInstance(context, platform, categoryId, "", false);
     }
 
     @Override

@@ -175,6 +175,7 @@ ext {
             gamification                : ":features:promo:gamification",
             merchantVoucher             : ":features:promo:merchant_voucher",
             tokopoints                  : ":features:promo:tokopoints",
+            promoCheckout               : ":features:promo:promo_checkout",
 
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
             topAdsManagement            : ":features:top_ads:top_ads_management",
@@ -184,7 +185,6 @@ ext {
             checkout                    : ":features:transaction:checkout",
             transactiondata             : ":features:transaction:transactiondata",
             transactionanalytics        : ":features:transaction:transactionanalytics",
-            promoCheckout               : ":features:transaction:promo_checkout",
 
             attachproduct               : ":features:user:attachproduct",
             bankdb                      : ":features:user:bankdb",

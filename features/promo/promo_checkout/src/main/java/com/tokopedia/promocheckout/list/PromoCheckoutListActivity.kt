@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.*
 
-class PromoCheckoutListActivity : BaseSimpleActivity() {
+open class PromoCheckoutListActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         return PromoCheckoutListFragment.createInstance(
                 intent?.extras?.getBoolean(EXTRA_COUPON_ACTIVE, true),
