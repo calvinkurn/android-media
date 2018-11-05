@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -46,7 +47,7 @@ public class LoginRegisterModule {
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(tkpdAuthInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
-        builder.addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class));
+        builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
