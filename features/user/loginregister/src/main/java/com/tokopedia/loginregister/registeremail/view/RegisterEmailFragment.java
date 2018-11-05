@@ -152,7 +152,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_register_email, parent, false);
+        View view = inflater.inflate(R.layout.fragment_register_with_email, parent, false);
         container = view.findViewById(R.id.container);
         redirectView = view.findViewById(R.id.redirect_reset_password);
         email = view.findViewById(R.id.register_email);
