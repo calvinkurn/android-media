@@ -260,9 +260,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_see_membership_status) {
-            openWebView(CommonConstant.WebLink.MEMBERSHIP);
-        } else if (source.getId() == R.id.text_my_coupon) {
+        if (source.getId() == R.id.text_my_coupon) {
             gotoMyCoupons();
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getHomePageData();
