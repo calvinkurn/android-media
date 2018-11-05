@@ -1,6 +1,6 @@
 package com.tokopedia.flight.detail.view.model;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.cloud.model.response.StopDetailEntity;

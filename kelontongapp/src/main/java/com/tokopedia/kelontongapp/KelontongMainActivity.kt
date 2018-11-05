@@ -11,8 +11,10 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.CookieManager
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.tokopedia.kelontongapp.firebase.Preference
 import com.tokopedia.kelontongapp.helper.ConnectionManager
@@ -30,6 +32,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
     private lateinit var webViewChromeClient: KelontongWebChromeClient
     private lateinit var webviewClient: KelontongWebviewClient
     private lateinit var webView: KelontongWebview
+    private lateinit var progressBar: ProgressBar
 
     private var doubleTapExit = false
 
@@ -68,6 +71,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
     private fun initializeWebview() {
         webView = findViewById(R.id.webview)
+        progressBar = findViewById(R.id.progressbar)
 
         webViewChromeClient = KelontongWebChromeClient(this, this)
         webviewClient = KelontongWebviewClient(this)
@@ -76,8 +80,15 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
 
+        webviewClient.setProgressInterface(object: KelontongWebviewClient.ProgressInterface {
+            override fun onPageVisible() {
+                progressBar.visibility = View.GONE
+            }
+        })
+
         webViewChromeClient.setWebviewListener(object : KelontongWebChromeClient.WebviewListener {
             override fun onComplete() {
+                progressBar!!.visibility = View.GONE
                 if (Preference.isFirstTime(this@KelontongMainActivity)) {
                     showAlertDialog()
                     Preference.saveFirstTime(this@KelontongMainActivity)
@@ -88,6 +99,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         webView.webChromeClient = webViewChromeClient
         webView.webViewClient = webviewClient
         webView.settings.allowFileAccess = true
+        webView.settings.pluginState = WebSettings.PluginState.ON;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.settings.mixedContentMode = 0
@@ -167,7 +179,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == KelontongWebChromeClient.ATTACH_FILE_REQUEST && webViewChromeClient != null) {
             webViewChromeClient.onActivityResult(requestCode, resultCode, data)

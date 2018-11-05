@@ -100,7 +100,6 @@ class KelontongWebChromeClient(context: Context, filePickerInterface: FilePicker
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-
         if (Build.VERSION.SDK_INT >= 21) {
             var results: Array<Uri?>? = null
             //Check if response is positive
