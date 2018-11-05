@@ -153,6 +153,11 @@ public class BranchSdkUtils {
         linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
 
+        if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())){
+            linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderShareUri());
+            linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderShareUri());
+        }
+
         return linkProperties;
     }
 
