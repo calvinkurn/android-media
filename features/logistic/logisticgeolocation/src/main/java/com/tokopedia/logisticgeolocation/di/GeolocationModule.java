@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.logisticdata.data.apiservice.MapsApi;
+import com.tokopedia.logisticgeolocation.data.RetrofitInteractor;
+import com.tokopedia.logisticgeolocation.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticgeolocation.pinpoint.GeolocationContract;
 import com.tokopedia.logisticgeolocation.pinpoint.GeolocationPresenter;
 import com.tokopedia.logisticgeolocation.pinpoint.GoogleMapFragment;
@@ -138,5 +140,11 @@ public class GeolocationModule {
     @GeolocationScope
     GeolocationContract.GeolocationPresenter provideGeolocationPresenter(GeolocationPresenter presenter) {
         return presenter;
+    }
+
+    @Provides
+    @GeolocationScope
+    RetrofitInteractor provideRetrofitInteractor(RetrofitInteractorImpl retrofitInteractor) {
+        return retrofitInteractor;
     }
 }
