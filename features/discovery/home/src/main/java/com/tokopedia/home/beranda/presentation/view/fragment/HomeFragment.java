@@ -29,12 +29,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.applink.RouteManager;
-
 import com.tokopedia.core.analytics.TrackingUtils;
-
-import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.widget.data.repository.DigitalWidgetRepository;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
@@ -66,6 +64,8 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
