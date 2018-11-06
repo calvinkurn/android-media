@@ -5,35 +5,31 @@ import android.os.Parcelable;
 
 public class TokopointHomeDrawerData implements Parcelable {
     private int offFlag;
+    private int hasNotif;
+    private UserTier userTier;
     private String rewardPointsStr;
     private String mainPageUrl;
     private String mainPageTitle;
+    private int sumCoupon;
+    private String sumCouponStr;
 
-    public TokopointHomeDrawerData(int offFlag, String rewardPointsStr, String mainPageUrl, String mainPageTitle) {
+    public TokopointHomeDrawerData(int offFlag,
+                                   int hasNotif,
+                                   UserTier userTier,
+                                   String rewardPointsStr,
+                                   String mainPageUrl,
+                                   String mainPageTitle,
+                                   int sumCoupon,
+                                   String sumCouponStr) {
         this.offFlag = offFlag;
+        this.hasNotif = hasNotif;
+        this.userTier = userTier;
         this.rewardPointsStr = rewardPointsStr;
         this.mainPageUrl = mainPageUrl;
         this.mainPageTitle = mainPageTitle;
+        this.sumCoupon = sumCoupon;
+        this.sumCouponStr = sumCouponStr;
     }
-
-    protected TokopointHomeDrawerData(Parcel in) {
-        offFlag = in.readInt();
-        rewardPointsStr = in.readString();
-        mainPageUrl = in.readString();
-        mainPageTitle = in.readString();
-    }
-
-    public static final Creator<TokopointHomeDrawerData> CREATOR = new Creator<TokopointHomeDrawerData>() {
-        @Override
-        public TokopointHomeDrawerData createFromParcel(Parcel in) {
-            return new TokopointHomeDrawerData(in);
-        }
-
-        @Override
-        public TokopointHomeDrawerData[] newArray(int size) {
-            return new TokopointHomeDrawerData[size];
-        }
-    };
 
     public int getOffFlag() {
         return offFlag;
@@ -49,6 +45,38 @@ public class TokopointHomeDrawerData implements Parcelable {
 
     public void setRewardPointsStr(String rewardPointsStr) {
         this.rewardPointsStr = rewardPointsStr;
+    }
+
+    public int getHasNotif() {
+        return hasNotif;
+    }
+
+    public void setHasNotif(int hasNotif) {
+        this.hasNotif = hasNotif;
+    }
+
+    public UserTier getUserTier() {
+        return userTier;
+    }
+
+    public void setUserTier(UserTier userTier) {
+        this.userTier = userTier;
+    }
+
+    public int getSumCoupon() {
+        return sumCoupon;
+    }
+
+    public void setSumCoupon(int sumCoupon) {
+        this.sumCoupon = sumCoupon;
+    }
+
+    public String getSumCouponStr() {
+        return sumCouponStr;
+    }
+
+    public void setSumCouponStr(String sumCouponStr) {
+        this.sumCouponStr = sumCouponStr;
     }
 
     public String getMainPageUrl() {
@@ -77,10 +105,35 @@ public class TokopointHomeDrawerData implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        offFlag = parcel.readInt();
-        rewardPointsStr = parcel.readString();
-        mainPageUrl = parcel.readString();
-        mainPageTitle = parcel.readString();
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.offFlag);
+        dest.writeInt(this.hasNotif);
+        dest.writeString(this.rewardPointsStr);
+        dest.writeString(this.mainPageUrl);
+        dest.writeString(this.mainPageTitle);
+        dest.writeInt(this.sumCoupon);
+        dest.writeString(this.sumCouponStr);
     }
+
+    protected TokopointHomeDrawerData(Parcel in) {
+        this.offFlag = in.readInt();
+        this.hasNotif = in.readInt();
+        this.rewardPointsStr = in.readString();
+        this.mainPageUrl = in.readString();
+        this.mainPageTitle = in.readString();
+        this.sumCoupon = in.readInt();
+        this.sumCouponStr = in.readString();
+    }
+
+    public static final Creator<TokopointHomeDrawerData> CREATOR = new Creator<TokopointHomeDrawerData>() {
+        @Override
+        public TokopointHomeDrawerData createFromParcel(Parcel source) {
+            return new TokopointHomeDrawerData(source);
+        }
+
+        @Override
+        public TokopointHomeDrawerData[] newArray(int size) {
+            return new TokopointHomeDrawerData[size];
+        }
+    };
 }

@@ -202,6 +202,7 @@ import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
@@ -1896,14 +1897,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
                     @Override
                     public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
-                        TokopointHomeDrawerData tokopointHomeDrawerData
-                                = new TokopointHomeDrawerData(
-                                        tokoPointDrawerData.getOffFlag(),
-                                        tokoPointDrawerData.getUserTier().getRewardPointsStr(),
-                                        tokoPointDrawerData.getMainPageUrl(),
-                                        tokoPointDrawerData.getMainPageTitle());
+                        UserTier userTier = new UserTier(
+                                tokoPointDrawerData.getUserTier().getTierImageUrl(),
+                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
+                                tokoPointDrawerData.getUserTier().getTierNameDesc()
+                        );
 
-                        return tokopointHomeDrawerData;
+                        return new TokopointHomeDrawerData(
+                                tokoPointDrawerData.getOffFlag(),
+                                tokoPointDrawerData.getHasNotif(),
+                                userTier,
+                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
+                                tokoPointDrawerData.getMainPageUrl(),
+                                tokoPointDrawerData.getMainPageTitle(),
+                                tokoPointDrawerData.getSumCoupon(),
+                                tokoPointDrawerData.getSumCouponStr()
+                        );
                     }
                 });
     }
@@ -2153,12 +2162,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return intent;
     }
 
-    @Override
-    public void openReactNativeOfficialStore(FragmentActivity activity) {
-        startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
-                activity, ReactConst.Screen.OFFICIAL_STORE,
-                getString(R.string.react_native_banner_official_title)));
-    }
+
 
     @Override
     public Fragment getShopReputationFragmentShop(String shopId, String shopDomain) {
