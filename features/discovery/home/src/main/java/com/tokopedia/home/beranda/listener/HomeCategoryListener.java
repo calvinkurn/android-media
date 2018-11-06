@@ -41,5 +41,7 @@ public interface HomeCategoryListener {
 
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 
-    void onServerTimeReceived();
+    void onServerTimeReceived(long serverTimeUnix);
+
+    long getServerTimeOffset();
 }

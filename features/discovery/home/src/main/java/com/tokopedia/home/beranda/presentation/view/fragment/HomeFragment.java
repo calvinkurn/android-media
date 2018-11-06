@@ -631,6 +631,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        this.serverTimeOffset = 0;
+
         if (items.get(0) instanceof HeaderViewModel) {
             HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
             updateHeaderItem(dataHeader);
@@ -643,6 +645,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateListOnResume(List<Visitable> visitables) {
+        this.serverTimeOffset = 0;
+
         adapter.updateItems(visitables);
     }
 
@@ -1037,10 +1041,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onServerTimeReceived(long serverTimeUnix) {
         if(serverTimeOffset == 0){
-            Date dateNow = new Date();
-            long currentTimemillis = dateNow.getTime();
             long serverTimemillis = serverTimeUnix * 1000l;
             this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
         }
+    }
+
+    @Override
+    public long getServerTimeOffset() {
+        return this.serverTimeOffset;
     }
 }

@@ -694,6 +694,14 @@ public class DynamicHomeChannel {
             this.expiredTime = expiredTime;
         }
 
+        public long getServerTimeUnix() {
+            return serverTimeUnix;
+        }
+
+        public void setServerTimeUnix(long serverTimeUnix) {
+            this.serverTimeUnix = serverTimeUnix;
+        }
+
         public String getApplink() {
             return applink;
         }
