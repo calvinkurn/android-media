@@ -223,6 +223,7 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
     public void onDirectRecommPilihanProdukButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -231,6 +232,18 @@ public class AffiliateAnalytics {
                         AffiliateEventTracking.Category.BYME_CREATE_POST,
                         AffiliateEventTracking.Action.CLICK_LIHAT_PILIHAN_PRODUK,
                         ""
+                )
+        );
+    }
+
+    public void onAfterClickTokopediMe(String originalLink) {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_USER_PROFILE,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_AFFILIATE_TRAFFIC,
+                        AffiliateEventTracking.Action.OTHERS,
+                        originalLink
                 )
         );
     }
