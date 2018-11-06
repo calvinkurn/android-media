@@ -317,7 +317,9 @@ public class GetReplyMapper extends BaseChatApiCallMapper<ReplyData, ChatRoomVie
         List<QuickReplyViewModel> list = new ArrayList<>();
         if (pojoList != null) {
             for (QuickReplyPojo pojo : pojoList.getQuickReplies()) {
-                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getMessage());
+                QuickReplyViewModel model = new QuickReplyViewModel(pojo.getText(),
+                        pojo.getValue(),
+                        pojo.getAction());
                 list.add(model);
             }
         }

@@ -1349,14 +1349,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         removeDummyReplyIfExist(message);
         removeIsTyping();
 
-        if (message instanceof QuickReplyListViewModel) {
-            showQuickReplyView((QuickReplyListViewModel) message);
-            if (!TextUtils.isEmpty(message.getMessage())) {
-                addMessageToList(message);
-            }
-        } else {
-            addMessageToList(message);
-        }
+        mapMessageToList(message);
 
         if (isMyMessage(message.getFromUid())) {
             scrollToBottom();
@@ -1367,6 +1360,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
 
         setResult();
+    }
+
+    private void mapMessageToList(BaseChatViewModel message) {
+        if (message instanceof QuickReplyListViewModel) {
+            showQuickReplyView((QuickReplyListViewModel) message);
+            if (!TextUtils.isEmpty(message.getMessage())) {
+                addMessageToList(message);
+            }
+        } else {
+            addMessageToList(message);
+        }
     }
 
     private void removeDummyReplyIfExist(BaseChatViewModel message) {
@@ -1408,12 +1412,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onQuickReplyClicked(QuickReplyViewModel quickReply) {
-        rvQuickReply.setVisibility(View.GONE);
-        if (templateAdapter != null && templateAdapter.getList().size() != 0) {
-            templateRecyclerView.setVisibility(View.VISIBLE);
+    public void onQuickReplyClicked(QuickReplyListViewModel quickReplyListViewModel, QuickReplyViewModel quickReply) {
+        if(getArguments()!= null) {
+            rvQuickReply.setVisibility(View.GONE);
+            if (templateAdapter != null && templateAdapter.getList().size() != 0) {
+                templateRecyclerView.setVisibility(View.VISIBLE);
+            }
+            String msgId = getArguments().getString(PARAM_MESSAGE_ID, "");
+
+            presenter.sendQuickReply(msgId, quickReply, SendableViewModel.generateStartTime());
         }
-        presenter.sendMessage(networkType, quickReply.getMessage());
     }
 
     @Override

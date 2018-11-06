@@ -9,9 +9,11 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
+import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkPojo;
 import com.tokopedia.topchat.chatroom.view.presenter.ChatWebSocketListenerImpl;
+import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
 import com.tokopedia.topchat.common.InboxChatConstant;
 
 import okhttp3.OkHttpClient;
@@ -84,7 +86,6 @@ public class WebSocketUseCase {
 
     public JsonObject getParamSendInvoiceAttachment(String messageId, InvoiceLinkPojo invoice, String
             startTime) {
-        int attachmentTypeInvoice = 7;
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
 
@@ -93,7 +94,7 @@ public class WebSocketUseCase {
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", invoiceAttribute.getCode());
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", attachmentTypeInvoice);
+        data.addProperty("attachment_type", WebSocketMapper.TYPE_INVOICE_SEND);
 
         JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);
         data.add("payload", payload);
@@ -103,14 +104,13 @@ public class WebSocketUseCase {
 
     public JsonObject getParamSendProductAttachment(String messageId, ResultProduct product, String startTime) {
         JsonObject json = new JsonObject();
-        int attachmentTypeProduct = 3;
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
         data.addProperty("message_id", Integer.valueOf(messageId));
         data.addProperty("message", product.getProductUrl());
 
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", attachmentTypeProduct);
+        data.addProperty("attachment_type", WebSocketMapper.TYPE_PRODUCT_ATTACHMENT);
         data.addProperty("product_id", product.getProductId());
 
         JsonObject productProfile = new JsonObject();
@@ -175,4 +175,28 @@ public class WebSocketUseCase {
         json.add("data", data);
         return json;
     }
+
+    public JsonObject getParamSendQuickReply(String messageId, QuickReplyViewModel
+            quickReplyViewModel, String startTime) {
+
+        JsonObject json = new JsonObject();
+        json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
+
+        JsonObject data = new JsonObject();
+        data.addProperty("message_id", Integer.parseInt(messageId));
+        data.addProperty("message", quickReplyViewModel.getValue());
+        data.addProperty("start_time", startTime);
+        data.addProperty("attachment_type", WebSocketMapper.TYPE_QUICK_REPLY_SEND);
+
+        JsonObject payload = new JsonObject();
+        JsonObject attributes = new JsonObject();
+        attributes.addProperty("text", quickReplyViewModel.getText());
+        attributes.addProperty("value", quickReplyViewModel.getValue());
+        attributes.addProperty("action", quickReplyViewModel.getAction());
+        payload.add("payload", attributes);
+        data.add("payload", payload);
+        json.add("data", data);
+        return json;
+    }
+
 }

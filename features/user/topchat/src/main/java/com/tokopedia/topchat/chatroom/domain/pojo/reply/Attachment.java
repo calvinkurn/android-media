@@ -20,7 +20,7 @@ public class Attachment {
     @SerializedName("fallback_attachment")
     @Expose
     private FallbackAttachment fallbackAttachment;
-    @SerializedName("quick_replies")
+    @SerializedName("new_quick_replies")
     @Expose
     private QuickReplyListPojo quickReplies;
 

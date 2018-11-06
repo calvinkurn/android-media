@@ -53,6 +53,8 @@ public class WebSocketMapper {
     public static final String TYPE_INVOICE_SEND = "7";
     public static final String TYPE_QUICK_REPLY = "8";
     public static final String TYPE_CHAT_BALLOON_ACTION = "9";
+    public static final String TYPE_QUICK_REPLY_SEND = "10";
+
 
     private SessionHandler sessionHandler;
 
@@ -322,8 +324,8 @@ public class WebSocketMapper {
         if (quickReplyListPojo != null
                 && !quickReplyListPojo.getQuickReplies().isEmpty()) {
             for (QuickReplyPojo pojo : quickReplyListPojo.getQuickReplies()) {
-                if (pojo.getMessage() != null && !TextUtils.isEmpty(pojo.getMessage())) {
-                    list.add(new QuickReplyViewModel(pojo.getMessage()));
+                if (pojo.getText() != null && !TextUtils.isEmpty(pojo.getText())) {
+                    list.add(new QuickReplyViewModel(pojo.getText(), pojo.getValue(), pojo.getAction()));
                 }
             }
         }
