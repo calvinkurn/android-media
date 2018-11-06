@@ -7,13 +7,13 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".list.PromoCheckoutListDigitalActivity"
+            android:name=".list.view.activity.PromoCheckoutListDigitalActivity"
             android:label="@string/activity_promo_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name=".list.PromoCheckoutListMarketplaceActivity"
+            android:name=".list.view.activity.PromoCheckoutListMarketplaceActivity"
             android:label="@string/activity_promo_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

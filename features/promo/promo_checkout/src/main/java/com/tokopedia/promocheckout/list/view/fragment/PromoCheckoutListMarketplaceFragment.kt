@@ -1,10 +1,11 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.fragment
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.detail.PromoCheckoutDetailActivity
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment() {
@@ -17,7 +18,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment() {
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        startActivityForResult(PromoCheckoutDetailActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
+        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -31,7 +32,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment() {
         val REQUEST_CODE_DETAIL_PROMO = 231
         val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
 
-        fun createInstance(isCouponActive: Boolean?):PromoCheckoutListMarketplaceFragment{
+        fun createInstance(isCouponActive: Boolean?): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive?:true)

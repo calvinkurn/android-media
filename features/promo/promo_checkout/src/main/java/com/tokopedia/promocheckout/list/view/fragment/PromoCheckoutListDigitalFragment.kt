@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -37,7 +37,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment() {
         val RESERVATION_CODE = "RESERVATION_CODE"
         val RESERVATION_ID = "RESERVATION_ID"
 
-        fun createInstance(isCouponActive: Boolean?, categoryId: String?, cartId: String?, reservationCode: String?, reservationId: String?):PromoCheckoutListDigitalFragment{
+        fun createInstance(isCouponActive: Boolean?, categoryId: String?, cartId: String?, reservationCode: String?, reservationId: String?): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive?:true)

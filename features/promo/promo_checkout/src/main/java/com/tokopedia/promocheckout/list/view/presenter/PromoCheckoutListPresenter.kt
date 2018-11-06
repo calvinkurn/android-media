@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.presenter
 
 import android.content.res.Resources
 import com.google.gson.JsonObject

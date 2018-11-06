@@ -1,9 +1,9 @@
 package com.tokopedia.promocheckout.list.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.promocheckout.list.BasePromoCheckoutListFragment
-import com.tokopedia.promocheckout.list.PromoCheckoutListDigitalFragment
-import com.tokopedia.promocheckout.list.PromoCheckoutListMarketplaceFragment
+import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
 import dagger.Component
 
 @PromoCheckoutListScope

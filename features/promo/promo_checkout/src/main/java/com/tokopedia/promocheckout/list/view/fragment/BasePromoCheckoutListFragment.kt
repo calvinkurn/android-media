@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.fragment
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -17,6 +17,11 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
+import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
+import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject

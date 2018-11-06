@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

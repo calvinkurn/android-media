@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.constant.IRouterConstant
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
 
 class PromoCheckoutListDigitalActivity : BaseSimpleActivity(){
     override fun getNewFragment(): Fragment {

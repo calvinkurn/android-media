@@ -1,4 +1,4 @@
-package com.tokopedia.promocheckout.list
+package com.tokopedia.promocheckout.list.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
