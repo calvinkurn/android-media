@@ -48,15 +48,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<LocalCacheHandler, LocationPass>() {
-                    @Override
-                    public LocationPass call(LocalCacheHandler cache) {
+                .map(cache1 -> {
 
-                        double latitude = Double.parseDouble(cache.getString(GeolocationPresenter.CACHE_LATITUDE));
-                        double longitude = Double.parseDouble(cache.getString(GeolocationPresenter.CACHE_LONGITUDE));
+                    double latitude = Double.parseDouble(cache1.getString(GeolocationPresenter.CACHE_LATITUDE));
+                    double longitude = Double.parseDouble(cache1.getString(GeolocationPresenter.CACHE_LONGITUDE));
 
-                        return listener.convertData(latitude, longitude);
-                    }
+                    return listener.convertData(latitude, longitude);
                 })
                 .delaySubscription(3000, TimeUnit.MILLISECONDS)
                 .subscribe(new Subscriber<LocationPass>() {

@@ -64,13 +64,6 @@ public class MapsRepository implements IMapsRepository {
         return mapsApi.getLatLngGeocode(params)
                 .map(response -> {
                     handleError(response);
-                    Gson gsonData = new GsonBuilder().disableHtmlEscaping()
-                            .setPrettyPrinting().create();
-
-//                        List<CoordinateModel> coordinateModels = Arrays
-//                                .asList(gsonData.fromJson(
-//                                        response.body().getStringData(), CoordinateModel[].class)
-//                                );
                     List<CoordinateModel> coordinateModels = response.body()
                             .convertDataList(CoordinateModel[].class);
                     return mapsMapper
