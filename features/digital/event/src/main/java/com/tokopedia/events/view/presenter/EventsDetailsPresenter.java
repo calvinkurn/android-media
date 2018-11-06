@@ -155,12 +155,10 @@ public class EventsDetailsPresenter
     public void bookBtnClick() {
         mView.showProgressBar();
         Intent bookTicketIntent = new Intent(mView.getActivity(), EventBookTicketActivity.class);
+        bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
-        if (eventsDetailsViewModel != null) {
-            bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle().toLowerCase() + "-" + getSCREEN_NAME());
-        }
         mView.navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle().toLowerCase() + "-" + getSCREEN_NAME());
     }
 
     public void checkForScan(int productId) {
