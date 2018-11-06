@@ -82,9 +82,4 @@ public class AddAddressActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    @Override
-    public String getScreenName() {
-        return SCREEN_ADD_ADDRESS_FORM;
-    }
-
 }
