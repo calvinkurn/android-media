@@ -169,7 +169,7 @@ public class BranchSdkUtils {
             if(linkProperties.getTags().size() > 0) {
                 tags = linkProperties.getTags().get(0);
             }
-            Uri uri = Uri.parse(String.format("%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+            Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
                     tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
             renderedUrl = uri.toString();
 
