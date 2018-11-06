@@ -32,7 +32,6 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
-import com.tokopedia.session.changename.di.ChangeNameScope;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
@@ -52,23 +51,15 @@ import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWa
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
-import com.tokopedia.session.data.source.CloudDiscoverDataSource;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
-import com.tokopedia.session.register.data.mapper.RegisterValidationMapper;
-import com.tokopedia.session.register.data.source.RegisterValidationSource;
-import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
-import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
-import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
 import com.tokopedia.session.register.registerphonenumber.data.source.CloudRegisterPhoneNumberSource;
-import com.tokopedia.session.register.registerphonenumber.domain.usecase.CheckMsisdnPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.LoginRegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.registerphonenumber.domain.usecase.RegisterPhoneNumberUseCase;
 import com.tokopedia.session.register.view.util.AccountsAuthInterceptor;
@@ -80,8 +71,6 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.di.UserModule.BEARER_SERVICE;
 
 
 /**
@@ -185,15 +174,6 @@ public class SessionModule {
                 .addInterceptor(accountsAuthInterceptor)
                 .addInterceptor(chuckInterceptor)
                 .build();
-    }
-
-    @SessionScope
-    @Provides
-    CloudDiscoverDataSource provideCloudDiscoverDataSource(GlobalCacheManager globalCacheManager,
-                                                           @Named(HMAC_SERVICE) AccountsService
-                                                                   accountsService,
-                                                           DiscoverMapper discoverMapper) {
-        return new CloudDiscoverDataSource(globalCacheManager, accountsService, discoverMapper);
     }
 
     @SessionScope
@@ -326,38 +306,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    public GetFacebookCredentialUseCase provideGetFacebookCredentialUseCase(){
-        return provideOverridenGetFacebookCredentialUseCase();
-    }
-
-    public GetFacebookCredentialUseCase provideOverridenGetFacebookCredentialUseCase(){
-        return new GetFacebookCredentialUseCase();
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnMapper provideCheckMsisdnMapper() {
-        return new CheckMsisdnMapper();
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnSource provideCheckMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                               CheckMsisdnMapper checkMsisdnMapper) {
-        return new CheckMsisdnSource(accountsService, checkMsisdnMapper);
-    }
-
-    @SessionScope
-    @Provides
-    CheckMsisdnPhoneNumberUseCase provideCheckMsisdnPhoneNumberUseCase(ThreadExecutor threadExecutor,
-                                                                       PostExecutionThread postExecutionThread,
-                                                                       @ApplicationContext Context context,
-                                                                       CheckMsisdnSource checkMsisdnSource) {
-        return new CheckMsisdnPhoneNumberUseCase(threadExecutor, postExecutionThread, context, checkMsisdnSource);
-    }
-
-    @SessionScope
-    @Provides
     RegisterPhoneNumberMapper provideRegisterPhoneNumberMapper() {
         return new RegisterPhoneNumberMapper();
     }
@@ -411,19 +359,6 @@ public class SessionModule {
     @Provides
     UserSession provideUserSession(@ApplicationContext Context context){
         return new UserSession(context);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterValidationSource provideRegisterValidationSource(AccountsService accountsService,
-                                                             RegisterValidationMapper registerValidationMapper){
-        return new RegisterValidationSource(accountsService, registerValidationMapper);
-    }
-
-    @SessionScope
-    @Provides
-    RegisterValidationMapper provideRegisterValidationMapper(){
-        return new RegisterValidationMapper();
     }
 
     @SessionScope

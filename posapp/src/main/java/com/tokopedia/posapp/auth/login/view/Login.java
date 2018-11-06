@@ -1,17 +1,10 @@
-package com.tokopedia.session.login.loginemail.view.viewlistener;
+package com.tokopedia.posapp.auth.login.view;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 
 import java.util.ArrayList;
 
@@ -45,10 +38,6 @@ public interface Login {
 
         void onErrorDiscoverLogin(String errorMessage);
 
-        void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> providers);
-
-        GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener();
-
         void onGoToCreatePasswordPage(GetUserInfoDomainData getUserInfoDomainData);
 
         void onGoToPhoneVerification();
@@ -76,25 +65,5 @@ public interface Login {
         void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
 
         boolean isFromRegister();
-    }
-
-    interface Presenter extends CustomerPresenter<View> {
-
-        void login(String email, String password);
-
-        void saveLoginEmail(String email);
-
-        ArrayList<String> getLoginIdList();
-
-        void discoverLogin();
-
-        void loginWebview(Intent data);
-
-        void loginGoogle(String accessToken, String email);
-
-        void getFacebookCredential(Fragment fragment, CallbackManager callbackManager);
-
-        void loginFacebook(AccessToken accessToken, String email);
-
     }
 }

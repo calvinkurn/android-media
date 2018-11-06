@@ -1,13 +1,12 @@
-package com.tokopedia.session.login.loginemail.domain.interactor;
+package com.tokopedia.posapp.auth.login.domain.usecase;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
+import com.tokopedia.posapp.auth.login.data.LoginEmailDomain;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.domain.interactor.GetTokenUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
-import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

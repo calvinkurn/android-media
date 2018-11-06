@@ -161,6 +161,18 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         daggerLoginComponent.inject(this);
     }
 
+//    public void initOuterInjector(SessionModule sessionModule) {
+//        AppComponent appComponent = getComponent(AppComponent.class);
+//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+//                DaggerSessionComponent.builder()
+//                        .appComponent(appComponent)
+//                        .sessionModule(sessionModule)
+//                        .build();
+//        daggerSessionComponent.inject(this);
+//
+//        presenter.attachView(this);
+//    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -447,7 +459,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     @Override
     public void onErrorLogin(String errorMessage) {
-        if(!TextUtils.isEmpty(actionLoginMethod)) {
+        if (!TextUtils.isEmpty(actionLoginMethod)) {
             analytics.eventFailedLogin(actionLoginMethod);
         }
 
@@ -749,9 +761,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             @Override
             public void onGoToPhoneVerification() {
                 if (getActivity() != null) {
-                   Intent intent =  ((ApplinkRouter) getActivity().getApplicationContext())
+                    Intent intent = ((ApplinkRouter) getActivity().getApplicationContext())
                             .getApplinkIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
-                   startActivityForResult(intent, REQUEST_VERIFY_PHONE);
+                    startActivityForResult(intent, REQUEST_VERIFY_PHONE);
                 }
             }
 

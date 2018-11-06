@@ -16,16 +16,16 @@ import android.webkit.WebView;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
+import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.loginregister.login.view.fragment.LoginFragment;
+import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
+import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity;
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.network.ErrorMessageException;
-import com.tokopedia.session.R;
-import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
-import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.tkpd.WebViewIdlingResource;
 import com.tokopedia.tkpd.activities.session.modules.TestSessionModule;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;
@@ -454,7 +454,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -511,7 +511,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -569,7 +569,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             doAnswer(new Answer() {
                 @Override
@@ -623,7 +623,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 

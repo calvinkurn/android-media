@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginemail.domain.model;
+package com.tokopedia.posapp.auth.login.data;
 
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;

@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginemail.view.subscriber;
+package com.tokopedia.posapp.auth.login.view;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,9 +7,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
+import com.tokopedia.posapp.auth.login.data.LoginEmailDomain;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
-import com.tokopedia.session.login.loginemail.domain.model.LoginEmailDomain;
-import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 
 import rx.Subscriber;
 
