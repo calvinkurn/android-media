@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.gson.JsonObject;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
@@ -19,8 +20,10 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -111,8 +114,8 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         JSONArray afProdIds = new JSONArray();
+        HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -123,17 +126,20 @@ public class BaseDiscoveryActivity
                 } else {
                     break;
                 }
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
+
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         JSONArray afProdIds = new JSONArray();
+        HashMap<String, String> category = new HashMap<String, String>();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
         if (productViewModel.getProductList().size() > 0) {
@@ -144,9 +150,11 @@ public class BaseDiscoveryActivity
                 } else {
                     break;
                 }
+                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
             }
         }
         TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }

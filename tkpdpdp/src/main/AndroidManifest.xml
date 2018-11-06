@@ -15,6 +15,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <activity
+            android:name=".affiliate.ProductAffiliateActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+
+        <activity
             android:name=".ProductYoutubeActivity"
             android:screenOrientation="landscape" />
 

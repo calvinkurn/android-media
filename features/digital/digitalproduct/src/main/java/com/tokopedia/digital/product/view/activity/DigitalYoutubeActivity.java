@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 
-import com.project.youtubeutils.activity.YoutubePlayerActivity;
+import com.tokopedia.youtubeutils.activity.YoutubePlayerActivity;
 
 public class DigitalYoutubeActivity extends YoutubePlayerActivity {
 

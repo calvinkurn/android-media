@@ -83,6 +83,18 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
+    public Observable<AddToCartDataResponse> addToCartDataOneClickShipment(Map<String, String> param) {
+        return cartApi.postAddToCartOneClickShipment(param).map(
+                new Func1<Response<CartResponse>, AddToCartDataResponse>() {
+                    @Override
+                    public AddToCartDataResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(AddToCartDataResponse.class);
+                    }
+                }
+        );
+    }
+
+    @Override
     public Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param) {
         return cartApi.postUpdateCart(param).map(new Func1<Response<CartResponse>, UpdateCartDataResponse>() {
             @Override
@@ -105,6 +117,16 @@ public class CartRepository implements ICartRepository {
     @Override
     public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param) {
         return cartApi.getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
+            @Override
+            public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressFormOneClickCheckout(Map<String, String> param) {
+        return cartApi.getShipmentAddressFormOneClickCheckout(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
             @Override
             public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
                 return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);

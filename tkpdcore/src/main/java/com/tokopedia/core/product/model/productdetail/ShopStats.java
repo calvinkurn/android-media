@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ShopStats implements Parcelable {
     private static final String TAG = ShopStats.class.getSimpleName();
     @SerializedName("shop_service_rate")

@@ -8,6 +8,7 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetSubmissionInChallengeUseCase extends RestRequestSupportIntercept
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         String url = ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.Me.SUBMISSIONS_IN_CHALLENGE, challengeId) + "&status=all&start=0&size=1";
         RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class)

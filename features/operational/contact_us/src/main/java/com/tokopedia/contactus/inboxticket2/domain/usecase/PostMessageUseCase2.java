@@ -11,6 +11,7 @@ import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class PostMessageUseCase2 extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<InboxDataResponse<StepTwoResponse>>() {
         }.getType())
