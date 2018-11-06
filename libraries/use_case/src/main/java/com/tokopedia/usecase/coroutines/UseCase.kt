@@ -17,18 +17,24 @@ abstract class UseCase<out T : Any> {
         }
     }
 
+    fun createJob(): Job {
+        return GlobalScope.async(AppExecutors.bgContext) {
+            executeCatchError()
+        }
+    }
+
     fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit) {
         parentJob.cancel()
-        parentJob = GlobalScope.launch(AppExecutors.uiContext) {
+        GlobalScope.launch(AppExecutors.uiContext + parentJob) {
             try {
                 val result = async(AppExecutors.bgContext) {
                     executeCatchError()
                 }.await()
-                when(result){
+                when (result) {
                     is Success -> onSuccess.invoke(result.data)
                     is Fail -> onError(result.throwable)
                 }
-            } catch (throwable: Throwable){
+            } catch (throwable: Throwable) {
                 onError(throwable)
             }
         }
