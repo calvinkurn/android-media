@@ -76,6 +76,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     public void bind(final DynamicChannelViewModel element) {
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
+            listener.
             itemAdapter.setChannel(channel);
             homeChannelTitle.setText(channel.getHeader().getName());
 

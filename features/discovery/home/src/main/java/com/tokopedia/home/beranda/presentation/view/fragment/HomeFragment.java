@@ -79,6 +79,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
+import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
@@ -95,6 +96,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -131,6 +133,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private RecyclerView.OnScrollListener onEggScrollListener;
 
     private MainToolbar mainToolbar;
+
+    private long serverTimeOffset = 0;
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
@@ -1028,5 +1032,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getString(R.string.sc_wishlist_title),
                 getString(R.string.sc_wishlist_desc)));
         return list;
+    }
+
+    @Override
+    public void onServerTimeReceived(long serverTimeUnix) {
+        if(serverTimeOffset == 0){
+            Date dateNow = new Date();
+            long currentTimemillis = dateNow.getTime();
+            long serverTimemillis = serverTimeUnix * 1000l;
+            this.serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffset(serverTimemillis);
+        }
     }
 }

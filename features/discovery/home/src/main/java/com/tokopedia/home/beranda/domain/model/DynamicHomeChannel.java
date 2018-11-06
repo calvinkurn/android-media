@@ -651,6 +651,10 @@ public class DynamicHomeChannel {
         private String expiredTime;
 
         @Expose
+        @SerializedName("serverTime")
+        private long serverTimeUnix;
+
+        @Expose
         @SerializedName("applink")
         private String applink;
 
