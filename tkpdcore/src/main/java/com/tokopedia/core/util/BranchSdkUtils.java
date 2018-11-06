@@ -2,6 +2,7 @@ package com.tokopedia.core.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -155,8 +156,25 @@ public class BranchSdkUtils {
         linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, deeplinkPath == null ? "" : deeplinkPath);
 
         if (ShareData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())){
-            linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, data.renderShareUri());
-            linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, data.renderShareUri());
+            String connector = "";
+            String renderedUrl = "";
+            String tempUri = data.getUri();
+
+            if (tempUri.contains("?")) {
+                connector = "&";
+            } else {
+                connector = "?";
+            }
+            String tags = "";
+            if(linkProperties.getTags().size() > 0) {
+                tags = linkProperties.getTags().get(0);
+            }
+            Uri uri = Uri.parse(String.format("%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                    tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
+            renderedUrl = uri.toString();
+
+            linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, renderedUrl);
+            linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, renderedUrl);
         }
 
         return linkProperties;
