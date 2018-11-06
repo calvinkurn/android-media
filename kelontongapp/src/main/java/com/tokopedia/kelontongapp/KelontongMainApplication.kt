@@ -5,6 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.appsflyer.AppsFlyerConversionListener
+import com.appsflyer.AppsFlyerLib
 
 import com.crashlytics.android.Crashlytics
 
@@ -17,14 +19,39 @@ class KelontongMainApplication : Application() {
 
     val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
     val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
+    val AF_KEY = ""
 
     override fun onCreate() {
         super.onCreate()
+        initAppsflyer()
         initCrashlytics()
         createNotificationChannel()
     }
 
-    fun initCrashlytics() {
+    private fun initAppsflyer() {
+        AppsFlyerLib.getInstance().init(AF_KEY, appsflyerConversionListener(), this)
+        AppsFlyerLib.getInstance().startTracking(this)
+    }
+
+    private fun appsflyerConversionListener() = object: AppsFlyerConversionListener {
+        override fun onAppOpenAttribution(p0: MutableMap<String, String>?) {
+            // no-op
+        }
+
+        override fun onAttributionFailure(p0: String?) {
+            // no-op
+        }
+
+        override fun onInstallConversionDataLoaded(p0: MutableMap<String, String>?) {
+            // no-op
+        }
+
+        override fun onInstallConversionFailure(p0: String?) {
+            // no-op
+        }
+    }
+
+    private fun initCrashlytics() {
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())
             Crashlytics.setUserIdentifier(getString(R.string.app_name))
