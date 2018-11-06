@@ -14,8 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -29,7 +28,6 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.logistic.domain.LocationPassMapper;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.Shipment;
@@ -77,7 +75,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     RequestParams requestParams;
     private TkpdProgressDialog tkpdProgressDialog;
-    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
+    private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -239,13 +237,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
-        HashMap<String, String> locationHashMap = LocationPassMapper.bundleLocationMap(locationPass);
-        logisticRouter.navigateToGeoLocationActivityRequest(
-                ShopOpenMandatoryLocationFragment.this,
-                REQUEST_CODE_GOOGLE_MAP,
-                generatedMap,
-                locationHashMap
-        );
+        Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getContext(), locationPass);
+        startActivityForResult(intent, REQUEST_CODE_GOOGLE_MAP);
     }
 
     @Override
@@ -320,10 +313,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                     }
                     break;
                 case REQUEST_CODE_GOOGLE_MAP:
-                    LocationPass locationPass = data.getSerializableExtra(EXTRA_HASH_LOCATION) != null ?
-                            LocationPassMapper.unBundleLocationMap(
-                                    (HashMap<String, String>) data.getSerializableExtra(EXTRA_HASH_LOCATION)
-                            ) : null;
+                    LocationPass locationPass = data.getParcelableExtra(EXTRA_EXISTING_LOCATION);
                     if (locationPass != null && locationPass.getLatitude() != null) {
 
                         GoogleLocationViewModel locationViewModel = new GoogleLocationViewModel();

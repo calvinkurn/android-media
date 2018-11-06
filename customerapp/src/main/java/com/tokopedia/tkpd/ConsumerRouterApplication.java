@@ -1850,9 +1850,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, HashMap<String, String> locationPass) {
-        Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
-        fragment.startActivityForResult(intent, requestCode);
+    public Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass) {
+       return GeolocationActivity.createInstance(context, locationPass, false);
     }
 
     @Override

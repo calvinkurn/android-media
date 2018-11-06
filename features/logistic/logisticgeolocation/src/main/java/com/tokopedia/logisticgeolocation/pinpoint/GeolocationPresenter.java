@@ -370,8 +370,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
             Intent intent = new Intent();
             intent.putExtras(bundle);
             intent.putExtra(GeolocationActivity.EXTRA_EXISTING_LOCATION, locationPass);
-            // Pass to shop open module which still depend on LocationPass core
-            intent.putExtra(GeolocationActivity.EXTRA_HASH_LOCATION, LocationPassMapper.bundleLocationMap(locationPass));
             activity.setResult(Activity.RESULT_OK, intent);
             activity.finish();
         }

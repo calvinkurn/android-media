@@ -56,22 +56,13 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     @Inject RetrofitInteractor mRepository;
     @Inject UserSession mUser;
 
-    // Address
+    // Address // ShopOpen // Seller
     public static Intent createInstance(@NonNull Context context, LocationPass locationPass,
                                         boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
         bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    // Shop open
-    public static Intent createInstanceIntent(@NonNull Context context, @Nullable HashMap<String, String> locationHash) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_HASH_LOCATION, locationHash);
         intent.putExtras(bundle);
         return intent;
     }
@@ -131,11 +122,6 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
         mBundle = getIntent().getExtras();
         if(mBundle != null) {
             LocationPass locationPass = mBundle.getParcelable(EXTRA_EXISTING_LOCATION);
-            // handle from shop open unresolved shared data
-            if (locationPass == null) {
-                locationPass = LocationPassMapper.unBundleLocationMap(
-                        (HashMap<String, String>) mBundle.getSerializable(EXTRA_HASH_LOCATION));
-            }
             if(locationPass != null && !locationPass.getLatitude().isEmpty()) {
                 fragment = GoogleMapFragment.newInstance(locationPass);
             } else {
