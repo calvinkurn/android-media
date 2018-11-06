@@ -81,6 +81,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.EventGroupChatVi
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ParticipantViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -1499,6 +1500,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             updateVideo((VideoViewModel) map);
         } else if (map instanceof EventGroupChatViewModel) {
             handleEvent((EventGroupChatViewModel) map);
+        } else if (map instanceof ParticipantViewModel) {
+            handleParticipant((ParticipantViewModel) map);
         }
 
         if (currentFragmentIsChat()) {
@@ -1509,6 +1512,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 listMessage.add(map);
             }
         }
+    }
+
+    private void handleParticipant(ParticipantViewModel map) {
+        setToolbarParticipantCount(map.totalView);
     }
 
     private void handleEvent(EventGroupChatViewModel event) {

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.groupchat.chatroom.domain.pojo.AdminMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.EventHandlerPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.ParticipantPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.UserMsg;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
@@ -26,6 +27,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessage
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ParticipantViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
@@ -120,9 +122,17 @@ public class WebSocketInfo {
             case EventHandlerPojo.BANNED:
             case EventHandlerPojo.FREEZE:
                 return mapToEventHandler(data);
+            case ParticipantViewModel.TYPE:
+                return mapToParticipant(data);
             default:
                 return null;
         }
+    }
+
+    private Visitable mapToParticipant(JsonObject data) {
+        Gson gson = new Gson();
+        ParticipantPojo pojo = gson.fromJson(data, ParticipantPojo.class);
+        return new ParticipantViewModel(pojo.getChannelId(), pojo.getTotalView());
     }
 
     private Visitable mapToEventHandler(JsonObject data) {
@@ -468,6 +478,8 @@ public class WebSocketInfo {
         } else if (mappedMessage instanceof VideoViewModel) {
             return true;
         } else if (mappedMessage instanceof EventGroupChatViewModel) {
+            return true;
+        } else if (mappedMessage instanceof ParticipantViewModel) {
             return true;
         } else {
             return false;
