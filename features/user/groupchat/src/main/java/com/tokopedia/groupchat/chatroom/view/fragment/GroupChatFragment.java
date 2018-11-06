@@ -496,14 +496,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
 
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
-        if (sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)) {
+        if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_pink_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
-        } else if (sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_ACTIVE)) {
+        } else if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_ACTIVE)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
@@ -522,8 +522,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (sprintSaleViewModel != null
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
-                && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_UPCOMING)
-                && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_FINISHED)
+                && !sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)
+                && !sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED)
                 && channelInfoViewModel != null) {
 
             trackViewSprintSaleComponent(sprintSaleViewModel);
@@ -872,7 +872,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignId() != null
                 && productViewModel.getSprintSaleCampaignId().equals(((GroupChatContract.View) getActivity())
                 .getSprintSaleViewModel().getCampaignId())
-                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equals
+                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equalsIgnoreCase
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
 
 
@@ -909,7 +909,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && ((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getCampaignId() != null
                 && sprintSaleAnnouncementViewModel.getCampaignId().equals(((GroupChatContract.View) getActivity())
                 .getSprintSaleViewModel().getCampaignId())
-                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equals
+                && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equalsIgnoreCase
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
 
             ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
