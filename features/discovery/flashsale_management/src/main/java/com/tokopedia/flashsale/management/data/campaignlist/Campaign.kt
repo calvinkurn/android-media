@@ -90,4 +90,11 @@ data class Campaign(
         @SerializedName("tnc")
         @Expose
         val tnc: String = ""
-)
+) {
+    data class GetCampaignInfo(@SerializedName("data")
+                                    @Expose val campaign: Campaign)
+
+
+    data class Response(@SerializedName("getCampaignInfo")
+                        @Expose val result: GetCampaignInfo)
+}

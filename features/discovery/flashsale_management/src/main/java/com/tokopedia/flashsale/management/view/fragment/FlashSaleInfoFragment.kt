@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.view.adapter.CampaignInfoAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.presenter.CampaignDetailInfoPresenter
@@ -16,6 +17,8 @@ import javax.inject.Inject
 
 class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInfoAdapterTypeFactory>() {
     lateinit var campaignUrl: String
+    lateinit var sellerStatus: SellerStatus
+
     @Inject
     lateinit var presenter: CampaignDetailInfoPresenter
 
@@ -48,7 +51,11 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        campaignUrl = arguments?.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
+        arguments?.let {
+            campaignUrl = it.getString(EXTRA_PARAM_CAMPAIGN_URL, "") ?: ""
+            sellerStatus = it.getParcelable(EXTRA_PARAM_SELLER_STATUS) ?: SellerStatus()
+        }
+
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -65,9 +72,13 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
 
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_URL = "campaign_url"
+        private const val EXTRA_PARAM_SELLER_STATUS = "seller_status"
 
-        fun createInstance(campaignUrl: String) = FlashSaleInfoFragment().apply {
-            arguments = Bundle().apply { putString(EXTRA_PARAM_CAMPAIGN_URL, campaignUrl) }
+        fun createInstance(campaignUrl: String, sellerStatus: SellerStatus) = FlashSaleInfoFragment().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_PARAM_CAMPAIGN_URL, campaignUrl)
+                putParcelable(EXTRA_PARAM_SELLER_STATUS, sellerStatus)
+            }
         }
     }
 }

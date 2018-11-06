@@ -4,11 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flashsale.management.data.campaignlabel.CampaignStatus
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
 
-class CampaignStatusListViewModel : Visitable<CampaignAdapterTypeFactory> {
+class CampaignStatusListViewModel {
 
-    var campaignStatusList = ArrayList<CampaignStatus>()
+    var campaignStatusList = listOf<CampaignStatus>()
 
-    override fun type(typeFactory: CampaignAdapterTypeFactory): Int {
-        return typeFactory.type(this)
-    }
+
 }

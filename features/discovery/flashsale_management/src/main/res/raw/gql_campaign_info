@@ -1,5 +1,5 @@
-query getCampaignInfo($camp_url: String!){
-    mojito_camp_info(camp_url:$camp_url){
+query getCampaignInfo($slug: String!, $shopID: Int!){
+    getCampaignInfo(slug:$slug, shop_id:$shopID){
         data {
             campaign_id
             name
@@ -15,7 +15,9 @@ query getCampaignInfo($camp_url: String!){
             description
             promo_code
             minimum_transaction
-            criteria {
+            min_seller_reputation_badge
+            max_seller_reputation_badge
+            criteria{
                 criteria_id
                 min_price
                 max_price
@@ -34,7 +36,17 @@ query getCampaignInfo($camp_url: String!){
                 }
             }
             banners
-            status_info
+            logistics{
+                logistic_id
+                logistic_name
+            }
+            status_info {
+                status_name
+                status_label
+                label_hover_text
+                status_head
+                status_sub_text
+            }
             dashboard_url
             tnc
         }

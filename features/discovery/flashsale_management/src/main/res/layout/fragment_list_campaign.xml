@@ -17,6 +17,15 @@
         android:layout_marginRight="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_2"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chips"
+        android:visibility="gone"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:visibility="visible"/>
+
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
@@ -27,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:layout_marginTop="@dimen/dp_12"
             android:paddingTop="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_8"/>
 

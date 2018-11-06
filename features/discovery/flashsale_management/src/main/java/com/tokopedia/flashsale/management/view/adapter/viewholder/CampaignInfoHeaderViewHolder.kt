@@ -1,15 +1,15 @@
 package com.tokopedia.flashsale.management.view.adapter.viewholder
 
 import android.animation.ObjectAnimator
+import android.graphics.drawable.GradientDrawable
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.ekstension.gone
-import com.tokopedia.flashsale.management.ekstension.isVisible
-import com.tokopedia.flashsale.management.ekstension.loadUrl
-import com.tokopedia.flashsale.management.ekstension.visible
+import com.tokopedia.flashsale.management.data.FlashSaleConstant
+import com.tokopedia.flashsale.management.ekstension.*
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
 import kotlinx.android.synthetic.main.item_flash_sale_info_camp_detail.view.*
 
@@ -21,12 +21,19 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
     override fun bind(element: CampaignInfoHeaderViewModel) {
         val campaign = element.campaign
         itemView.ivImageCampaign.loadUrl(campaign.cover, 20f)
-        itemView.tvCampaignType.text = campaign.campaignType
+        itemView.tvCampaignType.text = campaign.name
         itemView.tvCampaignName.text = campaign.name
-        itemView.tvStatus.text = campaign.status
         itemView.tvCampaignDate.text = campaign.campaignPeriod
         itemView.tvCampaignType.text = campaign.campaignType
-        itemView.tvStatus.text = campaign.statusInfo.label
+        with(itemView.tvStatus){
+            text = campaign.statusInfo.label
+            val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label) ?:
+            FlashSaleConstant.defaultPairColor
+            setTextDrawableColor(ContextCompat.getColor(itemView.context, textColor))
+            val bgDrawable = background.mutate() as GradientDrawable
+            bgDrawable.setColor(ContextCompat.getColor(context, bgColor))
+            bgDrawable.invalidateSelf()
+        }
         itemView.title_process.text = campaign.statusInfo.head
         itemView.desc_process.text = campaign.statusInfo.subText
 

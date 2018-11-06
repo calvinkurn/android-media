@@ -6,5 +6,4 @@ import com.tokopedia.flashsale.management.view.viewmodel.EmptyMyCampaignViewMode
 interface CampaignAdapterTypeFactoryContract {
     fun type(viewModel: CampaignViewModel): Int
     fun type(viewModel: EmptyMyCampaignViewModel): Int
-    fun type(viewModel: CampaignStatusListViewModel): Int
 }

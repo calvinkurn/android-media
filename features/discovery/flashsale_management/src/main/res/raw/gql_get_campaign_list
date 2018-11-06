@@ -1,9 +1,10 @@
-query getCampaignList($all: String!,
+query getCampaignList($all: Boolean!,
                       $offset: Int!,
                       $rows: Int!,
-                      $campaign_type: Int!,
-                      $q: String!,
-                      $status: String!){
+                      $campaign_type: Int,
+                      $q: String,
+                      $status: String,
+                      $shopID: Int!){
    mojito_camp_list(params:{
           all:$all
           offset:$offset
@@ -11,6 +12,7 @@ query getCampaignList($all: String!,
           campaign_type:$campaign_type
           q:$q
           status:$status
+          shopID:$shopID
       }){
            data{
            shop_id
@@ -40,3 +42,4 @@ query getCampaignList($all: String!,
            }
        }
 }
+

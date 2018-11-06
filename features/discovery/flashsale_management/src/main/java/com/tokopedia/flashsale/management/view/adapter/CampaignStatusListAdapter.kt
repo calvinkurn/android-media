@@ -5,35 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.campaignlabel.CampaignStatus
 import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import kotlinx.android.synthetic.main.item_campaign_status.view.*
 
-class CampaignStatusListAdapter(var campaignStatusViewModelList: ArrayList<CampaignStatusViewModel>,
-                                val onCampaignStatusListAdapterListener: OnCampaignStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class CampaignStatusListAdapter(val campaignStatusList: MutableList<CampaignStatus> = mutableListOf(),
+                                private val onSelected: (String) -> Unit) : RecyclerView.Adapter<CampaignStatusListAdapter.CampaignStatusViewHolder>(){
 
     private var selectedCampaignStatusId: String = ""
 
-    interface OnCampaignStatusListAdapterListener {
-        fun onCampaignStatusClicked(campaignStatusViewModel: CampaignStatusViewModel)
+    override fun onBindViewHolder(holder: CampaignStatusViewHolder, position: Int) {
+        holder.bind(campaignStatusList[position])
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.text.text = campaignStatusViewModelList[position].labelName
-        holder.itemView.text.isSelected = campaignStatusViewModelList[position].convertIdtoCommaString() == selectedCampaignStatusId
-    }
+    override fun getItemCount() = campaignStatusList.size
 
-    override fun getItemCount() = campaignStatusViewModelList.size
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampaignStatusViewHolder {
         val itemLayoutView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_campaign_status, parent, false)
 
         return CampaignStatusViewHolder(itemLayoutView)
     }
 
-    fun replaceData(campaignStatusViewModelList: ArrayList<CampaignStatusViewModel>) {
-        this.campaignStatusViewModelList = campaignStatusViewModelList
+    fun replaceData(campaignStatusViewModelList: List<CampaignStatus>) {
+        this.campaignStatusList.clear()
+        this.campaignStatusList.addAll(campaignStatusViewModelList)
         notifyDataSetChanged()
     }
 
@@ -44,13 +40,23 @@ class CampaignStatusListAdapter(var campaignStatusViewModelList: ArrayList<Campa
             itemView.text.setOnClickListener(this)
         }
 
+        fun bind(data: CampaignStatus){
+            itemView.text.text = data.name
+            itemView.text.isSelected = selectedCampaignStatusId.equals(data.convertIdtoCommaString())
+        }
+
         override fun onClick(v: View) {
             val position = adapterPosition
-            if (position < 0 || position >= campaignStatusViewModelList.size) {
+            if (position < 0 || position >= itemCount) {
                 return
             }
-            onCampaignStatusListAdapterListener.onCampaignStatusClicked(campaignStatusViewModelList[position])
-            selectedCampaignStatusId = campaignStatusViewModelList[position].convertIdtoCommaString()
+
+            if (selectedCampaignStatusId.equals(campaignStatusList[position].convertIdtoCommaString())){
+                selectedCampaignStatusId = ""
+            } else {
+                selectedCampaignStatusId = campaignStatusList[position].convertIdtoCommaString()
+            }
+            onSelected(selectedCampaignStatusId)
             notifyDataSetChanged()
         }
     }
