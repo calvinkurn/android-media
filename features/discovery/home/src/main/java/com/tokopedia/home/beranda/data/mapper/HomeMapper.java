@@ -1,14 +1,12 @@
 package com.tokopedia.home.beranda.data.mapper;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.analytics.HomePageTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.home.Ticker;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.home.analytics.HomePageTracking;
+import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -28,12 +26,20 @@ import java.util.List;
 import retrofit2.Response;
 import rx.functions.Func1;
 
+import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
+
 
 /**
  * Created by henrypriyono on 26/01/18.
  */
 
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<Visitable>> {
+    private final Context context;
+
+    public HomeMapper(Context context) {
+        this.context = context;
+    }
+
     @Override
     public List<Visitable> call(Response<GraphqlResponse<HomeData>> response) {
         if (response.isSuccessful()) {
@@ -76,33 +82,37 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
                                         channel.getEnhanceImpressionSprintSaleHomePage(position)
-
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
                                 channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                        context,
                                         channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        context,
                                         channel.getEnhanceImpressionLegoBannerHomePage(position)
                                 );
                             } else {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                        context,
                                         channel.getEnhanceImpressionDynamicChannelHomePage(position)
                                 );
                             }
                         }
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
-                            list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
+                            list.add(new DigitalsViewModel(context.getString(R.string.digital_widget_title), 0));
                         } else {
                             list.add(mappingDynamicChannel(channel));
-                            HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
+                            HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                    list.size(),channel);
                         }
                     }
                 }
@@ -110,9 +120,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             return list;
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = getErrorMessage(response);
             if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
+                throw new RuntimeException(messageError);
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }

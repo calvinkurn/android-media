@@ -13,4 +13,6 @@ public interface DigitalModuleRouter {
     Intent getDefaultContactUsIntent(Activity activity, String url, String toolbarTitle);
 
     Intent getLoginIntent(Context activity);
+
+    Intent instanceIntentDigitalCategoryList();
 }

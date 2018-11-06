@@ -68,6 +68,7 @@ import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.pushnotif.PushNotification;
+import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
@@ -290,6 +291,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FeedUrl.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         FeedUrl.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         FeedUrl.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        RecentViewUrl.MOJITO_DOMAIN = ConsumerAppBaseUrl.BASE_MOJITO_DOMAIN;
+
+
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
