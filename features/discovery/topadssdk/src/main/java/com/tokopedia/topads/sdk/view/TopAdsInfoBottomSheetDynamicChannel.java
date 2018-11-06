@@ -16,7 +16,7 @@ import com.tokopedia.topads.sdk.R;
  * Created by stevenfredian on 5/29/17.
  */
 
-public class TopAdsInfoBottomSheet {
+public class TopAdsInfoBottomSheetDynamicChannel {
 
     public static String ADS_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
 
@@ -25,13 +25,13 @@ public class TopAdsInfoBottomSheet {
     private View closeButton;
     private View moreButton;
 
-    public TopAdsInfoBottomSheet() {
+    public TopAdsInfoBottomSheetDynamicChannel() {
     }
 
-    public static TopAdsInfoBottomSheet newInstance(Context context) {
-        TopAdsInfoBottomSheet frag = new TopAdsInfoBottomSheet();
+    public static TopAdsInfoBottomSheetDynamicChannel newInstance(Context context) {
+        TopAdsInfoBottomSheetDynamicChannel frag = new TopAdsInfoBottomSheetDynamicChannel();
         frag.dialog = new BottomSheetDialog(context);
-        frag.dialog.setContentView(R.layout.promoted_info_dialog);
+        frag.dialog.setContentView(R.layout.promoted_info_dialog_dynamic_channel);
         frag.closeButton = frag.dialog.findViewById(R.id.close_but);
         frag.moreButton = frag.dialog.findViewById(R.id.more);
         frag.setView(context);
