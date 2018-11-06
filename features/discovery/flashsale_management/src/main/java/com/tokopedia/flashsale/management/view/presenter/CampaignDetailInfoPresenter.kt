@@ -1,8 +1,7 @@
 package com.tokopedia.flashsale.management.view.presenter
 
-import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
@@ -15,9 +14,9 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class CampaignDetailInfoPresenter @Inject
-constructor(private @ApplicationContext val context: Context,
+constructor(private val userSession: UserSession,
             @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN)
-            private val useCase: GraphqlUseCase<Campaign>) {
+            private val useCase: GraphqlUseCase<Campaign.Response>) {
 
     private val useCases = mutableListOf<UseCase<Any>>()
 
@@ -29,14 +28,12 @@ constructor(private @ApplicationContext val context: Context,
                         onError: (Throwable)->Unit) {
 
 
-        val parameters = mapOf(FlashSaleConstant.PARAM_CAMPAIGN_URL to campaignUrl)
+        val parameters = mapOf(FlashSaleConstant.PARAM_SLUG to campaignUrl,
+                FlashSaleConstant.PARAM_SHOP_ID to userSession.shopId.toInt())
 
         useCase.setGraphqlQuery(rawQuery)
         useCase.setRequestParams(parameters)
-        useCase.execute({onSuccess(it.toListCampaignInfoViewModel())}){
-            onSuccess(Gson().fromJson(GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign_info),
-                    Campaign::class.java).toListCampaignInfoViewModel())
-        }
+        useCase.execute({onSuccess(it.result.campaign.toListCampaignInfoViewModel())}, onError)
         useCases += useCase
     }
 }

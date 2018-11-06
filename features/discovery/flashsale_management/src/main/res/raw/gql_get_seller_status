@@ -1,0 +1,14 @@
+query getSellerStatus($slug: String, $shopID: Int!){
+    getMojitoSellerStatus(slug:$slug,shop_id:$shopID){
+        data {
+            is_eligible
+            is_visible
+            is_shop_active
+            is_god_seller
+            ticker_message
+            show_onboard
+            join_status
+            submit_status
+        }
+    }
+}

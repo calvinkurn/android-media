@@ -2,6 +2,7 @@ package com.tokopedia.flashsale.management.view.fragment
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
@@ -9,23 +10,18 @@ import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 class UpcomingCampaignFragment : BaseCampaignFragment(){
 
     override fun loadData(page: Int) {
+        val offset = (page-1)* DEFAULT_ROWS
         presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
-                CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE,
-                "", "1,2,3",
-                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
+                CAMPAIGN_LIST_TYPE, offset, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText,
+                onSuccess = {onSuccessGetCampaignList(it)},
+                onError = {onErrorGetCampaignList(it)})
     }
 
     override fun onSearchTextChanged(text: String) {
-
     }
 
     override fun onSearchSubmitted(text: String) {
-        adapter.clearAllElements()
-        adapter.notifyDataSetChanged()
-        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
-                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE,
-                DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3",
-                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
+        loadInitialData()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -42,12 +38,24 @@ class UpcomingCampaignFragment : BaseCampaignFragment(){
                 title = getString(R.string.fm_campaign_list_search_empty_title)
                 description = getString(R.string.fm_campaign_list_search_empty_content)
                 iconRes = R.drawable.ic_empty_search
+                callback = object : BaseEmptyViewHolder.Callback{
+                    override fun onEmptyContentItemTextClicked() {
+                        searchInputView.searchText = ""
+                        loadInitialData()
+                    }
+
+                    override fun onEmptyButtonClicked() {
+                        searchInputView.searchText = ""
+                        loadInitialData()
+                    }
+
+                }
             }
         }
     }
 
     companion object {
         fun createInstance() = UpcomingCampaignFragment()
-        const val CAMPAIGN_LIST_TYPE = "true"
+        const val CAMPAIGN_LIST_TYPE = true
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
+import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import dagger.Module
@@ -35,21 +36,28 @@ class CampaignModule {
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LABEL)
     fun provideGetCampaignLabelUseCase() =
-            GraphqlUseCase<DataCampaignLabel>(GraphqlInteractor.getInstance().graphqlRepository).apply {
-                setTypeClass(DataCampaignLabel::class.java)
+            GraphqlUseCase<DataCampaignLabel.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+                setTypeClass(DataCampaignLabel.Response::class.java)
             }
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LIST)
     fun provideGetCampaignListUseCase() =
-            GraphqlUseCase<DataCampaignList>(GraphqlInteractor.getInstance().graphqlRepository).apply {
-                setTypeClass(DataCampaignList::class.java)
+            GraphqlUseCase<DataCampaignList.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+                setTypeClass(DataCampaignList.Response::class.java)
             }
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN)
     fun provideGetCampaignUseCase() =
-            GraphqlUseCase<Campaign>(GraphqlInteractor.getInstance().graphqlRepository).apply {
-                setTypeClass(Campaign::class.java)
+            GraphqlUseCase<Campaign.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+                setTypeClass(Campaign.Response::class.java)
+            }
+
+    @Provides
+    @Named(FlashSaleConstant.NAMED_REQUEST_SELLER_STATUS)
+    fun provideGetSellerStatusUseCase() =
+            GraphqlUseCase<SellerStatus.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+                setTypeClass(SellerStatus.Response::class.java)
             }
 }

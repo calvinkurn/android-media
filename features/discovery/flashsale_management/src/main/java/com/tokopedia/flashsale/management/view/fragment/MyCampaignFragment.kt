@@ -1,49 +1,60 @@
 package com.tokopedia.flashsale.management.view.fragment
 
+import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
+import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
-import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
+import com.tokopedia.flashsale.management.view.adapter.CampaignStatusListAdapter
 import com.tokopedia.flashsale.management.view.viewmodel.EmptyMyCampaignViewModel
+import kotlinx.android.synthetic.main.fragment_list_campaign.*
 
-class MyCampaignFragment : BaseCampaignFragment(), CampaignStatusListViewHolder.OnCampaignStatusListViewHolderListener{
+class MyCampaignFragment : BaseCampaignFragment(){
+    private var selectedStatusIds = ""
 
-    override fun loadInitialData() {
-        super.loadInitialData()
-        reloadCampaignData()
-        presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
-                {onSuccessGetCampaignLabel(it)},{onErrorGetCampaignLabel(it)})
-    }
+    private val campaignStatusListAdapter: CampaignStatusListAdapter by lazy { CampaignStatusListAdapter{
+        selectedStatusIds = it
+        loadInitialData()
+    }}
 
     override fun loadData(page: Int) {
+        val offset = (page-1)* DEFAULT_ROWS
         presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
-                CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE, "", "1,2,3",
-                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
+                CAMPAIGN_LIST_TYPE, offset, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText, selectedStatusIds,
+                this::onSuccessGetCampaignList, this::onErrorGetCampaignList)
     }
 
-    override fun getAdapterTypeFactory(): CampaignAdapterTypeFactory {
-        return CampaignAdapterTypeFactory(this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        chips.visible()
+        chips.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val itemDecoration = DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL)
+        val dividerDrawable = context?.let {  ContextCompat.getDrawable(it, R.drawable.horizontal_divider_8dp) }
+        dividerDrawable?.let { itemDecoration.setDrawable(it)
+            chips.addItemDecoration(itemDecoration)}
+        chips.adapter = campaignStatusListAdapter
+
+        presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
+                this::onSuccessGetCampaignLabel,this::onErrorGetCampaignLabel)
     }
 
-    private fun reloadCampaignData() {
-        showLoading()
-        loadData(defaultInitialPage)
-    }
+    override fun getAdapterTypeFactory()= CampaignAdapterTypeFactory()
 
     override fun onSearchTextChanged(text: String) {
 
     }
 
     override fun onSearchSubmitted(text: String) {
-        adapter.clearAllElements()
-        adapter.notifyDataSetChanged()
-        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
-                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, text, "1,2,3",
-                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
+        loadInitialData()
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -56,19 +67,28 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignStatusListViewHolder.
                 title = getString(R.string.fm_campaign_list_search_empty_title)
                 description = getString(R.string.fm_campaign_list_search_empty_content)
                 iconRes = R.drawable.ic_empty_search
+                callback = object : BaseEmptyViewHolder.Callback{
+                    override fun onEmptyContentItemTextClicked() {
+                        searchInputView.searchText = ""
+                        loadInitialData()
+                    }
+
+                    override fun onEmptyButtonClicked() {
+                        searchInputView.searchText = ""
+                        loadInitialData()
+                    }
+
+                }
             }
         }
     }
 
-    override fun onCampaignStatusClicked(campaignStatusViewModel: CampaignStatusViewModel) {
-        presenter.getCampaignList(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_list),
-                CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText,
-                campaignStatusViewModel.convertIdtoCommaString(),
-                {onSuccessGetCampaignList(it)}, {onErrorGetCampaignList(it)})
+    override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
+        campaignStatusListAdapter.replaceData(data.data)
     }
 
     companion object {
         fun createInstance() = MyCampaignFragment()
-        const val CAMPAIGN_LIST_TYPE = "false"
+        const val CAMPAIGN_LIST_TYPE = false
     }
 }

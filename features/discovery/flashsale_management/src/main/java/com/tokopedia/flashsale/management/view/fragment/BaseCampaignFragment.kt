@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
-import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
@@ -52,26 +51,19 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         return CampaignAdapterTypeFactory()
     }
 
-    fun onSuccessGetCampaignList(data: DataCampaignList) {
-        val listDummy = ArrayList<CampaignViewModel>()
-        for(campaign : Campaign in data.list){
-            listDummy.add(campaign.toCampaignViewModel())
-        }
-        renderList(listDummy)
+    fun onSuccessGetCampaignList(data: DataCampaignList.ResponseData) {
+        val listDummy = data.data.list.map { it.toCampaignViewModel() }
+        renderList(listDummy, data.data.totalData > adapter.dataSize)
     }
 
     fun onErrorGetCampaignList(throwable: Throwable) {
 
     }
 
-    fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
-        val campaignStatusListViewModel = CampaignStatusListViewModel()
-        campaignStatusListViewModel.campaignStatusList = data.data
-        adapter.addElement(0, campaignStatusListViewModel)
-    }
+    open fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {}
 
     fun onErrorGetCampaignLabel(throwable: Throwable) {
-
+        throwable.printStackTrace()
     }
 
     override fun onDestroyView() {
@@ -81,7 +73,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
 
     companion object {
         const val DEFAULT_PAGE = 0
-        const val DEFAULT_ROWS = 5
+        const val DEFAULT_ROWS = 20
         const val CAMPAIGN_TYPE = 1
     }
 }

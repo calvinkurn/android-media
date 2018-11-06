@@ -20,8 +20,8 @@ fun Campaign.toCampaignViewModel(): CampaignViewModel {
 
 fun CampaignStatus.toCampaignStatusViewModel(): CampaignStatusViewModel {
     return CampaignStatusViewModel().also {
-        it.labelName = this.label_name
-        it.status_id = this.status_id
+        it.labelName = this.name
+        it.statusId = this.id
     }
 }
 
@@ -32,8 +32,8 @@ fun FlashSaleProduct.toEligibleSellerProductViewModel(): FlashSaleProductViewMod
     }
 }
 
-fun CampaignStatusViewModel.convertIdtoCommaString(): String {
-    return this.status_id.joinToString(",") { it.toString() }
+fun CampaignStatus.convertIdtoCommaString(): String {
+    return this.id.joinToString(",") { it.toString() }
 }
 
 fun Campaign.toListCampaignInfoViewModel(): List<CampaignInfoViewModel> {
