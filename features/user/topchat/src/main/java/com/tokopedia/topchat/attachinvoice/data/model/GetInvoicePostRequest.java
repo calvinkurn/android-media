@@ -14,6 +14,8 @@ import java.util.TimeZone;
 
 public class GetInvoicePostRequest {
 
+    public static final String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
     @SerializedName("message_id")
     @Expose
     int messageId;
@@ -40,58 +42,37 @@ public class GetInvoicePostRequest {
         this.isShowAll = isShowAll;
         this.page = page;
         this.limit = limit;
-
-        SimpleDateFormat date = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        date.setTimeZone(TimeZone.getTimeZone("UTC"));
-        this.startTime = date.format(Calendar.getInstance().getTime());
+        this.startTime = generateStartTime();
     }
 
     public int getMessageId() {
         return messageId;
     }
 
-    public void setMessageId(int messageId) {
-        this.messageId = messageId;
-    }
-
     public int getUserId() {
         return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
     }
 
     public boolean isShowAll() {
         return isShowAll;
     }
 
-    public void setShowAll(boolean showAll) {
-        isShowAll = showAll;
-    }
-
     public int getPage() {
         return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
     }
 
     public int getLimit() {
         return limit;
     }
 
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public String generateStartTime() {
+        SimpleDateFormat date = new SimpleDateFormat(
+                START_TIME_FORMAT, Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return date.format(Calendar.getInstance().getTime());
     }
 }
