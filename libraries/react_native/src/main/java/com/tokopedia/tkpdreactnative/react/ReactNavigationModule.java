@@ -89,7 +89,11 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void getCurrentUserId(Promise promise) {
-        promise.resolve(SessionHandler.getLoginID(context));
+        promise.resolve(getUserId(context));
+    }
+
+    public String getUserId(Context context){
+        return SessionHandler.getLoginID(context);
     }
 
 
