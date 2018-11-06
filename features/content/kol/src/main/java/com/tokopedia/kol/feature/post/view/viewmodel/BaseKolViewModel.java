@@ -41,6 +41,7 @@ public class BaseKolViewModel {
                             boolean deletable, boolean multipleContent) {
         this.userId = userId;
         this.cardType = cardType;
+        this.activityType = activityType;
         this.title = title;
         this.name = name;
         this.avatar = avatar;
