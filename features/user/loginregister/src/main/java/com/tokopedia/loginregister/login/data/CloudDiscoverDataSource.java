@@ -7,6 +7,7 @@ import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
 import com.tokopedia.loginregister.discover.mapper.DiscoverMapper;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class CloudDiscoverDataSource {
         this.discoverMapper = discoverMapper;
     }
 
-    public Observable<DiscoverViewModel> getDiscover(com.tokopedia.usecase.RequestParams params) {
+    public Observable<DiscoverViewModel> getDiscover(RequestParams params) {
         return loginRegisterApi
                 .discoverLogin(params.getParameters())
                 .map(discoverMapper)

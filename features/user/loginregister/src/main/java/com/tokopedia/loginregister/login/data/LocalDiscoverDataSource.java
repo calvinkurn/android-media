@@ -44,6 +44,6 @@ public class LocalDiscoverDataSource {
     }
 
     private String getCache(String source) {
-        return globalCacheManager.get(KEY_DISCOVER + source);
+        return globalCacheManager.get(source);
     }
 }
