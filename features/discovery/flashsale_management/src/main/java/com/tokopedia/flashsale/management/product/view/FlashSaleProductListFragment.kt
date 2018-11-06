@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +29,7 @@ import javax.inject.Inject
 class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory>(),
         SellerStatusListAdapter.OnSellerStatusListAdapterListener {
 
+    var filterIndex: Int = -1
 
     var campaignId: Int = 0
     var campaignSlug: String = ""
@@ -50,9 +50,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         campaignSlug = "flash-sale-kamis"
 //        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
 //        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
-
+        if (savedInstanceState != null) {
+            filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
+        }
         super.onCreate(savedInstanceState)
-        sellerStatusListAdapter = SellerStatusListAdapter(arrayListOf(), this)
+        sellerStatusListAdapter = SellerStatusListAdapter(filterIndex, 0, 0, this)
         context?.let {
             GraphqlClient.init(it)
         }
@@ -100,16 +102,27 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun loadData(page: Int) {
-        //TODO filter by chip (not always all), query
         presenter.getEligibleProductList(campaignId,
+                campaignSlug,
                 (page - 1) * PER_PAGE, PER_PAGE,
-                searchInputView.searchText, FlashSaleFilterProductListTypeDef.TYPE_ALL,
+                searchInputView.searchText,
+                getFilterId(),
                 onSuccess = {
                     onSuccessGetEligibleList(it)
                 },
                 onError = {
                     super.showGetListError(it)
                 })
+    }
+
+    private fun getFilterId() : Int{
+        var filterId: Int = FlashSaleFilterProductListTypeDef.TYPE_ALL.id
+        sellerStatusListAdapter.run {
+            val flashSaleFilterProductListTypeDef = FlashSaleFilterProductListTypeDef.values()
+                    .firstOrNull() { it.index == sellerStatusListAdapter?.selectedIndex }
+            flashSaleFilterProductListTypeDef?.let { filterId = it.id }
+        }
+        return filterId
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -123,16 +136,34 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     private fun onSuccessGetEligibleList(flashSaleProductHeader: FlashSaleProductHeader) {
         if (TextUtils.isEmpty(searchInputView.searchText) &&
                 flashSaleProductHeader.flashSaleProduct.isEmpty() &&
-                currentPage == defaultInitialPage) {
+                currentPage == 0 &&
+                (sellerStatusListAdapter?.selectedIndex ?: -1) == -1) {
             hideSearchInputView()
         } else {
             showSearchInputView()
         }
+        if (currentPage == 0) {
+            renderUILabel(flashSaleProductHeader.submittedCount, flashSaleProductHeader.pendingCount)
+        }
         super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
+    }
+
+    private fun renderUILabel(submittedCount: Int, pendingCount: Int) {
+        if (submittedCount + pendingCount == 0) {
+            recyclerViewLabel.visibility = View.GONE
+        } else {
+            sellerStatusListAdapter?.setData(submittedCount, pendingCount)
+            recyclerViewLabel.visibility = View.VISIBLE
+        }
     }
 
     private fun hasNextPage(list: List<Any>): Boolean {
         return list.isNotEmpty() && list.size >= PER_PAGE
+    }
+
+    override fun onSwipeRefresh() {
+        presenter.clearCache()
+        super.onSwipeRefresh()
     }
 
     private fun refreshUI() {
@@ -157,12 +188,13 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         }
     }
 
-    override fun onStatusClicked(string: String) {
-        //TODO
-        Log.i("Test", "test")
+    override fun onStatusSelected(position: Int) {
         loadContent()
     }
 
+    override fun onStatusCleared() {
+        loadContent()
+    }
 
     override fun onSearchSubmitted(text: String?) {
         loadContent()
@@ -190,6 +222,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_PARAM_CAMPAIGN_SLUG = "campaign_slug"
+        private const val SAVED_FILTER_INDEX = "saved_filter_id"
         private const val PER_PAGE = 20
 
         private const val REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL = 203
@@ -210,6 +243,13 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 hasVisibleOnce = true
                 refreshUI()
             }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        sellerStatusListAdapter?.run {
+            outState.putInt(SAVED_FILTER_INDEX, selectedIndex)
         }
     }
 }

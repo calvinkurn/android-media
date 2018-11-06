@@ -29,6 +29,7 @@
     <string name="no_eligible_product_in_this_flash_sale">Sayang sekali, tidak ada produk yang diterima pada Flash Sale ini</string>
     <string name="no_worry_you_can_join_next_flash_sale">Namun Anda tidak perlu kecewa, karena toko Anda berkesempatan mengikuti Flash Sale lainnya.</string>
     <string name="flash_sale_registered">Terdaftar</string>
+    <string name="flash_sale_not_registered">Belum Didaftarkan</string>
     <string name="flash_sale_accepted">Diterima</string>
     <string name="flash_sale_reserve">Diajukan</string>
     <string name="flash_sale_rejected">Ditolak</string>

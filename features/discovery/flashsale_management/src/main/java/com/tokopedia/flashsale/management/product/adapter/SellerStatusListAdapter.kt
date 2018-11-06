@@ -5,25 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import kotlinx.android.synthetic.main.item_campaign_status.view.*
 
-class SellerStatusListAdapter(var modelList: ArrayList<String>,
-                              val onSellerStatusListAdapterListener: OnSellerStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-
-    private var selectedStatusId: String = ""
+class SellerStatusListAdapter(var selectedIndex:Int = -1,
+                              var submittedCount:Int = 0,
+                              var pendingCount: Int = 0,
+                              val onSellerStatusListAdapterListener: OnSellerStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface OnSellerStatusListAdapterListener {
-        fun onStatusClicked(string: String)
+        fun onStatusSelected(position: Int)
+        fun onStatusCleared()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        holder.itemView.text.text = modelList[position]
-        holder.itemView.text.isSelected = selectedStatusId.equals(modelList[position])
+        holder.itemView.text.text = when (position) {
+            0 -> holder.itemView.context.getString(R.string.flash_sale_registered) +
+                    if (submittedCount > 0) {"("+submittedCount+")"} else ""
+            else -> holder.itemView.context.getString(R.string.flash_sale_not_registered) +
+                    if (pendingCount > 0) {"("+pendingCount+")"} else ""
+        }
+        holder.itemView.text.isSelected = selectedIndex.equals(position)
     }
 
-    override fun getItemCount() = modelList.size
+    override fun getItemCount() = if (submittedCount > 0 || pendingCount > 0) 2 else 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val itemLayoutView = LayoutInflater.from(parent.context)
@@ -32,8 +36,9 @@ class SellerStatusListAdapter(var modelList: ArrayList<String>,
         return CampaignStatusViewHolder(itemLayoutView)
     }
 
-    fun setData(stringList: ArrayList<String>) {
-        this.modelList = stringList
+    fun setData(submittedCount: Int, pendingCount: Int) {
+        this.submittedCount = submittedCount
+        this.pendingCount = pendingCount
         notifyDataSetChanged()
     }
 
@@ -46,11 +51,16 @@ class SellerStatusListAdapter(var modelList: ArrayList<String>,
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            if (position < 0 || position >= modelList.size) {
+            if (position < 0 || position >= itemCount) {
                 return
             }
-            onSellerStatusListAdapterListener.onStatusClicked(modelList[position])
-            selectedStatusId = modelList[position]
+            if (selectedIndex > -1 && position == selectedIndex) {
+                selectedIndex = -1
+                onSellerStatusListAdapterListener.onStatusCleared()
+            } else {
+                selectedIndex = position
+                onSellerStatusListAdapterListener.onStatusSelected(position)
+            }
             notifyDataSetChanged()
         }
     }

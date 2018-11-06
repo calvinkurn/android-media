@@ -60,7 +60,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                 tvPercentOff.visibility = View.VISIBLE
             }
             ivProduct.loadUrl(item.campaign.imageUrl, context.resources.getDimension(R.dimen.dp_4))
-            tvDepartmentName.text = item.departmentId.toString()
+            tvDepartmentName.text = item.departmentName.map { it }.joinToString(" > ")
             if (item.campaign.productStatus == FlashSaleProductStatusTypeDef.RESERVE) {
                 // show mark
                 ivCheckMark.visibility = View.VISIBLE

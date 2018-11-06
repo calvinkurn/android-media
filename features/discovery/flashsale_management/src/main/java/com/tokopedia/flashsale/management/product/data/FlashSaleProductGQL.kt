@@ -48,6 +48,8 @@ data class FlashSaleProductItem(
         @SerializedName("department_id")
         @Expose val departmentId: List<Int> = mutableListOf(),
 
+        @Expose var departmentName: List<String> = mutableListOf(),
+
         @SerializedName("campaign")
         @Expose val campaign: FlashSaleProductItemCampaign = FlashSaleProductItemCampaign()
 ) : Parcelable, Visitable<FlashSaleProductAdapterTypeFactory> {
@@ -57,15 +59,18 @@ data class FlashSaleProductItem(
             parcel.readFloat(),
             parcel.readString(),
             parcel.createIntArray().toList(),
+            parcel.createStringArrayList(),
             parcel.readParcelable(FlashSaleProductItemCampaign::class.java.classLoader)) {
     }
 
+    override fun type(typeFactory: FlashSaleProductAdapterTypeFactory) = typeFactory.type(this)
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeInt(price)
         parcel.writeFloat(rating)
         parcel.writeString(name)
         parcel.writeIntArray(departmentId.toIntArray())
+        parcel.writeStringList(departmentName)
         parcel.writeParcelable(campaign, flags)
     }
 
@@ -82,8 +87,6 @@ data class FlashSaleProductItem(
             return arrayOfNulls(size)
         }
     }
-
-    override fun type(typeFactory: FlashSaleProductAdapterTypeFactory) = typeFactory.type(this)
 
 }
 

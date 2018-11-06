@@ -2,25 +2,93 @@ package com.tokopedia.flashsale.management.product.view.presenter
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.data.campaignlist.Criteria
+import com.tokopedia.flashsale.management.product.data.FlashSaleCategoryListGQL
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
+import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleCategoryListUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductUseCase
+import kotlinx.coroutines.experimental.*
 import javax.inject.Inject
 
 class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductUseCase: GetFlashSaleProductUseCase,
+                                                        val getFlashSaleCategoryListUseCase: GetFlashSaleCategoryListUseCase,
                                                         val userSession: UserSession) {
 
-    fun getEligibleProductList(campaignId: Int, offset: Int, rows: Int, q: String,
-                               @FlashSaleFilterProductListTypeDef filter: Int,
+    protected var parentJob: Job = Job()
+
+    fun getEligibleProductList(campaignId: Int, campaignSlug: String, offset: Int, rows: Int, q: String,
+                               filterId: Int,
                                onSuccess: (FlashSaleProductHeader) -> Unit, onError: (Throwable) -> Unit) {
-        getFlashSaleProductUseCase.setParams(campaignId, offset, rows, q, userSession.shopId.toInt(), filter)
-        getFlashSaleProductUseCase.execute({
-            onSuccess(it.flashSaleProductGQLData.data)
-        }) {
-            onError(it)
+        parentJob.cancel()
+        parentJob = Job()
+        GlobalScope.launch(Dispatchers.Main + parentJob) {
+            try {
+                val shopId = userSession.shopId.toInt()
+                getFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
+                        shopId, filterId)
+                val flashSaleProductJob = GlobalScope.async(Dispatchers.Default) {
+                    try{
+                        getFlashSaleProductUseCase.executeOnBackground()
+                    }catch (e:Throwable) {
+                        onError(e)
+                        parentJob.cancel()
+                    }
+                }
+
+                getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
+                val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default) {
+                    try{
+                        getFlashSaleCategoryListUseCase.executeOnBackground()
+                    }catch (e:Throwable) {
+                        onError(e)
+                        parentJob.cancel()
+                    }
+                }
+                onSuccess(mergeResult(flashSaleProductJob.await() as FlashSaleProductGQL,
+                        flashSaleCategoryJob.await() as FlashSaleCategoryListGQL))
+            } catch (throwable: Throwable) {
+                onError(throwable)
+            }
         }
     }
 
+    fun mergeResult(flashSaleProductGQLResult: FlashSaleProductGQL,
+                    flashSaleCategoryListResult: FlashSaleCategoryListGQL): FlashSaleProductHeader {
+        val resultProductList = flashSaleProductGQLResult.flashSaleProductGQLData.data
+        if (resultProductList.flashSaleProduct.isEmpty()) {
+            return resultProductList
+        }
+
+        val resultCategoryList: List<Criteria> = flashSaleCategoryListResult.flashSaleCategoryListGQLData.flashSaleCategoryListGQLContent.criteriaList
+
+        val categoryMap= HashMap<Long, String>()
+        for (criteria in resultCategoryList) {
+            for (category in criteria.categories){
+                categoryMap.put(category.depId, category.depName)
+            }
+        }
+
+        for (flashSaleProductItem in resultProductList.flashSaleProduct) {
+            val departmentNameList = mutableListOf<String>()
+            for (departmentId in flashSaleProductItem.departmentId){
+                if (categoryMap.containsKey(departmentId.toLong())) {
+                    val departmentName = categoryMap.get(departmentId.toLong())
+                    departmentName?.run {
+                        departmentNameList.add(departmentName)
+                    }
+                }
+            }
+            flashSaleProductItem.departmentName = departmentNameList
+        }
+        return resultProductList
+    }
+
+    fun clearCache() {
+        getFlashSaleCategoryListUseCase.clearCache()
+    }
+
     fun detachView() {
-        getFlashSaleProductUseCase.unsubscribe()
+        parentJob.cancel()
     }
 }

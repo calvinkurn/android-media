@@ -17,7 +17,7 @@ abstract class UseCase<out T : Any> {
         }
     }
 
-    fun createJob(): Job {
+    fun createJob(): Deferred<Result<T>> {
         return GlobalScope.async(AppExecutors.bgContext) {
             executeCatchError()
         }
@@ -25,7 +25,7 @@ abstract class UseCase<out T : Any> {
 
     fun execute(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit) {
         parentJob.cancel()
-        GlobalScope.launch(AppExecutors.uiContext + parentJob) {
+        parentJob = GlobalScope.launch(AppExecutors.uiContext) {
             try {
                 val result = async(AppExecutors.bgContext) {
                     executeCatchError()

@@ -1,21 +1,23 @@
 package com.tokopedia.flashsale.management.data;
 
-import android.support.annotation.IntDef;
+public enum FlashSaleFilterProductListTypeDef {
+    TYPE_ALL(0, -1),
+    TYPE_SUBMITTED(1, 0),
+    TYPE_NON_SUBMITTED(3, 1);
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+    private int id;
+    private int index;
 
-import static com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef.TYPE_ALL;
-import static com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef.TYPE_NON_SUBMITTED;
-import static com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef.TYPE_SUBMITTED;
+    FlashSaleFilterProductListTypeDef(int id, int index) {
+        this.id = id;
+        this.index = index;
+    }
 
-/**
- * @author normansyahputa on 4/25/17.
- */
-@Retention(RetentionPolicy.SOURCE)
-@IntDef({TYPE_ALL, TYPE_SUBMITTED, TYPE_NON_SUBMITTED})
-public @interface FlashSaleFilterProductListTypeDef {
-    int TYPE_ALL = 0;
-    int TYPE_SUBMITTED = 1;
-    int TYPE_NON_SUBMITTED = 3;
+    public int getId() {
+        return id;
+    }
+
+    public int getIndex() {
+        return index;
+    }
 }

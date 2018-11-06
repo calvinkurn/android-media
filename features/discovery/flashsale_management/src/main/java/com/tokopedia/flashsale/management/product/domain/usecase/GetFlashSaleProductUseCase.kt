@@ -3,8 +3,11 @@ package com.tokopedia.flashsale.management.product.domain.usecase
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -18,7 +21,7 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST) private val gql
     }
 
     fun setParams(campaignId:Int, offset:Int, rows:Int, query:String, shopId:Int,
-                  @FlashSaleFilterProductListTypeDef filterTypeDef:Int) {
+                  filterId:Int) {
         val map = mutableMapOf<String, Any?>(FlashSaleConstant.PARAM_CAMP_ID to campaignId,
                 FlashSaleConstant.PARAM_OFFSET to offset,
                 FlashSaleConstant.PARAM_ROWS to rows,
@@ -26,8 +29,8 @@ constructor(@Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST) private val gql
         if (query.isNotEmpty()) {
             map.put(FlashSaleConstant.PARAM_QUERY, query)
         }
-        if (filterTypeDef != FlashSaleFilterProductListTypeDef.TYPE_ALL) {
-            map.put(FlashSaleConstant.PARAM_FILTER, filterTypeDef)
+        if (filterId != FlashSaleFilterProductListTypeDef.TYPE_ALL.id) {
+            map.put(FlashSaleConstant.PARAM_FILTER, filterId)
         }
         setRequestParams(map)
     }

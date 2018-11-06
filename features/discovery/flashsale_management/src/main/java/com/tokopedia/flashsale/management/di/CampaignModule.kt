@@ -31,8 +31,14 @@ class CampaignModule {
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_mojito_eligible_seller_product)
 
     @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_CATEGORY_LIST)
     @Provides
-    fun provideGqlRepository(@ApplicationContext context: Context): GraphqlRepository =
+    fun provideGqlRawStringRequestCategoryList(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_category_list)
+
+    @CampaignScope
+    @Provides
+    fun provideGqlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
