@@ -17,12 +17,9 @@ public interface RetrofitInteractor {
 
     void unSubscribe();
 
-    void generateLatLng(Context context,
-                        TKPDMapParam<String, String> param,
-                        GenerateLatLongListener listener);
+    void generateLatLng(TKPDMapParam<String, String> param, GenerateLatLongListener listener);
 
-    void generateLatLngGeoCode(TKPDMapParam<String, String> param,
-                               GenerateLatLongListener listener);
+    void generateLatLngGeoCode(TKPDMapParam<String, String> param, GenerateLatLongListener listener);
 
     CompositeSubscription getCompositeSubscription();
 

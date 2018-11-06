@@ -76,7 +76,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
-    public void generateLatLng(Context context, TKPDMapParam<String, String> param,
+    public void generateLatLng(TKPDMapParam<String, String> param,
                                final GenerateLatLongListener listener) {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);

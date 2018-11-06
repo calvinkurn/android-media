@@ -357,7 +357,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         //TODO summon service di sini
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("placeid", placeID);
-        retrofitInteractor.generateLatLng(context,
+        retrofitInteractor.generateLatLng(
                 AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 latLongListener());
     }
