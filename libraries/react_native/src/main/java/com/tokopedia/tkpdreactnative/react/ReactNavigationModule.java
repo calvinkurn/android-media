@@ -2,6 +2,7 @@ package com.tokopedia.tkpdreactnative.react;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.facebook.react.bridge.Promise;
@@ -11,6 +12,8 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
@@ -35,8 +38,6 @@ import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
  */
 
 public class ReactNavigationModule extends ReactContextBaseJavaModule implements FingerPrintUIHelper.Callback {
-    private static final int LOGIN_REQUEST_CODE = 1005;
-
     private Context context;
     private ProgressDialog progressDialog;
 
@@ -85,6 +86,12 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
             ((TkpdCoreRouter) context.getApplicationContext())
                     .actionApplink(this.getCurrentActivity(), Constants.Applinks.LOGIN);
         }
+    }
+
+    @ReactMethod
+    public void loginWithresult(Promise promise) {
+        Intent intent = RouteManager.getIntent(getCurrentActivity(), ApplinkConst.LOGIN);
+        getCurrentActivity().startActivityForResult(intent, ReactConst.REACT_LOGIN_REQUEST_CODE);
     }
 
     @ReactMethod
