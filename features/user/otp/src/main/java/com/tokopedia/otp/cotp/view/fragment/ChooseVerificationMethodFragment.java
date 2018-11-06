@@ -159,7 +159,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                 && !TextUtils.isEmpty(methodItem.getPopUpHeader())
                 && !TextUtils.isEmpty(methodItem.getPopUpBody())) {
             showInterruptDialog(methodItem);
-        } else if (getActivity() instanceof VerificationActivity) {
+        } else if (getActivity()!= null && getActivity() instanceof VerificationActivity) {
             ((VerificationActivity) getActivity()).goToVerificationPage(methodItem);
         }
     }

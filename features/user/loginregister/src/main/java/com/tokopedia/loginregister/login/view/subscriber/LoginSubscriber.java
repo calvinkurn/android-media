@@ -40,8 +40,7 @@ public class LoginSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
         super.onNext(loginEmailDomain);
 
         if (loginEmailDomain.getLoginResult() != null
-                && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (!view.isFromRegister() || GlobalConfig.isSellerApp())) {
+                && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
             view.setSmartLock();
             view.onSuccessLoginEmail();
         } else {

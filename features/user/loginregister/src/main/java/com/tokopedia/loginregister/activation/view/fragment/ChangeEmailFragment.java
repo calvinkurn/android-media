@@ -67,18 +67,6 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
         return null;
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            oldEmailEditText.setText(savedInstanceState.getString(EXTRA_EMAIL, ""));
-        } else if (getArguments() != null) {
-            oldEmailEditText.setText(getArguments().getString(EXTRA_EMAIL, ""));
-        }
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,12 +79,18 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
         mainView = view.findViewById(R.id.main_view);
         presenter.attachView(this);
         return view;
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            oldEmailEditText.setText(savedInstanceState.getString(EXTRA_EMAIL, ""));
+        } else if (getArguments() != null) {
+            oldEmailEditText.setText(getArguments().getString(EXTRA_EMAIL, ""));
+        }
+
         changeEmailButton.setOnClickListener(v -> {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
             presenter.changeEmail(
