@@ -637,12 +637,13 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isFromExploreAffiliate()){
-                    ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
-                            getUserId());
-                }
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
+
+                    if(isFromExploreAffiliate()){
+                        ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
+                                getUserId());
+                    }
                 }
             }
         });
