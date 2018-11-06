@@ -419,6 +419,7 @@ public class ExploreFragment
     @Override
     public void onSuccessCheckQuotaButEmpty() {
         isCanDoAction = true;
+        affiliateAnalytics.onJatahRekomendasiHabisDialogShow();
         Dialog dialog = buildDialog();
         dialog.setOnOkClickListener(view -> {
             RouteManager.route(

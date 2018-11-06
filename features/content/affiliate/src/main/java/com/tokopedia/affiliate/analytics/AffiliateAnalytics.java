@@ -115,6 +115,18 @@ public class AffiliateAnalytics {
         );
     }
 
+    public void onJatahRekomendasiHabisDialogShow() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Event.AFFILIATE_VIEW,
+                        AffiliateEventTracking.Category.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Action.IMPRESSION_JATAH_HABIS,
+                        ""
+                )
+        );
+    }
+
     public void onCobaSekarangButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
@@ -210,7 +222,6 @@ public class AffiliateAnalytics {
                 )
         );
     }
-
 
     public void onDirectRecommProdukLainButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
