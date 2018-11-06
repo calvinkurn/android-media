@@ -13,8 +13,6 @@ object FlashSaleConstant {
     const val PARAM_QUERY = "q"
     const val PARAM_FILTER = "filter"
     const val PARAM_STATUS = "status"
-    const val PARAM_SHOP_ID = "shopID"
-    const val PARAM_SLUG = "slug"
 
     const val NAMED_REQUEST_PRODUCT_LIST = "request_product_list"
     const val NAMED_REQUEST_CATEGORY_LIST = "request_category_list"

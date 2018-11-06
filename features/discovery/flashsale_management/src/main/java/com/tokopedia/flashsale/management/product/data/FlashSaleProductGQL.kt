@@ -113,9 +113,7 @@ data class FlashSaleProductItemCampaign(
         @Expose val message: String = "",
 
         @SerializedName("criteria")
-        @Expose val criteria: FlashSaleProductItemCampaignCriteria = FlashSaleProductItemCampaignCriteria(),
-
-        var isEdit: Boolean = false
+        @Expose val criteria: FlashSaleProductItemCampaignCriteria = FlashSaleProductItemCampaignCriteria()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -160,7 +158,7 @@ data class FlashSaleProductItemCampaign(
             FlashSaleProductStatusTypeDef.NOTHING -> ""
             FlashSaleProductStatusTypeDef.SUBMITTED -> context.getString(R.string.flash_sale_registered)
             FlashSaleProductStatusTypeDef.REJECTED -> context.getString(R.string.flash_sale_rejected)
-            FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_accepted)
+            FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_reserve)
             FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_canceled)
             FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> context.getString(R.string.flash_sale_registered)
             else -> ""

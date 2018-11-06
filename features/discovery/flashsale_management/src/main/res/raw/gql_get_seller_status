@@ -1,5 +1,5 @@
-query getSellerStatus($slug: String, $shopID: Int!){
-    getMojitoSellerStatus(slug:$slug,shop_id:$shopID){
+query getSellerStatus($slug: String, $shop_id: Int!){
+    getMojitoSellerStatus(slug:$slug,shop_id:$shop_id){
         data {
             is_eligible
             is_visible

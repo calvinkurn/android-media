@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.ekstension.loadUrl
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
 import com.tokopedia.flashsale.management.product.data.StatusColor
@@ -60,7 +61,7 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             }
             ivProduct.loadUrl(item.campaign.imageUrl, context.resources.getDimension(R.dimen.dp_4))
             tvDepartmentName.text = item.departmentId.toString()
-            if (item.campaign.isEdit) {
+            if (item.campaign.productStatus == FlashSaleProductStatusTypeDef.RESERVE) {
                 // show mark
                 ivCheckMark.visibility = View.VISIBLE
                 tvStatus.visibility = View.GONE

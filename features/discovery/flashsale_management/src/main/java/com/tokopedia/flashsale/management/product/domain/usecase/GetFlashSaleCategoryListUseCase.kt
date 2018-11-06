@@ -2,9 +2,7 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.product.data.FlashSaleCategoryListGQL
-import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
