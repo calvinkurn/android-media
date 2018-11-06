@@ -91,7 +91,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
 
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
-    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersiisa";
+    private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
