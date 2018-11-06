@@ -308,7 +308,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private FloatingActionButton fabWishlist;
     private LinearLayout rootView;
     private boolean isAppBarCollapsed = false;
-    private UserSession userSession;
     private TextView tvTickerGTM;
     private AppIndexHandler appIndexHandler;
     private ProgressDialog loading;

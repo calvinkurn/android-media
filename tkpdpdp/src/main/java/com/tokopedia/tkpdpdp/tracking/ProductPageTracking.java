@@ -68,7 +68,6 @@ public class ProductPageTracking {
 
     public static final String USER_ID = "userId";
 
-    public static final String EVENT_CLICK_AFFILIATE;
     public static final String EVENT_CLICK_AFFILIATE = "clickAffiliate";
     public static final String PRODUCT_DETAIL_PAGE_BY_ME = "product detail page tokopedia by.me";
     public static final String ACTION_CLICK_TAMBAH_BY_ME = "click tambah ke by.me";
