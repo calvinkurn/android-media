@@ -42,7 +42,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -346,6 +346,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private RemoteConfig firebaseRemoteConfig;
 
     @Inject
+    UserSession userSession;
+
+    @Inject
     GetWishlistCountUseCase getWishlistCountUseCase;
 
     @Inject
@@ -635,6 +638,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         fabWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isFromExploreAffiliate()){
+                    ProductPageTracking.eventClickWishlistOnAffiliate(getActivity(),
+                            getUserId());
+                }
                 if (productData != null) {
                     presenter.processWishList(getActivity(), productData);
                 }
@@ -653,7 +660,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialVar() {
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
         appIndexHandler = new AppIndexHandler(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         loading = new ProgressDialog(getActivity());
@@ -1022,6 +1028,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onByMeClicked(AffiliateInfoViewModel affiliate) {
         if (getActivity() != null) {
+            ProductPageTracking.eventClickAffiliate(
+                    getActivityContext(),
+                    getUserId()
+            );
             if (userSession.isLoggedIn()) {
                 RouteManager.route(
                         getActivity(),
@@ -2534,5 +2544,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             icon.mutate();
             icon.setDrawableByLayerId(R.id.ic_cart_count, badge);
         }
+    }
+
+    private String getUserId(){
+        return userSession.getUserId();
     }
 }
