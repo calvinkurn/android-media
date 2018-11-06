@@ -171,7 +171,12 @@ public class BranchSdkUtils {
             }
             Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
                     tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
-            renderedUrl = uri.toString();
+            try {
+                renderedUrl = Uri.encode(uri.toString());
+            }catch (Exception e){
+                e.printStackTrace();
+                renderedUrl = uri.toString();
+            }
 
             linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, renderedUrl);
             linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, renderedUrl);
