@@ -92,7 +92,9 @@ public class DealsSearchPresenter
     public void initialize() {
 //        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
-        getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+        if (mTopDeals != null) {
+            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+        }
     }
 
     @Override

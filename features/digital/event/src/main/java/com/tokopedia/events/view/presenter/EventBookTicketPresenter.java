@@ -321,7 +321,10 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
 
     private void generateLocationDateModels() {
         locationDateModels = new ArrayList<>();
-        List<SchedulesViewModel> schedulesViewModelList = dataModel.getSchedulesViewModels();
+        List<SchedulesViewModel> schedulesViewModelList = new ArrayList<>();
+        if (dataModel != null) {
+            schedulesViewModelList = dataModel.getSchedulesViewModels();
+        }
         if (schedulesViewModelList != null && !schedulesViewModelList.isEmpty()) {
             for (SchedulesViewModel viewModel : schedulesViewModelList) {
                 LocationDateModel model = new LocationDateModel();
