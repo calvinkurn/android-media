@@ -731,7 +731,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     if (cartDigitalInfoDataState.getAttributes().getDefaultPromoTab() != null &&
                             cartDigitalInfoDataState.getAttributes().getDefaultPromoTab().equalsIgnoreCase(
                                     IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.COUPON_STATE)) {
-                        intent = digitalModuleRouter.getLoyaltyActivity(
+                        intent = digitalModuleRouter.getLoyaltyActivitySelectedCoupon(
                                 context, IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING, passData.getCategoryId()
                         );
                     } else {

@@ -13,12 +13,13 @@ import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeen
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.HashMap
+import kotlin.collections.ArrayList
 
-class PromoCheckoutListPresenter(val getListCouponUseCase : GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
+class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
-    override fun getListPromo(page: Int, resources:Resources) {
+    override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
-        variables.put(INPUT_GQL, generateInputList(page))
+        variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables)
         getListCouponUseCase.clearRequest()
@@ -36,16 +37,18 @@ class PromoCheckoutListPresenter(val getListCouponUseCase : GraphqlUseCase) : Ba
 
             override fun onNext(objects: GraphqlResponse) {
                 val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutList>(DataPromoCheckoutList::class.java)
-                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData?:ArrayList(),
-                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext?:false)
+                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData
+                        ?: ArrayList(),
+                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext
+                                ?: false)
             }
         })
     }
 
-    private fun generateInputList(page : Int): JsonObject {
+    private fun generateInputList(page: Int, serviceId: String, categoryId: Int): JsonObject {
         val input = JsonObject()
-        input.addProperty(SERVICE_ID, "")
-        input.addProperty(CATEGORY_ID, 0)
+        input.addProperty(SERVICE_ID, serviceId)
+        input.addProperty(CATEGORY_ID, categoryId)
         input.addProperty(CATEGORY_ID_COUPON, "")
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)

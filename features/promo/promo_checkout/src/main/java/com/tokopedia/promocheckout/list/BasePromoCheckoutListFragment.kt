@@ -1,7 +1,5 @@
 package com.tokopedia.promocheckout.list
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
@@ -16,9 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.detail.PromoCheckoutDetailActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
@@ -26,12 +21,16 @@ import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
-class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
+abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
         PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
-    val promoLastSeenAdapter : PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
+    val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
+
+    abstract var serviceId : String
+    open var categoryId : Int = 0
+    open var isCouponActive : Boolean = true
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory()
@@ -66,23 +65,23 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
         populateLastSeen()
-    }
-
-    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        startActivityForResult(PromoCheckoutDetailActivity.createIntent(activity, promoCheckoutListModel?.code), REQUEST_CODE_DETAIL_PROMO)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_DETAIL_PROMO){
-
+        if(isCouponActive){
+            getRecyclerView(view).visibility = View.VISIBLE
+        }else{
+            getRecyclerView(view).visibility = View.GONE
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
+    /* hold cos api not ready yet
+       promoCheckoutListPresenter.getListLastSeen(resources)
+    */
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
+
+    }
+
+    /* hold cos api not ready yet
+       promoCheckoutListPresenter.getListLastSeen(resources)
+    */
     override fun showGetListLastSeenError(e: Throwable) {
         populateLastSeen()
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
@@ -96,9 +95,9 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
     }
 
     private fun populateLastSeen() {
-        if(promoLastSeenAdapter.listData.size <=0){
+        if (promoLastSeenAdapter.listData.size <= 0) {
             containerLastSeen.visibility = View.GONE
-        }else{
+        } else {
             containerLastSeen.visibility = View.VISIBLE
         }
     }
@@ -117,27 +116,12 @@ class PromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, Promo
     }
 
     override fun loadData(page: Int) {
-        promoCheckoutListPresenter.getListPromo(page, resources)
+        if(isCouponActive) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+        }
         /* hold cos api not ready yet
         promoCheckoutListPresenter.getListLastSeen(resources)
         */
-    }
-
-    companion object {
-        val REQUEST_CODE_DETAIL_PROMO = 231
-
-        fun createInstance(isCouponActive: Boolean?,
-                           platform: String?,
-                           category: String?,
-                           cartId: String?,
-                           trainReservationCode: String?,
-                           trainReservationId: String?,
-                           platformPage: String?,
-                           additionalData: String?):PromoCheckoutListFragment{
-
-
-            return PromoCheckoutListFragment()
-        }
     }
 
 }
