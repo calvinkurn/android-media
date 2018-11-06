@@ -47,7 +47,6 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
-    // todo : put screen analytics
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
 
     private Bundle mBundle;
@@ -113,6 +112,11 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public String getScreenName() {
+        return SCREEN_ADDRESS_GEOLOCATION;
     }
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
