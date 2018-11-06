@@ -85,6 +85,7 @@ ext {
             productDraftDatabase        : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             profile                     : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
             promoCheckout               : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
+            promoCheckoutCommon         : "com.tokopedia.promocheckout:promo_checkout_common:${promoCheckoutVersion}",
             reputation                  : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon            : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             ride                        : "com.tokopedia.ride:ride:${tkpdRideVersion}",
@@ -176,6 +177,7 @@ ext {
             merchantVoucher             : ":features:promo:merchant_voucher",
             tokopoints                  : ":features:promo:tokopoints",
             promoCheckout               : ":features:promo:promo_checkout",
+            promoCheckoutCommon         : ":features:promo:promo_checkout_common",
 
             topAdsFreeClaim             : ":features:top_ads:top_ads_free_claim",
             topAdsManagement            : ":features:top_ads:top_ads_management",

@@ -1,11 +1,11 @@
-package com.tokopedia.promocheckout.widget
+package com.tokopedia.promocheckout.common.widget
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker.view.*
 
 class TickerCheckoutView @JvmOverloads constructor(
@@ -90,7 +90,7 @@ class TickerCheckoutView @JvmOverloads constructor(
                         return state
                     }
                 }
-                return State.INACTIVE
+                return INACTIVE
             }
         }
     }

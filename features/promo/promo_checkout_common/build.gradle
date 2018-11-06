@@ -17,10 +17,10 @@ buildscript {
 
 
 project.ext {
-    artifactId = 'promo-checkout'
+    artifactId = 'promo-checkout-common'
     groupId = 'com.tokopedia.promocheckout'
     versionName = "${promoCheckoutVersion}"
-    artifactName ="promo_checkout-release"
+    artifactName ="promo_checkout_common-release"
 }
 
 dependencies {
@@ -28,9 +28,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.useCase)
-    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
