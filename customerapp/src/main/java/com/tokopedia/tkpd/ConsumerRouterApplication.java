@@ -1856,7 +1856,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstanceFromMarketplaceCart(context, locationPass);
+        return GeolocationActivity.createInstance(context, locationPass, true);
     }
 
     @Override

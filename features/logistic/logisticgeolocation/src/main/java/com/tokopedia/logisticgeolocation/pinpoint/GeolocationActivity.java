@@ -54,23 +54,18 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
     @Inject RetrofitInteractor mRepository;
     @Inject UserSession mUser;
 
-    // Address // ShopOpen // Seller
+    /**
+     * Usage = Address // Address Tx // Shipment // ShopOpen // Seller
+     * @param locationPass please get from common module logistic_data
+     * @param isFromMarketPlaceCart true if you are from marketplace cart
+     * @return intent
+     */
     public static Intent createInstance(@NonNull Context context, LocationPass locationPass,
                                         boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
         bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    // Checkout
-    public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, true);
         intent.putExtras(bundle);
         return intent;
     }
