@@ -221,6 +221,8 @@ import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListAc
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivity;
 import com.tokopedia.loginregister.LoginRegisterRouter;
@@ -304,8 +306,6 @@ import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;

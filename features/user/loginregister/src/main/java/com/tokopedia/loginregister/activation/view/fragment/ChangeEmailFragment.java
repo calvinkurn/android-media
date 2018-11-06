@@ -70,7 +70,7 @@ public class ChangeEmailFragment extends BaseDaggerFragment implements ChangeEma
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_change_email, container, false);
+        View view = inflater.inflate(R.layout.fragment_change_email_activate, container, false);
         oldEmailEditText = view.findViewById(R.id.old_email);
         newEmailEditText = view.findViewById(R.id.new_email);
         passwordEditText = view.findViewById(R.id.password);

@@ -21,7 +21,7 @@ import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
 /**
  * @author by nisie on 12/18/17.
  */
-
+@Deprecated
 public class LoginActivity extends TActivity implements HasComponent {
 
     public static final int METHOD_FACEBOOK = 111;
