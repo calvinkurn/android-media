@@ -63,6 +63,7 @@
     <string name="title_af_create_post">Tambah Gambar</string>
     <string name="title_af_create_post_example">Contoh Gambar</string>
     <string name="af_use_image_to_show">Gunakan gambar yang menampilkan produk rekomendasimu.</string>
-    <string name="af_set_main_image">Gambar Utama</string>
+    <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
+    <string name="af_main_image">Gambar Utama</string>
 
 </resources>
