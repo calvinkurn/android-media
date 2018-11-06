@@ -39,6 +39,8 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     object Action {
         const val CLICK_PROMPT = "click prompt"
         const val CLICK_FOLLOWING = "click following"
+        const val CLICK_FOLLOW = "click follow"
+        const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_TAG = "click-%s-user-all-%s-tag"
         const val CLICK_CARD = "click-%s-user-all-%s-card"
         const val IMPRESSION_CARD = "impression-%s-user-all-%s"
@@ -88,6 +90,18 @@ class ProfileAnalytics @Inject constructor(private val analyticTracker: Analytic
     fun eventClickFollowing(profileId: String) {
         analyticTracker.sendEventTracking(
                 getDefaultClickData(Action.CLICK_FOLLOWING, profileId)
+        )
+    }
+
+    fun eventClickFollow(profileId: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(Action.CLICK_FOLLOW, profileId)
+        )
+    }
+
+    fun eventClickUnfollow(profileId: String) {
+        analyticTracker.sendEventTracking(
+                getDefaultClickData(Action.CLICK_UNFOLLOW, profileId)
         )
     }
 

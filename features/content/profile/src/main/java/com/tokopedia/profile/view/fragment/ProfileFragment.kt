@@ -65,6 +65,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var afterEdit: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
+    private var isOwner: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
@@ -215,6 +216,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.cursor = firstPageViewModel.lastCursor
         onlyOnePost = firstPageViewModel.visitableList.size == 1
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
+        isOwner = firstPageViewModel.profileHeaderViewModel.isOwner
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
 
         setHasOptionsMenu(firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent)
@@ -282,8 +284,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             if (follow) {
                 presenter.followKol(userId)
+                profileAnalytics.eventClickFollow(userId.toString())
             } else {
                 presenter.unfollowKol(userId)
+                profileAnalytics.eventClickUnfollow(userId.toString())
             }
         } else {
             goToLogin()
