@@ -211,7 +211,7 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put(PARAM_LANG, "id");
 
-        List<CartItemData> cartItemDataList = view.getSelectedCartDataList();
+        List<CartItemData> cartItemDataList = view.getAllCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
