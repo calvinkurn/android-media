@@ -10,6 +10,7 @@ import com.tokopedia.discovery.autocomplete.adapter.DigitalViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.InCategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.PopularViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.RecentViewHolder;
+import com.tokopedia.discovery.autocomplete.adapter.RecentViewViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.ShopViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.TitleViewHolder;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
@@ -100,6 +101,8 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
         } else if(type == PopularViewHolder.LAYOUT) {
             viewHolder = new PopularViewHolder(parent, clickListener);
         } else if(type == RecentViewHolder.LAYOUT) {
+            viewHolder = new RecentViewHolder(parent, clickListener);
+        } else if(type == RecentViewViewHolder.LAYOUT) {
             viewHolder = new RecentViewHolder(parent, clickListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
