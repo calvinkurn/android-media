@@ -18,7 +18,7 @@ class CampaignDetailFragmentPagerAdapter(val fragmentManager: FragmentManager,
 
     override fun getItem(position: Int) = when(position){
         0 -> FlashSaleInfoFragment.createInstance(campaignUrl)
-        1 -> FlashSaleProductListFragment.createInstance(campaignUrl)
+        1 -> FlashSaleProductListFragment.createInstance(campaignId.toInt(), campaignUrl)
         else -> Fragment()
     }
 

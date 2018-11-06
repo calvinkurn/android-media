@@ -40,7 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_16" />
+                android:paddingBottom="@dimen/dp_16"
+                android:background="@color/grey_200"/>
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

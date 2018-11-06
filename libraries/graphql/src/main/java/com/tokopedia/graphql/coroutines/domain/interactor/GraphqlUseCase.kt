@@ -14,7 +14,7 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null
-    private var requestParams = mapOf<String, Any>()
+    private var requestParams = mapOf<String, Any?>()
     private var tClass: Class<T>? = null
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -32,7 +32,7 @@ open class GraphqlUseCase<T: Any>(private val graphqlRepository: GraphqlReposito
         this.graphqlQuery = query
     }
 
-    fun setRequestParams(params: Map<String, Any>){
+    fun setRequestParams(params: Map<String, Any?>){
         this.requestParams = params
     }
 

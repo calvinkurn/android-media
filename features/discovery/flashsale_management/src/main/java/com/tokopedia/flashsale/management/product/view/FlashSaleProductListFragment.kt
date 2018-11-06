@@ -16,19 +16,23 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 import com.tokopedia.flashsale.management.product.adapter.SellerStatusListAdapter
-import com.tokopedia.flashsale.management.product.model.FlashSaleProductViewModel
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
 import javax.inject.Inject
 
-class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductViewModel, FlashSaleProductAdapterTypeFactory>(), SellerStatusListAdapter.OnSellerStatusListAdapterListener {
+class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory>(),
+        SellerStatusListAdapter.OnSellerStatusListAdapterListener {
 
 
-    lateinit var campaignId: String
+    var campaignId: Int = 0
+    var campaignSlug: String = ""
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
 
@@ -41,7 +45,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
-        campaignId = arguments?.getString(EXTRA_PARAM_CAMPAIGN_ID, "") ?: ""
+        //TODO test, will replaced later
+        campaignId = 44
+        campaignSlug = "flash-sale-kamis"
+//        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
+//        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
+
         super.onCreate(savedInstanceState)
         sellerStatusListAdapter = SellerStatusListAdapter(arrayListOf(), this)
         context?.let {
@@ -84,34 +93,22 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
 
     override fun loadInitialData() {
         loadContent()
-        loadStatusLabels()
     }
 
-    override fun getDefaultInitialPage() = 0
-
-    fun loadContent(){
+    fun loadContent() {
         super.loadInitialData()
     }
 
     override fun loadData(page: Int) {
-        presenter.getEligibleProductList(campaignId, page, PER_PAGE, searchInputView.searchText,
+        //TODO filter by chip (not always all), query
+        presenter.getEligibleProductList(campaignId,
+                (page - 1) * PER_PAGE, PER_PAGE,
+                searchInputView.searchText, FlashSaleFilterProductListTypeDef.TYPE_ALL,
                 onSuccess = {
                     onSuccessGetEligibleList(it)
                 },
                 onError = {
                     super.showGetListError(it)
-                })
-    }
-
-    private fun loadStatusLabels() {
-        presenter.getSellerStatusLabels(
-                onSuccess = {
-                    val stringList = arrayListOf("aaa", "bbb", "ccc", "dwqnewq qfe fqe fqw", "dwqnewq qfe fqe fqw", "dwqnewq qfe fqe fqw")
-                    sellerStatusListAdapter?.setData(stringList = stringList)
-
-                },
-                onError = {
-                    recyclerViewLabel.visibility = View.GONE
                 })
     }
 
@@ -123,16 +120,19 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
         return emptyModel
     }
 
-    private fun onSuccessGetEligibleList(items: FlashSaleProductViewModel) {
-        //TODO just TEST
-        val eligibleSellerProductViewModelList = listOf(FlashSaleProductViewModel(), FlashSaleProductViewModel(),
-                FlashSaleProductViewModel(), FlashSaleProductViewModel(), FlashSaleProductViewModel())
-        if (TextUtils.isEmpty(searchInputView.searchText) && eligibleSellerProductViewModelList.isEmpty()) {
+    private fun onSuccessGetEligibleList(flashSaleProductHeader: FlashSaleProductHeader) {
+        if (TextUtils.isEmpty(searchInputView.searchText) &&
+                flashSaleProductHeader.flashSaleProduct.isEmpty() &&
+                currentPage == defaultInitialPage) {
             hideSearchInputView()
         } else {
             showSearchInputView()
         }
-        super.renderList(eligibleSellerProductViewModelList)
+        super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
+    }
+
+    private fun hasNextPage(list: List<Any>): Boolean {
+        return list.isNotEmpty() && list.size >= PER_PAGE
     }
 
     private fun refreshUI() {
@@ -150,11 +150,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
         getComponent(CampaignComponent::class.java).inject(this)
     }
 
-    override fun onItemClicked(t: FlashSaleProductViewModel?) {
-        //TODO
-        Log.i("Test", "test")
+    override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
         context?.let {
-            val intent = FlashSaleProductDetailActivity.createIntent(it)
+            val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId, flashSaleProductItem)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
@@ -191,12 +189,16 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductView
 
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
-        private const val PER_PAGE = 10
+        private const val EXTRA_PARAM_CAMPAIGN_SLUG = "campaign_slug"
+        private const val PER_PAGE = 20
 
         private const val REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL = 203
 
-        fun createInstance(campaignId: String) = FlashSaleProductListFragment().apply {
-            arguments = Bundle().apply { putString(EXTRA_PARAM_CAMPAIGN_ID, campaignId) }
+        fun createInstance(campaignId: Int, campaignSlug: String) = FlashSaleProductListFragment().apply {
+            arguments = Bundle().apply {
+                putInt(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
+                putString(EXTRA_PARAM_CAMPAIGN_SLUG, campaignSlug)
+            }
         }
     }
 
