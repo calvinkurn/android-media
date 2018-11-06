@@ -73,8 +73,6 @@ public class ProductPageTracking {
     public static final String ACTION_CLICK_TAMBAH_BY_ME = "click tambah ke by.me";
     public static final String EMPTY_LABEL = "";
     public static final String ACTION_CLICK_WISHLIST = "click wishlist";
-    public static final String DISCOVERY_PAGE_TOKOPEDIA_BY_ME = "discovery page tokopedia by.me";
-    public static final String ACTION_POPUP_MESSAGE_JATAH_REKOMENDASI_HABIS = "popup message jatah rekomendasi habis";
 
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
@@ -463,23 +461,6 @@ public class ProductPageTracking {
         eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
         eventTracking.put("eventAction", ACTION_CLICK_WISHLIST);
         eventTracking.put("eventLabel", EMPTY_LABEL);
-        eventTracking.put(USER_ID, userId);
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        tracker.sendEventTracking(eventTracking);
-    }
-
-    public static void eventPopUpMessageJatahRekomendasiHabis(Context context,
-                                                              String userId,
-                                                              String keywords) {
-        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        Map<String,Object> eventTracking = new HashMap<>();
-        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
-        eventTracking.put("eventCategory", DISCOVERY_PAGE_TOKOPEDIA_BY_ME);
-        eventTracking.put("eventAction", ACTION_POPUP_MESSAGE_JATAH_REKOMENDASI_HABIS);
-        eventTracking.put("eventLabel", keywords);
         eventTracking.put(USER_ID, userId);
 
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
