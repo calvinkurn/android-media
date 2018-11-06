@@ -28,11 +28,9 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
     public void renderItemViewHolder(final QuickFilterItem filterItem) {
         updateData(filterItem);
         updateItemColor(filterItem.isSelected());
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        itemView.setOnClickListener(view -> {
+            if (listener != null)
                 listener.selectFilter(filterItem);
-            }
         });
     }
 

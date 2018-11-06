@@ -26,15 +26,10 @@ import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.di.DaggerSessionComponent;
-import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
-import com.tokopedia.session.inactivephonenumber.ChangeInactivePhoneNumberWebView;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.ChooseTokocashAccountActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
@@ -166,22 +161,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
                 Intent intent;
-
-                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-                if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_ENABLE_UPDATE_INACTIVE_PHONE,
-                        true)) {
-                    intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
-
-                } else {
-                    intent = ChangeInactivePhoneNumberWebView.
-                            getIntentWithTitle(
-                                    getContext(),
-                                    SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                    getString(R.string.title_change_inactive_phone_number));
-                }
-
+                intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
                 startActivity(intent);
             }
 

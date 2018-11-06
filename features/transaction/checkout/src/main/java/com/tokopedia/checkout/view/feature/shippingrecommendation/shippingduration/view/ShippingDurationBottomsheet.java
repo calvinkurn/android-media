@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurat
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,9 +20,11 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourie
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.DaggerShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.constant.CourierConstant;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +123,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     protected void onCloseButtonClick() {
-        shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+        }
         dismiss();
     }
 
@@ -177,23 +182,60 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
         shippingDurationAdapter.notifyDataSetChanged();
         updateHeight();
+        boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
+        if (hasCourierPromo) {
+            sendAnalyticCourierPromo(shippingDurationViewModelList);
+        }
+    }
+
+    private boolean checkHasCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        boolean hasCourierPromo = false;
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            if (shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
+                hasCourierPromo = true;
+                break;
+            }
+        }
+
+        return hasCourierPromo;
+    }
+
+    private void sendAnalyticCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+            shippingDurationBottomsheetListener.onShowDurationListWithCourierPromo(
+                    shippingDurationViewModel.getServiceData().getIsPromo() == 1,
+                    shippingDurationViewModel.getServiceData().getServiceName()
+            );
+        }
+    }
+
+    @Override
+    public void showNoCourierAvailable(String message) {
+        shippingDurationBottomsheetListener.onNoCourierAvailable(message);
+        dismiss();
     }
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, String serviceName) {
+                                          int cartPosition, ServiceData serviceData, boolean hasCourierPromo) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
-        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-            shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-            if (shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
-                    shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+        if (isToogleYearEndPromotionOn()) {
+            if (serviceData.getError() != null && serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED) &&
+                    !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
+                flagNeedToSetPinpoint = true;
+                selectedServiceId = serviceData.getServiceId();
+            }
+        } else {
+            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+                shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
                 if (shippingCourierViewModel.getProductData().getError() != null &&
                         shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
                         shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     flagNeedToSetPinpoint = true;
                     selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
                     shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
@@ -201,9 +243,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 }
             }
         }
-        shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                    shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
+                    flagNeedToSetPinpoint, hasCourierPromo);
+        }
         dismiss();
     }
 
@@ -227,6 +272,17 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onDurationShipmentRecommendationShowCaseClosed() {
-        shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
+        }
+    }
+
+    @Override
+    public boolean isToogleYearEndPromotionOn() {
+        if (getActivity() != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+            return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+        }
+        return false;
     }
 }

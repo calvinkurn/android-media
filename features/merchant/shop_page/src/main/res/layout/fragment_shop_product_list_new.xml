@@ -3,56 +3,71 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:clipToPadding="false">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:clipToPadding="false">
 
-        <LinearLayout
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
+            android:background="@android:color/white"
             android:clipToPadding="false">
 
-            <LinearLayout
-                android:id="@+id/vg_etalase_list"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/dp_4"
-                android:paddingTop="@dimen/dp_4"
-                android:visibility="gone">
+                android:background="@android:color/white"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_etalase"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/vg_etalase_list"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1" />
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_scrollFlags="enterAlways">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/v_etalase_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    app:cardCornerRadius="2dp"
-                    app:cardElevation="4dp"
-                    app:cardUseCompatPadding="false">
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view_etalase"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:clipToPadding="false"
+                        android:paddingBottom="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_8"
+                        android:paddingTop="@dimen/dp_4" />
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_margin="@dimen/dp_8"
-                        android:src="@drawable/ic_see_list" />
-                </android.support.v7.widget.CardView>
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/v_etalase_more"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
+                        android:layout_gravity="end|center_vertical"
+                        android:clipToPadding="false"
+                        android:padding="@dimen/dp_2"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="@dimen/dp_2"
+                        app:cardUseCompatPadding="false">
 
-            </LinearLayout>
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="@dimen/dp_24"
+                            android:layout_height="@dimen/dp_24"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/dp_8"
+                            android:src="@drawable/ic_see_list" />
+                    </android.support.v7.widget.CardView>
+
+                </LinearLayout>
+
+            </android.support.design.widget.AppBarLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -62,8 +77,11 @@
                 android:descendantFocusability="blocksDescendants"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:paddingBottom="@dimen/dp_8" />
-        </LinearLayout>
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        </android.support.design.widget.CoordinatorLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 

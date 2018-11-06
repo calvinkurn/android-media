@@ -11,7 +11,7 @@ import dagger.Component;
  * Created by hendry on 18/01/18.
  */
 @ShopEtalaseScope
-@Component(modules = ShopEtalaseModule.class, dependencies = ShopComponent.class)
+@Component(dependencies = ShopComponent.class)
 public interface ShopEtalaseComponent {
 
     void inject(ShopEtalaseFragment shopEtalaseFragment);

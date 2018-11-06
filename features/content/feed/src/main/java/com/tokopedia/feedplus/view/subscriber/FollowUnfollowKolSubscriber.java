@@ -1,13 +1,12 @@
 package com.tokopedia.feedplus.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
-import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
+import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 
 import rx.Subscriber;
 
@@ -39,24 +38,25 @@ public class FollowUnfollowKolSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onError(Throwable e) {
-        view.finishLoadingProgress();
-        kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(e), id, status, rowNumber);
+        kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(view.getContext(), e), id,
+                status, rowNumber);
     }
 
     @Override
     public void onNext(GraphqlResponse response) {
-        view.finishLoadingProgress();
         FollowKolQuery query = response.getData(FollowKolQuery.class);
         if (query.getData() != null) {
             FollowKolDomain followKolDomain = new FollowKolDomain(query.getData().getData().getStatus());
             if (followKolDomain.getStatus() == FollowKolPostGqlUseCase.SUCCESS_STATUS)
                 kolListener.onSuccessFollowUnfollowKol(rowNumber);
             else {
-                kolListener.onErrorFollowKol(MainApplication.getAppContext().getString(R.string
+                kolListener.onErrorFollowKol(view.getContext().getString(R.string
                         .default_request_error_unknown), id, status, rowNumber);
             }
         } else {
-            kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(new Throwable()), id, status, rowNumber);
+            kolListener.onErrorFollowKol(ErrorHandler.getErrorMessage(view.getContext(), new
+                            Throwable()), id,
+                    status, rowNumber);
         }
     }
 }

@@ -214,7 +214,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     @Override
                     public void onNext(Pair<TrainScheduleDetailViewModel, TrainScheduleDetailViewModel> pairScheduleDetail) {
                         getView().showScheduleTripsPrice(pairScheduleDetail.first, pairScheduleDetail.second);
-                        getView().startCountdown(TrainDateUtil.stringToDate(TrainDateUtil.FORMAT_DATE_API_SOFTBOOK,
+                        getView().startCountdown(TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 getView().getExpireDate()));
                     }
                 });

@@ -732,7 +732,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     public void onStart() {
         super.onStart();
         sendAnalyticsScreenName(getScreenName());
-        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {

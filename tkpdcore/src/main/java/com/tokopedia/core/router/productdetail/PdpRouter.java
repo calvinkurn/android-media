@@ -5,17 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 
-import com.google.gson.JsonObject;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 
-import java.util.ArrayList;
-
 import rx.Observable;
+
+import java.util.ArrayList;
 
 /**
  * @author madi on 5/15/17.
@@ -48,9 +46,11 @@ public interface PdpRouter {
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest);
+    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
 
     Intent getCartIntent(Activity activity);
+
+    Intent getCheckoutIntent(Activity activity);
 
     Intent getLoginIntent(Context context);
 
@@ -61,4 +61,6 @@ public interface PdpRouter {
     void goToCreateTopadsPromo(Context context, String productId, String shopId, String sourceCreateTopadsManageProduct);
 
     int getCartCount(Context context);
+
+    Intent getProductTalk(Context context, String productId);
 }

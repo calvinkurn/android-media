@@ -12,6 +12,8 @@ import java.lang.reflect.Type;
 public class CacheUtil {
 
     public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
+    public static final String KEY_POPUP_INTRO_OVO_CACHE = "INTRO_OVO_CACHE";
+    public static final String FIRST_TIME_POPUP = "NEW_FIRST_TIME_POPUP";
 
     public static String convertModelToString(Object obj, Type type) {
         Gson gson = new Gson();

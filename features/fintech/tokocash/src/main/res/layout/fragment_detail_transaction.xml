@@ -9,16 +9,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/med_dp"
-        android:paddingLeft="@dimen/padding_detail"
-        android:paddingRight="@dimen/padding_detail"
-        android:paddingTop="@dimen/padding_detail">
+        android:paddingBottom="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15"
+        android:paddingTop="@dimen/dp_15">
 
         <ImageView
             android:id="@+id/icon_item_history"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginRight="@dimen/padding_detail"
+            android:layout_marginRight="@dimen/dp_15"
             android:src="@drawable/ic_tokocash_icon" />
 
         <TextView
@@ -29,7 +29,7 @@
             android:gravity="center_vertical"
             android:text="Admin Feed"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/fontm"
+            android:textSize="@dimen/sp_16"
             android:maxLines="2"
             android:ellipsize="end"
             android:layout_marginBottom="@dimen/dp_5"/>
@@ -44,7 +44,7 @@
             android:layout_toStartOf="@+id/price_item_history"
             android:text=""
             android:textColor="@color/black_38"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/notes_item_history"
@@ -57,7 +57,7 @@
             android:layout_toStartOf="@+id/price_item_history"
             android:text=""
             android:textColor="@color/black_38"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/sp_12" />
 
         <View
             android:id="@+id/separator1"
@@ -76,7 +76,7 @@
             android:layout_below="@+id/separator1"
             android:text="Nominal Transaksi"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/fonts" />
+            android:textSize="@dimen/sp_14" />
 
         <TextView
             android:id="@+id/price_item_history"
@@ -84,11 +84,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/separator1"
-            android:layout_marginLeft="@dimen/padding_detail"
+            android:layout_marginLeft="@dimen/dp_15"
             android:gravity="center_vertical"
             tools:text="- Rp 150.000"
             android:textColor="@color/red_500"
-            android:textSize="@dimen/fonts"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold" />
 
         <View
@@ -112,7 +112,7 @@
             android:layout_marginTop="@dimen/dp_5"
             tools:text="TokoCash TxID #99305dsadadasdadadadad17"
             android:textColor="@color/black_36"
-            android:textSize="@dimen/fontvs" />
+            android:textSize="@dimen/sp_12" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -126,7 +126,7 @@
                 android:text="Bantuan"
                 android:textAllCaps="false"
                 android:textColor="@color/black_38"
-                android:textSize="@dimen/fonts" />
+                android:textSize="@dimen/sp_14" />
 
             <LinearLayout
                 android:id="@+id/button_opsi"

@@ -2,19 +2,12 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class CouponValueEntity {
+public class CouponValueEntity extends BaseItem {
     @Expose
-    @SerializedName("catalog_id")
+    @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;
-
-    @Expose
-    @SerializedName("catalogTitle")
-    private String catalogTitle;
-
-    @Expose
-    @SerializedName("catalogSubTitle")
-    private String catalogSubTitle;
 
     @Expose
     @SerializedName("code")
@@ -25,7 +18,7 @@ public class CouponValueEntity {
     private String cta;
 
     @Expose
-    @SerializedName("ctaDesktop")
+    @SerializedName(value = "ctaDesktop", alternate = {"cta_desktop"})
     private String ctaDesktop;
 
     @Expose
@@ -41,43 +34,27 @@ public class CouponValueEntity {
     private String icon;
 
     @Expose
-    @SerializedName("imageUrl")
+    @SerializedName(value = "imageUrl", alternate = {"image_url"})
     private String imageUrl;
 
     @Expose
-    @SerializedName("imageUrlMobile")
+    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile", "imageURLMobile"})
     private String imageUrlMobile;
 
     @Expose
-    @SerializedName("thumbnailUrl")
+    @SerializedName(value = "thumbnailUrl", alternate = {"thumbnail_url"})
     private String thumbnailUrl;
 
     @Expose
-    @SerializedName("thumbnailUrlMobile")
+    @SerializedName(value = "thumbnailUrlMobile", alternate = {"thumbnail_url_mobile"})
     private String thumbnailUrlMobile;
-
-    @Expose
-    @SerializedName("imageV2Url")
-    private String imageV2Url;
-
-    @Expose
-    @SerializedName("imageV2UrlMobile")
-    private String imageV2UrlMobile;
-
-    @Expose
-    @SerializedName("thumbnailV2Url")
-    private String thumbnailV2Url;
-
-    @Expose
-    @SerializedName("thumbnailV2UrlMobile")
-    private String thumbnailV2UrlMobile;
 
     @Expose
     @SerializedName("promoID")
     private int promoId;
 
     @Expose
-    @SerializedName("subTitle")
+    @SerializedName(value = "subTitle", alternate = {"sub_title", "subtitle"})
     private String subTitle;
 
     @Expose
@@ -88,28 +65,54 @@ public class CouponValueEntity {
     @SerializedName("usage")
     private CouponUsesEntity usage;
 
+    @SerializedName(value = "howToUse", alternate = {"how_to_use"})
+    private String howToUse;
+
+    @SerializedName(value = "minimumUsage", alternate = {"minimum_usage"})
+    private String minimumUsage;
+
+    @SerializedName("overview")
+    private String overview;
+
+    @SerializedName("real_code")
+    private String realCode;
+
+    @SerializedName("tnc")
+    private String tnc;
+
+    @SerializedName("swipe")
+    private CouponSwipeDetail swipe;
+
+    public CouponSwipeDetail getSwipe() {
+        return swipe;
+    }
+
+    public void setSwipe(CouponSwipeDetail swipe) {
+        this.swipe = swipe;
+    }
+
+    public String getMinimumUsage() {
+        return minimumUsage;
+    }
+
+    public void setMinimumUsage(String minimumUsage) {
+        this.minimumUsage = minimumUsage;
+    }
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
     public int getCatalogId() {
         return catalogId;
     }
 
     public void setCatalogId(int catalogId) {
         this.catalogId = catalogId;
-    }
-
-    public String getCatalogTitle() {
-        return catalogTitle;
-    }
-
-    public void setCatalogTitle(String catalogTitle) {
-        this.catalogTitle = catalogTitle;
-    }
-
-    public String getCatalogSubTitle() {
-        return catalogSubTitle;
-    }
-
-    public void setCatalogSubTitle(String catalogSubTitle) {
-        this.catalogSubTitle = catalogSubTitle;
     }
 
     public String getCode() {
@@ -192,38 +195,6 @@ public class CouponValueEntity {
         this.thumbnailUrlMobile = thumbnailUrlMobile;
     }
 
-    public String getImageV2Url() {
-        return imageV2Url;
-    }
-
-    public void setImageV2Url(String imageV2Url) {
-        this.imageV2Url = imageV2Url;
-    }
-
-    public String getImageV2UrlMobile() {
-        return imageV2UrlMobile;
-    }
-
-    public void setImageV2UrlMobile(String imageV2UrlMobile) {
-        this.imageV2UrlMobile = imageV2UrlMobile;
-    }
-
-    public String getThumbnailV2Url() {
-        return thumbnailV2Url;
-    }
-
-    public void setThumbnailV2Url(String thumbnailV2Url) {
-        this.thumbnailV2Url = thumbnailV2Url;
-    }
-
-    public String getThumbnailV2UrlMobile() {
-        return thumbnailV2UrlMobile;
-    }
-
-    public void setThumbnailV2UrlMobile(String thumbnailV2UrlMobile) {
-        this.thumbnailV2UrlMobile = thumbnailV2UrlMobile;
-    }
-
     public int getPromoId() {
         return promoId;
     }
@@ -256,12 +227,34 @@ public class CouponValueEntity {
         this.usage = usage;
     }
 
+    public String getHowToUse() {
+        return howToUse;
+    }
+
+    public void setHowToUse(String howToUse) {
+        this.howToUse = howToUse;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getRealCode() {
+        return realCode;
+    }
+
+    public void setRealCode(String realCode) {
+        this.realCode = realCode;
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
                 "catalogId=" + catalogId +
-                ", catalogTitle='" + catalogTitle + '\'' +
-                ", catalogSubTitle='" + catalogSubTitle + '\'' +
                 ", code='" + code + '\'' +
                 ", cta='" + cta + '\'' +
                 ", ctaDesktop='" + ctaDesktop + '\'' +
@@ -272,14 +265,16 @@ public class CouponValueEntity {
                 ", imageUrlMobile='" + imageUrlMobile + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
-                ", imageV2Url='" + imageV2Url + '\'' +
-                ", imageV2UrlMobile='" + imageV2UrlMobile + '\'' +
-                ", thumbnailV2Url='" + thumbnailV2Url + '\'' +
-                ", thumbnailV2UrlMobile='" + thumbnailV2UrlMobile + '\'' +
                 ", promoId=" + promoId +
                 ", subTitle='" + subTitle + '\'' +
                 ", title='" + title + '\'' +
                 ", usage=" + usage +
+                ", howToUse='" + howToUse + '\'' +
+                ", minimumUsage='" + minimumUsage + '\'' +
+                ", overview='" + overview + '\'' +
+                ", realCode='" + realCode + '\'' +
+                ", tnc='" + tnc + '\'' +
+                ", swipe=" + swipe +
                 '}';
     }
 }

@@ -185,6 +185,10 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
         this.listFetchCache.addAll(list);
     }
 
+   public List<Visitable> getListCache(){
+        return listFetchCache;
+   }
+
     public void resetSearch() {
         viewModel.setMode(InboxChatViewModel.GET_CHAT_MODE);
         viewModel.setKeyword("");
@@ -266,7 +270,6 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
                 TopChatAnalytics.Action.INBOX_CHAT_CLICK,
                 TopChatAnalytics.Name.INBOX_CHAT);
 
-        getView().getAdapter().notifyItemChanged(position);
         Intent intent = ChatRoomActivity.getCallingIntent(getView().getActivity(),
                 getView().getArguments().getString(InboxMessageConstant.PARAM_NAV),
                 String.valueOf(listMessage.getId()),

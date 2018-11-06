@@ -1,0 +1,6 @@
+query hachikoCouponDetailQuery($code: String) {
+  detail: hachikoCouponDetail(code: $code) {
+    id
+    real_code
+  }
+}

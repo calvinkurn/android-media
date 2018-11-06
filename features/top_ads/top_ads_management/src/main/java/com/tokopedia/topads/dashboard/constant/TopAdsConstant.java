@@ -41,4 +41,5 @@ public class TopAdsConstant {
     public static final int KEYWORD_TYPE_NEGATIVE_VALUE = 0;
 
     public static final String IS_UNPROMOTED_PRODUCT = "0";
+    public static final String SHOP_ID = "shopId";
 }

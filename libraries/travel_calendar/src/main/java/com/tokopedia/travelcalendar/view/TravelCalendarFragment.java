@@ -34,8 +34,10 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
     private Calendar currentCalendar = Calendar.getInstance();
     private Calendar maxDateCalendar;
     private int month;
+    private int year;
 
     public static Fragment newInstance(Date selectedDate, int month, int year, Calendar maxDate,
+                                       Calendar minDate,
                                        ArrayList<HolidayResult> holidayResultList) {
         TravelCalendarFragment fragment = new TravelCalendarFragment();
         Bundle bundle = new Bundle();
@@ -44,6 +46,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         bundle.putInt(TravelCalendarActivity.EXTRA_MONTH, month);
         bundle.putInt(TravelCalendarActivity.EXTRA_YEAR, year);
         bundle.putSerializable(TravelCalendarActivity.EXTRA_MAX_DATE, maxDate);
+        bundle.putSerializable(TravelCalendarActivity.EXTRA_MIN_DATE, minDate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,6 +66,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
 
         //get current month
         month =  getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH);
+        year = getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR);
 
         List<HolidayResult> holidayResultList = getArguments().getParcelableArrayList(TravelCalendarActivity.EXTRA_LIST_HOLIDAY);
         List<HolidayResult> currentHolidayList = new ArrayList<>();
@@ -74,7 +78,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
                 calendarHoliday.setTime(zeroTimeHolidayDate);
                 holidayResultList.get(i).getAttributes().setDateHoliday(zeroTimeHolidayDate);
 
-                if (calendarHoliday.get(Calendar.MONTH) == month) {
+                if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {
                     currentHolidayList.add(holidayResultList.get(i));
                 }
             } catch (ParseException e) {
@@ -93,9 +97,11 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         CellDate cellDate = new CellDate();
         cellDate.setDate((Date) getArguments().getSerializable(TravelCalendarActivity.EXTRA_INITAL_DATE));
         cellDate.setSelected(true);
-        calendarPickerView.setDateRange(cellDate, getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH),
+        calendarPickerView.setDateRange(
+                cellDate, getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH),
                 getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR),
                 (Calendar) getArguments().getSerializable(TravelCalendarActivity.EXTRA_MAX_DATE),
+                (Calendar) getArguments().getSerializable(TravelCalendarActivity.EXTRA_MIN_DATE),
                 currentHolidayList);
         calendarPickerView.setActionListener(new CalendarPickerView.ActionListener() {
             @Override

@@ -39,6 +39,7 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
     public void onNext(NotificationEntity entity) {
         if (entity != null) {
             this.notificationView.renderNotification(entity.getNotifications(),
+                    entity.getNotifcenterUnread(),
                     NotificationMapper.isHasShop(entity));
         }
     }

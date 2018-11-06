@@ -8,7 +8,9 @@ import com.tokopedia.core.shop.model.ShopScheduleModel;
 
 /**
  * Created by Toped10 on 5/19/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public abstract class ShopEditorPresenter extends BaseImpl<ShopEditorView>{
     public static final int FragmentId = 1_192_129;
     public static final String DATA = "ShopEditor_DATA";

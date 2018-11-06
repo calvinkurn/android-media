@@ -183,7 +183,7 @@
     </style>
 
     <style name="View.ShopSetting">
-        <item name="android:background">@drawable/rounded_corner_black_shop_open</item>
+        <item name="android:background">@drawable/rect_white_rounded_stroke_gray_padding</item>
     </style>
 
     <style name="View.ShopSetting.ImagePicker">
@@ -202,7 +202,7 @@
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">7dp</item>
         <item name="android:paddingBottom">7dp</item>
-        <item name="android:background">@drawable/background_info_image_picker</item>
+        <item name="android:background">@drawable/ic_balloon_gray</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:layout_width">match_parent</item>

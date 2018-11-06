@@ -125,7 +125,9 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     public TopAdsModel checkWishlist(TopAdsModel model) {
         List<String> ids = new ArrayList<>();
         for (Data data : model.getData()) {
-            ids.add(data.getProduct().getId());
+            if (data.getProduct() != null) {
+                ids.add(data.getProduct().getId());
+            }
         }
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME)

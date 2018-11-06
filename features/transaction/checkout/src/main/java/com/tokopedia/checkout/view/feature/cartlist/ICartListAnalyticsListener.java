@@ -68,4 +68,8 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnButtonSelectAllUnchecked();
 
+    void sendAnalyticsOnViewPromoAutoApply();
+
+    void sendAnalyticsOnViewPromoManualApply(String type);
+
 }

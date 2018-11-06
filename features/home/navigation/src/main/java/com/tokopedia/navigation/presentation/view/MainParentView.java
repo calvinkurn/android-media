@@ -10,4 +10,6 @@ public interface MainParentView extends LoadDataView {
     void renderNotification(Notification notification);
 
     boolean isFirstTimeUser();
+
+    boolean isUserLogin();
 }

@@ -50,6 +50,7 @@ public class DealsCategoryDetailContract {
 
         void showViews();
 
+        void checkLocationStatus();
     }
 
     public interface Presenter extends CustomerPresenter<DealsCategoryDetailContract.View> {

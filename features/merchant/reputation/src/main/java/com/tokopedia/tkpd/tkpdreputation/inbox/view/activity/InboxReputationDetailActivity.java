@@ -35,9 +35,6 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     public static final String ARGS_TAB = "ARGS_TAB";
     public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
 
-    @Inject
-    GlobalCacheManager cacheManager;
-
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -112,17 +109,14 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        setToolbarData();
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.grey_500));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-
 
         Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
@@ -131,19 +125,4 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }
-
-    private void setToolbarData() {
-        if (cacheManager != null) {
-            InboxReputationDetailPassModel model = cacheManager.getConvertObjData
-                    (InboxReputationDetailActivity.CACHE_PASS_DATA,
-                            InboxReputationDetailPassModel.class);
-            if (model != null && toolbar != null) {
-                if (model.getInvoice() != null)
-                    toolbar.setTitle(model.getInvoice());
-                if (model.getCreateTime() != null)
-                    toolbar.setSubtitle(model.getCreateTime());
-            }
-        }
-    }
-
 }

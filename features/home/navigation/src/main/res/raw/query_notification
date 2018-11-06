@@ -1,4 +1,5 @@
 query {
+  status
   userShopInfo {
     info {
       shop_id
@@ -34,5 +35,8 @@ query {
       shipped
       arriveAtDestination
     }
+  }
+  notifcenter_unread {
+    notif_unread
   }
 }

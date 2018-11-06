@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_gravity="center_vertical"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_empty_payment_list"/>
+
+        <TextView
+            android:text="Untuk kemudahan pembayaran kartu kredit / debit online, simpan informasi kartu kredit / debit online anda,"
+            style="@style/TextView.Small.BlackSecondary"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonAddCard"
+        android:text="@string/payment_label_button_add_card"
+        android:layout_marginTop="@dimen/dp_16"
+        style="@style/Button.Submit.Green.Full"/>
+</LinearLayout>

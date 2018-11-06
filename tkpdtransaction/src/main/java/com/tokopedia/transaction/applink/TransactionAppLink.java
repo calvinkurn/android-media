@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.applink;
 
 import com.tokopedia.abstraction.constant.TkpdAppLink;
-import com.tokopedia.core.gcm.Constants;
 
 /**
  * @author okasurya on 2/12/18.

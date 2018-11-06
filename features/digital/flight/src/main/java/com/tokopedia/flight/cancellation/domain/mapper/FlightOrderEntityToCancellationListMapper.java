@@ -19,7 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.flight.common.util.FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT;
-import static com.tokopedia.flight.common.util.FlightDateUtil.FORMAT_DATE_API;
+import static com.tokopedia.flight.common.util.FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z;
 
 /**
  * @author by furqan on 30/04/18.
@@ -55,11 +55,9 @@ public class FlightOrderEntityToCancellationListMapper {
         FlightCancellationDetail cancellationItem = new FlightCancellationDetail();
 
         cancellationItem.setCreateTime(FlightDateUtil.formatDate(
-                FORMAT_DATE_API, DEFAULT_VIEW_TIME_FORMAT, cancellation.getCreateTime()));
+                YYYY_MM_DD_T_HH_MM_SS_Z, DEFAULT_VIEW_TIME_FORMAT, cancellation.getCreateTime()));
         cancellationItem.setEstimatedRefund(cancellation.getEstimatedRefund());
-        cancellationItem.setEstimatedRefundNumeric(cancellation.getEstimatedRefundNumeric());
         cancellationItem.setRealRefund(cancellation.getRealRefund());
-        cancellationItem.setRealRefundNumeric(cancellation.getRealRefundNumeric());
         cancellationItem.setRefundId(cancellation.getRefundId());
         cancellationItem.setStatus(cancellation.getStatus());
         cancellationItem.setJourneys(transform(orderEntity.getAttributes().getFlight().getJourneys(),

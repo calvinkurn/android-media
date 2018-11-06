@@ -35,4 +35,8 @@ public interface TopAdsDashboardView extends CustomerView {
     void onErrorPopulateData(Throwable throwable);
 
     void onSuccessPopulateData(DashboardPopulateResponse dashboardPopulateResponse);
+
+    void onSuccessGetTicker(List<String> message);
+
+    void onErrorGetTicker(Throwable e);
 }

@@ -5,13 +5,20 @@ package com.tokopedia.train.common.constant;
  */
 public interface TrainEventTracking {
 
+    String EVENT_CATEGORY = "eventCategory";
+    String EVENT_ACTION = "eventAction";
+    String EVENT_LABEL = "eventLabel";
+    String EVENT = "event";
+    String ECOMMERCE = "ecommerce";
+
     interface Event {
         String GENERIC_TRAIN_EVENT = "genericTrainEvent";
         String PROMO_CLICK = "promoCLick";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
         String VIEW_PRODUCT = "viewProduct";
-        Object ADD_TO_CART = "addToCart";
+        String ADD_TO_CART = "addToCart";
+        String KAI_CLICK = "digitalKAIClick";
     }
 
     interface Category {
@@ -41,13 +48,25 @@ public interface TrainEventTracking {
         String CLICK_USE_VOUCHER_CODE = "click gunakan voucher code";
         String VOUCHER_SUCCESS = "voucher success";
         String VOUCHER_ERROR = "voucher error";
-        String PROCEED_TO_PAYMENT = "proceed to payment";
+        String PROCEED_TO_PAYMENT = "click proceed to payment";
         String VIEW_MY_TICKET_PAGE = "view my ticket page";
         String CLICK_MY_TICKET = "click my ticket";
     }
 
     interface Label {
 
+    }
+
+    interface EnhanceEcommerce {
+        String NAME = "name";
+        String ID = "id";
+        String PRICE = "price";
+        String CATEGORY = "category";
+        String VARIANT = "variant";
+        String QUANTITY = "quantity";
+        String COUPON = "coupon";
+        String LIST = "list";
+        String BRAND = "brand";
     }
 
 }

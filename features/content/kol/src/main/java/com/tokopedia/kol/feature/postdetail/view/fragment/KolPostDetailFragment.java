@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -35,15 +34,17 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -71,8 +72,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     KolPostDetailContract.Presenter presenter;
+
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
+
     @Inject
     KolPostDetailAdapter adapter;
 
@@ -84,11 +87,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerKolProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
-                .build()
-                .inject(this);
+        if (getActivity() != null && getActivity().getApplication() != null) {
+            DaggerKolProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                    .kolProfileModule(new KolProfileModule())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override
@@ -112,7 +117,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
             abstractionRouter = (AbstractionRouter) getActivity().getApplication();
         } else {
             throw new IllegalStateException("Application must be an instance of "
@@ -126,7 +133,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                     + KolRouter.class.getSimpleName());
         }
 
-        GraphqlClient.init(getContext());
         initVar();
 
         swipeToRefresh.setOnRefreshListener(this);
@@ -137,15 +143,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
-        replyEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    return true;
-                }
-                return false;
-            }
-        });
+        replyEditText.setOnEditorActionListener((v, actionId, event) -> actionId == EditorInfo.IME_ACTION_DONE);
 
         presenter.attachView(this);
         presenter.getCommentFirstTime(postId);
@@ -220,7 +218,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
         }
     }
 
@@ -230,7 +228,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public UserSession getUserSession() {
+    public UserSessionInterface getUserSession() {
         return userSession;
     }
 
@@ -251,7 +249,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onOpenKolTooltip(int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -298,6 +296,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onEditClicked(int id) {
+
+    }
+
+    @Override
+    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+
+    }
+
+    @Override
     public void onGoToProfile(String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
@@ -324,7 +332,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             KolPostViewModel kolPostViewModel = (KolPostViewModel) adapter.getList().get(rowNumber);
             kolPostViewModel.setFollowed(!(kolPostViewModel.isFollowed()));
             kolPostViewModel.setTemporarilyFollowed(!(kolPostViewModel.isTemporarilyFollowed()));
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_FOLLOW);
 
             if (kolPostViewModel.isFollowed()) {
                 ToasterNormal
@@ -371,7 +379,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private View.OnClickListener followSuccessOnClickListener() {
         return v -> {
-            RouteManager.route(getContext(), ApplinkConst.FEED);
+            if (getContext() != null) RouteManager.route(getContext(), ApplinkConst.FEED);
         };
     }
 }

@@ -27,7 +27,7 @@
     <string name="already_registered_phone">Nomor ponsel sudah digunakan oleh banyak akun</string>
     <string name="phone_empty">nomor telepon tidak boleh kosong</string>
     <string name="phone_invalid">nomor telepon tidak valid</string>
-    <string name="max_limit_reached_for_phone">nomor telepon baru sudah dalam db, lebih besar dari atau sama dengan 5 data</string>
+    <string name="max_limit_reached_for_phone">Nomor ponsel sudah digunakan oleh banyak akun</string>
     <string name="phone_not_registered">Nomor ponsel belum terdaftar.</string>
     <string name="default_error_upload_image">Gagal mengupload gambar</string>
     <string name="info_title">Info</string>

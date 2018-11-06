@@ -42,7 +42,7 @@ public class AddProductImagePickerBuilder {
                 imageList,
                 placeholderDrawableRes,
                 R.string.primary,
-                MAX_IMAGE_LIMIT));
+                MAX_IMAGE_LIMIT, true));
     }
 
     public static ImagePickerBuilder createInstagramImportBuilder(Context context) {
@@ -56,7 +56,7 @@ public class AddProductImagePickerBuilder {
                 null,
                 null,
                 0,
-                INSTAGRAM_IMAGE_LIMIT));
+                INSTAGRAM_IMAGE_LIMIT, true));
     }
 
     public static ImagePickerBuilder createVariantNewBuilder(Context context) {

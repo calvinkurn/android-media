@@ -113,14 +113,14 @@ public class DealsAnalytics {
     public void sendEventDealsDigitalClick(String action, String label) {
         if (tracker == null)
             return;
-        tracker.sendEventTracking(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label);
+        tracker.sendEventTracking(EVENT_DEALS_CLICK, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
 
     }
 
     public void sendEventDealsDigitalView(String action, String label) {
         if (tracker == null)
             return;
-        tracker.sendEventTracking(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label);
+        tracker.sendEventTracking(EVENT_DEALS_VIEW, DIGITAL_DEALS, action, label == null ? "" : label.toLowerCase());
 
     }
 
@@ -132,7 +132,7 @@ public class DealsAnalytics {
         map.put("event", event);
         map.put("eventCategory", DIGITAL_DEALS);
         map.put("eventAction", action);
-        map.put("eventLabel", label);
+        map.put("eventLabel", label == null ? "" : label.toLowerCase());
         map.put("ecommerce", ecommerce);
         tracker.sendEnhancedEcommerce(map);
     }
@@ -186,7 +186,7 @@ public class DealsAnalytics {
             ecommerce.put(HASH_IMPRESSIONS, impressions);
             sendEventEcommerce(event
                     , action
-                    , label, ecommerce);
+                    , label == null ? "" : label.toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -240,7 +240,7 @@ public class DealsAnalytics {
             ecommerce.put(HASH_CLICK, click);
             sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
                     , action
-                    , label, ecommerce);
+                    , label == null ? "" : label.toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -269,7 +269,7 @@ public class DealsAnalytics {
                     , action
                     , String.format("%s - %s - %s", productItem.getBrand().getTitle()
                             , productItem.getDisplayName()
-                            , position), ecommerce);
+                            , position).toLowerCase(), ecommerce);
 
         } catch (Exception e) {
 
@@ -298,7 +298,7 @@ public class DealsAnalytics {
             sendEventEcommerce(DealsAnalytics.EVENT_CHECKOUT
                     , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
                     , String.format("%s - %s - %s", brandName
-                            , displayName, promo), ecommerce);
+                            , displayName, promo).toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -322,7 +322,7 @@ public class DealsAnalytics {
             sendEventEcommerce(DealsAnalytics.EVENT_ADD_TO_CART
                     , DealsAnalytics.EVENT_CHECKOUT
                     , String.format("%s - %s - %s - %s", brandName
-                            , displayName, quantity, salesPrice), ecommerce);
+                            , displayName, quantity, salesPrice).toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -348,7 +348,7 @@ public class DealsAnalytics {
             sendEventEcommerce(DealsAnalytics.EVENT_VIEW_PRODUCT
                     , DealsAnalytics.EVENT_VIEW_PRODUCT_DETAILS
                     , String.format("%s - %s", brandName
-                            , displayName), ecommerce);
+                            , displayName).toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -365,7 +365,7 @@ public class DealsAnalytics {
             ecommerce.put(event, bannerMap);
             sendEventEcommerce(event, action,
                     String.format("%s - %s", creative
-                            , position), ecommerce);
+                            , position).toLowerCase(), ecommerce);
 
         } catch (Exception e) {
 

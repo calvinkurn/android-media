@@ -100,8 +100,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void getData() {
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .query_seller_account_home));
+        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home));
     }
 
     @Override

@@ -6,7 +6,7 @@ package com.tokopedia.digital.categorylist.view.presenter;
 
 public interface IDigitalCategoryListPresenter {
 
-    void processGetDigitalCategoryList();
+    void processGetDigitalCategoryList(String deviceVersion);
 
     void processGetTokoCashData();
 

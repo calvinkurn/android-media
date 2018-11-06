@@ -13,6 +13,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.updateinactivephone.R;
 import com.tokopedia.updateinactivephone.model.request.ChangePhoneNumberRequestModel;
+import com.tokopedia.updateinactivephone.model.request.UploadHostModel;
 import com.tokopedia.updateinactivephone.model.request.UploadImageModel;
 
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_BANKBOOK_IMAGE_ID;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_BANK_BOOK_IMAGE_PATH;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_DEVICE_ID;
@@ -34,20 +36,24 @@ import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConsta
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.EMAIL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
+import static com.tokopedia.updateinactivephone.usecase.GetUploadHostUseCase.PARAM_NEW_ADD;
 
 public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlResponse> {
 
 
     private final UploadImageUseCase uploadImageUseCase;
     private final SubmitImageUseCase submitImageUseCase;
+    private GetUploadHostUseCase getUploadHostUseCase;
 
     public UploadChangePhoneNumberRequestUseCase(ThreadExecutor threadExecutor,
                                                  PostExecutionThread postExecutionThread,
                                                  UploadImageUseCase uploadImageUseCase,
-                                                 SubmitImageUseCase submitImageUseCase) {
+                                                 SubmitImageUseCase submitImageUseCase,
+                                                 GetUploadHostUseCase getUploadHostUseCase) {
         super(threadExecutor, postExecutionThread);
         this.uploadImageUseCase = uploadImageUseCase;
         this.submitImageUseCase = submitImageUseCase;
+        this.getUploadHostUseCase = getUploadHostUseCase;
     }
 
     @Override
@@ -58,8 +64,24 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         Observable<ChangePhoneNumberRequestModel> initialObservable = Observable.just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<ChangePhoneNumberRequestModel>>) requestParams1 -> Observable.just(changePhoneNumberRequestModel))
 
+                .flatMap((Func1<ChangePhoneNumberRequestModel, Observable<UploadHostModel>>) changePhoneNumberRequestModel14 -> getUploadHost(getUploadHostParam(requestParams)))
+
+                .flatMap((Func1<UploadHostModel, Observable<ChangePhoneNumberRequestModel>>) uploadHostModel -> {
+                    changePhoneNumberRequestModel.setUploadHostModel(uploadHostModel);
+                    changePhoneNumberRequestModel.setSuccess(uploadHostModel.isSuccess());
+
+                    if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                            && changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage() != null)
+                        throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage());
+                    else if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                            && changePhoneNumberRequestModel.getUploadHostModel().getResponseCode() != 200)
+                        throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getResponseCode()));
+                    return Observable.just(changePhoneNumberRequestModel);
+                })
+
                 .flatMap((Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>) changePhoneNumberRequestModel1 -> uploadImage(getUploadIdImageParam(requestParams,
                         changePhoneNumberRequestModel1)))
+
                 .flatMap((Func1<UploadImageModel, Observable<ChangePhoneNumberRequestModel>>) uploadImageModel -> {
                     changePhoneNumberRequestModel.setUploadIdImageModel(uploadImageModel);
                     changePhoneNumberRequestModel.setSuccess(uploadImageModel.isSuccess());
@@ -145,6 +167,17 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         params.putInt(SERVER_ID, requestParams.getInt(SERVER_ID, 49));
         params.putInt(RESOLUTION, requestParams.getInt(RESOLUTION, 215));
         params.putString(TOKEN, requestParams.getString(TOKEN, ""));
+
+        if(changePhoneNumberRequestModel != null &&
+                changePhoneNumberRequestModel.getUploadHostModel() != null &&
+                changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData() != null &&
+                changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost() != null &&
+                !TextUtils.isEmpty(changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost())) {
+
+            params.putString(IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost());
+        }
+
+
         return params;
     }
 
@@ -163,7 +196,28 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         params.putInt(SERVER_ID, requestParams.getInt(SERVER_ID, 49));
         params.putInt(RESOLUTION, requestParams.getInt(RESOLUTION, 215));
         params.putString(TOKEN, requestParams.getString(TOKEN, ""));
+
+        if(changePhoneNumberRequestModel != null &&
+                changePhoneNumberRequestModel.getUploadHostModel() != null &&
+                changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData() != null &&
+                changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost() != null &&
+                !TextUtils.isEmpty(changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost())) {
+
+            params.putString(IMAGE_UPLOAD_URL, changePhoneNumberRequestModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getUploadHost());
+        }
+
         return params;
+    }
+
+    private RequestParams getUploadHostParam(RequestParams requestParams) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_NEW_ADD, requestParams.getString(PARAM_NEW_ADD,
+                GetUploadHostUseCase.DEFAULT_NEW_ADD));
+        return params;
+    }
+
+    private Observable<UploadHostModel> getUploadHost(RequestParams requestParams) {
+        return getUploadHostUseCase.createObservable(requestParams);
     }
 
     @Override
@@ -173,6 +227,9 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         }
         if (submitImageUseCase != null) {
             submitImageUseCase.unsubscribe();
+        }
+        if(getUploadHostUseCase != null) {
+            getUploadHostUseCase.unsubscribe();
         }
         super.unsubscribe();
     }

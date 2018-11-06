@@ -136,6 +136,8 @@ public class ChannelInfoFragment extends BaseDaggerFragment
                 .COMPONENT_PARTNER, channelPartnerChildViewModel.getPartnerName(), GroupChatAnalytics
                 .ATTRIBUTE_PARTNER_LOGO, list);
 
+        analytics.eventActionClickOfficialPartner(channelPartnerChildViewModel.getPartnerName());
+
         GroupChatModuleRouter router = ((GroupChatModuleRouter) getActivity().getApplicationContext());
         router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity())
                 .generateAttributeApplink(channelPartnerChildViewModel.getPartnerUrl(),

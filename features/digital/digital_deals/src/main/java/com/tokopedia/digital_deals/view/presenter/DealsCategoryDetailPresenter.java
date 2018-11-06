@@ -1,21 +1,19 @@
 package com.tokopedia.digital_deals.view.presenter;
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
+import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
@@ -34,10 +32,13 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+;
+
 public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCategoryDetailContract.View>
         implements DealsCategoryDetailContract.Presenter {
 
     public final static String TAG = "url";
+    public static final String FROM_DEEPLINK = "from_deeplink";
     private boolean isLoading;
     private boolean isLastPage;
     private volatile boolean isDealsLoaded = false;
@@ -74,21 +75,24 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_search) {
-            Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
-            int size = 5;
-            if (productItems.size() < size) {
-                size = productItems.size();
-            }
-            ArrayList<ProductItem> searchItems = new ArrayList<ProductItem>();
-            for (int i = 0; i < size; i++) {
-                searchItems.add(productItems.get(i));
-            }
-            searchIntent.putParcelableArrayListExtra("TOPDEALS", searchItems);
-            getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
+            setTopDeals();
+            getView().checkLocationStatus();
         } else {
             getView().getActivity().onBackPressed();
         }
         return true;
+    }
+
+    public void setTopDeals(){
+        int size = 5;
+        if (productItems.size() < size) {
+            size = productItems.size();
+        }
+        ArrayList<ProductItem> searchItems = new ArrayList<ProductItem>();
+        for (int i = 0; i < size; i++) {
+            searchItems.add(productItems.get(i));
+        }
+        TopDealsCacheHandler.init().setTopDeals(searchItems);
     }
 
     @Override

@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.design.label.LabelView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/label_user"
-    style="@style/LabelLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8"
     app:lv_image="@drawable/ic_info_email_grey"
-    app:lv_title_text_style="bold" />
+    app:lv_image_width="@dimen/dp_48"
+    app:lv_image_height="@dimen/dp_48"
+    app:lv_title_text_style="normal"
+    app:lv_title_text_size="@dimen/sp_14"
+    app:lv_image_margin_right="@dimen/dp_8"/>

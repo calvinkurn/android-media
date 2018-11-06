@@ -56,6 +56,7 @@
     <color name="yellow_105">#fffbcd</color>
     <color name="yellow_110">#ffeaac</color>
     <color name="yellow_200">#ecdb77</color>
+    <color name="yellow_notif">#fffeeb</color>
 
     <color name="orange_300">#ffb74d</color>
     <color name="orange_900">#e65100</color>

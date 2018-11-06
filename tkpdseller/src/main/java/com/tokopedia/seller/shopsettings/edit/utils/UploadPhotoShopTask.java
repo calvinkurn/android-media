@@ -21,7 +21,10 @@ import okhttp3.RequestBody;
  * still using old network handler, just to make sure retrofit 2 upload work
  *
  * migrate retrofit 2 by Angga.Prasetiyo
+ *
+ * use ShopSettings Module
  */
+@Deprecated
 public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
     public static final String LOGO = "logo";
     public static final String NEW_ADD = "new_add";

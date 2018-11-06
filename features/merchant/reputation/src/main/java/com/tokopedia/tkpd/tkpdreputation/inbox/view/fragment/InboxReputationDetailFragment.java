@@ -11,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +21,12 @@ import android.view.Window;
 import com.facebook.CallbackManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -123,6 +124,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             try {
                 passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
                         InboxReputationDetailPassModel.class);
+                setToolbar();
             } catch (Exception e) {
                 // Ignore cache expired exception
             }
@@ -133,6 +135,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         adapter = new InboxReputationDetailAdapter(typeFactory);
     }
 
+    private void setToolbar(){
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
+        toolbar.setTitle(passModel.getInvoice());
+        toolbar.setSubtitle(passModel.getCreateTime());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,

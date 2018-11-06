@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -43,6 +43,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationVie
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.ReputationDataViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 
@@ -51,8 +53,9 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationFragment extends BaseDaggerFragment
-        implements InboxReputation.View {
+        implements InboxReputation.View, SearchInputView.Listener {
 
+    protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public final static String PARAM_TAB = "tab";
     private static final int REQUEST_OPEN_DETAIL = 101;
     private static final int REQUEST_FILTER = 102;
@@ -60,7 +63,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
     private static final String ARGS_QUERY = "ARGS_QUERY";
 
-    SearchView searchView;
+    SearchInputView searchView;
     private RecyclerView mainList;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayoutManager layoutManager;
@@ -139,7 +142,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_inbox_reputation, container, false);
         mainList = (RecyclerView) parentView.findViewById(R.id.review_list);
         swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
-        searchView = (SearchView) parentView.findViewById(R.id.search);
+        searchView = (SearchInputView) parentView.findViewById(R.id.search);
+        searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
+        searchView.setListener(this);
         filterButton = parentView.findViewById(R.id.filter_button);
         prepareView();
         presenter.attachView(this);
@@ -159,30 +164,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
             }
         });
 
-        setSearchviewTextSize(searchView, 12);
         setQueryHint();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                presenter.getFilteredInboxReputation(query,
-                        timeFilter,
-                        scoreFilter,
-                        getTab());
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0) {
-                    setQueryHint();
-                    presenter.getFilteredInboxReputation("",
-                            timeFilter,
-                            scoreFilter,
-                            getTab());
-                }
-                return false;
-            }
-        });
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,32 +174,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
         });
     }
 
-    private void setSearchviewTextSize(SearchView searchView, int fontSize) {
-        try {
-            AutoCompleteTextView autoCompleteTextViewSearch = (AutoCompleteTextView) searchView.findViewById(searchView.getContext().getResources().getIdentifier("app:id/search_src_text", null, null));
-            if (autoCompleteTextViewSearch != null) {
-                autoCompleteTextViewSearch.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-            } else {
-                LinearLayout linearLayout1 = (LinearLayout) searchView.getChildAt(0);
-                LinearLayout linearLayout2 = (LinearLayout) linearLayout1.getChildAt(2);
-                LinearLayout linearLayout3 = (LinearLayout) linearLayout2.getChildAt(1);
-                AutoCompleteTextView autoComplete = (AutoCompleteTextView) linearLayout3.getChildAt(0);
-                autoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-            }
-        } catch (Exception e) {
-            LinearLayout linearLayout1 = (LinearLayout) searchView.getChildAt(0);
-            LinearLayout linearLayout2 = (LinearLayout) linearLayout1.getChildAt(2);
-            LinearLayout linearLayout3 = (LinearLayout) linearLayout2.getChildAt(1);
-            AutoCompleteTextView autoComplete = (AutoCompleteTextView) linearLayout3.getChildAt(0);
-            autoComplete.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-        }
-    }
-
     private void setQueryHint() {
         if (getTab() == InboxReputationActivity.TAB_BUYER_REVIEW) {
-            searchView.setQueryHint(getString(R.string.query_hint_review_seller));
+            searchView.setSearchHint(getString(R.string.query_hint_review_seller));
         } else {
-            searchView.setQueryHint(getString(R.string.query_hint_review_buyer));
+            searchView.setSearchHint(getString(R.string.query_hint_review_buyer));
         }
     }
 
@@ -236,7 +198,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading() && !adapter.isEmpty())
                     presenter.getNextPage(lastItemPosition, visibleItem,
-                            searchView.getQuery().toString(), timeFilter, scoreFilter, getTab());
+                            searchView.getSearchText().toString(), timeFilter, scoreFilter, getTab());
             }
         };
     }
@@ -473,8 +435,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     public void onClick(View v) {
                         timeFilter = "";
                         scoreFilter = "";
-                        searchView.setQuery("", true);
-
+                        onSearchSubmitted("");
+                        searchView.setSearchText("");
                     }
                 });
         adapter.notifyDataSetChanged();
@@ -504,7 +466,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     private String getQuery() {
         if (searchView != null)
-            return searchView.getQuery().toString();
+            return searchView.getSearchText();
         else
             return "";
     }
@@ -528,5 +490,24 @@ public class InboxReputationFragment extends BaseDaggerFragment
         outState.putString(ARGS_TIME_FILTER, timeFilter);
         outState.putString(ARGS_SCORE_FILTER, scoreFilter);
         outState.putString(ARGS_QUERY, getQuery());
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        presenter.getFilteredInboxReputation(text,
+                timeFilter,
+                scoreFilter,
+                getTab());
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+        if (text.length() == 0) {
+            setQueryHint();
+            presenter.getFilteredInboxReputation("",
+                    timeFilter,
+                    scoreFilter,
+                    getTab());
+        }
     }
 }

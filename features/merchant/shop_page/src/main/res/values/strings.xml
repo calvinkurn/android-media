@@ -39,6 +39,7 @@
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
+    <string name="shop_info_title_tab_feed">Feed</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
@@ -101,7 +102,6 @@
     <string name="shop_info_sort_label">Urutkan</string>
     <string name="shop_info_filter_all_showcase">Semua Etalase</string>
     <string name="shop_info_filter_menu_etalase_all">Semua Produk</string>
-    <string name="shop_info_label_share">Bagikan</string>
     <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
 
     <string name="dashboard_x_points">%1$s poin</string>
@@ -111,7 +111,7 @@
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
-    <string name="shop_note_title">Catatan</string>
+    <string name="note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="choose_etalase_label">Pilih Etalase</string>
@@ -125,7 +125,7 @@
     <string name="shop_page_chat_label">Chat</string>
     <string name="shop_page_label_description">Deskripsi Toko</string>
     <string name="shop_info_label_manage_note">Atur</string>
-    <string name="shop_note_title_2">Catatan Toko</string>
+    <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>
     <string name="read">Baca</string>
     <string name="shop_page_label_follow">Follow</string>
@@ -140,5 +140,7 @@
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
+    <string name="tablayout_new_text">Baru</string>
+    <string name="x_product">%1$s Produk</string>
 
 </resources>

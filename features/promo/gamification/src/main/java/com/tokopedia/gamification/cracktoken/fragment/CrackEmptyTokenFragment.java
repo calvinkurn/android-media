@@ -126,7 +126,12 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment {
         ivFullLp.topMargin = imageMarginTop;
         tokenEmptyImage.requestLayout();
 
-        int titleMarginTop = imageMarginTop - getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+        int dimen = 0;
+        if (getActivity() != null) {
+            dimen = getActivity().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+        }
+
+        int titleMarginTop = imageMarginTop - dimen;
         FrameLayout.LayoutParams titleLp = (FrameLayout.LayoutParams) title.getLayoutParams();
         ivFullLp.gravity = CENTER_HORIZONTAL;
         titleLp.topMargin = titleMarginTop;

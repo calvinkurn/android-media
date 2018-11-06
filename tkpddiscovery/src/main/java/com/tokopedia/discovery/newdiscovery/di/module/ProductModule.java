@@ -3,6 +3,7 @@ package com.tokopedia.discovery.newdiscovery.di.module;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -15,6 +16,7 @@ import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.ProductDataSource;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
@@ -31,6 +33,12 @@ public class ProductModule {
     @Provides
     ProductRepository productRepository(ProductDataSource productDataSource) {
         return new ProductRepositoryImpl(productDataSource);
+    }
+
+    @Provides
+    ProductWishlistUrlUseCase productWishlistUrlUseCase(@ApplicationContext Context context,
+                                                        TopAdsService topAdsService){
+        return new ProductWishlistUrlUseCase(topAdsService, context);
     }
 
     @Provides

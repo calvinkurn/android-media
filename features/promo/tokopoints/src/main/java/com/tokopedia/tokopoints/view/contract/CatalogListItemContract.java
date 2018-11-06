@@ -5,13 +5,9 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.tokopoints.view.model.CatalogBanner;
-import com.tokopedia.tokopoints.view.model.CatalogCategory;
-import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface CatalogListItemContract {
@@ -48,6 +44,10 @@ public interface CatalogListItemContract {
         void refreshCatalog(List<CatalogStatusItem> items);
 
         void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
+
+        void onPreValidateError(String title, String message);
+
+        void gotoSendGiftPage(int id, String title, String pointStr);
     }
 
     interface Presenter extends CustomerPresenter<View> {

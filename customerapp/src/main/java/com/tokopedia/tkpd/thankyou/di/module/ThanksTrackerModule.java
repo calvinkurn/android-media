@@ -12,7 +12,6 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
-import com.tokopedia.tkpd.thankyou.data.mapper.MarketplaceTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepositoryImpl;
 import com.tokopedia.tkpd.thankyou.data.source.DigitalTrackerCloudSource;
@@ -69,16 +68,9 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(SessionHandler sessionHandler) {
-        return new MarketplaceTrackerMapper(sessionHandler);
-    }
-
-    @Provides
-    @ThanksTrackerScope
     ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
                                                        DigitalTrackerMapper digitalTrackerMapper,
                                                        MarketplaceTrackerApi marketplaceTrackerApi,
-                                                       MarketplaceTrackerMapper marketplaceTrackerMapper,
                                                        @ApplicationContext Context context,
                                                        Gson gson,
                                                        SessionHandler sessionHandler,
@@ -87,7 +79,6 @@ public class ThanksTrackerModule {
                 digitalTrackerApi,
                 digitalTrackerMapper,
                 marketplaceTrackerApi,
-                marketplaceTrackerMapper,
                 context,
                 gson,
                 sessionHandler,

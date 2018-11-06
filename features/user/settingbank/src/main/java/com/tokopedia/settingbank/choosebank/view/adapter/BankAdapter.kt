@@ -2,7 +2,6 @@ package com.tokopedia.settingbank.choosebank.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.design.search.EmptySearchResultView
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.EmptySearchBankViewModel
 

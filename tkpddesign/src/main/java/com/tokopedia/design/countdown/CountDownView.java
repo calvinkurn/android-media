@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.tokopedia.design.R;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -41,6 +43,8 @@ public class CountDownView extends FrameLayout {
     private Handler refreshCounterHandler;
     private Runnable runnableRefreshCounter;
 
+    private boolean isTimerActive = false;
+
     public CountDownView(@NonNull Context context) {
         super(context);
         init(context, null);
@@ -57,6 +61,7 @@ public class CountDownView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Jakarta"));
         rootView = inflate(context, R.layout.widget_count_down_view, this);
         hourView = (TextView) rootView.findViewById(R.id.hourView);
         minuteView = (TextView) rootView.findViewById(R.id.minuteView);
@@ -107,6 +112,39 @@ public class CountDownView extends FrameLayout {
             }
         };
         startAutoRefreshCounter();
+        isTimerActive = true;
+    }
+
+    public void setup(final long serverTimeOffset, final Date expiredTime,
+                      final CountDownListener listener) {
+        Date serverTime = new Date();
+        serverTime.setTime(
+                serverTime.getTime() + serverTimeOffset
+        );
+        if (isExpired(serverTime, expiredTime)) {
+            handleExpiredTime(listener);
+            return;
+        }
+        stopAutoRefreshCounter();
+        refreshCounterHandler = new Handler();
+        runnableRefreshCounter = new Runnable() {
+            @Override
+            public void run() {
+                if (!isExpired(serverTime, expiredTime)) {
+                    Date currentDate = new Date();
+                    long currentMillisecond = currentDate.getTime() + serverTimeOffset;
+                    serverTime.setTime(currentMillisecond);
+
+                    TimeDiffModel timeDiff = getTimeDiff(serverTime, expiredTime);
+                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
+
+                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
+                } else {
+                    handleExpiredTime(listener);
+                }
+            }
+        };
+        startAutoRefreshCounter();
     }
 
     private void handleExpiredTime(CountDownListener listener) {
@@ -121,6 +159,10 @@ public class CountDownView extends FrameLayout {
         return new Date().after(expiredTime);
     }
 
+    private boolean isExpired(Date serverTime, Date expiredTime) {
+        return serverTime.after(expiredTime);
+    }
+
     private TimeDiffModel getTimeDiff(Date startTime, Date endTime) {
         long diff = endTime.getTime() - startTime.getTime();
         TimeDiffModel model = new TimeDiffModel();
@@ -131,14 +173,18 @@ public class CountDownView extends FrameLayout {
     }
 
     public void stopAutoRefreshCounter() {
+        isTimerActive = false;
         if (refreshCounterHandler != null && runnableRefreshCounter != null) {
             refreshCounterHandler.removeCallbacks(runnableRefreshCounter);
         }
     }
 
     private void startAutoRefreshCounter() {
-        if (refreshCounterHandler != null && runnableRefreshCounter != null) {
+        if (refreshCounterHandler != null &&
+                runnableRefreshCounter != null &&
+                !isTimerActive) {
             refreshCounterHandler.postDelayed(runnableRefreshCounter, REFRESH_DELAY_MS);
+            isTimerActive = true;
         }
     }
 
@@ -214,5 +260,9 @@ public class CountDownView extends FrameLayout {
 
     public interface CountDownListener {
         void onCountDownFinished();
+    }
+
+    public boolean isTimerActive() {
+        return isTimerActive;
     }
 }

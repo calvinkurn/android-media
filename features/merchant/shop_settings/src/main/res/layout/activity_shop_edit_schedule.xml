@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/vgRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:descendantFocusability="beforeDescendants"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <include layout="@layout/partial_toolbar_save_button" />
+
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/vgContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
+
+            <com.tokopedia.shop.settings.common.widget.ImageLabelView
+                android:id="@+id/labelStartClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ilv_content_hint="@string/hint_date"
+                app:ilv_drawable="@drawable/ic_calendar_grey"
+                app:ilv_title="@string/date_start_shop_close" />
+
+            <com.tokopedia.shop.settings.common.widget.ImageLabelView
+                android:id="@+id/labelEndClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ilv_content_hint="@string/hint_date"
+                app:ilv_drawable="@drawable/ic_calendar_grey"
+                app:ilv_title="@string/date_end_shop_close" />
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/tilShopCloseNote"
+                style="@style/HintTextInputLayout"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:hint="@string/shop_close_note">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/etShopCloseNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textNoSuggestions|textMultiLine"
+                    android:maxLength="@integer/max_slogan_char" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <TextView
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:text="@string/closed_note_information" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -4,6 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class RatesEstimationModel (
+    @SerializedName("shop")
+    @Expose
+    val shop: ShopModel = ShopModel(),
+
     @SerializedName("address")
     @Expose
     val address: AddressModel = AddressModel(),

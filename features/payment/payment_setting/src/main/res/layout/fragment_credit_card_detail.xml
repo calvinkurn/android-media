@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/credit_card_detail_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_45">
+
+    <RelativeLayout
+        android:id="@+id/layoutCC"
+        android:layout_width="match_parent"
+        android:layout_height="190dp">
+
+        <ImageView
+            android:id="@+id/imageCCBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />=
+
+
+        <LinearLayout
+            android:layout_margin="@dimen/dp_22"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginBottom="@dimen/dp_16"
+                android:id="@+id/creditCardNumber"
+                style="@style/TextView.Title.White"
+                tools:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3" />
+
+            <TextView
+                android:id="@+id/creditCardExpiryLabel"
+                style="@style/TextView.Micro.WhitePrimary"
+                android:text="@string/payment_label_month_year" />
+
+            <TextView
+                android:id="@+id/creditCardExpiryText"
+                style="@style/TextView.Title.White"
+                tools:text="01/20" />
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/buttonDeleteCC"
+        style="@style/Button.Submit.White.Border.Full"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/payment_label_delete_card" />
+
+</LinearLayout>

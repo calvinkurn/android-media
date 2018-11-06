@@ -26,19 +26,18 @@ public class DisplayMetricUtils {
      */
     public static String getScreenDensity(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        switch (metrics.densityDpi) {
-            case DisplayMetrics.DENSITY_MEDIUM:
-                return MDPI;
-            case DisplayMetrics.DENSITY_HIGH:
-                return HDPI;
-            case DisplayMetrics.DENSITY_XHIGH:
-                return XHDPI;
-            case DisplayMetrics.DENSITY_XXHIGH:
-                return XXHDPI;
-            case DisplayMetrics.DENSITY_XXXHIGH:
-                return XXXHDPI;
-            default:
-                return MDPI;
+        if (metrics.densityDpi <= DisplayMetrics.DENSITY_MEDIUM) {
+            return MDPI;
+        } else if (metrics.densityDpi <= DisplayMetrics.DENSITY_HIGH) {
+            return HDPI;
+        } else if (metrics.densityDpi <= DisplayMetrics.DENSITY_XHIGH) {
+            return XHDPI;
+        } else if (metrics.densityDpi <= DisplayMetrics.DENSITY_XXHIGH) {
+            return XXHDPI;
+        } else if (metrics.densityDpi <= DisplayMetrics.DENSITY_XXXHIGH) {
+            return XXXHDPI;
+        } else {
+            return XXXHDPI;
         }
     }
 

@@ -40,4 +40,10 @@
 
     <!--Kol Post-->
     <string name="title_post">Pilih gambar</string>
+    <string name="empty_own_feed_title">Feed Tokomu Kosong</string>
+    <string name="empty_own_feed_subtitle">Post sesuatu untuk follower tokomu, yuk!</string>
+    <string name="empty_own_feed_button">Mulai Buat Post</string>
+    <string name="kol_post_something">Post sesuatu untuk follower tokomu, yuk!</string>
+    <string name="kol_create_post">Buat Post</string>
+    <string name="kol_add_image">Tambah Gambar</string>
 </resources>

@@ -72,4 +72,6 @@ public class GlobalNavConstant {
 
     public static final int BUYER = 11;
     public static final int SELLER = 12;
+
+    public static final int BUYER_INFO = 14;
 }

@@ -42,7 +42,7 @@
                 tools:layout_editor_absoluteY="460dp"
                 tools:visibility="gone" />
 
-            <EditText
+            <com.tokopedia.design.text.BackEditText
                 android:id="@+id/reply_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

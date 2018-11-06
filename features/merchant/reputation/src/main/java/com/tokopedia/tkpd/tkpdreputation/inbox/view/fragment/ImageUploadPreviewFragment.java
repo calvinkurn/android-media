@@ -35,6 +35,7 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.ImageUploadPreviewActivity;
@@ -47,13 +48,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageU
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -72,6 +66,7 @@ public class ImageUploadPreviewFragment extends
     private static final String ARGS_IMAGE_LIST = "ARGS_IMAGE_LIST";
     private static final String ARGS_CAMERA_FILELOC = "ARGS_CAMERA_FILELOC";
     public static final int REQUEST_CODE_IMAGE_REVIEW = 532;
+    public static final int MAX_IMAGE_LIMIT = 5;
 
     ViewPager previewImage;
     TextView submitButton;
@@ -83,10 +78,10 @@ public class ImageUploadPreviewFragment extends
     PreviewImageViewPagerAdapter viewPagerAdapter;
     int currentPosition = 0;
 
-    public static Fragment createInstance(String fileLoc, boolean isUpdate, int position) {
+    public static Fragment createInstance(ArrayList<String> fileLoc, boolean isUpdate, int position) {
         ImageUploadPreviewFragment fragment = new ImageUploadPreviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ImageUploadHandler.FILELOC, fileLoc);
+        bundle.putStringArrayList(ImageUploadHandler.FILELOC, fileLoc);
         bundle.putBoolean(ImageUploadPreviewActivity.IS_UPDATE, isUpdate);
         bundle.putInt(ImageUploadPreviewActivity.ARGS_POSITION, position);
         fragment.setArguments(bundle);
@@ -251,7 +246,11 @@ public class ImageUploadPreviewFragment extends
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
-                ,null);
+                ,new ImagePickerMultipleSelectionBuilder(
+                new ArrayList<>(),
+                null,
+                R.string.empty_desc,
+                MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
         startActivityForResult(intent, REQUEST_CODE_IMAGE_REVIEW);
     }

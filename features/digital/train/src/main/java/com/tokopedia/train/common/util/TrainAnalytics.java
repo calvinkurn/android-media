@@ -1,11 +1,16 @@
 package com.tokopedia.train.common.util;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.train.common.constant.TrainEventTracking;
+import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
+import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -15,10 +20,12 @@ import javax.inject.Inject;
 public class TrainAnalytics {
 
     private AnalyticTracker analyticTracker;
+    private TrainDateUtil trainDateUtil;
 
     @Inject
-    public TrainAnalytics(AnalyticTracker analyticTracker) {
+    public TrainAnalytics(AnalyticTracker analyticTracker, TrainDateUtil trainDateUtil) {
         this.analyticTracker = analyticTracker;
+        this.trainDateUtil = trainDateUtil;
     }
 
     public void eventChooseSingleTrip() {
@@ -78,20 +85,20 @@ public class TrainAnalytics {
     public void eventProductImpression(String scheduleId, String origin, String destination,
                                        String trainClass, String trainName) {
         Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "id", scheduleId,
-                "category", "train ticket",
-                "variant", trainClass,
-                "list", "/kereta-api"
+                TrainEventTracking.EnhanceEcommerce.NAME, trainName,
+                TrainEventTracking.EnhanceEcommerce.ID, scheduleId,
+                TrainEventTracking.EnhanceEcommerce.CATEGORY, "train ticket",
+                TrainEventTracking.EnhanceEcommerce.VARIANT, trainClass,
+                TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
         analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_VIEW,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
+                DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_VIEW,
+                        TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
+                        TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_IMPRESSIONS,
+                        TrainEventTracking.EVENT_LABEL, origin + " - " + destination + " - " + trainClass + " - " +
                                 trainName,
-                        "ecommerce", DataLayer.mapOf(
+                        TrainEventTracking.ECOMMERCE, DataLayer.mapOf(
                                 "impression", DataLayer.mapOf(
                                         "products", DataLayer.listOf(productItem))
                         )
@@ -102,23 +109,23 @@ public class TrainAnalytics {
     public void eventProductClick(String scheduleId, String origin, String destination, String trainClass,
                                   String trainName, String specialTagging) {
         Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "id", scheduleId,
-                "category", "train ticket",
-                "variant", trainClass,
-                "list", "/kereta-api"
+                TrainEventTracking.EnhanceEcommerce.NAME, trainName,
+                TrainEventTracking.EnhanceEcommerce.ID, scheduleId,
+                TrainEventTracking.EnhanceEcommerce.CATEGORY, "train ticket",
+                TrainEventTracking.EnhanceEcommerce.VARIANT, trainClass,
+                TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
         analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.PRODUCT_CLICK,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.PRODUCT_CLICK,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " +
-                                trainName + " - " + specialTagging,
-                        "ecommerce", DataLayer.mapOf("click",
+                DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_CLICK,
+                        TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
+                        TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_CLICK,
+                        TrainEventTracking.EVENT_LABEL, origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " +
+                                trainName.toLowerCase() + " - " + specialTagging.toLowerCase(),
+                        TrainEventTracking.ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
-                                                "list", "/kereta-api"),
+                                                TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"),
                                         "products", DataLayer.listOf(productItem)
                                 )
                         )
@@ -156,26 +163,26 @@ public class TrainAnalytics {
     public void eventProductDetailImpressions(String scheduleId, String origin, String destination,
                                               String trainClass, String trainName, double price) {
         Object productItem = DataLayer.mapOf(
-                "name", trainName,
-                "id", scheduleId,
-                "category", "train ticket",
-                "variant", trainClass,
-                "price", price,
-                "list", "/kereta-api"
+                TrainEventTracking.EnhanceEcommerce.NAME, trainName,
+                TrainEventTracking.EnhanceEcommerce.ID, scheduleId,
+                TrainEventTracking.EnhanceEcommerce.CATEGORY, "train ticket",
+                TrainEventTracking.EnhanceEcommerce.VARIANT, trainClass,
+                TrainEventTracking.EnhanceEcommerce.PRICE, price,
+                TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"
         );
 
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(productItem);
 
         analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.VIEW_PRODUCT,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.PRODUCT_DETAIL_IMPRESSIONS,
-                        "eventLabel", origin + " - " + destination + " - " + trainClass + " - " + trainName,
-                        "ecommerce",
+                DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.VIEW_PRODUCT,
+                        TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
+                        TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_DETAIL_IMPRESSIONS,
+                        TrainEventTracking.EVENT_LABEL, origin + " - " + destination + " - " + trainClass + " - " + trainName,
+                        TrainEventTracking.ECOMMERCE,
                         DataLayer.mapOf("detail",
                                 DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", "/kereta-api"),
+                                        DataLayer.mapOf(TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api"),
                                         "products", DataLayer.listOf(
                                                 dataLayerList.toArray(new Object[dataLayerList.size()])
                                         )
@@ -185,46 +192,64 @@ public class TrainAnalytics {
         );
     }
 
-    public void eventAddToCart(String trip,
-                               String origin, String destination,
-                               String departureScheduleId,
-                               String departureTrainClass, String departureTrainName,
-                               double departurePrice,
-                               String returnScheduleId,
-                               String returnTrainClass, String returnTrainName,
-                               double returnPrice,
-                               int numOfTotalPassenger) {
-        Object departureItem = DataLayer.mapOf(
-                "name", departureTrainName,
-                "id", departureScheduleId,
-                "category", "train ticket",
-                "variant", departureTrainClass,
-                "price", departurePrice,
-                "list", "/kereta-api",
-                "quantity", numOfTotalPassenger
-        );
 
-        Object returnItem = DataLayer.mapOf(
-                "name", returnTrainName,
-                "id", returnScheduleId,
-                "category", "train ticket",
-                "variant", returnTrainClass,
-                "price", returnPrice,
-                "list", "/kereta-api",
-                "quantity", numOfTotalPassenger
+    public void eventAddToCart(TrainScheduleViewModel scheduleViewModel, int numOfTotalPassenger) {
+        Object departureItem = buildProductEnhanceEcommerce(scheduleViewModel, numOfTotalPassenger);
+
+        List<Object> dataLayerList = new ArrayList<>();
+        dataLayerList.add(departureItem);
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
+                        TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
+                        TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
+                        TrainEventTracking.EVENT_LABEL, String.format("%s - %s - %s - %s",
+                                scheduleViewModel.getTrainName().toLowerCase(),
+                                scheduleViewModel.getOrigin().toLowerCase(),
+                                String.valueOf(trainDateUtil.getDayDiff(scheduleViewModel.getDepartureTimestamp())),
+                                String.valueOf(scheduleViewModel.getAdultFare())),
+                        TrainEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                "add", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                dataLayerList.toArray(new Object[dataLayerList.size()])
+                                        ))
+                        )
+                )
         );
+    }
+
+    private Map<String, Object> buildProductEnhanceEcommerce(TrainScheduleViewModel scheduleViewModel, int numOfTotalPassenger) {
+        return DataLayer.mapOf(
+                TrainEventTracking.EnhanceEcommerce.NAME, scheduleViewModel.getOrigin() + " - " + scheduleViewModel.getDestination(),
+                TrainEventTracking.EnhanceEcommerce.ID, scheduleViewModel.getIdSchedule(),
+                TrainEventTracking.EnhanceEcommerce.BRAND, scheduleViewModel.getTrainName(),
+                TrainEventTracking.EnhanceEcommerce.CATEGORY, "train ticket",
+                TrainEventTracking.EnhanceEcommerce.VARIANT, scheduleViewModel.getDisplayClass(),
+                TrainEventTracking.EnhanceEcommerce.PRICE, String.valueOf(scheduleViewModel.getAdultFare()),
+                TrainEventTracking.EnhanceEcommerce.LIST, "/kereta-api",
+                TrainEventTracking.EnhanceEcommerce.QUANTITY, numOfTotalPassenger
+        );
+    }
+
+    public void eventAddToCart(TrainScheduleViewModel scheduleViewModel, TrainScheduleViewModel returnScheduleViewModel, int numOfTotalPassenger) {
+        Object departureItem = buildProductEnhanceEcommerce(scheduleViewModel, numOfTotalPassenger);
+
+        Object returnItem = buildProductEnhanceEcommerce(returnScheduleViewModel, numOfTotalPassenger);
 
         List<Object> dataLayerList = new ArrayList<>();
         dataLayerList.add(departureItem);
         dataLayerList.add(returnItem);
 
         analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", TrainEventTracking.Event.ADD_TO_CART,
-                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
-                        "eventAction", TrainEventTracking.Action.ADD_TO_CART,
-                        "eventLabel", origin + " - " + destination + " - " +
-                                departureTrainClass + " - " + departureTrainName + " - " + trip,
-                        "ecommerce", DataLayer.mapOf(
+                DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.ADD_TO_CART,
+                        TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
+                        TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
+                        TrainEventTracking.EVENT_LABEL, String.format("%s - %s - %s - %s",
+                                (scheduleViewModel.getTrainName().toLowerCase() + ", " + returnScheduleViewModel.getTrainName().toLowerCase()),
+                                (scheduleViewModel.getOrigin().toLowerCase() + ", " + returnScheduleViewModel.getOrigin().toLowerCase()),
+                                (trainDateUtil.getDayDiff(scheduleViewModel.getDepartureTimestamp()) + ", " + trainDateUtil.getDayDiff(returnScheduleViewModel.getDepartureTimestamp())),
+                                (String.valueOf(scheduleViewModel.getAdultFare()) + ", " + String.valueOf(returnScheduleViewModel.getAdultFare()))),
+                        TrainEventTracking.ECOMMERCE, DataLayer.mapOf(
                                 "add", DataLayer.mapOf(
                                         "products", DataLayer.listOf(
                                                 dataLayerList.toArray(new Object[dataLayerList.size()])
@@ -236,16 +261,16 @@ public class TrainAnalytics {
 
     public void eventClickDetail(String origin, String destination, String trainClass, String trainName) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_DETAIL,
-                origin + " - " + destination + " - " + trainClass + " - " + trainName
+                origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
         );
     }
 
     public void eventClickNextOnCustomersPage() {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_NEXT_ON_CUSTOMERS_PAGE,
                 ""
@@ -254,7 +279,7 @@ public class TrainAnalytics {
 
     public void eventClickUseVoucherCode(String voucherCode) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_USE_VOUCHER_CODE,
                 voucherCode
@@ -263,30 +288,47 @@ public class TrainAnalytics {
 
     public void eventVoucherSuccess(String successMessage) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_SUCCESS,
-                successMessage
+                successMessage.toLowerCase()
         );
     }
 
     public void eventVoucherError(String errorMessage) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_ERROR,
-                errorMessage
+                errorMessage.toLowerCase()
         );
     }
 
     public void eventProceedToPayment(String origin, String destination, String trainClass,
                                       String trainName) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.PROCEED_TO_PAYMENT,
-                origin + " - " + destination + " - " + trainClass + " - " + trainName
+                origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
         );
     }
 
+    public void eventProceedToPayment(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
+        analyticTracker.sendEventTracking(
+                TrainEventTracking.Event.KAI_CLICK,
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.PROCEED_TO_PAYMENT,
+                buildRoundTripLabel(departureTripViewModel, returnTripViewModel)
+        );
+    }
+
+    @NonNull
+    private String buildRoundTripLabel(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
+        return String.format("%s, %s - %s, %s - %s, %s - %s, %s",
+                departureTripViewModel.getOriginStationCode().toLowerCase(), returnTripViewModel.getOriginStationCode().toLowerCase(),
+                departureTripViewModel.getDestinationStationCode().toLowerCase(), returnTripViewModel.getDestinationStationCode().toLowerCase(),
+                departureTripViewModel.getTrainClass().toLowerCase(), returnTripViewModel.getTrainClass().toLowerCase(),
+                departureTripViewModel.getTrainName().toLowerCase(), returnTripViewModel.getTrainName().toLowerCase());
+    }
 }

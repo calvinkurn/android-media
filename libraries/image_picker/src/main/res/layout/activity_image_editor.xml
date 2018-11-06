@@ -83,10 +83,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+                    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                         android:id="@+id/view_pager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        app:can_swipe="false"/>
 
                     <ProgressBar
                         android:id="@+id/crop_progressbar"

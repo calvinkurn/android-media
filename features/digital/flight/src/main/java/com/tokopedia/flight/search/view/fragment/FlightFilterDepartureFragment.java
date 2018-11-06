@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.flight.search.view.adapter.FlightFilterDepartureTimeAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;

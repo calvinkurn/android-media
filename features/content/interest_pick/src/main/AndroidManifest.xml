@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.interestpick">
+   <application>
+       <activity android:name=".view.activity.InterestPickActivity"
+           android:screenOrientation="portrait"
+           android:windowSoftInputMode="stateAlwaysHidden"
+           android:label="@string/interest_title"
+           android:theme="@style/Theme.White"/>
+   </application>
+</manifest>

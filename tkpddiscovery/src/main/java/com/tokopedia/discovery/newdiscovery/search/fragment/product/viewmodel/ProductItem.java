@@ -41,6 +41,9 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private boolean isOfficial;
     private String topLabel;
     private String bottomLabel;
+    private String productWishlistUrl;
+    private int categoryID;
+    private String categoryName;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -230,6 +233,22 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.bottomLabel = bottomLabel;
     }
 
+    public int getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public ProductItem() {
     }
 
@@ -304,6 +323,9 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeByte((byte) (isOfficial ? 0x01 : 0x00));
         dest.writeString(topLabel);
         dest.writeString(bottomLabel);
+        dest.writeString(productWishlistUrl);
+        dest.writeInt(categoryID);
+        dest.writeString(categoryName);
     }
 
     protected ProductItem(Parcel in) {
@@ -340,7 +362,9 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         isOfficial = in.readByte() != 0x00;
         topLabel = in.readString();
         bottomLabel = in.readString();
-
+        productWishlistUrl = in.readString();
+        categoryID = in.readInt();
+        categoryName = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -354,4 +378,12 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
             return new ProductItem[size];
         }
     };
+
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
+    }
+
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
+    }
 }

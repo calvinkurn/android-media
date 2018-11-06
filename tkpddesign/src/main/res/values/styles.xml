@@ -59,6 +59,11 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
+    <style name="RadioButton.Big">
+        <item name="android:padding">@dimen/dp_4</item>
+        <item name="android:button">@drawable/selector_radiobutton_big</item>
+    </style>
+
     <style name="Button" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -107,6 +112,25 @@
     <style name="Button.Submit.White.Border">
         <item name="android:background">@drawable/bg_button_white_border</item>
         <item name="android:textColor">@color/font_black_secondary_54</item>
+    </style>
+
+    <style name="Button.Submit.White.Border.Full">
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+    </style>
+
+    <style name="Button.Submit.White.Border.Green">
+        <item name="android:background">@drawable/bg_button_white_border</item>
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="Button.Submit.White.Border.Green.Full">
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginTop">0dp</item>
     </style>
 
     <style name="ImageButton">
@@ -234,6 +258,14 @@
         <item name="android:isIndicator">true</item>
     </style>
 
+    <style name="RatingBar.XXL" parent="Base.Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/tkpd_rating_bar_xxl</item>
+        <item name="android:stepSize">1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:minHeight">@dimen/dp_44</item>
+        <item name="android:maxHeight">@dimen/dp_44</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.AppBarOverlayWhite" parent="ThemeOverlay.AppCompat.Light" />
@@ -247,4 +279,12 @@
         <item name="android:background">@color/white</item>
     </style>
 
+    <style name="RatingBar.Micro" parent="Base.Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/tkpd_rating_bar_micro</item>
+        <item name="android:stepSize">0.1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:isIndicator">true</item>
+        <item name="android:minHeight">11dp</item>
+        <item name="android:maxHeight">11dp</item>
+    </style>
 </resources>

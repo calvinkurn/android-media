@@ -3,6 +3,8 @@ package com.tokopedia.feedplus;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -32,4 +34,23 @@ public interface FeedModuleRouter {
                            String name, String price);
 
     void openRedirectUrl(Activity activity, String url);
+
+    boolean isEnableInterestPick();
+
+    void actionAppLink(Context context, String redirectUrl);
+
+    Intent getBrandsWebViewIntent(Context context, String url);
+
+    void goToProductDetailForResult(Fragment fragment, String productId,
+                                    int adapterPosition,
+                                    int requestCode);
+
+    void shareFeed(Activity activity, String detailId, String url, String title, String imageUrl,
+                   String description);
+
+    Intent getAddToCartIntent(Context context, String productId, String price, String imageSource);
+
+    void startTrace(String traceName);
+
+    void stopTrace(String traceName);
 }

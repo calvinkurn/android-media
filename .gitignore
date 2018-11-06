@@ -60,3 +60,7 @@ buckw
 BUCK
 .buckconfig
 .settings
+.buckjavaargs
+
+# NDK
+.externalNativeBuild

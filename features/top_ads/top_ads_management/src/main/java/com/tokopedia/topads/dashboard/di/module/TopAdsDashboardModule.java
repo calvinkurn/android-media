@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
@@ -167,6 +168,12 @@ public class TopAdsDashboardModule {
     @Provides
     public DeleteTopAdsTotalAdUseCase provideDeleteTopAdsTotalAdUseCase(){
         return new DeleteTopAdsTotalAdUseCase();
+    }
+
+    @TopAdsDashboardScope
+    @Provides
+    public GraphqlUseCase provideGraphqlUseCase(){
+        return new GraphqlUseCase();
     }
 
 }

@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
 
 /**

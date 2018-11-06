@@ -4,18 +4,17 @@ import android.app.Dialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LobItem;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 public class StartPurchaseBottomSheet extends BottomSheets {
@@ -33,7 +32,8 @@ public class StartPurchaseBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight(screenHeight / 3);
+        if (getBottomSheetBehavior() != null)
+            getBottomSheetBehavior().setPeekHeight(screenHeight / 3);
     }
 
 
@@ -62,12 +62,36 @@ public class StartPurchaseBottomSheet extends BottomSheets {
             ImageView icon = itemView.findViewById(R.id.img_lob);
             if (item.getText().equalsIgnoreCase("Beli")) {
                 icon.setImageResource(R.drawable.ic_tp_buy);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BELI,
+                        "");
             } else if (item.getText().equalsIgnoreCase("Kereta")) {
                 icon.setImageResource(R.drawable.ic_tp_train);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_KARETA,
+                        "");
             } else if (item.getText().equalsIgnoreCase("Pesawat")) {
                 icon.setImageResource(R.drawable.ic_tp_pesawat);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_PESAWAT,
+                        "");
             } else if (item.getText().equalsIgnoreCase("Bayar")) {
                 icon.setImageResource(R.drawable.ic_tp_bayar);
+
+                AnalyticsTrackerUtil.sendEvent(view.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_BAYAR,
+                        "");
             }
         }
     }
@@ -79,5 +103,16 @@ public class StartPurchaseBottomSheet extends BottomSheets {
 
     public void setData(LobDetails lobDetails) {
         this.mLobDetails = lobDetails;
+    }
+
+    @Override
+    protected void onCloseButtonClick() {
+        super.onCloseButtonClick();
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
+                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL);
     }
 }

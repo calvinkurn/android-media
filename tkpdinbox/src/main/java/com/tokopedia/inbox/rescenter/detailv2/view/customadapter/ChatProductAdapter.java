@@ -47,7 +47,11 @@ public class ChatProductAdapter extends RecyclerView.Adapter<ChatProductAdapter.
     @Override
     public void onBindViewHolder(Holder holder, final int position) {
         final ConversationProductDomain product = productList.get(position);
-        ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
+
+        if (!product.getImage().isEmpty()) {
+            ImageHandler.LoadImage(holder.ivImage, product.getImage().get(0).getThumb());
+        }
+
         holder.tvMore.setVisibility(View.GONE);
         if (maxShowCount - 1 == position && maxShowCount < productList.size()) {
             holder.tvMore.setVisibility(View.VISIBLE);

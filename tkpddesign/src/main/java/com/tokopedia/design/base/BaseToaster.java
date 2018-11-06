@@ -1,5 +1,6 @@
 package com.tokopedia.design.base;
 
+import android.app.Activity;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
@@ -66,5 +67,9 @@ public class BaseToaster {
         public Snackbar build() {
             return snackbar;
         }
+    }
+
+    public static View getContentView(Activity activity) {
+        return activity.findViewById(android.R.id.content);
     }
 }

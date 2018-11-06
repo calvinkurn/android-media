@@ -33,7 +33,6 @@ public class ShipmentDataRequestConverter {
 
     public ShipmentAdapter.RequestData generateRequestData(
             List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
-
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
@@ -111,6 +110,10 @@ public class ShipmentDataRequestConverter {
                     .shippingInfo(new ShippingInfoCheckoutRequest.Builder()
                             .shippingId(courierItemData.getShipperId())
                             .spId(courierItemData.getShipperProductId())
+                            .ratesId(
+                                shipmentDetailData.getShippingCourierViewModels() != null ?
+                                shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
+                            )
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
@@ -118,7 +121,7 @@ public class ShipmentDataRequestConverter {
                     .shopId(shipmentCartItemModel.getShopId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
-            if (shipmentDetailData.getUseDropshipper()) {
+            if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)
                         .dropshipData(new DropshipDataCheckoutRequest.Builder()
                                 .name(shipmentDetailData.getDropshipperName())
@@ -152,7 +155,7 @@ public class ShipmentDataRequestConverter {
                                     .spId(courierItemData.getShipperProductId())
                                     .build());
 
-            if (shipmentDetailData.getUseDropshipper()) {
+            if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckPromoBuilder.dropshipData(new CheckPromoCodeCartShipmentRequest.DropshipData.Builder()
                         .name(shipmentDetailData.getDropshipperName())
                         .telpNo(shipmentDetailData.getDropshipperPhone())

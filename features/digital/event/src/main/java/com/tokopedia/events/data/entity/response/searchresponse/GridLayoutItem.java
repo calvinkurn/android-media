@@ -1,865 +1,890 @@
 package com.tokopedia.events.data.entity.response.searchresponse;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GridLayoutItem{
+public class GridLayoutItem {
 
-	@SerializedName("seo_url")
-	private String seoUrl;
+    @SerializedName("seo_url")
+    private String seoUrl;
 
-	@SerializedName("rating")
-	private int rating;
+    @SerializedName("rating")
+    private int rating;
 
-	@SerializedName("use_pdf")
-	private int usePdf;
+    @SerializedName("use_pdf")
+    private int usePdf;
 
-	@SerializedName("search_tags")
-	private String searchTags;
+    @SerializedName("search_tags")
+    private String searchTags;
 
-	@SerializedName("min_start_time")
-	private String minStartTime;
+    @SerializedName("min_start_time")
+    private String minStartTime;
 
-	@SerializedName("image_app")
-	private String imageApp;
+    @SerializedName("image_app")
+    private String imageApp;
 
-	@SerializedName("offer_text")
-	private String offerText;
+    @SerializedName("offer_text")
+    private String offerText;
 
-	@SerializedName("has_seat_layout")
-	private int hasSeatLayout;
+    @SerializedName("has_seat_layout")
+    private int hasSeatLayout;
 
-	@SerializedName("sale_start_time")
-	private String saleStartTime;
+    @SerializedName("sale_start_time")
+    private String saleStartTime;
 
-	@SerializedName("id")
-	private int id;
+    @SerializedName("id")
+    private int id;
 
-	@SerializedName("thumbnail_app")
-	private String thumbnailApp;
+    @SerializedName("thumbnail_app")
+    private String thumbnailApp;
 
-	@SerializedName("is_searchable")
-	private int isSearchable;
+    @SerializedName("is_searchable")
+    private int isSearchable;
 
-	@SerializedName("custom_labels")
-	private String customLabels;
+    @SerializedName("custom_labels")
+    private String customLabels;
 
-	@SerializedName("thumbs_down")
-	private int thumbsDown;
+    @SerializedName("thumbs_down")
+    private int thumbsDown;
 
-	@SerializedName("meta_title")
-	private String metaTitle;
+    @SerializedName("meta_title")
+    private String metaTitle;
 
-	@SerializedName("tnc")
-	private String tnc;
+    @SerializedName("tnc")
+    private String tnc;
 
-	@SerializedName("long_rich_desc")
-	private String longRichDesc;
+    @SerializedName("long_rich_desc")
+    private String longRichDesc;
 
-	@SerializedName("display_name")
-	private String displayName;
+    @SerializedName("display_name")
+    private String displayName;
 
-	@SerializedName("priority")
-	private int priority;
+    @SerializedName("priority")
+    private int priority;
 
-	@SerializedName("city_ids")
-	private String cityIds;
+    @SerializedName("city_ids")
+    private String cityIds;
 
-	@SerializedName("display_tags")
-	private String displayTags;
+    @SerializedName("display_tags")
+    private String displayTags;
 
-	@SerializedName("meta_description")
-	private String metaDescription;
+    @SerializedName("meta_description")
+    private String metaDescription;
 
-	@SerializedName("parent_id")
-	private int parentId;
+    @SerializedName("parent_id")
+    private int parentId;
 
-	@SerializedName("custom_text_1")
-	private int customText1;
+    @SerializedName("custom_text_1")
+    private int customText1;
 
-	@SerializedName("provider_id")
-	private int providerId;
+    @SerializedName("provider_id")
+    private int providerId;
 
-	@SerializedName("child_category_ids")
-	private String childCategoryIds;
+    @SerializedName("child_category_ids")
+    private String childCategoryIds;
 
-	@SerializedName("SeatChartTypeId")
-	private int seatChartTypeId;
+    @SerializedName("SeatChartTypeId")
+    private int seatChartTypeId;
 
-	@SerializedName("custom_text_3")
-	private String customText3;
+    @SerializedName("custom_text_3")
+    private String customText3;
 
-	@SerializedName("short_desc")
-	private String shortDesc;
+    @SerializedName("short_desc")
+    private String shortDesc;
 
-	@SerializedName("custom_text_2")
-	private String customText2;
+    @SerializedName("custom_text_2")
+    private String customText2;
 
-	@SerializedName("promotion_text")
-	private String promotionText;
+    @SerializedName("promotion_text")
+    private String promotionText;
 
-	@SerializedName("status")
-	private int status;
+    @SerializedName("status")
+    private int status;
 
-	@SerializedName("convenience_fee")
-	private int convenienceFee;
+    @SerializedName("convenience_fee")
+    private int convenienceFee;
 
-	@SerializedName("provider_product_name")
-	private String providerProductName;
+    @SerializedName("provider_product_name")
+    private String providerProductName;
 
-	@SerializedName("media")
-	private Object media;
+    @SerializedName("media")
+    private Object media;
 
-	@SerializedName("title")
-	private String title;
+    @SerializedName("title")
+    private String title;
 
-	@SerializedName("meta_keywords")
-	private String metaKeywords;
+    @SerializedName("meta_keywords")
+    private String metaKeywords;
 
-	@SerializedName("sold_quantity")
-	private int soldQuantity;
+    @SerializedName("sold_quantity")
+    private int soldQuantity;
 
-	@SerializedName("duration")
-	private String duration;
+    @SerializedName("duration")
+    private String duration;
 
-	@SerializedName("thumbnail_web")
-	private String thumbnailWeb;
+    @SerializedName("thumbnail_web")
+    private String thumbnailWeb;
 
-	@SerializedName("sale_end_date")
-	private int saleEndDate;
+    @SerializedName("sale_end_date")
+    private int saleEndDate;
 
-	@SerializedName("city_name")
-	private String cityName;
+    @SerializedName("city_name")
+    private String cityName;
 
-	@SerializedName("category_id")
-	private int categoryId;
+    @SerializedName("category_id")
+    private int categoryId;
 
-	@SerializedName("autocode")
-	private String autocode;
+    @SerializedName("autocode")
+    private String autocode;
 
-	@SerializedName("provider_product_id")
-	private String providerProductId;
+    @SerializedName("provider_product_id")
+    private String providerProductId;
 
-	@SerializedName("schedules")
-	private Object schedules;
+    @SerializedName("schedules")
+    private Object schedules;
 
-	@SerializedName("genre")
-	private String genre;
+    @SerializedName("genre")
+    private String genre;
 
-	@SerializedName("max_end_time")
-	private String maxEndTime;
+    @SerializedName("max_end_time")
+    private String maxEndTime;
 
-	@SerializedName("image_web")
-	private String imageWeb;
+    @SerializedName("image_web")
+    private String imageWeb;
 
-	@SerializedName("sell_rate")
-	private int sellRate;
+    @SerializedName("sell_rate")
+    private int sellRate;
 
-	@SerializedName("redirect")
-	private int redirect;
+    @SerializedName("redirect")
+    private int redirect;
 
-	@SerializedName("date_range")
-	private boolean dateRange;
+    @SerializedName("date_range")
+    private boolean dateRange;
 
-	@SerializedName("max_end_date")
-	private int maxEndDate;
+    @SerializedName("max_end_date")
+    private int maxEndDate;
 
-	@SerializedName("quantity")
-	private int quantity;
+    @SerializedName("quantity")
+    private int quantity;
 
-	@SerializedName("mrp")
-	private int mrp;
+    @SerializedName("mrp")
+    private int mrp;
 
-	@SerializedName("sale_start_date")
-	private int saleStartDate;
+    @SerializedName("sale_start_date")
+    private int saleStartDate;
 
-	@SerializedName("provider_product_code")
-	private String providerProductCode;
+    @SerializedName("provider_product_code")
+    private String providerProductCode;
 
-	@SerializedName("min_start_date")
-	private int minStartDate;
+    @SerializedName("min_start_date")
+    private int minStartDate;
 
-	@SerializedName("thumbs_up")
-	private int thumbsUp;
+    @SerializedName("thumbs_up")
+    private int thumbsUp;
 
-	@SerializedName("url")
-	private String url;
+    @SerializedName("url")
+    private String url;
 
-	@SerializedName("is_top")
-	private int isTop;
+    @SerializedName("is_top")
+    private int isTop;
 
-	@SerializedName("salient_features")
-	private String salientFeatures;
+    @SerializedName("salient_features")
+    private String salientFeatures;
 
-	@SerializedName("is_food_available")
-	private int isFoodAvailable;
+    @SerializedName("is_food_available")
+    private int isFoodAvailable;
 
-	@SerializedName("action_text")
-	private String actionText;
+    @SerializedName("action_text")
+    private String actionText;
 
-	@SerializedName("form")
-	private int form;
+    @SerializedName("form")
+    private int form;
 
-	@SerializedName("sale_end_time")
-	private String saleEndTime;
+    @SerializedName("sale_end_time")
+    private String saleEndTime;
 
-	@SerializedName("censor")
-	private String censor;
+    @SerializedName("censor")
+    private String censor;
 
-	@SerializedName("sales_price")
-	private int salesPrice;
+    @SerializedName("sales_price")
+    private int salesPrice;
 
-	@SerializedName("is_featured")
-	private int isFeatured;
+    @SerializedName("is_featured")
+    private int isFeatured;
 
-	@SerializedName("is_promo")
-	private int isPromo;
+    @SerializedName("is_promo")
+    private int isPromo;
 
-	@SerializedName("forms")
-	private Object forms;
+    @SerializedName("likes")
+    @Expose
+    private int likes;
 
-	public void setSeoUrl(String seoUrl){
-		this.seoUrl = seoUrl;
-	}
+    @SerializedName("is_liked")
+    @Expose
+    private boolean isLiked;
 
-	public String getSeoUrl(){
-		return seoUrl;
-	}
+    @SerializedName("forms")
+    private Object forms;
 
-	public void setRating(int rating){
-		this.rating = rating;
-	}
+    public void setSeoUrl(String seoUrl) {
+        this.seoUrl = seoUrl;
+    }
 
-	public int getRating(){
-		return rating;
-	}
+    public String getSeoUrl() {
+        return seoUrl;
+    }
 
-	public void setUsePdf(int usePdf){
-		this.usePdf = usePdf;
-	}
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
-	public int getUsePdf(){
-		return usePdf;
-	}
+    public int getLikes() {
+        return likes;
+    }
 
-	public void setSearchTags(String searchTags){
-		this.searchTags = searchTags;
-	}
+    public boolean isLiked() {
+        return isLiked;
+    }
 
-	public String getSearchTags(){
-		return searchTags;
-	}
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
 
-	public void setMinStartTime(String minStartTime){
-		this.minStartTime = minStartTime;
-	}
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
-	public String getMinStartTime(){
-		return minStartTime;
-	}
+    public int getRating() {
+        return rating;
+    }
 
-	public void setImageApp(String imageApp){
-		this.imageApp = imageApp;
-	}
+    public void setUsePdf(int usePdf) {
+        this.usePdf = usePdf;
+    }
 
-	public String getImageApp(){
-		return imageApp;
-	}
+    public int getUsePdf() {
+        return usePdf;
+    }
 
-	public void setOfferText(String offerText){
-		this.offerText = offerText;
-	}
+    public void setSearchTags(String searchTags) {
+        this.searchTags = searchTags;
+    }
 
-	public String getOfferText(){
-		return offerText;
-	}
+    public String getSearchTags() {
+        return searchTags;
+    }
 
-	public void setHasSeatLayout(int hasSeatLayout){
-		this.hasSeatLayout = hasSeatLayout;
-	}
+    public void setMinStartTime(String minStartTime) {
+        this.minStartTime = minStartTime;
+    }
 
-	public int getHasSeatLayout(){
-		return hasSeatLayout;
-	}
+    public String getMinStartTime() {
+        return minStartTime;
+    }
 
-	public void setSaleStartTime(String saleStartTime){
-		this.saleStartTime = saleStartTime;
-	}
+    public void setImageApp(String imageApp) {
+        this.imageApp = imageApp;
+    }
 
-	public String getSaleStartTime(){
-		return saleStartTime;
-	}
+    public String getImageApp() {
+        return imageApp;
+    }
 
-	public void setId(int id){
-		this.id = id;
-	}
+    public void setOfferText(String offerText) {
+        this.offerText = offerText;
+    }
 
-	public int getId(){
-		return id;
-	}
+    public String getOfferText() {
+        return offerText;
+    }
 
-	public void setThumbnailApp(String thumbnailApp){
-		this.thumbnailApp = thumbnailApp;
-	}
+    public void setHasSeatLayout(int hasSeatLayout) {
+        this.hasSeatLayout = hasSeatLayout;
+    }
 
-	public String getThumbnailApp(){
-		return thumbnailApp;
-	}
+    public int getHasSeatLayout() {
+        return hasSeatLayout;
+    }
 
-	public void setIsSearchable(int isSearchable){
-		this.isSearchable = isSearchable;
-	}
+    public void setSaleStartTime(String saleStartTime) {
+        this.saleStartTime = saleStartTime;
+    }
 
-	public int getIsSearchable(){
-		return isSearchable;
-	}
+    public String getSaleStartTime() {
+        return saleStartTime;
+    }
 
-	public void setCustomLabels(String customLabels){
-		this.customLabels = customLabels;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getCustomLabels(){
-		return customLabels;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setThumbsDown(int thumbsDown){
-		this.thumbsDown = thumbsDown;
-	}
+    public void setThumbnailApp(String thumbnailApp) {
+        this.thumbnailApp = thumbnailApp;
+    }
 
-	public int getThumbsDown(){
-		return thumbsDown;
-	}
+    public String getThumbnailApp() {
+        return thumbnailApp;
+    }
 
-	public void setMetaTitle(String metaTitle){
-		this.metaTitle = metaTitle;
-	}
+    public void setIsSearchable(int isSearchable) {
+        this.isSearchable = isSearchable;
+    }
 
-	public String getMetaTitle(){
-		return metaTitle;
-	}
+    public int getIsSearchable() {
+        return isSearchable;
+    }
 
-	public void setTnc(String tnc){
-		this.tnc = tnc;
-	}
+    public void setCustomLabels(String customLabels) {
+        this.customLabels = customLabels;
+    }
 
-	public String getTnc(){
-		return tnc;
-	}
+    public String getCustomLabels() {
+        return customLabels;
+    }
 
-	public void setLongRichDesc(String longRichDesc){
-		this.longRichDesc = longRichDesc;
-	}
+    public void setThumbsDown(int thumbsDown) {
+        this.thumbsDown = thumbsDown;
+    }
 
-	public String getLongRichDesc(){
-		return longRichDesc;
-	}
+    public int getThumbsDown() {
+        return thumbsDown;
+    }
 
-	public void setDisplayName(String displayName){
-		this.displayName = displayName;
-	}
+    public void setMetaTitle(String metaTitle) {
+        this.metaTitle = metaTitle;
+    }
 
-	public String getDisplayName(){
-		return displayName;
-	}
+    public String getMetaTitle() {
+        return metaTitle;
+    }
 
-	public void setPriority(int priority){
-		this.priority = priority;
-	}
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
 
-	public int getPriority(){
-		return priority;
-	}
+    public String getTnc() {
+        return tnc;
+    }
 
-	public void setCityIds(String cityIds){
-		this.cityIds = cityIds;
-	}
+    public void setLongRichDesc(String longRichDesc) {
+        this.longRichDesc = longRichDesc;
+    }
 
-	public String getCityIds(){
-		return cityIds;
-	}
+    public String getLongRichDesc() {
+        return longRichDesc;
+    }
 
-	public void setDisplayTags(String displayTags){
-		this.displayTags = displayTags;
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-	public String getDisplayTags(){
-		return displayTags;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public void setMetaDescription(String metaDescription){
-		this.metaDescription = metaDescription;
-	}
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
-	public String getMetaDescription(){
-		return metaDescription;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	public void setParentId(int parentId){
-		this.parentId = parentId;
-	}
+    public void setCityIds(String cityIds) {
+        this.cityIds = cityIds;
+    }
 
-	public int getParentId(){
-		return parentId;
-	}
+    public String getCityIds() {
+        return cityIds;
+    }
 
-	public void setCustomText1(int customText1){
-		this.customText1 = customText1;
-	}
+    public void setDisplayTags(String displayTags) {
+        this.displayTags = displayTags;
+    }
 
-	public int getCustomText1(){
-		return customText1;
-	}
+    public String getDisplayTags() {
+        return displayTags;
+    }
 
-	public void setProviderId(int providerId){
-		this.providerId = providerId;
-	}
+    public void setMetaDescription(String metaDescription) {
+        this.metaDescription = metaDescription;
+    }
 
-	public int getProviderId(){
-		return providerId;
-	}
+    public String getMetaDescription() {
+        return metaDescription;
+    }
 
-	public void setChildCategoryIds(String childCategoryIds){
-		this.childCategoryIds = childCategoryIds;
-	}
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
 
-	public String getChildCategoryIds(){
-		return childCategoryIds;
-	}
+    public int getParentId() {
+        return parentId;
+    }
 
-	public void setSeatChartTypeId(int seatChartTypeId){
-		this.seatChartTypeId = seatChartTypeId;
-	}
+    public void setCustomText1(int customText1) {
+        this.customText1 = customText1;
+    }
 
-	public int getSeatChartTypeId(){
-		return seatChartTypeId;
-	}
+    public int getCustomText1() {
+        return customText1;
+    }
 
-	public void setCustomText3(String customText3){
-		this.customText3 = customText3;
-	}
+    public void setProviderId(int providerId) {
+        this.providerId = providerId;
+    }
 
-	public String getCustomText3(){
-		return customText3;
-	}
+    public int getProviderId() {
+        return providerId;
+    }
 
-	public void setShortDesc(String shortDesc){
-		this.shortDesc = shortDesc;
-	}
+    public void setChildCategoryIds(String childCategoryIds) {
+        this.childCategoryIds = childCategoryIds;
+    }
 
-	public String getShortDesc(){
-		return shortDesc;
-	}
+    public String getChildCategoryIds() {
+        return childCategoryIds;
+    }
 
-	public void setCustomText2(String customText2){
-		this.customText2 = customText2;
-	}
+    public void setSeatChartTypeId(int seatChartTypeId) {
+        this.seatChartTypeId = seatChartTypeId;
+    }
 
-	public String getCustomText2(){
-		return customText2;
-	}
+    public int getSeatChartTypeId() {
+        return seatChartTypeId;
+    }
 
-	public void setPromotionText(String promotionText){
-		this.promotionText = promotionText;
-	}
+    public void setCustomText3(String customText3) {
+        this.customText3 = customText3;
+    }
 
-	public String getPromotionText(){
-		return promotionText;
-	}
+    public String getCustomText3() {
+        return customText3;
+    }
 
-	public void setStatus(int status){
-		this.status = status;
-	}
+    public void setShortDesc(String shortDesc) {
+        this.shortDesc = shortDesc;
+    }
 
-	public int getStatus(){
-		return status;
-	}
+    public String getShortDesc() {
+        return shortDesc;
+    }
 
-	public void setConvenienceFee(int convenienceFee){
-		this.convenienceFee = convenienceFee;
-	}
+    public void setCustomText2(String customText2) {
+        this.customText2 = customText2;
+    }
 
-	public int getConvenienceFee(){
-		return convenienceFee;
-	}
+    public String getCustomText2() {
+        return customText2;
+    }
 
-	public void setProviderProductName(String providerProductName){
-		this.providerProductName = providerProductName;
-	}
+    public void setPromotionText(String promotionText) {
+        this.promotionText = promotionText;
+    }
 
-	public String getProviderProductName(){
-		return providerProductName;
-	}
+    public String getPromotionText() {
+        return promotionText;
+    }
 
-	public void setMedia(Object media){
-		this.media = media;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public Object getMedia(){
-		return media;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public void setTitle(String title){
-		this.title = title;
-	}
+    public void setConvenienceFee(int convenienceFee) {
+        this.convenienceFee = convenienceFee;
+    }
 
-	public String getTitle(){
-		return title;
-	}
+    public int getConvenienceFee() {
+        return convenienceFee;
+    }
 
-	public void setMetaKeywords(String metaKeywords){
-		this.metaKeywords = metaKeywords;
-	}
+    public void setProviderProductName(String providerProductName) {
+        this.providerProductName = providerProductName;
+    }
 
-	public String getMetaKeywords(){
-		return metaKeywords;
-	}
+    public String getProviderProductName() {
+        return providerProductName;
+    }
 
-	public void setSoldQuantity(int soldQuantity){
-		this.soldQuantity = soldQuantity;
-	}
+    public void setMedia(Object media) {
+        this.media = media;
+    }
 
-	public int getSoldQuantity(){
-		return soldQuantity;
-	}
+    public Object getMedia() {
+        return media;
+    }
 
-	public void setDuration(String duration){
-		this.duration = duration;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getDuration(){
-		return duration;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setThumbnailWeb(String thumbnailWeb){
-		this.thumbnailWeb = thumbnailWeb;
-	}
+    public void setMetaKeywords(String metaKeywords) {
+        this.metaKeywords = metaKeywords;
+    }
 
-	public String getThumbnailWeb(){
-		return thumbnailWeb;
-	}
+    public String getMetaKeywords() {
+        return metaKeywords;
+    }
 
-	public void setSaleEndDate(int saleEndDate){
-		this.saleEndDate = saleEndDate;
-	}
+    public void setSoldQuantity(int soldQuantity) {
+        this.soldQuantity = soldQuantity;
+    }
 
-	public int getSaleEndDate(){
-		return saleEndDate;
-	}
+    public int getSoldQuantity() {
+        return soldQuantity;
+    }
 
-	public void setCityName(String cityName){
-		this.cityName = cityName;
-	}
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
-	public String getCityName(){
-		return cityName;
-	}
+    public String getDuration() {
+        return duration;
+    }
 
-	public void setCategoryId(int categoryId){
-		this.categoryId = categoryId;
-	}
+    public void setThumbnailWeb(String thumbnailWeb) {
+        this.thumbnailWeb = thumbnailWeb;
+    }
 
-	public int getCategoryId(){
-		return categoryId;
-	}
+    public String getThumbnailWeb() {
+        return thumbnailWeb;
+    }
 
-	public void setAutocode(String autocode){
-		this.autocode = autocode;
-	}
+    public void setSaleEndDate(int saleEndDate) {
+        this.saleEndDate = saleEndDate;
+    }
 
-	public String getAutocode(){
-		return autocode;
-	}
+    public int getSaleEndDate() {
+        return saleEndDate;
+    }
 
-	public void setProviderProductId(String providerProductId){
-		this.providerProductId = providerProductId;
-	}
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 
-	public String getProviderProductId(){
-		return providerProductId;
-	}
+    public String getCityName() {
+        return cityName;
+    }
 
-	public void setSchedules(Object schedules){
-		this.schedules = schedules;
-	}
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
-	public Object getSchedules(){
-		return schedules;
-	}
+    public int getCategoryId() {
+        return categoryId;
+    }
 
-	public void setGenre(String genre){
-		this.genre = genre;
-	}
+    public void setAutocode(String autocode) {
+        this.autocode = autocode;
+    }
 
-	public String getGenre(){
-		return genre;
-	}
+    public String getAutocode() {
+        return autocode;
+    }
 
-	public void setMaxEndTime(String maxEndTime){
-		this.maxEndTime = maxEndTime;
-	}
+    public void setProviderProductId(String providerProductId) {
+        this.providerProductId = providerProductId;
+    }
 
-	public String getMaxEndTime(){
-		return maxEndTime;
-	}
+    public String getProviderProductId() {
+        return providerProductId;
+    }
 
-	public void setImageWeb(String imageWeb){
-		this.imageWeb = imageWeb;
-	}
+    public void setSchedules(Object schedules) {
+        this.schedules = schedules;
+    }
 
-	public String getImageWeb(){
-		return imageWeb;
-	}
+    public Object getSchedules() {
+        return schedules;
+    }
 
-	public void setSellRate(int sellRate){
-		this.sellRate = sellRate;
-	}
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 
-	public int getSellRate(){
-		return sellRate;
-	}
+    public String getGenre() {
+        return genre;
+    }
 
-	public void setRedirect(int redirect){
-		this.redirect = redirect;
-	}
+    public void setMaxEndTime(String maxEndTime) {
+        this.maxEndTime = maxEndTime;
+    }
 
-	public int getRedirect(){
-		return redirect;
-	}
+    public String getMaxEndTime() {
+        return maxEndTime;
+    }
 
-	public void setDateRange(boolean dateRange){
-		this.dateRange = dateRange;
-	}
+    public void setImageWeb(String imageWeb) {
+        this.imageWeb = imageWeb;
+    }
 
-	public boolean isDateRange(){
-		return dateRange;
-	}
+    public String getImageWeb() {
+        return imageWeb;
+    }
 
-	public void setMaxEndDate(int maxEndDate){
-		this.maxEndDate = maxEndDate;
-	}
+    public void setSellRate(int sellRate) {
+        this.sellRate = sellRate;
+    }
 
-	public int getMaxEndDate(){
-		return maxEndDate;
-	}
+    public int getSellRate() {
+        return sellRate;
+    }
 
-	public void setQuantity(int quantity){
-		this.quantity = quantity;
-	}
+    public void setRedirect(int redirect) {
+        this.redirect = redirect;
+    }
 
-	public int getQuantity(){
-		return quantity;
-	}
+    public int getRedirect() {
+        return redirect;
+    }
 
-	public void setMrp(int mrp){
-		this.mrp = mrp;
-	}
+    public void setDateRange(boolean dateRange) {
+        this.dateRange = dateRange;
+    }
 
-	public int getMrp(){
-		return mrp;
-	}
+    public boolean isDateRange() {
+        return dateRange;
+    }
 
-	public void setSaleStartDate(int saleStartDate){
-		this.saleStartDate = saleStartDate;
-	}
+    public void setMaxEndDate(int maxEndDate) {
+        this.maxEndDate = maxEndDate;
+    }
 
-	public int getSaleStartDate(){
-		return saleStartDate;
-	}
+    public int getMaxEndDate() {
+        return maxEndDate;
+    }
 
-	public void setProviderProductCode(String providerProductCode){
-		this.providerProductCode = providerProductCode;
-	}
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-	public String getProviderProductCode(){
-		return providerProductCode;
-	}
+    public int getQuantity() {
+        return quantity;
+    }
 
-	public void setMinStartDate(int minStartDate){
-		this.minStartDate = minStartDate;
-	}
+    public void setMrp(int mrp) {
+        this.mrp = mrp;
+    }
 
-	public int getMinStartDate(){
-		return minStartDate;
-	}
+    public int getMrp() {
+        return mrp;
+    }
 
-	public void setThumbsUp(int thumbsUp){
-		this.thumbsUp = thumbsUp;
-	}
+    public void setSaleStartDate(int saleStartDate) {
+        this.saleStartDate = saleStartDate;
+    }
 
-	public int getThumbsUp(){
-		return thumbsUp;
-	}
+    public int getSaleStartDate() {
+        return saleStartDate;
+    }
 
-	public void setUrl(String url){
-		this.url = url;
-	}
+    public void setProviderProductCode(String providerProductCode) {
+        this.providerProductCode = providerProductCode;
+    }
 
-	public String getUrl(){
-		return url;
-	}
+    public String getProviderProductCode() {
+        return providerProductCode;
+    }
 
-	public void setIsTop(int isTop){
-		this.isTop = isTop;
-	}
+    public void setMinStartDate(int minStartDate) {
+        this.minStartDate = minStartDate;
+    }
 
-	public int getIsTop(){
-		return isTop;
-	}
+    public int getMinStartDate() {
+        return minStartDate;
+    }
 
-	public void setSalientFeatures(String salientFeatures){
-		this.salientFeatures = salientFeatures;
-	}
+    public void setThumbsUp(int thumbsUp) {
+        this.thumbsUp = thumbsUp;
+    }
 
-	public String getSalientFeatures(){
-		return salientFeatures;
-	}
+    public int getThumbsUp() {
+        return thumbsUp;
+    }
 
-	public void setIsFoodAvailable(int isFoodAvailable){
-		this.isFoodAvailable = isFoodAvailable;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public int getIsFoodAvailable(){
-		return isFoodAvailable;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setActionText(String actionText){
-		this.actionText = actionText;
-	}
+    public void setIsTop(int isTop) {
+        this.isTop = isTop;
+    }
 
-	public String getActionText(){
-		return actionText;
-	}
-
-	public void setForm(int form){
-		this.form = form;
-	}
-
-	public int getForm(){
-		return form;
-	}
-
-	public void setSaleEndTime(String saleEndTime){
-		this.saleEndTime = saleEndTime;
-	}
-
-	public String getSaleEndTime(){
-		return saleEndTime;
-	}
-
-	public void setCensor(String censor){
-		this.censor = censor;
-	}
-
-	public String getCensor(){
-		return censor;
-	}
-
-	public void setSalesPrice(int salesPrice){
-		this.salesPrice = salesPrice;
-	}
-
-	public int getSalesPrice(){
-		return salesPrice;
-	}
-
-	public void setIsFeatured(int isFeatured){
-		this.isFeatured = isFeatured;
-	}
-
-	public int getIsFeatured(){
-		return isFeatured;
-	}
-
-	public void setIsPromo(int isPromo){
-		this.isPromo = isPromo;
-	}
-
-	public int getIsPromo(){
-		return isPromo;
-	}
-
-	public void setForms(Object forms){
-		this.forms = forms;
-	}
-
-	public Object getForms(){
-		return forms;
-	}
-
-	@Override
- 	public String toString(){
-		return 
-			"GridLayoutItem{" + 
-			"seo_url = '" + seoUrl + '\'' + 
-			",rating = '" + rating + '\'' + 
-			",use_pdf = '" + usePdf + '\'' + 
-			",search_tags = '" + searchTags + '\'' + 
-			",min_start_time = '" + minStartTime + '\'' + 
-			",image_app = '" + imageApp + '\'' + 
-			",offer_text = '" + offerText + '\'' + 
-			",has_seat_layout = '" + hasSeatLayout + '\'' + 
-			",sale_start_time = '" + saleStartTime + '\'' + 
-			",id = '" + id + '\'' + 
-			",thumbnail_app = '" + thumbnailApp + '\'' + 
-			",is_searchable = '" + isSearchable + '\'' + 
-			",custom_labels = '" + customLabels + '\'' + 
-			",thumbs_down = '" + thumbsDown + '\'' + 
-			",meta_title = '" + metaTitle + '\'' + 
-			",tnc = '" + tnc + '\'' + 
-			",long_rich_desc = '" + longRichDesc + '\'' + 
-			",display_name = '" + displayName + '\'' + 
-			",priority = '" + priority + '\'' + 
-			",city_ids = '" + cityIds + '\'' + 
-			",display_tags = '" + displayTags + '\'' + 
-			",meta_description = '" + metaDescription + '\'' + 
-			",parent_id = '" + parentId + '\'' + 
-			",custom_text_1 = '" + customText1 + '\'' + 
-			",provider_id = '" + providerId + '\'' + 
-			",child_category_ids = '" + childCategoryIds + '\'' + 
-			",seatChartTypeId = '" + seatChartTypeId + '\'' + 
-			",custom_text_3 = '" + customText3 + '\'' + 
-			",short_desc = '" + shortDesc + '\'' + 
-			",custom_text_2 = '" + customText2 + '\'' + 
-			",promotion_text = '" + promotionText + '\'' + 
-			",status = '" + status + '\'' + 
-			",convenience_fee = '" + convenienceFee + '\'' + 
-			",provider_product_name = '" + providerProductName + '\'' + 
-			",media = '" + media + '\'' + 
-			",title = '" + title + '\'' + 
-			",meta_keywords = '" + metaKeywords + '\'' + 
-			",sold_quantity = '" + soldQuantity + '\'' + 
-			",duration = '" + duration + '\'' + 
-			",thumbnail_web = '" + thumbnailWeb + '\'' + 
-			",sale_end_date = '" + saleEndDate + '\'' + 
-			",city_name = '" + cityName + '\'' + 
-			",category_id = '" + categoryId + '\'' + 
-			",autocode = '" + autocode + '\'' + 
-			",provider_product_id = '" + providerProductId + '\'' + 
-			",schedules = '" + schedules + '\'' + 
-			",genre = '" + genre + '\'' + 
-			",max_end_time = '" + maxEndTime + '\'' + 
-			",image_web = '" + imageWeb + '\'' + 
-			",sell_rate = '" + sellRate + '\'' + 
-			",redirect = '" + redirect + '\'' + 
-			",date_range = '" + dateRange + '\'' + 
-			",max_end_date = '" + maxEndDate + '\'' + 
-			",quantity = '" + quantity + '\'' + 
-			",mrp = '" + mrp + '\'' + 
-			",sale_start_date = '" + saleStartDate + '\'' + 
-			",provider_product_code = '" + providerProductCode + '\'' + 
-			",min_start_date = '" + minStartDate + '\'' + 
-			",thumbs_up = '" + thumbsUp + '\'' + 
-			",url = '" + url + '\'' + 
-			",is_top = '" + isTop + '\'' + 
-			",salient_features = '" + salientFeatures + '\'' + 
-			",is_food_available = '" + isFoodAvailable + '\'' + 
-			",action_text = '" + actionText + '\'' + 
-			",form = '" + form + '\'' + 
-			",sale_end_time = '" + saleEndTime + '\'' + 
-			",censor = '" + censor + '\'' + 
-			",sales_price = '" + salesPrice + '\'' + 
-			",is_featured = '" + isFeatured + '\'' + 
-			",is_promo = '" + isPromo + '\'' + 
-			",forms = '" + forms + '\'' + 
-			"}";
-		}
+    public int getIsTop() {
+        return isTop;
+    }
+
+    public void setSalientFeatures(String salientFeatures) {
+        this.salientFeatures = salientFeatures;
+    }
+
+    public String getSalientFeatures() {
+        return salientFeatures;
+    }
+
+    public void setIsFoodAvailable(int isFoodAvailable) {
+        this.isFoodAvailable = isFoodAvailable;
+    }
+
+    public int getIsFoodAvailable() {
+        return isFoodAvailable;
+    }
+
+    public void setActionText(String actionText) {
+        this.actionText = actionText;
+    }
+
+    public String getActionText() {
+        return actionText;
+    }
+
+    public void setForm(int form) {
+        this.form = form;
+    }
+
+    public int getForm() {
+        return form;
+    }
+
+    public void setSaleEndTime(String saleEndTime) {
+        this.saleEndTime = saleEndTime;
+    }
+
+    public String getSaleEndTime() {
+        return saleEndTime;
+    }
+
+    public void setCensor(String censor) {
+        this.censor = censor;
+    }
+
+    public String getCensor() {
+        return censor;
+    }
+
+    public void setSalesPrice(int salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
+    public int getSalesPrice() {
+        return salesPrice;
+    }
+
+    public void setIsFeatured(int isFeatured) {
+        this.isFeatured = isFeatured;
+    }
+
+    public int getIsFeatured() {
+        return isFeatured;
+    }
+
+    public void setIsPromo(int isPromo) {
+        this.isPromo = isPromo;
+    }
+
+    public int getIsPromo() {
+        return isPromo;
+    }
+
+    public void setForms(Object forms) {
+        this.forms = forms;
+    }
+
+    public Object getForms() {
+        return forms;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "GridLayoutItem{" +
+                        "seo_url = '" + seoUrl + '\'' +
+                        ",rating = '" + rating + '\'' +
+                        ",use_pdf = '" + usePdf + '\'' +
+                        ",search_tags = '" + searchTags + '\'' +
+                        ",min_start_time = '" + minStartTime + '\'' +
+                        ",image_app = '" + imageApp + '\'' +
+                        ",offer_text = '" + offerText + '\'' +
+                        ",has_seat_layout = '" + hasSeatLayout + '\'' +
+                        ",sale_start_time = '" + saleStartTime + '\'' +
+                        ",id = '" + id + '\'' +
+                        ",thumbnail_app = '" + thumbnailApp + '\'' +
+                        ",is_searchable = '" + isSearchable + '\'' +
+                        ",custom_labels = '" + customLabels + '\'' +
+                        ",thumbs_down = '" + thumbsDown + '\'' +
+                        ",meta_title = '" + metaTitle + '\'' +
+                        ",tnc = '" + tnc + '\'' +
+                        ",long_rich_desc = '" + longRichDesc + '\'' +
+                        ",display_name = '" + displayName + '\'' +
+                        ",priority = '" + priority + '\'' +
+                        ",city_ids = '" + cityIds + '\'' +
+                        ",display_tags = '" + displayTags + '\'' +
+                        ",meta_description = '" + metaDescription + '\'' +
+                        ",parent_id = '" + parentId + '\'' +
+                        ",custom_text_1 = '" + customText1 + '\'' +
+                        ",provider_id = '" + providerId + '\'' +
+                        ",child_category_ids = '" + childCategoryIds + '\'' +
+                        ",seatChartTypeId = '" + seatChartTypeId + '\'' +
+                        ",custom_text_3 = '" + customText3 + '\'' +
+                        ",short_desc = '" + shortDesc + '\'' +
+                        ",custom_text_2 = '" + customText2 + '\'' +
+                        ",promotion_text = '" + promotionText + '\'' +
+                        ",status = '" + status + '\'' +
+                        ",convenience_fee = '" + convenienceFee + '\'' +
+                        ",provider_product_name = '" + providerProductName + '\'' +
+                        ",media = '" + media + '\'' +
+                        ",title = '" + title + '\'' +
+                        ",meta_keywords = '" + metaKeywords + '\'' +
+                        ",sold_quantity = '" + soldQuantity + '\'' +
+                        ",duration = '" + duration + '\'' +
+                        ",thumbnail_web = '" + thumbnailWeb + '\'' +
+                        ",sale_end_date = '" + saleEndDate + '\'' +
+                        ",city_name = '" + cityName + '\'' +
+                        ",category_id = '" + categoryId + '\'' +
+                        ",autocode = '" + autocode + '\'' +
+                        ",provider_product_id = '" + providerProductId + '\'' +
+                        ",schedules = '" + schedules + '\'' +
+                        ",genre = '" + genre + '\'' +
+                        ",max_end_time = '" + maxEndTime + '\'' +
+                        ",image_web = '" + imageWeb + '\'' +
+                        ",sell_rate = '" + sellRate + '\'' +
+                        ",redirect = '" + redirect + '\'' +
+                        ",date_range = '" + dateRange + '\'' +
+                        ",max_end_date = '" + maxEndDate + '\'' +
+                        ",quantity = '" + quantity + '\'' +
+                        ",mrp = '" + mrp + '\'' +
+                        ",sale_start_date = '" + saleStartDate + '\'' +
+                        ",provider_product_code = '" + providerProductCode + '\'' +
+                        ",min_start_date = '" + minStartDate + '\'' +
+                        ",thumbs_up = '" + thumbsUp + '\'' +
+                        ",url = '" + url + '\'' +
+                        ",is_top = '" + isTop + '\'' +
+                        ",salient_features = '" + salientFeatures + '\'' +
+                        ",is_food_available = '" + isFoodAvailable + '\'' +
+                        ",action_text = '" + actionText + '\'' +
+                        ",form = '" + form + '\'' +
+                        ",sale_end_time = '" + saleEndTime + '\'' +
+                        ",censor = '" + censor + '\'' +
+                        ",sales_price = '" + salesPrice + '\'' +
+                        ",is_featured = '" + isFeatured + '\'' +
+                        ",is_promo = '" + isPromo + '\'' +
+                        ",forms = '" + forms + '\'' +
+                        "}";
+    }
 }

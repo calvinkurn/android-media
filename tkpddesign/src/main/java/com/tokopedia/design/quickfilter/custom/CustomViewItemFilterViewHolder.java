@@ -3,6 +3,7 @@ package com.tokopedia.design.quickfilter.custom;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.design.R;
 import com.tokopedia.design.quickfilter.ItemFilterViewHolder;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterListener;
@@ -20,6 +21,8 @@ public class CustomViewItemFilterViewHolder extends ItemFilterViewHolder {
     @Override
     protected void updateData(QuickFilterItem filterItem) {
         super.updateData(filterItem);
+        layoutBorder.setBackgroundResource(R.drawable.bg_rounded_corners_green_with_shadow);
+        layoutInside.setBackgroundResource(R.drawable.bg_rounded_corners_green_with_shadow);
         updateCustomItemView((CustomViewQuickFilterItem) filterItem);
     }
 

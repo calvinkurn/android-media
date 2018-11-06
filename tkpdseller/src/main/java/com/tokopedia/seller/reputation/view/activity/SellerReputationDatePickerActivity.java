@@ -1,12 +1,12 @@
 package com.tokopedia.seller.reputation.view.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
-import com.tokopedia.seller.common.datepicker.view.adapter.DatePickerTabPagerAdapter;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.adapter.DatePickerTabPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class SellerReputationDatePickerActivity extends DatePickerActivity {
     protected PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(getDatePickerCustomFragment());
-        return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
+        return new DatePickerTabPagerAdapter(this, getSupportFragmentManager(), fragmentList);
     }
 
     @Override

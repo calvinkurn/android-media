@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
+@Deprecated
 public class ProductInfo implements Parcelable {
     private static final String TAG = ProductInfo.class.getSimpleName();
 
@@ -113,6 +114,10 @@ public class ProductInfo implements Parcelable {
     @SerializedName("product_price_unfmt")
     @Expose
     private Integer productPriceUnformatted;
+
+    @SerializedName("product_original_price")
+    @Expose
+    private Integer productOriginalPrice;
 
     @SerializedName("has_variant")
     @Expose
@@ -518,6 +523,14 @@ public class ProductInfo implements Parcelable {
 
     public void setLimitedStock(boolean limitedStock) {
         this.limitedStock = limitedStock;
+    }
+
+    public Integer getProductOriginalPrice() {
+        return productOriginalPrice;
+    }
+
+    public void setProductOriginalPrice(Integer productOriginalPrice) {
+        this.productOriginalPrice = productOriginalPrice;
     }
 
 

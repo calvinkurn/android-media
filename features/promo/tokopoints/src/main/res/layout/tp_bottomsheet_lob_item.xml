@@ -16,7 +16,7 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/tp_margin_regular"
+        android:layout_marginTop="@dimen/dp_2"
         android:textColor="@color/medium_green"
         android:textSize="@dimen/tp_text_size_small"
         app:layout_constraintEnd_toEndOf="@+id/img_lob"
