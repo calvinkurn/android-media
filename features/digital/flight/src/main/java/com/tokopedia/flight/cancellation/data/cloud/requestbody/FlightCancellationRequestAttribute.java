@@ -18,7 +18,7 @@ public class FlightCancellationRequestAttribute {
     private String reason;
     @SerializedName("reason_id")
     @Expose
-    private String reasonId;
+    private int reasonId;
     @SerializedName("attachments")
     @Expose
     private List<FlightCancellationRequestAttachment> attachments;
@@ -61,11 +61,11 @@ public class FlightCancellationRequestAttribute {
         this.details = details;
     }
 
-    public String getReasonId() {
+    public int getReasonId() {
         return reasonId;
     }
 
-    public void setReasonId(String reasonId) {
+    public void setReasonId(int reasonId) {
         this.reasonId = reasonId;
     }
 }

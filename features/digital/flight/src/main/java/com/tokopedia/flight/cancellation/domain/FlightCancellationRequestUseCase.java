@@ -50,7 +50,7 @@ public class FlightCancellationRequestUseCase extends UseCase<CancellationReques
         FlightCancellationRequestAttribute flightCancellationRequestAttribute = new FlightCancellationRequestAttribute();
         flightCancellationRequestAttribute.setInvoiceId(invoiceId);
         flightCancellationRequestAttribute.setReason(reason);
-        flightCancellationRequestAttribute.setReasonId(reasonId);
+        flightCancellationRequestAttribute.setReasonId(Integer.parseInt(reasonId));
         flightCancellationRequestAttribute.setAttachments(transformIntoRequestAttachments(attachments));
         flightCancellationRequestAttribute.setDetails(transformIntoDetails(journeyCancellations));
 
