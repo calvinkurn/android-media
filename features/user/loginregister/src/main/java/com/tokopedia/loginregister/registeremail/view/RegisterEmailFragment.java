@@ -609,9 +609,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
-
-        container.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
     }
 
 
