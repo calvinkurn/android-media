@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Hendri on 28/03/18.
@@ -42,6 +43,7 @@ public class GetInvoicePostRequest {
 
         SimpleDateFormat date = new SimpleDateFormat(
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.startTime = date.format(Calendar.getInstance().getTime());
     }
 
