@@ -360,6 +360,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private FlightCancellationWrapperViewModel buildCancellationWrapperModel(List<FlightCancellationAttachmentViewModel> flightCancellationAttachmentViewModels) {
         FlightCancellationWrapperViewModel viewModel = getView().getCancellationViewModel();
         FlightCancellationReasonAndAttachmentViewModel reasonAndAttachmentViewModel = new FlightCancellationReasonAndAttachmentViewModel();
+        reasonAndAttachmentViewModel.setReasonId(getView().getReason().getId());
         reasonAndAttachmentViewModel.setReason(getView().getReason().getDetail());
         if (checkIfAttachmentMandatory()) {
             reasonAndAttachmentViewModel.setAttachments(flightCancellationAttachmentViewModels);

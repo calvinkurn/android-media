@@ -411,7 +411,7 @@
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
     <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
-    <string name="flight_cancellation_estimate_refund_label">Estimate Refund</string>
+    <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
     <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
     <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
     <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
@@ -467,4 +467,6 @@
     <string name="flight_search_return_dialog_abort">Batal</string>
     <string name="flight_cancellation_reason_title">Pilih Alasan Pembatalan</string>
     <string name="flight_cancellation_upload_percentage_label">sedang diupload %s</string>
+    <string name="flight_cancellation_review_refund_to_email_detail">Estimasi refund akan dikirim ke e-mail Anda hingga 1 jam ke depan.</string>
+    <string name="flight_cancellation_review_no_refund_detail">Refund tidak tersedia pada penerbangan ini.</string>
 </resources>

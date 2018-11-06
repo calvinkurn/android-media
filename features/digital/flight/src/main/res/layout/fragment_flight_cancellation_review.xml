@@ -104,27 +104,78 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_16"
                 android:background="@color/white"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_16">
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8">
+
+                <TextView
+                    android:id="@+id/tv_estimate_label"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    android:background="@color/white"
+                    android:text="@string/flight_cancellation_estimate_refund_label" />
+
+                <LinearLayout
+                    style="@style/CardWarningStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_16"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_description_refund"
+                        style="@style/TextView.Micro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/line_divider" />
+
+                <LinearLayout
+                    android:id="@+id/container_estimate_refund"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/flight_cancellation_estimate_refund_label" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_total_refund"
+                        style="@style/TextView.Title.OrangeRed.Bold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        tools:text="Rp45.846.900" />
+
+                </LinearLayout>
 
                 <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_refund_detail"
                     style="@style/TextView.Small.Bold"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="@string/flight_cancellation_review_total_refund_label" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/txt_total_refund"
-                    style="@style/TextView.Title.OrangeRed.Bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right|center_vertical"
-                    tools:text="@string/flight_cancellation_review_total_refund_label" />
+                    android:layout_marginBottom="@dimen/margin_8"
+                    android:layout_marginTop="@dimen/margin_8"
+                    android:visibility="gone"
+                    tools:text="@string/flight_cancellation_review_refund_to_email_detail"
+                    tools:visibility="visible"/>
 
             </LinearLayout>
 
