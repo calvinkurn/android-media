@@ -27,6 +27,12 @@ public class ChooseTokocashAccountActivity extends BaseSimpleActivity {
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0, 0, 30, 0);
+    }
+
+    @Override
     public String getScreenName() {
         return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
     }

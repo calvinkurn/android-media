@@ -49,6 +49,12 @@ public class LoginActivity extends BaseSimpleActivity implements HasComponent {
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0, 0, 30, 0);
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {

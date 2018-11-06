@@ -42,6 +42,11 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
         initInjector();
     }
 
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0, 0, 30, 0);
+    }
 
     private void initInjector() {
         DaggerRegisterEmailComponent daggerRegisterEmailComponent = (DaggerRegisterEmailComponent)

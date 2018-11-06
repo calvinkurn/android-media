@@ -42,6 +42,12 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
 
     }
 
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0, 0, 30, 0);
+    }
+
     private void initInjector() {
         DaggerActivationComponent daggetActivationComponent = (DaggerActivationComponent)
                 DaggerActivationComponent

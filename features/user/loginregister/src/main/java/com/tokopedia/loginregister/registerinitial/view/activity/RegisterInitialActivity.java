@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.registerinitial.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -23,6 +24,12 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, RegisterInitialActivity.class);
+    }
+
+    @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        toolbar.setPadding(0, 0, 30, 0);
     }
 
     @Override
