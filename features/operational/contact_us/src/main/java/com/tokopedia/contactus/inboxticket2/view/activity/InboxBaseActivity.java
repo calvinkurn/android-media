@@ -35,6 +35,8 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     abstract int getMenuRes();
 
+    abstract int getBottomSheetLayoutRes();
+
     abstract boolean doNeedReattach();
 
     @Inject
@@ -128,7 +130,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         String BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment";
         bottomFragment = (BottomSheetDialogFragment) getSupportFragmentManager().findFragmentByTag(BOTTOM_FRAGMENT);
         if (bottomFragment == null)
-            bottomFragment = mPresenter.getBottomFragment();
+            bottomFragment = mPresenter.getBottomFragment(getBottomSheetLayoutRes());
         bottomFragment.show(getSupportFragmentManager(), BOTTOM_FRAGMENT);
     }
 

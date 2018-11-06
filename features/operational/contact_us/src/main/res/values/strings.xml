@@ -58,7 +58,7 @@
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
     <string name="text_satisfied">Apakah sudah membantu?</string>
-    <string name="select_bad_reason">Beritahu kami apa yang salah?</string>
+    <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
     <string name="no_search_result">Tidak ditemukan hasil untuk pencarian Anda</string>
@@ -66,5 +66,7 @@
     <string name="invalid_images">Gambar Tidak Valid</string>
     <string name="network_error">Maaf terjadi kesalahan teknis, silakan dicoba lagi.</string>
     <string name="abandon_message_warning">Pesan Anda akan hilang jika keluar halaman ini. Anda yakin?</string>
+    <string name="enter_other_reason">Ada hal lain yang bisa diperbaiki?</string>
+    <string name="type_other_reason">Tulis Disini(minimum 15 karakter)</string>
 
 </resources>

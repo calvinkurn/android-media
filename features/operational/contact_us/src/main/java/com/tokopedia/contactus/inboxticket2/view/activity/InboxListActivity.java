@@ -149,6 +149,11 @@ public class InboxListActivity extends InboxBaseActivity
     }
 
     @Override
+    int getBottomSheetLayoutRes() {
+        return R.layout.layout_bottom_sheet_fragment;
+    }
+
+    @Override
     boolean doNeedReattach() {
         return true;
     }

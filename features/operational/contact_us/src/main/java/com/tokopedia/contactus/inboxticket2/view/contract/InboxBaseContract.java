@@ -51,7 +51,7 @@ public interface InboxBaseContract {
 
         void onDestroy();
 
-        BottomSheetDialogFragment getBottomFragment();
+        BottomSheetDialogFragment getBottomFragment(int resID);
 
         boolean onOptionsItemSelected(MenuItem item);
 

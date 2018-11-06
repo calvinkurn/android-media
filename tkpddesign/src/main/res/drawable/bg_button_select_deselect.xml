@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ellipse_white_grey_br" android:state_selected="false" />
+    <item android:drawable="@drawable/ellipse_white_green_br" android:state_selected="true" />
+</selector>

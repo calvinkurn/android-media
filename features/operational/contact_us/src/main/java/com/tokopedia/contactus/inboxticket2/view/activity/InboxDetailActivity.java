@@ -36,7 +36,6 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -90,6 +88,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     TextView totalRes;
     @BindView(R2.id.tv_count_current)
     TextView currentRes;
+
 
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
@@ -229,6 +228,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
+    int getBottomSheetLayoutRes() {
+        return R.layout.layout_bad_csat;
+    }
+
+    @Override
     boolean doNeedReattach() {
         return false;
     }
@@ -293,17 +297,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
-        if (!isCustomReason) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
-
-        } else {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendCustomReason(edMessage.getText().toString().trim());
-            textToolbar.setVisibility(View.GONE);
-            isCustomReason = false;
-            ivUploadImg.setVisibility(View.VISIBLE);
-            edMessage.getText().clear();
-            setSubmitButtonEnabled(false);
-        }
+        ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
         edMessage.setHint(R.string.type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
