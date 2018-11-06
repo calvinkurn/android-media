@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.onboarding.fragment.NewOnBoardingFragment;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
@@ -52,6 +53,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         setSkip();
         setNext();
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
+        TrackingUtils.sendInstallSourceEvent();
     }
 
     private void initView() {

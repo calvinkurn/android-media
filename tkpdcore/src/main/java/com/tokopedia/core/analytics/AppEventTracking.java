@@ -1011,6 +1011,7 @@ public interface AppEventTracking {
         String CHANNEL = "channel";
         String APP_VERSION = "app version";
         String PLATFORM = "platform";
+        String PARTNER_SOURCE = "partner_source";
     }
 
     interface EventMoEngage {
@@ -1047,6 +1048,7 @@ public interface AppEventTracking {
         String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
         String REFERRAL_SHARE_EVENT = "Share_Event";
         String OPEN_SHOP_SCREEN = "Open_Shop_Screen_Launched";
+        String PARTNER_REFERRAL = "Partner_Referred";
     }
 
 

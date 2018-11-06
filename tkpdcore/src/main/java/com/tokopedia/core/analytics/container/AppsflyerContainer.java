@@ -108,6 +108,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAFLog(boolean login) {
+        AppsFlyerLib.getInstance().setPreinstallAttribution("oppo_int", "oppo_preinstall","oppo_store_site");
         AppsFlyerLib.getInstance().setDebugLog(login);
     }
 
