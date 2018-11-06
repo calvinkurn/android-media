@@ -172,7 +172,7 @@ public class BranchSdkUtils {
             Uri uri = Uri.parse(String.format("groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
                     tempUri, connector, linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags));
             try {
-                renderedUrl = Uri.encode(uri.toString());
+                renderedUrl = uri.toString().replace(" ","%20");
             }catch (Exception e){
                 e.printStackTrace();
                 renderedUrl = uri.toString();
