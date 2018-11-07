@@ -45,7 +45,6 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -101,6 +100,7 @@ import com.tokopedia.groupchat.common.util.TextFormatter;
 import com.tokopedia.groupchat.common.util.TransparentStatusBarHelper;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -607,9 +607,14 @@ public class GroupChatActivity extends BaseSimpleActivity
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
                 viewModel.getChannelName()), "");
 
+        String userId = "0";
+        if(userSession.isLoggedIn()){
+            userId = userSession.getUserId();
+        }
+
         ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
-                viewModel.getChannelUuid(), viewModel.getChannelName(), description,
-                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl());
+                viewModel.getChannelInfoViewModel().getChannelId(), viewModel.getChannelName(), description,
+                viewModel.getChannelInfoViewModel().getBannerUrl(), viewModel.getChannelUrl(), userId, "sharing");
     }
 
     private void setupViewPager() {

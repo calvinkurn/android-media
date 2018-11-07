@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.entity.variant.Campaign;
@@ -31,9 +32,11 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.util.ServerTimeOffsetUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +60,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private CountDownView countDownView;
     private Context context;
     private LinearLayout textOfficialStore;
-    private CountDownTimer countDownTimer = null;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -109,14 +111,6 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
-        if(data != null && data.getCampaign() != null && data.getCampaign().getActive()) {
-            renderProductCampaign(data.getCampaign());
-        } else {
-            linearDiscountTimerHolder.setVisibility(GONE);
-            textDiscount.setVisibility(GONE);
-            textOriginalPrice.setVisibility(GONE);
-            tvPriceFinal.setText(data.getInfo().getProductPrice());
-        }
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {
             cashbackTextView.setText(data.getCashBack().getProductCashbackValue());
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
@@ -178,7 +172,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(Campaign campaign) {
+    public void renderProductCampaign(ProductDetailData data) {
+        Campaign campaign = data.getCampaign();
         if(campaign != null && campaign.getActive()) {
             textTimerTitle.setText(campaign.getCampaignShortName());
             tvPriceFinal.setText(campaign.getDiscountedPriceFmt());
@@ -196,7 +191,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            showCountdownTimer(campaign);
+            showCountdownTimer(data);
+        } else {
+            linearDiscountTimerHolder.setVisibility(GONE);
+            textDiscount.setVisibility(GONE);
+            textOriginalPrice.setVisibility(GONE);
+            tvPriceFinal.setText(data.getInfo().getProductPrice());
         }
     }
 
@@ -219,22 +219,32 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void showCountdownTimer(final Campaign campaign) {
+    private void showCountdownTimer(final ProductDetailData data) {
+        Campaign campaign = data.getCampaign();
+        linearDiscountTimerHolder.setVisibility(GONE);
+
         try {
-            if (countDownTimer!=null) countDownTimer.cancel();
-            linearDiscountTimerHolder.setVisibility(GONE);
-            SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
-            Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            long delta = sf.parse(campaign.getEndDate()).getTime() - now.getTimeInMillis();
-            if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
+            if (!countDownView.isTimerActive()) {
+                SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
+
+                //*1000 to convert serverTime to millisecond since serverTime is unix
+                long serverTimeMillisecond = data.getServerTimeUnix() * 1000L;
+                long delta = sf.parse(campaign.getEndDate()).getTime() - serverTimeMillisecond;
+
+                if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
+                    countDownView.setup(
+                            ServerTimeOffsetUtil.getServerTimeOffset(serverTimeMillisecond),
+                            sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
+                                @Override
+                                public void onCountDownFinished() {
+                                    hideProductCampaign(campaign);
+                                    showAlerDialog();
+                                }
+                            });
+                    linearDiscountTimerHolder.setVisibility(VISIBLE);
+                }
+            } else{
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
-                countDownView.setup(sf.parse(campaign.getEndDate()), new CountDownView.CountDownListener() {
-                    @Override
-                    public void onCountDownFinished() {
-                        hideProductCampaign(campaign);
-                        showAlerDialog();
-                    }
-                });
             }
         } catch (Exception ex) {
             ex.printStackTrace();
