@@ -13,7 +13,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.registeremail.view.RegisterEmailFragment;
+import com.tokopedia.loginregister.registeremail.view.fragment.RegisterEmailFragment;
 
 import javax.inject.Inject;
 

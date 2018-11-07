@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.registeremail.di;
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.registeremail.view.RegisterEmailFragment;
+import com.tokopedia.loginregister.registeremail.view.fragment.RegisterEmailFragment;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
 
 import dagger.Component;

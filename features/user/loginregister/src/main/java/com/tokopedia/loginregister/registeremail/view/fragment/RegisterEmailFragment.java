@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.registeremail.view;
+package com.tokopedia.loginregister.registeremail.view.fragment;
 
 import android.Manifest;
 import android.accounts.Account;
