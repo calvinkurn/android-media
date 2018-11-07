@@ -397,7 +397,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (sprintSaleViewModel != null
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
-                && !sprintSaleViewModel.getSprintSaleType().equals(SprintSaleViewModel.TYPE_FINISHED)) {
+                && !sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED)) {
             trackViewSprintSaleComponent(sprintSaleViewModel);
             sprintSaleIconLayout.setVisibility(View.VISIBLE);
             setupSprintSaleIcon(sprintSaleViewModel);
