@@ -329,7 +329,8 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onEditClicked(int id) {
+    public void onEditClicked(boolean hasMultipleContent, String activityId,
+                              String activityType) {
 
     }
 

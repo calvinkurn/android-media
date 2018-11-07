@@ -288,7 +288,11 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             }
         });
 
-        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
+        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(
+                element.isMultipleContent(),
+                String.valueOf(element.getContentId()),
+                element.getActivityType()
+        ));
     }
 
     private void goToProfile(final BaseKolViewModel element) {
