@@ -551,6 +551,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
                                              CourierItemData recommendedCourier, int position) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            shippingCourierViewModel.setSelected(false);
+        }
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) currentShipmentData;
