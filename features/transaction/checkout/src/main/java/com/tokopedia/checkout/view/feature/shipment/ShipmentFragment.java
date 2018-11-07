@@ -226,8 +226,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void initializePresenterData(Bundle arguments) {
-        PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
-        shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
         shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
         shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
     }
@@ -464,7 +462,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             isTraceStopped = true;
         }
 
-        if (getArguments() != null && !isFromPdp) {
+        if (getArguments() != null) {
             initializePresenterData(getArguments());
         }
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
