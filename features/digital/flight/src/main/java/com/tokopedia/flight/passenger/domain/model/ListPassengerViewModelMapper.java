@@ -32,7 +32,7 @@ public class ListPassengerViewModelMapper {
             );
         }
 
-        if (savedPassengerEntity.getPassportNo() != null) {
+        if (savedPassengerEntity.getPassportNo() != null && !savedPassengerEntity.getPassportNo().isEmpty()) {
             flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
         }
 
@@ -46,13 +46,13 @@ public class ListPassengerViewModelMapper {
             );
         }
 
-        if (savedPassengerEntity.getPassportNationality() != null) {
+        if (savedPassengerEntity.getPassportNationality() != null && !savedPassengerEntity.getPassportNationality().isEmpty()) {
             FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
             passportNationality.setCountryId(savedPassengerEntity.getPassportNationality());
             flightBookingPassengerViewModel.setPassportNationality(passportNationality);
         }
 
-        if (savedPassengerEntity.getPassportCountry() != null) {
+        if (savedPassengerEntity.getPassportCountry() != null && !savedPassengerEntity.getPassportCountry().isEmpty()) {
             FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
             passportIssuerCountry.setCountryId(savedPassengerEntity.getPassportCountry());
             flightBookingPassengerViewModel.setPassportIssuerCountry(passportIssuerCountry);
