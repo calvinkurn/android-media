@@ -39,6 +39,7 @@ public class ChannelInfoViewModel implements Parcelable {
     private String bannedMessage;
     private String kickedMessage;
     private boolean isFreeze;
+    private String videoId;
 
     @Nullable
     private VoteInfoViewModel voteInfoViewModel;
@@ -69,7 +70,8 @@ public class ChannelInfoViewModel implements Parcelable {
                                 String bannedMessage, String kickedMessage, boolean isFreeze,
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
                                 @Nullable ExitMessage exitMessage,
-                                List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
+                                List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
+                                String videoId) {
         this.channelId = channelId;
         this.title = title;
         this.channelUrl = channelUrl;
@@ -95,6 +97,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.pinnedMessageViewModel = pinnedMessageViewModel;
         this.exitMessage = exitMessage;
         this.quickRepliesViewModel = quickRepliesViewModel;
+        this.videoId = videoId;
     }
 
     @Override
@@ -125,6 +128,7 @@ public class ChannelInfoViewModel implements Parcelable {
         dest.writeParcelable(this.pinnedMessageViewModel, flags);
         dest.writeParcelable(this.exitMessage, flags);
         dest.writeTypedList(this.quickRepliesViewModel);
+        dest.writeString(this.videoId);
     }
 
     protected ChannelInfoViewModel(Parcel in) {
@@ -154,6 +158,7 @@ public class ChannelInfoViewModel implements Parcelable {
         this.pinnedMessageViewModel = in.readParcelable(PinnedMessageViewModel.class.getClassLoader());
         this.exitMessage = in.readParcelable(ExitMessage.class.getClassLoader());
         this.quickRepliesViewModel = in.createTypedArrayList(GroupChatQuickReplyItemViewModel.CREATOR);
+        this.videoId = in.readString();
     }
 
     public static final Creator<ChannelInfoViewModel> CREATOR = new Creator<ChannelInfoViewModel>() {
@@ -300,6 +305,10 @@ public class ChannelInfoViewModel implements Parcelable {
         return pinnedMessageViewModel;
     }
 
+    public void setPinnedMessageViewModel(@Nullable PinnedMessageViewModel pinnedMessageViewModel) {
+        this.pinnedMessageViewModel = pinnedMessageViewModel;
+    }
+
     @Nullable
     public ExitMessage getExitMessage() {
         return exitMessage;
@@ -317,5 +326,13 @@ public class ChannelInfoViewModel implements Parcelable {
 
     public void setQuickRepliesViewModel(@Nullable List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
         this.quickRepliesViewModel = quickRepliesViewModel;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 }

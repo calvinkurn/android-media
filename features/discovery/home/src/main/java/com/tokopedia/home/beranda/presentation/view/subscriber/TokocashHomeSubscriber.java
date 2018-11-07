@@ -1,15 +1,14 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
-import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.util.TokoCashUtil;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 
 import rx.Subscriber;
 
 /**
  * Created by meta on 16/07/18.
  */
-public class TokocashHomeSubscriber extends Subscriber<TokoCashData> {
+public class TokocashHomeSubscriber extends Subscriber<HomeHeaderWalletAction> {
 
     private HomeContract.Presenter presenter;
 
@@ -18,7 +17,8 @@ public class TokocashHomeSubscriber extends Subscriber<TokoCashData> {
     }
 
     @Override
-    public void onCompleted() { }
+    public void onCompleted() {
+    }
 
     @Override
     public void onError(Throwable e) {
@@ -26,7 +26,10 @@ public class TokocashHomeSubscriber extends Subscriber<TokoCashData> {
     }
 
     @Override
-    public void onNext(TokoCashData balanceTokoCash) {
-        presenter.updateHeaderTokoCashData(TokoCashUtil.convertToActionHomeHeader(balanceTokoCash));
+    public void onNext(HomeHeaderWalletAction homeHeaderWalletAction) {
+        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
+        if (homeHeaderWalletAction.isShowAnnouncement()) {
+            presenter.showPopUpIntroWalletOvo(homeHeaderWalletAction.getAppLinkActionButton());
+        }
     }
 }

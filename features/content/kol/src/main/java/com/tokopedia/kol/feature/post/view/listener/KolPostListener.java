@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.kol.KolRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface KolPostListener {
 
         AbstractionRouter getAbstractionRouter();
 
-        UserSession getUserSession();
+        UserSessionInterface getUserSession();
 
         void showLoading();
 
@@ -48,7 +49,7 @@ public interface KolPostListener {
         interface ViewHolder {
             Context getContext();
 
-            UserSession getUserSession();
+            UserSessionInterface getUserSession();
 
             AbstractionRouter getAbstractionRouter();
 

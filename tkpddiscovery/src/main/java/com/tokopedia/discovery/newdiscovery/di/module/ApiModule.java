@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.di.module;
 
+import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
@@ -10,6 +11,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 
 import dagger.Module;
@@ -36,6 +38,11 @@ public class ApiModule {
     @Provides
     MojitoApi provideMojitoApi(@MojitoQualifier Retrofit retrofit) {
         return retrofit.create(MojitoApi.class);
+    }
+
+    @Provides
+    TopAdsService provideTopAdsService(@TopAdsQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsService.class);
     }
 
     @MojitoGetWishlistQualifier

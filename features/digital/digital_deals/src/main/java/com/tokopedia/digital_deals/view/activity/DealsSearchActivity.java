@@ -71,6 +71,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private int listCount;
     private String searchText;
     private int adapterPosition = -1;
+    private boolean forceRefresh;
 
     @Override
     public int getLayoutRes() {
@@ -375,6 +376,22 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void onBackPressed() {
         setResult(RESULT_OK);
         super.onBackPressed();
+    }
+
+    @Override
+    public void onStop() {
+        forceRefresh = true;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (forceRefresh) {
+            if (dealsCategoryAdapter != null)
+                dealsCategoryAdapter.notifyDataSetChanged();
+            forceRefresh = false;
+        }
     }
 
     @Override

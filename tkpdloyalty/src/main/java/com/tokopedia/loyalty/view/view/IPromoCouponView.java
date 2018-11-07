@@ -44,4 +44,5 @@ public interface IPromoCouponView extends IBaseView {
 
     void couponDataNoResult(String title, String subTitle);
 
+    void sendTrackingOnCheckTrainVoucherError(String errorMessage);
 }

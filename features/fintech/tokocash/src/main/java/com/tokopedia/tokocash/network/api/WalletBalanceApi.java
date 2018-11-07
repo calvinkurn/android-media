@@ -1,7 +1,9 @@
 package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.drawer2.data.pojo.UserData;
+import com.tokopedia.tokocash.balance.data.entity.BalanceWalletEntity;
+
+import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -17,5 +19,5 @@ public interface WalletBalanceApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<UserData>>> getBalance(@Body String requestBody);
+    Observable<Response<GraphqlResponse<BalanceWalletEntity>>> getBalance(@Body Map<String, Object> requestBody);
 }

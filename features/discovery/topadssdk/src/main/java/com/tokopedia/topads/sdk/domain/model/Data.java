@@ -1,12 +1,17 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class Data {
+public class Data implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_AD_REF = "ad_ref_key";
@@ -14,21 +19,32 @@ public class Data {
     private static final String KEY_STICKER_ID = "sticker_id";
     private static final String KEY_STICKER_IMAGE = "sticker_image";
     private static final String KEY_PRODUCT_CLICK_URL = "product_click_url";
+    private static final String KEY_PRODUCT_WISHLIST_URL = "product_wishlist_url";
     private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
 
+    @SerializedName(KEY_ID)
     private String id;
+    @SerializedName(KEY_AD_REF)
     private String adRefKey;
+    @SerializedName(KEY_REDIRECT)
     private String redirect;
+    @SerializedName(KEY_STICKER_ID)
     private String stickerId;
+    @SerializedName(KEY_STICKER_IMAGE)
     private String stickerImage;
+    @SerializedName(KEY_PRODUCT_CLICK_URL)
     private String productClickUrl;
+    @SerializedName(KEY_PRODUCT_WISHLIST_URL)
+    private String productWishlistUrl;
+    @SerializedName(KEY_SHOP_CLICK_URL)
     private String shopClickUrl;
+    @SerializedName(KEY_SHOP)
     private Shop shop;
+    @SerializedName(KEY_PRODUCT)
     private Product product;
     private boolean favorit;
-    private boolean wislished;
 
     public Data() {
     }
@@ -52,6 +68,9 @@ public class Data {
         if(!object.isNull(KEY_PRODUCT_CLICK_URL)) {
             setProductClickUrl(object.getString(KEY_PRODUCT_CLICK_URL));
         }
+        if(!object.isNull(KEY_PRODUCT_WISHLIST_URL)) {
+            setProductWishlistUrl(object.getString(KEY_PRODUCT_WISHLIST_URL));
+        }
         if(!object.isNull(KEY_SHOP_CLICK_URL)) {
             setShopClickUrl(object.getString(KEY_SHOP_CLICK_URL));
         }
@@ -62,6 +81,52 @@ public class Data {
             setShop(new Shop(object.getJSONObject(KEY_SHOP)));
         }
     }
+
+    protected Data(Parcel in) {
+        id = in.readString();
+        adRefKey = in.readString();
+        redirect = in.readString();
+        stickerId = in.readString();
+        stickerImage = in.readString();
+        productClickUrl = in.readString();
+        productWishlistUrl = in.readString();
+        shopClickUrl = in.readString();
+        shop = in.readParcelable(Shop.class.getClassLoader());
+        product = in.readParcelable(Product.class.getClassLoader());
+        favorit = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(adRefKey);
+        dest.writeString(redirect);
+        dest.writeString(stickerId);
+        dest.writeString(stickerImage);
+        dest.writeString(productClickUrl);
+        dest.writeString(productWishlistUrl);
+        dest.writeString(shopClickUrl);
+        dest.writeParcelable(shop, flags);
+        dest.writeParcelable(product, flags);
+        dest.writeByte((byte) (favorit ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Data> CREATOR = new Creator<Data>() {
+        @Override
+        public Data createFromParcel(Parcel in) {
+            return new Data(in);
+        }
+
+        @Override
+        public Data[] newArray(int size) {
+            return new Data[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -143,11 +208,11 @@ public class Data {
         this.favorit = favorit;
     }
 
-    public void setWislished(boolean wislished) {
-        this.wislished = wislished;
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
     }
 
-    public boolean isWislished() {
-        return wislished;
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
     }
 }

@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.fragment.BroadcastMessageAttachProductFragment;
-import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
 
 import java.util.ArrayList;
 import java.util.HashMap;

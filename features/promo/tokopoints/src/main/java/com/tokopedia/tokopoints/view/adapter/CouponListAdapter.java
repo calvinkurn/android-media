@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -89,6 +88,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             holder.label.setText(item.getUsage().getText());
             if (item.getUsage().getBtnUsage() != null) {
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
+
+                if(item.getUsage().getBtnUsage().getType().equalsIgnoreCase("invisible")) {
+                    holder.btnContinue.setVisibility(View.GONE);
+                } else {
+                    holder.btnContinue.setVisibility(View.VISIBLE);
+                }
             }
         }
 
@@ -158,6 +163,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
                 holder.btnContinue.setEnabled(true);
                 holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+                holder.value.setPadding(0, 0, 0, 0);
             }
         } else {
             if (item.getUsage().getActiveCountDown() > 0) {
@@ -184,6 +190,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.btnContinue.setText(item.getUsage().getUsageStr());
                 holder.btnContinue.setEnabled(true);
                 holder.progressTimer.setVisibility(View.GONE);
+                holder.value.setPadding(0, 0, 0, 0);
             }
         }
     }

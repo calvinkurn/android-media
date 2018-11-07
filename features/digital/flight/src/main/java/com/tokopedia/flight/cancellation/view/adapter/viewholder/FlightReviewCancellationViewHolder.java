@@ -70,15 +70,15 @@ public class FlightReviewCancellationViewHolder extends AbstractViewHolder<Fligh
                 element.getFlightCancellationJourney().getArrivalAirportId() :
                 element.getFlightCancellationJourney().getArrivalCityCode();
         String departureDate = FlightDateUtil.formatDate(
-                FlightDateUtil.FORMAT_DATE_API,
+                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.FORMAT_DATE,
                 element.getFlightCancellationJourney().getDepartureTime());
         String departureTime = FlightDateUtil.formatDate(
-                FlightDateUtil.FORMAT_DATE_API,
+                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.FORMAT_TIME_DETAIL,
                 element.getFlightCancellationJourney().getDepartureTime());
         String arrivalTime = FlightDateUtil.formatDate(
-                FlightDateUtil.FORMAT_DATE_API,
+                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.FORMAT_TIME_DETAIL,
                 element.getFlightCancellationJourney().getArrivalTime());
 

@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.support.v7.widget.GridLayoutManager;
 
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -112,4 +113,6 @@ public interface WishListView {
     void clearSearchView();
 
     void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult);
+
+    void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize);
 }

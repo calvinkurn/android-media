@@ -19,7 +19,7 @@
             android:id="@+id/iv_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            tools:src="@drawable/ic_toped_step_01" />
+            tools:src="@drawable/ic_account_wallet" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,8 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_5"
-                android:textColor="@color/digital_voucher_notes"
-                android:textSize="@dimen/fontvs"
+                android:textColor="@color/font_black_disabled_38"
+                android:textSize="@dimen/sp_12"
                 tools:text="Terhubung sejak dahulu kala" />
 
         </LinearLayout>
@@ -52,8 +52,8 @@
         style="@style/Button.Submit.White.Stroke"
         android:layout_height="@dimen/dp_32"
         android:text="@string/tokocash_unlink_account_button"
-        android:textColor="@color/digital_voucher"
-        android:textSize="@dimen/fontvs"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/sp_12"
         android:visibility="visible"
         tools:visibility="visible" />
 
@@ -66,6 +66,6 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_20"
-        android:background="@color/digital_separator" />
+        android:background="@color/separator_voucher" />
 
 </LinearLayout>

@@ -10,6 +10,7 @@ import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataRespon
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -51,4 +52,6 @@ public interface ICartRepository {
     Observable<NotifCounterCartDataResponse> getNotificationCounter();
 
     Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params);
+
+    Observable<SaveShipmentStateResponse> saveShipmentState(Map<String, String> params);
 }

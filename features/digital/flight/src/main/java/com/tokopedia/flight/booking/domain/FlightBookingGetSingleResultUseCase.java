@@ -1,10 +1,10 @@
 package com.tokopedia.flight.booking.domain;
 
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
+import com.tokopedia.flight_dbflow.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
-import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

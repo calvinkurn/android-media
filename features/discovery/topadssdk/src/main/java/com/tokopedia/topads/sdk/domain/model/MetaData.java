@@ -1,5 +1,7 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,6 +10,7 @@ import org.json.JSONObject;
  */
 public class MetaData {
 
+    @SerializedName(KEY_DISPLAY)
     private String display;
 
     private static final String KEY_DISPLAY = "display";

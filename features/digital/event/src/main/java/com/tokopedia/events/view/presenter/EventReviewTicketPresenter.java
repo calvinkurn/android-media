@@ -1,5 +1,6 @@
 package com.tokopedia.events.view.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
 
@@ -7,20 +8,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.events.data.entity.response.verifyresponse.EntityPackagesItem;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.CouponModel;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
 import com.tokopedia.events.domain.model.request.cart.CartItems;
@@ -34,7 +32,9 @@ import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.CheckoutPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostInitCouponUseCase;
 import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
+import com.tokopedia.events.view.contractor.EventBaseContract;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
-
 import rx.Subscriber;
 
 import static com.tokopedia.events.view.activity.ReviewTicketActivity.PAYMENT_REQUEST_CODE;
@@ -63,9 +61,10 @@ import static com.tokopedia.events.view.activity.ReviewTicketActivity.PAYMENT_RE
  * Created by pranaymohapatra on 29/11/17.
  */
 
+
 public class EventReviewTicketPresenter
-        extends BaseDaggerPresenter<EventReviewTicketsContractor.EventReviewTicketsView>
-        implements EventReviewTicketsContractor.Presenter {
+        extends BaseDaggerPresenter<EventBaseContract.EventBaseView>
+        implements EventReviewTicketsContractor.EventReviewTicketPresenter {
 
     private EventsDetailsViewModel eventsDetailsViewModel;
     private PackageViewModel checkoutData;
@@ -74,30 +73,43 @@ public class EventReviewTicketPresenter
     private CheckoutPaymentUseCase checkoutPaymentUseCase;
     private PostPaymentUseCase postPaymentUseCase;
     private PostInitCouponUseCase postInitCouponUseCase;
-    private ProfileUseCase profileUseCase;
-    private ProfileModel profileModel;
     private String promocode;
     private String email;
     private String number;
-    private boolean isPromoCodeCase;
+    private boolean isSeatingEvent;
     private SelectedSeatViewModel selectedSeatViewModel;
     private ArrayList<String> hints = new ArrayList<>();
     private ArrayList<String> errors = new ArrayList<>();
     private RequestParams paymentparams;
     private String INVALID_EMAIL = "Invalid Email";
     private JsonObject cartData;
-    private FirebaseRemoteConfigImpl remoteConfig;
+    private EventReviewTicketsContractor.EventReviewTicketsView mView;
+    private EventsAnalytics eventsAnalytics;
 
-    @Inject
     public EventReviewTicketPresenter(VerifyCartUseCase usecase, CheckoutPaymentUseCase payment,
-                                      ProfileUseCase profileUseCase,
-                                      PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase) {
+                               PostInitCouponUseCase couponUseCase, PostVerifyCartUseCase postVerifyCartUseCase, PostPaymentUseCase postPaymentUseCase, EventsAnalytics eventsAnalytics) {
         this.verifyCartUseCase = usecase;
         this.checkoutPaymentUseCase = payment;
-        this.profileUseCase = profileUseCase;
         this.postInitCouponUseCase = couponUseCase;
         this.postVerifyCartUseCase = postVerifyCartUseCase;
         this.postPaymentUseCase = postPaymentUseCase;
+        this.eventsAnalytics = eventsAnalytics;
+    }
+
+    @Override
+    public boolean onClickOptionMenu(int id) {
+        mView.getActivity().onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode) {
+
     }
 
     @Override
@@ -107,11 +119,11 @@ public class EventReviewTicketPresenter
 
     @Override
     public void proceedToPayment() {
-        isPromoCodeCase = false;
-        if (getView().validateAllFields()) {
+        isSeatingEvent = false;
+        if (mView.validateAllFields()) {
             verifyCart();
         } else {
-            getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
+            mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
         }
 
     }
@@ -120,7 +132,7 @@ public class EventReviewTicketPresenter
     public void updatePromoCode(String code) {
         this.promocode = code;
         if (code.length() == 0) {
-            getView().hideSuccessMessage();
+            mView.hideSuccessMessage();
         }
     }
 
@@ -149,66 +161,50 @@ public class EventReviewTicketPresenter
 
     @Override
     public void getProfile() {
-        getView().showProgressBar();
-        profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
-                        getLoginIntent(getView().getActivity());
-                getView().getActivity().startActivity(intent);
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                number = profileModel.getProfileData().getUserInfo().getUserPhone();
-                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
-                getView().setPhoneNumber(number);
-                autoApplyCoupon();
-                getView().hideProgressBar();
-            }
-        });
+        mView.showProgressBar();
+        email = Utils.getUserSession(mView.getActivity()).getEmail();
+        number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
+        mView.setEmailID(email);
+        mView.setPhoneNumber(number);
+        autoApplyCoupon();
+        mView.hideProgressBar();
     }
 
     @Override
     public void clickEmailIcon() {
-        getView().showEmailTooltip();
+        mView.showEmailTooltip();
     }
 
     @Override
     public void clickMoreinfoIcon() {
-        getView().showMoreinfoTooltip();
+        mView.showMoreinfoTooltip();
     }
 
     @Override
     public void clickDismissTooltip() {
-        getView().hideTooltip();
+        mView.hideTooltip();
     }
 
     @Override
     public void clickGoToPromo() {
-        getView().showProgressBar();
+        mView.showProgressBar();
         goToLoyaltyActivity();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promocode);
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECK_PROMO, promocode);
     }
 
     private void goToLoyaltyActivity() {
         JsonObject requestBody = convertPackageToCartItem(checkoutData);
-        Intent loyaltyIntent = LoyaltyActivity.newInstanceCouponActive(getView().getActivity(), Utils.Constants.EVENTS, Utils.Constants.EVENTS);
+        Intent loyaltyIntent = ((EventModuleRouter) getView().getActivity().getApplication()).
+                tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(getView().getActivity(),
+                        Utils.Constants.EVENTS,
+                        Utils.Constants.EVENTS,
+                        "");
         loyaltyIntent.putExtra(Utils.Constants.CHECKOUTDATA, requestBody.toString());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_PRODUCTID,
                 checkoutData.getDigitalProductID());
         loyaltyIntent.putExtra(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORYID,
                 checkoutData.getDigitalCategoryID());
-        getView().navigateToActivityRequest(loyaltyIntent,
+        mView.navigateToActivityRequest(loyaltyIntent,
                 IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
@@ -221,7 +217,7 @@ public class EventReviewTicketPresenter
         Configuration config = new Configuration();
         config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
-        sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        sub.setName(Utils.getUserSession(mView.getActivity()).getName());
         config.setSubConfig(sub);
         MetaData meta = new MetaData();
         meta.setEntityCategoryId(packageViewModel.getCategoryId());
@@ -240,14 +236,14 @@ public class EventReviewTicketPresenter
             packageItem.setAreaId(selectedSeatViewModel.getAreaId());
             packageItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
         } else {
-            packageItem.setAreaCode(new ArrayList<String>());
-            packageItem.setSeatId(new ArrayList<String>());
+            packageItem.setAreaCode(new ArrayList<>());
+            packageItem.setSeatId(new ArrayList<>());
             packageItem.setAreaId("");
-            packageItem.setSeatRowId(new ArrayList<String>());
-            packageItem.setSeatPhysicalRowId(new ArrayList<String>());
+            packageItem.setSeatRowId(new ArrayList<>());
+            packageItem.setSeatPhysicalRowId(new ArrayList<>());
             packageItem.setQuantity(packageViewModel.getSelectedQuantity());
             packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
-            packageItem.setActualSeatNos(new ArrayList<String>());
+            packageItem.setActualSeatNos(new ArrayList<>());
         }
         packageItem.setDescription(packageViewModel.getDescription());
 
@@ -281,7 +277,7 @@ public class EventReviewTicketPresenter
         meta.setEntityPassengers(passengerItems);
         EntityAddress address = new EntityAddress();
         address.setAddress("");
-        address.setName(profileModel.getProfileData().getUserInfo().getUserName());
+        address.setName(Utils.getUserSession(mView.getActivity()).getName());
         address.setCity("");
         address.setEmail(this.email);
         address.setMobile(this.number);
@@ -322,28 +318,16 @@ public class EventReviewTicketPresenter
         cart.setPromocode(promocode);
 
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cart));
-        JsonObject requestBody = jsonElement.getAsJsonObject();
-        return requestBody;
-    }
-
-    @Override
-    public void attachView(EventReviewTicketsContractor.EventReviewTicketsView view) {
-        super.attachView(view);
-        getView().showProgressBar();
-        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        Intent intent = view.getActivity().getIntent();
-        this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
-        this.checkoutData = intent.getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
-        this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
-        getView().renderFromPackageVM(checkoutData, selectedSeatViewModel);
-        getAndInitForms();
+        return jsonElement.getAsJsonObject();
     }
 
     private void verifyCart() {
-        getView().showProgressBar();
+        mView.showProgressBar();
         final RequestParams params = RequestParams.create();
         params.putObject(Utils.Constants.CHECKOUTDATA, convertPackageToCartItem(checkoutData));
-        params.putBoolean("ispromocodecase", !isPromoCodeCase);
+        if (selectedSeatViewModel != null)
+            isSeatingEvent = true;
+        params.putBoolean(Utils.Constants.ISSEATINGEVENT, !isSeatingEvent);
         if (isEventOmsEnabled()) {
             postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
@@ -354,14 +338,9 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onError(Throwable throwable) {
                     throwable.printStackTrace();
-                    getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    verifyCart();
-                                }
-                            });
+                    mView.hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                            mView.getRootView(), () -> verifyCart());
                 }
 
                 @Override
@@ -370,40 +349,20 @@ public class EventReviewTicketPresenter
                     Cart cart = gson.fromJson(String.valueOf(verifyCartResponse.getCart()), Cart.class);
                     cartData = verifyCartResponse.getCart();
 
-                    if (!isPromoCodeCase) {
-                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
-                            getView().hideProgressBar();
-                            getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
-                        } else {
-                            paymentparams = RequestParams.create();
-                            if (selectedSeatViewModel != null) {
-                                EntityPackagesItem entityPackagesItem = cart.getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-                                entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-                                entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-                                entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
-                                entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-                            }
-                            paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
-                            getPaymentLink();
-                        }
+                    if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
+                        mView.hideProgressBar();
+                        mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
                     } else {
-                        String errorMsg = cart.getPromocodeFailureMessage();
-                        if (errorMsg != null &&
-                                errorMsg.length() > 0) {
-                            getView().hideProgressBar();
-                            getView().hideSuccessMessage();
-                            getView().showPromoSuccessMessage(errorMsg,
-                                    getView().getActivity().getResources().getColor(R.color.red_a700));
-                            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_FAILURE + promocode, errorMsg);
-                            promocode = "";
-                        } else {
-                            String successMsg = cart.getPromocodeFailureMessage();
-                            if (successMsg != null && successMsg.length() > 0) {
-                                getView().hideProgressBar();
-                                getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-                                        getView().getActivity().getResources().getColor(R.color.black_54));
-                            }
+                        paymentparams = RequestParams.create();
+                        if (selectedSeatViewModel != null) {
+                            EntityPackagesItem entityPackagesItem = cart.getCartItems().get(0).getMetaData().getEntityPackages().get(0);
+                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
+                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
+                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
                         }
+                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
+                        getPaymentLink();
                     }
 
                 }
@@ -418,53 +377,27 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onError(Throwable throwable) {
                     throwable.printStackTrace();
-                    getView().hideProgressBar();
-                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                                @Override
-                                public void onRetryClicked() {
-                                    verifyCart();
-                                }
-                            });
+                    mView.hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                            mView.getRootView(), () -> verifyCart());
                 }
 
                 @Override
                 public void onNext(VerifyCartResponse verifyCartResponse) {
-
-                    if (!isPromoCodeCase) {
-                        if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
-                            getView().hideProgressBar();
-                            getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
-                        } else {
-                            paymentparams = RequestParams.create();
-                            if (selectedSeatViewModel != null) {
-                                EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
-                                entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
-                                entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
-                                entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
-                                entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
-                            }
-                            paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
-                            getPaymentLink();
-                        }
+                    if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
+                        mView.hideProgressBar();
+                        mView.showSnackBar("Silahkan Isi Data Pelanggan Tambahan", false);
                     } else {
-                        String errorMsg = verifyCartResponse.getCart().getPromocodeFailureMessage();
-                        if (errorMsg != null &&
-                                errorMsg.length() > 0) {
-                            getView().hideProgressBar();
-                            getView().hideSuccessMessage();
-                            getView().showPromoSuccessMessage(errorMsg,
-                                    getView().getActivity().getResources().getColor(R.color.red_a700));
-                            UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PROMO_FAILURE + promocode, errorMsg);
-                            promocode = "";
-                        } else {
-                            String successMsg = verifyCartResponse.getCart().getPromocodeSuccessMessage();
-                            if (successMsg != null && successMsg.length() > 0) {
-                                getView().hideProgressBar();
-                                getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
-                                        getView().getActivity().getResources().getColor(R.color.black_54));
-                            }
+                        paymentparams = RequestParams.create();
+                        if (selectedSeatViewModel != null) {
+                            EntityPackagesItem entityPackagesItem = verifyCartResponse.getCart().getCartItems().get(0).getMetaData().getEntityPackages().get(0);
+                            entityPackagesItem.setSeatIds(selectedSeatViewModel.getSeatIds());
+                            entityPackagesItem.setSeatPhysicalRowIds(selectedSeatViewModel.getPhysicalRowIds());
+                            entityPackagesItem.setSeatRowIds(selectedSeatViewModel.getSeatRowIds());
+                            entityPackagesItem.setActualSeatNos(selectedSeatViewModel.getActualSeatNos());
                         }
+                        paymentparams.putObject("verfiedcart", verifyCartResponse.getCart());
+                        getPaymentLink();
                     }
                 }
             });
@@ -491,15 +424,10 @@ public class EventReviewTicketPresenter
             try {
                 checkoutParams.putObject(com.tokopedia.oms.view.utils.Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
             } catch (Exception e) {
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                getPaymentLink();
-                            }
-                        });
+                NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                        mView.getRootView(), this::getPaymentLink);
             }
-            getView().showProgressBar();
+            mView.showProgressBar();
             postPaymentUseCase.execute(checkoutParams, new Subscriber<JsonObject>() {
 
                 @Override
@@ -515,17 +443,12 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onError(Throwable throwable) {
                     throwable.printStackTrace();
-                    getView().hideProgressBar();
+                    mView.hideProgressBar();
                     if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
-                        getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
+                        mView.showSnackBar(mView.getActivity().getString(R.string.please_enter_email), false);
                     else {
-                        NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                                getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                                    @Override
-                                    public void onRetryClicked() {
-                                        getPaymentLink();
-                                    }
-                                });
+                        NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                                mView.getRootView(), () -> getPaymentLink());
                     }
                 }
 
@@ -533,8 +456,10 @@ public class EventReviewTicketPresenter
                 public void onNext(JsonObject checkoutResponse) {
                     String paymentData = com.tokopedia.oms.view.utils.Utils.transform(checkoutResponse);
                     String paymentURL = checkoutResponse.get("url").getAsString();
-                    ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, getView().getActivity().getResources().getString(R.string.pembayaran));
-                    getView().hideProgressBar();
+                    ScroogePGUtil.openScroogePage(mView.getActivity(), paymentURL, true, paymentData, mView.getActivity().getResources().getString(R.string.pembayaran));
+                    mView.hideProgressBar();
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
+                            + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
 
                 }
             });
@@ -548,17 +473,12 @@ public class EventReviewTicketPresenter
                 @Override
                 public void onError(Throwable throwable) {
                     throwable.printStackTrace();
-                    getView().hideProgressBar();
+                    mView.hideProgressBar();
                     if (throwable.getMessage().equalsIgnoreCase(INVALID_EMAIL))
-                        getView().showMessage(getView().getActivity().getString(R.string.please_enter_email));
+                        mView.showSnackBar(mView.getActivity().getString(R.string.please_enter_email), false);
                     else {
-                        NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                                getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                                    @Override
-                                    public void onRetryClicked() {
-                                        getPaymentLink();
-                                    }
-                                });
+                        NetworkErrorHelper.showEmptyState(mView.getActivity(),
+                                mView.getRootView(), () -> getPaymentLink());
                     }
                 }
 
@@ -571,12 +491,12 @@ public class EventReviewTicketPresenter
                     paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
                     paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
                     paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
-                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle() + " - "
                             + checkoutData.getDisplayName() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
-                    getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
-                                    createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
+                    mView.navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
+                                    createInstance(mView.getActivity().getApplicationContext(), paymentPassData),
                             PAYMENT_REQUEST_CODE);
-                    getView().hideProgressBar();
+                    mView.hideProgressBar();
 
                 }
             });
@@ -597,7 +517,7 @@ public class EventReviewTicketPresenter
         String[] u = new String[1];
         String[] hint = hints.toArray(t);
         String[] validatorRegex = regex.toArray(u);
-        getView().initForms(hint, validatorRegex);
+        mView.initForms(hint, validatorRegex);
     }
 
 
@@ -626,7 +546,7 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable e) {
-                getView().showMessage(getView().getActivity().getResources().getString(R.string.autocoupon_fail));
+                mView.showSnackBar(mView.getActivity().getResources().getString(R.string.autocoupon_fail), false);
             }
 
             @Override
@@ -634,17 +554,17 @@ public class EventReviewTicketPresenter
                 String errorMsg = couponModel.getPromocodeFailureMessage();
                 if (errorMsg != null &&
                         errorMsg.length() > 0) {
-                    getView().hideProgressBar();
-                    getView().hideSuccessMessage();
-                    getView().showPromoSuccessMessage(errorMsg,
-                            getView().getActivity().getResources().getColor(R.color.red_a700));
+                    mView.hideProgressBar();
+                    mView.hideSuccessMessage();
+                    mView.showPromoSuccessMessage(errorMsg,
+                            mView.getActivity().getResources().getColor(R.color.red_a700));
                     promocode = "";
                 } else {
                     String successMsg = couponModel.getPromocodeSuccessMessage();
                     if (successMsg != null && successMsg.length() > 0) {
-                        getView().hideProgressBar();
-                        getView().showPromoSuccessMessage(successMsg,
-                                getView().getActivity().getResources().getColor(R.color.green_nob));
+                        mView.hideProgressBar();
+                        mView.showPromoSuccessMessage(successMsg,
+                                mView.getActivity().getResources().getColor(R.color.green_nob));
                         promocode = couponModel.getPromocode();
                     }
                 }
@@ -653,8 +573,19 @@ public class EventReviewTicketPresenter
     }
 
     private boolean isEventOmsEnabled() {
-        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
+        return ((EventModuleRouter)mView.getActivity().getApplication()).getBooleanRemoteConfig(Utils.Constants.EVENT_OMS, false);
     }
 
-
+    @Override
+    public void attachView(EventBaseContract.EventBaseView view) {
+        super.attachView(view);
+        mView = (EventReviewTicketsContractor.EventReviewTicketsView) view;
+        mView.showProgressBar();
+        Intent intent = view.getActivity().getIntent();
+        this.eventsDetailsViewModel = intent.getParcelableExtra("event_detail");
+        this.checkoutData = intent.getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
+        this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
+        mView.renderFromPackageVM(checkoutData, selectedSeatViewModel);
+        getAndInitForms();
+    }
 }

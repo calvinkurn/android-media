@@ -229,7 +229,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     @Override
     public void checkIfFlightCancellable(String departureTime, String invoiceId, List<FlightCancellationJourney> item) {
         if (isDepartureDateMoreThan6Hours(
-                FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, departureTime))) {
+                FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, departureTime))) {
             getView().goToCancellationPage(invoiceId, item);
         } else {
             getView().showLessThan6HoursDialog();

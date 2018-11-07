@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,20 +15,17 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.applink.ApplinkDelegate;
+import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
@@ -44,17 +40,17 @@ import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
@@ -144,9 +140,15 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         setVersionCode();
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
+        com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -157,15 +159,18 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
+        InstabugInitalize.init(this);
     }
 
     private void setVersionCode() {
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         }
     }
 
@@ -223,6 +228,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
+        AttachProductUrl.URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
+        TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
 
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
     }
@@ -249,26 +256,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
-    }
-
-    @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCartIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-
-    }
-
-    @Override
-    public Intent getPromoListIntent(Activity activity) {
-        return null;
     }
 
     @Override

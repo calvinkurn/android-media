@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -28,10 +30,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -55,6 +55,7 @@ import com.tokopedia.posapp.product.productlist.view.activity.ProductListActivit
 import com.tokopedia.posapp.react.di.component.DaggerPosReactNativeComponent;
 import com.tokopedia.posapp.react.di.component.PosReactNativeComponent;
 import com.tokopedia.posapp.react.di.module.PosReactNativeModule;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 
 import java.io.IOException;
@@ -438,6 +439,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getTalkIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -696,12 +702,9 @@ public class PosRouterApplication extends MainApplication implements
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                if(activity != null && !TextUtils.isEmpty(screenName)) {
+                    ScreenTracking.sendScreen(activity, () -> screenName);
+                }
             }
 
             @Override
@@ -759,5 +762,10 @@ public class PosRouterApplication extends MainApplication implements
     public Intent getChangePasswordIntent(Context context) {
         //        There is no change password in pos
         return null;
+    }
+
+    @Override
+    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
+        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
 }

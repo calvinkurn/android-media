@@ -40,6 +40,12 @@ public class Purchase {
     private String eventLabel;
     private String shopType;
 
+    public String getItemPrice() {
+        return itemPrice;
+    }
+
+    private String itemPrice;
+
     public Purchase() {
 
     }
@@ -182,4 +188,10 @@ public class Purchase {
         ListProduct = null;
         currency = null;
     }
+
+    public void setItemPrice(String itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+
 }

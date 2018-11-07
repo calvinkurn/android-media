@@ -14,6 +14,7 @@ public class ShippingCourierViewModel implements Parcelable {
 
     private ProductData productData;
     private ServiceData serviceData;
+    private String ratesId;
     private int additionalFee;
     private boolean allowDropshipper;
     private boolean selected;
@@ -24,6 +25,7 @@ public class ShippingCourierViewModel implements Parcelable {
     protected ShippingCourierViewModel(Parcel in) {
         productData = in.readParcelable(ProductData.class.getClassLoader());
         serviceData = in.readParcelable(ServiceData.class.getClassLoader());
+        ratesId = in.readString();
         additionalFee = in.readInt();
         allowDropshipper = in.readByte() != 0;
         selected = in.readByte() != 0;
@@ -33,6 +35,7 @@ public class ShippingCourierViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(productData, flags);
         dest.writeParcelable(serviceData, flags);
+        dest.writeString(ratesId);
         dest.writeInt(additionalFee);
         dest.writeByte((byte) (allowDropshipper ? 1 : 0));
         dest.writeByte((byte) (selected ? 1 : 0));
@@ -69,6 +72,14 @@ public class ShippingCourierViewModel implements Parcelable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getRatesId() {
+        return ratesId;
+    }
+
+    public void setRatesId(String ratesId) {
+        this.ratesId = ratesId;
     }
 
     public int getAdditionalFee() {

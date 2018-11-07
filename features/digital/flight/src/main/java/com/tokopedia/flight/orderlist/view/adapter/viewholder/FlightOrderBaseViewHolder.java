@@ -140,7 +140,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         rvDepartureSchedule.setAdapter(departureSchedules);
         if (orderJourney.size() == 1) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setLabel(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.FORMAT_DATE, orderJourney.get(0).getDepartureTime()));
+            simpleViewModel.setLabel(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE, orderJourney.get(0).getDepartureTime()));
             simpleViewModel.setDescription(null);
             departureSchedules.setTitleBold(false);
             departureSchedules.setArrowVisible(false);
@@ -152,7 +152,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             int index = 0;
             for (FlightOrderJourney journey : orderJourney) {
                 simpleViewModels.add(new SimpleViewModel(journey.getDepartureAiportId() + "-" + journey.getArrivalAirportId(),
-                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.FORMAT_DATE, orderJourney.get(index).getDepartureTime())));
+                        FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.FORMAT_DATE, orderJourney.get(index).getDepartureTime())));
                 index++;
             }
             departureSchedules.setTitleBold(true);

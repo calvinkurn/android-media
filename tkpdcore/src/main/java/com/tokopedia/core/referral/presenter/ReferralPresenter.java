@@ -77,10 +77,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public void initialize() {
         remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         activity = getView().getActivity();
+        checkLoginAndFetchReferralCode();
+    }
+
+    @Override
+    public void checkLoginAndFetchReferralCode() {
         if (sessionHandler.isV4Login(getView().getActivity())) {
             if (isAppShowReferralButtonActivated()) {
                 if (sessionHandler.isMsisdnVerified()) {
-                    fetchTokoCashBalance();
+                    getReferralVoucherCode();
                 } else {
                     getView().showVerificationPhoneNumberPage();
                     TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
@@ -230,51 +235,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public String getReferralTitleDesc() {
         return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_TITLE_DESC, getView().getActivity().getString(R.string.referral_title_desc));
     }
-
-
-    /**
-     * This function fetches the tokocash balance and then check Voucher code
-     */
-    private void fetchTokoCashBalance() {
-        tokoCashUseCase.execute(RequestParams.EMPTY, new Subscriber<TokoCashData>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper("ManagePaymentOptionsPresenter :: inside tokocash subscriber error");
-            }
-
-            @Override
-            public void onNext(TokoCashData tokoCashData) {
-                if (!isViewAttached()) {
-                    return;
-                }
-
-                if (tokoCashData != null
-                        && tokoCashData.getAction() != null) {
-                    if (tokoCashData.getLink()) {
-                        getReferralVoucherCode();
-                    } else {
-
-                        WalletRouterUtil.navigateWallet(
-                                getView().getActivity().getApplication(),
-                                getView().getActivity(),
-                                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashData.getAction().getmAppLinks() == null ?
-                                        "" : tokoCashData.getAction().getmAppLinks(),
-                                tokoCashData.getAction().getRedirectUrl() == null ?
-                                        "" : tokoCashData.getAction().getRedirectUrl(),
-                                new Bundle()
-                        );
-                    }
-                }
-            }
-        });
-    }
-
 
     public ShareApps[] checkInstalledApps() {
         int index = 0;

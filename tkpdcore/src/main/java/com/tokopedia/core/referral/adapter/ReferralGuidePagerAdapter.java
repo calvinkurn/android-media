@@ -45,7 +45,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(View container, int position, Object object) {
-            ((ViewPager) container).removeView((View) object);
+        ((ViewPager) container).removeView((View) object);
     }
 
     @Override
@@ -65,6 +65,9 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
             TextView btnShare = layout.findViewById(R.id.btn_app_share);
             TextView tvHelpLink = layout.findViewById(R.id.tv_referral_help_link);
 
+
+            tvHelpLink.setVisibility(isShowReferralHelpLink() ? View.VISIBLE : View.GONE);
+            tvHelpLink.setText(getHelpButtonText());
             btnShare.setOnClickListener(view1 -> {
                 listener.onShareClick();
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_TEMAN, "");
@@ -72,7 +75,7 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
 
             tvHelpLink.setOnClickListener(view1 -> {
                 UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_WHAT_IS_TOKOCASH, "");
-                showOnBoardingTooltip(context.getString(R.string.acquisition_referral) ,context.getString(R.string.what_is_referral_tokocash) );
+                showOnBoardingTooltip(getHelpButtonContentTitle(), getHelpButtonContentSubtitle());
             });
 
         } else {
@@ -83,8 +86,24 @@ public class ReferralGuidePagerAdapter extends PagerAdapter {
         return layout;
     }
 
+    private String getHelpButtonText() {
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_TEXT, context.getString(R.string.apa_itu_tokocash));
+    }
+
+    private String getHelpButtonContentTitle() {
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_TITLE, context.getString(R.string.acquisition_referral));
+    }
+
+    private String getHelpButtonContentSubtitle() {
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFERRAL_HELP_LINK_CONTENT_SUBTITLE, context.getString(R.string.what_is_referral_tokocash));
+    }
+
     public String getReferralTerms() {
-            return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.REFFERAL_TERMS, context.getString(R.string.referral_tnc));
+    }
+
+    public boolean isShowReferralHelpLink() {
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_REFERRAL_HELP_LINK, false);
     }
 
     private void showOnBoardingTooltip(String title, String content) {

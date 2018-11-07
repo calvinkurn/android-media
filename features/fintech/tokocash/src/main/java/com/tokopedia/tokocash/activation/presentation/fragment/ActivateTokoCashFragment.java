@@ -15,9 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -26,7 +26,7 @@ import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.contract.LinkedTokoCashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.LinkedTokoCashPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 
@@ -41,7 +41,7 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
     private TextView syaratKetentuanTokocash;
 
     private ActionListener listener;
-    private TkpdProgressDialog progressDialog;
+    private ProgressBar progressBar;
 
     @Inject
     LinkedTokoCashPresenter presenter;
@@ -62,6 +62,7 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
         walletPhoneNumber = view.findViewById(R.id.wallet_phone_number);
         activationButton = view.findViewById(R.id.activation_btn);
         syaratKetentuanTokocash = view.findViewById(R.id.syarat_ketentuan_tokocash);
+        progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -137,16 +138,15 @@ public class ActivateTokoCashFragment extends BaseDaggerFragment implements Link
 
     @Override
     public void showProgressDialog() {
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        } else {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 
     private void finishProgressDialog() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -58,6 +58,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
+    private boolean isAdsBannerLoaded = false;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
@@ -74,8 +75,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 context.getResources().getDimensionPixelSize(R.dimen.dp_8),
                 context.getResources().getDimensionPixelSize(R.dimen.dp_16)
         ));
-        initTopAds(topAdsConfig);
+        //initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
+        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                clickListener.onBannerAdsClicked(applink);
+            }
+        });
     }
 
     private void initTopAds(Config topAdsConfig) {
@@ -91,12 +98,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 .build();
         adsBannerView.setConfig(newConfig);
         adsBannerView.loadTopAds();
-        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
-            @Override
-            public void onBannerAdsClicked(String applink) {
-                clickListener.onBannerAdsClicked(applink);
-            }
-        });
     }
 
     private void initQuickFilterRecyclerView() {
@@ -111,7 +112,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(final HeaderViewModel element) {
-
+        if (!isAdsBannerLoaded) {
+            adsBannerView.displayAds(element.getCpmModel());
+            isAdsBannerLoaded = true;
+        }
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
@@ -121,7 +125,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 suggestionText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        clickListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
+                        if (!TextUtils.isEmpty(element.getSuggestionModel().getSuggestedQuery())) {
+                            clickListener.onSuggestionClicked(element.getSuggestionModel().getSuggestedQuery());
+                        }
                     }
                 });
                 suggestionText.setVisibility(View.VISIBLE);

@@ -63,6 +63,32 @@ public class Route implements Parcelable {
     private String arrivalAirportName; // mergeResult
     private String arrivalAirportCity; // mergeResult
 
+    public Route(String airline, String departureAirport, String departureTimestamp, String arrivalAirport,
+                 String arrivalTimestamp, String duration, String layover, List<Info> infos, String flightNumber,
+                 boolean isRefundable, List<Amenity> amenities, int stops, List<StopDetailEntity> stopDetails,
+                 String airlineName, String airlineLogo, String departureAirportName, String departureAirportCity,
+                 String arrivalAirportName, String arrivalAirportCity) {
+        this.airline = airline;
+        this.departureAirport = departureAirport;
+        this.departureTimestamp = departureTimestamp;
+        this.arrivalAirport = arrivalAirport;
+        this.arrivalTimestamp = arrivalTimestamp;
+        this.duration = duration;
+        this.layover = layover;
+        this.infos = infos;
+        this.flightNumber = flightNumber;
+        this.isRefundable = isRefundable;
+        this.amenities = amenities;
+        this.stops = stops;
+        this.stopDetails = stopDetails;
+        this.airlineName = airlineName;
+        this.airlineLogo = airlineLogo;
+        this.departureAirportName = departureAirportName;
+        this.departureAirportCity = departureAirportCity;
+        this.arrivalAirportName = arrivalAirportName;
+        this.arrivalAirportCity = arrivalAirportCity;
+    }
+
     protected Route(Parcel in) {
         airline = in.readString();
         departureAirport = in.readString();
@@ -187,9 +213,6 @@ public class Route implements Parcelable {
 
     public String getArrivalAirportCity() {
         return arrivalAirportCity;
-    }
-
-    public Route() {
     }
 
     public int getStops() {

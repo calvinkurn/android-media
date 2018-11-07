@@ -26,7 +26,18 @@ public class PromoCouponEntity {
 
     @Expose
     @SerializedName("tokopointsEmptyMessage")
-    private Map<String,String> emptyMessage;
+    private Map<String, String> emptyMessage;
+
+    @SerializedName("tokopointsPaging")
+    private TokopointPaging paging;
+
+    public TokopointPaging getPaging() {
+        return paging;
+    }
+
+    public void setPaging(TokopointPaging paging) {
+        this.paging = paging;
+    }
 
     public Map<String, String> getEmptyMessage() {
         return emptyMessage;

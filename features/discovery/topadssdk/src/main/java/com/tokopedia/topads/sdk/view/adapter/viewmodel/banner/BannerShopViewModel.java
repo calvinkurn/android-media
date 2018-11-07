@@ -1,7 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.viewmodel.banner;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 
 /**
@@ -10,17 +10,17 @@ import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsTypeFactory;
 
 public class BannerShopViewModel implements Item<BannerAdsTypeFactory> {
 
-    private final CpmData.Cpm cpm;
+    private final Cpm cpm;
     private final String appLink;
     private final String adsClickUrl;
 
-    public BannerShopViewModel(CpmData.Cpm cpm, String appLink, String adsClickUrl) {
+    public BannerShopViewModel(Cpm cpm, String appLink, String adsClickUrl) {
         this.cpm = cpm;
         this.appLink = appLink;
         this.adsClickUrl = adsClickUrl;
     }
 
-    public CpmData.Cpm getCpm() {
+    public Cpm getCpm() {
         return cpm;
     }
 

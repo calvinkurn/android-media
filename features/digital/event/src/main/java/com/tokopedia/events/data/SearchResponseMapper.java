@@ -1,6 +1,6 @@
 package com.tokopedia.events.data;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 

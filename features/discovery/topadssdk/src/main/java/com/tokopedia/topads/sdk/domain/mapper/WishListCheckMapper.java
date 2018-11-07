@@ -42,9 +42,9 @@ public class WishListCheckMapper extends Mapper<TopAdsModel> {
                 for (int i = 0; i < ids.length(); i++) {
                     if(topAdsModel.getData().get(i).getProduct().getId()
                             .equalsIgnoreCase(ids.getString(i))){
-                        topAdsModel.getData().get(i).setWislished(true);
+                        topAdsModel.getData().get(i).getProduct().setWishlist(true);
                     } else {
-                        topAdsModel.getData().get(i).setWislished(false);
+                        topAdsModel.getData().get(i).getProduct().setWishlist(false);
                     }
                 }
             }

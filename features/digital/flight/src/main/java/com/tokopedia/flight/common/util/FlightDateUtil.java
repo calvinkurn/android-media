@@ -8,13 +8,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by alvarisi on 10/30/17.
  */
 
 public class FlightDateUtil {
-    public static final String FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME = "HH:mm";
     public static final String FORMAT_DATE = "EEEE, dd LLLL yyyy";
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd";
@@ -23,13 +23,17 @@ public class FlightDateUtil {
     public static final String DEFAULT_VIEW_TIME_FORMAT = "dd MMM yyyy, HH:mm";
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     public static final TimeZone DEFAULT_TIMEZONE = TimeZone.getTimeZone("GMT+7");
-    public static final String FORMAT_DATE_API_DETAIL = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final String FORMAT_TIME_DETAIL = "HH:mm";
     public static final String FORMAT_DATE_LOCAL_DETAIL = "EEEE, dd LLLL yyyy";
     public static final String FORMAT_DATE_LOCAL_DETAIL_ORDER = "dd MMM yyyy, HH:mm";
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+
+    public FlightDateUtil() {
+
+    }
 
     public static String formatDate(String currentFormat, String newFormat, String dateString) {
         return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE);
@@ -87,7 +91,7 @@ public class FlightDateUtil {
             return fromFormat.parse(input);
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new RuntimeException("Date doesnt valid (" + input + ")");
+            throw new RuntimeException("Date doesnt valid (" + input + ") with format" + DEFAULT_FORMAT);
         }
     }
 
@@ -97,7 +101,7 @@ public class FlightDateUtil {
             return fromFormat.parse(input);
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new RuntimeException("Date doesnt valid (" + input + ")");
+            throw new RuntimeException("Date doesnt valid (" + input + ") with format" + format);
         }
     }
 
@@ -153,5 +157,12 @@ public class FlightDateUtil {
         now.setTime(date);
         now.add(field, value);
         return now.getTime();
+    }
+
+    public long getDayDiff(String timestamp) {
+        Date inputDate = trimDate(stringToDate(YYYY_MM_DD_T_HH_MM_SS_Z, timestamp));
+        Date currentDate = trimDate(getCurrentDate());
+        long diff = inputDate.getTime() - currentDate.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 }
