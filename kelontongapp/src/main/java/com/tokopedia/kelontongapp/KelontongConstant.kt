@@ -27,3 +27,7 @@ object KelontongConstant {
         val PREFERENCES_FIRST_TIME = "mitra_first_time";
     }
 }
+
+const val EVENT_NAME = "eventName"
+const val EVENT_VALUE = "eventValue"
+const val APPSFLYER_URL_SCHEME = "af-event"
