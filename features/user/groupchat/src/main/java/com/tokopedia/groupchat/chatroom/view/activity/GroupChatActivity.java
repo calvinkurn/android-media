@@ -179,7 +179,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(1);
     private static final long TOOLTIP_DELAY = 1500L;
 
     private static final int KEYBOARD_TRESHOLD = 100;
@@ -295,7 +295,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
             if (youTubePlayer != null) {
                 youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
-                new Handler().postDelayed(new Runnable() {
+                youtubeRunnable.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         youTubePlayer.play();
@@ -316,7 +316,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                         youTubePlayer.setShowFullscreenButton(false);
                         //cue the 1st video by default
                         youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
-                        new Handler().postDelayed(new Runnable() {
+                        youtubeRunnable.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 if(youTubePlayer != null){
@@ -464,8 +464,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showTooltip();
             }
         };
-//
-//        youtubeRunnable =
+
         youtubeRunnable = new Handler();
 
     }
