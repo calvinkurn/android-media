@@ -71,7 +71,6 @@ import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;

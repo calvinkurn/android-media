@@ -254,10 +254,7 @@ public abstract class SellerRouterApplication extends MainApplication
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
-        NetworkRouter, TopChatRouter, com.tokopedia.tkpdpdp.ProductDetailRouter, KolRouter,
-        ProductEditModuleRouter, TopAdsWebViewRouter, BankRouter, ChangePasswordRouter,
-        WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter, PaymentSettingRouter,
-        TalkRouter, ChangePhoneNumberRouter, PhoneVerificationRouter,
+        com.tokopedia.tkpdpdp.ProductDetailRouter,
         MerchantVoucherModuleRouter, LoginRegisterRouter {
 
     protected RemoteConfig remoteConfig;
