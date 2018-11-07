@@ -26,8 +26,6 @@ import com.tokopedia.affiliate.feature.onboarding.view.viewmodel.RecommendProduc
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.user.session.UserSession;
 
-import java.util.Objects;
-
 import javax.inject.Inject;
 
 /**
@@ -80,6 +78,12 @@ public class RecommendProductFragment extends BaseDaggerFragment
         initVar();
         initView();
         presenter.getProductInfo(productId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
