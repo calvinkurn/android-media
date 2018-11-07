@@ -56,7 +56,7 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
 
     interface OnMerchantVoucherListWidgetListener {
         val isOwner: Boolean
-        fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
+        fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position:Int)
         fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel)
         fun onSeeAllClicked()
     }
@@ -166,7 +166,14 @@ class MerchantVoucherListWidget : FrameLayout, MerchantVoucherView.OnMerchantVou
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         if (onMerchantVoucherListWidgetListener != null) {
-            onMerchantVoucherListWidgetListener!!.onMerchantUseVoucherClicked(merchantVoucherViewModel)
+            var position: Int = 0
+            adapter?.run {
+                position = data.indexOf(merchantVoucherViewModel)
+                if (position < 0) {
+                    position = 0
+                }
+            }
+            onMerchantVoucherListWidgetListener!!.onMerchantUseVoucherClicked(merchantVoucherViewModel, position)
         }
     }
 

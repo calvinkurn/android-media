@@ -149,7 +149,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_see_membership_status) {
+        if (source.getId() == R.id.text_membership_label) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -193,7 +193,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             return;
         }
 
-        getView().findViewById(R.id.text_see_membership_status).setOnClickListener(this);
+        getView().findViewById(R.id.text_membership_label).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.view_point_saya).setOnClickListener(this);
         getView().findViewById(R.id.view_loyalty_saya).setOnClickListener(this);
@@ -229,7 +229,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mTextMembershipValue.setText(String.valueOf(tierData.getNameDesc()));
         mTextPoints.setText(CurrencyFormatUtil.convertPriceValue(pointData.getReward(), false));
         mTextLoyalty.setText(CurrencyFormatUtil.convertPriceValue(pointData.getLoyalty(), false));
-        ImageHandler.loadImageFitCenter(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
+        ImageHandler.loadImageCircle2(getActivityContext(), mImgEgg, tierData.getEggImageUrl());
 
         //init bottom sheet
         mStartPurchaseBottomSheet = new StartPurchaseBottomSheet();
