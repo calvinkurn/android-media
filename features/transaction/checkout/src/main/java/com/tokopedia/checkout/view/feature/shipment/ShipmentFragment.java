@@ -1666,7 +1666,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                     shippingCourierViewModels, recipientAddressModel, cartPosition);
             shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
-            if (isToogleYearEndPromoOn()) {
+            if (isToogleYearEndPromoOn() && shippingCourierViewModels != null) {
                 checkHasCourierPromo(shippingCourierViewModels);
             }
         }
