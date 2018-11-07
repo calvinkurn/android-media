@@ -484,9 +484,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
-                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
+//                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
+//                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
+//                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
+                    presenter.getChannelInfo(viewModel.getChannelUuid(), true);
                     setSnackBarErrorLoading();
                 }
             });
