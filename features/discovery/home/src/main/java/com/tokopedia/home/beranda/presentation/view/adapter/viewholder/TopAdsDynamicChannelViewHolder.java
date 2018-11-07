@@ -34,6 +34,7 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicCh
             DynamicHomeChannel.Grid grid = element.getChannel().getGrids()[i];
             ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
             model.setProductPrice(grid.getPrice());
+            model.setProductName(grid.getName());
             model.setProductCashback(grid.getCashback());
             model.setImageUrl(grid.getImageUrl());
             model.setImpressionUrl(grid.getImpression());
