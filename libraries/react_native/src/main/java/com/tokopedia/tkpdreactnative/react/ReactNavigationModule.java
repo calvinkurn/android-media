@@ -99,7 +99,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
         promise.resolve(getUserId(context));
     }
 
-    public String getUserId(Context context){
+    public static String getUserId(Context context){
         return SessionHandler.getLoginID(context);
     }
 
