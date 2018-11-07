@@ -11,9 +11,11 @@ import android.view.KeyEvent;
 
 import com.facebook.react.ReactApplication;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.ReactNavigationModule;
 
 /**
  *
@@ -26,6 +28,8 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
+    private IReactNativeRouter iReactNativeRouter;
+    private ReactNavigationModule reactNavigationModule;
 
     @Override
     protected int getLayoutId() {
@@ -90,6 +94,8 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if (requestCode == ReactConst.REACT_LOGIN_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 Log.d("TEST","Success Login !");
+                String UserID = reactNavigationModule.getUserId(this);
+                iReactNativeRouter.sendLoginEmitter(UserID);
             }
         }
     }
