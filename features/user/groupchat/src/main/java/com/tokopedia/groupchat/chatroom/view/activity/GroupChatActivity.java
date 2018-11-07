@@ -179,7 +179,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
-    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(1);
+    private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
     private static final long TOOLTIP_DELAY = 1500L;
 
     private static final int KEYBOARD_TRESHOLD = 100;

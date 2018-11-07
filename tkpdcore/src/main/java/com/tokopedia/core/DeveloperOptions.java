@@ -217,8 +217,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
 
         LocalCacheHandler groupChatPreference = new LocalCacheHandler(getApplicationContext(), GROUPCHAT_PREF);
-        ipGroupChat.setText(sharedPreferences.getString(IP_GROUPCHAT,""));
-        groupChatLogToggle.setChecked(sharedPreferences.getBoolean(LOG_GROUPCHAT, false));
+        ipGroupChat.setText(groupChatPreference.getString(IP_GROUPCHAT,""));
+        groupChatLogToggle.setChecked(groupChatPreference.getBoolean(LOG_GROUPCHAT, false));
     }
 
     private void actionLogGroupChat(boolean check) {
