@@ -2,6 +2,7 @@ package com.tokopedia.topads.sdk.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -48,21 +49,9 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         titleTxt = findViewById(R.id.channel_title);
         itemAdapter = new AdsItemAdapter(getContext());
         recyclerView.setAdapter(itemAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
         infoCta.setOnClickListener(this);
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
-
-        //Dummy Data
-//        List<Item> items = new ArrayList<>();
-//        for (int i = 0; i < 6; i++) {
-//            ProductDynamicChannelViewModel viewModel = new ProductDynamicChannelViewModel();
-//            viewModel.setProductName("Produk "+i);
-//            viewModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
-//            viewModel.setImpressionUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
-//            viewModel.setProductCashback("Cashback 5%");
-//            viewModel.setProductPrice("Rp 1.000.000");
-//            items.add(viewModel);
-//        }
-//        setData("Produk Pilihan", "", items);
     }
 
     @Override
