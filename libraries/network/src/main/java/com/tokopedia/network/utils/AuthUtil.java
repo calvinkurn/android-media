@@ -23,31 +23,31 @@ import javax.crypto.spec.SecretKeySpec;
  *         Modified by kulomady add method without params
  */
 public class AuthUtil {
-    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
+    public static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
     private static final String MAC_ALGORITHM = "HmacSHA1";
-    private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
+    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
-    private static final String HEADER_CONTENT_TYPE = "Content-Type";
-    private static final String HEADER_X_METHOD = "X-Method";
-    private static final String HEADER_REQUEST_METHOD = "Request-Method";
-    private static final String HEADER_CONTENT_MD5 = "Content-MD5";
-    private static final String HEADER_DATE = "Date";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_X_METHOD = "X-Method";
+    public static final String HEADER_REQUEST_METHOD = "Request-Method";
+    public static final String HEADER_CONTENT_MD5 = "Content-MD5";
+    public static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_USER_ID = "X-User-ID";
+    public static final String HEADER_USER_ID = "X-User-ID";
     public static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_TKPD_USER_ID = "Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
-    private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
+    public static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     public static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
-    private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
+    public static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
     private static final String HEADER_OS_TYPE = "os-type";
     private static final String HEADER_SESSION_ID = "tkpd-SessionId";
-    private static final String HEADER_OS_VERSION = "os_version";
+    public static final String HEADER_OS_VERSION = "os_version";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -66,7 +66,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
-    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
+    private static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps:";
 
     /**
      * default key is KEY_WSV$

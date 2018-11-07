@@ -5,6 +5,7 @@ import android.app.Application;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
+import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
@@ -30,6 +31,8 @@ public class CartComponentInjector {
     UpdateCartUseCase updateCartUseCase;
     @Inject
     AddToCartUseCase addToCartUseCase;
+    @Inject
+    AddToCartOneClickShipmentUseCase addToCartUseCaseOneClickShipment;
     @Inject
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     @Inject
@@ -78,6 +81,10 @@ public class CartComponentInjector {
 
     public AddToCartUseCase getAddToCartUseCase() {
         return addToCartUseCase;
+    }
+
+    public AddToCartOneClickShipmentUseCase getAddToCartUseCaseOneClickShipment() {
+        return addToCartUseCaseOneClickShipment;
     }
 
     public UpdateCartUseCase getUpdateCartUseCase() {

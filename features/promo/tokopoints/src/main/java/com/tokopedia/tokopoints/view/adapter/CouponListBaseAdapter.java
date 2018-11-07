@@ -41,6 +41,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
+    private int mCategoryId = 0;
 
     public class ViewHolder extends BaseAdapter.BaseVH {
         TextView description, label, value, btnContinue;
@@ -67,10 +68,11 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         }
     }
 
-    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context) {
+    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context, int categoryId) {
         super(callback);
         this.mPresenter = presenter;
         this.mContext = context;
+        this.mCategoryId = categoryId;
     }
 
     @Override
@@ -152,7 +154,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, pageNumber);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),

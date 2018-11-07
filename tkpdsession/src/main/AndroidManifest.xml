@@ -25,25 +25,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity"
-            android:label="@string/title_activity_phone_verification"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name="com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity"
-            android:label="@string/title_activity_change_phone_number"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".changephonenumber.view.activity.ChangePhoneNumberRequestActivity"
-            android:label="@string/title_change_phone_number_request"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"
@@ -53,37 +34,9 @@
             android:name=".register.view.activity.SmartLockActivity"
             android:theme="@style/AppTheme.Dialog"/>
 
-        <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
-        </activity>
-
         <activity
             android:name=".register.view.activity.CreatePasswordActivity"
             android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
-            android:label=""
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".changephonenumber.view.activity.OvoWebViewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
-        <activity
-            android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
-            android:label="@string/change_phone_number"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            />
-        <activity
-            android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            />
 
         <activity
             android:name=".addchangeemail.view.activity.AddEmailActivity"

@@ -27,6 +27,8 @@ import rx.functions.Func1;
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
+    public static final String DEFAULT_SHOP_TYPE = "default";
+    
     private SessionHandler sessionHandler;
     private List<String> shopTypes;
 
@@ -89,7 +91,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
-        purchase.setShopType((shopTypes.get(position)));
+        purchase.setShopType(checkShopTypeForMarketplace(shopTypes.get(position)));
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
@@ -106,6 +108,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         }
 
         return purchase;
+    }
+
+    private String checkShopTypeForMarketplace(String s){
+        if (s.isEmpty()){
+            return DEFAULT_SHOP_TYPE;
+        }
+
+        return s;
     }
 
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {

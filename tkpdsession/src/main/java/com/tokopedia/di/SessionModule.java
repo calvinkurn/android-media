@@ -20,10 +20,6 @@ import com.tokopedia.network.service.RegisterPhoneNumberApi;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
-import com.tokopedia.otp.phoneverification.data.source.ChangeMsisdnSource;
-import com.tokopedia.otp.phoneverification.data.source.VerifyMsisdnSource;
-import com.tokopedia.otp.phoneverification.domain.mapper.ChangePhoneNumberMapper;
-import com.tokopedia.otp.phoneverification.domain.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -33,24 +29,6 @@ import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
-import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
-import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateOtpStatus;
-import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
-import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateOtpStatusUseCase;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 import com.tokopedia.session.data.source.CreatePasswordDataSource;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
@@ -199,42 +177,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
-        return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberWarningFragmentListener.Presenter
-    provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase,
-                                             ValidateOtpStatusUseCase validateOtpStatusUseCase) {
-        return new ChangePhoneNumberWarningPresenter(getWarningUseCase, validateOtpStatusUseCase);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
-                                                                   CloudSendEmailSource cloudSendEmailSource,
-                                                                   CloudValidateNumberSource cloudValidateNumberSource,
-                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource,
-                                                                   CloudValidateOtpStatus cloudValidateOtpStatus) {
-        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
-                cloudSendEmailSource,
-                cloudValidateNumberSource,
-                cloudValidateEmailCodeSource,
-                cloudValidateOtpStatus);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
-                                                                                                             ValidateEmailCodeUseCase validateEmailCodeUseCase) {
-        return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase, validateEmailCodeUseCase);
-    }
-
-
-    @SessionScope
-    @Provides
     ProfileSourceFactory provideProfileSourceFactory(@ApplicationContext Context context,
                                                      @Named(BEARER_SERVICE) AccountsService accountsService,
                                                      GetUserInfoMapper getUserInfoMapper,
@@ -273,20 +215,6 @@ public class SessionModule {
                                ValidateOtpMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
-    ChangeMsisdnSource provideCloudChangeMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                      ChangePhoneNumberMapper changePhoneNumberMapper) {
-        return new ChangeMsisdnSource(accountsService, changePhoneNumberMapper);
-    }
-
-    @SessionScope
-    @Provides
-    VerifyMsisdnSource provideVerifyMsisdnSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                                                 VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
-        return new VerifyMsisdnSource(accountsService, verifyPhoneNumberMapper);
     }
 
     @SessionScope

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -24,9 +23,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -46,9 +44,13 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.ORDER_LIST_URL_ENCODING;
 
 /**
  * Created by baghira on 09/05/18.
@@ -186,8 +188,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         lihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .actionOpenGeneralWebView(getActivity(), invoice.invoiceUrl());
+                startActivity(((UnifiedOrderListRouter) getActivity()
+                        .getApplication()).getWebviewActivityWithIntent(getContext(),
+                        invoice.invoiceUrl()));
             }
         });
     }
@@ -243,7 +246,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
-                    TransactionPurchaseRouter.startWebViewActivity(getContext(), getResources().getString(R.string.contact_us_applink));
+                    try {
+                        startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
+                                .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
+                                        getResources().getString(R.string.contact_us_applink), ORDER_LIST_URL_ENCODING)));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -299,14 +308,20 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             public void onClick(View view) {
                 String newUri = uri;
                 if (uri.startsWith(KEY_URI)) {
-                    if(newUri.contains(KEY_URI_PARAMETER)) {
+                    if (newUri.contains(KEY_URI_PARAMETER)) {
                         Uri url = Uri.parse(newUri);
                         newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
                         newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
                     }
                     RouteManager.route(getActivity(), newUri);
                 } else if (uri != null && !uri.equals("")) {
-                    TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
+                    try {
+                        startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
+                                .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
+                                        uri, ORDER_LIST_URL_ENCODING)));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
