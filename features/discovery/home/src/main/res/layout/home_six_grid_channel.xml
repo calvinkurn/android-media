@@ -25,7 +25,8 @@
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/home_channel_title"
+            android:layout_toRightOf="@id/channel_title"
+            android:visibility="invisible"
             android:layout_centerVertical="true"
             app:coundDownBackgroud="@drawable/background_countdown"
             android:layout_marginLeft="@dimen/dp_8"/>

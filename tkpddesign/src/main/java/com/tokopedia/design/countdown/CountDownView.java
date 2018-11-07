@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -91,30 +92,6 @@ public class CountDownView extends FrameLayout {
         displayTime();
     }
 
-    public void setup(final Date expiredTime, final CountDownListener listener) {
-        if (isExpired(expiredTime)) {
-            handleExpiredTime(listener);
-            return;
-        }
-        stopAutoRefreshCounter();
-        refreshCounterHandler = new Handler();
-        runnableRefreshCounter = new Runnable() {
-            @Override
-            public void run() {
-                if (!isExpired(expiredTime)) {
-                    Date now = new Date();
-                    TimeDiffModel timeDiff = getTimeDiff(now, expiredTime);
-                    setTime(timeDiff.getHour(), timeDiff.getMinute(), timeDiff.getSecond());
-                    refreshCounterHandler.postDelayed(this, REFRESH_DELAY_MS);
-                } else {
-                    handleExpiredTime(listener);
-                }
-            }
-        };
-        startAutoRefreshCounter();
-        isTimerActive = true;
-    }
-
     public void setup(final long serverTimeOffset, final Date expiredTime,
                       final CountDownListener listener) {
         Date serverTime = new Date();
@@ -153,10 +130,6 @@ public class CountDownView extends FrameLayout {
         if (listener != null) {
             listener.onCountDownFinished();
         }
-    }
-
-    private boolean isExpired(Date expiredTime) {
-        return new Date().after(expiredTime);
     }
 
     private boolean isExpired(Date serverTime, Date expiredTime) {
@@ -199,6 +172,25 @@ public class CountDownView extends FrameLayout {
         hourView.setText(String.format(Locale.US, "%02d", hour));
         minuteView.setText(String.format(Locale.US, "%02d", minute));
         secondView.setText(String.format(Locale.US, "%02d", second));
+
+        if(rootView.getVisibility() == INVISIBLE &&
+                hour != 0 &&
+                minute != 0 &&
+                second != 0){
+            slideUp(rootView);
+        }
+    }
+
+    public void slideUp(View view){
+        view.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                view.getHeight(),  // fromYDelta
+                0);                // toYDelta
+        animate.setDuration(250);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
     }
 
     @Override

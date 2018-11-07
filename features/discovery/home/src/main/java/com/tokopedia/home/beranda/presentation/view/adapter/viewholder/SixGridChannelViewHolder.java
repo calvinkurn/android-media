@@ -107,7 +107,8 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
     }
 
     private boolean isSprintSale(DynamicHomeChannel.Channels channel) {
-        return channel.getHeader().getExpiredTime() != null;
+        return channel.getHeader().getExpiredTime() != null
+                && !TextUtils.isEmpty(channel.getHeader().getExpiredTime());
     }
 
     private static String getAvailableLink(String applink, String url) {
