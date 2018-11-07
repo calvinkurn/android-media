@@ -100,8 +100,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         }
                         if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)) {
                             list.add(new DigitalsViewModel(MainApplication.getAppContext().getString(R.string.digital_widget_title), 0));
-                        } else if(channel.getLayout().equals("topads")) {
-
                         } else {
                             list.add(mappingDynamicChannel(channel));
                             HomeTrackingUtils.homeDiscoveryWidgetImpression(list.size(),channel);
