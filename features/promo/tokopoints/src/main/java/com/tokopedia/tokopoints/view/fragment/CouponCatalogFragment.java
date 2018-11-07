@@ -356,7 +356,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter)getAppContext()).getHomeIntent(getActivityContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -730,8 +730,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (data.getMinimumUsage() != null && !data.getMinimumUsage().isEmpty()) {
             imgMinExchange.setVisibility(View.VISIBLE);
             textMinExchange.setVisibility(View.VISIBLE);
-            textMinExchangeValue.setVisibility(View.VISIBLE);
-            textMinExchangeValue.setText(data.getMinimumUsage());
+
+            if (CommonConstant.TEXT_NO_MIN_TRANS.equalsIgnoreCase(data.getMinimumUsage())) {
+                textMinExchange.setText(data.getMinimumUsage());
+            } else {
+                textMinExchangeValue.setVisibility(View.VISIBLE);
+                textMinExchangeValue.setText(data.getMinimumUsage());
+            }
         }
 
         imgLabel.setVisibility(View.VISIBLE);
