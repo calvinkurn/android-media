@@ -701,7 +701,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if(errorSendIndicator != null && errorSendIndicator instanceof WebSocketException && getActivity()!=null && getActivity() instanceof GroupChatActivity){
-            ((GroupChatActivity) getActivity()).setSnackBarErrorLoading();
+            ((GroupChatActivity) getActivity()).setSnackBarRetry();
         }
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         clearMessageEditText();
