@@ -106,6 +106,13 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
+            android:name=".register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity"
+            android:label="@string/title_add_name_empty"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
             android:name=".addname.AddNameActivity"
             android:label="@string/title_add_name_empty"
             android:screenOrientation="portrait"
