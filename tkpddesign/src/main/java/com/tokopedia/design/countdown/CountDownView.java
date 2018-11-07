@@ -156,7 +156,7 @@ public class CountDownView extends FrameLayout {
         if (refreshCounterHandler != null &&
                 runnableRefreshCounter != null &&
                 !isTimerActive) {
-            refreshCounterHandler.postDelayed(runnableRefreshCounter, REFRESH_DELAY_MS);
+            refreshCounterHandler.post(runnableRefreshCounter);
             isTimerActive = true;
         }
     }
@@ -172,25 +172,6 @@ public class CountDownView extends FrameLayout {
         hourView.setText(String.format(Locale.US, "%02d", hour));
         minuteView.setText(String.format(Locale.US, "%02d", minute));
         secondView.setText(String.format(Locale.US, "%02d", second));
-
-        if(rootView.getVisibility() == INVISIBLE &&
-                hour != 0 &&
-                minute != 0 &&
-                second != 0){
-            slideUp(rootView);
-        }
-    }
-
-    public void slideUp(View view){
-        view.setVisibility(View.VISIBLE);
-        TranslateAnimation animate = new TranslateAnimation(
-                0,                 // fromXDelta
-                0,                 // toXDelta
-                view.getHeight(),  // fromYDelta
-                0);                // toYDelta
-        animate.setDuration(250);
-        animate.setFillAfter(true);
-        view.startAnimation(animate);
     }
 
     @Override

@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/home_channel_title"
             android:layout_centerVertical="true"
-            android:visibility="invisible"
             app:coundDownBackgroud="@drawable/background_countdown"
             android:layout_marginLeft="@dimen/dp_8"/>
 
