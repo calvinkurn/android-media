@@ -19,6 +19,7 @@ import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -81,6 +82,11 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     @Override
     public int type(AutoCompleteSearch viewModel) {
         return AutoCompleteViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(RecentViewSearch viewModel) {
+        return RecentViewViewHolder.LAYOUT;
     }
 
     @Override
