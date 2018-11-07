@@ -92,7 +92,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     public void loginWithresult(Promise promise) {
         Intent intent = RouteManager.getIntent(getCurrentActivity(), ApplinkConst.LOGIN);
         String UserID = getUserId(getCurrentActivity().getApplicationContext());
-        if (!UserID.equals("")){
+        if (UserID.equals("")){
             getCurrentActivity().startActivityForResult(intent, ReactConst.REACT_LOGIN_REQUEST_CODE);
         }
     }
