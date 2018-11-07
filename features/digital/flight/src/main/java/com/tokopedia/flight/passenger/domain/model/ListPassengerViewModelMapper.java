@@ -22,7 +22,7 @@ public class ListPassengerViewModelMapper {
 
     public FlightBookingPassengerViewModel transform(FlightPassengerDB savedPassengerEntity) {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
-        if (!savedPassengerEntity.getBirthdate().isEmpty()) {
+        if (savedPassengerEntity.getBirthdate() != null && !savedPassengerEntity.getBirthdate().isEmpty()) {
             flightBookingPassengerViewModel.setPassengerBirthdate(
                     FlightDateUtil.formatDate(
                             FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
@@ -36,7 +36,7 @@ public class ListPassengerViewModelMapper {
             flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
         }
 
-        if (!savedPassengerEntity.getPassportExpiry().isEmpty()) {
+        if (savedPassengerEntity.getPassportExpiry() != null && !savedPassengerEntity.getPassportExpiry().isEmpty()) {
             flightBookingPassengerViewModel.setPassportExpiredDate(
                     FlightDateUtil.formatDate(
                             FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
