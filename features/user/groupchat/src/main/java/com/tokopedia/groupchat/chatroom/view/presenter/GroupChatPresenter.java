@@ -6,6 +6,7 @@ import android.util.Log;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
@@ -127,40 +128,52 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
-                showDummy("onOpened ".concat(webSocketUrl), "logger open");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", " on WebSocket open");
+                    showDummy("onOpened ".concat(webSocketUrl), "logger open");
+                }
                 getView().onOpenWebSocket();
-                Log.d("RxWebSocket Presenter", " on WebSocket open");
                 setReportWebSocket(false);
             }
 
             @Override
             protected void onMessage(@NonNull String text) {
-                Log.d("RxWebSocket Presenter", text);
-                showDummy(text, "logger message");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", text);
+                    showDummy(text, "logger message");
+                }
             }
 
             @Override
             protected void onMessage(@NonNull Visitable item, boolean hideMessage) {
-                Log.d("RxWebSocket Presenter", "item");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "item");
+                }
                 getView().onMessageReceived(item, hideMessage);
             }
 
             @Override
             protected void onMessage(@NonNull ByteString byteString) {
-                Log.d("RxWebSocket Presenter", byteString.toString());
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", byteString.toString());
+                }
             }
 
             @Override
             protected void onReconnect() {
-                Log.d("RxWebSocket Presenter", "onReconnect");
-                showDummy("reconnecting", "logger reconnect");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onReconnect");
+                    showDummy("reconnecting", "logger reconnect");
+                }
                 getView().setSnackBarErrorLoading();
             }
 
             @Override
             protected void onClose() {
-                Log.d("RxWebSocket Presenter", "onClose");
-                showDummy("onClose", "logger close");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onClose");
+                    showDummy("onClose", "logger close");
+                }
                 destroyWebSocket();
                 connect(userId, deviceId, accessToken, finalSettingGroupChat);
             }
@@ -168,8 +181,10 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                Log.d("RxWebSocket Presenter", "onError " + e.toString());
-                showDummy(e.toString(), "logger error");
+                if(GlobalConfig.isAllowDebuggingTools()) {
+                    Log.d("RxWebSocket Presenter", "onError " + e.toString());
+                    showDummy(e.toString(), "logger error");
+                }
                 getView().setSnackBarRetry();
                 reportWebSocket(e);
             }
@@ -182,7 +197,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         mSubscription.add(subscription);
     }
 
-    public void testSendReply(PendingChatViewModel pendingChatViewModel) {
+    public void sendViaWebSocket(PendingChatViewModel pendingChatViewModel) {
         Exception errorSendIndicator = null;
         try {
             RxWebSocket.send(webSocketUrl, GroupChatWebSocketParam.getParamSend(channelId, pendingChatViewModel.getMessage()));

@@ -323,7 +323,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
                                         false);
-                        ((GroupChatActivity)getActivity()).testSendReply(pendingChatViewModel);
+                        ((GroupChatActivity)getActivity()).sendViaWebSocket(pendingChatViewModel);
                     }
                 }
             });
@@ -587,7 +587,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         userSession.getProfilePicture(),
                         false);
 
-        ((GroupChatActivity)getActivity()).testSendReply(pendingChatViewModel);
+        ((GroupChatActivity)getActivity()).sendViaWebSocket(pendingChatViewModel);
     }
 
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {

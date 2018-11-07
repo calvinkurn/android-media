@@ -1877,8 +1877,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-    public void testSendReply(PendingChatViewModel pendingChatViewModel) {
-        presenter.testSendReply(pendingChatViewModel);
+    public void sendViaWebSocket(PendingChatViewModel pendingChatViewModel) {
+        presenter.sendViaWebSocket(pendingChatViewModel);
     }
 
     public void saveStateFragment(GroupChatFragment fragment, String key) {
