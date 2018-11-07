@@ -241,10 +241,11 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setCode(cartDataListResponse.getAutoApply().getCode());
         autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoApply().getIsCoupon());
-        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageSuccess());
+        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageAutoApply().getText());
         autoApplyData.setPromoId(cartDataListResponse.getAutoApply().getPromoId());
         autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
         autoApplyData.setTitleDescription(cartDataListResponse.getAutoApply().getTitleDescription());
+        autoApplyData.setState(cartDataListResponse.getAutoApply().getMessageAutoApply().getState());
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;
@@ -397,10 +398,11 @@ public class CartMapper implements ICartMapper {
         autoApplyData.setCode(cartDataListResponse.getAutoApply().getCode());
         autoApplyData.setDiscountAmount(cartDataListResponse.getAutoApply().getDiscountAmount());
         autoApplyData.setIsCoupon(cartDataListResponse.getAutoApply().getIsCoupon());
-        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageSuccess());
+        autoApplyData.setMessageSuccess(cartDataListResponse.getAutoApply().getMessageAutoApply().getState());
         autoApplyData.setPromoId(cartDataListResponse.getAutoApply().getPromoId());
         autoApplyData.setSuccess(cartDataListResponse.getAutoApply().isSuccess());
         autoApplyData.setTitleDescription(cartDataListResponse.getAutoApply().getTitleDescription());
+        autoApplyData.setState(cartDataListResponse.getAutoApply().getMessageAutoApply().getState());
         cartListData.setAutoApplyData(autoApplyData);
 
         return cartListData;

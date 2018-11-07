@@ -22,10 +22,10 @@ import retrofit2.Converter;
 public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab);
+            boolean couponActive, String additionalStringData);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab);
+            boolean couponActive, String additionalStringData);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
@@ -64,4 +64,8 @@ public interface ICheckoutModuleRouter {
     void goToPurchasePage(Activity activity);
 
     Intent checkoutModuleRouterGetRecentViewIntent();
+
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive);
+
+    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive);
 }

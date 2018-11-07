@@ -4,7 +4,7 @@
               android:layout_height="wrap_content"
               android:orientation="vertical">
 
-    <com.tokopedia.checkout.view.common.compoundview.VoucherPromoView
+    <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
         android:id="@+id/voucher_cart_holder_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

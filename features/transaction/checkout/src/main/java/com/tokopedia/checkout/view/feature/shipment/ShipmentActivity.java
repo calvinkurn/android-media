@@ -10,10 +10,10 @@ import android.view.View;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 
 /**
@@ -35,12 +35,12 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
 
     public static Intent createInstance(Context context,
-                                        PromoCodeAppliedData promoCodeCartListData,
+                                        PromoData promoData,
                                         CartPromoSuggestion cartPromoSuggestion,
                                         String defaultSelectedTabPromo,
                                         boolean isAutoApplyPromoCodeApplied) {
         Intent intent = new Intent(context, ShipmentActivity.class);
-        intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
+        intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
         intent.putExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);

@@ -49,6 +49,7 @@ public class CheckPromoCodeCartListUseCase extends UseCase<PromoCodeCartListData
 
         if (paramUpdateCart != null)
             return cartRepository.updateCartData(paramUpdateCart)
+                    //todo zul
                     .flatMap(updateCartDataResponse -> cartRepository.checkPromoCodeCartList(paramCheckPromo)
                             .map(
                                     voucherCouponMapper::convertPromoCodeCartListData

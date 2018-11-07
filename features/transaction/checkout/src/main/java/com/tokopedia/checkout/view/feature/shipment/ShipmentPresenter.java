@@ -22,10 +22,8 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
@@ -39,7 +37,6 @@ import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
@@ -47,10 +44,10 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemMo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
@@ -113,10 +110,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
 
-    private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
-    private PromoCodeAppliedData promoCodeAppliedData;
     private CartPromoSuggestion cartPromoSuggestion;
     private ShipmentCostModel shipmentCostModel;
     private ShipmentDonationModel shipmentDonationModel;
@@ -194,16 +189,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public PromoCodeAppliedData getPromoCodeAppliedData() {
-        return promoCodeAppliedData;
-    }
-
-    @Override
-    public void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData) {
-        this.promoCodeAppliedData = promoCodeAppliedData;
-    }
-
-    @Override
     public CartPromoSuggestion getCartPromoSuggestion() {
         return cartPromoSuggestion;
     }
@@ -258,16 +243,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel) {
         this.shipmentDonationModel = shipmentDonationModel;
-    }
-
-    @Override
-    public CartItemPromoHolderData getCartItemPromoHolderData() {
-        return cartItemPromoHolderData;
-    }
-
-    @Override
-    public void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData) {
-        this.cartItemPromoHolderData = cartItemPromoHolderData;
     }
 
     @Override
@@ -366,7 +341,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData oldCartItemPromoHolderData,
+    public void processReloadCheckoutPageFromMultipleAddress(PromoData oldPromoData,
                                                              CartPromoSuggestion oldCartPromoSuggestion,
                                                              RecipientAddressModel oldRecipientAddressModel,
                                                              ArrayList<ShipmentCartItemModel> oldShipmentCartItemModels,
@@ -598,10 +573,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckShipmentPrepareCheckout() {
+    public void processCheckShipmentPrepareCheckout(String voucherCode) {
         boolean isNeedToRemoveErrorProduct = isNeedToremoveErrorShopProduct();
         if (partialCheckout || isNeedToRemoveErrorProduct) {
-            processCheckout();
+            processCheckout(voucherCode);
         } else {
             getView().showLoading();
             com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
@@ -735,10 +710,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout() {
+    public void processCheckout(String voucherCode) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
-                promoCodeAppliedData != null && promoCodeAppliedData.getPromoCode() != null ?
-                        promoCodeAppliedData.getPromoCode() : "",
+                !TextUtils.isEmpty(voucherCode) ?
+                        voucherCode : "",
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
 
@@ -833,10 +808,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void checkPromoShipment() {
+    public void checkPromoShipment(String promoCode) {
+        //todo zul change to new check final
         CheckPromoCodeCartShipmentRequest checkPromoCodeCartShipmentRequest =
                 new CheckPromoCodeCartShipmentRequest.Builder()
-                        .promoCode(promoCodeAppliedData.getPromoCode())
+                        .promoCode(promoCode)
                         .data(promoCodeCartShipmentRequestDataList)
                         .build();
 

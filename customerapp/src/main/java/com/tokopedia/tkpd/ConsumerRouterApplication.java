@@ -1954,14 +1954,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData
     ) {
         return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(),couponActive);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData
     ) {
         return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive);
     }

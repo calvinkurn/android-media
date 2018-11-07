@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -69,7 +69,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
 
-    public void bindViewHolder(ShipmentCostModel shipmentCost, CartItemPromoHolderData promo) {
+    public void bindViewHolder(ShipmentCostModel shipmentCost, PromoData promo) {
         mRlShipmentCostLayout.setVisibility(View.VISIBLE);
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
@@ -86,9 +86,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
             formatPromoMessage(mTvPromoMessage, shipmentCost.getPromoMessage());
             mTvPromoMessage.setVisibility(View.VISIBLE);
             if (promo != null) {
-                if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_COUPON) {
+                if (promo.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
                     mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_coupon));
-                } else if (promo.getTypePromo() == CartItemPromoHolderData.TYPE_PROMO_VOUCHER) {
+                } else if (promo.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
                     mTvPromoOrCouponLabel.setText(mTvPromoOrCouponLabel.getContext().getString(R.string.label_promo));
                 }
             }

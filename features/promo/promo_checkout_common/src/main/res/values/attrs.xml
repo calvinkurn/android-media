@@ -5,6 +5,7 @@
             <enum name="inactive" value="1"/>
             <enum name="active" value="2"/>
             <enum name="failed" value="3"/>
+            <enum name="empty" value="-1"/>
         </attr>
         <attr name="title" format="string"/>
         <attr name="desc" format="string"/>

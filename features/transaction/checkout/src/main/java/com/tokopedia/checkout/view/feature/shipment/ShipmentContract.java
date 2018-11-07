@@ -12,15 +12,14 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
@@ -173,7 +172,7 @@ public interface ShipmentContract {
 
         void processInitialLoadCheckoutPage(boolean isFromMultipleAddress);
 
-        void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData cartItemPromoHolderData,
+        void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
@@ -182,13 +181,13 @@ public interface ShipmentContract {
 
         void processReloadCheckoutPageBecauseOfError();
 
-        void processCheckShipmentPrepareCheckout();
+        void processCheckShipmentPrepareCheckout(String voucherCode);
 
-        void processCheckout();
+        void processCheckout(String voucherCode);
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment();
+        void checkPromoShipment(String promoCode);
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
@@ -209,10 +208,6 @@ public interface ShipmentContract {
         List<ShipmentCartItemModel> getShipmentCartItemModelList();
 
         void setShipmentCartItemModelList(List<ShipmentCartItemModel> recipientCartItemList);
-
-        PromoCodeAppliedData getPromoCodeAppliedData();
-
-        void setPromoCodeAppliedData(PromoCodeAppliedData promoCodeAppliedData);
 
         CartPromoSuggestion getCartPromoSuggestion();
 
@@ -243,10 +238,6 @@ public interface ShipmentContract {
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
         ShipmentDonationModel getShipmentDonationModel();
-
-        void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData);
-
-        CartItemPromoHolderData getCartItemPromoHolderData();
 
         void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
                                                int itemPosition);

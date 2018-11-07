@@ -183,7 +183,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvErrorShipmentItemTitle;
     private TextView tvErrorShipmentItemDescription;
 
-    private List<ShipmentData> shipmentDataList;
+    private List<Object> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
     private CompositeSubscription compositeSubscription;
     private SaveStateDebounceListener saveStateDebounceListener;
@@ -356,7 +356,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
-                               List<ShipmentData> shipmentDataList,
+                               List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
                                RatesDataConverter ratesDataConverter,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
