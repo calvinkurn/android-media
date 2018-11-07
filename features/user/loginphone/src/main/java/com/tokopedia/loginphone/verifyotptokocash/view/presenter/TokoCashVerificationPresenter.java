@@ -96,9 +96,13 @@ public class TokoCashVerificationPresenter extends BaseDaggerPresenter<TokoCashV
                     public void onNext(VerifyOtpTokoCashPojo verifyOtpTokoCashPojo) {
                         getView().dismissLoadingProgress();
                         if (verifyOtpTokoCashPojo.isVerified()
-                                && !verifyOtpTokoCashPojo.getUserDetails().isEmpty())
+                                        && !verifyOtpTokoCashPojo.getUserDetails().isEmpty()
+                                        && verifyOtpTokoCashPojo.getUserDetails().size() == 1) {
+                            getView().autoLoginPhoneNumber(verifyOtpTokoCashPojo);
+                        } else if (verifyOtpTokoCashPojo.isVerified()
+                                && !verifyOtpTokoCashPojo.getUserDetails().isEmpty()) {
                             getView().onSuccessVerifyOTP(verifyOtpTokoCashPojo);
-                        else {
+                        } else {
                             getView().onErrorNoAccountTokoCash();
                         }
                     }

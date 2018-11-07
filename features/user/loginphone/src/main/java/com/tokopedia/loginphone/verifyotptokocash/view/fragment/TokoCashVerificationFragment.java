@@ -45,6 +45,8 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
         TokoCashVerificationContract.View {
 
     private static final int REQUEST_SECURITY_QUESTION = 101;
+    public static final int RESULT_SUCCESS_AUTO_LOGIN = 333;
+
     @Inject
     TokoCashVerificationPresenter presenter;
 
@@ -134,13 +136,13 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
                             verifyOtpTokoCashPojo.getKey()));
             intent.putExtras(bundle);
             getActivity().setResult(Activity.RESULT_OK, intent);
-
-            if (verifyOtpTokoCashPojo.getUserDetails().size() > 1) {
-                getActivity().finish();
-            } else {
-                presenter.autoLogin(verifyOtpTokoCashPojo.getKey(), verifyOtpTokoCashPojo);
-            }
+            getActivity().finish();
         }
+    }
+
+    @Override
+    public void autoLoginPhoneNumber(VerifyOtpTokoCashPojo verifyOtpTokoCashPojo) {
+        presenter.autoLogin(verifyOtpTokoCashPojo.getKey(), verifyOtpTokoCashPojo);
     }
 
     @Override
@@ -246,7 +248,7 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
             loginPhoneNumberAnalytics.eventSuccessLoginPhoneNumber();
             ((LoginPhoneNumberRouter) getActivity().getApplicationContext()).setTrackingUserId(userId,
                     getActivity().getApplicationContext());
-            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().setResult(RESULT_SUCCESS_AUTO_LOGIN);
             getActivity().finish();
         }
     }

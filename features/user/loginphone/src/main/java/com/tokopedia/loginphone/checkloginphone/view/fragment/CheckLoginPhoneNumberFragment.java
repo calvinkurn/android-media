@@ -33,11 +33,11 @@ import com.tokopedia.loginphone.checkloginphone.view.listener.CheckLoginPhoneNum
 import com.tokopedia.loginphone.checkloginphone.view.presenter.CheckLoginPhoneNumberPresenter;
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
 import com.tokopedia.loginphone.choosetokocashaccount.view.activity.ChooseTokocashAccountActivity;
-import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.verifyotptokocash.view.activity.TokoCashOtpActivity;
+import com.tokopedia.loginphone.verifyotptokocash.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 
@@ -224,27 +224,32 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (getActivity() != null) {
             if (requestCode == REQUEST_VERIFY_PHONE
-                    && resultCode == Activity.RESULT_OK) {
-
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA) != null) {
                 ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel =
                         data.getParcelableExtra(ChooseTokocashAccountActivity.ARGS_DATA);
-                if (chooseTokoCashAccountViewModel != null
-                        && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                } else if (chooseTokoCashAccountViewModel != null && !chooseTokoCashAccountViewModel
-                        .getListAccount().isEmpty()) {
+                if (!chooseTokoCashAccountViewModel.getListAccount().isEmpty()) {
                     goToChooseAccountPage(chooseTokoCashAccountViewModel);
                 } else {
                     goToNoTokocashAccountPage();
                 }
+            } else if (requestCode == REQUEST_VERIFY_PHONE
+                    && resultCode == TokoCashVerificationFragment.RESULT_SUCCESS_AUTO_LOGIN) {
+                onSuccessLoginPhoneNumber();
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
                     && resultCode == Activity.RESULT_OK) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
+                onSuccessLoginPhoneNumber();
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
+        }
+    }
+
+    private void onSuccessLoginPhoneNumber() {
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }
     }
 

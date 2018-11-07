@@ -34,6 +34,7 @@ public interface TokoCashVerificationContract {
 
         void onLimitOTPReached(String errorMessage);
 
+        void autoLoginPhoneNumber(VerifyOtpTokoCashPojo userDetail);
     }
 
     interface Presenter extends CustomerPresenter<View> {
