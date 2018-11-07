@@ -1,21 +1,19 @@
 package com.tokopedia.tokocash.balance.data.datasource;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.drawer2.data.pojo.UserData;
-import com.tokopedia.core.drawer2.data.pojo.Wallet;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.balance.data.entity.BalanceTokoCashEntity;
+import com.tokopedia.tokocash.balance.data.entity.BalanceWalletEntity;
 import com.tokopedia.tokocash.network.api.WalletBalanceApi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -29,6 +27,7 @@ import rx.functions.Func1;
 public class CloudBalanceDataSource implements BalanceDataSource {
 
     private static final String TAG = CloudBalanceDataSource.class.getName();
+    private static final String QUERY = "query";
     private static final int DURATION_SAVE_TO_CACHE = 60;
 
     private WalletBalanceApi walletApi;
@@ -44,52 +43,30 @@ public class CloudBalanceDataSource implements BalanceDataSource {
     }
 
     @Override
-    public Observable<Wallet> getBalanceTokoCash() {
-        return walletApi.getBalance(getRequestPayload())
-                .doOnNext(new Action1<Response<GraphqlResponse<UserData>>>() {
+    public Observable<BalanceTokoCashEntity> getBalanceTokoCash() {
+        Map<String, Object> requestQuery = new HashMap<>();
+        requestQuery.put(QUERY, getRequestPayload());
+        return walletApi.getBalance(requestQuery)
+                .doOnNext(new Action1<Response<GraphqlResponse<BalanceWalletEntity>>>() {
                     @Override
-                    public void call(Response<GraphqlResponse<UserData>> dataResponseResponse) {
+                    public void call(Response<GraphqlResponse<BalanceWalletEntity>> dataResponseResponse) {
                         if (dataResponseResponse.body().getData() != null && dataResponseResponse.body().getData().getWallet() != null && dataResponseResponse.body().getData().getWallet().getLinked()) {
                             cacheManager.save(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE,
                                     CacheUtil.convertModelToString(dataResponseResponse.body().getData().getWallet(),
-                                            new TypeToken<Wallet>() {
+                                            new TypeToken<BalanceTokoCashEntity>() {
                                             }.getType()), DURATION_SAVE_TO_CACHE);
                         }
                     }
                 })
-                .map(new Func1<Response<GraphqlResponse<UserData>>, Wallet>() {
+                .map(new Func1<Response<GraphqlResponse<BalanceWalletEntity>>, BalanceTokoCashEntity>() {
                     @Override
-                    public Wallet call(Response<GraphqlResponse<UserData>> userData) {
-                        return userData.body().getData().getWallet();
+                    public BalanceTokoCashEntity call(Response<GraphqlResponse<BalanceWalletEntity>> graphqlResponseResponse) {
+                        return graphqlResponseResponse.body().getData().getWallet();
                     }
                 });
     }
 
     private String getRequestPayload() {
-        if (context == null) return "";
-        return loadRawString(context.getResources(), R.raw.wallet_balance_query);
-    }
-
-    private String loadRawString(Resources resources, int resId) {
-        InputStream rawResource = resources.openRawResource(resId);
-        String content = streamToString(rawResource);
-        try {
-            rawResource.close();
-        } catch (IOException e) {
-        }
-        return content;
-    }
-
-    private String streamToString(InputStream in) {
-        String temp;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            while ((temp = bufferedReader.readLine()) != null) {
-                stringBuilder.append(temp + "\n");
-            }
-        } catch (IOException e) {
-        }
-        return stringBuilder.toString();
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.wallet_balance_query);
     }
 }

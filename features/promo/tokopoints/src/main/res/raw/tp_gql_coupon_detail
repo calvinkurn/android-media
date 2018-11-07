@@ -29,5 +29,15 @@ query hachikoCouponDetailQuery($code: String) {
         type
       }
     }
+    swipe {
+      need_swipe
+      text
+      note
+      partner_code
+      pin {
+        need_pin
+        text
+      }
+    }
   }
 }

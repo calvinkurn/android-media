@@ -50,7 +50,7 @@
     <string name="train_search_sort">Urutkan</string>
     <string name="train_search_filter">Filter</string>
     <string name="train_search_passenger_adult" formatted="false">%d Dewasa</string>
-    <string name="train_search_passenger_infant" formatted="false">%d Infant</string>
+    <string name="train_search_passenger_infant" formatted="false">%d Bayi</string>
     <string name="train_search_departure_title">Perjalanan Pergi</string>
     <string name="train_search_return_title">Perjalanan Pulang</string>
     <string name="train_search_cheapest_label">Termurah</string>
@@ -170,7 +170,7 @@
     <string name="train_review_trip_adult_passenger_count">%1$s - %2$s (Dewasa) x %3$d</string>
     <string name="train_review_trip_infant_passenger_count">%1$s - %2$s (Bayi) x %3$d</string>
     <string name="train_review_label_discount_channel">Diskon Channel (%1$s - %2$s)</string>
-    <string name="train_review_label_extra_fee">Biaya lananan (%1$s - %2$s)</string>
+    <string name="train_review_label_extra_fee">Biaya layanan (%1$s - %2$s)</string>
     <string name="train_review_label_rp">Rp</string>
     <string name="train_review_label_subtotal">Subtotal</string>
     <string name="train_review_label_discount_voucher">Diskon Voucher</string>
@@ -206,5 +206,9 @@
     <string name="train_sorting_most_expensive">Harga Termahal</string>
     <string name="train_error_dialog_default_button">OK</string>
     <string name="train_error_dialog_failed_booking">Pemesanan Gagal</string>
+    <string name="travel_homepage_promo_copy_label">Salin</string>
+    <string name="travel_homepage_promo_code_label">Kode Promo:</string>
+    <string name="travel_homepage_promo_label">Promo</string>
+    <string name="travel_homepage_promo_see_all_label">Lihat Semua</string>
 
 </resources>

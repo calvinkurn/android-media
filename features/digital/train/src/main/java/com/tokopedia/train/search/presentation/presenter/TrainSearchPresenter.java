@@ -56,8 +56,8 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
 
                     @Override
                     public void onNext(List<AvailabilityKeySchedule> availabilityKeySchedules) {
-                        getView().clearAdapterData();
                         if (availabilityKeySchedules.isEmpty()) {
+                            getView().clearAdapterData();
                             getView().showEmptyResult();
                         } else {
                             getAvailabilitySchedule(availabilityKeySchedules);
@@ -78,12 +78,14 @@ public class TrainSearchPresenter extends BaseDaggerPresenter<TrainSearchContrac
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
+                    getView().clearAdapterData();
                     getView().showGetListError(e);
                 }
             }
 
             @Override
             public void onNext(List<List<TrainScheduleViewModel>> trainScheduleViewModels) {
+                getView().clearAdapterData();
                 if (isViewAttached() && trainScheduleViewModels != null) {
                     getView().addPaddingSortAndFilterSearch();
                     getView().showFilterAndSortButtonAction();

@@ -20,5 +20,6 @@ public interface EventsUrl {
     String EVENT_GET_USER_LIKES = "/v1/api/rating/user";
     String EVENT_SEAT_LAYOUT = "/v1/api/seat-layout/category/{category_id}/product/{product_id}/schedule/{schedule_id}/group/{group_id}/package/{package_id}";
 
+    String EVENT_SCAN_TICKET_URL="v1/api/redeem/role/validate";
 
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2
@@ -33,7 +31,7 @@ import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
 import kotlinx.android.synthetic.main.fragment_shop_info.*
 import kotlinx.android.synthetic.main.partial_shop_info_description.*
-import kotlinx.android.synthetic.main.partial_shop_info_logistic_2.*
+import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
 import kotlinx.android.synthetic.main.partial_shop_info_note.*
 import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
 import javax.inject.Inject
@@ -64,13 +62,6 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
         recyclerViewNote.isFocusable = false
         recyclerViewLogistic.isNestedScrollingEnabled = false
         recyclerViewLogistic.isFocusable = false
-
-        recyclerViewNote.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerViewNote.setHasFixedSize(true)
-
-        recyclerViewLogistic.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerViewLogistic.setHasFixedSize(true)
-        recyclerViewLogistic.addItemDecoration(DividerItemDecoration(activity))
 
         shopInfo?.run { updateShopInfo(this) }
     }
@@ -115,8 +106,9 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
 
         if (!presenter.isMyshop(shopId)){
             labelViewLogisticTitle.setContent("")
-            labelViewLogisticTitle.setOnClickListener {}
+            labelViewLogisticTitle.setOnClickListener { }
         } else {
+            labelViewLogisticTitle.setContent(getString(R.string.shop_info_label_manage_note))
             labelViewLogisticTitle.setOnClickListener { goToManageLogistic()}
         }
     }

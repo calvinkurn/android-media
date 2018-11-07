@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,6 +40,7 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -53,6 +52,8 @@ import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -223,15 +224,27 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         rvLastSeen.setNestedScrollingEnabled(false);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
-        tvWishListSeeAll.setOnClickListener(v -> startActivityForResult(
-                checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
-                REQUEST_CODE_ROUTE_WISHLIST)
+        tvWishListSeeAll.setOnClickListener(v -> {
+                    cartPageAnalytics.eventClickLihatSemuaWishlist();
+                    startActivityForResult(
+                            checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
+                            REQUEST_CODE_ROUTE_WISHLIST);
+                }
         );
-        tvLastSeenSeeAll.setOnClickListener(v -> startActivityForResult(
-                checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
-                REQUEST_CODE_ROUTE_RECENT_VIEW));
-        tvRecommendationSeeAll.setOnClickListener(v -> navigateToHome());
-        tvRecommendationSeeAllBottom.setOnClickListener(v -> navigateToHome());
+        tvLastSeenSeeAll.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickLihatSemuaLastSeen();
+            startActivityForResult(
+                    checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
+                    REQUEST_CODE_ROUTE_RECENT_VIEW);
+        });
+        tvRecommendationSeeAll.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            navigateToHome();
+        });
+        tvRecommendationSeeAllBottom.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickLihatLainnya();
+            navigateToHome();
+        });
 
         String autoApplyMessage = null;
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
@@ -267,6 +280,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasWishList(boolean hasMoreItem) {
+        cartPageAnalytics.enhancedEcommerceProductViewWishListOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductWishlistDataLayer());
         cvWishList.setVisibility(View.VISIBLE);
         wishlistAdapter.notifyDataSetChanged();
         if (hasMoreItem) {
@@ -291,6 +306,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasRecentView(boolean hasMoreItem) {
+        cartPageAnalytics.enhancedEcommerceProductViewLastSeenOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductRecentViewDataLayer());
         cvLastSeen.setVisibility(View.VISIBLE);
         recentViewAdapter.notifyDataSetChanged();
         if (hasMoreItem) {
@@ -314,13 +331,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             layoutUsedPromo.setVisibility(View.GONE);
         }
         btnContinueShoppingEmptyCart.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
             navigateToHome();
         });
     }
 
     private void navigateToHome() {
         if (getActivity() != null) {
-            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
             startActivity(
                     checkoutModuleRouter.checkoutModuleRouterGetHomeIntent(getActivity())
             );
@@ -372,6 +389,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void hideLoading() {
         swipeRefreshLayout.setRefreshing(false);
+        nestedScrollView.scrollTo(0, 0);
     }
 
     @Override
@@ -466,7 +484,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onProductItemClicked(int position, Product product) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
+                String.valueOf(position + 1), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 
@@ -514,7 +532,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
+        presenter.setRecommendationList(list);
+        cartPageAnalytics.enhancedEcommerceProductViewRecommendationOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductRecommendationDataLayer());
         cvRecommendation.setVisibility(View.VISIBLE);
         tvRecommendationSeeAllBottom.setVisibility(View.VISIBLE);
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.transactionanalytics.data.emptycart;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +11,7 @@ import java.util.Map;
 public class EnhancedECommerceEmptyCartData {
 
     private static final String KEY_CLICK = "click";
+    private static final String KEY_IMPRESSION = "impressions";
     private static final String KEY_CURRENCY_CODE = "currencyCode";
     private static final String DATA_CURRENCY_IDR = "IDR";
 
@@ -21,6 +23,10 @@ public class EnhancedECommerceEmptyCartData {
 
     public void setClickData(Map<String, Object> clickData) {
         data.put(KEY_CLICK, clickData);
+    }
+
+    public void setImpressionData(List<Map<String, Object>> impressionDataList) {
+        data.put(KEY_IMPRESSION, impressionDataList);
     }
 
     public Map<String, Object> getData() {

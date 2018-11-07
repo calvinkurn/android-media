@@ -50,7 +50,7 @@ public class FlightPassengerDb extends BaseModel implements Parcelable {
 
         if (passengerListEntity.getPassengerAttribute().getDob() != null) {
             this.birthdate = FlightDateUtil.formatDate(
-                    FlightDateUtil.FORMAT_DATE_API,
+                    FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                     FlightDateUtil.DEFAULT_FORMAT,
                     passengerListEntity.getPassengerAttribute().getDob()
             );

@@ -1,3 +1,4 @@
+include ':logisticanalytics'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

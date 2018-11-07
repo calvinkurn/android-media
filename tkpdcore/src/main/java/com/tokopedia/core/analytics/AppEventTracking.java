@@ -350,7 +350,6 @@ public interface AppEventTracking {
         String REPORT_SUCCESS = "Report Success";
         String LOGIN = "Login Success";
         String LOGIN_ERROR = "Login Error";
-        String REGISTER = "Register";
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";

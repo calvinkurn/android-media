@@ -186,12 +186,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         });
 
         buttonSubmit.setOnClickListener(v -> {
-            trainAnalytics.eventProceedToPayment(
-                    departureTripViewModel.getOriginStationCode(),
-                    departureTripViewModel.getDestinationStationCode(),
-                    departureTripViewModel.getTrainClass(),
-                    departureTripViewModel.getTrainName()
-            );
+            if (returnTripViewModel != null) {
+                trainAnalytics.eventProceedToPayment(
+                        departureTripViewModel,
+                        returnTripViewModel
+                );
+            } else {
+                trainAnalytics.eventProceedToPayment(
+                        departureTripViewModel.getOriginStationCode(),
+                        departureTripViewModel.getDestinationStationCode(),
+                        departureTripViewModel.getTrainClass(),
+                        departureTripViewModel.getTrainName()
+                );
+            }
 
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
@@ -245,19 +252,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         cardDepartureTrip.setContent(getString(R.string.train_review_trip, departureTrip.getOrigin(),
                 departureTrip.getDestination()));
         cardDepartureTrip.setContentInfo(
-                getString(R.string.train_review_trip_date, TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                getString(R.string.train_review_trip_date, TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         TrainDateUtil.DEFAULT_VIEW_FORMAT, departureTrip.getDepartureTimestamp())));
         cardDepartureTrip.setSubContent(getString(R.string.train_review_trip_train, departureTrip.getTrainName(),
                 departureTrip.getTrainNumber()));
 
-        String timeDepartureDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeDepartureDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, departureTrip.getDepartureTimestamp());
-        String timeDepartureArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeDepartureArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, departureTrip.getArrivalTimestamp());
 
-        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, departureTrip.getDepartureTimestamp());
-        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, departureTrip.getArrivalTimestamp());
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";
@@ -274,19 +281,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         cardReturnTrip.setContent(getString(R.string.train_review_trip, returnTrip.getOrigin(),
                 returnTrip.getDestination()));
         cardReturnTrip.setContentInfo(
-                getString(R.string.train_review_trip_date, TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                getString(R.string.train_review_trip_date, TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         TrainDateUtil.DEFAULT_VIEW_FORMAT, returnTrip.getDepartureTimestamp())));
         cardReturnTrip.setSubContent(getString(R.string.train_review_trip_train, returnTrip.getTrainName(),
                 returnTrip.getTrainNumber()));
 
-        String timeReturnDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeReturnDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, returnTrip.getDepartureTimestamp());
-        String timeReturnArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeReturnArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, returnTrip.getArrivalTimestamp());
 
-        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, returnTrip.getDepartureTimestamp());
-        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, returnTrip.getArrivalTimestamp());
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";

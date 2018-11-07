@@ -9,11 +9,11 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
-import com.tokopedia.navigation_common.model.WalletAction;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;
 
@@ -34,16 +34,19 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     private BuyerAccountMapper mapper;
     private Observable<WalletModel> tokocashAccountBalance;
     private WalletPref walletPref;
+    private UserSession userSession;
 
     @Inject
     public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
                                   Observable<WalletModel> tokocashAccountBalance,
                                   BuyerAccountMapper mapper,
-                                  WalletPref walletPref) {
+                                  WalletPref walletPref,
+                                  UserSession userSession) {
         this.graphqlUseCase = graphqlUseCase;
         this.tokocashAccountBalance = tokocashAccountBalance;
         this.mapper = mapper;
         this.walletPref = walletPref;
+        this.userSession = userSession;
     }
 
     @Override
@@ -56,6 +59,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     return accountModel;
                 })
                 .doOnNext(this::saveLocallyWallet)
+                .doOnNext(this::savePhoneVerified)
                 .map(mapper);
     }
 
@@ -82,6 +86,12 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
         walletPref.saveWallet(accountModel.getWallet());
         if (accountModel.getVccUserStatus() != null) {
             walletPref.setTokoSwipeUrl(accountModel.getVccUserStatus().getRedirectionUrl());
+        }
+    }
+
+    private void savePhoneVerified(AccountModel accountModel) {
+        if (accountModel.getProfile() != null) {
+            userSession.setIsMsisdnVerified(accountModel.getProfile().isPhoneVerified());
         }
     }
 }

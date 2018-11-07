@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="logistic_address_sort_type">
+        <item>@string/title_sort_by</item>
+        <item>@string/item_address_latest</item>
+        <item>@string/item_address_name</item>
+        <item>@string/item_address_receiver</item>
+    </string-array>
+</resources>

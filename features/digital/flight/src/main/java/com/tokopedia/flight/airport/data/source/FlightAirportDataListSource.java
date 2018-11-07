@@ -117,23 +117,34 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         return flightAirportDataListDBSource
                 .isDataAvailable()
                 .flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
-            @Override
-            public Observable<FlightAirportDB> call(Boolean isLocalAvailable) {
-                if (isLocalAvailable) {
-                    return flightAirportDataListDBSource.getAirport(params);
-                } else {
-                    return getAirportCloudByParam(params);
-                }
-            }
-        });
+                    @Override
+                    public Observable<FlightAirportDB> call(Boolean isLocalAvailable) {
+                        if (isLocalAvailable) {
+                            return flightAirportDataListDBSource.getAirport(params);
+                        } else {
+                            return getAirportCloudByParam(params);
+                        }
+                    }
+                });
     }
 
     public Observable<Boolean> checkPreloadAirport() {
-        return getCloudData(new HashMap<>())
-                .flatMap(new Func1<List<FlightAirportDB>, Observable<Boolean>>() {
+        return flightAirportDataListDBSource
+                .isDataAvailable()
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(List<FlightAirportDB> flightAirportDBS) {
-                        return Observable.just(true);
+                    public Observable<Boolean> call(Boolean hasData) {
+                        if (hasData) {
+                            return Observable.just(hasData);
+                        } else {
+                            return getCloudData(new HashMap<>())
+                                    .flatMap(new Func1<List<FlightAirportDB>, Observable<Boolean>>() {
+                                        @Override
+                                        public Observable<Boolean> call(List<FlightAirportDB> flightAirportDBS) {
+                                            return Observable.just(true);
+                                        }
+                                    });
+                        }
                     }
                 });
     }
@@ -168,7 +179,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
                 });
     }
 
-    public  Observable<Integer> getAirportCount(String query, String idCountry) {
+    public Observable<Integer> getAirportCount(String query, String idCountry) {
         HashMap<String, Object> map = generateGetParam(query);
         map.put(ID_COUNTRY, idCountry);
         return getCacheDataListCount(map);

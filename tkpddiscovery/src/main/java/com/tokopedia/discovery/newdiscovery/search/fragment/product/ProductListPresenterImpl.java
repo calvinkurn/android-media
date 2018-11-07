@@ -119,16 +119,20 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
-                getView().notifyAdapter();
+                if (isViewAttached()) {
+                    getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
+                    getView().notifyAdapter();
+                }
             }
 
             @Override
             public void onNext(Boolean result) {
-                if(result){
-                    getView().onSuccessAddWishlist(productItem.getProductID());
-                } else {
-                    getView().notifyAdapter();
+                if (isViewAttached()){
+                    if (result) {
+                        getView().onSuccessAddWishlist(productItem.getProductID());
+                    } else {
+                        getView().notifyAdapter();
+                    }
                 }
             }
         };
@@ -182,7 +186,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
-                getView().incrementStart();
+                if (isViewAttached()) {
+                    getView().incrementStart();
+                }
             }
 
             @Override
@@ -237,13 +243,17 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
             @Override
             public void onStart() {
-                getView().showRefreshLayout();
-                getView().incrementStart();
+                if (isViewAttached()) {
+                    getView().showRefreshLayout();
+                    getView().incrementStart();
+                }
             }
 
             @Override
             public void onCompleted() {
-                getView().hideRefreshLayout();
+                if (isViewAttached()) {
+                    getView().hideRefreshLayout();
+                }
             }
 
             @Override
@@ -327,5 +337,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         removeWishlistActionUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
         getDynamicFilterV4UseCase.unsubscribe();
+        graphqlUseCase.unsubscribe();
     }
 }

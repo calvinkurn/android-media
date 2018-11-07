@@ -209,7 +209,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             }
         }
         if (adsListener != null) {
-            adsListener.onTopAdsLoaded();
+            adsListener.onTopAdsLoaded(null);
         }
     }
 

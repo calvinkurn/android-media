@@ -17,6 +17,7 @@
   }) {
   ratesv3 {
     id
+    rates_id
     type
     services {
         service_name

@@ -129,6 +129,7 @@
             android:layout_height="match_parent"
             android:overScrollMode="never"
             android:scrollbars="none"
+            android:nestedScrollingEnabled="false"
             tools:itemCount="2"
             tools:listitem="@layout/vote_option_image" />
 

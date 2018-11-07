@@ -50,6 +50,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
@@ -146,6 +147,12 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(ExploreViewModel exploreViewModel) {
         return ExploreViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(EntryPointViewModel entryPointViewModel) {
+        throw new IllegalStateException(this.getClass().getSimpleName() + " doesn't support "
+                + EntryPointViewModel.class.getSimpleName());
     }
 
     @Override
@@ -249,5 +256,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
+    }
+
+    @Override
+    public void setType(KolPostViewHolder.Type type) {
+
     }
 }

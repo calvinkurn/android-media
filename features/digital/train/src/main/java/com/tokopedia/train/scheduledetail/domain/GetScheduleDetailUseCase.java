@@ -50,13 +50,13 @@ public class GetScheduleDetailUseCase extends UseCase<TrainScheduleDetailViewMod
                                         .originStationCode(origin.getStationCode())
                                         .destinationStationName(destination.getStationName())
                                         .destinationStationCode(destination.getStationCode())
-                                        .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        .arrivalDate(TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                                 TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getArrivalTimestamp()))
-                                        .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        .arrivalTime(TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp()))
-                                        .departureDate(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        .departureDate(TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                                 TrainDateUtil.FORMAT_DATE_LOCAL_DETAIL, trainScheduleViewModel.getDepartureTimestamp()))
-                                        .departureTime(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                                        .departureTime(TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp()))
                                         .duration(trainScheduleViewModel.getDisplayDuration())
                                         .trainClass(trainScheduleViewModel.getDisplayClass())

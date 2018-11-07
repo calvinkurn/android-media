@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -73,6 +74,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,8 +91,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
-    public static final String ARGS_EXPLORE_CATEGORY = "EXPLORE_CATEGORY";
-    public static final int ONBOARDING_REQUEST = 101;
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int INBOX_MENU = 2;
@@ -107,7 +107,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHOP_ID = "Jual";
 
     @Inject
-    com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
+    UserSessionInterface userSession;
     @Inject
     MainParentPresenter presenter;
     @Inject
@@ -213,8 +213,8 @@ public class MainParentActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser() {
-        return UserSession.isFirstTimeUser(MainParentActivity.this);
+    public boolean isFirstTimeUser(){
+        return userSession.isFirstTimeUser();
     }
 
     private void createView(Bundle savedInstanceState) {
@@ -373,7 +373,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+    public void setUserSession(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 
@@ -394,6 +394,10 @@ public class MainParentActivity extends BaseActivity implements
         addShortcuts();
 
         registerBroadcastHockeyApp();
+
+        if(!((BaseMainApplication)getApplication()).checkAppSignature()){
+            finish();
+        }
     }
 
     @Override
@@ -680,12 +684,6 @@ public class MainParentActivity extends BaseActivity implements
             }
             fragmentList.set(CART_MENU, cartFragment);
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
-    }
-
-    public static class UserSession {
-        public static boolean isFirstTimeUser(Context context) {
-            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
         }
     }
 

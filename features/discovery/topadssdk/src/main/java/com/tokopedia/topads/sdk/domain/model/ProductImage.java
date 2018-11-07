@@ -32,6 +32,7 @@ public class ProductImage implements Parcelable {
     private String s_ecs;
     @SerializedName(KEY_XS_ECS)
     private String xs_ecs;
+    private boolean impressed;
 
     public ProductImage(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_M_URL)){
@@ -61,6 +62,7 @@ public class ProductImage implements Parcelable {
         m_ecs = in.readString();
         s_ecs = in.readString();
         xs_ecs = in.readString();
+        impressed = in.readByte() != 0;
     }
 
     @Override
@@ -71,6 +73,7 @@ public class ProductImage implements Parcelable {
         dest.writeString(m_ecs);
         dest.writeString(s_ecs);
         dest.writeString(xs_ecs);
+        dest.writeByte((byte) (impressed ? 1 : 0));
     }
 
     @Override
@@ -89,6 +92,14 @@ public class ProductImage implements Parcelable {
             return new ProductImage[size];
         }
     };
+
+    public boolean isImpressed() {
+        return impressed;
+    }
+
+    public void setImpressed(boolean impressed) {
+        this.impressed = impressed;
+    }
 
     public String getM_url() {
         return m_url;

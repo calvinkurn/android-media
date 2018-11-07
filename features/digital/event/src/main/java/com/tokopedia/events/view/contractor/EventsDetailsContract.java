@@ -42,6 +42,8 @@ public class EventsDetailsContract {
 
         android.view.View getRootView();
 
+        void setMenuItemVisibility(boolean canScanCode);
+
     }
 
     public interface Presenter extends CustomerPresenter<EventDetailsView> {

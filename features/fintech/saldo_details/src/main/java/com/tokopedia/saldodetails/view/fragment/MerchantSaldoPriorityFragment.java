@@ -61,6 +61,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
+    private boolean originalSwitchState;
 
     @Nullable
     @Override
@@ -107,9 +108,11 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     private void initListeners() {
 
-        spEnableSwitchCompat.setOnClickListener(view -> {
+        spEnableSwitchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            boolean isChecked = spEnableSwitchCompat.isChecked();
+            if (originalSwitchState == isChecked) {
+                return;
+            }
 
             final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
             dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
@@ -143,8 +146,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             dialog.show();
             dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
             dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
-
         });
+
         if (sellerDetails.isBoxShowPopup()) {
             spKYCStatusLayout.setOnClickListener(v -> {
                 UserStatusInfoBottomSheet userStatusInfoBottomSheet =
@@ -164,6 +167,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             spEnableSwitchCompat.setVisibility(View.VISIBLE);
             spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
             spEnableSwitchCompat.setClickable(true);
+            originalSwitchState = sellerDetails.isIsEnabled();
         } else {
             spEnableSwitchCompat.setVisibility(View.GONE);
         }
@@ -323,7 +327,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onSaldoStatusUpdateSuccess() {
+    public void onSaldoStatusUpdateSuccess(boolean newState) {
+        originalSwitchState = newState;
         NetworkErrorHelper.showGreenSnackbarShort(getActivity(),
                 getResources().getString(R.string.saldo_status_updated_success));
     }

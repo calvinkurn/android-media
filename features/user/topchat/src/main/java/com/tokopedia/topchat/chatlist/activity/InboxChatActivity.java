@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -83,7 +84,7 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
     public static TaskStackBuilder getCallingTaskStack(Context context) {
         Intent homeIntent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
         Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);
-
+        channelListIntent.putExtra("title","Play");
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(channelListIntent);
@@ -276,6 +277,11 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
     }
 
     private void initGroupChatFragment() {
+
+        if(!TextUtils.isEmpty(getIntent().getExtras().getString("title"))){
+            getSupportActionBar().setTitle(getIntent().getExtras().getString("title"));
+        };
+
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
             bundle.putAll(getIntent().getExtras());

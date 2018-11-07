@@ -25,7 +25,7 @@ public class ListPassengerViewModelMapper {
         if (savedPassengerEntity.getBirthdate() != null) {
             flightBookingPassengerViewModel.setPassengerBirthdate(
                     FlightDateUtil.formatDate(
-                            FlightDateUtil.FORMAT_DATE_API,
+                            FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                             FlightDateUtil.DEFAULT_FORMAT,
                             savedPassengerEntity.getBirthdate()
                     )

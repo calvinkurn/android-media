@@ -5,10 +5,8 @@ import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -22,6 +20,15 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
     private val graphqlUseCase: GraphqlUseCase
 
     protected abstract val graphQLRawResId: Int
+    // default, always use network.
+    // do not change to false. Other use-cases might not handling force network when swipe refresh.
+    var forceNetwork: Boolean = true
+
+    var useCache: Boolean
+        get() = !forceNetwork
+        set(value) {
+            forceNetwork = value
+        }
 
     init {
         this.graphqlUseCase = GraphqlUseCase()
@@ -51,6 +58,7 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
                     Observable.error(MessageErrorException(errorMessage))
                 }
             } else {
+                forceNetwork = false
                 Observable.just(data)
             }
         }
@@ -62,7 +70,14 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
     }
 
     protected fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
-        return null
+        if (forceNetwork) {
+            return null
+        } else {
+            return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
+                setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                setSessionIncluded(true)
+            }.build();
+        }
     }
 
     override fun unsubscribe() {

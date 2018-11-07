@@ -125,10 +125,6 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:label="com.tokopedia.tkpd:string/app_name" />
         <activity
-            android:name=".onboarding.OnboardingActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
@@ -453,7 +449,6 @@
         </provider>
 
         <activity android:name=".referral.ReferralActivity" />
-        <activity android:name=".onboarding.NewOnboardingActivity"></activity>
         <activity android:name=".referral.FriendsWelcomeActivity" />
     </application>
 

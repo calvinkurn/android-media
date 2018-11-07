@@ -36,6 +36,7 @@ import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -135,7 +136,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         });
         topAdsBannerView.setAdsListener(new TopAdsListener() {
             @Override
-            public void onTopAdsLoaded() {
+            public void onTopAdsLoaded(List<Item> list) {
                 loadProductAds();
             }
 
@@ -153,7 +154,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

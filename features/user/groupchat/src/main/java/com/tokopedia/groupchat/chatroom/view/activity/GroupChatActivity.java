@@ -27,17 +27,23 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.CallbackManager;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.sendbird.android.OpenChannel;
 import com.sendbird.android.SendBird;
 import com.sendbird.android.User;
@@ -65,6 +71,7 @@ import com.tokopedia.groupchat.chatroom.view.adapter.tab.GroupChatTabAdapter;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelInfoFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.ChannelVoteFragment;
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatFragment;
+import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelInfoFragmentListener;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
@@ -81,6 +88,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
@@ -113,6 +121,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
     Dialog exitDialog;
     private static final float ELEVATION = 10;
+    private static final int YOUTUBE_DELAY = 1500;
+    private long onPlayTime, onPauseTime, onEndTime, onLeaveTime, onTrackingTime;
+    private Handler youtubeRunnable;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
@@ -186,6 +197,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private boolean canShowDialog = true;
     private boolean isFirstTime;
     private boolean shouldRefreshAfterLogin = false;
+    private boolean youtubeIsFullScreen = false;
     private BroadcastReceiver notifReceiver;
 
     public View rootView, loading, main;
@@ -196,6 +208,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     private CloseableBottomSheetDialog channelInfoDialog;
     private View sponsorLayout;
     private ImageView sponsorImage;
+    private GroupChatVideoFragment videoFragment;
+    private YouTubePlayer youTubePlayer;
 
     private int initialFragment;
     private GroupChatViewModel viewModel;
@@ -227,12 +241,17 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             initialFragment = CHATROOM_FRAGMENT;
         }
+
         isFirstTime = true;
+
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
-            viewModel = new GroupChatViewModel(getIntent().getExtras().getString(GroupChatActivity
-                    .EXTRA_CHANNEL_UUID, ""), getIntent().getExtras().getInt(GroupChatActivity
+            String path = getIntent().getExtras().getString("channel_id", "");
+            if(TextUtils.isEmpty(path)) {
+                path = getIntent().getExtras().getString(GroupChatActivity.EXTRA_CHANNEL_UUID, "");
+            }
+            viewModel = new GroupChatViewModel(path, getIntent().getExtras().getInt(GroupChatActivity
                     .EXTRA_POSITION, -1));
         } else {
             Intent intent = new Intent();
@@ -252,6 +271,151 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
+    }
+
+    public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
+        findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        if(channelInfoViewModel == null){
+            return;
+        }
+        setSponsorData();
+
+        if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
+            videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
+            if (videoFragment == null)
+                return;
+            findViewById(R.id.video_container_layout).setVisibility(View.VISIBLE);
+            sponsorLayout.setVisibility(View.GONE);
+
+             if (youTubePlayer != null) {
+                youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                youtubeRunnable.postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                         youTubePlayer.play();
+                     }
+                 }, YOUTUBE_DELAY);
+                return;
+            }
+
+            videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                    if (!wasRestored) {
+                        try {
+                            youTubePlayer = player;
+
+                            //set the player style default
+                            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                            youTubePlayer.setShowFullscreenButton(false);
+                            //cue the 1st video by default
+                            youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                            youtubeRunnable.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(youTubePlayer != null){
+                                        youTubePlayer.play();
+                                    }
+                                }
+                            }, YOUTUBE_DELAY);
+
+                            youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                                String TAG = "youtube";
+
+                                @Override
+                                public void onPlaying() {
+                                    Log.i(TAG, "onPlaying: ");
+                                    if (onPlayTime == 0) {
+                                        onPlayTime = System.currentTimeMillis() / 1000L;
+                                        analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
+                                    }
+                                }
+
+                                @Override
+                                public void onPaused() {
+                                    Log.i(TAG, "onPaused: ");
+                                    onPauseTime = System.currentTimeMillis() / 1000L;
+                                }
+
+                                @Override
+                                public void onStopped() {
+                                    Log.i(TAG, "onStopped: ");
+                                }
+
+                                @Override
+                                public void onBuffering(boolean b) {
+                                    Log.i(TAG, "onBuffering: ");
+                                }
+
+                                @Override
+                                public void onSeekTo(int i) {
+                                    Log.i(TAG, "onSeekTo: ");
+                                }
+                            });
+
+                            youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                                String TAG = "youtube";
+
+                                @Override
+                                public void onLoading() {
+                                    Log.i(TAG, "onLoading: ");
+                                }
+
+                                @Override
+                                public void onLoaded(String s) {
+                                    Log.i(TAG, "onLoaded: ");
+                                }
+
+                                @Override
+                                public void onAdStarted() {
+                                    Log.i(TAG, "onAdStarted: ");
+                                }
+
+                                @Override
+                                public void onVideoStarted() {
+                                    Log.i(TAG, "onVideoStarted: ");
+                                }
+
+                                @Override
+                                public void onVideoEnded() {
+                                    Log.i(TAG, "onVideoEnded: ");
+                                    onEndTime = System.currentTimeMillis() / 1000L;
+                                }
+
+                                @Override
+                                public void onError(YouTubePlayer.ErrorReason errorReason) {
+                                    Log.i(TAG, errorReason.getDeclaringClass() + " onError: " + errorReason.name());
+                                }
+                            });
+                        } catch (Exception e) {
+                            onInitializationFailure(provider, YouTubeInitializationResult.SERVICE_MISSING);
+                        }
+                    }
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    Log.e(GroupChatActivity.class.getSimpleName(), "Youtube Player View initialization failed");
+                }
+            });
+        }
+
+    }
+
+    private void initVideoSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+
+        RelativeLayout videoContainer = findViewById(R.id.video_container_layout);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) videoContainer
+                .getLayoutParams();
+        params.height = width / 16 * 9;
+        videoContainer.setLayoutParams(params);
+
+        videoContainer.setVisibility(View.VISIBLE);
+
+
     }
 
     @Override
@@ -275,7 +439,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void initView() {
-
 
         Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
@@ -311,6 +474,10 @@ public class GroupChatActivity extends BaseSimpleActivity
                 showTooltip();
             }
         };
+//
+//        youtubeRunnable =
+        youtubeRunnable = new Handler();
+
     }
 
     private void initData() {
@@ -586,6 +753,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onBackPressed() {
+        if(youtubeIsFullScreen && youTubePlayer != null){
+            youTubePlayer.setFullscreen(false);
+            return;
+        }
+
         if (currentlyLoadingFragment() || hasErrorEmptyState()) {
             finish();
             super.onBackPressed();
@@ -598,6 +770,12 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
     private boolean hasErrorEmptyState() {
         return rootView.findViewById(R.id.main_retry) != null
                 && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
@@ -605,11 +783,25 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void showDialogConfirmToExit() {
         if (getExitMessage() == null) {
+            if (onPlayTime != 0) {
+                analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
+            }
             finish();
             GroupChatActivity.super.onBackPressed();
             return;
         }
         exitDialog.show();
+    }
+
+    private String getDurationWatchVideo() {
+        if (onEndTime != 0) {
+            return String.valueOf(onEndTime - onPlayTime);
+        } else if (onPauseTime != 0) {
+            return String.valueOf(onPauseTime - onPlayTime);
+        } else {
+            onLeaveTime = System.currentTimeMillis() / 1000L;
+            return String.valueOf(onLeaveTime - onPlayTime);
+        }
     }
 
     private android.app.AlertDialog.Builder createAlertDialog() {
@@ -623,6 +815,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (isTaskRoot()) {
                             startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                        }
+                        if (onPlayTime != 0) {
+                            analytics.eventWatchVideoDuration(getChannelInfoViewModel().getChannelId(), getDurationWatchVideo());
                         }
                         finish();
                         GroupChatActivity.super.onBackPressed();
@@ -738,6 +933,9 @@ public class GroupChatActivity extends BaseSimpleActivity
                 exitDialog = createAlertDialog().create();
                 exitDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
+
+            initVideoFragment(channelInfoViewModel);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -909,7 +1107,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarParticipantCount(TextFormatter.format(totalParticipant));
         setVisibilityHeader(View.VISIBLE);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
     }
 
@@ -969,6 +1166,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         super.onResume();
 
         kickIfIdleForTooLong();
+
+        if(youTubePlayer == null && getChannelInfoViewModel() != null) {
+            initVideoFragment(getChannelInfoViewModel());
+        }
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
@@ -1118,6 +1319,12 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onDestroy() {
+        if(youTubePlayer!=null){
+            youTubePlayer.release();
+        }
+
+        youtubeRunnable.removeCallbacksAndMessages(null);
+
         super.onDestroy();
         if (tooltipHandler != null && runnable != null) {
             tooltipHandler.removeCallbacks(runnable);
@@ -1226,6 +1433,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
+    @Override
+    public void initVideoFragment() {
+        initVideoFragment(getChannelInfoViewModel());
+    }
+
     private void setChannelConnectionHandler() {
         ConnectionManager.addConnectionManagementHandler(userSession.getUserId(), getConnectionHandlerId(), new
                 ConnectionManager.ConnectionManagementHandler() {
@@ -1299,6 +1511,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (findViewById(R.id.shadow_layer) != null) {
             findViewById(R.id.shadow_layer).setVisibility(View.GONE);
         }
+        if (findViewById(R.id.video_container_layout) != null) {
+            findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        }
     }
 
     private void setChannelNotFoundView(int visibility) {
@@ -1319,10 +1534,16 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void setToolbarPlain() {
         toolbar.removeAllViews();
+        setToolbarWhite();
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
+    }
+
+    private void setToolbarWhite() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(null);
@@ -1368,12 +1589,25 @@ public class GroupChatActivity extends BaseSimpleActivity
             updateAds((AdsViewModel) map);
         } else if (map instanceof GroupChatQuickReplyViewModel) {
             updateQuickReply(((GroupChatQuickReplyViewModel) map).getList());
+        } else if (map instanceof PinnedMessageViewModel) {
+            updatePinnedMessage((PinnedMessageViewModel) map);
+        } else if (map instanceof VideoViewModel) {
+            updateVideo((VideoViewModel) map);
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
         }
+    }
+
+    private void updateVideo(VideoViewModel map) {
+        viewModel.getChannelInfoViewModel().setVideoId(map.getVideoId());
+        initVideoFragment(getChannelInfoViewModel());
+    }
+
+    private void updatePinnedMessage(PinnedMessageViewModel map) {
+        viewModel.getChannelInfoViewModel().setPinnedMessageViewModel(map);
     }
 
     private void updateQuickReply(List<GroupChatQuickReplyItemViewModel> list) {
@@ -1461,7 +1695,28 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelFrozen() {
-        onChannelNotFound(getString(R.string.channel_deactivated));
+//        onChannelNotFound(getString(R.string.channel_deactivated));
+        if(viewModel.getChannelInfoViewModel() == null) {
+            onChannelDeleted();
+            return;
+        }
+        AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
+        myAlertDialog.setTitle(getString(R.string.channel_not_found));
+        myAlertDialog.setMessage(getString(R.string.channel_deactivated));
+        final Context context = this;
+        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_ok), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (isTaskRoot()) {
+                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                        }
+                        finish();
+                        GroupChatActivity.super.onBackPressed();
+                    }
+                });
+        myAlertDialog.setCancelable(false);
+        myAlertDialog.show();
     }
 
     @Override

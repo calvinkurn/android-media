@@ -478,7 +478,8 @@ public class EventReviewTicketPresenter
                     String paymentURL = checkoutResponse.get("url").getAsString();
                     ScroogePGUtil.openScroogePage(getView().getActivity(), paymentURL, true, paymentData, getView().getActivity().getResources().getString(R.string.pembayaran));
                     getView().hideProgressBar();
-
+                    UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_PAYMENT, checkoutData.getTitle().toLowerCase() + " - "
+                            + checkoutData.getDisplayName().toLowerCase() + " - " + checkoutData.getSalesPrice() + " - " + promocode);
                 }
             });
         } else {

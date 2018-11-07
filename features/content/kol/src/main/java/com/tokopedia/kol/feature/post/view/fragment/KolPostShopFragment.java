@@ -11,10 +11,13 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.analytics.KolEventTracking;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
+import com.tokopedia.kol.feature.post.view.viewmodel.EntryPointViewModel;
 
 import java.util.List;
 
@@ -66,10 +69,15 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     }
 
     @Override
+    protected String getScreenName() {
+        return KolEventTracking.Screen.SCREEN_SHOP_PAGE_FEED;
+    }
+
+    @Override
     protected void initInjector() {
         DaggerKolProfileComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolProfileModule(new KolProfileModule(this))
+                .kolProfileModule(new KolProfileModule())
                 .build()
                 .inject(this);
     }
@@ -77,6 +85,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     private void initVar() {
         shopId = getArguments().getString(PARAM_SHOP_ID);
         createPostUrl = getArguments().getString(PARAM_CREATE_POST_URL, "");
+        typeFactory.setType(KolPostViewHolder.Type.SHOP_PAGE);
     }
 
     @Override
@@ -100,6 +109,10 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
             } else {
                 adapter.showEmpty();
             }
+        } else if (adapter.getList().isEmpty()
+                && TextUtils.equals(userSession.getShopId(), shopId)) {
+            adapter.addItem(new EntryPointViewModel(v -> goToCreatePost()));
+            adapter.addList(visitables);
         } else {
             adapter.addList(visitables);
         }
@@ -110,6 +123,17 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
         adapter.showErrorNetwork(message, this::fetchData);
     }
 
+    private void goToCreatePost() {
+        if (!TextUtils.isEmpty(createPostUrl)) {
+            startActivityForResult(
+                    CreatePostImagePickerActivity.getInstance(
+                            getActivity(),
+                            createPostUrl),
+                    CREATE_POST
+            );
+        }
+    }
+
     private EmptyResultViewModel getEmptyResultViewModel() {
         if (emptyResultViewModel == null) {
             emptyResultViewModel = new EmptyResultViewModel();
@@ -117,7 +141,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
             emptyResultViewModel.setTitle(getString(R.string.empty_own_feed_title));
             emptyResultViewModel.setContent(getString(R.string.empty_own_feed_subtitle));
 
-            if (!TextUtils.isEmpty(createPostUrl)){
+            if (!TextUtils.isEmpty(createPostUrl)) {
                 emptyResultViewModel.setButtonTitle(getString(R.string.empty_own_feed_button));
                 emptyResultViewModel.setCallback(new BaseEmptyViewHolder.Callback() {
                     @Override
@@ -127,12 +151,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
                     @Override
                     public void onEmptyButtonClicked() {
-                        startActivityForResult(
-                                CreatePostImagePickerActivity.getInstance(
-                                        getActivity(),
-                                        createPostUrl),
-                                CREATE_POST
-                        );
+                        goToCreatePost();
                     }
                 });
             }

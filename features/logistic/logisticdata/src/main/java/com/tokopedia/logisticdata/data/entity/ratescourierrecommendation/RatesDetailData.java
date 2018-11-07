@@ -17,6 +17,9 @@ public class RatesDetailData implements Parcelable {
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("rates_id")
+    @Expose
+    private String ratesId;
     @SerializedName("type")
     @Expose
     private String type;
@@ -29,6 +32,7 @@ public class RatesDetailData implements Parcelable {
 
     protected RatesDetailData(Parcel in) {
         id = in.readString();
+        ratesId = in.readString();
         type = in.readString();
         services = in.createTypedArrayList(ServiceData.CREATOR);
     }
@@ -36,6 +40,7 @@ public class RatesDetailData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(ratesId);
         dest.writeString(type);
         dest.writeTypedList(services);
     }
@@ -63,6 +68,14 @@ public class RatesDetailData implements Parcelable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getRatesId() {
+        return ratesId;
+    }
+
+    public void setRatesId(String ratesId) {
+        this.ratesId = ratesId;
     }
 
     public String getType() {

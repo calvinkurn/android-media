@@ -67,8 +67,6 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getOnBoardingActivityIntent(Context context);
-
     Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
@@ -80,6 +78,8 @@ public interface TkpdCoreRouter {
 
 
     void onLogout(AppComponent appComponent);
+
+    void onAppsFlyerInit();
 
     void goToCreateMerchantRedirect(Context context);
 

@@ -450,13 +450,15 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     public void hideSaldoPrioritasFragment() {
-        saldoFrameLayout.setVisibility(View.GONE);
+        if (saldoFrameLayout != null) {
+            saldoFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
 
-        if(sellerDetails != null &&
+        if (sellerDetails != null &&
                 sellerDetails.isIsEligible()) {
             if (depositScreenListener != null) {
                 depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);

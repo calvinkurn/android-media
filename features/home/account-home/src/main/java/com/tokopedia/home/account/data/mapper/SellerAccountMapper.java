@@ -200,17 +200,22 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         }
 
         try {
-            mitraTopperMaxLoan = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    Long.parseLong(mitraTopperMaxLoan),
-                    true);
+            Long loan = Long.parseLong(mitraTopperMaxLoan);
+            if (loan > 0) {
+                mitraTopperMaxLoan = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        Long.parseLong(mitraTopperMaxLoan),
+                        true);
+            }
         } catch (NumberFormatException e) { /*ignore*/ }
 
-        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
-        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
-        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
-        infoCardViewModel.setSecondaryText(String.format("%s %s", context.getString(R.string.label_menu_loan), mitraTopperMaxLoan));
-        infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
-        items.add(infoCardViewModel);
+        if (!mitraTopperMaxLoan.isEmpty() && !mitraTopperMaxLoan.equals("0")) {
+            InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
+            infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
+            infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
+            infoCardViewModel.setSecondaryText(String.format("%s %s", context.getString(R.string.label_menu_loan), mitraTopperMaxLoan));
+            infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
+            items.add(infoCardViewModel);
+        }
 
         sellerViewModel.setItems(items);
         return sellerViewModel;

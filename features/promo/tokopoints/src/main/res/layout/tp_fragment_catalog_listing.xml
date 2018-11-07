@@ -80,6 +80,19 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/container_fab_egg_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginBottom="24dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:background="@color/transparent"
+                app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
+
+                <include layout="@layout/tp_layout_floating_token" />
+            </LinearLayout>
+
         </android.support.design.widget.CoordinatorLayout>
 
         <include layout="@layout/layout_tp_network_error_large" />

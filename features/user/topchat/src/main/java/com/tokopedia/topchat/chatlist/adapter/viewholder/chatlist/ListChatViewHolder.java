@@ -56,7 +56,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     String[] array;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.message_item;
+    public static final int LAYOUT = R.layout.message_item_topchat;
 
     public ListChatViewHolder(View itemView, InboxChatContract.View viewListener, InboxChatPresenter presenter) {
         super(itemView);

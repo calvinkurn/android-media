@@ -1,9 +1,7 @@
 package com.tokopedia.tkpd;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -13,8 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.facebook.soloader.SoLoader;
 import com.moengage.inapp.InAppManager;
@@ -85,11 +83,18 @@ import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import io.hansel.hanselsdk.Hansel;
 
@@ -109,6 +114,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String FLAVOR_STAGING = "staging";
     private final String FLAVOR_ALPHA = "alpha";
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
+
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
@@ -122,10 +132,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.DEBUG;
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
+
         initializeDatabase();
         super.onCreate();
         initReact();
-
+        
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
@@ -138,6 +149,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        InstabugInitalize.init(this);
     }
 
     private void createCustomSoundNotificationChannel() {
@@ -218,6 +230,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        WalletUrl.BaseUrl.GQL_TOKOCASH_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         UpdateInactivePhoneURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
@@ -261,52 +274,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
 
-        generateTransactionDataModuleBaseUrl();
-        generateLogisticDataModuleBaseUrl();
+        LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
+        TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
+        TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
     }
 
-    private void generateLogisticDataModuleBaseUrl() {
-        switch (BuildConfig.FLAVOR) {
-            case FLAVOR_STAGING:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.STAGING_BASE_URL;
-                break;
-            case FLAVOR_ALPHA:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.ALPHA_BASE_URL;
-                break;
-            default:
-                LogisticDataConstantUrl.KeroRates.BASE_URL =
-                        LogisticDataConstantUrl.KeroRates.LIVE_BASE_URL;
-                break;
-        }
-    }
-
-    private void generateTransactionDataModuleBaseUrl() {
-        switch (BuildConfig.FLAVOR) {
-            case FLAVOR_STAGING:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.STAGING_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.STAGING_BASE_URL;
-                break;
-            case FLAVOR_ALPHA:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.ALPHA_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.ALPHA_BASE_URL;
-                break;
-            default:
-                TransactionDataApiUrl.Cart.BASE_URL =
-                        TransactionDataApiUrl.Cart.LIVE_BASE_URL;
-                TransactionDataApiUrl.TransactionAction.BASE_URL =
-                        TransactionDataApiUrl.TransactionAction.LIVE_BASE_URL;
-                break;
-        }
-    }
 
     private void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
@@ -397,5 +373,94 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    private native byte[] bytesFromJNI();
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
+
+    public boolean checkAppSignature(){
+        PackageInfo info = null;
+        try {
+            info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (null != info && info.signatures.length > 0) {
+            byte[] rawCertJava = info.signatures[0].toByteArray();
+            byte[] rawCertNative = bytesFromJNI();
+
+            return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
+        } else {
+            return false;
+        }
+    }
+
+    private String getInfoFromBytes(byte[] bytes) {
+        if(null == bytes) {
+            return "null";
+        }
+
+        /*
+         * Get the X.509 certificate.
+         */
+        InputStream certStream = new ByteArrayInputStream(bytes);
+        StringBuilder sb = new StringBuilder();
+        try {
+            CertificateFactory certFactory = CertificateFactory.getInstance("X509");
+            X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(certStream);
+
+            sb.append("Certificate subject: ").append(x509Cert.getSubjectDN()).append("\n");
+            sb.append("Certificate issuer: ").append(x509Cert.getIssuerDN()).append("\n");
+            sb.append("Certificate serial number: ").append(x509Cert.getSerialNumber()).append("\n");
+            MessageDigest md;
+            try {
+                md = MessageDigest.getInstance("MD5");
+                md.update(bytes);
+                byte[] byteArray = md.digest();
+                //String hash_key = new String(Base64.encode(md.digest(), 0));
+                sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
+                md.reset();
+                md = MessageDigest.getInstance("SHA");
+                md.update(bytes);
+                byteArray = md.digest();
+                //String hash_key = new String(Base64.encode(md.digest(), 0));
+                sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
+                md.reset();
+                md = MessageDigest.getInstance("SHA256");
+                md.update(bytes);
+                byteArray = md.digest();
+                sb.append("SHA256: ").append(bytesToString(byteArray)).append("\n");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+
+            sb.append("\n");
+        } catch (CertificateException e) {
+            // e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+
+    private String bytesToString(byte[] bytes) {
+        StringBuilder md5StrBuff = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            if (Integer.toHexString(0xFF & bytes[i]).length() == 1) {
+                md5StrBuff.append("0").append(Integer.toHexString(0xFF & bytes[i]));
+            } else {
+                md5StrBuff.append(Integer.toHexString(0xFF & bytes[i]));
+            }
+            if (bytes.length - 1 != i) {
+                md5StrBuff.append(":");
+            }
+        }
+        return md5StrBuff.toString();
+    }
 }
