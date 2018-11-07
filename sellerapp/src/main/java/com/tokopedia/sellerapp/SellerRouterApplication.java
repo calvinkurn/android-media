@@ -1731,4 +1731,14 @@ public abstract class SellerRouterApplication extends MainApplication
         BranchSdkUtils.sendRegisterEvent(email, phone);
 
     }
+
+    @Override
+    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
+        return null;
+    }
+
+    @Override
+    public Intent getCheckoutIntent(Activity activity) {
+        return null;
+    }
 }
