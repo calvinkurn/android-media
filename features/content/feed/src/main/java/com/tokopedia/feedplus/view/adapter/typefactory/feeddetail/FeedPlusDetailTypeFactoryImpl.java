@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.EmptyFeedDetailViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
-import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.SingleFeedDetailViewHolder;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 
 /**
  * @author by nisie on 5/18/17.
@@ -38,11 +36,6 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(SingleFeedDetailViewModel viewModel) {
-        return SingleFeedDetailViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(EmptyModel emptyModel) {
         return EmptyFeedDetailViewHolder.LAYOUT;
     }
@@ -51,10 +44,7 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
-
-        if (type == SingleFeedDetailViewHolder.LAYOUT)
-            viewHolder = new SingleFeedDetailViewHolder(view, viewListener);
-        else if (type == FeedDetailViewHolder.LAYOUT)
+        if (type == FeedDetailViewHolder.LAYOUT)
             viewHolder = new FeedDetailViewHolder(view, viewListener);
         else if (type == FeedDetailHeaderViewHolder.LAYOUT)
             viewHolder = new FeedDetailHeaderViewHolder(view, viewListener);

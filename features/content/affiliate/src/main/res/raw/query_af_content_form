@@ -1,0 +1,48 @@
+query ContentForm($type: String, $productID: String, $adID: String, $ID: String) {
+  feed_content_form(type: $type, productID: $productID, adID: $adID, ID: $ID) {
+    token
+    type
+    components {
+      name
+      caption
+      type
+      required
+      value
+    }
+    authors {
+      type
+      id
+      name
+      thumbnail
+    }
+    tags
+    media {
+      multiple_media
+      max_media
+      media {
+        id
+        type
+        removable
+        media_url
+      }
+    }
+    guides {
+      id
+      header
+      more_text
+      image_url
+      image_description
+      cta
+    }
+    campaigns {
+      id
+      shop
+      campaign
+    }
+    error
+  }
+  affiliateCheck {
+    isAffiliate
+    status
+  }
+}

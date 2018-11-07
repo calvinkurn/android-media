@@ -32,6 +32,7 @@ import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.changephonenumber.ChangePhoneNumberUrl;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -44,7 +45,6 @@ import com.tokopedia.flight_dbflow.TkpdFlight;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.orderlist.view.FlightOrderListFragment;
 import com.tokopedia.gamification.GamificationUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -63,11 +63,12 @@ import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.profile.data.network.TopAdsConstantKt;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
-import com.tokopedia.profile.data.network.ProfileUrl;
+import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -78,17 +79,18 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpdpdp.ProductDetailUrl;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tokocash.network.api.WalletUrl;
-import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.topchat.chatroom.data.network.ChatBotUrl;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
+import com.tokopedia.train.common.constant.TrainUrl;
 import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
-import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -187,6 +189,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     private void generateConsumerAppBaseUrl() {
         TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = ConsumerAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
+        InstantLoanUrl.BaseUrl.WEB_DOMAIN= ConsumerAppBaseUrl.BASE_INSTANT_LOAN_URL;
         TkpdBaseURL.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.BASE_API_DOMAIN = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -227,6 +230,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AbstractionBaseURL.JS_DOMAIN = ConsumerAppBaseUrl.BASE_JS_DOMAIN;
         FlightUrl.ALL_PROMO_LINK = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.PROMO_PATH;
         FlightUrl.CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + FlightUrl.CONTACT_US_PATH;
+        FlightUrl.CONTACT_US_FLIGHT = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_HOME_PREFIX;
         FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL = FlightUrl.CONTACT_US + FlightUrl.CONTACT_US_FLIGHT_PREFIX;
         TransactionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         WalletUrl.BaseUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
@@ -242,7 +246,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         ShopCommonUrl.BASE_WS_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
         KolUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
-        ProfileUrl.BASE_URL = ConsumerAppBaseUrl.TOPPROFILE_DOMAIN;
         DigitalUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         GroupChatUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
         VoteUrl.BASE_URL = ConsumerAppBaseUrl.CHAT_DOMAIN;
@@ -277,14 +280,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
         AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        ChangePhoneNumberUrl.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        PhoneVerificationConst.BASE_URL = ConsumerAppBaseUrl.ACCOUNTS_DOMAIN;
+        ProductDetailUrl.WS_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
+        TopAdsConstantKt.setTOPADS_BASE_URL(ConsumerAppBaseUrl.BASE_TOPADS_DOMAIN);
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
         AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
         FeedUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         FeedUrl.GRAPHQL_DOMAIN = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         FeedUrl.TOME_DOMAIN = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
         FeedUrl.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-
-
         LogisticDataConstantUrl.KeroRates.BASE_URL = ConsumerAppBaseUrl.LOGISTIC_BASE_DOMAIN;
         TransactionDataApiUrl.Cart.BASE_URL = ConsumerAppBaseUrl.CART_BASE_DOMAIN;
         TransactionDataApiUrl.TransactionAction.BASE_URL = ConsumerAppBaseUrl.TRANSACTION_BASE_DOMAIN;
