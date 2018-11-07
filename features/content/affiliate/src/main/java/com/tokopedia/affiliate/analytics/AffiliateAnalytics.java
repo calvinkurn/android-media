@@ -247,4 +247,16 @@ public class AffiliateAnalytics {
                 )
         );
     }
+
+    public void onAfterClickSaldo() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_MY_PROFILE,
+                        AffiliateEventTracking.Event.PROFILE_CLICK,
+                        AffiliateEventTracking.Category.BYME_MY_PROFILE,
+                        AffiliateEventTracking.Action.CLICK_TOKOPEDIA_SALDO,
+                        ""
+                )
+        );
+    }
 }

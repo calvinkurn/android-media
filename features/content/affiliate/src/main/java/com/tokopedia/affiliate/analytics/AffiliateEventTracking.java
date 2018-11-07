@@ -12,11 +12,13 @@ public interface AffiliateEventTracking {
         String BYME_DISCOVERY_PAGE = "discovery page tokopedia by.me";
         String BYME_CREATE_POST = "create post tokopedia by.me";
         String BYME_USER_PROFILE = "user profile page";
+        String BYME_MY_PROFILE = "my profile page";
     }
 
     interface Event {
         String AFFILIATE_CLICK = "clickAffiliate";
         String AFFILIATE_VIEW = "viewAffiliate";
+        String PROFILE_CLICK = "clickProfile";
     }
 
     interface Category {
@@ -27,6 +29,7 @@ public interface AffiliateEventTracking {
         String BYME_DISCOVERY_PAGE = "discovery page tokopedia by.me";
         String BYME_CREATE_POST = "create post tokopedia by.me";
         String BYME_AFFILIATE_TRAFFIC = "affiliate traffic";
+        String BYME_MY_PROFILE = "my profile page";
     }
 
     interface Action {
@@ -45,6 +48,7 @@ public interface AffiliateEventTracking {
         String CLICK_LIHAT_CONTOH = "click lihat contoh";
         String CLICK_SELESAI = "click selesai";
         String CLICK_TAMBAH_GAMBAR = "click selesai";
+        String CLICK_TOKOPEDIA_SALDO = "cta tokopedia saldo";
         String OTHERS = "others";
     }
 
