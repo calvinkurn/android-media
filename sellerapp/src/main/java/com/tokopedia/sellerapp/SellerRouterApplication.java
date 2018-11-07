@@ -1370,11 +1370,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
-        return null;
-    }
-
-    @Override
     public Intent getCartIntent(Activity activity) {
         return null;
     }
