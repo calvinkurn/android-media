@@ -4,12 +4,18 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 import com.tokopedia.topads.sdk.widget.TopAdsDynamicChannelView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicChannelViewModel> implements TopAdsItemClickListener {
 
@@ -23,7 +29,17 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicCh
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-//        topAdsDynamicChannelView.setData(element.getTitle(), element.getCta(), element.getDataList());
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < element.getChannel().getGrids().length; i++) {
+            DynamicHomeChannel.Grid grid = element.getChannel().getGrids()[i];
+            ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
+            model.setProductPrice(grid.getPrice());
+            model.setProductCashback(grid.getCashback());
+            model.setImageUrl(grid.getImageUrl());
+            model.setImpressionUrl(grid.getImpression());
+            items.add(model);
+        }
+        topAdsDynamicChannelView.setData(element.getChannel().getName(), element.getChannel().getHeader().getApplink(), items);
     }
 
     @Override

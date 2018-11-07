@@ -549,6 +549,30 @@ public class DynamicHomeChannel {
         @SerializedName("attribution")
         private String attribution;
 
+        @Expose
+        @SerializedName("impression")
+        private String impression;
+
+        @Expose
+        @SerializedName("cashback")
+        private String cashback;
+
+        public String getImpression() {
+            return impression;
+        }
+
+        public void setImpression(String impression) {
+            this.impression = impression;
+        }
+
+        public String getCashback() {
+            return cashback;
+        }
+
+        public void setCashback(String cashback) {
+            this.cashback = cashback;
+        }
+
         public String getLabel() {
             return label;
         }

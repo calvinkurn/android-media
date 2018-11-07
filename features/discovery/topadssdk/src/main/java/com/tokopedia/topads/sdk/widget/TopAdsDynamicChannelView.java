@@ -52,17 +52,17 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
 
         //Dummy Data
-        List<Item> items = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            ProductDynamicChannelViewModel viewModel = new ProductDynamicChannelViewModel();
-            viewModel.setProductName("Produk "+i);
-            viewModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
-            viewModel.setImpressionUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
-            viewModel.setProductCashback("Cashback 5%");
-            viewModel.setProductPrice("Rp 1.000.000");
-            items.add(viewModel);
-        }
-        setData("Produk Pilihan", "", items);
+//        List<Item> items = new ArrayList<>();
+//        for (int i = 0; i < 6; i++) {
+//            ProductDynamicChannelViewModel viewModel = new ProductDynamicChannelViewModel();
+//            viewModel.setProductName("Produk "+i);
+//            viewModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
+//            viewModel.setImpressionUrl("https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/6/24/1374800/1374800_14e091c8-284f-4725-8421-eeb82ebe1f40_507_440.jpg");
+//            viewModel.setProductCashback("Cashback 5%");
+//            viewModel.setProductPrice("Rp 1.000.000");
+//            items.add(viewModel);
+//        }
+//        setData("Produk Pilihan", "", items);
     }
 
     @Override
