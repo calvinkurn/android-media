@@ -470,24 +470,28 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void setSnackBarErrorLoading() {
-        snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
-        snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-        snackbarError.show();
+        if(userSession.isLoggedIn()) {
+            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.connecting));
+            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
+            snackbarError.show();
+        }
     }
 
     public void setSnackBarRetry() {
-        snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
-        snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
-        snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-                        , viewModel.getChannelInfoViewModel().getGroupChatToken()
-                        , viewModel.getChannelInfoViewModel().getSettingGroupChat());
-                setSnackBarErrorLoading();
-            }
-        });
-        snackbarError.show();
+        if(userSession.isLoggedIn()) {
+            snackbarError = ToasterError.make(findViewById(android.R.id.content), getString(R.string.sendbird_error_retry));
+            snackbarError.getView().setMinimumHeight((int) getResources().getDimension(R.dimen.snackbar_height));
+            snackbarError.setAction(getString(R.string.retry), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
+                            , viewModel.getChannelInfoViewModel().getGroupChatToken()
+                            , viewModel.getChannelInfoViewModel().getSettingGroupChat());
+                    setSnackBarErrorLoading();
+                }
+            });
+            snackbarError.show();
+        }
     }
 
     @Override
