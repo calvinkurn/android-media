@@ -207,15 +207,6 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,
-                               RequestOtpMapper requestOTPMapper,
-                               ValidateOtpMapper validateOTPMapper,
-                               SessionHandler sessionHandler) {
-        return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
-    }
-
-    @SessionScope
-    @Provides
     CreatePasswordDataSource provideCreatePasswordDataSource(@Named(BEARER_SERVICE) AccountsService
                                                                      accountsService,
                                                              CreatePasswordMapper createPasswordMapper) {
@@ -282,7 +273,7 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    UserSession provideUserSession(@ApplicationContext Context context){
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
