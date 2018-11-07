@@ -103,7 +103,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         sqlStringBuilder.append(sqlQuery)
 
         sqlStringBuilder.append("FlightJourneyTable.durationMinute BETWEEN ${filterModel.durationMin} AND ${filterModel.durationMax} AND ")
-        sqlStringBuilder.append("FlightJourneyTable.sortPrice BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
+        sqlStringBuilder.append("FlightJourneyTable.sortPriceNumeric BETWEEN ${filterModel.priceMin} AND ${filterModel.priceMax} AND ")
 
         val isSpecialPrice = if (filterModel.isSpecialPrice) 1 else 0
         val isBestPairing = if (filterModel.isBestPairing) 1 else 0
@@ -221,14 +221,14 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
-            FlightSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPrice ASC"
+            FlightSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPriceNumeric ASC"
             FlightSortOption.EARLIEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt ASC"
             FlightSortOption.EARLIEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt ASC"
             FlightSortOption.LATEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt DESC"
             FlightSortOption.LATEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt DESC"
             FlightSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC"
             FlightSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC"
-            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPrice DESC"
+            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPriceNumeric DESC"
             FlightSortOption.NO_PREFERENCE -> ""
             else -> ""
         }
