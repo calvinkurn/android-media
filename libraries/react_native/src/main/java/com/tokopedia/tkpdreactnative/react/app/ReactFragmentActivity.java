@@ -94,8 +94,9 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
         if (requestCode == ReactConst.REACT_LOGIN_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 Log.d("TEST","Success Login !");
-                String UserID = reactNavigationModule.getUserId(this);
-                iReactNativeRouter.sendLoginEmitter(UserID);
+                String User = reactNavigationModule.getUserId(getApplicationContext());
+//                String UserID = reactNavigationModule.getUserId(this);
+                iReactNativeRouter.sendLoginEmitter(User);
             }
         }
     }
