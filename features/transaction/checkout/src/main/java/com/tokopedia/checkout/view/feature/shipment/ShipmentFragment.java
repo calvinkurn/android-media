@@ -464,7 +464,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             isTraceStopped = true;
         }
 
-        if (getArguments() != null) {
+        if (getArguments() != null && !isFromPdp) {
             initializePresenterData(getArguments());
         }
         PromoCodeAppliedData promoCodeAppliedData = shipmentPresenter.getPromoCodeAppliedData();
