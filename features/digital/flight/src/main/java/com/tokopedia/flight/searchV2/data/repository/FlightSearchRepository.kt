@@ -106,8 +106,11 @@ open class FlightSearchRepository @Inject constructor(
                                 }) {
                             journeyAndRoutes: JourneyAndRoutes, combo: FlightComboTable? ->
                             val journeyTable = journeyAndRoutes.flightJourneyTable
-                            journeyAndRoutes.flightJourneyTable =
-                                    combo?.let { flightSearchMapper.createJourneyWithCombo(journeyTable, it) }
+                            journeyAndRoutes.flightJourneyTable = combo?.let {
+                                flightSearchMapper.createJourneyWithCombo(journeyTable, it)
+                            } ?: run {
+                                journeyTable
+                            }
                             journeyAndRoutes
                         }
             }.toList().map { journeyAndRoutesList ->

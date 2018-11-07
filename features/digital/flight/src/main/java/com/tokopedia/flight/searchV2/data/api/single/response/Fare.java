@@ -78,9 +78,6 @@ public class Fare implements Parcelable {
         dest.writeInt(this.infantNumeric);
     }
 
-    public Fare() {
-    }
-
     protected Fare(Parcel in) {
         this.adult = in.readString();
         this.child = in.readString();

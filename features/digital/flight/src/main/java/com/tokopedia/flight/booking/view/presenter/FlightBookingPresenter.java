@@ -391,16 +391,16 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             @Override
                             public Observable<FlightBookingCartData> call(FlightBookingCartData flightBookingCartData) {
                                 List<Fare> fares = new ArrayList<>();
-                                Fare departureFare = new Fare();
-                                departureFare.setAdultNumeric(flightBookingCartData.getDepartureTrip().getAdultNumericPrice());
-                                departureFare.setChildNumeric(flightBookingCartData.getDepartureTrip().getChildNumericPrice());
-                                departureFare.setInfantNumeric(flightBookingCartData.getDepartureTrip().getInfantNumericPrice());
+                                Fare departureFare = new Fare("", "", "",
+                                        flightBookingCartData.getDepartureTrip().getAdultNumericPrice(),
+                                        flightBookingCartData.getDepartureTrip().getChildNumericPrice(),
+                                        flightBookingCartData.getDepartureTrip().getInfantNumericPrice());
                                 fares.add(departureFare);
                                 if (flightBookingCartData.getReturnTrip() != null) {
-                                    Fare returnFare = new Fare();
-                                    returnFare.setAdultNumeric(flightBookingCartData.getReturnTrip().getAdultNumericPrice());
-                                    returnFare.setChildNumeric(flightBookingCartData.getReturnTrip().getChildNumericPrice());
-                                    returnFare.setInfantNumeric(flightBookingCartData.getReturnTrip().getInfantNumericPrice());
+                                    Fare returnFare = new Fare("", "", "",
+                                            flightBookingCartData.getReturnTrip().getAdultNumericPrice(),
+                                            flightBookingCartData.getReturnTrip().getChildNumericPrice(),
+                                            flightBookingCartData.getReturnTrip().getInfantNumericPrice());
                                     fares.add(returnFare);
                                 }
                                 FlightSearchPassDataViewModel searchPassDataViewModel = getView().getCurrentBookingParamViewModel().getSearchParam();

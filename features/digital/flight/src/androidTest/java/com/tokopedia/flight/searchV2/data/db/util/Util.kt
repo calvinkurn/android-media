@@ -51,6 +51,7 @@ fun createFlightJourneyTable(journeyId: String): FlightJourneyTable {
             500000,
             0,
             false,
+            "Rp 600000",
             "Rp 500000",
             500000,
             false,
