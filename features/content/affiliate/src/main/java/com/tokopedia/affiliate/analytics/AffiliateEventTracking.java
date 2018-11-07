@@ -43,6 +43,7 @@ public interface AffiliateEventTracking {
         String CLICK_BYME = "click by.me";
         String IMPRESSION_PRODUCTS_AFFILIATE = "impressions products affiliate";
         String CLICK_PRODUCTS_AFFILIATE = "click products affiliate";
+        String IMPRESSION_JATAH_HABIS = "popup message jatah rekomendasi habis";
         String SEARCH = "search";
         String SEARCH_NOT_FOUND = "search not found";
         String CLICK_LIHAT_CONTOH = "click lihat contoh";

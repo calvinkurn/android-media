@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by nakama on 4/2/18.
@@ -64,6 +65,14 @@ public class ProductPageTracking {
     public static final String PROMO_CODE = "promo_code";
     public static final String ID = "id";
     public static final String POSITION = "position";
+
+    public static final String USER_ID = "user_id";
+
+    public static final String EVENT_CLICK_AFFILIATE = "clickAffiliate";
+    public static final String PRODUCT_DETAIL_PAGE_BY_ME = "product detail page tokopedia by.me";
+    public static final String ACTION_CLICK_TAMBAH_BY_ME = "click tambah ke by.me";
+    public static final String EMPTY_LABEL = "";
+    public static final String ACTION_CLICK_WISHLIST = "click wishlist";
 
     private static String joinDash(String... s) {
         return TextUtils.join(" - ", s);
@@ -426,5 +435,35 @@ public class ProductPageTracking {
         if (map != null) {
             tracker.sendEventTracking(map);
         }
+    }
+
+    public static void eventClickAffiliate(Context context, String userId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
+        eventTracking.put("eventAction", ACTION_CLICK_TAMBAH_BY_ME);
+        eventTracking.put("eventLabel", EMPTY_LABEL);
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
+    }
+
+    public static void eventClickWishlistOnAffiliate(Context context, String userId) {
+        if (!(context.getApplicationContext() instanceof AbstractionRouter)) {
+            return;
+        }
+        Map<String,Object> eventTracking = new HashMap<>();
+        eventTracking.put("event", EVENT_CLICK_AFFILIATE);
+        eventTracking.put("eventCategory", PRODUCT_DETAIL_PAGE_BY_ME);
+        eventTracking.put("eventAction", ACTION_CLICK_WISHLIST);
+        eventTracking.put("eventLabel", EMPTY_LABEL);
+        eventTracking.put(USER_ID, userId);
+
+        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
+        tracker.sendEventTracking(eventTracking);
     }
 }
