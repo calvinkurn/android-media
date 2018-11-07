@@ -20,9 +20,13 @@ class SellerStatusListAdapter(var selectedIndex:Int = -1,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.itemView.text.text = when (position) {
             0 -> holder.itemView.context.getString(R.string.flash_sale_registered) +
-                    if (submittedCount > 0) {"("+submittedCount+")"} else ""
+                    if (submittedCount > 0) {
+                        " ($submittedCount)"
+                    } else ""
             else -> holder.itemView.context.getString(R.string.flash_sale_not_registered) +
-                    if (pendingCount > 0) {"("+pendingCount+")"} else ""
+                    if (pendingCount > 0) {
+                        " ($pendingCount)"
+                    } else ""
         }
         holder.itemView.text.isSelected = selectedIndex.equals(position)
     }

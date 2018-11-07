@@ -34,8 +34,11 @@
     <string name="flash_sale_reserve">Diajukan</string>
     <string name="flash_sale_rejected">Ditolak</string>
     <string name="register_flash_sale">Daftar Flash Sale</string>
+    <string name="flash_sale_list">Daftar Flash Sale</string>
     <string name="with_click_button_you_agree_with_tnc"><![CDATA[Dengan klik tombol, Anda telah menyetujui Syarat & Ketentuan]]></string>
+    <string name="flash_sale_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="flash_sale_request_product">Ajukan Produk</string>
     <string name="x_percent_off">%1$s%% OFF</string>
     <string name="flash_sale_canceled">Dibatalkan</string>
+    <string name="flash_sale_update_request">Perbarui Pengajuan</string>
 </resources>

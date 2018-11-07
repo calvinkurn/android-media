@@ -3,17 +3,23 @@ package com.tokopedia.flashsale.management.product.view
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.TextUtils
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
@@ -33,6 +39,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     var campaignId: Int = 0
     var campaignSlug: String = ""
+    var allowEditProducts: Boolean = false
+
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
 
@@ -95,10 +103,72 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun loadInitialData() {
         loadContent()
+        loadBottomBar()
     }
 
     fun loadContent() {
+        hideSearchInputView()
+        recyclerViewLabel.visibility = View.GONE
         super.loadInitialData()
+    }
+
+    fun loadBottomBar() {
+        vgBottom.visibility = View.GONE
+        loadSellerStatus()
+        loadTnC()
+    }
+
+    private fun loadSellerStatus() {
+        presenter.getSellerStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_get_seller_status),
+                campaignSlug,
+                onSuccess = {
+                    context?.run {
+                        btnSubmit.text = if (it.submitStatus) {
+                            getString(R.string.flash_sale_update_request)
+                        } else {
+                            getString(R.string.flash_sale_list)
+                        }
+                    }
+                    allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
+                    vgBottom.visibility = View.VISIBLE
+                },
+                onError = {
+                    vgBottom.visibility = View.GONE
+                })
+    }
+
+    private fun loadTnC() {
+        presenter.getFlashSaleTnc(campaignSlug,
+                onSuccess = {
+                    context?.run {
+                        val tncLongString = getString(R.string.with_click_button_you_agree_with_tnc)
+                        val tncString = getString(R.string.flash_sale_term_and_condition)
+                        val spannable = SpannableString(tncLongString)
+                        val indexStart = tncLongString.indexOf(tncString)
+                        val indexEnd = indexStart + tncString.length
+
+                        val color = ContextCompat.getColor(context!!, R.color.tkpd_main_green)
+                        spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        val clickableSpan = object : ClickableSpan() {
+                            override fun onClick(widget: View) {
+                                //TODO will change page
+                                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                            }
+
+                            override fun updateDrawState(ds: TextPaint) {
+                                super.updateDrawState(ds)
+                                ds.isUnderlineText = false
+                                ds.color = color
+                            }
+                        }
+                        spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        tvTnc.movementMethod = LinkMovementMethod.getInstance()
+                        tvTnc.text = spannable
+                    }
+                },
+                onError = {
+                    tvTnc.text = getString(R.string.with_click_button_you_agree_with_tnc)
+                })
     }
 
     override fun loadData(page: Int) {
@@ -115,7 +185,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 })
     }
 
-    private fun getFilterId() : Int{
+    private fun getFilterId(): Int {
         var filterId: Int = FlashSaleFilterProductListTypeDef.TYPE_ALL.id
         sellerStatusListAdapter.run {
             val flashSaleFilterProductListTypeDef = FlashSaleFilterProductListTypeDef.values()
@@ -128,24 +198,31 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_box
-        emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
-        emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
+        if (getFilterId() == FlashSaleFilterProductListTypeDef.TYPE_ALL.id &&
+                searchInputView.searchText.isEmpty()) {
+            emptyModel.title = getString(R.string.no_eligible_product_in_this_flash_sale)
+            emptyModel.content = getString(R.string.no_worry_you_can_join_next_flash_sale)
+        } else {
+            //TODO wording empty for filter or search text
+            emptyModel.title = ""
+            emptyModel.content = ""
+        }
         return emptyModel
     }
 
     private fun onSuccessGetEligibleList(flashSaleProductHeader: FlashSaleProductHeader) {
+        super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
         if (TextUtils.isEmpty(searchInputView.searchText) &&
                 flashSaleProductHeader.flashSaleProduct.isEmpty() &&
-                currentPage == 0 &&
+                currentPage == 1 &&
                 (sellerStatusListAdapter?.selectedIndex ?: -1) == -1) {
             hideSearchInputView()
         } else {
             showSearchInputView()
         }
-        if (currentPage == 0) {
+        if (currentPage == 1) {
             renderUILabel(flashSaleProductHeader.submittedCount, flashSaleProductHeader.pendingCount)
         }
-        super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
     }
 
     private fun renderUILabel(submittedCount: Int, pendingCount: Int) {

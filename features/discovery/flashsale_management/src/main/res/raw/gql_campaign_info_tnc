@@ -1,0 +1,8 @@
+query getCampaignInfo($slug: String!, $shop_id: Int!){
+    getCampaignInfo(slug:$slug, shop_id:$shop_id){
+        data {
+            campaign_id
+            tnc
+        }
+    }
+}

@@ -37,6 +37,12 @@ class CampaignModule {
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_category_list)
 
     @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_TNC)
+    @Provides
+    fun provideGqlRawStringRequestTnc(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_tnc)
+
+    @CampaignScope
     @Provides
     fun provideGqlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository
