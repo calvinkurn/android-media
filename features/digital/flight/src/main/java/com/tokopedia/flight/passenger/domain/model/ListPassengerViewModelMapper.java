@@ -1,7 +1,5 @@
 package com.tokopedia.flight.passenger.domain.model;
 
-import android.text.TextUtils;
-
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -24,7 +22,6 @@ public class ListPassengerViewModelMapper {
 
     public FlightBookingPassengerViewModel transform(FlightPassengerDB savedPassengerEntity) {
         FlightBookingPassengerViewModel flightBookingPassengerViewModel = new FlightBookingPassengerViewModel();
-
         if (savedPassengerEntity.getBirthdate() != null && !savedPassengerEntity.getBirthdate().isEmpty()) {
             flightBookingPassengerViewModel.setPassengerBirthdate(
                     FlightDateUtil.formatDate(
@@ -35,7 +32,7 @@ public class ListPassengerViewModelMapper {
             );
         }
 
-        if (savedPassengerEntity.getPassportNo() != null && !TextUtils.isEmpty(savedPassengerEntity.getPassportNo())) {
+        if (savedPassengerEntity.getPassportNo() != null) {
             flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
         }
 
@@ -49,13 +46,13 @@ public class ListPassengerViewModelMapper {
             );
         }
 
-        if (savedPassengerEntity.getPassportNationality() != null && !TextUtils.isEmpty(savedPassengerEntity.getPassportNationality())) {
+        if (savedPassengerEntity.getPassportNationality() != null) {
             FlightBookingPhoneCodeViewModel passportNationality = new FlightBookingPhoneCodeViewModel();
             passportNationality.setCountryId(savedPassengerEntity.getPassportNationality());
             flightBookingPassengerViewModel.setPassportNationality(passportNationality);
         }
 
-        if (savedPassengerEntity.getPassportCountry() != null && !TextUtils.isEmpty(savedPassengerEntity.getPassportCountry())) {
+        if (savedPassengerEntity.getPassportCountry() != null) {
             FlightBookingPhoneCodeViewModel passportIssuerCountry = new FlightBookingPhoneCodeViewModel();
             passportIssuerCountry.setCountryId(savedPassengerEntity.getPassportCountry());
             flightBookingPassengerViewModel.setPassportIssuerCountry(passportIssuerCountry);
