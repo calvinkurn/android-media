@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -69,6 +70,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
@@ -110,6 +112,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
@@ -240,7 +243,7 @@ public abstract class SellerRouterApplication extends MainApplication
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
         BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter,
         KolRouter, PaymentSettingRouter, TalkRouter,
-        MerchantVoucherModuleRouter {
+        MerchantVoucherModuleRouter, LoginRegisterRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1694,6 +1697,48 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendAFCompleteRegistrationEvent(int userId, String methodName) {
+
+    }
+
+    @Override
+    public void setTrackingUserId(String userId, Context applicationContext) {
+        onAppsFlyerInit();
+        TrackingUtils.eventPushUserID();
+        if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
+            Crashlytics.setUserIdentifier(userId);
+        BranchSdkUtils.sendIdentityEvent(userId);
+        BranchSdkUtils.sendLoginEvent(applicationContext);
+    }
+
+    @Override
+    public void setMoEUserAttributesLogin(String userId, String name, String email, String phoneNumber, boolean isGoldMerchant, String shopName, String shopId, boolean hasShop, String loginMethod) {
+        TrackingUtils.setMoEUserAttributesLogin(
+                userId,
+                name,
+                email,
+                phoneNumber,
+                isGoldMerchant,
+                shopName,
+                shopId,
+                hasShop,
+                loginMethod
+        );
+    }
+
+    @Override
+    public void eventMoRegistrationStart(String label) {
+        UnifyTracking.eventMoRegistrationStart(label);
+    }
+
+    @Override
+    public void eventMoRegister(String name, String phone) {
+        UnifyTracking.eventMoRegister(name, phone);
+
+    }
+
+    @Override
+    public void sendBranchRegisterEvent(String email, String phone) {
+        BranchSdkUtils.sendRegisterEvent(email, phone);
 
     }
 }

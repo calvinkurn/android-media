@@ -13,8 +13,8 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.otp.common.network.ErrorMessageException;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.usecase.RequestParams;
 
@@ -59,7 +59,7 @@ public class GetFacebookCredentialUseCase {
 
                 if (TextUtils.isEmpty(loginResult.getAccessToken().getToken())) {
                     LoginManager.getInstance().logOut();
-                    subscriber.onError(new ErrorMessageException(
+                    subscriber.onError(new MessageErrorException(
                             fragment.getContext().getString(R.string.facebook_error_not_authorized),
                             String.valueOf(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN)));
                 } else {
@@ -79,12 +79,12 @@ public class GetFacebookCredentialUseCase {
 
                 LoginManager.getInstance().logOut();
                 if (e instanceof FacebookAuthorizationException) {
-                    subscriber.onError(new ErrorMessageException(
+                    subscriber.onError(new MessageErrorException(
                             fragment.getContext().getString(R.string.facebook_error_not_authorized),
                             String.valueOf(ErrorHandlerSession.ErrorCode
                                     .FACEBOOK_AUTHORIZATION_EXCEPTION)));
                 } else {
-                    subscriber.onError(new ErrorMessageException(
+                    subscriber.onError(new MessageErrorException(
                             fragment.getContext().getString(R.string.facebook_error_not_authorized),
                             String.valueOf(ErrorHandlerSession.ErrorCode.FACEBOOK_EXCEPTION)));
                 }
@@ -102,7 +102,7 @@ public class GetFacebookCredentialUseCase {
                         subscriber.onSuccess(accessToken, email);
                     } catch (JSONException | NullPointerException e) {
                         LoginManager.getInstance().logOut();
-                        subscriber.onError(new ErrorMessageException(
+                        subscriber.onError(new MessageErrorException(
                                 context.getString(R.string.facebook_error_not_authorized),
                                 String.valueOf(ErrorHandlerSession.ErrorCode
                                         .FACEBOOK_EXCEPTION)));

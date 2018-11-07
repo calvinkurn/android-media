@@ -3193,8 +3193,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         onAppsFlyerInit();
         TrackingUtils.eventPushUserID();
         if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
-            Crashlytics.setUserIdentifier(userSession.getUserId());
-        BranchSdkUtils.sendIdentityEvent(userSession.getUserId());
+            Crashlytics.setUserIdentifier(userId);
+        BranchSdkUtils.sendIdentityEvent(userId);
         BranchSdkUtils.sendLoginEvent(applicationContext);
     }
 
