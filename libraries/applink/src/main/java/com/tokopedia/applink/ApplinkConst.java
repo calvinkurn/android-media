@@ -15,7 +15,7 @@ public interface ApplinkConst {
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
-    String MESSAGE = "tokopedia://mesApplinkConstsage";
+    String MESSAGE = "tokopedia://message";
     String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
     String TALK = "tokopedia://talk";
     String TALK_DETAIL = "tokopedia://talk/{talk_id}";
@@ -23,7 +23,7 @@ public interface ApplinkConst {
     String RIDE_DETAIL = "tokopedia://ride/uber/{request_id}";
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
-    String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_TALK = "tokopedia://shop/{shop_id}Ω/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";

@@ -19,10 +19,6 @@ public interface LoginRegisterRouter {
 
     void eventMoRegistrationStart(String labelEmail);
 
-    Intent getHomeIntent(Context context);
-
-    Intent getAutomaticResetPasswordIntent(Context context, String email);
-
     void sendAFCompleteRegistrationEvent(int userId, String methodName);
 
     void eventMoRegister(String name, String phone);
