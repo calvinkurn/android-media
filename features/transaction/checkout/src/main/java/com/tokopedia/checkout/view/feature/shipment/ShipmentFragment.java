@@ -228,8 +228,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void initializePresenterData(Bundle arguments) {
 //        PromoCodeAppliedData promoCodeAppliedData = arguments.getParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA);
 //        shipmentPresenter.setPromoCodeAppliedData(promoCodeAppliedData);
-        shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
-        shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
+//        shipmentPresenter.setCartPromoSuggestion(arguments.getParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION));
+//        shipmentPresenter.setShipmentCostModel(new ShipmentCostModel());
     }
 
     @Override
