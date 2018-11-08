@@ -2,8 +2,8 @@ package com.tokopedia.discovery.search.view.adapter.factory;
 
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.AutoCompleteViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.CategoryViewHolder;
 import com.tokopedia.discovery.autocomplete.adapter.DigitalViewHolder;
