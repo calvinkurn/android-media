@@ -36,7 +36,6 @@ include "features:merchant:product_draft_database"
 include "features:merchant:shop_settings"
 //include "features:merchant:shop_settings_no_op" // toggle for no_op
 include "features:top_ads:top_ads_management"
-include "features:payment:payment"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"

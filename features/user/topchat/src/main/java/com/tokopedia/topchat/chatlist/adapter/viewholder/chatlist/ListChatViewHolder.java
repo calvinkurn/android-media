@@ -225,7 +225,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                     if (presenter.getSelected() == 0) {
                         element.setReadStatus(InboxMessageConstant.STATE_CHAT_READ);
                         element.setUnreadCounter(0);
-                        presenter.goToDetailMessage(position, element);
+                        presenter.goToDetailMessage(v.getContext(), position, element);
                     } else if (element.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);

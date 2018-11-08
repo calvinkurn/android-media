@@ -173,7 +173,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
     @ReactMethod
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
-        TrackingUtils.eventTrackingEnhancedEcommerce(maps);
+        TrackingUtils.eventTrackingEnhancedEcommerce(context, maps);
     }
 
     @ReactMethod

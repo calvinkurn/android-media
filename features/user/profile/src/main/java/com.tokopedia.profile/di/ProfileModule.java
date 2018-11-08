@@ -35,7 +35,8 @@ public class ProfileModule {
 
     @ProfileScope
     @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor
+    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                            @ApplicationScope HttpLoggingInterceptor
                                                     httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ProfileQualifier OkHttpRetryPolicy retryPolicy,
@@ -45,7 +46,7 @@ public class ProfileModule {
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(new FingerprintInterceptor());
+                .addInterceptor(new FingerprintInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
