@@ -11,6 +11,7 @@ ext {
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0-SNAPSHOT'
+    coroutineVersion = '0.30.2'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.1'
@@ -153,7 +154,9 @@ ext {
             sendBird              : "com.sendbird.sdk:sendbird-android-sdk:3.0.49",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
-            flexBoxLayout         : "com.google.android:flexbox:0.3.2"
+            flexBoxLayout         : "com.google.android:flexbox:0.3.2",
+            coroutineCore         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineVersion",
+            coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion"
     ]
 
     testDependencies = [
@@ -189,7 +192,7 @@ ext {
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
