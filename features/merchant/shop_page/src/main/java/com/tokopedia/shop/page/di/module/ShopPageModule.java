@@ -1,7 +1,7 @@
 package com.tokopedia.shop.page.di.module;
 
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase;
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
 import com.tokopedia.shop.etalase.domain.interactor.DeleteShopEtalaseUseCase;
 import com.tokopedia.shop.note.domain.interactor.DeleteShopNoteUseCase;
 import com.tokopedia.shop.page.di.scope.ShopPageScope;
@@ -18,8 +18,8 @@ public class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    public DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoUseCase();
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
+        return new DeleteShopInfoCacheUseCase();
     }
 
     @ShopPageScope

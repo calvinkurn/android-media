@@ -188,6 +188,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
         String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
         String CLICK_UBAH_DURASI = "click ubah durasi";
+        String VIEW_DURATION = "view duration";
+        String VIEW_COURIER_OPTION = "view courier option";
 
         //EMPTY CART
         String CLICK_LIHAT_LAINNYA = "click lihat lainnya on empty cart";
@@ -236,5 +238,6 @@ public interface ConstantTransactionAnalytics {
         String ADDRESS_LIST_PAGE = "/cart/address";
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
+        String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
     }
 }

@@ -241,14 +241,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_is_enabled_new_withdraw</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>sellerapp_is_enabled_new_withdraw</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>mainapp_wallet_label_register</key>
         <value>true</value>
     </entry>

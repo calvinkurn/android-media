@@ -1,5 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-apply from: 'buildconfig/dependencies.gradle'
+apply from: 'buildconfig/dependencies/dependencies.gradle'
+apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
+apply from: 'buildconfig/dependencies/dependency-features.gradle'
+//apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
+
 
 buildscript {
     ext.jacocoVersion = '0.7.9'
@@ -36,7 +40,7 @@ buildscript {
 }
 
 allprojects {
-    project.apply from: rootProject.file('buildconfig/dependencies.gradle')
+    project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
         mavenLocal()
         maven { url "https://maven.google.com" }
@@ -149,6 +153,8 @@ subprojects {
                 substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:27.1.1')
                 substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:27.1.1')
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
+                substitute module('android.arch.core:runtime') with module('android.arch.core:runtime:1.1.1')
+                substitute module('android.arch.core:common') with module('android.arch.core:common:1.1.1')
             }
         }
     }

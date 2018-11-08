@@ -1,7 +1,13 @@
 package com.tokopedia.analytics.mapper.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class AppsflyerMappingRequest {
+
+	@SerializedName("customerUserId")
 	private String customerUserId;
+
+	@SerializedName("appsflyerId")
 	private String appsflyerId;
 
 	public void setCustomerUserId(String customerUserId){

@@ -768,7 +768,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                     ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
                     : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
         }
-        return super.getScreenName();
+        return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_USER;
     }
 
     @Override
@@ -1158,19 +1158,17 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            if (success) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
-            } else {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
-                checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
-            }
+        if (success) {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+        } else {
+            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+        }
     }
 
     @Override
     public void sendAnalyticsScreenName(String screenName) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 }

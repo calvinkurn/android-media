@@ -28,8 +28,8 @@ import com.tokopedia.flight.search.view.fragment.FlightFilterRefundableFragment;
 import com.tokopedia.flight.search.view.fragment.FlightFilterTransitFragment;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFilterFragment;
 import com.tokopedia.flight.search.view.fragment.flightinterface.OnFlightBaseFilterListener;
-import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
+import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel;
 
 import java.util.List;
 
@@ -299,7 +299,6 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     @Override
     public void showErrorGetFilterStatistic(Throwable e) {
         Toast.makeText(this, FlightErrorUtil.getMessageFromException(this, e), Toast.LENGTH_SHORT).show();
-        ;
     }
 
     @Override

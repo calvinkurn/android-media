@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/loadingView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:visibility="gone"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        android:layout_gravity="start|center_vertical"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        app:corners="@integer/corner_radius_shimmering_small"
+        android:layout_gravity="start|center_vertical"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering_small"
+        android:layout_gravity="start|center_vertical"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering_small"
+        android:layout_gravity="start|center_vertical"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_60"
+        app:corners="@integer/corner_radius_shimmering_small"
+        android:layout_gravity="start|center_vertical"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="@dimen/dp_150"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering_small"
+        android:layout_gravity="start|center_vertical"/>
+
+</LinearLayout>

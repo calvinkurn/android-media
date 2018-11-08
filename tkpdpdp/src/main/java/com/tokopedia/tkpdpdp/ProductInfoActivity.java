@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.perf.metrics.AddTrace;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
@@ -46,6 +45,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
         DetailFragmentInteractionListener,
         ProductInfoResultReceiver.Receiver,YoutubeThumbnailViewHolder.YouTubeThumbnailLoadInProcess,
         BottomSheets.BottomSheetDismissListener {
+
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -68,7 +68,6 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     }
 
     @Override
-    @AddTrace(name = "onCreateTracePDP", enabled = true)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_info_fragmented);

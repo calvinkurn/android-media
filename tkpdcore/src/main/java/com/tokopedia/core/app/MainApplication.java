@@ -41,9 +41,9 @@ import java.util.List;
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class MainApplication extends BaseMainApplication{
+public abstract class MainApplication extends BaseMainApplication {
 
-	public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 7;
     public static final int DEFAULT_APPLICATION_TYPE = -1;
     private static final String TAG = "MainApplication";
     public static HUDIntent hudIntent;
@@ -51,13 +51,13 @@ public abstract class MainApplication extends BaseMainApplication{
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static Context context;
-	private static Activity activity;
-	private static Boolean isResetNotification = false;
-	private static Boolean isResetDrawer = false;
-	private static Boolean isResetCart = false;
+    private static Activity activity;
+    private static Boolean isResetNotification = false;
+    private static Boolean isResetDrawer = false;
+    private static Boolean isResetCart = false;
     private static Boolean isResetTickerState = true;
-	private static int currActivityState;
-	private static String currActivityName;
+    private static int currActivityState;
+    private static String currActivityName;
     private static IntentService RunningService;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
@@ -68,8 +68,7 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
     @Override
-    protected void attachBaseContext(Context base)
-    {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(MainApplication.this);
     }
@@ -281,7 +280,6 @@ public abstract class MainApplication extends BaseMainApplication{
     }
 
 
-
     @Override
     public void onTerminate() {
         super.onTerminate();
@@ -292,6 +290,9 @@ public abstract class MainApplication extends BaseMainApplication{
      * Intialize the request manager and the image cache
      */
     private void init() {
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
+        }
     }
 
     /**
@@ -317,27 +318,27 @@ public abstract class MainApplication extends BaseMainApplication{
         }
     }
 
-	protected void initDbFlow() {
-		if(BuildConfig.DEBUG) {
-			FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
-		}
-		FlowManager.init(new FlowConfig.Builder(this)
+    protected void initDbFlow() {
+        if (BuildConfig.DEBUG) {
+            FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
+        }
+        FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
                 .build());
-	}
+    }
 
     public AppComponent getApplicationComponent() {
         return getAppComponent();
     }
 
-    public AppComponent getAppComponent(){
+    public AppComponent getAppComponent() {
         if (appComponent == null) {
             appComponent = daggerBuilder.build();
         }
         return appComponent;
     }
 
-    public void setAppComponent(AppComponent appComponent){
+    public void setAppComponent(AppComponent appComponent) {
         this.appComponent = appComponent;
     }
 

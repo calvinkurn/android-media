@@ -22,7 +22,7 @@ public class DeleteFeatureProductListCacheUseCase extends CacheApiDataDeleteUseC
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         RequestParams newRequestParams = CacheApiDataDeleteUseCase
-                .createParams(GMCommonUrl.BASE_URL, GMCommonUrl.FEATURED_PRODUCT_URL);
+                .createParams(GMCommonUrl.BASE_URL, GMCommonUrl.FEATURED_PRODUCT_URL, true);
         return super.createObservable(newRequestParams);
     }
 }

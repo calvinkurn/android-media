@@ -11,6 +11,7 @@ import java.util.List;
 public class ShopInfoDetail {
 
     public static final String IS_OFFICIAL_TYPE = "1";
+    public static final String GOLD_MERCHANT_VALUE = "1";
     @SerializedName("badges")
     @Expose
     private List<Object> badges = null;
@@ -270,6 +271,10 @@ public class ShopInfoDetail {
 
     public String getShopIsGold() {
         return shopIsGold;
+    }
+
+    public boolean isGoldMerchant(){
+        return GOLD_MERCHANT_VALUE.equals(shopIsGold);
     }
 
     public void setShopIsGold(String shopIsGold) {
