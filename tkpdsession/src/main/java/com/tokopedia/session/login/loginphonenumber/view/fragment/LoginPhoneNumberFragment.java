@@ -101,7 +101,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
+                    UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                     presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
                 }
@@ -149,7 +149,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 errorText.setText("");
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
+                UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
         });

@@ -142,7 +142,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                 bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT,
                         viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
                 intent.putExtras(bundle);
-                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                         getEventWarningPageClickOnWithdraw());
                 startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
             }
@@ -152,7 +152,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -275,15 +275,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         if (viewModel != null) {
             if (viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING
                     && viewModel.getTokocashNumber() > 0) {
-                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageTokocash());
             } else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
                     && viewModel.getTokocashNumber() <= 0) {
-                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageSaldo());
             } else if (viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
                     && viewModel.getTokocashNumber() > 0) {
-                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                         getEventViewWarningMessageBoth());
             }
         }

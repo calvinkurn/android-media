@@ -166,7 +166,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                               @Override
                               public void updateDrawState(TextPaint ds) {
                                   ds.setColor(MethodChecker.getColor(getActivity(),
-                                          com.tokopedia.core.R.color.tkpd_main_green));
+                                          com.tokopedia.core2.R.color.tkpd_main_green));
                               }
                           }
                 , getString(R.string.activation_resend_email_2).indexOf("Kirim")

@@ -92,12 +92,12 @@ public class ChangePhoneNumberEmailVerificationActivity extends BasePresenterAct
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core.R.id.container,
+                    .replace(com.tokopedia.core2.R.id.container,
                             getSupportFragmentManager().findFragmentByTag(TAG))
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
                     .commit();
         }
 

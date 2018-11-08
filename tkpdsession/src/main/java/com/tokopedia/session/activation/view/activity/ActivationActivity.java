@@ -116,7 +116,7 @@ public class ActivationActivity extends BasePresenterActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(this,getScreenName());
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {

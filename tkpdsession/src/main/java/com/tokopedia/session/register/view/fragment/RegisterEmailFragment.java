@@ -132,7 +132,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -189,9 +189,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
         }
 
-        String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
-                "<br>" + getString(com.tokopedia.core.R.string.link_term_condition) +
-                " serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
+        String joinString = getString(com.tokopedia.core2.R.string.detail_term_and_privacy) +
+                "<br>" + getString(com.tokopedia.core2.R.string.link_term_condition) +
+                " serta " + getString(com.tokopedia.core2.R.string.link_privacy_policy);
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
@@ -214,7 +214,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
+                                  ds.setColor(getResources().getColor(com.tokopedia.core2.R.color.tkpd_main_green));
                               }
                           }
                 , sourceString.indexOf(hyperlinkString)
@@ -493,7 +493,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
         registerPassword.setOnEditorActionListener((v, id, event) -> {
-            if (id == com.tokopedia.core.R.id.register_button || id == EditorInfo.IME_NULL) {
+            if (id == com.tokopedia.core2.R.id.register_button || id == EditorInfo.IME_NULL) {
                 analytics.eventRegisterWithEmail();
                 presenter.onRegisterClicked();
                 return true;
@@ -814,7 +814,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
             case REQUEST_ACTIVATE_ACCOUNT:
                 if (resultCode == Activity.RESULT_OK) {
-                    UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
+                    UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventSuccessRegisterEmail());
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 } else {

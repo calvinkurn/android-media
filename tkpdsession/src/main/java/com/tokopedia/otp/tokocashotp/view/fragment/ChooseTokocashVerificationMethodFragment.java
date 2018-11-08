@@ -56,7 +56,7 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     public static Fragment createInstance(Bundle bundle) {
@@ -97,13 +97,13 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
         if (getActivity() instanceof VerificationActivity) {
             switch (type) {
                 case VerificationActivity.TYPE_SMS: {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                    UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics
                             .getChooseVerificationMethodTracking(VerificationActivity.TYPE_SMS));
                     ((VerificationActivity) getActivity()).goToSmsVerification();
                     break;
                 }
                 case VerificationActivity.TYPE_PHONE_CALL: {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                    UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics
                             .getChooseVerificationMethodTracking(VerificationActivity.TYPE_PHONE_CALL));
                     ((VerificationActivity) getActivity()).goToCallVerification();
                     break;

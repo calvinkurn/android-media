@@ -180,7 +180,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                                 RequestPermissionUtil
                                         .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
                         )
-                        .setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(com.tokopedia.core2.R.string.title_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 ProfileCompletionPhoneVerificationFragmentPermissionsDispatcher
@@ -188,7 +188,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
 
                             }
                         })
-                        .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(com.tokopedia.core2.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -250,7 +250,7 @@ public class ProfileCompletionPhoneVerificationFragment extends BaseDaggerFragme
                               @Override
                               public void updateDrawState(TextPaint ds) {
                                   ds.setColor(MethodChecker.getColor(getActivity(),
-                                          com.tokopedia.core.R.color.tkpd_main_green));
+                                          com.tokopedia.core2.R.color.tkpd_main_green));
                               }
                           }
                 , getString(R.string.via_call).indexOf(getString(R.string.via_call_short))

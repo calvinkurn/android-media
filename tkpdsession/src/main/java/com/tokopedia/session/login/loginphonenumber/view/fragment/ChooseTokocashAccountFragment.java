@@ -97,7 +97,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessLogin() {
-        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+        UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getSuccessLoginTracking());
         BranchSdkUtils.sendLoginEvent(getActivity());
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

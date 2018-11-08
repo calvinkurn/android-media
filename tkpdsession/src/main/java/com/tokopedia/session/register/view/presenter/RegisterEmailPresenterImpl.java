@@ -87,8 +87,8 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
         }
 
         if (registerViewModel != null) {
-            UnifyTracking.eventMoRegister(registerViewModel.getName(), registerViewModel.getPhone());
-            BranchSdkUtils.sendRegisterEvent(registerViewModel.getEmail(),registerViewModel.getPhone());
+            UnifyTracking.eventMoRegister(viewListener.getActivity(), registerViewModel.getName(), registerViewModel.getPhone());
+            BranchSdkUtils.sendRegisterEvent(viewListener.getActivity(), registerViewModel.getEmail(),registerViewModel.getPhone());
         }
     }
 

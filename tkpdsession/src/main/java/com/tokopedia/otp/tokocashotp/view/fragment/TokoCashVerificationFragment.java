@@ -143,7 +143,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == MAX_INPUT_OTP) {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking
+                    UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getVerifyTracking
                             (viewModel.getType()));
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
@@ -222,7 +222,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking(viewModel.getType()));
+                UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getVerifyTracking(viewModel.getType()));
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
@@ -392,7 +392,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
             public void onClick(View v) {
                 inputOtp.setText("");
                 removeErrorOtp();
-                UnifyTracking.eventTracking(
+                UnifyTracking.eventTracking(getActivity(),
                         LoginPhoneNumberAnalytics.getResendVerificationTracking(
                                 viewModel.getType()));
                 presenter.requestOTP(viewModel);
@@ -472,7 +472,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onSuccessLogin() {
-        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+        UnifyTracking.eventTracking(getActivity(), LoginPhoneNumberAnalytics.getSuccessLoginTracking());
         BranchSdkUtils.sendLoginEvent(getActivity());
         getActivity().finish();
     }

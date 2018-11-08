@@ -148,7 +148,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -245,7 +245,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     protected void prepareView(View view) {
-        UserAuthenticationAnalytics.setActiveRegister();
+        UserAuthenticationAnalytics.setActiveRegister(view.getContext());
         registerButton.setVisibility(View.GONE);
         registerPhoneNumberButton.setVisibility(View.GONE);
         partialRegisterInputView.setVisibility(View.GONE);
@@ -263,8 +263,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
-                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
+                UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickRegisterEmail());
+                UnifyTracking.eventMoRegistrationStart(getActivity(), AppEventTracking.GTMCacheValue.EMAIL);
                 goToRegisterEmailPage();
 
             }
@@ -385,7 +385,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-            UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
+            UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
 
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
@@ -464,7 +464,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onResume() {
         super.onResume();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
 
         if (sessionHandler != null &&
                 sessionHandler.isV4Login()) {
@@ -559,8 +559,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void onRegisterFacebookClick() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterFacebook());
-        UnifyTracking.eventMoRegistrationStart(
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickRegisterFacebook());
+        UnifyTracking.eventMoRegistrationStart(getActivity(),
                 com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
 
         presenter.getFacebookCredential(this, callbackManager);
@@ -570,8 +570,8 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void onRegisterGooglelick() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterGoogle());
-        UnifyTracking.eventMoRegistrationStart(
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickRegisterGoogle());
+        UnifyTracking.eventMoRegistrationStart(getActivity(),
                 AppEventTracking.GTMCacheValue.GMAIL);
 
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
@@ -581,9 +581,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     }
 
     private void onRegisterWebviewClick(DiscoverItemViewModel discoverItemViewModel) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterWebview
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickRegisterWebview
                 (discoverItemViewModel.getName()));
-        UnifyTracking.eventMoRegistrationStart(
+        UnifyTracking.eventMoRegistrationStart(getActivity(),
                 AppEventTracking.GTMCacheValue.WEBVIEW);
 
         WebViewLoginFragment newFragment = WebViewLoginFragment.createInstance(
@@ -593,7 +593,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         newFragment.show(fragmentTransaction, WebViewLoginFragment.class.getSimpleName());
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(discoverItemViewModel
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(getActivity(), discoverItemViewModel
                 .getName());
 
     }
@@ -640,7 +640,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRegisterSosmed(String methodName) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventSuccessRegisterSosmed(socmedMethod));
         startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                 REQUEST_WELCOME_PAGE);
     }

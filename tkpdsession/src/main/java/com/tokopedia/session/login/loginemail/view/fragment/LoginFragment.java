@@ -188,7 +188,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override
@@ -234,7 +234,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UserAuthenticationAnalytics.setActiveLogin();
+        UserAuthenticationAnalytics.setActiveLogin(getActivity());
         callbackManager = CallbackManager.Factory.create();
     }
 
@@ -288,7 +288,7 @@ public class LoginFragment extends BaseDaggerFragment
                 presenter.saveLoginEmail(emailEditText.getText().toString());
                 presenter.login(emailEditText.getText().toString().trim(),
                         passwordEditText.getText().toString());
-                UnifyTracking.eventCTAAction();
+                UnifyTracking.eventCTAAction(getActivity());
                 SessionTrackingUtils.loginPageClickLogin();
             }
         });
@@ -379,7 +379,7 @@ public class LoginFragment extends BaseDaggerFragment
 
 
     private void goToRegisterInitial() {
-        UnifyTracking.eventTracking(LoginAnalytics.goToRegisterFromLogin());
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.goToRegisterFromLogin());
         Intent intent = RegisterInitialActivity.getCallingIntent(getActivity());
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
@@ -435,14 +435,14 @@ public class LoginFragment extends BaseDaggerFragment
     public void showErrorPassword(int resId) {
         setWrapperError(wrapperPassword, getString(resId));
         passwordEditText.requestFocus();
-        UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
+        UnifyTracking.eventLoginError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
     }
 
     @Override
     public void showErrorEmail(int resId) {
         setWrapperError(wrapperEmail, getString(resId));
         emailEditText.requestFocus();
-        UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
+        UnifyTracking.eventLoginError(getActivity(), AppEventTracking.EventLabel.EMAIL);
     }
 
     private void saveSmartLock(int state, String email, String password) {
@@ -463,7 +463,7 @@ public class LoginFragment extends BaseDaggerFragment
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 
-        TrackingUtils.eventPushUserID();
+        TrackingUtils.eventPushUserID(getActivity(), SessionHandler.getGTMLoginID(getActivity()));
         if (!GlobalConfig.DEBUG) {
             Crashlytics.setUserIdentifier(String.valueOf(sessionHandler.getLoginID()));
         }
@@ -612,8 +612,9 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLoginEmail() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessLoginEmail());
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventSuccessLoginEmail());
         TrackingUtils.setMoEUserAttributesLogin(
+                getActivity(),
                 sessionHandler.getLoginID(),
                 sessionHandler.getLoginName(),
                 sessionHandler.getEmail(),
@@ -632,8 +633,9 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLoginSosmed(String loginMethod) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessLoginSosmed(loginMethod));
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventSuccessLoginSosmed(loginMethod));
         TrackingUtils.setMoEUserAttributesLogin(
+                getActivity(),
                 sessionHandler.getLoginID(),
                 sessionHandler.getLoginName(),
                 sessionHandler.getEmail(),
@@ -717,7 +719,7 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginWebviewClick(String name, String url) {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginWebview(name));
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickLoginWebview(name));
         WebViewLoginFragment newFragment = WebViewLoginFragment
                 .createInstance(url, name);
         newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
@@ -727,7 +729,7 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginPhoneNumberClick() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
         SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
@@ -735,7 +737,7 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginGoogleClick() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginGoogle());
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickLoginGoogle());
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
         SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
@@ -743,7 +745,7 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginFacebookClick() {
-        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginFacebook());
+        UnifyTracking.eventTracking(getActivity(), LoginAnalytics.getEventClickLoginFacebook());
         presenter.getFacebookCredential(this, callbackManager);
         SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
     }
@@ -787,7 +789,7 @@ public class LoginFragment extends BaseDaggerFragment
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(com.tokopedia.core.R.string.error_field_required));
+                    setWrapperError(wrapper, getString(com.tokopedia.core2.R.string.error_field_required));
                 }
             }
         };

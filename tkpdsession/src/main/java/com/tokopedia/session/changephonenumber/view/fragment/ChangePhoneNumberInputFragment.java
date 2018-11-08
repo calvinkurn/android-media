@@ -133,7 +133,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+                UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                         getEventChangePhoneNumberClickOnNext());
                 presenter.validateNumber(cleanPhoneNumber(newPhoneNumber));
             }
@@ -153,7 +153,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_info) {
-            UnifyTracking.eventTracking(ChangePhoneNumberAnalytics.
+            UnifyTracking.eventTracking(getActivity(), ChangePhoneNumberAnalytics.
                     getEventChangePhoneNumberClickOnInfo());
             bottomSheetInfo.show();
         }
@@ -169,7 +169,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.screen(getScreenName());
+        ScreenTracking.screen(getActivity(),getScreenName());
     }
 
     @Override

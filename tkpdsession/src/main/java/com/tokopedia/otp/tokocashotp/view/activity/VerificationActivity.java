@@ -150,8 +150,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             Fragment fragment = ChooseTokocashVerificationMethodFragment.createInstance(getIntent().getExtras());
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
-                    .tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core2.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core2.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
             fragmentTransaction.commit();
@@ -168,8 +168,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
             Fragment fragment = TokoCashVerificationFragment.createInstance(createSmsBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core2.R.animator.slide_in_left, 0, 0,
+                    com.tokopedia.core2.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
@@ -186,8 +186,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
             Fragment fragment = TokoCashVerificationFragment.createInstance(createCallBundle(phoneNumber));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core2.R.animator.slide_in_left, 0, 0,
+                    com.tokopedia.core2.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();

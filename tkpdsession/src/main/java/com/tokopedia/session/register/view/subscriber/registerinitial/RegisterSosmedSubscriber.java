@@ -97,7 +97,7 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel) {
         if (userInfoDomainModel.getGetUserInfoDomainData() != null) {
-            BranchSdkUtils.sendRegisterEvent(userInfoDomainModel.getGetUserInfoDomainData().getEmail(),
+            BranchSdkUtils.sendRegisterEvent(viewListener.getContext(), userInfoDomainModel.getGetUserInfoDomainData().getEmail(),
                     userInfoDomainModel.getGetUserInfoDomainData().getPhone());
         }
     }
