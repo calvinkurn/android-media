@@ -153,7 +153,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                     getView().onErrorPoint(null);
                 } else {
                     if (pointDetailEntity.getTokoPoints().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
-                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr(), pointDetailEntity.getTokoPoints().getStatus().getPoints().getReward());
+                        getView().onSuccessPoints(pointDetailEntity.getTokoPoints().getStatus().getPoints().getRewardStr(),
+                                pointDetailEntity.getTokoPoints().getStatus().getPoints().getReward(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getNameDesc(),
+                                pointDetailEntity.getTokoPoints().getStatus().getTier().getEggImageUrl());
                     }
                 }
 

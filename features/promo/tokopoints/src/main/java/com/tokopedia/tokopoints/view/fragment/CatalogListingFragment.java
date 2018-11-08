@@ -177,11 +177,11 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     @Override
-    public void onSuccessPoints(String rewardStr, int rewardValue) {
+    public void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl) {
         mTextPoints.setText(rewardStr);
-//        mTextMembershipValueBottom.setText(String.valueOf(tierData.getNameDesc()));
+        mTextMembershipValueBottom.setText(membership);
         mTextPointsBottom.setText(CurrencyFormatUtil.convertPriceValue(rewardValue, false));
-//        ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, tierData.getEggImageUrl());
+        ImageHandler.loadImageCircle2(getActivityContext(), mImgEggBottom, eggUrl);
     }
 
     @Override
