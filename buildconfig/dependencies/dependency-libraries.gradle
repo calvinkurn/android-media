@@ -47,6 +47,7 @@ ext {
             pagination        : ":libraries:pagination",
             pushNotif         : ":libraries:push_notification",
             reactNative       : ":libraries:react_native",
+            remoteConfig       : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
             useCase           : ":libraries:use_case",
             userSession       : ":libraries:user_session",

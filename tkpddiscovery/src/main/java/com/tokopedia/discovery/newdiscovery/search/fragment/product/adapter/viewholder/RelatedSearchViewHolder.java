@@ -13,7 +13,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ListHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 
@@ -28,7 +28,7 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
     RelatedSearchAdapter adapter;
     TextView relatedSearchTitle;
 
-    public RelatedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public RelatedSearchViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
         recyclerView = itemView.findViewById(R.id.recyclerView);
         relatedSearchTitle = itemView.findViewById(R.id.relatedSearchTitle);
@@ -56,9 +56,9 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
     public static class RelatedSearchAdapter extends RecyclerView.Adapter<ViewHolder> {
 
         List<RelatedSearchModel.OtherRelated> itemList = new ArrayList<>();
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public RelatedSearchAdapter(ItemClickListener itemClickListener) {
+        public RelatedSearchAdapter(ProductListener itemClickListener) {
             this.itemClickListener = itemClickListener;
         }
 
@@ -87,9 +87,9 @@ public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchMod
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
-        ItemClickListener itemClickListener;
+        ProductListener itemClickListener;
 
-        public ViewHolder(View itemView, ItemClickListener itemClickListener) {
+        public ViewHolder(View itemView, ProductListener itemClickListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.related_search_text);
             this.itemClickListener = itemClickListener;

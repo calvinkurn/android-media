@@ -22,12 +22,15 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.adapter.KolPostAdapter;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -59,16 +62,15 @@ public class KolPostFragment extends BaseDaggerFragment implements
     @Inject
     KolPostListener.Presenter presenter;
 
-    protected KolPostAdapter adapter;
-    protected KolPostTypeFactory typeFactory;
-
     @Inject
     UserSessionInterface userSession;
 
+    protected KolPostAdapter adapter;
+    protected KolPostTypeFactory typeFactory;
+    protected boolean canLoadMore = true;
+
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
-
-    protected boolean canLoadMore = true;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
@@ -264,7 +266,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onOpenKolTooltip(int rowNumber, String url) {
+    public void onOpenKolTooltip(int rowNumber, String uniqueTrackingId, String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
     }
 
@@ -313,14 +315,24 @@ public class KolPostFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onEditClicked(int id) {
+
+    }
+
+    @Override
+    public void onMenuClicked(int rowNumber, BaseKolViewModel element) {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case KOL_COMMENT_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessAddDeleteKolComment(
-                            data.getIntExtra(kolRouter.getKolCommentArgsPosition(), -1),
-                            data.getIntExtra(kolRouter.getKolCommentArgsTotalComment(), 0));
+                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, -1),
+                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0));
                 }
                 break;
             default:
@@ -340,11 +352,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
             } else {
                 kolPostViewModel.setTotalLike(kolPostViewModel.getTotalLike() - 1);
             }
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_LIKE);
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();
@@ -380,11 +392,11 @@ public class KolPostFragment extends BaseDaggerFragment implements
                     ((KolPostViewModel) adapter.getList().get(rowNumber));
             kolPostViewModel.setTotalComment(
                     kolPostViewModel.getTotalComment() + totalNewComment);
-            adapter.notifyItemChanged(rowNumber);
+            adapter.notifyItemChanged(rowNumber, KolPostViewHolder.PAYLOAD_COMMENT);
 
             if (getActivity() != null &&
                     getArguments() != null &&
-                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getKolId()) {
+                    getArguments().getInt(PARAM_POST_ID, -1) == kolPostViewModel.getContentId()) {
 
                 if (resultIntent == null) {
                     resultIntent = new Intent();

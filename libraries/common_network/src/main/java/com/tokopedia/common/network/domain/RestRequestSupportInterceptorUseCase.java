@@ -38,7 +38,7 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return ObservableFactory.create(buildRequest(), mInterceptors, mContext);
+        return ObservableFactory.create(buildRequest(requestParams), mInterceptors, mContext);
     }
 
     /**
@@ -93,5 +93,5 @@ public abstract class RestRequestSupportInterceptorUseCase extends UseCase<Map<T
      *
      * @return List of RestRequest object which may or may not contain above parameter
      */
-    protected abstract List<RestRequest> buildRequest();
+    protected abstract List<RestRequest> buildRequest(RequestParams requestParams);
 }

@@ -25,7 +25,7 @@ public interface ICheckoutModuleRouter {
             boolean couponActive, String additionalStringData);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData);
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 

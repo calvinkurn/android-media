@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
@@ -118,6 +119,13 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    GetShipmentAddressFormOneClickShipementUseCase provideGetShipmentAddressFormOneClickShipmentUseCase(
+            ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
+        return new GetShipmentAddressFormOneClickShipementUseCase(cartRepository, shipmentMapper);
+    }
+
+    @Provides
+    @ShipmentScope
     CheckPromoCodeCartListUseCase provideCheckPromoCodeCartListUseCase(ICartRepository cartRepository,
                                                                        IVoucherCouponMapper voucherCouponMapper) {
         return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper);
@@ -154,6 +162,7 @@ public class ShipmentModule {
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
                                                         CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
+                                                        GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                         EditAddressUseCase editAddressUseCase,
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
@@ -164,9 +173,10 @@ public class ShipmentModule {
                                                         ShippingCourierConverter shippingCourierConverter) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
-                checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
-                changeShippingAddressUseCase, saveShipmentStateUseCase, getRatesUseCase,
-                getCourierRecommendationUseCase, shippingCourierConverter, shipmentAnalyticsActionListener);
+                getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
+                editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
+                saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
+                shippingCourierConverter, shipmentAnalyticsActionListener);
     }
 
     @Provides

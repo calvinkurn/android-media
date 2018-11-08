@@ -82,6 +82,10 @@ public class RevampCategoryAdapter extends
         void onCategoryRevampClick(ChildCategoryModel child);
 
         void onBannerAdsClicked(String appLink);
+
+        boolean isUserHasLogin();
+
+        String getUserId();
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

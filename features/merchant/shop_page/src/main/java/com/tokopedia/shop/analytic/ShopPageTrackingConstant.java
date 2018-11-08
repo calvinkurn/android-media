@@ -11,6 +11,8 @@ public class ShopPageTrackingConstant {
     //event
     public static final String CLICK_SHOP_PAGE = "clickShopPage";
     public static final String VIEW_SHOP_PAGE = "viewShopPage";
+    public static final String PROMO_VIEW = "promoView";
+    public static final String PROMO_CLICK = "promoClick";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
@@ -20,6 +22,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION = "top section";
     public static final String INFO = "info";
     public static final String MERCHANT_VOUCHER_CODE = "merchant voucher code";
+    public static final String PROMO_BANNER = "promo banner";
     public static final String MANAGE_SHOP = "manage shop";
     public static final String MANAGE_PRODUCT = "manage product";
     public static final String CLICK = "click";
@@ -82,6 +85,8 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT = "product";
     public static final String PRODUCTS = "products";
     public static final String NAME = "name";
+    public static final String PROMO_ID = "promo_id";
+    public static final String PROMO_CODE = "promo_code";
     public static final String ID = "id";
     public static final String PRICE = "price";
     public static final String BRAND = "brand";
@@ -99,4 +104,5 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
+    public static final String PROMOTIONS = "promotions";
 }

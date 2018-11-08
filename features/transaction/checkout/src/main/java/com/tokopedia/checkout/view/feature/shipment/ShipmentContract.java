@@ -49,7 +49,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(boolean isInitialRender);
+        void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -71,6 +71,8 @@ public interface ShipmentContract {
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
+        void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);
+
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -87,6 +89,13 @@ public interface ShipmentContract {
 
         void renderCourierStateFailed(int itemPosition);
 
+        void cancelAllCourierPromo();
+
+        void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition,
+                                              ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
+        void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
+
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
@@ -95,7 +104,9 @@ public interface ShipmentContract {
 
         Activity getActivityContext();
 
+        boolean checkCourierPromoStillExist();
 
+        void setCourierPromoApplied(int itemPosition);
     }
 
     interface AnalyticsActionListener {
@@ -166,30 +177,43 @@ public interface ShipmentContract {
         void sendAnalyticsOnViewPromoAutoApply();
 
         void sendAnalyticsOnViewPromoManualApply(String type);
+
+        void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId);
+
+        void sendAnalyticsOnDisplayDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnDisplayLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
+
+        void sendAnalyticsOnClickDurationThatContainPromo(boolean isCourierPromo, String duration);
+
+        void sendAnalyticsOnClickLogisticThatContainPromo(boolean isCourierPromo, int shippingProductId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
 
         void processReloadCheckoutPageFromMultipleAddress(PromoData promoData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel);
+                                                          ShipmentDonationModel shipmentDonationModel,
+                                                          boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError();
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
-        void processCheckShipmentPrepareCheckout(String voucherCode);
+        void processCheckShipmentPrepareCheckout(String voucherCode, boolean isOneClickShipment);
 
-        void processCheckout(String voucherCode);
+        void processCheckout(String voucherCode, boolean isOneClickShipment);
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment(String promoCode);
+        void checkPromoShipment(String promoCode,boolean isOneClickShipment);
 
-        void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+        void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
+
+        void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
@@ -199,7 +223,10 @@ public interface ShipmentContract {
                              ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
-                                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+                                             ShipmentDetailData shipmentDetailData,
+                                             ShipmentCartItemModel shipmentCartItemModel,
+                                             List<ShopShipment> shopShipmentList,
+                                             boolean isInitialLoad);
 
         RecipientAddressModel getRecipientAddressModel();
 
@@ -233,7 +260,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon();
 
-        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
@@ -244,6 +271,13 @@ public interface ShipmentContract {
 
         List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition);
 
+        void setCouponStateChanged(boolean appliedCoupon);
+
+        boolean getCouponStateChanged();
+
+        void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
+
+        boolean getHasDeletePromoAfterChecKPromoCodeFinal();
     }
 
 }
