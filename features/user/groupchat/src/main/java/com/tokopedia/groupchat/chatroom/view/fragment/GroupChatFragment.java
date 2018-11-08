@@ -385,9 +385,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onResume() {
         super.onResume();
-        autoAddSprintSaleAnnouncement(
-                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
-                ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
     }
 
     @Override

@@ -1202,7 +1202,10 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
-            presenter.getChannelInfo(viewModel.getChannelUuid());
+            if(!channelInfoDialog.isShowing()){
+                presenter.getChannelInfo(viewModel.getChannelUuid());
+            }
+
         }
 
         if (notifReceiver == null) {
