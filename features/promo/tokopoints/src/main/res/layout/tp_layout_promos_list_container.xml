@@ -47,7 +47,7 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="102dp"
+                android:layout_height="@dimen/tp_margin_bottom_membership_and_egg"
                 android:visibility="invisible" />
         </LinearLayout>
 
