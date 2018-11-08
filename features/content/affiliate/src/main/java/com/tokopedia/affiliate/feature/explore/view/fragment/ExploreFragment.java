@@ -84,6 +84,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
+    private View layoutEmpty;
 
     private boolean isCanDoAction;
 
@@ -115,6 +116,7 @@ public class ExploreFragment
         ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
+        layoutEmpty = view.findViewById(R.id.layout_empty);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -136,6 +138,7 @@ public class ExploreFragment
     }
 
     private void initView() {
+        layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
@@ -343,12 +346,16 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                swipeRefreshLayout,
+                layoutEmpty,
                 error,
-                () -> presenter.getFirstData(exploreParams, false)
+                () -> {
+                    layoutEmpty.setVisibility(View.GONE);
+                    presenter.getFirstData(exploreParams, false);
+                }
         );
     }
 
