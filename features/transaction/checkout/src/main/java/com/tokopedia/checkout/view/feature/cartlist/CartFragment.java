@@ -831,6 +831,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
+        cartAdapter.addTopAdsSection();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
 
@@ -849,9 +850,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderTopAds() {
         Xparams xparams = new Xparams();
-//        xparams.setProduct_id(productData.getInfo().getProductId());
-//        xparams.setProduct_name(productData.getInfo().getProductName());
-//        xparams.setSource_shop_id(Integer.parseInt(productData.getShopInfo().getShopId()));
+        xparams.setProduct_id(12007464);
+        xparams.setProduct_name("Original Baterai Samsung Galaxy Mini GT-S5570 1200mAh");
+        xparams.setSource_shop_id(415979);
 
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, "cart");
@@ -867,7 +868,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         topAdsCarouselView.setAdsItemClickListener(this);
         topAdsCarouselView.setAdsListener(this);
-//        topAdsCarouselView.setAdsItemImpressionListener(this);
         topAdsCarouselView.setConfig(config);
         topAdsCarouselView.loadTopAds();
     }

@@ -19,10 +19,13 @@ import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +74,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
         } else if (cartDataList.get(position) instanceof ShipmentSellerCashbackModel) {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
+        } else if (cartDataList.get(position) instanceof TopAdsViewModel) {
+            return CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS;
         } else {
             return super.getItemViewType(position);
         }
@@ -99,6 +104,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false);
             return new ShipmentSellerCashbackViewHolder(view);
+        } else if (viewType == CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS, parent, false);
+            return new CartTopAdsViewHolder(view);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -496,6 +505,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         }
+    }
+
+    public void addTopAdsSection() {
+        cartDataList.add(new TopAdsViewModel());
     }
 
     public interface ActionListener extends CartAdapterActionListener {

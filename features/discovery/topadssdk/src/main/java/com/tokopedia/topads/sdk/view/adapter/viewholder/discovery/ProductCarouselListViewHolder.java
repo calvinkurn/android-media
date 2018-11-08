@@ -78,7 +78,9 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
-                impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+                if(impressionListener!=null) {
+                    impressionListener.onImpressionProductAdsItem(getAdapterPosition(), product);
+                }
             }
         });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

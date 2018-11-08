@@ -101,7 +101,8 @@
                     <com.tokopedia.topads.sdk.widget.TopAdsCarouselView
                         android:id="@+id/topads"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
