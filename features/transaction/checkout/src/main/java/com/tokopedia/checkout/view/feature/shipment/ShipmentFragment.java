@@ -142,14 +142,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
-    public static ShipmentFragment newInstance(PromoCodeAppliedData promoCodeAppliedData,
-                                               CartPromoSuggestion cartPromoSuggestionData,
-                                               String defaultSelectedTabPromo,
-                                               boolean isAutoApplyPromoCodeApplied,
-                                               boolean isFromPdp) {
+    public static ShipmentFragment newInstance(
+//            PromoCodeAppliedData promoCodeAppliedData,
+//            CartPromoSuggestion cartPromoSuggestionData,
+            String defaultSelectedTabPromo,
+            boolean isAutoApplyPromoCodeApplied,
+            boolean isFromPdp) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
-        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
+//        bundle.putParcelable(ARG_EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestionData);
+//        bundle.putParcelable(ARG_EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeAppliedData);
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         bundle.putBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         bundle.putBoolean(ARG_IS_FROM_PDP, isFromPdp);
