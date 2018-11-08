@@ -133,12 +133,7 @@ public class CheckRegisterPhoneNumberFragment extends BaseDaggerFragment
             presenter.checkPhoneNumber(phoneNumber.getText().toString());
         });
 
-        String joinString = String.format(getString(R.string.bottom_info_terms_and_privacy),
-                getString(R.string.detail_term_and_privacy),
-                getString(R.string.link_term_condition),
-                getString(R.string.link_privacy_policy));
-
-        bottomInfo.setText(MethodChecker.fromHtml(joinString));
+        bottomInfo.setText(MethodChecker.fromHtml(getString(R.string.bottom_info_terms_and_privacy)));
         bottomInfo.setMovementMethod(LinkMovementMethod.getInstance());
         nextButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         StripedUnderlineUtil.stripUnderlines(bottomInfo);

@@ -185,12 +185,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
         }
 
-        String joinString = String.format(getString(R.string.bottom_info_terms_and_privacy),
-                getString(R.string.detail_term_and_privacy),
-                getString(R.string.link_term_condition),
-                getString(R.string.link_privacy_policy));
-
-        registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
+        registerNextTAndC.setText(MethodChecker.fromHtml(getString(R.string.bottom_info_terms_and_privacy)));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
         StripedUnderlineUtil.stripUnderlines(registerNextTAndC);
 
