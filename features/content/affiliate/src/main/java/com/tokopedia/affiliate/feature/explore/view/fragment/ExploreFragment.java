@@ -84,7 +84,6 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
-    private CoordinatorLayout mainView;
 
     private boolean isCanDoAction;
 
@@ -116,7 +115,6 @@ public class ExploreFragment
         ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
-        mainView = view.findViewById(R.id.main_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -348,7 +346,7 @@ public class ExploreFragment
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                mainView,
+                rvExplore,
                 error,
                 () -> presenter.getFirstData(exploreParams, false)
         );
