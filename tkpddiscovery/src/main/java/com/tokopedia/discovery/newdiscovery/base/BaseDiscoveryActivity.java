@@ -111,7 +111,7 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        TrackingUtils.sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         JSONArray afProdIds = new JSONArray();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
@@ -125,14 +125,14 @@ public class BaseDiscoveryActivity
                 }
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this,afProdIds,productViewModel.getQuery(),prodIdArray);
         finish();
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop(), isPausing());
     }
 
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-        TrackingUtils.sendMoEngageSearchAttempt(productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
+        TrackingUtils.sendMoEngageSearchAttempt(this,productViewModel.getQuery(), !productViewModel.getProductList().isEmpty());
         JSONArray afProdIds = new JSONArray();
         ArrayList<String> prodIdArray = new ArrayList<>();
 
@@ -146,7 +146,7 @@ public class BaseDiscoveryActivity
                 }
             }
         }
-        TrackingUtils.eventAppsFlyerViewListingSearch(afProdIds,productViewModel.getQuery(),prodIdArray);
+        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
         ImageSearchActivity.moveTo(this, productViewModel);
         finish();
     }

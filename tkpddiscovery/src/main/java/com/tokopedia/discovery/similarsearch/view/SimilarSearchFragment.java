@@ -147,7 +147,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
             }
         }
         if(dataLayerList.size() > 0)
-            SimilarSearchTracking.eventUserSeeSimilarProduct(getProductID(),dataLayerList);
+            SimilarSearchTracking.eventUserSeeSimilarProduct(getActivity(), getProductID(),dataLayerList);
         mAdapter.setProductsItems(productList);
     }
 

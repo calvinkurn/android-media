@@ -196,7 +196,7 @@ public class SearchActivity extends DiscoveryActivity
 
         if (intent != null &&
                 intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            UnifyTracking.eventBeliLongClick();
+            UnifyTracking.eventBeliLongClick(this);
         }
         handleImageUri(intent);
     }
@@ -286,7 +286,7 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void sendImageSearchFromGalleryGTM(String label) {
-        UnifyTracking.eventDiscoveryExternalImageSearch(label);
+        UnifyTracking.eventDiscoveryExternalImageSearch(this, label);
     }
 
     private void initInjector() {

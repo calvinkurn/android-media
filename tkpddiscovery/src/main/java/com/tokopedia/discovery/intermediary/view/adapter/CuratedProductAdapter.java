@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -143,12 +143,12 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             viewHolder.labelContainer.removeAllViews();
             if (data.getLabels() != null) {
                 for (LabelModel label : data.getLabels()) {
-                    View view = LayoutInflater.from(context).inflate(com.tokopedia.core.R.layout.label_layout, null);
-                    TextView labelText = (TextView) view.findViewById(com.tokopedia.core.R.id.label);
+                    View view = LayoutInflater.from(context).inflate(com.tokopedia.core2.R.layout.label_layout, null);
+                    TextView labelText = (TextView) view.findViewById(com.tokopedia.core2.R.id.label);
                     labelText.setText(label.getTitle());
                     if (!label.getColor().toLowerCase().equals("#ffffff")) {
-                        labelText.setBackgroundResource(com.tokopedia.core.R.drawable.bg_label);
-                        labelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.core.R.color.white));
+                        labelText.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_label);
+                        labelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.core2.R.color.white));
                         ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             labelText.setBackgroundTintList(tint);

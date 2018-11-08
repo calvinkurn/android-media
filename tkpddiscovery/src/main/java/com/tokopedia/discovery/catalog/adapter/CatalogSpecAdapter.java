@@ -10,8 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.catalog.listener.ICatalogSpecSectionChanged;
 import com.tokopedia.discovery.catalog.model.SpecChild;

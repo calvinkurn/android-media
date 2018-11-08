@@ -196,7 +196,7 @@ public class CategoryNavigationFragment extends BaseDaggerFragment implements Ca
 
     @Override
     public void onItemClicked(com.tokopedia.discovery.categorynav.domain.model.Category parent, int position) {
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(parent.getName());
+        TrackingUtils.sendMoEngageClickMainCategoryIcon(getActivity(),parent.getName());
         rootCategoryId = parent.getId();
         categoryParentAdapter.setActiveId(parent.getId());
         for (Category category : categoryNavDomainModel.getCategories()) {

@@ -32,7 +32,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -260,7 +260,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
-        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
+        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core2.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
         headerContainer.setVisibility(View.VISIBLE);
         bannerContainer.setVisibility(View.GONE);
@@ -338,7 +338,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventExpandCategoryIntermediary(departmentId);
+                    UnifyTracking.eventExpandCategoryIntermediary(getActivity(),departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -381,7 +381,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void trackEventEnhance(Map<String, Object> maps) {
-        CategoryPageTracking.eventEnhance(maps);
+        CategoryPageTracking.eventEnhance(getActivity(), maps);
     }
 
     @Override
@@ -564,7 +564,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+        ScreenTracking.eventDiscoveryScreenAuth(getActivity(), departmentId);
     }
 
     @Override
@@ -627,7 +627,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(departmentId,
+        UnifyTracking.eventCuratedIntermediary(getActivity(),departmentId,
                 curatedName, productModel.getName());
     }
 
@@ -698,7 +698,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 child.getCategoryName(),
                 true
         );
-        UnifyTracking.eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
+        UnifyTracking.eventLevelCategoryIntermediary(getActivity(),departmentId, child.getCategoryId());
     }
 
     public String getDepartmentId() {
@@ -756,7 +756,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel) {
-        UnifyTracking.eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
+        UnifyTracking.eventOfficialStoreIntermediary(getActivity(),departmentId, brandModel.getBrandName());
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);

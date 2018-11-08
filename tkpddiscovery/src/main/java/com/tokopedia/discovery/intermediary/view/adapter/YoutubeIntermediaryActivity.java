@@ -7,7 +7,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.discovery.R;
 
 import butterknife.BindView;
@@ -43,7 +43,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     private void setSideBarAvailability() {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onSingleVideoInitializedListener());
     }
 
@@ -142,7 +142,7 @@ public class YoutubeIntermediaryActivity extends YouTubeBaseActivity {
     }
 
     public void onInitiazlizeVideo(int videoIndex) {
-        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core.R.string.GOOGLE_API_KEY),
+        youTubePlayerView.initialize(getApplicationContext().getString(com.tokopedia.core2.R.string.GOOGLE_API_KEY),
                 onInitializedListener());
     }
 

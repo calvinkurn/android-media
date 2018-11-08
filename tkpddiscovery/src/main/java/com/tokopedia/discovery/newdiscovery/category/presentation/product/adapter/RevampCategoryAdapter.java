@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.network.entity.intermediary.Child;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 
@@ -39,7 +39,7 @@ public class RevampCategoryAdapter extends
     @Override
     public RevampCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(com.tokopedia.core.R.layout.item_revamp_category, null
+                viewGroup.getContext()).inflate(com.tokopedia.core2.R.layout.item_revamp_category, null
         );
         v.setMinimumWidth(categoryWidth);
         return new RevampCategoryAdapter.ItemRowHolder(v);

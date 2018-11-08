@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class IntermediaryCategoryAdapter extends
     @Override
     public IntermediaryCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(com.tokopedia.core.R.layout.item_revamp_category, null
+                viewGroup.getContext()).inflate(com.tokopedia.core2.R.layout.item_revamp_category, null
         );
         v.setMinimumWidth(categoryWidth);
         return new IntermediaryCategoryAdapter.ItemRowHolder(v);

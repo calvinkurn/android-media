@@ -117,7 +117,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getDepartementId());
+                    UnifyTracking.eventShowMoreCategory(v.getContext(), categoryHeaderModel.getDepartementId());
                     categoryAdapter.addDataChild(categoryHeaderModel.getChildCategoryModelList()
                             .subList(6, categoryHeaderModel.getChildCategoryModelList().size()));
                     expandLayout.setVisibility(View.GONE);

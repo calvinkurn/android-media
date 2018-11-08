@@ -14,7 +14,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.R2;
+import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -113,7 +113,7 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
+                UnifyTracking.eventHotlistIntermediary(view.getContext(), categoryId,hotListModel.getTitle());
                 String url = hotListModel.getUrl();
                 URLParser urlParser = new URLParser(url);
                 switch (urlParser.getType()) {
