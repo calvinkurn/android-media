@@ -232,7 +232,7 @@ public class DashboardFragment
     @Override
     public void onErrorGetDashboardItem(String error) {
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView().getRootView(),
+                getView(),
                 error,
                 () -> {
                     presenter.loadDashboardItem(false);
