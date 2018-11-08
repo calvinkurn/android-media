@@ -32,6 +32,7 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
         productTxt = itemView.findViewById(R.id.product_name);
         cashbackTxt = itemView.findViewById(R.id.bottom_label);
         priceTxt = itemView.findViewById(R.id.product_price);
+        itemView.findViewById(R.id.container).setOnClickListener(this);
     }
 
     @Override
