@@ -19,6 +19,9 @@ import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
+import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
+import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
@@ -29,14 +32,11 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationV
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
-import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -238,7 +238,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addPromoSuggestionData(CartPromoSuggestion cartPromoSuggestion) {
-        if (!TextUtils.isEmpty(cartPromoSuggestion.getPromoCode())) {
+        if (cartPromoSuggestion != null && !TextUtils.isEmpty(cartPromoSuggestion.getPromoCode())) {
             this.cartPromoSuggestion = cartPromoSuggestion;
             shipmentDataList.add(cartPromoSuggestion);
         }

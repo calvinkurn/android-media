@@ -50,7 +50,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;

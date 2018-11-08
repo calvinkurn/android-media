@@ -7,15 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.di.DrawerInjector;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.activity.PosDrawerActivity;
@@ -117,10 +109,5 @@ public class OutletActivity extends PosDrawerActivity {
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    protected void getDrawerUserAttrUseCase(SessionHandler sessionHandler) {
-        // no-op
     }
 }

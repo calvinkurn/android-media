@@ -42,7 +42,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String RESPONSE_STATUS_INVALID_REQUEST = "INVALID_REQUEST";
     private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
     private static final String HEADER_PARAM_AUTHORIZATION = "authorization";
-    private static final String HEADER_PARAM_BEARER = "Bearer";
+    protected static final String HEADER_PARAM_BEARER = "Bearer";
     private static final String RESPONSE_PARAM_MAKE_LOGIN = "make_login";
     private static final String RESPONSE_PARAM_STATUS = "status";
     private static final String RESPONSE_PARAM_MESSAGE_ERROR = "message_error";

@@ -84,6 +84,10 @@ public class DefaultCategoryAdapter extends
         void onCategoryClick(ChildCategoryModel child);
 
         void onBannerAdsClicked(String appLink);
+
+        boolean isUserHasLogin();
+
+        String getUserId();
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

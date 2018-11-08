@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;

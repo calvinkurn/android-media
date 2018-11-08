@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
+import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
@@ -154,6 +156,7 @@ import io.branch.referral.BranchError;
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
+        AffiliateApplinkModule.class,
         SettingBankApplinkModule.class,
         ChallengesDeepLinkModule.class,
         InboxTalkApplinkModule.class,
@@ -206,6 +209,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
+                new AffiliateApplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
                 new ChallengesDeepLinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),

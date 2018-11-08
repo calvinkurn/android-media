@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,17 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         holder.bind(visitables.get(position));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
+                                 @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(visitables.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
     }
 
     @Override

@@ -23,6 +23,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;

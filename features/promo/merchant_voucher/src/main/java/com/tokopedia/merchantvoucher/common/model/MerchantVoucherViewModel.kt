@@ -37,6 +37,8 @@ class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>, P
     @MerchantVoucherOwnerTypeDef
     var ownerId: Int? = MerchantVoucherOwnerTypeDef.TYPE_MERCHANT
 
+    fun isAvailable() = status == MerchantVoucherStatusTypeDef.TYPE_AVAILABLE
+
     constructor(merchantVoucherModel: MerchantVoucherModel) {
         voucherId = merchantVoucherModel.voucherId
         voucherName = merchantVoucherModel.voucherName
@@ -117,7 +119,7 @@ fun MerchantVoucherViewModel.getAmountString(): String {
     if (merchantVoucherAmount == null) return ""
     return when (this.merchantVoucherAmountType) {
         MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatRupiahString(this.merchantVoucherAmount!!.toLong())
-        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(),false) + "%"
+        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(), false) + "%"
         else -> ""
     }
 }
@@ -126,7 +128,7 @@ fun MerchantVoucherViewModel.getAmountShortString(): String {
     if (merchantVoucherAmount == null) return ""
     return when (this.merchantVoucherAmountType) {
         MerchantVoucherAmountTypeDef.TYPE_FIXED -> KMNumbers.formatSuffixNumbers(this.merchantVoucherAmount!!.toLong())
-        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(),false) + "%"
+        MerchantVoucherAmountTypeDef.TYPE_PERCENTAGE -> KMNumbers.formatDouble2PCheckRound(this.merchantVoucherAmount!!.toDouble(), false) + "%"
         else -> ""
     }
 }
