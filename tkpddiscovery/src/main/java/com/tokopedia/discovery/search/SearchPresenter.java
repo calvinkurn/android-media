@@ -118,8 +118,9 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
             for (SearchData searchData : searchDatas) {
                 if (searchData.getItems().size() > 0) {
                     switch (searchData.getId()) {
-                        case "popular_search":
                         case "recent_search":
+                        case "recent_view":
+                        case "popular_search":
                             defaultAutoCompleteViewModel.setSearchTerm(querySearch);
                             defaultAutoCompleteViewModel.addList(searchData);
                             continue;

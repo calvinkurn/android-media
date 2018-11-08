@@ -254,8 +254,8 @@ public interface BrowseApi {
             @QueryMap TKPDMapParam<String, Object> param
     );
 
-    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V5)
-    Observable<Response<String>> getUniverseAutoCompleteV5(
+    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH_V8)
+    Observable<Response<String>> getUniverseAutoCompleteV8(
             @QueryMap TKPDMapParam<String, Object> param
     );
 

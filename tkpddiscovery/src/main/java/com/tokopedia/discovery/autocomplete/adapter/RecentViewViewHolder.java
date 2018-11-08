@@ -21,13 +21,14 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentViewViewHolder extends AbstractViewHolder<PopularSearch> {
+public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_recent_view_autocomplete;
@@ -52,7 +53,7 @@ public class RecentViewViewHolder extends AbstractViewHolder<PopularSearch> {
     }
 
     @Override
-    public void bind(PopularSearch element) {
+    public void bind(RecentViewSearch element) {
         adapter.setData(element.getList());
     }
 

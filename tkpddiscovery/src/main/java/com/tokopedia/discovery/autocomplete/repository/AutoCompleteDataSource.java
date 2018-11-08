@@ -26,7 +26,7 @@ public class AutoCompleteDataSource {
     }
 
     public Observable<List<SearchData>> getUniverseAutoComplete(TKPDMapParam<String, Object> param) {
-        return browseApi.getUniverseAutoCompleteV5(param)
+        return browseApi.getUniverseAutoCompleteV8(param)
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<Response<String>>() {
                     @Override

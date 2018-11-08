@@ -109,7 +109,7 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
         } else if(type == RecentViewHolder.LAYOUT) {
             viewHolder = new RecentViewHolder(parent, clickListener);
         } else if(type == RecentViewViewHolder.LAYOUT) {
-            viewHolder = new RecentViewHolder(parent, clickListener);
+            viewHolder = new RecentViewViewHolder(parent, clickListener);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
