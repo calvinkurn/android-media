@@ -103,9 +103,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventClickSeeAllProductSprint();
+                    HomePageTracking.eventClickSeeAllProductSprint(view.getContext());
                 } else {
-                    HomePageTracking.eventClickSeeAllDynamicChannel(DynamicLinkHelper.getActionLink(channel.getHeader()));
+                    HomePageTracking.eventClickSeeAllDynamicChannel(view.getContext(), DynamicLinkHelper.getActionLink(channel.getHeader()));
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }
@@ -155,11 +155,11 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                         @Override
                         public void onClick(View view) {
                             if (isSprintSale(channel)) {
-                                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
+                                HomePageTracking.eventEnhancedClickSprintSaleProduct(view.getContext(), channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else {
-                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
+                                HomePageTracking.eventEnhancedClickDynamicChannelHomePage(view.getContext(), channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));
                                 String attr = channel.getHomeAttribution(position + 1, grid.getAttribution());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             }

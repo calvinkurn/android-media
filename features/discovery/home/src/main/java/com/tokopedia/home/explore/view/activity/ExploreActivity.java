@@ -253,7 +253,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         public void onClick(View v) {
             TabLayout.Tab currentTab = tab.getTabAt(positionTab);
             if (positionTab != tab.getSelectedTabPosition() && currentTab != null) {
-                HomePageTracking.eventClickTabExplorer(title);
+                HomePageTracking.eventClickTabExplorer(v.getContext(), title);
                 currentTab.select();
             }
         }

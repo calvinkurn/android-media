@@ -48,6 +48,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            v.getContext(),
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(
@@ -64,6 +65,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
                 @Override
                 public void onClick(View v) {
                     HomePageTracking.eventEnhancedClickProductHomePage(
+                            v.getContext(),
                             inspirationViewModel.getHomePageClickDataLayer(getAdapterPosition())
                     );
                     viewListener.onGoToProductDetailFromInspiration(

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tkpd.library.utils.legacy.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -176,6 +176,10 @@ public class ProductShopInfo implements Parcelable{
 
     public Integer getShopIsOfficial() {
         return shopIsOfficial;
+    }
+
+    public boolean isOfficial() {
+        return shopIsOfficial == SHOP_OFFICIAL_VALUE;
     }
 
     public void setShopIsOfficial(Integer shopIsOfficial) {

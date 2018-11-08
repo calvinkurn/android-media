@@ -33,7 +33,7 @@ public class RecentViewActivity extends BaseSimpleActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        UnifyTracking.eventFeedViewAll();
+        UnifyTracking.eventFeedViewAll(this);
     }
 
     @Override

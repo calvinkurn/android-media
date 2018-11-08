@@ -100,6 +100,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(inspirationViewModel);
 
                             HomePageTracking.eventEnhancedImpressionProductHomePage(
+                                    viewListener.getActivity(),
                                     inspirationViewModel.getHomePageImpressionDataLayer()
                             );
 

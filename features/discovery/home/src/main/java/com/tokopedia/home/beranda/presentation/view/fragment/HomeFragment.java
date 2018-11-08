@@ -149,7 +149,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trace = TrackingUtils.startTrace(BERANDA_TRACE);
+        trace = TrackingUtils.startTrace(getActivity(), BERANDA_TRACE);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void showRecomendationButton() {
         if (showRecomendation && SessionHandler.isV4Login(getActivity())) {
             floatingTextButton.setVisibility(View.VISIBLE);
-            HomePageTracking.eventImpressionJumpRecomendation();
+            HomePageTracking.eventImpressionJumpRecomendation(getActivity());
         } else {
             floatingTextButton.setVisibility(View.GONE);
         }
@@ -238,7 +238,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onClick(View view) {
                 scrollToRecommendList();
-                HomePageTracking.eventClickJumpRecomendation();
+                HomePageTracking.eventClickJumpRecomendation(view.getContext());
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -847,7 +847,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (!url.equals("")) {
             Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
-            UnifyTracking.eventHomeGimmick(label);
+            UnifyTracking.eventHomeGimmick(getActivity(), label);
         }
     }
 

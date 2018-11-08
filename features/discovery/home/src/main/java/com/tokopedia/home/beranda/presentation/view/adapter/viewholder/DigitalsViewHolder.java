@@ -165,7 +165,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
                 viewPager.setCurrentItem(tab.getPosition(), false);
                 rechargeViewPagerAdapter.notifyDataSetChanged();
                 if (tab.getText() != null) {
-                    UnifyTracking.eventClickWidgetBar(tab.getText().toString());
+                    UnifyTracking.eventClickWidgetBar(tabLayout.getContext(), tab.getText().toString());
                 }
             }
 
@@ -229,7 +229,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     public void onClick(View view) {
         int i = view.getId();
         if (i == R.id.see_more) {
-            UnifyTracking.eventClickLihatSemua();
+            UnifyTracking.eventClickLihatSemua(view.getContext());
             listener.onDigitalMoreClicked(getAdapterPosition());
 
         }

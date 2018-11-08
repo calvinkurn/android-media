@@ -158,7 +158,7 @@ public class HeaderHomeView extends BaseCustomView {
                 @Override
                 public void onClick(View view) {
                     if (headerViewModel.getTokoPointDrawerData() != null) {
-                        UnifyTracking.eventUserProfileTokopoints();
+                        UnifyTracking.eventUserProfileTokopoints(view.getContext());
                         listener.actionTokoPointClicked(
                                 headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
                                 TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
@@ -358,7 +358,7 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
                         !homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashActivateClick();
+                    UnifyTracking.eventTokoCashActivateClick(getContext());
                 }
 
                 listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
@@ -396,7 +396,7 @@ public class HeaderHomeView extends BaseCustomView {
                 if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
                         !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
                         homeHeaderWalletAction.isLinked()) {
-                    UnifyTracking.eventTokoCashCheckSaldoClick();
+                    UnifyTracking.eventTokoCashCheckSaldoClick(v.getContext());
                 }
 
                 listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
