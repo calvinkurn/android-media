@@ -53,14 +53,12 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
     private static final int REQUEST_VERIFY_PHONE = 101;
     private static final int REQUEST_CHOOSE_ACCOUNT = 102;
 
-    EditText phoneNumber;
-    TextView nextButton;
-    TextView message;
-    TextView errorText;
-    TextView changeInactiveNumber;
-    String phoneNumberString;
-    View mainView;
-    ProgressBar progressBar;
+    private EditText phoneNumber;
+    private TextView nextButton;
+    private TextView errorText;
+    private TextView changeInactiveNumber;
+    private View mainView;
+    private ProgressBar progressBar;
 
     @Inject
     CheckLoginPhoneNumberPresenter presenter;
@@ -114,7 +112,6 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_check_login_phone_number, parent, false);
         phoneNumber = view.findViewById(R.id.phone_number);
-        message = view.findViewById(R.id.message);
         nextButton = view.findViewById(R.id.next_btn);
         errorText = view.findViewById(R.id.error);
         changeInactiveNumber = view.findViewById(R.id.change_inactive);
@@ -144,7 +141,7 @@ public class CheckLoginPhoneNumberFragment extends BaseDaggerFragment
 
         if (getArguments() != null) {
             if (getArguments().get(CheckLoginPhoneNumberActivity.PARAM_PHONE_NUMBER) != null) {
-                phoneNumberString = getArguments().getString(CheckLoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
+                String phoneNumberString = getArguments().getString(CheckLoginPhoneNumberActivity.PARAM_PHONE_NUMBER);
                 phoneNumber.setText(phoneNumberString);
                 nextButton.performClick();
             }
