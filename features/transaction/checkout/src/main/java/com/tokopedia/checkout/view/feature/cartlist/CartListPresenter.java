@@ -557,6 +557,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderEmptyCartData(cartListData);
                 } else {
                     view.renderInitialGetCartListDataSuccess(cartListData);
+                    view.renderTopAds();
                 }
             }
         };
