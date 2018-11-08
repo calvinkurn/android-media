@@ -90,7 +90,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -855,7 +854,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 //        xparams.setSource_shop_id(Integer.parseInt(productData.getShopInfo().getShopId()));
 
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, SRC_PDP_VALUE);
+        params.getParam().put(TopAdsParams.KEY_SRC, "cart");
         params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
         params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
