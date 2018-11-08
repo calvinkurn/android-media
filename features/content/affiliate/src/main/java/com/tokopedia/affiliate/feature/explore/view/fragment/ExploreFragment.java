@@ -346,7 +346,7 @@ public class ExploreFragment
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                rvExplore,
+                swipeRefreshLayout,
                 error,
                 () -> presenter.getFirstData(exploreParams, false)
         );
