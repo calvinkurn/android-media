@@ -20,8 +20,8 @@ import rx.Subscriber;
 public class CheckRegisterPhoneNumberPresenter extends BaseDaggerPresenter<CheckRegisterPhoneNumber.View>
         implements CheckRegisterPhoneNumber.Presenter {
 
-    public static final int COUNT_MIN = 8;
-    public static final int COUNT_MAX = 15;
+    private static final int COUNT_MIN = 8;
+    private static final int COUNT_MAX = 15;
 
     private final CheckRegisterPhoneNumberUseCase checkMsisdnPhoneNumberUseCase;
 
@@ -55,17 +55,19 @@ public class CheckRegisterPhoneNumberPresenter extends BaseDaggerPresenter<Check
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().dismissLoading();
-                    getView().showErrorPhoneNumber(ErrorHandlerSession.getErrorMessage(getView()
-                            .getContext(), e));
+                    if(getView()!= null) {
+                        getView().dismissLoading();
+                        getView().showErrorPhoneNumber(ErrorHandlerSession.getErrorMessage(getView()
+                                .getContext(), e));
+                    }
                 }
 
                 @Override
                 public void onNext(CheckRegisterPhoneNumberPojo checkMsisdnPojo) {
                     getView().dismissLoading();
-                    if (!checkMsisdnPojo.isExist()) {
+                    if (!checkMsisdnPojo.isExist() && getView() != null) {
                         getView().showConfirmationPhoneNumber(checkMsisdnPojo.getPhoneView());
-                    } else {
+                    } else if (getView() != null) {
                         getView().showAlreadyRegisteredDialog(checkMsisdnPojo.getPhoneView());
                     }
                 }
@@ -74,6 +76,10 @@ public class CheckRegisterPhoneNumberPresenter extends BaseDaggerPresenter<Check
 
 
     private boolean isValid(String phoneNumber) {
+        if (getView() == null) {
+            return false;
+        }
+
         if (TextUtils.isEmpty(phoneNumber)) {
             getView().showErrorPhoneNumber(R.string.error_field_required_phone);
             return false;

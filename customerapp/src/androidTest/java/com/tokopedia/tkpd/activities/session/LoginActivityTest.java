@@ -454,7 +454,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -511,7 +511,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 
@@ -569,7 +569,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             doAnswer(new Answer() {
                 @Override
@@ -623,7 +623,7 @@ public class LoginActivityTest {
         Fragment fragment = mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag(LoginFragment.class.getSimpleName());
         if (fragment != null && fragment.isVisible()) {
             TestSessionModule testSessionModule = new TestSessionModule();
-//            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
+            ((LoginFragment) fragment).initOuterInjector(testSessionModule);
 
             AccessTokenSource accessTokenSource = AccessTokenSource.CLIENT_TOKEN;
 

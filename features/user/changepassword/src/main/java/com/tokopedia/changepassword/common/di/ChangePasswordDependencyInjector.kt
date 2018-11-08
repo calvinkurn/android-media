@@ -29,13 +29,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ChangePasswordDependencyInjector {
 
     object Companion {
+        val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
 
         fun inject(context: Context): ChangePasswordPresenter {
 
             val userSession : UserSessionInterface = UserSession(context)
 
             val gson: Gson = GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                    .setDateFormat(DATE_FORMAT)
                     .setPrettyPrinting()
                     .serializeNulls().create()
 
