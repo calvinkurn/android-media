@@ -886,20 +886,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     private boolean isMandatoryDoB() {
         FlightBookingCartData flightBookingCartData = getView().getCurrentCartPassData();
-
-        if (flightBookingCartData.getDepartureTrip() != null)
-            for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-//                if (data.isAirlineMandatoryDOB() == 1)
-                    return true;
-            }
-
-        if (flightBookingCartData.getReturnTrip() != null)
-            for (FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-//                if (data.isAirlineMandatoryDOB() == 1)
-                    return true;
-            }
-
-        return false;
+        return flightBookingCartData.isMandatoryDob();
     }
 
     private boolean validatePassengerData() {
