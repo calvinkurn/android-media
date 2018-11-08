@@ -2,8 +2,6 @@ package com.tokopedia.flashsale.management.ekstension
 
 import com.tokopedia.flashsale.management.data.campaignlabel.CampaignStatus
 import com.tokopedia.flashsale.management.data.campaignlist.Campaign
-import com.tokopedia.flashsale.management.product.data.FlashSaleProduct
-import com.tokopedia.flashsale.management.product.model.FlashSaleProductViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.*
 
 fun Campaign.toCampaignViewModel(): CampaignViewModel {
@@ -22,13 +20,6 @@ fun CampaignStatus.toCampaignStatusViewModel(): CampaignStatusViewModel {
     return CampaignStatusViewModel().also {
         it.labelName = this.name
         it.statusId = this.id
-    }
-}
-
-fun FlashSaleProduct.toEligibleSellerProductViewModel(): FlashSaleProductViewModel {
-    return FlashSaleProductViewModel().also {
-        it.id = this.id
-        it.shopId = this.shopId
     }
 }
 

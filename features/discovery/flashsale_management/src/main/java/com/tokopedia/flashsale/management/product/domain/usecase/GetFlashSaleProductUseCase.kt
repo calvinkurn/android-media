@@ -1,29 +1,38 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.data.FlashSaleConstant.NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT
-import com.tokopedia.flashsale.management.product.data.FlashSaleProduct
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.usecase.coroutines.UseCase
-import java.io.IOException
+import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
+import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
 class GetFlashSaleProductUseCase @Inject
-constructor(@Named(NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT) private val gqlRawString: String,
-            private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): UseCase<FlashSaleProduct>() {
+constructor(@Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST) private val gqlRawString: String,
+            graphqlRepository: GraphqlRepository): GraphqlUseCase<FlashSaleProductGQL>(graphqlRepository) {
 
-    private val params = mutableMapOf<String, Any>()
-
-    override suspend fun executeOnBackground(): FlashSaleProduct {
-        throw IOException()
+    init {
+        setTypeClass(FlashSaleProductGQL::class.java)
+        setGraphqlQuery(gqlRawString)
     }
 
-    fun setParams(campaignId:String, offset:Int, rows:Int, query:String) {
-        params.putAll(mapOf(FlashSaleConstant.PARAM_CAMP_ID to campaignId,
+    fun setParams(campaignId:Int, offset:Int, rows:Int, query:String, shopId:Int,
+                  filterId:Int) {
+        val map = mutableMapOf<String, Any?>(FlashSaleConstant.PARAM_CAMP_ID to campaignId,
                 FlashSaleConstant.PARAM_OFFSET to offset,
                 FlashSaleConstant.PARAM_ROWS to rows,
-                FlashSaleConstant.PARAM_QUERY to query))
+                FlashSaleConstant.PARAM_SHOP_ID to shopId)
+        if (query.isNotEmpty()) {
+            map.put(FlashSaleConstant.PARAM_QUERY, query)
+        }
+        if (filterId != FlashSaleFilterProductListTypeDef.TYPE_ALL.id) {
+            map.put(FlashSaleConstant.PARAM_FILTER, filterId)
+        }
+        setRequestParams(map)
     }
 
 }

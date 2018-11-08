@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/partial_flash_sale_product_detail_loading" />
-
     <LinearLayout
         android:id="@+id/vgContent"
         android:layout_width="match_parent"
@@ -28,7 +26,10 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dp_4">
 
-                <include layout="@layout/partial_flash_sale_product_detail_header" />
+                <com.tokopedia.flashsale.management.product.widget.FlashSaleProductWidget
+                    android:id="@+id/flashSaleProductWidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

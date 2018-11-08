@@ -1,5 +1,5 @@
-query getCampaignInfo($slug: String!, $shopID: Int!){
-    getCampaignInfo(slug:$slug, shop_id:$shopID){
+query getCampaignInfo($slug: String!, $shop_id: Int!){
+    getCampaignInfo(slug:$slug, shop_id:$shop_id){
         data {
             campaign_id
             name

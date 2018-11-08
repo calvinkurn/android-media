@@ -40,16 +40,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="@dimen/dp_16" />
+                android:paddingBottom="@dimen/dp_16"
+                android:background="@color/grey_200"/>
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 
     <LinearLayout
+        android:id="@+id/vgBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_minus4"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
             android:layout_width="match_parent"
@@ -63,6 +67,7 @@
             android:padding="@dimen/dp_16">
 
             <TextView
+                android:id="@+id/tvTnc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -72,12 +77,12 @@
                 android:text="@string/with_click_button_you_agree_with_tnc" />
 
             <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
-                android:text="@string/register_flash_sale"
                 android:textAllCaps="false"
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="primary"

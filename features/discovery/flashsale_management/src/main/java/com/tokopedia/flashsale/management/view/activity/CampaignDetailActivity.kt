@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.flashsale.management.di.CampaignComponent
@@ -32,6 +34,10 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        loadSellerStatus()
+    }
+
+    private fun loadSellerStatus(){
         presenter.getSellerStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_get_seller_status),
                 campaignUrl, this::onSuccessGetSellerStatus, this::onErrorGetSellerStatus)
     }
@@ -49,7 +55,10 @@ class CampaignDetailActivity: BaseSimpleActivity(), HasComponent<CampaignCompone
     }
 
     fun onErrorGetSellerStatus(throwable: Throwable){
-
+        NetworkErrorHelper.showEmptyState(this, vgContent,
+                ErrorHandler.getErrorMessage(this, throwable)) {
+            loadSellerStatus()
+        }
     }
 
     override fun onDestroy() {

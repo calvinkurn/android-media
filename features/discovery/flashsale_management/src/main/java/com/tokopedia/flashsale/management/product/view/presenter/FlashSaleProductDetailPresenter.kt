@@ -1,19 +1,18 @@
 
 package com.tokopedia.flashsale.management.product.view.presenter
 
-import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductDetailUseCase
 import javax.inject.Inject
 
-class FlashSaleProductDetailPresenter @Inject constructor(val getFlashSaleProductDetailUseCase: GetFlashSaleProductDetailUseCase) {
+class FlashSaleProductDetailPresenter @Inject constructor(/*val getFlashSaleProductDetailUseCase: GetFlashSaleProductDetailUseCase*/) {
 
-    fun getFlashSaleDetail(onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        getFlashSaleProductDetailUseCase.execute(onSuccess){
-            //TODO use this = onError(it)
-            onSuccess("aaa")
-        }
-    }
+//    fun getFlashSaleDetail(onSuccess: (FlashSaleProductHeader) -> Unit, onError: (Throwable) -> Unit) {
+//        getFlashSaleProductDetailUseCase.execute(onSuccess){
+//            //TODO use this = onError(it)
+//            onSuccess(FlashSaleProductHeader())
+//        }
+//    }
 
     fun detachView() {
-        getFlashSaleProductDetailUseCase.unsubscribe()
+        /*getFlashSaleProductDetailUseCase.unsubscribe()*/
     }
 }

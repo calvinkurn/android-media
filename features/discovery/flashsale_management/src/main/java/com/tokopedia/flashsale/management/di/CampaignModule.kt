@@ -11,6 +11,7 @@ import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -24,40 +25,59 @@ class CampaignModule {
     fun provideGraphqlUseCase() = com.tokopedia.graphql.domain.GraphqlUseCase()
 
     @CampaignScope
-    @Named(FlashSaleConstant.NAMED_GQL_RAW_ELIGIBLE_SELLER_PRODUCT)
+    @Named(FlashSaleConstant.NAMED_REQUEST_PRODUCT_LIST)
     @Provides
-    fun provideGqlRawString(@ApplicationContext context: Context) =
-        GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_campaign_label)
+    fun provideGqlRawStringRequestProductList(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_mojito_eligible_seller_product)
+
+    @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_CATEGORY_LIST)
+    @Provides
+    fun provideGqlRawStringRequestCategoryList(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_category_list)
+
+    @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_TNC)
+    @Provides
+    fun provideGqlRawStringRequestTnc(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_tnc)
+
+    @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_SUBMIT_PRODUCT)
+    @Provides
+    fun provideGqlRawStringRequestSubmitProduct(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_submit_product)
 
     @CampaignScope
     @Provides
-    fun provideGraphqlMultiUseCase() = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    fun provideGqlRepository(): GraphqlRepository =
+            GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LABEL)
-    fun provideGetCampaignLabelUseCase() =
-            GraphqlUseCase<DataCampaignLabel.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+    fun provideGetCampaignLabelUseCase(graphqlRepository: GraphqlRepository) =
+            GraphqlUseCase<DataCampaignLabel.Response>(graphqlRepository).apply {
                 setTypeClass(DataCampaignLabel.Response::class.java)
             }
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN_LIST)
-    fun provideGetCampaignListUseCase() =
-            GraphqlUseCase<DataCampaignList.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+    fun provideGetCampaignListUseCase(graphqlRepository: GraphqlRepository) =
+            GraphqlUseCase<DataCampaignList.Response>(graphqlRepository).apply {
                 setTypeClass(DataCampaignList.Response::class.java)
             }
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_CAMPAIGN)
-    fun provideGetCampaignUseCase() =
-            GraphqlUseCase<Campaign.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+    fun provideGetCampaignUseCase(graphqlRepository: GraphqlRepository) =
+            GraphqlUseCase<Campaign.Response>(graphqlRepository).apply {
                 setTypeClass(Campaign.Response::class.java)
             }
 
     @Provides
     @Named(FlashSaleConstant.NAMED_REQUEST_SELLER_STATUS)
-    fun provideGetSellerStatusUseCase() =
-            GraphqlUseCase<SellerStatus.Response>(GraphqlInteractor.getInstance().graphqlRepository).apply {
+    fun provideGetSellerStatusUseCase(graphqlRepository: GraphqlRepository) =
+            GraphqlUseCase<SellerStatus.Response>(graphqlRepository).apply {
                 setTypeClass(SellerStatus.Response::class.java)
             }
 }
