@@ -48,6 +48,10 @@ def allowProguard() {
     return project.hasProperty('tkpdBuildType')
 }
 
+def devMode() {
+    return !project.hasProperty('tkpdBuildType')
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -158,7 +162,7 @@ android {
             ext.enableHansel=false
         }
         release {
-            if (!isProduction() && !isAlpha() && !allowDistribution()) {
+            if (devMode()) {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel=true
