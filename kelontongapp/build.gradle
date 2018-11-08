@@ -23,6 +23,9 @@ def getTkpdKelontongVersionName() {
     return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
 }
 
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -43,14 +46,30 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
         }
         release {
+            signingConfig signingConfigs.debug
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (allowProguard()) {
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            } else {
+                proguardFiles 'proguard-rules.txt'
+            }
         }
     }
 
