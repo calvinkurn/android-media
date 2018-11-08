@@ -193,6 +193,7 @@ ext {
             logisticCommon              : ":features:logistic:logisticcommon",
             tracking                    : ":features:logistic:tracking",
             logisticuploadawb           : ":features:logistic:logisticuploadawb",
+            logisticgeolocation         : ":features:logistic:logisticgeolocation",
             districtrecommendation      : ":features:logistic:district_recommendation",
             districtRecommendation      : ":features:logistic:district_recommendation",
 
