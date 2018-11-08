@@ -44,8 +44,6 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(itemView.getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
-        int staticDimen8dp = itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.dp_8);
-        recyclerView.addItemDecoration(new SpacingItemDecoration(staticDimen8dp));
         recyclerView.setLayoutManager(layoutManager);
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR);
         adapter = new ItemAdapter(clickListener);
@@ -103,38 +101,28 @@ public class RecentViewViewHolder extends AbstractViewHolder<RecentViewSearch> {
             public void bind(final BaseItemAutoCompleteSearch item) {
                 BitmapImageViewTarget bitmapImageViewTarget = new BitmapImageViewTarget(
                         recentImage
-                ){
+                ) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
+                        final float roundPx = (float) resource.getWidth() * 0.06f;
+
+                        RoundedBitmapDrawable roundedBitmapDrawable =
                                 RoundedBitmapDrawableFactory.create(
                                         itemView.getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        recentImage.setImageDrawable(circularBitmapDrawable);
+                        roundedBitmapDrawable.setCornerRadius(roundPx);
+                        recentImage.setImageDrawable(roundedBitmapDrawable);
                     }
                 };
                 Glide.with(itemView.getContext())
                         .load(item.getImageUrl())
                         .asBitmap()
                         .into(bitmapImageViewTarget);
-//                recentImage.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        AutoCompleteTracking.eventClickPopularSearch(
-//                                itemView.getContext(),
-//                                String.format(
-//                                        "value: %s - po: %s - applink: %s",
-//                                        item.getKeyword(),
-//                                        String.valueOf(getAdapterPosition() + 1),
-//                                        item.getApplink()
-//                                )
-//                        );
-//                        clickListener.onItemSearchClicked(
-//                                item.getKeyword(),
-//                                item.getCategoryId()
-//                        );
-//                    }
-//                });
+                recentImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickListener.onItemClicked(item.getApplink(), item.getUrl());
+                    }
+                });
             }
         }
     }

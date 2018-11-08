@@ -54,19 +54,18 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
                             )
                     );
                     continue;
-                case SearchData.AUTOCOMPLETE_POPULAR_SEARCH:
-                    adapter.addAll(
-                            insertTitle(
-                                    preparePopularSearch(searchData, element.getSearchTerm()),
-                                    searchData.getName()
-                            )
-                    );
-                    continue;
-
                 case SearchData.AUTOCOMPLETE_RECENT_VIEW:
                     adapter.addAll(
                             insertTitle(
                                     prepareRecentViewSearch(searchData, element.getSearchTerm()),
+                                    searchData.getName()
+                            )
+                    );
+                    continue;
+                case SearchData.AUTOCOMPLETE_POPULAR_SEARCH:
+                    adapter.addAll(
+                            insertTitle(
+                                    preparePopularSearch(searchData, element.getSearchTerm()),
                                     searchData.getName()
                             )
                     );
@@ -128,6 +127,7 @@ public class DefaultAutoCompleteViewHolder extends AbstractViewHolder<DefaultAut
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setImageUrl(item.getImageURI());
             childList.add(model);
         }
         recentViewSearch.setList(childList);
