@@ -61,7 +61,7 @@
     <string name="label_receive_review">Ulasan</string>
     <string name="label_receive_promo">Promo</string>
     <string name="label_receive_seller_info">Info Penjual</string>
-    <string name="label_receive_group_chat">Group Chat</string>
+    <string name="label_receive_group_chat">Play</string>
 
 
     <string name="pref_receive_purchasing" translatable="false">notification_purchase</string>
@@ -179,5 +179,8 @@
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="label_total_coupon">%1$d Kupon</string>
+
+    <string name="title_menu_challenge">Tokopedia Challenge</string>
+    <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
 
 </resources>

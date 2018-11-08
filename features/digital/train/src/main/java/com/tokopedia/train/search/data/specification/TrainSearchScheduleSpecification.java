@@ -23,7 +23,7 @@ public class TrainSearchScheduleSpecification implements DbFlowSpecification {
 
     public void setArrivalTimestampSelected(String arrivalTimestampSelected) {
         if (arrivalTimestampSelected != null) {
-            String arrivalTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+            String arrivalTimestampCustom = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                     TrainDateUtil.DEFAULT_TIMESTAMP_FORMAT, arrivalTimestampSelected);
             Timestamp timestamp = Timestamp.valueOf(arrivalTimestampCustom);
             this.arrivalTimestampSelected = timestamp.getTime();

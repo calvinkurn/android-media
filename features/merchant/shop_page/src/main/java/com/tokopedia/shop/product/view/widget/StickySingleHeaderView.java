@@ -53,14 +53,17 @@ public class StickySingleHeaderView extends FrameLayout
             return;
         }
         hasInit = true;
+        setClipToPadding(false);
         View view = getChildAt(0);
         if (!(view instanceof RecyclerView))
             throw new RuntimeException("RecyclerView should be the first child view.");
         mRecyclerView = (RecyclerView) view;
         mHeaderContainer = new FrameLayout(getContext());
         mHeaderContainer.setBackgroundColor(Color.WHITE);
+        mHeaderContainer.setClipToPadding(false);
         mHeaderContainer.setLayoutParams(
                 new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mHeaderContainer.setPadding(mRecyclerView.getPaddingLeft(),0, mRecyclerView.getPaddingRight(), 0);
         addView(mHeaderContainer);
         onScrollListener = new RecyclerView.OnScrollListener() {
             @Override

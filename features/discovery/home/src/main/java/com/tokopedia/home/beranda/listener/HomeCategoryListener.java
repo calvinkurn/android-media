@@ -19,11 +19,11 @@ public interface HomeCategoryListener {
 
     void openShop();
 
-    void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance);
+    void actionAppLinkWalletHeader(String appLinkBalance);
 
     void onRequestPendingCashBack();
 
-    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String redirectUrlActionButton, String appLinkActionButton);
+    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String appLinkActionButton);
 
     void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
 

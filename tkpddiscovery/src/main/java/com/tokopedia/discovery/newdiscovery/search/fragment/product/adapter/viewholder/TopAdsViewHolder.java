@@ -14,7 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -31,9 +31,9 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     private TopAdsWidgetView adsWidgetView;
     private Context context;
-    private ItemClickListener itemClickListener;
+    private ProductListener itemClickListener;
 
-    public TopAdsViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public TopAdsViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
         this.context = itemView.getContext();
         this.itemClickListener = itemClickListener;
@@ -57,10 +57,14 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                 int position = parent.getChildAdapterPosition(view);
                 int column = position % spanCount;
                 outRect.left = column * spacing / spanCount;
-                outRect.right = spacing - (column + 1) * spacing / spanCount;
                 if (position >= spanCount) {
                     outRect.top = spacing / spanCount;
                     outRect.bottom = spacing / spanCount;
+                }
+                if (parent.getLayoutManager() instanceof GridLayoutManager) {
+                    outRect.right = spacing - (column + 1) * spacing / spanCount;
+                } else {
+                    outRect.right = 0;
                 }
             }
         });
@@ -80,7 +84,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
             data.setId(product.getId());
             data.setName(product.getName());
             data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_url());
+            data.setImgUri(product.getImage().getM_ecs());
             Bundle bundle = new Bundle();
             Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(activity);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);

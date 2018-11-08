@@ -53,7 +53,7 @@ public class RecentViewAdapter extends RecyclerView.Adapter<RecentViewViewHolder
 
     public interface ActionListener {
 
-        void onItemRecentViewClicked(RecentView recentView);
+        void onItemRecentViewClicked(RecentView recentView, int position);
 
     }
 

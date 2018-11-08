@@ -110,6 +110,7 @@ public class TrainPromoAdapter extends RecyclerView.Adapter {
 
     public interface ListenerTrainPromoAdapter {
         void onClickCopyPromoCode(String promoCode);
+
         void onClickItemPromo(int position);
     }
 }

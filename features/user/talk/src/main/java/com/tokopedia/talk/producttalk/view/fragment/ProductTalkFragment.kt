@@ -27,10 +27,9 @@ import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolde
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
-import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
+import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity
 import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
@@ -41,6 +40,7 @@ import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.product_talk.*
@@ -625,12 +625,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
                     && adapter.getItemById(talkId) != null) {
                 adapter.deleteComment(talkId, commentId)
             } else if (adapter.getItemById(talkId) != null
-                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
-                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
-                ((adapter.getItemById(talkId) as
-                        InboxTalkItemViewModel).talkThread.listChild[0] as
-                        LoadMoreCommentTalkViewModel).counter -= 1
-
+                    && !(adapter.getItemById(talkId) as TalkThreadViewModel).listChild.isEmpty()
+                    && (adapter.getItemById(talkId) as TalkThreadViewModel).listChild[0] is LoadMoreCommentTalkViewModel) {
+                ((adapter.getItemById(talkId) as TalkThreadViewModel).listChild[0] as LoadMoreCommentTalkViewModel).counter -= 1
             }
 
         } else {

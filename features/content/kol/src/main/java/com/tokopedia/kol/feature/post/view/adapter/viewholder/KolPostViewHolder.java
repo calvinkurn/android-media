@@ -1,23 +1,21 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -29,6 +27,7 @@ import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * @author by nisie on 10/27/17.
  */
@@ -38,23 +37,25 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @LayoutRes
     public static final int LAYOUT = R.layout.kol_post_layout;
+    public static final int PAYLOAD_LIKE = 13;
+    public static final int PAYLOAD_COMMENT = 14;
+    public static final int PAYLOAD_FOLLOW = 15;
 
     private static final String DASH = "-";
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
     private final Context context;
+    private PostImageAdapter adapter;
     private BaseKolView baseKolView;
     private FrameLayout containerView;
-    private ImageView reviewImage;
+    private ViewPager imageViewPager;
+    private TabLayout tabLayout;
+    private TextView info;
     private TextView tooltip;
-    private View tooltipClickArea;
-    private View topShadow;
+    private View addImageBtn;
+    private View bottomSpace;
     private Type type;
-
-    public enum Type {
-        PROFILE, FEED, EXPLORE
-    }
 
     public KolPostViewHolder(View itemView,
                              KolPostListener.View.ViewHolder viewListener,
@@ -64,23 +65,22 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         context = itemView.getContext();
-        topShadow = itemView.findViewById(R.id.top_shadow);
         containerView = itemView.findViewById(R.id.container_view);
 
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
-        reviewImage = view.findViewById(R.id.image);
+        imageViewPager = view.findViewById(R.id.imageViewPager);
+        tabLayout = view.findViewById(R.id.tabLayout);
+        info = view.findViewById(R.id.info);
         tooltip = view.findViewById(R.id.tooltip);
-        tooltipClickArea = view.findViewById(R.id.tooltip_area);
+        addImageBtn = view.findViewById(R.id.addImageBtn);
+        bottomSpace = view.findViewById(R.id.bottom_space);
     }
 
     @Override
     public void bind(KolPostViewModel element) {
-        if (element.isShowTopShadow() && getAdapterPosition() == 0) {
-            topShadow.setVisibility(View.VISIBLE);
-        } else {
-            topShadow.setVisibility(View.GONE);
-        }
+        setUpViewPager(element.getImageList());
+        setListener(element);
 
         if (type == Type.EXPLORE) {
             containerView.setBackground(null);
@@ -93,52 +93,54 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        ViewTreeObserver viewTreeObserver = reviewImage.getViewTreeObserver();
-                        viewTreeObserver.removeOnGlobalLayoutListener(this);
-
-                        reviewImage.setMaxHeight(reviewImage.getWidth());
-                        reviewImage.requestLayout();
-                    }
-                }
-        );
-
-        ImageHandler.loadImageWithTarget(
-                context,
-                element.getKolImage(),
-                new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        reviewImage.setImageBitmap(resource);
-                    }
-                }
-        );
-
         if (TextUtils.isEmpty(element.getTagsCaption())) {
-            tooltipClickArea.setVisibility(View.GONE);
+            tooltip.setVisibility(View.GONE);
         } else {
-            tooltipClickArea.setVisibility(View.VISIBLE);
+            tooltip.setVisibility(View.VISIBLE);
             tooltip.setText(element.getTagsCaption());
             element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
-        setListener(element);
+        if (TextUtils.isEmpty(element.getInfo())) {
+            info.setVisibility(View.GONE);
+        } else {
+            info.setVisibility(View.VISIBLE);
+            info.setText(element.getInfo());
+        }
+
+        addImageBtn.setVisibility(element.isEditable() ? View.VISIBLE : View.GONE);
+
+        if (TextUtils.isEmpty(element.getReview())) {
+            bottomSpace.setVisibility(View.VISIBLE);
+        } else {
+            bottomSpace.setVisibility(View.GONE);
+        }
 
         baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
     }
 
-    public void onViewRecycled() {
-        ImageHandler.clearImage(reviewImage);
-        baseKolView.onViewRecycled();
+    @Override
+    public void bind(KolPostViewModel element, @NonNull List<Object> payloads) {
+        super.bind(element, payloads);
+        switch ((int) payloads.get(0)) {
+            case PAYLOAD_LIKE:
+                baseKolView.bindLike(element.isLiked(), element.getTotalLike());
+                break;
+            case PAYLOAD_COMMENT:
+                baseKolView.bindComment(element.getTotalComment());
+                break;
+            case PAYLOAD_FOLLOW:
+                baseKolView.bindFollow(element.isFollowed(), element.isTemporarilyFollowed());
+                break;
+            default:
+                bind(element);
+                break;
+        }
+    }
 
-        reviewImage.setImageDrawable(
-                MethodChecker.getDrawable(context, R.drawable.ic_loading_image)
-        );
+    public void onViewRecycled() {
+        baseKolView.onViewRecycled();
     }
 
     @Override
@@ -206,7 +208,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
         } else {
             if (type == Type.FEED) {
                 analyticTracker.sendEventTracking(
@@ -217,7 +219,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getKolId());
+            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
         }
     }
 
@@ -232,24 +234,35 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getKolId());
+        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
+    }
+
+    @Override
+    public void onMenuClickListener(BaseKolViewModel element) {
+        viewListener.onMenuClicked(getAdapterPosition(), element);
+    }
+
+    private void setUpViewPager(List<String> images) {
+        adapter = new PostImageAdapter();
+        adapter.setList(new ArrayList<>(images));
+        imageViewPager.setAdapter(adapter);
+        imageViewPager.setOffscreenPageLimit(adapter.getCount());
+        tabLayout.setupWithViewPager(imageViewPager);
+        tabLayout.setVisibility(adapter.getCount() > 1 ? View.VISIBLE : View.GONE);
     }
 
     private void setListener(final KolPostViewModel element) {
-        tooltipClickArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tooltipAreaClicked(element);
-            }
-        });
+        tooltip.setOnClickListener(v -> tooltipAreaClicked(element));
 
-        reviewImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (tooltipClickArea.getVisibility() == View.VISIBLE)
-                    tooltipAreaClicked(element);
-            }
-        });
+        adapter.setClickListener(
+                position -> {
+                    if (tooltip.getVisibility() == View.VISIBLE) {
+                        tooltipAreaClicked(element);
+                    }
+                }
+        );
+
+        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
     }
 
     private void goToProfile(final BaseKolViewModel element) {
@@ -263,7 +276,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         if (element.getUserId() > 0) {
             viewListener.onGoToKolProfile(getAdapterPosition(),
                     String.valueOf(element.getUserId()),
-                    element.getKolId()
+                    element.getContentId()
             );
         } else {
             viewListener.onGoToKolProfileUsingApplink(
@@ -284,7 +297,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
 
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameFeed(
                             element.getTagsType(),
                             element.getCardType()),
@@ -306,7 +319,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         } else if (type == Type.PROFILE) {
             promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getKolId(),
+                    element.getContentId(),
                     KolEnhancedTracking.Promotion.createContentNameKolPost(
                             element.getTagsType()),
                     TextUtils.isEmpty(element.getName()) ? DASH :
@@ -324,9 +337,18 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             analyticTracker.sendEnhancedEcommerce(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
+        } else if (type == Type.SHOP_PAGE) {
+            analyticTracker.sendEventTracking(
+                    KolEventTracking.Event.EVENT_SHOP_PAGE,
+                    KolEventTracking.Category.SHOP_PAGE_FEED,
+                    KolEventTracking.Action.SHOP_ITEM_CLICK,
+                    String.valueOf(element.getContentId())
+            );
         }
 
-        viewListener.onOpenKolTooltip(getAdapterPosition(),
+        viewListener.onOpenKolTooltip(
+                getAdapterPosition(),
+                element.getTrackingId(),
                 element.getTagsLink()
         );
     }
@@ -354,5 +376,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
             }
         };
+    }
+
+    public enum Type {
+        PROFILE, FEED, EXPLORE, SHOP_PAGE
     }
 }

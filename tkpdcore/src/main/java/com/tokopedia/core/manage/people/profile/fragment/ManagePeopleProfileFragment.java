@@ -489,15 +489,18 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void startChangePhoneNumber() {
-        startActivityForResult(
-                ((TkpdCoreRouter) getActivity().getApplicationContext())
-                        .getChangePhoneNumberIntent(
-                                getActivity(),
-                                profileData.getDataUser().getUserEmail(),
-                                profileData.getDataUser().getUserPhone()
-                        ),
-                REQUEST_CHANGE_PHONE_NUMBER
-        );
+        if (getActivity() != null && getActivity().getApplicationContext() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter) {
+            startActivityForResult(
+                    ((TkpdCoreRouter) getActivity().getApplicationContext())
+                            .getChangePhoneNumberIntent(
+                                    getActivity(),
+                                    profileData.getDataUser().getUserEmail(),
+                                    profileData.getDataUser().getUserPhone()
+                            ),
+                    REQUEST_CHANGE_PHONE_NUMBER
+            );
+        }
     }
 
     @Override

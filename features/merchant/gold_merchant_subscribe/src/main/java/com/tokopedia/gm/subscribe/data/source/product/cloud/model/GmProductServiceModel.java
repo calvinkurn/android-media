@@ -35,6 +35,9 @@ public class GmProductServiceModel {
     @SerializedName("LastPriceFmt")
     @Expose
     private String lastPriceFmt;
+    @SerializedName("ProductTimeRangeFmt")
+    @Expose
+    private String productTimeRangeFmt;
 
     public Integer getProductId() {
         return productId;
@@ -116,4 +119,11 @@ public class GmProductServiceModel {
         this.lastPriceFmt = lastPriceFmt;
     }
 
+    public String getProductTimeRangeFmt() {
+        return productTimeRangeFmt;
+    }
+
+    public void setProductTimeRangeFmt(String productTimeRangeFmt) {
+        this.productTimeRangeFmt = productTimeRangeFmt;
+    }
 }

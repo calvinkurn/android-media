@@ -1,53 +1,46 @@
 package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
+import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.tokopedia.events.view.contractor.EventFilterContract.REQ_OPEN_FILTER;
-
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
 
-public class EventSearchActivity extends TActivity implements
-        EventSearchContract.IEventSearchView, SearchInputView.Listener {
+public class EventSearchActivity extends EventBaseActivity implements
+        EventSearchContract.EventSearchView, SearchInputView.Listener {
 
-    EventComponent eventComponent;
-    @Inject
-    public EventSearchPresenter mPresenter;
+    public EventSearchPresenter eventSearchPresenter;
 
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
@@ -73,20 +66,32 @@ public class EventSearchActivity extends TActivity implements
     LinearLayoutManager layoutManager;
 
     Unbinder unbinder;
+    private EventsAnalytics eventsAnalytics;
+
+    @Override
+    void initPresenter() {
+        initInjector();
+        mPresenter = eventComponent.getEventSearchPresenter();
+        eventSearchPresenter = (EventSearchPresenter) mPresenter;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_events_search;
+    }
+
+    @Override
+    View getProgressBar() {
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events_search);
         unbinder = ButterKnife.bind(this);
-        initInjector();
-        executeInjector();
-        ButterKnife.bind(this);
         searchInputView.setListener(this);
-        mPresenter.attachView(this);
-        toolbar.setTitle("Events");
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        mPresenter.initialize();
+        eventsAnalytics = new EventsAnalytics(getApplicationContext());
 
     }
 
@@ -96,25 +101,17 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        filterBtn.setVisibility(View.VISIBLE);
-        mPresenter.searchSubmitted(text);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null)
+            imm.hideSoftInputFromWindow(getRootView().getWindowToken(), 0);
+        eventSearchPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
         filterBtn.setVisibility(View.GONE);
-        mPresenter.searchTextChanged(text);
+        eventSearchPresenter.searchTextChanged(text);
 
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public Activity getActivity() {
-        return this;
     }
 
     @Override
@@ -124,17 +121,12 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void showProgressBar() {
-        progressBarLayout.setVisibility(View.VISIBLE);
+        super.showProgressBar();
     }
 
     @Override
     public void hideProgressBar() {
-        progressBarLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public RequestParams getParams() {
-        return null;
+        super.hideProgressBar();
     }
 
     @Override
@@ -150,7 +142,7 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter, true);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, true);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
@@ -170,7 +162,9 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter, showCards);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards);
+            if (showCards)
+                filterBtn.setVisibility(View.VISIBLE);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
@@ -221,22 +215,6 @@ public class EventSearchActivity extends TActivity implements
         tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, 0, 0);
     }
 
-    private void executeInjector() {
-        if (eventComponent == null) initInjector();
-        eventComponent.inject(this);
-    }
-
-    private void initInjector() {
-        eventComponent = DaggerEventComponent.builder()
-                .baseAppComponent(getBaseAppComponent())
-                .eventModule(new EventModule(this))
-                .build();
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
 
     private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -247,19 +225,19 @@ public class EventSearchActivity extends TActivity implements
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            mPresenter.onRecyclerViewScrolled(layoutManager);
+            eventSearchPresenter.onRecyclerViewScrolled(layoutManager);
         }
     };
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     public String getScreenName() {
-        return mPresenter.getSCREEN_NAME();
+        return eventSearchPresenter.getSCREEN_NAME();
     }
 
     @OnClick(R2.id.iv_finish)
@@ -269,12 +247,17 @@ public class EventSearchActivity extends TActivity implements
 
     @OnClick(R2.id.btn_filter)
     void onClickFilter() {
-        mPresenter.openFilters();
+        eventSearchPresenter.openFilters();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onActivityResult(requestCode, resultCode, data);
+        eventSearchPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }

@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
+import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
+import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
@@ -70,6 +72,8 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -103,6 +107,8 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -150,8 +156,11 @@ import io.branch.referral.BranchError;
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
+        AffiliateApplinkModule.class,
         SettingBankApplinkModule.class,
-        InboxTalkApplinkModule.class
+        ChallengesDeepLinkModule.class,
+        InboxTalkApplinkModule.class,
+        ProductManageApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -200,9 +209,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
+                new AffiliateApplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
-                    new InboxTalkApplinkModuleLoader()
-
+                new ChallengesDeepLinkModuleLoader(),
+                new InboxTalkApplinkModuleLoader(),
+                new ProductManageApplinkModuleLoader()
             );
         }
 

@@ -31,11 +31,11 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import butterknife.BindView;
@@ -259,15 +259,19 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+        if (remoteConfig.getBoolean(RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
                 true)) {
             presenter.getMerchantSaldoDetails();
         } else {
             hideSaldoPrioritasFragment();
         }
-
     }
 
     @Override
@@ -446,13 +450,15 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     public void hideSaldoPrioritasFragment() {
-        saldoFrameLayout.setVisibility(View.GONE);
+        if (saldoFrameLayout != null) {
+            saldoFrameLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
 
-        if(sellerDetails != null &&
+        if (sellerDetails != null &&
                 sellerDetails.isIsEligible()) {
             if (depositScreenListener != null) {
                 depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);

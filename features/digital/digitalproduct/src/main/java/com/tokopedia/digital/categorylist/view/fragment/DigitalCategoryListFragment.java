@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -24,22 +25,19 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -113,7 +111,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
-
     private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -428,7 +425,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
+        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName().toLowerCase());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
@@ -501,7 +498,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         switch (data.getTypeMenu()) {
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
-                    RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+                    if (GlobalConfig.isCustomerApp()) {
+                        RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+                    } else {
+                        startActivity(((IDigitalModuleRouter) getActivity().getApplication()).
+                                getOrderListIntent(getActivity()));
+                    }
                     break;
                 }
             default:

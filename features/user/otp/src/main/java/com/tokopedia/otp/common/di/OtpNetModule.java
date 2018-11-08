@@ -7,7 +7,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
@@ -49,8 +50,9 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public FingerprintInterceptor provideFingerprintInterceptor() {
-        return new FingerprintInterceptor();
+    public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
+                                                                UserSession userSession) {
+        return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 
     @OtpScope

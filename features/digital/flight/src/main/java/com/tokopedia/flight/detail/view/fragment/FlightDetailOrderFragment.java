@@ -19,7 +19,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -46,9 +45,7 @@ import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
-import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
@@ -283,7 +280,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flightDetailOrderPresenter.onHelpButtonClicked();
+                flightDetailOrderPresenter.onHelpButtonClicked(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData.getStatus());
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
@@ -444,7 +441,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
+        startActivity(flightModuleRouter
+                .getDefaultContactUsIntent(getActivity(), url));
     }
 
     @Override

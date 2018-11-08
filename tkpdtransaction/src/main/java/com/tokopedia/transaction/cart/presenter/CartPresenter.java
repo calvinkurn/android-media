@@ -298,7 +298,6 @@ public class CartPresenter implements ICartPresenter {
                         }
                         try {
                             processCartAnalytics(cartData);
-                            trackCanceledCart(canceledCartItem);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -348,7 +347,6 @@ public class CartPresenter implements ICartPresenter {
                                 String.valueOf(canceledCartProduct.getProductQuantity()));
                         try {
                             processCartAnalytics(cartData);
-                            trackCanceledProduct(canceledCartItem, canceledCartProduct);
                             trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -709,32 +707,6 @@ public class CartPresenter implements ICartPresenter {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
         cache.applyEditor();
-    }
-
-    private void trackCanceledCart(CartItem canceledCartItem) {
-        if (canceledCartItem != null
-                && canceledCartItem.getCartProducts() != null
-                && !canceledCartItem.getCartProducts().isEmpty()) {
-            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
-                trackCanceledProduct(canceledCartItem, cartProduct);
-            }
-        }
-    }
-
-    private void trackCanceledProduct(CartItem cartData, CartProduct cartProduct) {
-        if (cartData != null
-                && cartData.getCartShop() != null
-                && cartProduct != null) {
-            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-            product.setName(cartProduct.getProductName());
-            product.setId(cartProduct.getProductId());
-            product.setUrl(cartProduct.getProductUrl());
-            product.setImageUrl(cartProduct.getProductPic());
-            product.setPrice(cartProduct.getProductPrice());
-            product.setShopId(cartData.getCartShop().getShopId());
-
-            TrackingUtils.sendMoEngageRemoveProductFromCart(product);
-        }
     }
 
     @NonNull

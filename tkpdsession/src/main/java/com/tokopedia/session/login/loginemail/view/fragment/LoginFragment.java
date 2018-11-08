@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,6 +48,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
@@ -59,13 +61,12 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.addname.AddNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.view.activity.ForbiddenActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -75,7 +76,8 @@ import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumb
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial
+        .GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 
@@ -294,41 +296,31 @@ public class LoginFragment extends BaseDaggerFragment
 
         emailEditText.addTextChangedListener(watcher(wrapperEmail));
 
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
-                        .toString());
-                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(intent);
-                SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+        forgotPass.setOnClickListener(v -> {
+            Intent intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .getForgotPasswordIntent(getActivity(), emailEditText.getText().toString()
+                            .trim());
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(intent);
+            SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
 
-            }
         });
 
-        loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (isLastItem()) {
-                    loadMoreFab.setVisibility(View.GONE);
-                } else {
-                    loadMoreFab.setVisibility(View.VISIBLE);
-                }
-
+        loginView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if (isLastItem()) {
+                loadMoreFab.setVisibility(View.GONE);
+            } else {
+                loadMoreFab.setVisibility(View.VISIBLE);
             }
+
         });
 
-        loadMoreFab.setOnClickListener(new View.OnClickListener() {
+        loadMoreFab.setOnClickListener(v -> loginView.post(new Runnable() {
             @Override
-            public void onClick(View v) {
-                loginView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        loginView.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
+            public void run() {
+                loginView.fullScroll(View.FOCUS_DOWN);
             }
-        });
+        }));
 
     }
 
@@ -468,8 +460,16 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
+        ((TkpdCoreRouter)(getContext().getApplicationContext())).onAppsFlyerInit();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+
+        TrackingUtils.eventPushUserID();
+        if (!GlobalConfig.DEBUG) {
+            Crashlytics.setUserIdentifier(String.valueOf(sessionHandler.getLoginID()));
+        }
+        BranchSdkUtils.sendIdentityEvent(String.valueOf(sessionHandler
+                .getLoginID()));
     }
 
     @Override
@@ -815,35 +815,29 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
             presenter.loginWebview(data);
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
             sessionHandler.clearUserData(getActivity());
             dismissLoadingLogin();

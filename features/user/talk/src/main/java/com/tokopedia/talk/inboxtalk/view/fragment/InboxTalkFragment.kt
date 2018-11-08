@@ -44,7 +44,7 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL) : BaseDaggerFragment(),
+open class InboxTalkFragment : BaseDaggerFragment(),
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
@@ -128,7 +128,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 super.onScrolled(recyclerView, dx, dy)
                 val index = linearLayoutManager.findLastVisibleItemPosition()
                 if (index != -1 && adapter.checkCanLoadMore(index)) {
-                    presenter.getInboxTalk(filter, nav)
+                    presenter.getInboxTalk(filter, viewModel.screen)
                 }
             }
 
@@ -140,7 +140,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     private fun initData() {
 
         filter = "all"
-        presenter.getInboxTalk(filter, nav)
+        presenter.getInboxTalk(filter, viewModel.screen)
 
         filterMenuList = ArrayList()
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk), -1))
@@ -150,7 +150,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     }
 
     private fun onRefreshData() {
-        presenter.refreshTalk(filter, nav)
+        presenter.refreshTalk(filter, viewModel.screen)
         swipeToRefresh.isRefreshing = true
 
     }
@@ -181,7 +181,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             itemMenu.icon = -1
         }
         filterMenuList[pos].iconEnd = R.drawable.ic_check
-        presenter.getInboxTalkWithFilter(filter, nav)
+        presenter.getInboxTalkWithFilter(filter, viewModel.screen)
         filterMenu.dismiss()
     }
 
@@ -275,24 +275,24 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         viewModel.unreadNotification = unreadNotification
 
         if (activity is GetUnreadNotificationListener) {
-            val notifCount: Int = when (nav) {
+            val notifCount: Int = when (viewModel.screen) {
                 InboxTalkActivity.INBOX_ALL -> unreadNotification.all
                 InboxTalkActivity.FOLLOWING -> unreadNotification.following
                 InboxTalkActivity.MY_PRODUCT -> unreadNotification.my_product
                 else -> 0
             }
-            (activity as GetUnreadNotificationListener).onGetNotification(notifCount, nav)
+            (activity as GetUnreadNotificationListener).onGetNotification(notifCount, viewModel.screen)
         }
     }
 
     override fun onErrorGetInboxTalk(errorMessage: String) {
         if (adapter.itemCount == 0) {
             NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
-                presenter.getInboxTalk(filter, nav)
+                presenter.getInboxTalk(filter, viewModel.screen)
             }
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-                presenter.getInboxTalk(filter, nav)
+                presenter.getInboxTalk(filter, viewModel.screen)
             }.showRetrySnackbar()
         }
     }
@@ -353,7 +353,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 if (shouldDecreaseNotifCount) {
                     adapter.updateReadStatus(talkId)
 
-                    when (nav) {
+                    when (viewModel.screen) {
                         InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
                         InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
                         InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1
@@ -386,7 +386,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 if (shouldDecreaseNotifCount) {
                     adapter.updateReadStatus(talkId)
 
-                    when (nav) {
+                    when (viewModel.screen) {
                         InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
                         InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
                         InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1
@@ -398,8 +398,9 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 }
                 adapter.deleteComment(talkId, commentId)
             } else if (adapter.getItemById(talkId) != null
-                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
-                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
+                    && !(adapter.getItemById(talkId) as InboxTalkItemViewModel).talkThread
+                            .listChild.isEmpty()
+                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel).talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
                 ((adapter.getItemById(talkId) as
                         InboxTalkItemViewModel).talkThread.listChild[0] as
                         LoadMoreCommentTalkViewModel).counter -= 1
@@ -422,7 +423,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 if (shouldDecreaseNotifCount) {
                     adapter.updateReadStatus(talkId)
 
-                    when (nav) {
+                    when (viewModel.screen) {
                         InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
                         InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
                         InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1

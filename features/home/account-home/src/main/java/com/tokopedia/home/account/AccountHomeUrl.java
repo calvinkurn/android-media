@@ -11,6 +11,14 @@ public class AccountHomeUrl {
     public static String CDN_IMAGE_PATH = "/img/android/others/";
     public static String IMAGE_URL = CDN_URL + CDN_IMAGE_PATH;
 
+    public static class ImageUrl {
+
+        public static final String KEY_IMAGE_HOST = "image_host";
+
+        public static final String TOKOCASH_IMG = "/img/wallet/ic_tokocash_circle.png";
+        public static final String SALDO_IMG = "/img/wallet/ic_saldo_circle.png";
+    }
+
     public static String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
     public static String GOLD_MERCHANT = BASE_SELLER_URL + "gold-merchant/";
 

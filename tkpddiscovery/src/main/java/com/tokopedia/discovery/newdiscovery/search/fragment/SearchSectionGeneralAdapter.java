@@ -12,6 +12,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.List;
@@ -103,6 +104,12 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     public boolean isHeaderBanner(int position) {
         if (checkDataSize(position))
             return getItemList().get(position) instanceof HeaderViewModel;
+        return false;
+    }
+
+    public boolean isRelatedSearch(int position) {
+        if (checkDataSize(position))
+            return getItemList().get(position) instanceof RelatedSearchModel;
         return false;
     }
 

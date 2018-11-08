@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -57,6 +58,8 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -90,6 +93,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
+    private static final String CART_TRACE = "cart_trace";
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -133,6 +137,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
+    private Trace trace;
+    private boolean isTraceStopped;
+
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -153,6 +160,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
+        trace = TrackingUtils.startTrace(CART_TRACE);
     }
 
     @Override
@@ -165,13 +173,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onStop() {
         boolean hasChanges = dPresenter.dataHasChanged();
 
-        if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
-            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
-            service.putParcelableArrayListExtra(
-                    UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
-            );
-            getActivity().startService(service);
+        try {
+            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+                Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+                service.putParcelableArrayListExtra(
+                        UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
+                );
+                getActivity().startService(service);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
+
         super.onStop();
     }
 
@@ -386,7 +399,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return view -> {
             if (message == null) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
-                sendAnalyticsOnButtonCheckoutClicked();
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
@@ -637,6 +649,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
+
+    }
+
+    @Override
     public void onCartItemAfterErrorChecked() {
         cartAdapter.checkForShipmentForm();
     }
@@ -765,7 +782,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        refreshHandler.finishRefresh();
+        if (trace != null && !isTraceStopped) {
+            trace.stop();
+            isTraceStopped = true;
+        }
+
+        sendAnalyticsScreenName(getScreenName());
+        if (refreshHandler != null) {
+            refreshHandler.finishRefresh();
+        }
         this.cartListData = cartListData;
         cartAdapter.resetData();
 
@@ -1117,6 +1142,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 } else {
                     if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
                         dPresenter.processInitialGetCartData(false);
+                    } else {
+                        CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
+                        dPresenter.setCartListData(cartListData);
+                        renderLoadGetCartDataFinish();
+                        renderInitialGetCartListDataSuccess(cartListData);
                     }
                 }
             }
@@ -1173,15 +1203,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void showToastMessageRed(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showRedCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if (view != null) {
+            NetworkErrorHelper.showRedCloseSnackbar(view, message);
+        } else if (getActivity() != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void showToastMessageGreen(String message) {
         View view = getView();
-        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(view, message);
-        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        if (view != null) {
+            NetworkErrorHelper.showGreenCloseSnackbar(view, message);
+        } else if (getActivity() != null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -1220,7 +1256,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderCancelAutoApplyCouponError() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        if (getActivity() != null) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
+        }
     }
 
     @Override
@@ -1307,10 +1345,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().finish();
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
+            sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            sendAnalyticsScreenName(getScreenName());
+        } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
+            refreshHandler.setRefreshing(true);
+            dPresenter.processInitialGetCartData(false);
         }
     }
 
     private void onResultFromRequestCodeLoyalty(int resultCode, Intent data) {
+        sendAnalyticsScreenName(getScreenName());
         if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.VOUCHER_RESULT_CODE) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {
@@ -1517,12 +1562,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     protected String getScreenName() {
         return ConstantTransactionAnalytics.ScreenName.CART;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        sendAnalyticsScreenName(getScreenName());
     }
 
     @Override

@@ -194,6 +194,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
+
     fun getItemById(talkId: String): InboxTalkItemViewModel? {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {

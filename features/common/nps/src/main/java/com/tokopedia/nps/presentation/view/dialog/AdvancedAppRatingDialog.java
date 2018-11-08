@@ -11,6 +11,7 @@ import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
 import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
 
@@ -115,9 +116,9 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
 
     private String getRemoteConfigKey(){
         if (GlobalConfig.isSellerApp()) {
-            return SELLERAPP_SHOW_ADVANCED_APP_RATING;
+            return RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING;
         } else {
-            return MAINAPP_SHOW_ADVANCED_APP_RATING;
+            return RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
         }
     }
 
@@ -126,7 +127,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
                 && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
-            Integer rating = cacheHandler.getInt(KEY_RATING);
+            Integer rating = cacheHandler.getInt(TkpdCache.Key.KEY_RATING);
             if (appRatingVersion == null || appRatingVersion == -1 || appRatingVersion < GlobalConfig.VERSION_CODE) {
                  return rating == null || rating <= MIN_RATING;
             }

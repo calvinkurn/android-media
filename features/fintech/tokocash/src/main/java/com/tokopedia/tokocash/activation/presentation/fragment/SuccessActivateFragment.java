@@ -17,7 +17,7 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.activation.presentation.contract.SuccessActivateTokocashContract;
 import com.tokopedia.tokocash.activation.presentation.presenter.SuccessActivateTokocashPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 

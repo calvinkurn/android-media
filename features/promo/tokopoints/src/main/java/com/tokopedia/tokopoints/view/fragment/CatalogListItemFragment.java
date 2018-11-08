@@ -19,9 +19,6 @@ import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
@@ -56,7 +53,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     private ViewFlipper mContainer;
     private RecyclerView mRecyclerViewCatalog;
     private CatalogListAdapter mAdapter;
-    private RemoteConfig mRemoteConfig;
     private long mRefreshTime;
     private Timer mTimer;
     private Handler mHandler = new Handler();
@@ -329,8 +325,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(HomeRouter.getHomeActivityInterfaceRouter(
-                            getAppContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -391,7 +386,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 CatalogsValueEntity item = mAdapter.getItems().get(i);
                 if (each.getCatalogID() == item.getId()) {
                     item.setDisabled(each.isDisabled());
-                    item.setDisabledButton(each.isDisabled());
+                    item.setDisabledButton(each.isDisabledButton());
                     item.setUpperTextDesc(each.getUpperTextDesc());
                     item.setQuota(each.getQuota());
                 }
@@ -435,8 +430,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     }
 
     private void fetchRemoteConfig() {
-        mRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        mRefreshTime = mRemoteConfig.getLong(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
+        mRefreshTime = ((TokopointRouter) getAppContext())
+                .getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S);
     }
 
     @Override

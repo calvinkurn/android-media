@@ -47,6 +47,8 @@ public class WishlistViewHolder extends RecyclerView.ViewHolder {
         imgProduct.getLayoutParams().height = itemWidth;
         imgProduct.requestLayout();
 
-        itemView.setOnClickListener(v -> actionListener.onItemWishListClicked(wishlistViewModel.getWishlist()));
+        itemView.setOnClickListener(v -> actionListener.onItemWishListClicked(
+                wishlistViewModel.getWishlist(), getAdapterPosition() + 1)
+        );
     }
 }

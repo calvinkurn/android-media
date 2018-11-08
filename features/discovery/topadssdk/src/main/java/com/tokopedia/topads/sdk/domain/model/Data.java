@@ -45,7 +45,6 @@ public class Data implements Parcelable {
     @SerializedName(KEY_PRODUCT)
     private Product product;
     private boolean favorit;
-    private boolean wislished;
 
     public Data() {
     }
@@ -95,7 +94,6 @@ public class Data implements Parcelable {
         shop = in.readParcelable(Shop.class.getClassLoader());
         product = in.readParcelable(Product.class.getClassLoader());
         favorit = in.readByte() != 0;
-        wislished = in.readByte() != 0;
     }
 
     @Override
@@ -111,7 +109,6 @@ public class Data implements Parcelable {
         dest.writeParcelable(shop, flags);
         dest.writeParcelable(product, flags);
         dest.writeByte((byte) (favorit ? 1 : 0));
-        dest.writeByte((byte) (wislished ? 1 : 0));
     }
 
     @Override
@@ -209,14 +206,6 @@ public class Data implements Parcelable {
 
     public void setFavorit(boolean favorit) {
         this.favorit = favorit;
-    }
-
-    public void setWislished(boolean wislished) {
-        this.wislished = wislished;
-    }
-
-    public boolean isWislished() {
-        return wislished;
     }
 
     public String getProductWishlistUrl() {

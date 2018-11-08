@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.network;
 
 import com.tokopedia.tokocash.WalletUserSession;
-import com.tokopedia.tokocash.di.RetrofitWalletQualifier;
+import com.tokopedia.tokocash.common.di.RetrofitWalletQualifier;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 import com.tokopedia.tokocash.network.model.WalletTokenEntity;

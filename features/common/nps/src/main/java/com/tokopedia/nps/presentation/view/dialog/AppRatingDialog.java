@@ -9,11 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 
 import static com.tokopedia.nps.NpsConstant.Key.APP_RATING;
 

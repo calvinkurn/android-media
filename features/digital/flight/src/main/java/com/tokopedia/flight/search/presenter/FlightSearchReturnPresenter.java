@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -71,8 +72,8 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
             if (departureViewModel.getRouteList().size() > 0 && returnViewModel.getRouteList().size() > 0) {
                 Route lastDepartureRoute = departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1);
                 Route firstReturnRoute = returnViewModel.getRouteList().get(0);
-                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, lastDepartureRoute.getArrivalTimestamp());
-                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, firstReturnRoute.getDepartureTimestamp());
+                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.getArrivalTimestamp());
+                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.getDepartureTimestamp());
                 long different = returnDepartureTime.getTime() - departureArrivalTime.getTime();
                 if (different >= 0) {
                     long hours = different / ONE_HOUR;
@@ -90,7 +91,13 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
     public void onFlightSearchSelected(String selectedFlightDeparture, final String selectedFlightReturn) {
         compositeSubscription.add(Observable.zip(
                 flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, selectedFlightDeparture)),
-                flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, selectedFlightReturn)),
+                flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, selectedFlightReturn))
+                        .doOnNext(new Action1<FlightSearchViewModel>() {
+                            @Override
+                            public void call(FlightSearchViewModel flightSearchViewModel) {
+                                flightAnalytics.eventSearchProductClickFromDetail(getView().getFlightSearchPassData(), flightSearchViewModel);
+                            }
+                        }),
                 new Func2<FlightSearchViewModel, FlightSearchViewModel, Boolean>() {
                     @Override
                     public Boolean call(FlightSearchViewModel departureViewModel, FlightSearchViewModel returnViewModel) {
@@ -132,7 +139,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
     }
 
     public void onFlightSearchSelected(String selectedFlightDeparture, FlightSearchViewModel flightSearchViewModel, int adapterPosition) {
-        flightAnalytics.eventSearchProductClick(flightSearchViewModel, adapterPosition);
+        flightAnalytics.eventSearchProductClickFromList(getView().getFlightSearchPassData(), flightSearchViewModel, adapterPosition);
         onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel);
     }
 }

@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -347,13 +348,17 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             tvMembershipName.text = getString(R.string.label_gold_merchant)
             tvMembershipDescription.text = getString(R.string.valid_until_x,
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
-
+            tvManageGmSubscribe.visibility = View.VISIBLE
             vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
         }
     }
 
     private fun navigateToAboutGM() {
-        (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
+        if (GlobalConfig.isSellerApp()) {
+            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
+        } else {
+            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
+        }
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {

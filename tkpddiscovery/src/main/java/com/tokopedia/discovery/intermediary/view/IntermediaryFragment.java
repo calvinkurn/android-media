@@ -32,7 +32,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -47,7 +46,6 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.DiscoveryRouter;
@@ -74,6 +72,7 @@ import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -83,15 +82,13 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
@@ -111,65 +108,26 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public static final String DEFAULT_ITEM_VALUE = "1";
     public static final int REQUEST_CODE_LOGIN = 561;
 
-    @BindView(R2.id.nested_intermediary)
-    NestedScrollView nestedScrollView;
-
-    @BindView(R2.id.image_header)
-    ImageView imageHeader;
-
-    @BindView(R2.id.title_header)
-    TextView titleHeader;
-
-    @BindView(R2.id.expand_layout)
-    LinearLayout expandLayout;
-
-    @BindView(R2.id.hide_layout)
-    LinearLayout hideLayout;
-
-    @BindView(R2.id.recycler_view_revamp_categories)
-    RecyclerView revampCategoriesRecyclerView;
-
-    @BindView(R2.id.recycler_view_curation)
-    RecyclerView curationRecyclerView;
-
-    @BindView(R2.id.card_hoth_intermediary)
-    CardView cardViewHotList;
-
-    @BindView(R2.id.card_video_intermediary)
-    CardView cardViewVideo;
-
-    @BindView(R2.id.youtube_video_place_holder)
-    LinearLayout placeHolderVideo;
-
-    @BindView(R2.id.recycler_view_hot_list)
-    RecyclerView hotListRecyclerView;
-
-    @BindView(R2.id.category_view_all)
-    TextView viewAllCategory;
-
-    @BindView(R2.id.banner_container)
-    RelativeLayout bannerContainer;
-
-    @BindView(R2.id.header_container)
-    RelativeLayout headerContainer;
-
-    @BindView(R2.id.intermediary_video_title)
-    TextView videoTitle;
-
-    @BindView(R2.id.intermediary_video_desc)
-    TextView videoDesc;
-
-    @BindView(R2.id.card_official_intermediary)
-    CardView cardOfficial;
-
-    @BindView(R2.id.rv_official_intermediary)
-    RecyclerView brandsRecyclerView;
-
-    @BindView(R2.id.top_ads_view)
-    TopAdsView topAdsView;
-
-    @BindView(R2.id.top_ads_banner)
-    TopAdsBannerView topAdsBannerView;
+    private NestedScrollView nestedScrollView;
+    private ImageView imageHeader;
+    private TextView titleHeader;
+    private LinearLayout expandLayout;
+    private LinearLayout hideLayout;
+    private RecyclerView revampCategoriesRecyclerView;
+    private RecyclerView curationRecyclerView;
+    private CardView cardViewHotList;
+    private CardView cardViewVideo;
+    private LinearLayout placeHolderVideo;
+    private RecyclerView hotListRecyclerView;
+    private TextView viewAllCategory;
+    private RelativeLayout bannerContainer;
+    private RelativeLayout headerContainer;
+    private TextView videoTitle;
+    private TextView videoDesc;
+    private CardView cardOfficial;
+    private RecyclerView brandsRecyclerView;
+    private TopAdsView topAdsView;
+    private TopAdsBannerView topAdsBannerView;
 
     private TextView btnSeeAllOfficialBrand;
 
@@ -191,6 +149,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
     private NonScrollGridLayoutManager gridLayoutManager;
+    private UserSessionInterface userSession;
 
     public static IntermediaryFragment createInstance(String departmentId, String trackerAttribution) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -214,15 +173,54 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_intermediary, container, false);
 
-        ButterKnife.bind(this, parentView);
+        initView(parentView);
+        initListener();
 
         btnSeeAllOfficialBrand = parentView.findViewById(R.id.see_all_official_brand_button);
         btnSeeAllOfficialBrand.setOnClickListener(new SeeAllOfficialOnClickListener());
 
         presenter.attachView(this);
-        presenter.getIntermediaryCategory(departmentId);
         presenter.setWishlishListener(this);
         return parentView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        userSession = new UserSession(getActivity());
+        presenter.getIntermediaryCategory(departmentId);
+    }
+
+    private void initView(View view) {
+        nestedScrollView = view.findViewById(R.id.nested_intermediary);
+        imageHeader = view.findViewById(R.id.image_header);
+        titleHeader = view.findViewById(R.id.title_header);
+        expandLayout = view.findViewById(R.id.expand_layout);
+        hideLayout = view.findViewById(R.id.hide_layout);
+        revampCategoriesRecyclerView = view.findViewById(R.id.recycler_view_revamp_categories);
+        curationRecyclerView = view.findViewById(R.id.recycler_view_curation);
+        cardViewHotList = view.findViewById(R.id.card_hoth_intermediary);
+        cardViewVideo = view.findViewById(R.id.card_video_intermediary);
+        placeHolderVideo = view.findViewById(R.id.youtube_video_place_holder);
+        hotListRecyclerView = view.findViewById(R.id.recycler_view_hot_list);
+        viewAllCategory = view.findViewById(R.id.category_view_all);
+        bannerContainer = view.findViewById(R.id.banner_container);
+        headerContainer = view.findViewById(R.id.header_container);
+        videoTitle = view.findViewById(R.id.intermediary_video_title);
+        videoDesc = view.findViewById(R.id.intermediary_video_desc);
+        cardOfficial = view.findViewById(R.id.card_official_intermediary);
+        brandsRecyclerView = view.findViewById(R.id.rv_official_intermediary);
+        topAdsView = view.findViewById(R.id.top_ads_view);
+        topAdsBannerView = view.findViewById(R.id.top_ads_banner);
+    }
+
+    private void initListener() {
+        viewAllCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewAllCategory();
+            }
+        });
     }
 
     @Override
@@ -276,7 +274,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .topAdsParams(params)
                 .build();
 
@@ -289,11 +287,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
         adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
         adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
-        adsBannerParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getActivity()));
+        adsBannerParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
         Config configAdsBanner = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.CPM)
                 .topAdsParams(adsBannerParams)
                 .build();
@@ -592,7 +590,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         return width / 2;
     }
 
-    @OnClick(R2.id.category_view_all)
     public void viewAllCategory() {
 /*        BrowseProductActivity.moveTo(
                 getActivity(),
@@ -648,7 +645,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
-    public void onTopAdsLoaded() {
+    public void onTopAdsLoaded(List<Item> list) {
         hideLoading();
         topAdsView.setVisibility(View.VISIBLE);
         backToTop();
@@ -665,7 +662,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         data.setId(product.getId());
         data.setName(product.getName());
         data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
+        data.setImgUri(product.getImage().getM_ecs());
         Bundle bundle = new Bundle();
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -720,7 +717,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
@@ -733,7 +730,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {

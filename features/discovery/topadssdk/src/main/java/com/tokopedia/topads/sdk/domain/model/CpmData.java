@@ -22,7 +22,7 @@ public class CpmData implements Parcelable {
     private static final String KEY_APPLINKS = "applinks";
 
     @SerializedName(KEY_ID)
-    private int id;
+    private String id;
     @SerializedName(KEY_AD_REF_KEY)
     private String adRefKey;
     @SerializedName(KEY_REDIRECT)
@@ -36,7 +36,7 @@ public class CpmData implements Parcelable {
 
     public CpmData(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
-            setId(object.getInt(KEY_ID));
+            setId(object.getString(KEY_ID));
         }
         if(!object.isNull(KEY_AD_REF_KEY)){
             setAdRefKey(object.getString(KEY_AD_REF_KEY));
@@ -56,7 +56,7 @@ public class CpmData implements Parcelable {
     }
 
     protected CpmData(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         adRefKey = in.readString();
         redirect = in.readString();
         adClickUrl = in.readString();
@@ -66,7 +66,7 @@ public class CpmData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(adRefKey);
         dest.writeString(redirect);
         dest.writeString(adClickUrl);
@@ -99,11 +99,11 @@ public class CpmData implements Parcelable {
         this.applinks = applinks;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

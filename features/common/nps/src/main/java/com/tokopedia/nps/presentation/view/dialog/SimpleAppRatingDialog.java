@@ -7,12 +7,9 @@ import android.support.v7.app.AlertDialog;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.R;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
-
-import static com.tokopedia.nps.NpsConstant.Key.*;
-import static com.tokopedia.nps.NpsConstant.RemoteConfigKey.*;
-import static com.tokopedia.nps.NpsConstant.Analytic.*;
 
 /**
  * Created by okasurya on 11/29/17.
@@ -40,14 +37,14 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
         return new AlertDialog.Builder(activity)
                 .setTitle(
                     remoteConfig.getString(
-                            MAINAPP_RATING_TITLE,
-                            activity.getString(R.string.app_rating_title)
+                        RemoteConfigKey.MAINAPP_RATING_TITLE,
+                        activity.getString(R.string.app_rating_title)
                     )
                 )
                 .setMessage(
                     remoteConfig.getString(
-                            MAINAPP_RATING_MESSAGE,
-                            activity.getString(R.string.app_rating_message)
+                        RemoteConfigKey.MAINAPP_RATING_MESSAGE,
+                        activity.getString(R.string.app_rating_message)
                     )
                 )
                 .setPositiveButton(R.string.app_rating_button_rate, (dialog, which) -> {
@@ -70,7 +67,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        if(remoteConfig.getBoolean(MAINAPP_SHOW_SIMPLE_APP_RATING, false)
+        if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
                 && globalCacheManager.isExpired(HIDE_SIMPLE_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;

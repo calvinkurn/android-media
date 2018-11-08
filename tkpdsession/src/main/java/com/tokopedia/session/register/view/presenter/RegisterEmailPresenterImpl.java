@@ -41,7 +41,6 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
         viewListener.resetError();
         viewListener.showLoadingProgress();
         viewListener.dropKeyboard();
-        sendGTMClickStepTwo();
         registerEmail();
     }
 
@@ -59,10 +58,6 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
 
     private void registerEmail() {
         registerEmailUseCase.execute(getRegisterStep2Param(), new RegisterEmailSubscriber(viewListener));
-    }
-
-    private void sendGTMClickStepTwo() {
-        UnifyTracking.eventRegister(AppEventTracking.EventLabel.REGISTER_STEP_2);
     }
 
     @Override

@@ -30,6 +30,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightGsonPlainQualifier;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderMapper;
@@ -40,6 +41,10 @@ import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.FlightSearchReturnDataSource;
 import com.tokopedia.flight.search.data.FlightSearchSingleDataSource;
 import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
+import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
+import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
+import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
+import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
 
 import java.util.concurrent.TimeUnit;
 
@@ -183,4 +188,35 @@ public class FlightModule {
                 .serializeNulls()
                 .create();
     }
+
+    @Provides
+    @FlightScope
+    FlightSearchRoomDb provideFlightSearchRoomDb(@ApplicationContext Context context) {
+        return FlightSearchRoomDb.getInstance(context);
+    }
+
+    @Provides
+    @FlightScope
+    FlightComboDao provideComboDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboDao();
+    }
+
+    @Provides
+    @FlightScope
+    FlightJourneyDao provideFlightJourneyDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightJourneyDao();
+    }
+
+    @Provides
+    @FlightScope
+    FlightRouteDao provideRouteDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightRouteDao();
+    }
+
+    @FlightScope
+    @Provides
+    public FlightDateUtil provideFlightDateUtil(){
+        return new FlightDateUtil();
+    }
+
 }

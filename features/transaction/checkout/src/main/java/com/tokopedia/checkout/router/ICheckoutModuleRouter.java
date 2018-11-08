@@ -3,7 +3,11 @@ package com.tokopedia.checkout.router;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.security.PublicKey;
@@ -21,7 +25,7 @@ public interface ICheckoutModuleRouter {
             boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, String defaultSelectedTab);
+            boolean couponActive, String additionalStringData, String defaultSelectedTab, boolean isOneClickShipment);
 
     Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
@@ -48,6 +52,8 @@ public interface ICheckoutModuleRouter {
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
     Intent checkoutModuleRouterGetHomeIntent(Context context);
+
+    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 

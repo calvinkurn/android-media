@@ -46,7 +46,9 @@ public class RecentViewViewHolder extends RecyclerView.ViewHolder {
         imgProduct.getLayoutParams().height = itemWidth;
         imgProduct.requestLayout();
 
-        itemView.setOnClickListener(v -> actionListener.onItemRecentViewClicked(recentViewViewModel.getRecentView()));
+        itemView.setOnClickListener(v -> actionListener.onItemRecentViewClicked(
+                recentViewViewModel.getRecentView(), getAdapterPosition() + 1)
+        );
 
     }
 

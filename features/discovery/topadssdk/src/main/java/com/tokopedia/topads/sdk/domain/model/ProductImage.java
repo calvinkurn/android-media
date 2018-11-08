@@ -3,6 +3,8 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,12 +20,19 @@ public class ProductImage implements Parcelable {
     private static final String KEY_S_ECS = "s_ecs";
     private static final String KEY_XS_ECS = "xs_ecs";
 
+    @SerializedName(KEY_M_URL)
     private String m_url;
+    @SerializedName(KEY_S_URL)
     private String s_url;
+    @SerializedName(KEY_XS_URL)
     private String xs_url;
+    @SerializedName(KEY_M_ECS)
     private String m_ecs;
+    @SerializedName(KEY_S_ECS)
     private String s_ecs;
+    @SerializedName(KEY_XS_ECS)
     private String xs_ecs;
+    private boolean impressed;
 
     public ProductImage(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_M_URL)){
@@ -53,6 +62,7 @@ public class ProductImage implements Parcelable {
         m_ecs = in.readString();
         s_ecs = in.readString();
         xs_ecs = in.readString();
+        impressed = in.readByte() != 0;
     }
 
     @Override
@@ -63,6 +73,7 @@ public class ProductImage implements Parcelable {
         dest.writeString(m_ecs);
         dest.writeString(s_ecs);
         dest.writeString(xs_ecs);
+        dest.writeByte((byte) (impressed ? 1 : 0));
     }
 
     @Override
@@ -81,6 +92,14 @@ public class ProductImage implements Parcelable {
             return new ProductImage[size];
         }
     };
+
+    public boolean isImpressed() {
+        return impressed;
+    }
+
+    public void setImpressed(boolean impressed) {
+        this.impressed = impressed;
+    }
 
     public String getM_url() {
         return m_url;

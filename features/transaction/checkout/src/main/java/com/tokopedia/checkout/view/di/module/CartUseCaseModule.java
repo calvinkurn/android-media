@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
+import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
@@ -20,6 +21,7 @@ import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
@@ -36,6 +38,11 @@ public class CartUseCaseModule {
     @Provides
     AddToCartUseCase addToCartUseCase(ICartRepository cartRepository, Gson gson) {
         return new AddToCartUseCase(cartRepository, gson);
+    }
+
+    @Provides
+    AddToCartOneClickShipmentUseCase addToCartOneClickShipmentUseCase(ICartRepository cartRepository, Gson gson) {
+        return new AddToCartOneClickShipmentUseCase(cartRepository, gson);
     }
 
     @Provides

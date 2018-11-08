@@ -52,8 +52,9 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerVie
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
-import com.tokopedia.flight.search.view.activity.FlightSearchActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.activity.FlightSearchActivity;
+import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,6 +82,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
+    private static final int REQUEST_CODE_DATE_PICKER_DEPARTURE = 7;
+    private static final int REQUEST_CODE_DATE_PICKER_RETURN = 8;
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -351,7 +354,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                         .setExtras(bundle)
                         .build());
-            }else {
+            } else {
                 GetAirportListService.startService(getActivity(), airportVersion);
             }
         }
@@ -437,6 +440,22 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         datePicker1.setMinDate(minDate.getTime());
         datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
+    }
+
+    @Override
+    public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
+        startActivityForResult(TravelCalendarActivity
+                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
+                                TravelCalendarActivity.DEPARTURE_TYPE),
+                REQUEST_CODE_DATE_PICKER_DEPARTURE);
+    }
+
+    @Override
+    public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
+        startActivityForResult(TravelCalendarActivity
+                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
+                                TravelCalendarActivity.RETURN_TYPE),
+                REQUEST_CODE_DATE_PICKER_RETURN);
     }
 
     @Override
@@ -567,15 +586,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-        KeyboardHandler.hideSoftKeyboard(getActivity());
         removeFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
                     FlightClassViewModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
                     presenter.onFlightClassesChange(viewModel);
-
                     break;
                 case REQUEST_CODE_AIRPORT_PASSENGER:
                     FlightPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
@@ -589,12 +605,22 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     FlightAirportViewModel arrivalAirport = data.getParcelableExtra(FlightAirportPickerFragment.EXTRA_SELECTED_AIRPORT);
                     presenter.onArrivalAirportChange(arrivalAirport);
                     break;
-                case REQUEST_CODE_SEARCH:
-
-                    break;
-
                 case REQUEST_CODE_LOGIN:
                     presenter.onLoginResultReceived();
+                    break;
+                case REQUEST_CODE_DATE_PICKER_DEPARTURE:
+                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    Calendar calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                    break;
+                case REQUEST_CODE_DATE_PICKER_RETURN:
+                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
+                    calendarSelected = Calendar.getInstance();
+                    calendarSelected.setTime(dateString);
+                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
                     break;
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {

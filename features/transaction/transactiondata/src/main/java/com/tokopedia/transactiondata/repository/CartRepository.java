@@ -12,6 +12,7 @@ import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataRespon
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.notifcounter.NotifCounterCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
+import com.tokopedia.transactiondata.entity.response.saveshipmentstate.SaveShipmentStateResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddress.ShippingAddressDataResponse;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -82,6 +83,18 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
+    public Observable<AddToCartDataResponse> addToCartDataOneClickShipment(Map<String, String> param) {
+        return cartApi.postAddToCartOneClickShipment(param).map(
+                new Func1<Response<CartResponse>, AddToCartDataResponse>() {
+                    @Override
+                    public AddToCartDataResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(AddToCartDataResponse.class);
+                    }
+                }
+        );
+    }
+
+    @Override
     public Observable<UpdateCartDataResponse> updateCartData(Map<String, String> param) {
         return cartApi.postUpdateCart(param).map(new Func1<Response<CartResponse>, UpdateCartDataResponse>() {
             @Override
@@ -104,6 +117,16 @@ public class CartRepository implements ICartRepository {
     @Override
     public Observable<ShipmentAddressFormDataResponse> getShipmentAddressForm(Map<String, String> param) {
         return cartApi.getShipmentAddressForm(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
+            @Override
+            public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);
+            }
+        });
+    }
+
+    @Override
+    public Observable<ShipmentAddressFormDataResponse> getShipmentAddressFormOneClickCheckout(Map<String, String> param) {
+        return cartApi.getShipmentAddressFormOneClickCheckout(param).map(new Func1<Response<CartResponse>, ShipmentAddressFormDataResponse>() {
             @Override
             public ShipmentAddressFormDataResponse call(Response<CartResponse> cartResponseResponse) {
                 return cartResponseResponse.body().convertDataObj(ShipmentAddressFormDataResponse.class);
@@ -180,5 +203,16 @@ public class CartRepository implements ICartRepository {
     @Override
     public Observable<String> cancelAutoApplyCoupon(String os, Map<String, String> params) {
         return cartApi.cancelAutoApplyCoupon(os, params);
+    }
+
+    @Override
+    public Observable<SaveShipmentStateResponse> saveShipmentState(Map<String, String> params) {
+        return cartApi.postSaveShipmentState(params).map(
+                new Func1<Response<CartResponse>, SaveShipmentStateResponse>() {
+                    @Override
+                    public SaveShipmentStateResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(SaveShipmentStateResponse.class);
+                    }
+                });
     }
 }
