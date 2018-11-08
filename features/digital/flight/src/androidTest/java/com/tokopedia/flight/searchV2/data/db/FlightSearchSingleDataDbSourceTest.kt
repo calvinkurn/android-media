@@ -3,13 +3,11 @@ package com.tokopedia.flight.searchV2.data.db
 import android.arch.persistence.room.Room
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
 import com.tokopedia.flight.search.view.model.filter.TransitEnum
-import com.tokopedia.flight.searchV2.constant.FlightSortOption
 import com.tokopedia.flight.searchV2.data.db.util.createFlightJourneyTable
 import com.tokopedia.flight.searchV2.data.db.util.createRoutes
 import com.tokopedia.flight.searchV2.presentation.model.filter.FlightFilterModel
@@ -122,7 +120,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(1))
@@ -152,7 +150,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -184,7 +182,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -228,7 +226,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(2))
@@ -268,7 +266,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.NO_PREFERENCE)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.NO_PREFERENCE)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(3))
@@ -321,7 +319,7 @@ class FlightSearchSingleDataDbSourceTest {
         // journey 2 price = Rp 1.500.000
         // journey 3 price = Rp   500.000
     // action
-        // FlightSortOption = CHEAPEST
+        // TravelSortOption = CHEAPEST
     // expected result
         // journey 3 price = Rp   500.000
         // journey 1 price = Rp 1.000.000
@@ -347,7 +345,7 @@ class FlightSearchSingleDataDbSourceTest {
 
         val testSubscriber = TestSubscriber<List<JourneyAndRoutes>>()
 
-        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, FlightSortOption.CHEAPEST)
+        flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, TravelSortOption.CHEAPEST)
                 .subscribe(testSubscriber)
 
         assertThat(testSubscriber.onNextEvents[0].size, `is`(3))

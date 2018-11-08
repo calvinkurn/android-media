@@ -55,6 +55,7 @@ ext {
     tkpdWishlistVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     transactionCheckoutVersion = '2.22'
+    tkpdTravelVersion = '2.22'
 
 
     // Sort alphabetically by package name
@@ -111,6 +112,7 @@ ext {
             transactioncommon           : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
             vote                        : "com.tokopedia.user:user:${tkpdVoteVersion}",
             wishListCommon              : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            commonTravel                : "com.tokopedia.common.travel:${tkpdTravelVersion}"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -220,5 +222,6 @@ ext {
             session                     : ":tkpdsession",
             transaction                 : ":tkpdtransaction",
             transactioncommon           : ":tkpdtransaction-common",
+            commonTravel                : ":features:digital:common_travel"
     ]
 }

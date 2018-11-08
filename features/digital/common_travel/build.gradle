@@ -2,9 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-    maven { url 'https://hansel.io/maven' }
-}
 
 android {
     defaultConfig {
@@ -16,23 +13,21 @@ android {
     }
 }
 
+project.ext {
+    artifactId = 'common_travel'
+    groupId = 'com.tokopedia.common.travel'
+    versionName = "${tkpdTravelVersion}"
+    artifactName = "commontravel-release"
+}
+
 buildscript {
     repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
-}
-
-project.ext {
-    artifactId = 'common_travel'
-    groupId = 'com.tokopedia.common.travel'
-    versionName = "${tkpdTravelVersion}"
-    artifactName ="commontravel-release"
 }
 
 dependencies {

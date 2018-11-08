@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.flight.search.view.adapter.viewholder.FlightSearchShimmeringViewHolder;
+import com.tokopedia.common.travel.presentation.adapter.viewholder.TravelSearchShimmeringViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.searchV2.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
@@ -43,8 +43,8 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
-        } else if (type == FlightSearchShimmeringViewHolder.LAYOUT) {
-            return new FlightSearchShimmeringViewHolder(parent);
+        } else if (type == TravelSearchShimmeringViewHolder.LAYOUT) {
+            return new TravelSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -60,7 +60,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     public int type(LoadingModel loadingModel) {
-        return FlightSearchShimmeringViewHolder.LAYOUT;
+        return TravelSearchShimmeringViewHolder.LAYOUT;
     }
 
     public int type(EmptyResultViewModel viewModel) {

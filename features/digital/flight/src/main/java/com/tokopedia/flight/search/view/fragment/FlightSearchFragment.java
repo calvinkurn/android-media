@@ -35,8 +35,6 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
-import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.di.FlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -51,6 +49,7 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
 import java.util.ArrayList;

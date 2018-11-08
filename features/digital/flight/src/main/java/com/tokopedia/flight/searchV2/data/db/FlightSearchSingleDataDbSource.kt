@@ -2,11 +2,11 @@ package com.tokopedia.flight.searchV2.data.db
 
 import android.arch.persistence.db.SimpleSQLiteQuery
 import android.util.Log
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.airline.data.db.FlightAirlineDataListDBSource
 import com.tokopedia.flight_dbflow.FlightAirlineDB
 import com.tokopedia.flight.airport.data.source.db.FlightAirportDataListDBSource
 import com.tokopedia.flight_dbflow.FlightAirportDB
-import com.tokopedia.flight.search.constant.FlightSortOption
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
 import com.tokopedia.flight.search.view.model.filter.TransitEnum
@@ -42,7 +42,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
-    fun getFilteredJourneys(filterModel: FlightFilterModel, @FlightSortOption flightSortOption: Int):
+    fun getFilteredJourneys(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
             Observable<List<JourneyAndRoutes>> {
         return Observable.create<List<JourneyAndRoutes>> {
             val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
@@ -92,7 +92,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
             } else {
                 "SELECT count(*) FROM FlightJourneyTable WHERE "
             }
-            val query = buildQuery(sqlQuery, filterModel, FlightSortOption.CHEAPEST)
+            val query = buildQuery(sqlQuery, filterModel, TravelSortOption.CHEAPEST)
             it.onNext(flightJourneyDao.getSearchCount(query))
         }
     }
@@ -220,17 +220,17 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         return stringBuilder.toString()
     }
 
-    private fun getOrderBy(@FlightSortOption flightSortOption: Int): String {
+    private fun getOrderBy(@TravelSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
-            FlightSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPrice ASC"
-            FlightSortOption.EARLIEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt ASC"
-            FlightSortOption.EARLIEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt ASC"
-            FlightSortOption.LATEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt DESC"
-            FlightSortOption.LATEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt DESC"
-            FlightSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC"
-            FlightSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC"
-            FlightSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPrice DESC"
-            FlightSortOption.NO_PREFERENCE -> ""
+            TravelSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPrice ASC"
+            TravelSortOption.EARLIEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt ASC"
+            TravelSortOption.EARLIEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt ASC"
+            TravelSortOption.LATEST_ARRIVAL -> " ORDER BY FlightJourneyTable.arrivalTimeInt DESC"
+            TravelSortOption.LATEST_DEPARTURE -> " ORDER BY FlightJourneyTable.departureTimeInt DESC"
+            TravelSortOption.SHORTEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute ASC"
+            TravelSortOption.LONGEST_DURATION -> " ORDER BY FlightJourneyTable.durationMinute DESC"
+            TravelSortOption.MOST_EXPENSIVE -> " ORDER BY FlightJourneyTable.sortPrice DESC"
+            TravelSortOption.NO_PREFERENCE -> ""
             else -> ""
         }
     }

@@ -39,7 +39,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                                                       boolean isReturning,
                                                       boolean fromCache,
                                                       FlightFilterModel flightFilterModel,
-                                                      @FlightSortOption int sortOption) {
+                                                      @TravelSortOption int sortOption) {
         return FlightSearchParamUtil.generateRequestParams(
                 flightSearchApiRequestModel,
                 isReturning,
