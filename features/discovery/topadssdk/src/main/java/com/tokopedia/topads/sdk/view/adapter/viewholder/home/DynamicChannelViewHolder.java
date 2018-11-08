@@ -54,5 +54,11 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
             productTxt.setText(Html.fromHtml(element.getProductName()));
         }
         priceTxt.setText(element.getProductPrice());
+        if(!element.getProductCashback().isEmpty()){
+            cashbackTxt.setText(element.getProductCashback());
+            cashbackTxt.setVisibility(View.VISIBLE);
+        } else {
+            cashbackTxt.setVisibility(View.GONE);
+        }
     }
 }

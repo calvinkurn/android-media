@@ -14,7 +14,9 @@
         <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="380dp" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/bottom_label"
@@ -38,21 +40,23 @@
 
     <TextView
         android:id="@+id/product_name"
-        style="@style/TextView.TitleMedium"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:lineSpacingExtra="6sp"
+        android:lineSpacingExtra="@dimen/sp_4"
         android:maxLines="2"
-        tools:text="Huawei P20 128gb" />
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        tools:text="Headset Gaming Power Bass" />
 
     <TextView
         android:id="@+id/product_price"
-        style="@style/TextView.Title.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/orange_red"
-        tools:text="Huawei P20 128gb" />
+        android:layout_toLeftOf="@+id/ic_toa"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textColor="@color/deep_orange_500"
+        android:textSize="@dimen/sp_12"
+        tools:text="Rp. 1000.000" />
 
 </LinearLayout>
