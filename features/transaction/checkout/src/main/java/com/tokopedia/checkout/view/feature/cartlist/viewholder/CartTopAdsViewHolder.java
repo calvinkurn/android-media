@@ -31,10 +31,7 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     private TopAdsCarouselView topAdsCarouselView;
 
-    @Inject
-    UserSession userSession;
-
-    public CartTopAdsViewHolder(View itemView) {
+    public CartTopAdsViewHolder(View itemView, UserSession userSession) {
         super(itemView);
         topAdsCarouselView = itemView.findViewById(R.id.topads);
 

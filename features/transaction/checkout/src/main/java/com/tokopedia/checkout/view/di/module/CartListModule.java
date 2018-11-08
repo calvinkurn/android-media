@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.di.module;
 
 import android.support.v7.widget.RecyclerView;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -92,8 +93,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, cartItemActionListener);
+    CartAdapter provideCartListAdapter(UserSession userSession) {
+        return new CartAdapter(cartActionListener, cartItemActionListener, userSession);
     }
 
 }
