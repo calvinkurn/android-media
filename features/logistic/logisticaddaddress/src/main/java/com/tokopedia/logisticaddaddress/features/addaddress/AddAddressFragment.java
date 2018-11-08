@@ -36,7 +36,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticaddaddress.domain.LocationPassMapper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
@@ -46,11 +45,11 @@ import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
-import com.tokopedia.logisticdata.data.entity.address.LocationPass;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.address.db.City;
 import com.tokopedia.logisticdata.data.entity.address.db.District;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
@@ -58,13 +57,11 @@ import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.domain.LocationPassMapper.bundleLocationMap;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
@@ -228,10 +225,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    LocationPass locationPass = bundle.getSerializable(EXTRA_HASH_LOCATION) != null ?
-                            LocationPassMapper.unBundleLocationMap(
-                                    (HashMap<String, String>) bundle.getSerializable(EXTRA_HASH_LOCATION)
-                            ) : bundle.getParcelable(EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = bundle.getParcelable(EXTRA_EXISTING_LOCATION);
                     if (locationPass != null) {
                         String latitude = locationPass.getLatitude();
                         String longitude = locationPass.getLongitude();
@@ -1122,17 +1116,12 @@ public class AddAddressFragment extends BaseDaggerFragment
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
 
-            HashMap<String, String> locationMap = bundleLocationMap(locationPass);
-            if (getArguments().getString(EXTRA_PLATFORM_PAGE, "")
-                    .equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)) {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, true);
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                Intent intent = ((IAddressRouter) getActivity().getApplication())
-                        .getGeoLocationActivityIntent(getActivity(), locationMap, false);
-                startActivityForResult(intent, REQUEST_CODE);
-            }
+            Intent intent = ((IAddressRouter) getActivity().getApplication())
+                    .getGeoLocationActivityIntent(
+                            getActivity(), locationPass,
+                            isAddAddressFromCartCheckoutMarketplace()
+                    );
+            startActivityForResult(intent, REQUEST_CODE);
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.security.PublicKey;
@@ -54,6 +55,8 @@ public interface ICheckoutModuleRouter {
     Intent checkoutModuleRouterGetHomeIntent(Context context);
 
     Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
+
+    Intent getGeolocationIntent(Context context, LocationPass locationPass);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 

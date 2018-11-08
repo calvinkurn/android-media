@@ -23,7 +23,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -47,14 +46,19 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstanceFromAddress(@NonNull Context context, @Nullable HashMap<String, String> locationPass) {
+    // Address -> Router
+    public static Intent createInstanceFromAddress(@NonNull Context context,
+                                                   @Nullable HashMap<String, String> locationPass,
+                                                   boolean isFromMarketPlaceCart) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable(EXTRA_HASH_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketPlaceCart);
         intent.putExtras(bundle);
         return intent;
     }
 
+    // Shop Open -> Router
     public static Intent createInstanceIntent(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();
@@ -63,6 +67,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         return intent;
     }
 
+    // Shipment Fragment -> Direct dep
     public static Intent createInstanceFromMarketplaceCart(@NonNull Context context, @Nullable LocationPass locationPass) {
         Intent intent = new Intent(context, GeolocationActivity.class);
         Bundle bundle = new Bundle();

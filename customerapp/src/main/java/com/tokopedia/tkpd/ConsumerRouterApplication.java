@@ -91,8 +91,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.geolocation.activity.GeolocationActivity;
-import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -221,6 +219,8 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.manageaddress.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -1814,9 +1814,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
-        Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
-        fragment.startActivityForResult(intent, requestCode);
+    public Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass) {
+       return GeolocationActivity.createInstance(context, locationPass, false);
+    }
+
+    @Override
+    public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
+        return GeolocationActivity.createInstance(context, locationPass, true);
     }
 
     @Override
@@ -1920,6 +1924,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         return cartEntity.toString();
                     }
                 });
+    }
+
+    @Override
+    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
+            Context context, String platform, String category, String defaultSelectedTab
+    ) {
+        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
     }
 
     @Override
@@ -2584,7 +2595,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {
-        return new CreditCardFingerPrintUseCase();
+        return null;
     }
 
     @Override
@@ -2622,13 +2633,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGeoLocationActivityIntent(Context context, HashMap<String, String> locationMap, boolean isFromMarketplaceCart) {
-        Intent intent = new Intent(context, GeolocationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(GeolocationActivity.EXTRA_HASH_LOCATION, locationMap);
-        bundle.putBoolean(GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART, isFromMarketplaceCart);
-        intent.putExtras(bundle);
-        return intent;
+    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationMap, boolean isFromMarketplaceCart) {
+        return GeolocationActivity.createInstance(context, locationMap, isFromMarketplaceCart);
     }
 
     @Override
