@@ -88,7 +88,7 @@
             android:clipToPadding="false"/>
     </FrameLayout>
 
-    <View
+    <FrameLayout
         android:visibility="gone"
         android:id="@+id/layout_empty"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

@@ -84,7 +84,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
-    private View layoutEmpty;
+    private FrameLayout layoutEmpty;
 
     private boolean isCanDoAction;
 
@@ -329,6 +329,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+        layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
