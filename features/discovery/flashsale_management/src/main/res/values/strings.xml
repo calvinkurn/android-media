@@ -32,4 +32,15 @@
     <string name="register_flash_sale">Daftar Flash Sale</string>
     <string name="with_click_button_you_agree_with_tnc"><![CDATA[Dengan klik tombol, Anda telah menyetujui Syarat & Ketentuan]]></string>
     <string name="flash_sale_request_product">Ajukan Produk</string>
+    <string name="shop_criteria_title">Kriteria Toko</string>
+    <string name="label_shop_type">Tipe Toko</string>
+    <string name="label_shop_reputation">Reputasi Toko</string>
+    <string name="label_minimum">Minimal</string>
+    <string name="label_shop_success_transaction">Transaksi Sukses</string>
+    <string name="label_shop_courrier">Kurir</string>
+    <string name="description_title">Deskripsi</string>
+    <string name="promo_title">Info Promosi</string>
+    <string name="label_min_transaction">Minimum Transaksi</string>
+    <string name="tnc_title"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="label_see_full">Lihat Selengkapnya</string>
 </resources>

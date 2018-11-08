@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.view.adapter.viewholder
+package com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

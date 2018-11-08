@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.view.adapter.viewholder
+package com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,9 +18,11 @@ class CampaignInfoCategoryViewHolder(val view: View): AbstractViewHolder<Campaig
             discount_range.text = context.getString(R.string.range_format, criteria.minPrice, criteria.maxPrice)
             discount.text = context.getString(R.string.range_format,
                     "${criteria.minDiscount}%", "${criteria.maxDiscount}%")
-            rating.text = context.getString(R.string.range_format, criteria.maxRating.toString(), "5")
+
+            rating.text = context.getString(R.string.range_format, "0", criteria.maxRating.toString())
             limit_request.text = context.getString(R.string.submission_count_format, criteria.maxSubmission)
             min_stock.text = criteria.minStock.toString()
+            min_cashback.text = if (criteria.minCashback == 0) "-" else criteria.minCashback.toString()
 
             val noteItems = mutableListOf<String>()
             if (criteria.isPreorderExcluded) noteItems.add("PreOrder")

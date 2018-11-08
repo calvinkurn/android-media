@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.view.adapter.viewholder
+package com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.GradientDrawable
@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.animation.LinearInterpolator
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayoutListener
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.ekstension.*
@@ -27,7 +26,7 @@ class CampaignInfoHeaderViewHolder(view: View): AbstractViewHolder<CampaignInfoH
         itemView.tvCampaignType.text = campaign.campaignType
         with(itemView.tvStatus){
             text = campaign.statusInfo.label
-            val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label) ?:
+            val (textColor, bgColor) = FlashSaleConstant.statusColorList.get(campaign.statusInfo.label.toLowerCase()) ?:
             FlashSaleConstant.defaultPairColor
             setTextDrawableColor(ContextCompat.getColor(itemView.context, textColor))
             val bgDrawable = background.mutate() as GradientDrawable
