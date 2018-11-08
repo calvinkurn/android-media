@@ -189,12 +189,20 @@ public class WebSocketUseCase {
         data.addProperty("attachment_type", WebSocketMapper.TYPE_QUICK_REPLY_SEND);
 
         JsonObject payload = new JsonObject();
-        JsonObject attributes = new JsonObject();
-        attributes.addProperty("text", quickReplyViewModel.getText());
-        attributes.addProperty("value", quickReplyViewModel.getValue());
-        attributes.addProperty("action", quickReplyViewModel.getAction());
-        payload.add("payload", attributes);
+
+        JsonObject selectedOption = new JsonObject();
+
+        JsonObject quickReplies = new JsonObject();
+        quickReplies.addProperty("text", quickReplyViewModel.getText());
+        quickReplies.addProperty("value", quickReplyViewModel.getValue());
+        quickReplies.addProperty("action", quickReplyViewModel.getAction());
+
+        selectedOption.add("quick_replies", quickReplies);
+
+        payload.add("selected_option", selectedOption);
+
         data.add("payload", payload);
+
         json.add("data", data);
         return json;
     }
