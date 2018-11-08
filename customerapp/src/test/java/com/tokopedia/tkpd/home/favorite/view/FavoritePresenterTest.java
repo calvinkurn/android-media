@@ -188,9 +188,6 @@ public class FavoritePresenterTest {
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
                 getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
 
-                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUtil,
-                getTopAdsShopUseCase);
-
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
                 getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
     }

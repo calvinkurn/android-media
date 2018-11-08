@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.home;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -35,6 +36,11 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
                 bundle.getString(KEY_SLUG),
                 bundle
         );
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        // no-op
     }
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
