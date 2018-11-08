@@ -43,10 +43,7 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
 
     @Override
     public void bind(ProductDynamicChannelViewModel element) {
-        ProductImage productImage = new ProductImage();
-        productImage.setM_ecs(element.getImageUrl());
-        productImage.setM_url(element.getImpressionUrl());
-        imageView.setImage(productImage);
+        imageView.setImage(element.getProductImage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productTxt.setText(Html.fromHtml(element.getProductName(),
                     Html.FROM_HTML_MODE_LEGACY));

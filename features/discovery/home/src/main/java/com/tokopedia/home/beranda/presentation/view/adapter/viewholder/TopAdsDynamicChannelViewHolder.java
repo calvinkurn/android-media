@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
@@ -28,26 +29,31 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicCh
     public static final int LAYOUT = R.layout.layout_item_dynamic_channel_ads;
     private TopAdsDynamicChannelView topAdsDynamicChannelView;
     private Context context;
+    private List<Item> items;
 
     public TopAdsDynamicChannelViewHolder(View itemView) {
         super(itemView);
         this.context = itemView.getContext();
+        this.items = new ArrayList<>();
         topAdsDynamicChannelView = (TopAdsDynamicChannelView) itemView;
         topAdsDynamicChannelView.setAdsItemClickListener(this);
     }
 
     @Override
     public void bind(DynamicChannelViewModel element) {
-        List<Item> items = new ArrayList<>();
-        for (int i = 0; i < element.getChannel().getGrids().length; i++) {
-            DynamicHomeChannel.Grid grid = element.getChannel().getGrids()[i];
-            ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
-            model.setProductPrice(grid.getPrice());
-            model.setProductName(grid.getName());
-            model.setProductCashback(grid.getCashback());
-            model.setImageUrl(grid.getImageUrl());
-            model.setImpressionUrl(grid.getImpression());
-            items.add(model);
+        if(items.isEmpty()) {
+            for (int i = 0; i < element.getChannel().getGrids().length; i++) {
+                DynamicHomeChannel.Grid grid = element.getChannel().getGrids()[i];
+                ProductDynamicChannelViewModel model = new ProductDynamicChannelViewModel();
+                model.setProductPrice(grid.getPrice());
+                model.setProductName(grid.getName());
+                model.setProductCashback(grid.getCashback());
+                ProductImage productImage = new ProductImage();
+                productImage.setM_url(grid.getImpression());
+                productImage.setM_ecs(grid.getImageUrl());
+                model.setProductImage(productImage);
+                items.add(model);
+            }
         }
         topAdsDynamicChannelView.setData(element.getChannel().getName(), items);
     }

@@ -4,15 +4,15 @@ package com.tokopedia.topads.sdk.view.adapter.viewmodel.home;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 
 public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
 
-    private String imageUrl;
-    private String impressionUrl;
     private String productName;
     private String productPrice;
     private String productCashback;
+    private ProductImage productImage;
 
     @Override
     public int type(AdsTypeFactory typeFactory) {
@@ -24,20 +24,12 @@ public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
         return RecyclerView.NO_POSITION;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public ProductImage getProductImage() {
+        return productImage;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getImpressionUrl() {
-        return impressionUrl;
-    }
-
-    public void setImpressionUrl(String impressionUrl) {
-        this.impressionUrl = impressionUrl;
+    public void setProductImage(ProductImage productImage) {
+        this.productImage = productImage;
     }
 
     public String getProductName() {
