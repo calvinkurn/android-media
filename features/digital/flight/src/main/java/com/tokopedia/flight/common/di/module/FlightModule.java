@@ -38,10 +38,10 @@ import com.tokopedia.flight.passenger.data.FlightPassengerFactorySource;
 import com.tokopedia.flight.review.data.FlightBookingDataSource;
 import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
 import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
-import com.tokopedia.flight.searchV2.data.db.FlightComboDao;
-import com.tokopedia.flight.searchV2.data.db.FlightJourneyDao;
-import com.tokopedia.flight.searchV2.data.db.FlightRouteDao;
-import com.tokopedia.flight.searchV2.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.search.data.db.FlightComboDao;
+import com.tokopedia.flight.search.data.db.FlightJourneyDao;
+import com.tokopedia.flight.search.data.db.FlightRouteDao;
+import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
 
 import java.util.concurrent.TimeUnit;
 

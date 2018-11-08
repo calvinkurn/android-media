@@ -1,6 +1,5 @@
 package com.tokopedia.flight.booking.view.fragment;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -66,8 +65,8 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.searchV2.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
