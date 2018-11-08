@@ -112,6 +112,8 @@ public class WebSocketMapper {
                 return convertToInvoiceSelection(pojo.getData(), jsonAttributes);
             case TYPE_CHAT_BALLOON_ACTION:
                 return convertToChatActionSelectionBubbleModel(pojo.getData(),jsonAttributes);
+            case TYPE_QUICK_REPLY_SEND:
+                return convertToMessageViewModel(pojo.getData());
             default:
                 return convertToFallBackModel(pojo.getData());
         }
