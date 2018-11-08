@@ -54,6 +54,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var hasVisibleOnce = false
     var needLoadData = true
 
+    var submitStatus: Boolean = false
+    var pendingCount: Int = 0
+    var submittedCount: Int = 0
+
     var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
     override fun getAdapterTypeFactory() = FlashSaleProductAdapterTypeFactory()
@@ -130,7 +134,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 campaignSlug,
                 onSuccess = {
                     context?.run {
-                        if (it.submitStatus) {
+                        submitStatus = it.submitStatus
+                        renderUILabel()
+                        if (submitStatus) {
                             btnSubmit.text = getString(R.string.flash_sale_update_submission)
                             btnSubmit.setOnClickListener {
                                 onClickToUpdateSubmission()
@@ -143,7 +149,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                         }
                     }
                     allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
-                    vgBottom.visibility = View.VISIBLE
+                    renderBottom()
                 },
                 onError = {
                     vgBottom.visibility = View.GONE
@@ -180,10 +186,10 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 },
                 onError = {
                     hideProgressDialog()
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(context,it), BaseToaster.LENGTH_INDEFINITE)
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
                             .setAction(R.string.retry_label) {
                                 onClickToUpdateSubmission()
-                            }
+                            }.show()
                 })
     }
 
@@ -271,17 +277,35 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             showSearchInputView()
         }
         if (currentPage <= 1) {
-            renderUILabel(flashSaleProductHeader.submittedCount, flashSaleProductHeader.pendingCount)
+            pendingCount = flashSaleProductHeader.pendingCount
+            submittedCount = flashSaleProductHeader.submittedCount
+            renderUILabel()
+            renderBottom()
         }
     }
 
-    private fun renderUILabel(submittedCount: Int, pendingCount: Int) {
-        if (submittedCount + pendingCount == 0) {
-            recyclerViewLabel.visibility = View.GONE
-        } else {
+    private fun needShowChip() = submitStatus && ((pendingCount + submittedCount) > 0)
+    private fun needShowBottom() = submitStatus && pendingCount > 0
+
+    private fun renderUILabel() {
+        if (needShowChip()) {
             flashSaleSubmitLabelAdapter?.setData(submittedCount, pendingCount)
             recyclerViewLabel.visibility = View.VISIBLE
+        } else {
+            hideChipLabel()
         }
+    }
+
+    private fun renderBottom() {
+        if (needShowBottom()) {
+            vgBottom.visibility = View.VISIBLE
+        } else {
+            vgBottom.visibility = View.GONE
+        }
+    }
+
+    private fun hideChipLabel() {
+        recyclerViewLabel.visibility = View.GONE
     }
 
     private fun hasNextPage(list: List<Any>): Boolean {
@@ -311,7 +335,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
-                    flashSaleProductItem, allowEditProducts)
+                    flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }

@@ -32,7 +32,7 @@ abstract class UseCase<out T : Any> {
                     executeCatchError()
                 }.await()
                 when (result) {
-                    is Success -> onSuccess.invoke(result.data)
+                    is Success -> onSuccess(result.data)
                     is Fail -> onError(result.throwable)
                 }
             } catch (throwable: Throwable) {

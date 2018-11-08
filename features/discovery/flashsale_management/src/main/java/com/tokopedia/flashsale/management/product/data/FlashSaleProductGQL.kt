@@ -53,6 +53,9 @@ data class FlashSaleProductItem(
         @SerializedName("campaign")
         @Expose val campaign: FlashSaleProductItemCampaign = FlashSaleProductItemCampaign()
 ) : Parcelable, Visitable<FlashSaleProductAdapterTypeFactory> {
+
+    fun getDepartmentNameString() = departmentName.map { it }.joinToString(" > ")
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt(),
@@ -87,7 +90,6 @@ data class FlashSaleProductItem(
             return arrayOfNulls(size)
         }
     }
-
 }
 
 data class FlashSaleProductItemCampaign(
@@ -112,12 +114,16 @@ data class FlashSaleProductItemCampaign(
         @SerializedName("image_url")
         @Expose val imageUrl: String = "",
 
+        @SerializedName("is_eligible")
+        @Expose val isEligible: Boolean = false,
+
         @SerializedName("message")
         @Expose val message: String = "",
 
         @SerializedName("criteria")
         @Expose val criteria: FlashSaleProductItemCampaignCriteria = FlashSaleProductItemCampaignCriteria()
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readInt(),
@@ -126,8 +132,45 @@ data class FlashSaleProductItemCampaign(
             parcel.readInt(),
             parcel.readInt(),
             parcel.readString(),
+            parcel.readByte() != 0.toByte(),
             parcel.readString(),
             parcel.readParcelable(FlashSaleProductItemCampaignCriteria::class.java.classLoader)) {
+    }
+
+    fun getProductStatusString(context: Context): String {
+        return when (productStatus) {
+            FlashSaleProductStatusTypeDef.NOTHING -> ""
+            FlashSaleProductStatusTypeDef.SUBMITTED -> context.getString(R.string.flash_sale_registered)
+            FlashSaleProductStatusTypeDef.REJECTED -> context.getString(R.string.flash_sale_rejected)
+            FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_reserve)
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_canceled)
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> context.getString(R.string.flash_sale_registered)
+            else -> ""
+        }
+    }
+
+    fun getProductStatusActionString(context: Context): String {
+        return when (productStatus) {
+            FlashSaleProductStatusTypeDef.NOTHING -> context.getString(R.string.flash_sale_reserve_product)
+            FlashSaleProductStatusTypeDef.SUBMITTED -> context.getString(R.string.flash_sale_cancel_reserve)
+            FlashSaleProductStatusTypeDef.REJECTED -> context.getString(R.string.flash_sale_resubmit_product)
+            FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_cancel_reserve)
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_reserve_product)
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> context.getString(R.string.flash_sale_reserve_product)
+            else -> context.getString(R.string.flash_sale_resubmit_product)
+        }
+    }
+
+    fun getProductStatusColor(): StatusColor {
+        return when (productStatus) {
+            FlashSaleProductStatusTypeDef.NOTHING -> StatusColor(0, 0)
+            FlashSaleProductStatusTypeDef.REJECTED,
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)
+            FlashSaleProductStatusTypeDef.SUBMITTED,
+            FlashSaleProductStatusTypeDef.RESERVE,
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> StatusColor(R.color.tkpd_main_green, 0)
+            else -> StatusColor(0, 0)
+        }
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -138,6 +181,7 @@ data class FlashSaleProductItemCampaign(
         parcel.writeInt(stock)
         parcel.writeInt(productStatus)
         parcel.writeString(imageUrl)
+        parcel.writeByte(if (isEligible) 1 else 0)
         parcel.writeString(message)
         parcel.writeParcelable(criteria, flags)
     }
@@ -153,30 +197,6 @@ data class FlashSaleProductItemCampaign(
 
         override fun newArray(size: Int): Array<FlashSaleProductItemCampaign?> {
             return arrayOfNulls(size)
-        }
-    }
-
-    fun getProductStatusString(context: Context): String {
-        return when (productStatus) {
-            FlashSaleProductStatusTypeDef.NOTHING -> ""
-            FlashSaleProductStatusTypeDef.SUBMITTED -> context.getString(R.string.flash_sale_registered)
-            FlashSaleProductStatusTypeDef.REJECTED -> context.getString(R.string.flash_sale_rejected)
-            FlashSaleProductStatusTypeDef.RESERVE -> context.getString(R.string.flash_sale_reserve)
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_canceled)
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> context.getString(R.string.flash_sale_registered)
-            else -> ""
-        }
-    }
-
-    fun getProductStatusColor(): StatusColor {
-        return when (productStatus) {
-            FlashSaleProductStatusTypeDef.NOTHING -> StatusColor(0, 0)
-            FlashSaleProductStatusTypeDef.REJECTED,
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> StatusColor(R.color.white, R.drawable.rect_gray_rounded_left)
-            FlashSaleProductStatusTypeDef.SUBMITTED,
-            FlashSaleProductStatusTypeDef.RESERVE,
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> StatusColor(R.color.tkpd_main_green, 0)
-            else -> StatusColor(0, 0)
         }
     }
 }
