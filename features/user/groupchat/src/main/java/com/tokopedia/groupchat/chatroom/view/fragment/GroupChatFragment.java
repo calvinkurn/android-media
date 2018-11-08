@@ -660,7 +660,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     public void scrollToBottom() {
         resetNewMessageCounter();
-        layoutManager.scrollToPosition(0);
+        new Handler().postDelayed(() -> chatRecyclerView.scrollToPosition(0), 200);
     }
 
     private void resetNewMessageCounter() {
