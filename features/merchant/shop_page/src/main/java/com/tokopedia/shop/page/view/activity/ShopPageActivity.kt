@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -153,6 +154,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
         }
         super.onCreate(savedInstanceState)
+        GraphqlClient.init(this)
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
