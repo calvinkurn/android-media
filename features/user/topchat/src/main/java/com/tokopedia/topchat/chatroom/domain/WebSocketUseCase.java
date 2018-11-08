@@ -94,7 +94,7 @@ public class WebSocketUseCase {
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", invoiceAttribute.getCode());
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", WebSocketMapper.TYPE_INVOICE_SEND);
+        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper.TYPE_INVOICE_SEND));
 
         JsonElement payload = new GsonBuilder().create().toJsonTree(invoice,InvoiceLinkPojo.class);
         data.add("payload", payload);
@@ -110,7 +110,8 @@ public class WebSocketUseCase {
         data.addProperty("message", product.getProductUrl());
 
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", WebSocketMapper.TYPE_PRODUCT_ATTACHMENT);
+        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper
+                .TYPE_PRODUCT_ATTACHMENT));
         data.addProperty("product_id", product.getProductId());
 
         JsonObject productProfile = new JsonObject();
@@ -135,7 +136,6 @@ public class WebSocketUseCase {
     }
 
     public JsonObject getParamSendImage(String messageId, String path, String startTime) {
-        int attachmentTypeImageUpload = 2;
         JsonObject json = new JsonObject();
         json.addProperty("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
         JsonObject data = new JsonObject();
@@ -143,7 +143,7 @@ public class WebSocketUseCase {
         data.addProperty("message", InboxChatConstant.UPLOADING);
         data.addProperty("start_time", startTime);
         data.addProperty("file_path", path);
-        data.addProperty("attachment_type", attachmentTypeImageUpload);
+        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper.TYPE_IMAGE_UPLOAD));
         json.add("data", data);
         return json;
     }
@@ -186,7 +186,8 @@ public class WebSocketUseCase {
         data.addProperty("message_id", Integer.parseInt(messageId));
         data.addProperty("message", quickReplyViewModel.getValue());
         data.addProperty("start_time", startTime);
-        data.addProperty("attachment_type", WebSocketMapper.TYPE_QUICK_REPLY_SEND);
+        data.addProperty("attachment_type", Integer.parseInt(WebSocketMapper
+                .TYPE_QUICK_REPLY_SEND));
 
         JsonObject payload = new JsonObject();
 
