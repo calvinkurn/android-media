@@ -29,6 +29,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.tokopedia.loginregister.R;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -184,9 +185,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
         }
 
-        String joinString = getString(R.string.detail_term_and_privacy) +
-                "<br>" + getString(R.string.link_term_condition) +
-                " serta " + getString(R.string.link_privacy_policy);
+        String joinString = String.format(getString(R.string.bottom_info_terms_and_privacy),
+                getString(R.string.detail_term_and_privacy),
+                getString(R.string.link_term_condition),
+                getString(R.string.link_privacy_policy));
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());

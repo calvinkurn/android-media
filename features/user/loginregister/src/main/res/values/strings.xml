@@ -293,7 +293,6 @@
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="error_invalid_phone_number">Nomor Telepon tidak valid</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
-
-
+    <string name="bottom_info_terms_and_privacy"><![CDATA[%s <br> %s serta %s]]></string>
 
 </resources>

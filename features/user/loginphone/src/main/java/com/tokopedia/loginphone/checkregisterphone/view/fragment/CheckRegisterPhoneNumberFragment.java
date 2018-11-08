@@ -133,7 +133,7 @@ public class CheckRegisterPhoneNumberFragment extends BaseDaggerFragment
             presenter.checkPhoneNumber(phoneNumber.getText().toString());
         });
 
-        String joinString = String.format("%s <br> %s serta %s",
+        String joinString = String.format(getString(R.string.bottom_info_terms_and_privacy),
                 getString(R.string.detail_term_and_privacy),
                 getString(R.string.link_term_condition),
                 getString(R.string.link_privacy_policy));
