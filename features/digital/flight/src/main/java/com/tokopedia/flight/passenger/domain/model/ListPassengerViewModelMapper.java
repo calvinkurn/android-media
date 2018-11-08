@@ -32,7 +32,7 @@ public class ListPassengerViewModelMapper {
             );
         }
 
-        if (savedPassengerEntity.getPassportNo() != null) {
+        if (savedPassengerEntity.getPassportNo() != null && !savedPassengerEntity.getPassportNo().isEmpty()) {
             flightBookingPassengerViewModel.setPassportNumber(savedPassengerEntity.getPassportNo());
         }
 
