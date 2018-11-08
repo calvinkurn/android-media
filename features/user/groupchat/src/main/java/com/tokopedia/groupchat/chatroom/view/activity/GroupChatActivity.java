@@ -1528,7 +1528,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void handleParticipant(ParticipantViewModel map) {
-        if(map.channelId == getChannelInfoViewModel().getChannelId()) {
+        if(map.channelId.equals(getChannelInfoViewModel().getChannelId())) {
             setToolbarParticipantCount(map.totalView);
         }
     }
