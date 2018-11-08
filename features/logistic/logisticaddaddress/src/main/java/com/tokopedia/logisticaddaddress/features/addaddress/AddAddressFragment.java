@@ -742,7 +742,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                     ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
                     : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
         }
-        return null;
+        return ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_USER;
     }
 
     @SuppressLint("ClickableViewAccessibility")
