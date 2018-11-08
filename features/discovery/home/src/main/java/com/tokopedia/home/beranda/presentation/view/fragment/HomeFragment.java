@@ -673,7 +673,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
                     messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
-                            getActivity(), getString(com.tokopedia.core.R.string.msg_network_error),
+                            getActivity(), getString(R.string.msg_network_error),
                             () -> onRefresh()
                     );
                 }
@@ -813,6 +813,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
+        if (feedLoadMoreTriggerListener != null) {
+            feedLoadMoreTriggerListener.updateStateAfterGetData();
+            feedLoadMoreTriggerListener.setHasNextPage(presenter.hasNextPageFeed());
+        }
         adapter.hideLoading();
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
@@ -836,6 +840,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onShowRetryGetFeed() {
+        if (feedLoadMoreTriggerListener != null) {
+            feedLoadMoreTriggerListener.updateStateAfterGetData();
+        }
         if (adapter != null) {
             adapter.hideLoading();
             adapter.showRetry();
