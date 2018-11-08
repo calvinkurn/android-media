@@ -1412,9 +1412,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void onErrorEnterChannel(String errorMessage) {
         hideLoading();
         NetworkErrorHelper.showEmptyState(this, rootView, errorMessage
-                , () -> presenter.connectWebSocket(userSession, viewModel.getChannelInfoViewModel().getChannelId()
-                        , viewModel.getChannelInfoViewModel().getGroupChatToken()
-                        , viewModel.getChannelInfoViewModel().getSettingGroupChat()));
+                , () -> presenter.getChannelInfo(viewModel.getChannelUuid(), true);
     }
 
     public void onChannelNotFound(String errorMessage) {
