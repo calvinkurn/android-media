@@ -92,7 +92,7 @@ class KelontongMainActivity : AppCompatActivity(), FilePickerInterface {
 
         webViewChromeClient.setWebviewListener(object : KelontongWebChromeClient.WebviewListener {
             override fun onComplete() {
-                progressBar!!.visibility = View.GONE
+                progressBar.visibility = View.GONE
                 if (Preference.isFirstTime(this@KelontongMainActivity)) {
                     Preference.saveFirstTime(this@KelontongMainActivity)
                 }

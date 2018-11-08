@@ -19,7 +19,7 @@ class KelontongMainApplication : Application() {
 
     val NOTIFICATION_CHANNEL_NAME = "mitra_tkpd_notification_channel"
     val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
-    val AF_KEY = ""
+    val AF_KEY = "SdSopxGtYr9yK8QEjFVHXL"
 
     override fun onCreate() {
         super.onCreate()
