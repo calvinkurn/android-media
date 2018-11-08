@@ -24,6 +24,7 @@ import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -246,7 +247,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     Visitable visitable = adapter.getItem(firstVisibleItemPos);
                     if ((visitable instanceof InspirationViewModel
                             || visitable instanceof TopAdsViewModel)
-                            || visitable instanceof LoadingModel) {
+                            || visitable instanceof LoadingModel
+                            || visitable instanceof LoadingMoreModel) {
                         floatingTextButton.setVisibility(View.INVISIBLE);
                     } else {
                         floatingTextButton.setVisibility(View.VISIBLE);
