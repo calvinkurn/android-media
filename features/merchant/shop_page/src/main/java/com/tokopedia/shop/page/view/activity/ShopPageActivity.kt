@@ -143,6 +143,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        GraphqlClient.init(this)
         initInjector()
         shopPageTracking = ShopPageTrackingBuyer(application as AbstractionRouter)
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
@@ -154,7 +155,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
         }
         super.onCreate(savedInstanceState)
-        GraphqlClient.init(this)
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -452,7 +452,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickFollowUnfollowShop(isFavourite,
                     CustomDimensionShopPage.create(shopInfo))
         }
-        shopInfo?.info?.isShopOfficial?.let { ( application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
+        shopInfo?.info?.isShopOfficial?.let { (application as ShopModuleRouter).sendMoEngageFavoriteEvent(shopInfo?.info?.shopName, shopInfo?.info?.shopId, shopInfo?.info?.shopDomain, shopInfo?.info?.shopLocation, it, isFavourite) }
         shopId?.run { presenter.toggleFavouriteShop(this) }
 
     }
