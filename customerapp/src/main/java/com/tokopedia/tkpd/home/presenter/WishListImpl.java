@@ -306,6 +306,9 @@ public class WishListImpl implements WishList {
                 wishListView.setSearchNotFound();
         }
         wishListView.displayPull(false);
+
+        wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
+
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
@@ -592,6 +595,10 @@ public class WishListImpl implements WishList {
                         wishListView.setSearchNotFound();
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+
+                wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
+                        , dataWishlist.size());
+
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());

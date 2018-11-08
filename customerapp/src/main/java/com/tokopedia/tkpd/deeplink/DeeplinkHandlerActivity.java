@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
@@ -69,6 +70,8 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -82,6 +85,8 @@ import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
+import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
+import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -100,6 +105,8 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModule;
+import com.tokopedia.challenges.deeplinkmodule.ChallengesDeepLinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -147,7 +154,10 @@ import io.branch.referral.BranchError;
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
-        SettingBankApplinkModule.class
+        SettingBankApplinkModule.class,
+        ChallengesDeepLinkModule.class,
+        InboxTalkApplinkModule.class,
+        ProductManageApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -155,7 +165,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     private static ApplinkDelegate applinkDelegate;
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
-        if(applinkDelegate == null) {
+        if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new ProductAddDeeplinkModuleLoader(),
@@ -196,7 +206,10 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
-                new SettingBankApplinkModuleLoader()
+                new SettingBankApplinkModuleLoader(),
+                new ChallengesDeepLinkModuleLoader(),
+                new InboxTalkApplinkModuleLoader(),
+                new ProductManageApplinkModuleLoader()
             );
         }
 
@@ -208,6 +221,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initBranchSession();
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
+
+        if (GlobalConfig.isCustomerApp()) {
+            AppsFlyerLib.getInstance().sendDeepLinkData(this);
+        }
+
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();

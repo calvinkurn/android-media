@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -38,15 +39,22 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
         if (shippingCourierViewModel.getProductData().getError() != null &&
                 shippingCourierViewModel.getProductData().getError().getErrorMessage().length() > 0) {
-            tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
-            tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
-            tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.font_disabled));
-            itemView.setOnClickListener(null);
+            if (shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
+                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
+                itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition, true));
+            } else {
+                tvPrice.setText(shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
+                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.font_disabled));
+                itemView.setOnClickListener(null);
+            }
         } else {
             tvPrice.setText(shippingCourierViewModel.getProductData().getPrice().getFormattedPrice());
             tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
-            itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition));
+            itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierViewModel, cartPosition, false));
         }
         imgCheck.setVisibility(shippingCourierViewModel.isSelected() ? View.VISIBLE : View.GONE);
     }

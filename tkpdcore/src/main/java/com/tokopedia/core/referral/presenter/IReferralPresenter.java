@@ -10,6 +10,8 @@ public interface IReferralPresenter {
 
     void initialize();
 
+    void checkLoginAndFetchReferralCode();
+
     void shareApp(FragmentManager fragmentManager);
 
     void getReferralVoucherCode();

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,23 +34,28 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
                                RecyclerView parent,
                                RecyclerView.State state) {
         final int absolutePos = parent.getChildAdapterPosition(view);
-        if (!isProductItem(parent, absolutePos)) {
-            return;
-        }
-        int firstProductItemPos = absolutePos;
-        while(isProductItem(parent,firstProductItemPos - 1)) firstProductItemPos--;
-        int relativePos = absolutePos - firstProductItemPos;
 
-        final int totalSpanCount = getTotalSpanCount(parent);
+        if (isProductItem(parent, absolutePos)) {
+            int firstProductItemPos = absolutePos;
+            while (isProductItem(parent, firstProductItemPos - 1)) firstProductItemPos--;
+            int relativePos = absolutePos - firstProductItemPos;
 
-        outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
-        outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        if (parent.getLayoutManager() instanceof GridLayoutManager) {
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-        } else {
-            outRect.right = 0;
+            final int totalSpanCount = getTotalSpanCount(parent);
+
+            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+            outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+            if (parent.getLayoutManager() instanceof GridLayoutManager) {
+                outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
+            } else {
+                outRect.right = 0;
+            }
+            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+        } else if(isAdsItem(parent, absolutePos)){
+            outRect.left = spacing;
+            outRect.right = spacing;
+            outRect.top = !isProductItem(parent, absolutePos - 1) ? spacing : 0;
+            outRect.bottom = !isProductItem(parent, absolutePos + 1) ? spacing : 0;
         }
-        outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
@@ -84,6 +90,15 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return allowedViewTypes.contains(viewType);
     }
 
+    private boolean isAdsItem(RecyclerView parent, int viewPosition) {
+        final RecyclerView.Adapter adapter = parent.getAdapter();
+        if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
+            return false;
+        }
+        final int viewType = adapter.getItemViewType(viewPosition);
+        return viewType == TopAdsViewHolder.LAYOUT;
+    }
+
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
         Paint paint = new Paint();
@@ -93,13 +108,12 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
             int absolutePos = parent.getChildAdapterPosition(child);
-            if (!isProductItem(parent, absolutePos) || child == null) {
-                continue;
+            if (isProductItem(parent, absolutePos) || isAdsItem(parent, absolutePos) || child == null) {
+                canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
+                canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
+                canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
+                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
             }
-            canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
-            canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
-            canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-            canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
         }
     }
 }

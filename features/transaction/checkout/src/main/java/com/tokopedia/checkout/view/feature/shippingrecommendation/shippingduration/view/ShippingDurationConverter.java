@@ -1,10 +1,12 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -20,6 +22,7 @@ public class ShippingDurationConverter {
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
                                                               List<ShopShipment> shopShipmentList,
                                                               ShipmentDetailData shipmentDetailData,
+                                                              String ratesId,
                                                               int selectedServiceId) {
         int selectedSpId = 0;
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
@@ -31,22 +34,16 @@ public class ShippingDurationConverter {
             shippingDurationViewModel.setServiceData(serviceData);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     convertToShippingCourierViewModel(shippingDurationViewModel, serviceData.getProducts(),
-                            shopShipmentList, selectedSpId, selectedServiceId);
+                            shopShipmentList, ratesId, selectedSpId, selectedServiceId);
             shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
             }
-            if (serviceData.getProducts() != null && serviceData.getProducts().size() > 0) {
-                for (ProductData product : serviceData.getProducts()) {
-                    if (product.getError() != null &&
-                            product.getError().getErrorMessage() != null &&
-                            product.getError().getErrorId() != null) {
-                        if (product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                            serviceData.getTexts().setTextRangePrice(product.getError().getErrorMessage());
-                        } else {
-                            shippingDurationViewModel.setErrorMessage(product.getError().getErrorMessage());
-                        }
-                    }
+            if (serviceData.getError() != null && !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
+                if (serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+                    serviceData.getTexts().setTextRangePrice(serviceData.getError().getErrorMessage());
+                } else {
+                    shippingDurationViewModel.setErrorMessage(serviceData.getError().getErrorMessage());
                 }
             }
         }
@@ -57,10 +54,11 @@ public class ShippingDurationConverter {
     private List<ShippingCourierViewModel> convertToShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
                                                                              List<ProductData> productDataList,
                                                                              List<ShopShipment> shopShipmentList,
+                                                                             String ratesId,
                                                                              int selectedSpId, int selectedServiceId) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
-            addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
+            addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, ratesId, selectedSpId,
                     selectedServiceId, shippingCourierViewModels, productData);
         }
 
@@ -69,19 +67,23 @@ public class ShippingDurationConverter {
 
     private void addShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
                                              List<ShopShipment> shopShipmentList,
+                                             String ratesId,
                                              int selectedSpId, int selectedServiceId,
                                              List<ShippingCourierViewModel> shippingCourierViewModels,
                                              ProductData productData) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
         shippingCourierViewModel.setProductData(productData);
         shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
+        shippingCourierViewModel.setRatesId(ratesId);
         if (selectedSpId != 0) {
             if (selectedSpId == productData.getShipperProductId()) {
                 shippingCourierViewModel.setSelected(true);
                 shippingDurationViewModel.setSelected(true);
             }
         } else if (selectedServiceId != 0) {
-            if (selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
+            if (!(shippingDurationViewModel.getServiceData().getError() != null &&
+                    !TextUtils.isEmpty(shippingDurationViewModel.getServiceData().getError().getErrorId())) &&
+                    selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
                 shippingDurationViewModel.setSelected(true);
             }
         } else {

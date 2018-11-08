@@ -18,7 +18,9 @@ public interface GlobalNavRouter {
 
     Fragment getFeedPlusFragment(Bundle bundle);
 
-    Fragment getCartFragment();
+    Fragment getCartFragment(Bundle bundle);
+
+    Fragment getEmptyCartFragment(String autoApplyMessage);
 
     Intent getInboxTalkCallingIntent(Context context);
 
@@ -48,5 +50,5 @@ public interface GlobalNavRouter {
 
     Intent getReferralIntent(Context context);
 
-    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 }

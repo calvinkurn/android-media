@@ -323,7 +323,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         return filters;
     }
 
-    private void setSortData(List<Sort> sorts) {
+    protected void setSortData(List<Sort> sorts) {
         this.sort = new ArrayList<>();
         if (sorts == null) {
             return;
@@ -436,7 +436,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             requestDynamicFilter();
         }
     }
-
+    
     protected void requestDynamicFilter() {
         getPresenter().requestDynamicFilter();
     }

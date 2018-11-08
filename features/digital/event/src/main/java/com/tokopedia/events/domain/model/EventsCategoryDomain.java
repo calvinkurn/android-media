@@ -11,6 +11,9 @@ import java.util.List;
 
 public class EventsCategoryDomain {
 
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -23,6 +26,14 @@ public class EventsCategoryDomain {
     @SerializedName("items")
     @Expose
     private List<EventsItemDomain> items = null;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

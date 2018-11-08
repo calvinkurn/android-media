@@ -53,7 +53,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private Type type;
 
     public enum Type {
-        PROFILE, FEED, EXPLORE
+        PROFILE, FEED, EXPLORE, SHOP_PAGE
     }
 
     public KolPostViewHolder(View itemView,
@@ -323,6 +323,13 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
             analyticTracker.sendEnhancedEcommerce(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
+            );
+        } else if (type == Type.SHOP_PAGE) {
+            analyticTracker.sendEventTracking(
+                    KolEventTracking.Event.EVENT_SHOP_PAGE,
+                    KolEventTracking.Category.SHOP_PAGE_FEED,
+                    KolEventTracking.Action.SHOP_ITEM_CLICK,
+                    String.valueOf(element.getKolId())
             );
         }
 

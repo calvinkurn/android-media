@@ -93,6 +93,13 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         );
     }
 
+    public void addItem(Visitable item) {
+        int position = this.list.size();
+        if (this.list.add(item)) {
+            notifyItemInserted(position);
+        }
+    }
+
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();

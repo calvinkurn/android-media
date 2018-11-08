@@ -13,6 +13,8 @@
     <string name="become_default">menjadi rekening utama</string>
     <string name="yes_delete">Ya, Hapus</string>
     <string name="yes_correct">Ya, Benar</string>
+    <string name="cancel">Batal</string>
+    <string name="yes">Ya</string>
     <string name="delete_bank_account_prompt_title">Hapus Rekening Bank?</string>
     <string name="you_will_delete">Anda akan menghapus rekening Bank</string>
     <string name="empty_bank_title">Oops, rekening bank masih kosong</string>

@@ -657,11 +657,6 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     }
 
-    @Override
-    public void moveToEstimationDetail() {
-
-    }
-
     private void initView(View view) {
         pictureView = view.findViewById(R.id.view_picture);
         headerInfoView = view.findViewById(R.id.view_header);
@@ -704,5 +699,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
             imageSources.add(productImage.getImageSrc());
         }
         return imageSources;
+    }
+
+    @Override
+    public void moveToEstimationDetail() {
+
     }
 }

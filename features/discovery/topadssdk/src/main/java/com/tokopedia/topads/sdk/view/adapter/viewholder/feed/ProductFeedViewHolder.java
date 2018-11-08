@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.feed;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -71,7 +72,8 @@ public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            itemClickListener.onProductItemClicked(adapterPosition, data);
+            itemClickListener.onProductItemClicked(adapterPosition == RecyclerView.NO_POSITION ?
+                    getAdapterPosition() : adapterPosition, data);
         }
     }
 

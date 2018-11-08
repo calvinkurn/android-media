@@ -178,6 +178,10 @@ public class ProductShopInfo implements Parcelable{
         return shopIsOfficial;
     }
 
+    public boolean isOfficial() {
+        return shopIsOfficial == SHOP_OFFICIAL_VALUE;
+    }
+
     public void setShopIsOfficial(Integer shopIsOfficial) {
         this.shopIsOfficial = shopIsOfficial;
     }

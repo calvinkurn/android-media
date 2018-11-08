@@ -224,9 +224,12 @@ class ProductModalFragment : BaseDaggerFragment() {
             }
         }
 
-        number_picker_quantitiy_product.setNumber(selectedQuantity!!)
-        number_picker_quantitiy_product.setMinValue(Integer.parseInt(productData?.info?.productMinOrder))
-        number_picker_quantitiy_product.setMaxValue(DEFAULT_MAXIMUM_STOCK_PICKER)
+        number_picker_quantitiy_product.setInitialState(
+                Integer.parseInt(productData?.info?.productMinOrder),
+                DEFAULT_MAXIMUM_STOCK_PICKER,
+                selectedQuantity!!
+                )
+
         number_picker_quantitiy_product.setOnPickerActionListener { num ->
             selectedQuantity = num
             text_product_price.text = generateTextCartPrice()

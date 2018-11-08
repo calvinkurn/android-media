@@ -13,11 +13,9 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpdpdp.CourierActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+import com.tokopedia.tkpdpdp.revamp.ProductViewData;
 
 /**
  * @author alifa on 5/8/17.
@@ -75,6 +73,10 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
+
+    }
+
+    public void renderData(@NonNull ProductDetailData data, @NonNull ProductViewData viewData) {
         ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
         int courierCount = 0;
         if (data.getShopInfo().getShopShipments() != null) {
@@ -86,11 +88,10 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList(CourierActivity.KEY_COURIER_DATA,
-                        data.getShopInfo().getShopShipments());
-                bundle.putString(EXTRA_PRODUCT_ID, String.valueOf(data.getInfo().getProductId()));
-                listener.onCourierClicked(bundle);
+                listener.onCourierClicked(
+                        viewData.getProductId(),
+                        viewData.getCourierList()
+                );
             }
         });
         talkContainer.setOnClickListener(new ClickTalk(data));
@@ -142,6 +143,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
             bundle.putString("prod_name", data.getInfo().getProductName());
             bundle.putString("is_owner", String.valueOf(data.getShopInfo().getShopIsOwner()));
             bundle.putString("product_image", data.getProductImages().get(0).getImageSrc300());
+            bundle.putString("product_price", data.getInfo().getProductPrice());
             listener.onProductTalkClicked(bundle);
             if(data != null) {
                 TrackingUtils.sendMoEngageClickDiskusi(data);

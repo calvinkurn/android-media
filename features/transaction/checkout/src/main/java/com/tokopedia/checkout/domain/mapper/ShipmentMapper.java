@@ -105,6 +105,12 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setWarning(!mapperUtil.isEmpty(groupShop.getMessages()));
                         groupShopResult.setWarningMessage(mapperUtil.convertToString(groupShop.getMessages()));
 
+                        groupShopResult.setShippingId(groupShop.getShippingId());
+                        groupShopResult.setSpId(groupShop.getSpId());
+                        groupShopResult.setDropshipperName(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getName() : "");
+                        groupShopResult.setDropshipperPhone(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getTelpNo() : "");
+                        groupShopResult.setUseInsurance(groupShop.isInsurance());
+
                         if (groupShop.getShop() != null) {
                             Shop shopResult = new Shop();
 
@@ -185,7 +191,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
-                                productResult.setErrorMessage(mapperUtil.convertToString(product.getErrors()));
+                                if (product.getErrors() != null) {
+                                    productResult.setErrorMessage(product.getErrors().size() >= 1 ? product.getErrors().get(0) : "");
+                                    productResult.setErrorMessageDescription(product.getErrors().size() >= 2 ? product.getErrors().get(1) : "");
+                                }
 
                                 productResult.setProductId(product.getProductId());
                                 productResult.setCartId(product.getCartId());
@@ -201,6 +210,8 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductReturnable(product.getProductReturnable() == 1);
                                 productResult.setProductIsFreeReturns(product.getProductIsFreeReturns() == 1);
                                 productResult.setProductIsPreorder(product.getProductIsPreorder() == 1);
+                                productResult.setPreOrderDurationDay(product.getProductPreorder() != null ?
+                                        product.getProductPreorder().getDurationDay() : 0);
                                 productResult.setProductCashback(product.getProductCashback());
                                 productResult.setProductMinOrder(product.getProductMinOrder());
                                 productResult.setProductInvenageValue(product.getProductInvenageValue());
