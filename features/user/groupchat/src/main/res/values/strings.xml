@@ -12,7 +12,7 @@
     <string name="title_share">Share</string>
     <string name="title_bagikan">Bagikan</string>
     <string name="default_sendbird_error">Terjadi kesalahan. Mohon coba kembali.</string>
-    <string name="sendbird_error_retry">Terjadi kesalahan. Mohon coba kembali</string>
+    <string name="sendbird_error_retry">Terjadi kendala pada chat. Mohon coba sebentar lagi</string>
     <string name="sendbird_error_network">Terjadi kesalahan koneksi. Mohon periksa jaringan internet anda.</string>
     <string name="sendbird_error_server">Terjadi kesalahan pada server. Mohon coba beberapa saat lagi.</string>
     <string name="groupchat_action_enter">bergabung</string>

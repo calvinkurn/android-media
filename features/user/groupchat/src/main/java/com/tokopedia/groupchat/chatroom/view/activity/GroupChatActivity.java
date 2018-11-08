@@ -1180,6 +1180,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getAdsImageUrl())) {
             sponsorLayout.setVisibility(View.GONE);
         }
+
+        if(!TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getVideoId())){
+            sponsorLayout.setVisibility(View.GONE);
+        }
     }
 
     private void openSponsor(String adsLink) {
