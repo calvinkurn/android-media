@@ -5,13 +5,14 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourierViewData implements Visitable<CourierTypeFactory>,Parcelable {
 
     private String courierId;
     private String logo;
-    private List<String> packageName;
+    private List<String> packageName = new ArrayList<>();
     private String courierName;
 
     @Override
