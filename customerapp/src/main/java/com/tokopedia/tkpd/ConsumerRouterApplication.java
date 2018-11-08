@@ -112,6 +112,7 @@ import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -1952,19 +1953,29 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
             boolean couponActive, String additionalStringData
     ) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(),couponActive);
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(),couponActive, "", false);
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, boolean isOneClickShipment
     ) {
-        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive);
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), couponActive, "", isOneClickShipment);
     }
 
     @Override
     public Intent checkoutModuleRouterGetRecentViewIntent() {
         return RecentViewActivity.newInstance(this);
+    }
+
+    @Override
+    public Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment) {
+        return PromoCheckoutDetailMarketplaceActivity.Companion.createIntent(getAppContext(), promoCode, true, oneClickShipment);
+    }
+
+    @Override
+    public Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment) {
+        return PromoCheckoutListMarketplaceActivity.Companion.newInstance(getAppContext(), promoCouponActive, promoCode, oneClickShipment);
     }
 
     @Override

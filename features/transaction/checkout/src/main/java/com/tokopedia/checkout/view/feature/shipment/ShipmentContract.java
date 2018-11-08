@@ -107,6 +107,8 @@ public interface ShipmentContract {
         boolean checkCourierPromoStillExist();
 
         void setCourierPromoApplied(int itemPosition);
+
+        void setPromoData(CartShipmentAddressFormData cartShipmentAddressFormData);
     }
 
     interface AnalyticsActionListener {

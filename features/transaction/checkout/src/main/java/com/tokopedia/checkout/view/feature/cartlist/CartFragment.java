@@ -637,10 +637,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onClickDetailPromo(PromoData data, int position) {
         if(data.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()){
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(data.getPromoCode(),
-                    cartListData.isPromoCouponActive()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }else{
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(data.getPromoCode(),
-                    cartListData.isPromoCouponActive()), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+                    cartListData.isPromoCouponActive(), false), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 
@@ -1070,9 +1070,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .promoCode(promoCodeCartListData.getDataVoucher().getCode())
                 .description(promoCodeCartListData.getDataVoucher().getMessageSuccess())
                 .amount(promoCodeCartListData.getDataVoucher().getCashbackAmount())
-                //todo
-                .state()
-                .title()
+                .state(TickerCheckoutUtilKt.mapToStatePromoCheckout(promoCodeCartListData.getDataVoucher().getState()))
+                .title(promoCodeCartListData.getDataVoucher().getTitleDescription())
                 .build();
         cartAdapter.updateItemPromoVoucher(promoData);
     }

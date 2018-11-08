@@ -24,6 +24,8 @@ import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
@@ -32,7 +34,7 @@ import dagger.Provides;
 /**
  * @author anggaprasetiyo on 25/04/18.
  */
-@Module
+@Module(includes = {PromoCheckoutModule.class})
 public class CartUseCaseModule {
 
     @Provides
@@ -47,8 +49,9 @@ public class CartUseCaseModule {
 
     @Provides
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase(ICartRepository cartRepository,
-                                                                IVoucherCouponMapper iVoucherCouponMapper) {
-        return new CheckPromoCodeCartListUseCase(cartRepository, iVoucherCouponMapper);
+                                                                IVoucherCouponMapper iVoucherCouponMapper,
+                                                                CheckPromoCodeUseCase checkPromoCodeUseCase) {
+        return new CheckPromoCodeCartListUseCase(cartRepository, iVoucherCouponMapper, checkPromoCodeUseCase);
     }
 
     @Provides

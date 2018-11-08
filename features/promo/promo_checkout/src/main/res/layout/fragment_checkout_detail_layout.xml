@@ -13,7 +13,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/buttonUse"
+            android:layout_above="@+id/containerButton"
             android:layout_alignParentTop="true">
 
             <LinearLayout
@@ -69,11 +69,25 @@
             </LinearLayout>
         </ScrollView>
 
-        <Button
-            android:id="@+id/buttonUse"
-            style="@style/Button.Submit.Green"
+        <LinearLayout
+            android:id="@+id/containerButton"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_alignParentBottom="true"
-            tools:text="Gunakan" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/buttonUse"
+                style="@style/Button.Submit.Green"
+                android:text="@string/promo_label_use" />
+
+            <Button
+                android:text="@string/promo_label_cancel_use"
+                android:visibility="gone"
+                android:id="@+id/buttonCancel"
+                style="@style/Button.Submit.White.Border" />
+
+        </LinearLayout>
     </RelativeLayout>
 
 

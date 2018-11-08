@@ -1,6 +1,8 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -12,6 +14,10 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
@@ -21,6 +27,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     var isLoadingFinished = false
     var codeCoupon = ""
+    open var isUse = false
 
     override fun getScreenName(): String {
         return ""
@@ -34,16 +41,29 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         super.onViewCreated(view, savedInstanceState)
         loadData()
         validateViewLoading()
+        validateButton()
         buttonUse.setOnClickListener { onClickUse() }
+        buttonCancel.setOnClickListener { onClickCancel() }
+    }
+
+    protected fun validateButton() {
+        if(isUse){
+            buttonCancel.visibility = View.VISIBLE
+            buttonUse.visibility = View.GONE
+        }else{
+            buttonCancel.visibility = View.GONE
+            buttonUse.visibility = View.VISIBLE
+        }
     }
 
     abstract fun onClickUse()
+    abstract fun onClickCancel()
 
     protected open fun loadData() {
         isLoadingFinished = false
     }
 
-    private fun validateViewLoading() {
+    protected fun validateViewLoading() {
         if (isLoadingFinished) {
             mainView.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
@@ -75,7 +95,14 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = Intent()
+        val typePromo = if(dataVoucher.isCoupon == PromoData.TYPE_COUPON ) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val promoData = PromoData(typePromo, dataVoucher.code?:"",
+                dataVoucher.message?.text?:"", dataVoucher.titleDescription?:"",
+                dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()?: TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun showLoading() {

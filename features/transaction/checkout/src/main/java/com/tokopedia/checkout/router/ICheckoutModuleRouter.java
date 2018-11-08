@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.security.PublicKey;
@@ -65,7 +64,7 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetRecentViewIntent();
 
-    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive);
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment);
 
-    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive);
+    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment);
 }

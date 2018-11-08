@@ -23,32 +23,28 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(final PromoData data, final int position) {
-        if (data.isVisible()) {
-            tickerCheckoutView.setActionListener(new TickerCheckoutView.ActionListener() {
-                @Override
-                public void onClickUsePromo() {
-                    actionListener.onCartPromoUseVoucherPromoClicked(data, position);
-                }
+        tickerCheckoutView.setActionListener(new TickerCheckoutView.ActionListener() {
+            @Override
+            public void onClickUsePromo() {
+                actionListener.onCartPromoUseVoucherPromoClicked(data, position);
+            }
 
-                @Override
-                public void onDisablePromoDiscount() {
-                    actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
-                    actionListener.onCartPromoTrackingCancelled(data, position);
-                }
+            @Override
+            public void onDisablePromoDiscount() {
+                actionListener.onCartPromoCancelVoucherPromoClicked(data, position);
+                actionListener.onCartPromoTrackingCancelled(data, position);
+            }
 
-                @Override
-                public void onClickDetailPromo() {
-                    actionListener.onClickDetailPromo(data, position);
-                }
-            });
-            actionListener.onCartPromoTrackingSuccess(data, position);
-            tickerCheckoutView.setDesc(data.getDescription());
-            tickerCheckoutView.setTitle(data.getTitle());
-            tickerCheckoutView.setState(data.getState());
-            tickerCheckoutView.setVisibility(View.VISIBLE);
-        } else {
-            tickerCheckoutView.setVisibility(View.GONE);
-        }
+            @Override
+            public void onClickDetailPromo() {
+                actionListener.onClickDetailPromo(data, position);
+            }
+        });
+        actionListener.onCartPromoTrackingSuccess(data, position);
+        tickerCheckoutView.setDesc(data.getDescription());
+        tickerCheckoutView.setTitle(data.getTitle());
+        tickerCheckoutView.setState(data.getState());
+        tickerCheckoutView.setVisibility(View.VISIBLE);
     }
 
 }

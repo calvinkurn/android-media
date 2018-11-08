@@ -18,9 +18,9 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
-import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
@@ -80,8 +80,7 @@ public class CartListModule {
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase
-        );
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase);
     }
 
     @Provides

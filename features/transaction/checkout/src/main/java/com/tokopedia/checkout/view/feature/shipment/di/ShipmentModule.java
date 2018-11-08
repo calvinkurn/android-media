@@ -35,6 +35,10 @@ import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataReques
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
+import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeFinalUseCase;
+import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
 
@@ -46,7 +50,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Irfan Khoirul on 24/04/18.
  */
 
-@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class, TrackingAnalyticsModule.class})
+@Module(includes = {ConverterDataModule.class, PeopleAddressModule.class, UtilModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class ShipmentModule {
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
@@ -127,8 +131,9 @@ public class ShipmentModule {
     @Provides
     @ShipmentScope
     CheckPromoCodeCartListUseCase provideCheckPromoCodeCartListUseCase(ICartRepository cartRepository,
-                                                                       IVoucherCouponMapper voucherCouponMapper) {
-        return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper);
+                                                                       IVoucherCouponMapper voucherCouponMapper,
+                                                                       @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
+        return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper, checkPromoCodeUseCase);
     }
 
     @Provides
@@ -157,10 +162,10 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    ShipmentContract.Presenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
+    ShipmentContract.Presenter provideShipmentPresenter(@PromoCheckoutQualifier CheckPromoCodeFinalUseCase checkPromoCodeFinalUseCase,
+                                                        CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
-                                                        CheckPromoCodeCartShipmentUseCase checkPromoCodeCartShipmentUseCase,
                                                         GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
                                                         GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
@@ -170,13 +175,14 @@ public class ShipmentModule {
                                                         SaveShipmentStateUseCase saveShipmentStateUseCase,
                                                         GetRatesUseCase getRatesUseCase,
                                                         GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                                        ShippingCourierConverter shippingCourierConverter) {
-        return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
-                checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
+                                                        ShippingCourierConverter shippingCourierConverter,
+                                                        IVoucherCouponMapper voucherCouponMapper) {
+        return new ShipmentPresenter(checkPromoCodeFinalUseCase,
+                compositeSubscription, checkoutUseCase, getThanksToppayUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase, checkPromoCodeCartListUseCase,
                 editAddressUseCase, cancelAutoApplyCouponUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getRatesUseCase, getCourierRecommendationUseCase,
-                shippingCourierConverter, shipmentAnalyticsActionListener);
+                shippingCourierConverter, voucherCouponMapper, shipmentAnalyticsActionListener);
     }
 
     @Provides

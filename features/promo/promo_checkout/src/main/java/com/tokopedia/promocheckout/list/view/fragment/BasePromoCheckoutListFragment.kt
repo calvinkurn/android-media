@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
@@ -36,9 +37,15 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     abstract var serviceId : String
     open var categoryId : Int = 0
     open var isCouponActive : Boolean = true
+    open var promoCode : String = ""
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        promoCheckoutListPresenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,12 +77,17 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
 
         populateLastSeen()
+        buttonUse.setOnClickListener {
+            onPromoCodeUse(textInputCoupon.text.toString())
+        }
         if(isCouponActive){
             getRecyclerView(view).visibility = View.VISIBLE
         }else{
             getRecyclerView(view).visibility = View.GONE
         }
     }
+
+    abstract fun onPromoCodeUse(promoCode: String)
 
     /* hold cos api not ready yet
        promoCheckoutListPresenter.getListLastSeen(resources)
@@ -117,7 +129,11 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
                 .promoCheckoutListModule(PromoCheckoutListModule())
                 .build()
                 .inject(this)
-        promoCheckoutListPresenter.attachView(this)
+    }
+
+    override fun onDestroyView() {
+        promoCheckoutListPresenter.detachView()
+        super.onDestroyView()
     }
 
     override fun loadData(page: Int) {

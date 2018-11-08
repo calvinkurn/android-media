@@ -9,8 +9,7 @@ data class PromoData(var typePromo: Int = 0,
                      var description: String = "",
                      var title: String = "",
                      var amount: Int = 0,
-                     var state: TickerCheckoutView.State = TickerCheckoutView.State.EMPTY,
-                     var isVisible : Boolean = true) : Parcelable{
+                     var state: TickerCheckoutView.State = TickerCheckoutView.State.EMPTY) : Parcelable{
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -56,7 +55,6 @@ data class PromoData(var typePromo: Int = 0,
         var title: String = ""
         var amount: Int = 0
         var state: TickerCheckoutView.State = TickerCheckoutView.State.EMPTY
-        var isVisible : Boolean = true
 
         fun typePromo(typePromo: Int) = apply { this.typePromo = typePromo }
         fun promoCode(promoCode: String) = apply { this.promoCode = promoCode }
@@ -64,7 +62,6 @@ data class PromoData(var typePromo: Int = 0,
         fun title(title: String) = apply { this.title = title }
         fun amount(amount: Int) = apply { this.amount = amount }
         fun state(state: TickerCheckoutView.State) = apply { this.state = state }
-        fun isVisible(isVisible: Boolean)= apply { this.isVisible = isVisible }
 
         fun build() = PromoData(
                 typePromo,
@@ -72,8 +69,7 @@ data class PromoData(var typePromo: Int = 0,
                 description,
                 title,
                 amount,
-                state,
-                isVisible
+                state
         )
     }
 }

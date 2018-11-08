@@ -12,4 +12,6 @@
     <string name="promo_label_min_transaction">Min. transaksi</string>
     <string name="promo_title_empty_list">Tidak Ada Kupon di Kategori Ini</string>
     <string name="promo_label_empty_list">Ayo eksplor berbagai macam Kupon menarik di TokoPoints!</string>
+    <string name="promo_label_use">Gunakan</string>
+    <string name="promo_label_cancel_use">Batal Gunakan</string>
 </resources>

@@ -14,10 +14,13 @@ interface PromoCheckoutDetailContract {
         fun onErrorValidatePromo(e: Throwable)
         fun showLoading()
         fun hideLoading()
+        fun onErrorCancelPromo(e: Throwable)
+        fun onSuccessCancelPromo()
     }
 
     interface Presenter : CustomerPresenter<View>{
         fun getDetailPromo(codeCoupon: String, resources: Resources)
-        fun validatePromoUse(codeCoupon: String, resources: Resources)
+        fun validatePromoUse(codeCoupon: String, oneClickShipment : Boolean, resources: Resources)
+        fun cancelPromo()
     }
 }
