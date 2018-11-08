@@ -13,12 +13,15 @@ import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.utils.GridSpaceItemDecoration;
 import com.tokopedia.topads.sdk.view.TopAdsInfoBottomSheetDynamicChannel;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 import java.util.List;
 
-public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener {
+public class TopAdsDynamicChannelView extends LinearLayout implements View.OnClickListener, LocalAdsClickListener {
 
     public static final int SPAN_COUNT = 3;
     private RecyclerView recyclerView;
@@ -26,6 +29,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
     private TextView titleTxt;
     private ImageView infoCta;
     private TopAdsInfoBottomSheetDynamicChannel infoBottomSheet;
+    private TopAdsItemClickListener adsItemClickListener;
 
     public TopAdsDynamicChannelView(Context context) {
         super(context);
@@ -48,6 +52,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         infoCta = findViewById(R.id.info_cta);
         titleTxt = findViewById(R.id.channel_title);
         itemAdapter = new AdsItemAdapter(getContext());
+        itemAdapter.setItemClickListener(this);
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, SPAN_COUNT));
         recyclerView.addItemDecoration(new GridSpaceItemDecoration(SPAN_COUNT,
@@ -56,6 +61,7 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         infoBottomSheet = TopAdsInfoBottomSheetDynamicChannel.newInstance(getContext());
     }
 
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.info_cta) {
@@ -63,8 +69,41 @@ public class TopAdsDynamicChannelView extends LinearLayout implements View.OnCli
         }
     }
 
-    public void setData(String title, String cta, List<Item> data) {
+    public void setData(String title, List<Item> data) {
         titleTxt.setText(title);
         itemAdapter.setList(data);
+    }
+
+    public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
+        this.adsItemClickListener = adsItemClickListener;
+    }
+
+    @Override
+    public void onShopItemClicked(int position, Data data) {
+        if(adsItemClickListener!=null){
+            adsItemClickListener.onShopItemClicked(position, data.getShop());
+        }
+    }
+
+    @Override
+    public void onProductItemClicked(int position, Data data) {
+        if(adsItemClickListener!=null){
+            adsItemClickListener.onProductItemClicked(position, data.getProduct());
+        }
+
+    }
+
+    @Override
+    public void onAddFavorite(int position, Data data) {
+        if(adsItemClickListener!=null){
+            adsItemClickListener.onAddFavorite(position, data);
+        }
+    }
+
+    @Override
+    public void onAddWishLish(int position, Data data) {
+        if(adsItemClickListener!=null){
+            adsItemClickListener.onAddWishList(position, data);
+        }
     }
 }
