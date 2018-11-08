@@ -38,8 +38,9 @@ public abstract class AppRatingDialog {
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
     protected CacheManager globalCacheManager;
+
     @Nullable
-    protected AppRatingListener listener;
+    protected DialogInterface.OnDismissListener listener;
 
     @Inject NpsAnalytics npsAnalytics;
 
@@ -87,27 +88,13 @@ public abstract class AppRatingDialog {
     protected void showDialog() {
         if(isDialogNeedToBeShown()) {
             AlertDialog alertDialog = buildAlertDialog();
-                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        dismissDialog();
-                    }
-                });
-
+            alertDialog.setOnDismissListener(listener);
             alertDialog.show();
             onShowDialog();
-        } else {
-            dismissDialog();
         }
     }
 
-    private void dismissDialog() {
-        if(listener != null) {
-            listener.onDismiss();
-        }
-    }
-
-    protected void setListener(@Nullable AppRatingListener listener) {
+    protected void setListener(@Nullable DialogInterface.OnDismissListener listener) {
         this.listener = listener;
     }
 
@@ -119,8 +106,4 @@ public abstract class AppRatingDialog {
      * This will be executed when dialog appear
      */
     protected abstract void onShowDialog();
-
-    public interface AppRatingListener {
-        void onDismiss();
-    }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -9,8 +8,6 @@ import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.nps.NpsConstant.Analytic.*;
 import static com.tokopedia.nps.NpsConstant.Key.*;

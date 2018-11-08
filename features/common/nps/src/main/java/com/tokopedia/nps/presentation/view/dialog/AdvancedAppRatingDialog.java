@@ -1,6 +1,7 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -38,7 +39,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         dialog.showDialog();
     }
 
-    public static void show(Activity activity, AppRatingListener listener) {
+    public static void show(Activity activity, DialogInterface.OnDismissListener listener) {
         AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
         dialog.setListener(listener);
         dialog.showDialog();
