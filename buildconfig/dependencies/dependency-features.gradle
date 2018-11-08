@@ -116,6 +116,7 @@ ext {
             kolCommon                   : ":features:content:kol_common",
 
             browse                      : ":features:digital:digital_browse",
+            commonDigital               : ":features:digital:common_digital",
             digitalDeals                : ":features:digital:digital_deals",
             digitalproduct              : ":features:digital:digitalproduct",
             event                       : ":features:digital:event",
