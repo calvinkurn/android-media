@@ -383,6 +383,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        autoAddSprintSaleAnnouncement(
+                ((GroupChatContract.View) getActivity()).getSprintSaleViewModel(),
+                ((GroupChatContract.View) getActivity()).getChannelInfoViewModel());
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
@@ -705,6 +713,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         clearMessageEditText();
+        onKeyboardDismiss();
+        setQuickReply(null);
         setSendButtonEnabled(true);
     }
 
