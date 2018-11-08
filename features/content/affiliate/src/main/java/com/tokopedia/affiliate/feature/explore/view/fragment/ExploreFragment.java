@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +84,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
+    private CoordinatorLayout mainView;
 
     private boolean isCanDoAction;
 
@@ -114,6 +116,7 @@ public class ExploreFragment
         ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
+        mainView = view.findViewById(R.id.main_view);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -345,7 +348,7 @@ public class ExploreFragment
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView(),
+                mainView,
                 error,
                 () -> presenter.getFirstData(exploreParams, false)
         );
