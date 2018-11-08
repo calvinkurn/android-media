@@ -67,6 +67,7 @@ import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV2.presentation.model.FlightPriceViewModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,10 +84,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private static final String EXTRA_SEARCH_PASS_DATA = "EXTRA_SEARCH_PASS_DATA";
     private static final String EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID";
     private static final String EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID";
+    private static final String EXTRA_PRICE = "EXTRA_PRICE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String KEY_CART_DATA = "KEY_CART_DATA";
     private static final String KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA";
     private static final String KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE";
+    private static final String KEY_PARAM_EXTRA_PRICE = "KEY_PARAMEXTRA_PRICE";
 
     private static final int REQUEST_CODE_PASSENGER = 1;
     private static final int REQUEST_CODEP_PHONE_CODE = 2;
@@ -121,6 +124,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     private FlightSimpleAdapter priceListAdapter;
 
     private String departureTripId, returnTripId;
+    private FlightPriceViewModel priceViewModel;
     private FlightBookingParamViewModel paramViewModel;
     private FlightBookingCartData flightBookingCartData;
     private FlightBookingPassengerAdapter adapter;
@@ -133,12 +137,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         // Required empty public constructor
     }
 
-    public static FlightBookingFragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId) {
+    public static FlightBookingFragment newInstance(FlightSearchPassDataViewModel searchPassDataViewModel, String departureId, String returnId, FlightPriceViewModel priceViewModel) {
         FlightBookingFragment fragment = new FlightBookingFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataViewModel);
         bundle.putString(EXTRA_FLIGHT_DEPARTURE_ID, departureId);
         bundle.putString(EXTRA_FLIGHT_ARRIVAL_ID, returnId);
+        bundle.putParcelable(EXTRA_PRICE, priceViewModel);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -155,6 +160,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
+        priceViewModel = arguments.getParcelable(EXTRA_PRICE);
     }
 
     @Override
@@ -169,6 +175,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         outState.putParcelable(KEY_CART_DATA, flightBookingCartData);
         outState.putParcelable(KEY_PARAM_VIEW_MODEL_DATA, paramViewModel);
         outState.putSerializable(KEY_PARAM_EXPIRED_DATE, expiredTransactionDate);
+        outState.putParcelable(KEY_PARAM_EXTRA_PRICE, priceViewModel);
     }
 
     @Override
@@ -267,6 +274,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             flightBookingCartData = savedInstanceState.getParcelable(KEY_CART_DATA);
             paramViewModel = savedInstanceState.getParcelable(KEY_PARAM_VIEW_MODEL_DATA);
             expiredTransactionDate = (Date) savedInstanceState.getSerializable(KEY_PARAM_EXPIRED_DATE);
+            priceViewModel = savedInstanceState.getParcelable(KEY_PARAM_EXTRA_PRICE);
             hideFullPageLoading();
             presenter.renderUi(flightBookingCartData, true);
         }
@@ -675,8 +683,10 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
         countdownFinishTransactionView.cancel();
-        startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel), REQUEST_CODE_REVIEW);
+        startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel, priceViewModel.getComboKey()), REQUEST_CODE_REVIEW);
     }
+
+
 
     @Override
     public void onResume() {
@@ -825,5 +835,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     private void hideSameAsContactContainer() {
         sameAsContactContainer.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public FlightPriceViewModel getPriceViewModel() {
+        return priceViewModel;
     }
 }

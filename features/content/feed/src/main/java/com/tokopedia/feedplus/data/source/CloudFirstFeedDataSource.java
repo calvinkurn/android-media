@@ -2,10 +2,11 @@ package com.tokopedia.feedplus.data.source;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
@@ -14,6 +15,8 @@ import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.usecase.RequestParams;
+
+import java.lang.reflect.Type;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -28,7 +31,7 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
                                     FeedApi feedApi,
                                     FeedListMapper feedListMapper,
                                     FeedResultMapper feedResultMapperCloud,
-                                    GlobalCacheManager globalCacheManager) {
+                                    CacheManager globalCacheManager) {
         super(context, feedApi, feedListMapper, feedResultMapperCloud, globalCacheManager);
     }
 
@@ -39,17 +42,23 @@ public class CloudFirstFeedDataSource extends CloudFeedDataSource {
     }
 
     private Action1<FeedDomain> saveToCache() {
-        return new Action1<FeedDomain>() {
-            @Override
-            public void call(FeedDomain dataFeedDomains) {
-                globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
-                globalCacheManager.setValue(
-                        CacheUtil.convertModelToString(dataFeedDomains,
-                                new TypeToken<FeedDomain>() {
-                                }.getType()));
-                globalCacheManager.store();
-            }
+        return dataFeedDomains -> {
+            globalCacheManager.save(LocalFeedDataSource.KEY_FEED_PLUS, convertModelToString(dataFeedDomains,
+                    new TypeToken<FeedDomain>() {
+                    }.getType()), 0);
         };
+    }
+
+    private static String convertModelToString(Object obj, Type type) {
+        Gson gson = new Gson();
+
+        JsonElement element = gson.toJsonTree(obj, type);
+
+        if (!element.isJsonObject()) {
+            throw new RuntimeException();
+        }
+
+        return element.getAsJsonObject().toString();
     }
 
 

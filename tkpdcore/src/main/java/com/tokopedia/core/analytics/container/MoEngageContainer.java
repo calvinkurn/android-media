@@ -174,9 +174,6 @@ public class MoEngageContainer implements IMoengageContainer {
                 if (checkNull(value.isGoldMerchant()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
 
-                if (checkNull(value.isSeller()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
-
                 if (checkNull(value.getShopId()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
 
@@ -186,41 +183,14 @@ public class MoEngageContainer implements IMoengageContainer {
                 if (checkNull(value.getTotalItemSold()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_SOLD_ITEM, value.getTotalItemSold());
 
-                if (checkNull(value.getRegDate()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.REG_DATE, value.getRegDate());
-
-                if (checkNull(value.getDateShopCreated()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.DATE_SHOP_CREATED, value.getDateShopCreated());
-
-                if (checkNull(value.getShopLocation()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_LOCATION, value.getShopLocation());
-
-                if (checkNull(value.getTokocashAmt()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOKOCASH_AMT, value.getTokocashAmt());
-
-                if (checkNull(value.getSaldoAmt()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.SALDO_AMT, value.getSaldoAmt());
-
                 if (checkNull(value.getTopAdsAmt()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_AMT, value.getTopAdsAmt());
-
-                if (checkNull(value.isTopadsUser()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOPADS_USER, value.isTopadsUser());
-
-                if (checkNull(value.isHasPurchasedTiket()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_TICKET, value.isHasPurchasedTiket());
 
                 if (checkNull(value.isHasPurchasedMarketplace()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_MARKETPLACE, value.isHasPurchasedMarketplace());
 
-                if (checkNull(value.isHasPurchasedDigital()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.HAS_PURCHASED_DIGITAL, value.isHasPurchasedDigital());
-
                 if (checkNull(value.getLastTransactionDate()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.LAST_TRANSACT_DATE, value.getLastTransactionDate());
-
-                if (checkNull(value.getTotalActiveProduct()))
-                    helper.setUserAttribute(AppEventTracking.MOENGAGE.TOTAL_ACTIVE_PRODUCT, value.getTotalActiveProduct());
 
                 if (checkNull(value.getShopScore()))
                     helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());

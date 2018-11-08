@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Mitra Tokopedia</string>
+    <string name="msg_exit">Tekan sekali lagi untuk keluar</string>
+
+    <string name="dialog_info">Info</string>
+    <string name="dialog_msg">Kami mendeteksi bahwa beberapa fitur pada aplikasi akan tidak berfungsi secara fungsional pada device Anda.</string>
+    <string name="dialog_ok">OK, terimakasih</string>
+
+    <string name="title_general_push_notification">Notifikasi Baru dari Mitra Tokopedia</string>
+</resources>

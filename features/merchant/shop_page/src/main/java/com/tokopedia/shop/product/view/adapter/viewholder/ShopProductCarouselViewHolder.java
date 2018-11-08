@@ -53,7 +53,7 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
         shopProductCarouselAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedListener, null, null,
-                null,
+                null, null,
                 false, deviceWidth, shopTrackType));
         findViews(itemView);
         tvTitle.setText(titleString);

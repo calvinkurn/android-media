@@ -11,9 +11,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopMerchantVoucherViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseHighlightViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseTitleViewHolder;
@@ -24,6 +26,7 @@ import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListene
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
+import com.tokopedia.shop.product.view.model.ShopMerchantVoucherViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -40,6 +43,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private final ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener;
     private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
+    private final MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener onMerchantVoucherListWidgetListener;
 
     // gridLayout is for main product
     private final boolean isGridSquareLayout;
@@ -53,6 +57,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                          EmptyResultViewHolder.Callback emptyProductOnClickListener,
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
                                                  onShopProductEtalaseListViewHolderListener,
+                                         MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener onMerchantVoucherListWidgetListener,
                                          boolean isGridSquareLayout,
                                          int deviceWidth,
                                          @ShopTrackProductTypeDef int shopTrackType) {
@@ -61,6 +66,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         this.shopCarouselSeeAllClickedListener = shopCarouselSeeAllClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
+        this.onMerchantVoucherListWidgetListener = onMerchantVoucherListWidgetListener;
         this.isGridSquareLayout = isGridSquareLayout;
         this.shopTrackType = shopTrackType;
         this.deviceWidth = deviceWidth;
@@ -116,6 +122,14 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             } else {
                 return ShopProductCarouselViewHolder.LAYOUT;
             }
+        }
+    }
+
+    public int type(ShopMerchantVoucherViewModel shopMerchantVoucherViewModel) {
+        if (shopMerchantVoucherViewModel.getShopMerchantVoucherViewModelArrayList().size() ==0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopMerchantVoucherViewHolder.LAYOUT;
         }
     }
 
@@ -181,6 +195,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductEtalaseListViewHolder(parent, onShopProductEtalaseListViewHolderListener);
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
+        } if (type == ShopMerchantVoucherViewHolder.LAYOUT) {
+            return new ShopMerchantVoucherViewHolder(parent, onMerchantVoucherListWidgetListener);
         } else if (type == ShopProductCarouselViewHolder.LAYOUT ||
                 type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,

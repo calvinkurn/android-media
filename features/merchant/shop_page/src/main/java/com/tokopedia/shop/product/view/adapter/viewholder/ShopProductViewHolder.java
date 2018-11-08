@@ -16,6 +16,8 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
+
 /**
  * @author by alvarisi on 12/12/17.
  */
@@ -119,7 +121,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType, getAdapterPosition() - ITEM_OFFSET );
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {

@@ -82,6 +82,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
     public static final String EXTRA_COUPON_CHANGED = "EXTRA_COUPON_CHANGED";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
+    public static final String EXTRA_COMBO_KEY = "EXTRA_COMBO_KEY";
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
@@ -120,10 +121,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private boolean isCouponVoucherChanged = false;
 
 
-    public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
+    public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel,
+                                                             String comboKey) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_DATA_REVIEW, flightBookingReviewModel);
+        bundle.putString(EXTRA_COMBO_KEY, comboKey);
         flightBookingReviewFragment.setArguments(bundle);
         return flightBookingReviewFragment;
     }
@@ -393,6 +396,14 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public void renderVoucherInfoData() {
         FlightBookingVoucherViewModel voucherViewModel = flightBookingReviewModel.getVoucherViewModel();
         voucherCartView.setVoucher(voucherViewModel.getCode(), voucherViewModel.getMessageSuccess());
+    }
+
+    @Override
+    public String getComboKey() {
+        if (getArguments() != null){
+            return getArguments().getString(EXTRA_COMBO_KEY);
+        }
+        return null;
     }
 
     @Override
@@ -674,8 +685,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             taskStackBuilder.addNextIntent(intent);
         }
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
-        Intent ordersFlight = ((FlightModuleRouter)getActivity().getApplication()).getOrderListIntent(getActivity());
-        ordersFlight.putExtra(ORDER_CATEGORY,"FLIGHTS");
+        Intent ordersFlight = ((FlightModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity());
+        ordersFlight.putExtra(ORDER_CATEGORY, "FLIGHTS");
         taskStackBuilder.addNextIntent(homepageFlight);
         taskStackBuilder.addNextIntent(ordersFlight);
         taskStackBuilder.startActivities();
@@ -761,4 +772,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
         getCurrentBookingReviewModel().setVoucherViewModel(voucherViewModel);
     }
+
+
 }

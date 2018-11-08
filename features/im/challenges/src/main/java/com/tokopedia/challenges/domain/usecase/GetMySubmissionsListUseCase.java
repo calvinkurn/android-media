@@ -73,7 +73,7 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         HashMap headers = new HashMap();
         String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start=" + start + "&size=" + size;

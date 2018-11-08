@@ -33,6 +33,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
     private HolidayAdapter holidayAdapter;
     private Calendar currentCalendar = Calendar.getInstance();
     private int month;
+    private int year;
 
     public static Fragment newInstance(Date selectedDate, int month, int year, Calendar maxDate,
                                        Calendar minDate,
@@ -63,7 +64,8 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         super.onViewCreated(view, savedInstanceState);
 
         //get current month
-        month = getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH);
+        month =  getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH);
+        year = getArguments().getInt(TravelCalendarActivity.EXTRA_YEAR);
 
         List<HolidayResult> holidayResultList = getArguments().getParcelableArrayList(TravelCalendarActivity.EXTRA_LIST_HOLIDAY);
         List<HolidayResult> currentHolidayList = new ArrayList<>();
@@ -75,7 +77,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
                 calendarHoliday.setTime(zeroTimeHolidayDate);
                 holidayResultList.get(i).getAttributes().setDateHoliday(zeroTimeHolidayDate);
 
-                if (calendarHoliday.get(Calendar.MONTH) == month) {
+                if (calendarHoliday.get(Calendar.MONTH) == month && calendarHoliday.get(Calendar.YEAR) == year) {
                     currentHolidayList.add(holidayResultList.get(i));
                 }
             } catch (ParseException e) {

@@ -35,7 +35,8 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
+import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight_dbflow.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.di.FlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
@@ -422,12 +423,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                flightSearchPresenter.getFlightStatistic(isReturning());
-                FlightSearchFragment.this.addToolbarElevation();
-                startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
-                        isReturning(),
-                        flightFilterModel),
-                        REQUEST_CODE_SEARCH_FILTER);
             }
         });
         filterAndSortBottomAction.setVisibility(View.GONE);

@@ -13,6 +13,8 @@ public class HachikoDrawerDataResponse {
     @Expose
     private GqlTokoPointDrawerDataResponse gqlTokoPointDrawerDataResponse;
 
+    @SerializedName("tokopointsSumCoupon")
+    private TokopointsSumCoupon tokopointsSumCoupon;
 
     public GqlTokoPointDrawerDataResponse getGqlTokoPointDrawerDataResponse() {
         return gqlTokoPointDrawerDataResponse;
@@ -20,5 +22,13 @@ public class HachikoDrawerDataResponse {
 
     public void setGqlTokoPointDrawerDataResponse(GqlTokoPointDrawerDataResponse gqlTokoPointDrawerDataResponse) {
         this.gqlTokoPointDrawerDataResponse = gqlTokoPointDrawerDataResponse;
+    }
+
+    public TokopointsSumCoupon getTokopointsSumCoupon() {
+        return tokopointsSumCoupon;
+    }
+
+    public void setTokopointsSumCoupon(TokopointsSumCoupon tokopointsSumCoupon) {
+        this.tokopointsSumCoupon = tokopointsSumCoupon;
     }
 }

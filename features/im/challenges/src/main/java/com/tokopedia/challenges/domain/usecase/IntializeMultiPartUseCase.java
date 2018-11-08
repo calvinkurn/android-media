@@ -10,6 +10,7 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class IntializeMultiPartUseCase extends RestRequestSupportInterceptorUseC
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_INTIALIZE_MULTIPART,challengeID), UploadFingerprints.class)
                 .setRequestType(RequestType.POST_MULTIPART).setBody(requestBodyMap) .build();

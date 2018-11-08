@@ -35,7 +35,7 @@ public class PostBuzzPointEventUseCase extends RestRequestSupportInterceptorUseC
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
 

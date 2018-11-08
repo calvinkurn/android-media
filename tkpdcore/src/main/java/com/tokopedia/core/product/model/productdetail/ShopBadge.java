@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Angga.Prasetiyo on 17/11/2015.
  */
+@Deprecated
 public class ShopBadge implements Parcelable {
     private static final String TAG = ShopBadge.class.getSimpleName();
 

@@ -68,6 +68,12 @@
         <item name="android:textColor">@color/flight_chips_danger_text</item>
     </style>
 
+    <style name="FlightChips.Info">
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/bg_flight_chip_info</item>
+        <item name="android:textColor">@color/flight_chips_info_text</item>
+    </style>
+
     <style name="CardInsuranceDetail">
         <item name="android:background">@drawable/bg_flight_insurance_card_success</item>
         <item name="android:textSize">@dimen/sp_11</item>
@@ -149,6 +155,17 @@
 
     <style name="TextView.Micro.OrangeRed">
         <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+
+    <style name="Button.Secondary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Button.Secondary.Green">
+        <item name="android:background">@drawable/flight_bg_button_secondary_green</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:textColor">@color/green_250</item>
     </style>
 
 </resources>
