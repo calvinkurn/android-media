@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
@@ -72,6 +73,8 @@ public class DashboardFragment
     @Inject
     UserSession userSession;
 
+    @Inject
+    AffiliateAnalytics affiliateAnalytics;
 
     public static DashboardFragment getInstance(Bundle bundle) {
         DashboardFragment fragment = new DashboardFragment();
@@ -285,6 +288,12 @@ public class DashboardFragment
     @Override
     public void goToAffiliateExplore() {
         RouteManager.route(getContext(), ApplinkConst.AFFILIATE_EXPLORE);
+    }
+
+    @Override
+    public void goToDeposit() {
+        RouteManager.route(getContext(), ApplinkConst.DEPOSIT);
+        affiliateAnalytics.onAfterClickSaldo();
     }
 
     @Override

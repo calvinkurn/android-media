@@ -65,6 +65,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var afterEdit: Boolean = false
     private var onlyOnePost: Boolean = false
     private var isAffiliate: Boolean = false
+    private var isOwner: Boolean = false
     private var resultIntent: Intent? = null
     private var affiliatePostQuota: AffiliatePostQuota? = null
 
@@ -164,7 +165,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         super.onSwipeRefresh()
     }
 
-    override fun getScreenName(): String = ProfileAnalytics.Screen.PROFILE
+    override fun getScreenName(): String {
+        return if (userId.toString() == userSession.userId) ProfileAnalytics.Screen.MY_PROFILE
+        else ProfileAnalytics.Screen.PROFILE
+    }
 
     override fun initInjector() {
         DaggerProfileComponent.builder()
@@ -274,7 +278,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun goToFollowing() {
-        profileAnalytics.eventClickFollowing(userId.toString())
+        profileAnalytics.eventClickFollowing(isOwner, userId.toString())
         startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
@@ -282,8 +286,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (userSession.isLoggedIn) {
             if (follow) {
                 presenter.followKol(userId)
+                profileAnalytics.eventClickFollow(userId.toString())
             } else {
                 presenter.unfollowKol(userId)
+                profileAnalytics.eventClickUnfollow(userId.toString())
             }
         } else {
             goToLogin()
@@ -342,12 +348,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
                                    activityType: String, position: String) {
-        profileAnalytics.eventClickCard(hasMultipleContent, activityId, activityType, position)
+        if (isOwner.not()) {
+            profileAnalytics.eventClickCard(hasMultipleContent, activityId, activityType, position)
+        }
     }
 
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String,
                                    activityType: String, position: String) {
-        profileAnalytics.eventClickTag(hasMultipleContent, activityId, activityType, position)
+        profileAnalytics.eventClickTag(
+                isOwner,
+                hasMultipleContent,
+                activityId,
+                activityType,
+                position
+        )
     }
 
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
@@ -362,7 +376,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                   activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
-            profileAnalytics.eventClickLike(hasMultipleContent, id.toString(), activityType)
+            if (isOwner.not()) {
+                profileAnalytics.eventClickLike(hasMultipleContent, id.toString(), activityType)
+            }
         } else {
             goToLogin()
         }
@@ -372,7 +388,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                     activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
-            profileAnalytics.eventClickUnlike(hasMultipleContent, id.toString(), activityType)
+            if (isOwner.not()) {
+                profileAnalytics.eventClickUnlike(hasMultipleContent, id.toString(), activityType)
+            }
         } else {
             goToLogin()
         }
@@ -384,17 +402,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 context, id, rowNumber
         )
         startActivityForResult(intent, KOL_COMMENT_CODE)
-        profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
+        if (isOwner.not()) {
+            profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
+        }
     }
 
-    override fun onEditClicked(id: Int) {
+    override fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
+                               activityType: String) {
         startActivityForResult(
                 RouteManager.getIntent(
                         context,
-                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, id.toString())
+                        ApplinkConst.AFFILIATE_EDIT_POST.replace(POST_ID, activityId)
                 ),
                 EDIT_POST_CODE
         )
+        profileAnalytics.eventClickTambahGambar(hasMultipleContent, activityId, activityType)
     }
 
     override fun onMenuClicked(rowNumber: Int, element: BaseKolViewModel) {
@@ -523,6 +545,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             throw IllegalStateException("Application must implement "
                     .plus(ProfileModuleRouter::class.java.simpleName))
         }
+
+        isOwner = userId.toString() == userSession.userId
     }
 
     private fun setToolbarTitle(title: String) {
@@ -537,6 +561,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             when (model) {
                 is KolPostViewModel -> {
                     profileAnalytics.eventViewCard(
+                            isOwner,
                             model.isMultipleContent,
                             model.contentId.toString(),
                             model.activityType,
@@ -562,6 +587,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
             addRecommendation.setOnClickListener {
                 goToAffiliateExplore()
+                profileAnalytics.eventClickTambahRekomendasi()
             }
             addRecommendation.setOnLongClickListener {
                 showToast(getString(R.string.profile_add_recommendation))
@@ -626,7 +652,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             startActivity(
                     Intent.createChooser(sharingIntent, getString(R.string.profile_share_profile))
             )
-            profileAnalytics.eventClickBagikanProfile(userId.toString())
+            profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
         }
     }
 
@@ -652,6 +678,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
                     override fun onEmptyButtonClicked() {
                         goToOnboading()
+                        profileAnalytics.eventClickEmptyStateCta()
                     }
                 }
             }
@@ -737,6 +764,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun goToDashboard() {
         RouteManager.route(context, ApplinkConst.AFFILIATE_DASHBOARD)
+        profileAnalytics.eventClickStatistic()
     }
 
     private fun goToLogin() {

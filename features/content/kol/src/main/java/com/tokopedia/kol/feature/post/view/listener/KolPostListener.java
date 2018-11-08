@@ -78,7 +78,8 @@ public interface KolPostListener {
             void onGoToKolComment(int rowNumber, int id, boolean hasMultipleContent,
                                   String activityType);
 
-            void onEditClicked(int id);
+            void onEditClicked(boolean hasMultipleContent, String activityId,
+                               String activityType);
 
             void onMenuClicked(int rowNumber, BaseKolViewModel element);
         }
