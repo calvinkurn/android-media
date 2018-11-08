@@ -46,7 +46,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Inject
     public GroupChatPresenter(
-                              GetChannelInfoUseCase getChannelInfoUseCase) {
+            GetChannelInfoUseCase getChannelInfoUseCase) {
         this.getChannelInfoUseCase = getChannelInfoUseCase;
     }
 
@@ -82,16 +82,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
-                        if (getView() != null) {
-                            String errorMessage = GroupChatErrorHandler.getErrorMessage(getView().getContext(), e, false);
-                            String defaultMessage = getView().getContext().getString(R.string.default_request_error_unknown);
-                            String internalServerErrorMessage = "Internal Server Error";
-                            if(errorMessage.equals(defaultMessage) || errorMessage.equalsIgnoreCase(internalServerErrorMessage)) {
-                                getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel));
-                            }else {
-                                getView().onErrorGetChannelInfo(errorMessage);
-                            }
-                        }
+                       onErrorGetChannelInfo(e);
                     }
 
                     @Override
@@ -100,6 +91,43 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                             getView().onChannelFrozen();
                         } else if (getView() != null) {
                             getView().onSuccessGetChannelInfo(channelInfoViewModel);
+                        }
+                    }
+                });
+    }
+
+    private void onErrorGetChannelInfo(Throwable e) {
+        if (getView() != null) {
+            String errorMessage = GroupChatErrorHandler.getErrorMessage(getView().getContext(), e, false);
+            String defaultMessage = getView().getContext().getString(R.string.default_request_error_unknown);
+            String internalServerErrorMessage = "Internal Server Error";
+            if (errorMessage.equals(defaultMessage) || errorMessage.equalsIgnoreCase(internalServerErrorMessage)) {
+                getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel));
+            } else {
+                getView().onErrorGetChannelInfo(errorMessage);
+            }
+        }
+    }
+
+    public void refreshChannelInfo(String channelUuid) {
+        getChannelInfoUseCase.execute(GetChannelInfoUseCase.createParams(channelUuid),
+                new Subscriber<ChannelInfoViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                       onErrorGetChannelInfo(e);
+                    }
+
+                    @Override
+                    public void onNext(ChannelInfoViewModel channelInfoViewModel) {
+                        if (getView() != null && channelInfoViewModel.isFreeze()) {
+                            getView().onChannelFrozen();
+                        } else if (getView() != null) {
+                            getView().onSuccessRefreshChannelInfo(channelInfoViewModel);
                         }
                     }
                 });
@@ -119,7 +147,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             mSubscription = new CompositeSubscription();
         }
 
-        if(settingGroupChat == null){
+        if (settingGroupChat == null) {
             settingGroupChat = new SettingGroupChat();
         }
 
@@ -129,7 +157,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         WebSocketSubscriber subscriber = new WebSocketSubscriber() {
             @Override
             protected void onOpen(@NonNull WebSocket webSocket) {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open");
                     showDummy("onOpened ".concat(webSocketUrl), "logger open");
                 }
@@ -139,7 +167,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             protected void onMessage(@NonNull String text) {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", text);
                     showDummy(text, "logger message");
                 }
@@ -147,7 +175,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             protected void onMessage(@NonNull Visitable item, boolean hideMessage) {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "item");
                 }
                 getView().onMessageReceived(item, hideMessage);
@@ -155,14 +183,14 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             protected void onMessage(@NonNull ByteString byteString) {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", byteString.toString());
                 }
             }
 
             @Override
             protected void onReconnect() {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect");
                     showDummy("reconnecting", "logger reconnect");
                 }
@@ -171,18 +199,19 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             protected void onClose() {
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onClose");
                     showDummy("onClose", "logger close");
                 }
                 destroyWebSocket();
+                //TODO Why is this connecting again?
                 connect(userId, deviceId, accessToken, finalSettingGroupChat);
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                if(GlobalConfig.isAllowDebuggingTools()) {
+                if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onError " + e.toString());
                     showDummy(e.toString(), "logger error");
                 }
@@ -191,7 +220,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             }
         };
         Subscription subscription = RxWebSocket.get(webSocketUrl, accessToken,
-                    settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
+                settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
                 , settingGroupChat.getPingInterval()).subscribe(subscriber);
 
 
@@ -245,9 +274,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     private void reportWebSocket(Throwable e) {
-        if(shouldReportWebSocket()){
+        if (shouldReportWebSocket()) {
             getView().reportWebSocket(webSocketUrl, e.toString());
             setReportWebSocket(false);
         }
     }
+
+
 }

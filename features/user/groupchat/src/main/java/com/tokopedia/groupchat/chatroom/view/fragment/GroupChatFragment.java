@@ -294,15 +294,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             }
         });
 
-        replyEditText.setKeyImeChangeListener(new BackEditText.KeyImeChange(){
+        replyEditText.setKeyImeChangeListener(new BackEditText.KeyImeChange() {
             @Override
-            public void onKeyIme(int keyCode, KeyEvent event)
-            {
-                if (KeyEvent.KEYCODE_BACK == event.getKeyCode())
-                {
+            public void onKeyIme(int keyCode, KeyEvent event) {
+                if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
                     onKeyboardDismiss();
                 }
-            }});
+            }
+        });
     }
 
 
@@ -323,7 +322,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                         userSession.getName(),
                                         userSession.getProfilePicture(),
                                         false);
-                        ((GroupChatActivity)getActivity()).sendViaWebSocket(pendingChatViewModel);
+                        ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
                     }
                 }
             });
@@ -367,19 +366,23 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     .getGroupChatPointsViewModel() != null) {
                 autoAddGroupChatPoints(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getGroupChatPointsViewModel());
             }
+
             if (getActivity() != null
                     && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel() != null
                     && ((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
                     .getSettingGroupChat() != null) {
-                replyEditText.setFilters( new InputFilter[] {
+                replyEditText.setFilters(new InputFilter[]{
                         new InputFilter.LengthFilter(((GroupChatContract.View) getActivity()).getChannelInfoViewModel()
-                        .getSettingGroupChat().getMaxChar()) } );
+                                .getSettingGroupChat().getMaxChar())});
             }
 
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
 
+    public void refreshChat() {
+        initView();
     }
 
     @Override
@@ -445,7 +448,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 quickReplyAdapter.setList(list);
                 ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
                         .getChannelInfoViewModel();
-                if(channelInfoViewModel != null){
+                if (channelInfoViewModel != null) {
                     channelInfoViewModel.setQuickRepliesViewModel(list);
                 }
             } else {
@@ -592,7 +595,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                         userSession.getProfilePicture(),
                         false);
 
-        ((GroupChatActivity)getActivity()).sendViaWebSocket(pendingChatViewModel);
+        ((GroupChatActivity) getActivity()).sendViaWebSocket(pendingChatViewModel);
     }
 
     private void trackViewSprintSaleComponent(SprintSaleViewModel sprintSaleViewModel) {
@@ -690,7 +693,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         adapter.notifyDataSetChanged();
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
                 .getChannelInfoViewModel();
-        if(channelInfoViewModel != null){
+        if (channelInfoViewModel != null) {
             channelInfoViewModel.setQuickRepliesViewModel(null);
         }
         setQuickReply(null);
@@ -699,13 +702,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
 
     public void afterSendMessage(PendingChatViewModel pendingChatViewModel, Exception errorSendIndicator) {
-        if (errorSendIndicator == null){
+        if (errorSendIndicator == null) {
             onSuccessSendMessage(pendingChatViewModel);
-        } else if (errorSendIndicator != null && !(errorSendIndicator instanceof WebSocketException)){
+        } else if (errorSendIndicator != null && !(errorSendIndicator instanceof WebSocketException)) {
             onErrorSendMessage(pendingChatViewModel, errorSendIndicator.getMessage());
         }
 
-        if(errorSendIndicator != null && errorSendIndicator instanceof WebSocketException && getActivity()!=null && getActivity() instanceof GroupChatActivity){
+        if (errorSendIndicator != null && errorSendIndicator instanceof WebSocketException && getActivity() != null && getActivity() instanceof GroupChatActivity) {
             ((GroupChatActivity) getActivity()).setSnackBarRetry();
         }
         KeyboardHandler.DropKeyboard(getActivity(), getView());
@@ -728,8 +731,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             setQuickReply(((GroupChatQuickReplyViewModel) messageItem).getList());
         }
 
-        if(messageItem instanceof ImageAnnouncementViewModel){
-            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem);
+        if (messageItem instanceof ImageAnnouncementViewModel) {
+            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel) messageItem);
         }
 
         if (!hideMessage) {
@@ -985,7 +988,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     public void onKeyboardDismiss() {
-        if(getActivity() != null
+        if (getActivity() != null
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null) {
             setPinnedMessage(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getPinnedMessageViewModel());
             setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
@@ -1000,4 +1003,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public List<Visitable> getList() {
         return adapter.getList();
     }
+
+
 }
