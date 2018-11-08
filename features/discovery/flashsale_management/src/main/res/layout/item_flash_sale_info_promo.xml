@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_16"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <TextView style="@style/TextView.Small.Bold"
+            android:text="@string/promo_title"
+            android:id="@+id/promo_title"
+            android:drawablePadding="@dimen/dp_4"
+            android:drawableRight="@drawable/info_icon"
+            android:drawableEnd="@drawable/info_icon"
+            android:gravity="center_vertical"/>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="@dimen/dp_3"
+            app:cardPreventCornerOverlap="false"
+            app:cardBackgroundColor="@color/white">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_10">
+
+                <TextView style="@style/TextView.Micro.BlackDisabled"
+                    android:text="@string/label_min_transaction"
+                    android:id="@+id/label_min_transaction"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/divider_promo"
+                    app:layout_constraintEnd_toStartOf="@+id/divider_promo"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView style="@style/TextView.Small.Bold"
+                    android:id="@+id/min_transaction"
+                    tools:text="Rp70000"
+                    android:layout_marginTop="@dimen/dp_5"
+                    app:layout_constraintTop_toBottomOf="@+id/label_min_transaction"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/divider_promo"
+                    app:layout_constraintEnd_toStartOf="@+id/divider_promo"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <View android:id="@+id/divider_promo"
+                    android:layout_width="@dimen/dp_1"
+                    android:layout_height="0dp"
+                    android:background="@color/grey_300"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView style="@style/TextView.Micro.BlackDisabled"
+                    android:text="@string/promo_code"
+                    android:id="@+id/label_promo_code"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/divider_promo"
+                    app:layout_constraintStart_toEndOf="@+id/divider_promo"
+                    app:layout_constraintTop_toTopOf="@+id/label_min_transaction" />
+
+                <TextView style="@style/TextView.Small.Bold"
+                    android:id="@+id/promo_code"
+                    tools:text="STUART"
+                    app:layout_constraintTop_toTopOf="@+id/min_transaction"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/divider_promo"
+                    app:layout_constraintStart_toEndOf="@+id/divider_promo"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

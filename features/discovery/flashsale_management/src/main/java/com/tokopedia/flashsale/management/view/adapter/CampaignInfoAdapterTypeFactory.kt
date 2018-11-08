@@ -4,13 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoHeaderViewHolder
-import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoCategoryViewHolder
-import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignInfoSectionViewHolder
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoCategoryViewModel
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoHeaderViewModel
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoSectionViewModel
-import com.tokopedia.flashsale.management.view.viewmodel.CampaignInfoViewModel
+import com.tokopedia.flashsale.management.view.adapter.viewholder.campaigndetail.*
+import com.tokopedia.flashsale.management.view.viewmodel.*
 
 class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
 
@@ -19,6 +14,10 @@ class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
             is CampaignInfoHeaderViewModel -> CampaignInfoHeaderViewHolder.LAYOUT
             is CampaignInfoCategoryViewModel -> CampaignInfoCategoryViewHolder.LAYOUT
             is CampaignInfoSectionViewModel -> CampaignInfoSectionViewHolder.LAYOUT
+            is CampaignInfoShopCriteriaViewModel -> CampaignInfoShopCriteriaViewHolder.LAYOUT
+            is CampaignInfoDescriptionViewModel -> CampaignInfoDescriptionViewHolder.LAYOUT
+            is CampaignInfoPromoViewModel -> CampaignInfoPromoViewHolder.LAYOUT
+            is CampaignInfoTnCViewModel -> CampaignInfoTnCViewHolder.LAYOUT
         }
     }
 
@@ -27,6 +26,10 @@ class CampaignInfoAdapterTypeFactory: BaseAdapterTypeFactory(){
             CampaignInfoHeaderViewHolder.LAYOUT -> CampaignInfoHeaderViewHolder(parent)
             CampaignInfoCategoryViewHolder.LAYOUT -> CampaignInfoCategoryViewHolder(parent)
             CampaignInfoSectionViewHolder.LAYOUT -> CampaignInfoSectionViewHolder(parent)
+            CampaignInfoShopCriteriaViewHolder.LAYOUT -> CampaignInfoShopCriteriaViewHolder(parent)
+            CampaignInfoDescriptionViewHolder.LAYOUT -> CampaignInfoDescriptionViewHolder(parent)
+            CampaignInfoPromoViewHolder.LAYOUT -> CampaignInfoPromoViewHolder(parent)
+            CampaignInfoTnCViewHolder.LAYOUT -> CampaignInfoTnCViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

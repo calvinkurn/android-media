@@ -2,6 +2,7 @@ package com.tokopedia.flashsale.management.data.campaignlist
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.flashsale.management.data.Logistic
 
 data class Campaign(
         @SerializedName("campaign_id")
@@ -71,6 +72,11 @@ data class Campaign(
         /*@SerializedName("banner")
         @Expose
         val banner: String,*/
+        @SerializedName("min_seller_reputation_badge")
+        @Expose val minSellerReputation: String = "",
+
+        @SerializedName("max_seller_reputation_badge")
+        @Expose val maxSellerReputation: String = "",
 
         @SerializedName("is_joined")
         @Expose
@@ -82,6 +88,9 @@ data class Campaign(
 
         @SerializedName("status_info")
         @Expose val statusInfo: StatusInfo = StatusInfo(),
+
+        @SerializedName("logistics")
+        @Expose val logistics: List<Logistic> = listOf(),
 
         @SerializedName("criteria")
         @Expose

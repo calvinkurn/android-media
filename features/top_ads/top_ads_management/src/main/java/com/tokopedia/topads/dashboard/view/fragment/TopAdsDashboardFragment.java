@@ -639,9 +639,10 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         snackbarRetry.hideRetrySnackbar();
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
         depositValueTextView.setText(dataDeposit.getAmountFmt());
-        if (freeDeposit.getNominal() > 0) {
+        String freeDepositFmt = freeDeposit.getStatus() == 2 ? freeDeposit.getUsageFmt() : freeDeposit.getNominalFmt();
+        if (!freeDepositFmt.isEmpty() && !freeDepositFmt.trim().equals("0")) {
             tickerView.addMessage(0, getString(R.string.top_ads_template_credit_bonus,
-                    freeDeposit.getNominalFmt(),
+                    freeDepositFmt,
                     freeDeposit.getRemainingDays() + ""));
             tickerView.setVisibility(View.VISIBLE);
         }

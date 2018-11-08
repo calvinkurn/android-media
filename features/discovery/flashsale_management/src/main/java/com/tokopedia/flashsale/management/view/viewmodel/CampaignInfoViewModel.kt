@@ -9,6 +9,15 @@ sealed class CampaignInfoViewModel: Visitable<CampaignInfoAdapterTypeFactory>{
     override fun type(typeFactory: CampaignInfoAdapterTypeFactory) = typeFactory.type(this)
 }
 
-class CampaignInfoHeaderViewModel(val campaign: Campaign): CampaignInfoViewModel()
-class CampaignInfoSectionViewModel(val title: String): CampaignInfoViewModel()
-class CampaignInfoCategoryViewModel(val criteria: Criteria): CampaignInfoViewModel()
+data class CampaignInfoHeaderViewModel(val campaign: Campaign): CampaignInfoViewModel()
+data class CampaignInfoSectionViewModel(val title: String): CampaignInfoViewModel()
+data class CampaignInfoCategoryViewModel(val criteria: Criteria): CampaignInfoViewModel()
+data class CampaignInfoShopCriteriaViewModel(val shopType:String = "-",
+                                             val shopMinReputation: String,
+                                             val shopMaxReputation: String,
+                                             val shopSuccessTransaction: String = "-",
+                                             val courierNames: List<String>): CampaignInfoViewModel()
+data class CampaignInfoDescriptionViewModel(val description: String): CampaignInfoViewModel()
+data class CampaignInfoPromoViewModel(val minTransaction: String,
+                                      val promoCode: String): CampaignInfoViewModel()
+data class CampaignInfoTnCViewModel(val tnc: String): CampaignInfoViewModel()
