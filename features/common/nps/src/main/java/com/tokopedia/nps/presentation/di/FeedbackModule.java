@@ -2,6 +2,7 @@ package com.tokopedia.nps.presentation.di;
 
 import android.content.Context;
 
+import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.data.repository.FeedbackDataRepository;
 import com.tokopedia.nps.domain.repository.FeedbackRepository;
 
@@ -30,5 +31,11 @@ public class FeedbackModule {
     @Provides
     FeedbackRepository provideFeedbackRepository(FeedbackDataRepository repository) {
         return repository;
+    }
+
+    @FeedbackScope
+    @Provides
+    NpsAnalytics provideNpsAnalytics() {
+        return new NpsAnalytics(context);
     }
 }

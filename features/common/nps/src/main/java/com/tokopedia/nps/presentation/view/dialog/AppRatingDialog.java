@@ -8,13 +8,18 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.nps.NpsAnalytics;
+import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;
+import com.tokopedia.nps.presentation.di.FeedbackComponent;
+import com.tokopedia.nps.presentation.di.FeedbackModule;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.abstraction.AbstractionRouter;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.nps.NpsConstant.Key.APP_RATING;
 
@@ -36,11 +41,21 @@ public abstract class AppRatingDialog {
     @Nullable
     protected AppRatingListener listener;
 
+    @Inject NpsAnalytics npsAnalytics;
+
     protected AppRatingDialog(Activity activity) {
         this.activity = activity;
+        this.initInjector();
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
         cacheHandler = new LocalCacheHandler(activity, APP_RATING);
         globalCacheManager = ((AbstractionRouter) activity.getApplication()).getGlobalCacheManager();
+    }
+
+    private void initInjector() {
+        FeedbackComponent component = DaggerFeedbackComponent.builder()
+                .feedbackModule(new FeedbackModule(this.activity))
+                .build();
+        component.inject(this);
     }
 
     public static void openPlayStore(Context context) {
@@ -92,7 +107,7 @@ public abstract class AppRatingDialog {
         }
     }
 
-    protected void setListener(AppRatingListener listener) {
+    protected void setListener(@Nullable AppRatingListener listener) {
         this.listener = listener;
     }
 

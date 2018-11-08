@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.enumeration.AppRatingEnum;
 
@@ -21,6 +21,7 @@ import com.tokopedia.nps.presentation.enumeration.AppRatingEnum;
  */
 
 public class AppRatingView extends FrameLayout {
+
     private ImageView imageRating;
     private TextView textDescription;
     private RatingBar ratingBar;
@@ -61,7 +62,7 @@ public class AppRatingView extends FrameLayout {
     private void onRatingChange(float rating) {
         AppRatingEnum appRating = ratingFactory(rating);
         if(appRating != AppRatingEnum.EMPTY) {
-            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId(), appRating.getDrawableId());
+            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId());
             textDescription.setText(appRating.getStringId());
             textDescription.setTextColor(
                     AppCompatResources.getColorStateList(getContext(), appRating.getColorId())

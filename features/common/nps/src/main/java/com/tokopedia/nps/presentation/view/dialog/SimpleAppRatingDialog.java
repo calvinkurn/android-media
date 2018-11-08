@@ -5,11 +5,15 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import static com.tokopedia.nps.NpsConstant.Analytic.*;
+import static com.tokopedia.nps.NpsConstant.Key.*;
 
 /**
  * Created by okasurya on 11/29/17.
@@ -20,7 +24,6 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     private static final String DEFAULT_VALUE = "1";
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
 
-    private NpsAnalytics npsAnalytics;
 
     public static void show(Activity activity) {
         SimpleAppRatingDialog simpleAppRatingDialog = new SimpleAppRatingDialog(activity);
@@ -33,7 +36,6 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected AlertDialog buildAlertDialog() {
-        npsAnalytics = new NpsAnalytics(activity);
         return new AlertDialog.Builder(activity)
                 .setTitle(
                     remoteConfig.getString(
@@ -53,13 +55,10 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
                     npsAnalytics.eventClickAppRating(CLICK_APP_RATING);
                     dialog.dismiss();
                 })
-                .setNegativeButton(R.string.app_rating_button_later, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        hideDialog();
-                        npsAnalytics.eventCancelAppRating(CANCEL_APP_RATING);
-                        dialog.dismiss();
-                    }
+                .setNegativeButton(R.string.app_rating_button_later, (dialog, which) -> {
+                    hideDialog();
+                    npsAnalytics.eventCancelAppRating(CANCEL_APP_RATING);
+                    dialog.dismiss();
                 })
                 .setCancelable(false)
                 .create();
