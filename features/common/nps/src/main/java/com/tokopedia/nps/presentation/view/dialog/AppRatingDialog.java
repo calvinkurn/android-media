@@ -10,8 +10,8 @@ import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 

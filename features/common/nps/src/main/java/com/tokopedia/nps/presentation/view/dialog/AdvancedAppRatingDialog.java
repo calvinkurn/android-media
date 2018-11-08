@@ -12,6 +12,7 @@ import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
 import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.concurrent.TimeUnit;
 
@@ -111,9 +112,9 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
 
     private String getRemoteConfigKey(){
         if (GlobalConfig.isSellerApp()) {
-            return TkpdCache.RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING;
+            return RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING;
         } else {
-            return TkpdCache.RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
+            return RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
         }
     }
 

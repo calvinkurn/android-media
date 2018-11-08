@@ -36,7 +36,7 @@ public class GetChallengeDetailsUseCase extends RestRequestSupportInterceptorUse
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.CHALLENGES_DETAILS_CACHE) {

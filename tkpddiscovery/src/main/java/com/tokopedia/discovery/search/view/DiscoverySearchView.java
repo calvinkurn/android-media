@@ -33,14 +33,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -267,7 +267,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         allowVoiceSearch = true;
 
         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        setImageSearch(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_IMAGE_SEARCH,
+        setImageSearch(remoteConfig.getBoolean(RemoteConfigKey.SHOW_IMAGE_SEARCH,
                 false));
 
         showVoice(true);
@@ -364,7 +364,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             showCaseObjectList.add(new ShowCaseObject(
                     mImageSearchButton,
                     mContext.getResources().getString(R.string.on_board_title),
-                    remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
+                    remoteConfig.getString(RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
                     R.color.tkpd_main_green));

@@ -588,7 +588,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             List<ShopProductViewModel> shopProductViewModelList = list.get(i);
             etalaseHighlightCarouselViewModels.add(
                     new EtalaseHighlightCarouselViewModel(shopProductViewModelList, highlightEtalaseViewModelList.get(i)));
-            if (shopInfo != null && shopProductViewModelList!= null && shopProductViewModelList.size() > 0) {
+            if (shopInfo != null && shopProductViewModelList != null && shopProductViewModelList.size() > 0) {
                 shopPageTracking.impressionProductList(isOwner(),
                         ListTitleTypeDef.HIGHLIGHTED,
                         highlightEtalaseViewModelList.get(i).getEtalaseName(),
@@ -887,11 +887,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel) {
+    public void onMerchantUseVoucherClicked(MerchantVoucherViewModel merchantVoucherViewModel, int position) {
         if (getContext() == null) {
             return;
         }
-        shopPageTracking.clickUseMerchantVoucher(isOwner());
+        shopPageTracking.clickUseMerchantVoucher(isOwner(), merchantVoucherViewModel, position);
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
         /*if (!merchantVoucherListPresenter.isLogin()) {
             if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
@@ -998,7 +998,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessGetMerchantVoucherList(@NotNull ArrayList<MerchantVoucherViewModel> merchantVoucherViewModelList) {
-        shopPageTracking.impressionUseMerchantVoucher(isOwner());
+        shopPageTracking.impressionUseMerchantVoucher(isOwner(), merchantVoucherViewModelList);
 
         shopProductAdapter.setShopMerchantVoucherViewModel(new ShopMerchantVoucherViewModel(merchantVoucherViewModelList));
         shopProductAdapter.refreshSticky();

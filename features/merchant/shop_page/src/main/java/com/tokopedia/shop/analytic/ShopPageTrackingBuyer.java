@@ -43,21 +43,6 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
         super(shopTrackingRouter);
     }
 
-    private void sendDataLayerEvent(Map<String, Object> eventTracking) {
-        sendClearEvent();
-        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventTracking);
-    }
-
-    private void sendClearEvent() {
-        shopTrackingRouter.getAnalyticTracker().sendEventTracking(
-                DataLayer.mapOf(ShopPageTrackingConstant.EVENT, null,
-                        ShopPageTrackingConstant.EVENT_CATEGORY, null,
-                        ShopPageTrackingConstant.EVENT_ACTION, null,
-                        ShopPageTrackingConstant.EVENT_LABEL, null,
-                        ShopPageTrackingConstant.ECOMMERCE, null
-                ));
-    }
-
     private List<Object> createProductListMap(List<ShopProductViewModel> shopProductViewModelList,
                                               @ListTitleTypeDef String listTitle, String etalaseName,
                                               String attribution, int productPositionStart,

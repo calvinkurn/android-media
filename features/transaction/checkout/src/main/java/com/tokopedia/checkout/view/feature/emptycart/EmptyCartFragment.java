@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -37,6 +38,7 @@ import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.topads.sdk.base.Config;
@@ -71,6 +73,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
     private static final int REQUEST_CODE_ROUTE_RECENT_VIEW = 321;
+    private static final String EMPTY_CART_TRACE = "empty_cart_trace";
 
     public static final String ARG_AUTO_APPLY_MESSAGE = "ARG_AUTO_APPLY_MESSAGE";
 
@@ -99,6 +102,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private WishlistAdapter wishlistAdapter;
     private RecentViewAdapter recentViewAdapter;
 
+    private Trace trace;
+    private boolean isTraceStopped;
+
     @Inject
     UserSession userSession;
     @Inject
@@ -126,6 +132,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        trace = TrackingUtils.startTrace(EMPTY_CART_TRACE);
     }
 
     @Override
@@ -265,6 +277,14 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         renderWishList((int) itemWidth);
         renderRecentView((int) itemWidth);
         cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void stopTrace() {
+        if (trace != null && !isTraceStopped && presenter.hasLoadAllApi()) {
+            trace.stop();
+            isTraceStopped = true;
+        }
     }
 
     private double getItemWidth() {
@@ -538,6 +558,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsLoaded(List<Item> list) {
+        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+        stopTrace();
         presenter.setRecommendationList(list);
         cartPageAnalytics.enhancedEcommerceProductViewRecommendationOnEmptyCart(
                 presenter.generateEmptyCartAnalyticViewProductRecommendationDataLayer());
@@ -547,6 +569,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
+        presenter.setLoadApiStatus(EmptyCartApi.SUGGESTION, true);
+        stopTrace();
         cvRecommendation.setVisibility(View.GONE);
         tvRecommendationSeeAllBottom.setVisibility(View.GONE);
     }

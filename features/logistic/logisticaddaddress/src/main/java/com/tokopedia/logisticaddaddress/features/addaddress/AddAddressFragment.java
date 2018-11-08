@@ -738,8 +738,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void sendAnalyticsScreenName(String screenName) {
-        if (isAddAddressFromCartCheckoutMarketplace())
-            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 
     @Override

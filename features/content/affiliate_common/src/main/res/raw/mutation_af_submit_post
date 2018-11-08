@@ -1,0 +1,7 @@
+mutation SubmitPost($input:ContentSubmitInput!) {
+  feed_content_submit(Input:$input){
+    success
+    redirectURI
+    error
+  }
+}

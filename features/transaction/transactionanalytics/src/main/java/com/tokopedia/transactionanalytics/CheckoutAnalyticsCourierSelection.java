@@ -544,7 +544,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEventCategoryActionLabel(
                 EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_COURIER_OPTION,
+                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                 isCourierPromo ? "promo - " + duration : "non promo - " + duration
         );
     }
