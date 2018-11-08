@@ -40,7 +40,7 @@ public class CourierViewData implements Visitable<CourierTypeFactory>,Parcelable
     }
 
     public void setPackageName(List<String> packageName) {
-        this.packageName = packageName;
+        if (packageName != null) this.packageName = packageName;
     }
 
     public List<String> getPackageName() {
