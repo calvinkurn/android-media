@@ -25,7 +25,8 @@ class FlashSaleProductDetailActivity : BaseSimpleActivity(), HasComponent<Campai
 
     override fun getNewFragment(): Fragment {
         return FlashSaleProductDetailFragment.createInstance(
-                intent.getIntExtra(EXTRA_PARAM_CAMPAIGN_ID, 0))
+                intent.getIntExtra(EXTRA_PARAM_CAMPAIGN_ID, 0),
+                intent.getBooleanExtra(EXTRA_CAN_EDIT, false))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,13 +38,16 @@ class FlashSaleProductDetailActivity : BaseSimpleActivity(), HasComponent<Campai
         @JvmStatic
         fun createIntent(context: Context,
                          campaignId: Int,
-                         flashSaleProductItem: FlashSaleProductItem): Intent {
+                         flashSaleProductItem: FlashSaleProductItem,
+                         canEdit:Boolean): Intent {
             return Intent(context, FlashSaleProductDetailActivity::class.java)
                     .putExtra(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
                     .putExtra(EXTRA_PARAM_PRODUCT, flashSaleProductItem)
+                    .putExtra(EXTRA_CAN_EDIT, canEdit)
         }
 
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
         private const val EXTRA_PARAM_PRODUCT = "product"
+        private const val EXTRA_CAN_EDIT = "can_edit"
     }
 }

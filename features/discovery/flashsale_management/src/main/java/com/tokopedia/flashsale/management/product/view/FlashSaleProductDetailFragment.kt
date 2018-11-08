@@ -15,7 +15,6 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductDetailPresenter
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_flash_sale_product_detail.*
-import kotlinx.android.synthetic.main.partial_flash_sale_product_detail_loading.*
 import javax.inject.Inject
 
 /**
@@ -25,6 +24,7 @@ import javax.inject.Inject
 class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     var progressDialog: ProgressDialog? = null
+    var canEdit: Boolean = false
 
     @Inject
     lateinit var presenter: FlashSaleProductDetailPresenter
@@ -37,11 +37,13 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     companion object {
         private const val EXTRA_PARAM_CAMPAIGN_ID = "campaign_id"
+        private const val EXTRA_CAN_EDIT = "can_edit"
         @JvmStatic
-        fun createInstance(campaignId: Int): Fragment {
+        fun createInstance(campaignId: Int, canEdit: Boolean): Fragment {
             return FlashSaleProductDetailFragment().apply {
                 arguments = Bundle().apply {
                     putInt(EXTRA_PARAM_CAMPAIGN_ID, campaignId)
+                    putBoolean(EXTRA_CAN_EDIT, canEdit)
                 }
             }
         }
@@ -49,6 +51,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
+        canEdit = arguments!!.getBoolean(EXTRA_CAN_EDIT)
         super.onCreate(savedInstanceState)
     }
 
@@ -60,9 +63,13 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         flashSaleProductWidget.setData(onFlashSaleProductDetailFragmentListener.getProduct())
-        btnContainer.visibility = View.VISIBLE
         btnRequestProduct.setOnClickListener {
             onBtnRequestProductClicked()
+        }
+        if (canEdit) {
+            btnContainer.visibility = View.VISIBLE
+        } else {
+            btnContainer.visibility = View.GONE
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.flashsale.management.product.view
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -20,11 +21,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleFilterProductListTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
-import com.tokopedia.flashsale.management.product.adapter.SellerStatusListAdapter
+import com.tokopedia.flashsale.management.product.adapter.FlashSaleSubmitLabelAdapter
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductListPresenter
@@ -33,7 +38,7 @@ import kotlinx.android.synthetic.main.fragment_flash_sale_eligible_product.*
 import javax.inject.Inject
 
 class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem, FlashSaleProductAdapterTypeFactory>(),
-        SellerStatusListAdapter.OnSellerStatusListAdapterListener {
+        FlashSaleSubmitLabelAdapter.OnSellerStatusListAdapterListener {
 
     var filterIndex: Int = -1
 
@@ -41,13 +46,15 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var campaignSlug: String = ""
     var allowEditProducts: Boolean = false
 
+    var progressDialog: ProgressDialog? = null
+
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
 
     var hasVisibleOnce = false
     var needLoadData = true
 
-    var sellerStatusListAdapter: SellerStatusListAdapter? = null
+    var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
     override fun getAdapterTypeFactory() = FlashSaleProductAdapterTypeFactory()
 
@@ -62,7 +69,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
         super.onCreate(savedInstanceState)
-        sellerStatusListAdapter = SellerStatusListAdapter(filterIndex, 0, 0, this)
+        flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, 0, this)
         context?.let {
             GraphqlClient.init(it)
         }
@@ -94,7 +101,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
-        recyclerViewLabel.adapter = sellerStatusListAdapter
+        recyclerViewLabel.adapter = flashSaleSubmitLabelAdapter
         searchInputView.setResetListener {
             onSearchSubmitted("")
         }
@@ -102,18 +109,18 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun loadInitialData() {
+        hideSearchInputView()
+        recyclerViewLabel.visibility = View.GONE
+        vgBottom.visibility = View.GONE
         loadContent()
         loadBottomBar()
     }
 
     fun loadContent() {
-        hideSearchInputView()
-        recyclerViewLabel.visibility = View.GONE
         super.loadInitialData()
     }
 
     fun loadBottomBar() {
-        vgBottom.visibility = View.GONE
         loadSellerStatus()
         loadTnC()
     }
@@ -123,10 +130,16 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 campaignSlug,
                 onSuccess = {
                     context?.run {
-                        btnSubmit.text = if (it.submitStatus) {
-                            getString(R.string.flash_sale_update_request)
+                        if (it.submitStatus) {
+                            btnSubmit.text = getString(R.string.flash_sale_update_submission)
+                            btnSubmit.setOnClickListener {
+                                onClickToUpdateSubmission()
+                            }
                         } else {
-                            getString(R.string.flash_sale_list)
+                            btnSubmit.text = getString(R.string.flash_sale_list)
+                            btnSubmit.setOnClickListener {
+                                onClickFlashSaleList()
+                            }
                         }
                     }
                     allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
@@ -135,6 +148,47 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 onError = {
                     vgBottom.visibility = View.GONE
                 })
+    }
+
+    private fun showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(context)
+            progressDialog!!.setCancelable(false)
+            progressDialog!!.setMessage(getString(R.string.title_loading))
+        }
+        if (progressDialog!!.isShowing()) {
+            progressDialog!!.dismiss()
+        }
+        progressDialog!!.show()
+    }
+
+    private fun hideProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog!!.dismiss()
+        }
+    }
+
+    private fun onClickToUpdateSubmission() {
+        showProgressDialog()
+        presenter.submitSubmission(campaignId,
+                onSuccess = {
+                    hideProgressDialog()
+                    activity?.run {
+                        ToasterNormal.showClose(this, it)
+                    }
+                    loadInitialData()
+                },
+                onError = {
+                    hideProgressDialog()
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(context,it), BaseToaster.LENGTH_INDEFINITE)
+                            .setAction(R.string.retry_label) {
+                                onClickToUpdateSubmission()
+                            }
+                })
+    }
+
+    private fun onClickFlashSaleList() {
+
     }
 
     private fun loadTnC() {
@@ -186,13 +240,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun getFilterId(): Int {
-        var filterId: Int = FlashSaleFilterProductListTypeDef.TYPE_ALL.id
-        sellerStatusListAdapter.run {
-            val flashSaleFilterProductListTypeDef = FlashSaleFilterProductListTypeDef.values()
-                    .firstOrNull() { it.index == sellerStatusListAdapter?.selectedIndex }
-            flashSaleFilterProductListTypeDef?.let { filterId = it.id }
-        }
-        return filterId
+        return FlashSaleFilterProductListTypeDef.values()
+                .firstOrNull() { it.index == flashSaleSubmitLabelAdapter?.selectedIndex }?.id
+                ?: FlashSaleFilterProductListTypeDef.TYPE_ALL.id
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -214,13 +264,13 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         super.renderList(flashSaleProductHeader.flashSaleProduct, hasNextPage(flashSaleProductHeader.flashSaleProduct))
         if (TextUtils.isEmpty(searchInputView.searchText) &&
                 flashSaleProductHeader.flashSaleProduct.isEmpty() &&
-                currentPage == 1 &&
-                (sellerStatusListAdapter?.selectedIndex ?: -1) == -1) {
+                currentPage <= 1 &&
+                (flashSaleSubmitLabelAdapter?.selectedIndex ?: -1) == -1) {
             hideSearchInputView()
         } else {
             showSearchInputView()
         }
-        if (currentPage == 1) {
+        if (currentPage <= 1) {
             renderUILabel(flashSaleProductHeader.submittedCount, flashSaleProductHeader.pendingCount)
         }
     }
@@ -229,7 +279,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         if (submittedCount + pendingCount == 0) {
             recyclerViewLabel.visibility = View.GONE
         } else {
-            sellerStatusListAdapter?.setData(submittedCount, pendingCount)
+            flashSaleSubmitLabelAdapter?.setData(submittedCount, pendingCount)
             recyclerViewLabel.visibility = View.VISIBLE
         }
     }
@@ -260,7 +310,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
         context?.let {
-            val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId, flashSaleProductItem)
+            val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
+                    flashSaleProductItem, allowEditProducts)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
@@ -278,7 +329,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     override fun onSearchTextChanged(text: String?) {
-        //TODO("not implemented")
+        // no-op
     }
 
     override fun onDestroyView() {
@@ -325,7 +376,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        sellerStatusListAdapter?.run {
+        flashSaleSubmitLabelAdapter?.run {
             outState.putInt(SAVED_FILTER_INDEX, selectedIndex)
         }
     }

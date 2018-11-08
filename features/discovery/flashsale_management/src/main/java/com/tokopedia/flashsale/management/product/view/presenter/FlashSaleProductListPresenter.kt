@@ -1,6 +1,7 @@
 package com.tokopedia.flashsale.management.product.view.presenter
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Criteria
 import com.tokopedia.flashsale.management.data.seller_status.SellerStatus
@@ -9,7 +10,8 @@ import com.tokopedia.flashsale.management.product.data.FlashSaleProductGQL
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductHeader
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleCategoryListUseCase
 import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleProductUseCase
-import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleTnCUseCase
+import com.tokopedia.flashsale.management.product.domain.usecase.GetFlashSaleTncUseCase
+import com.tokopedia.flashsale.management.product.domain.usecase.SubmitProductUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import kotlinx.coroutines.experimental.*
 import java.lang.NullPointerException
@@ -20,44 +22,35 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
                                                         val getFlashSaleCategoryListUseCase: GetFlashSaleCategoryListUseCase,
                                                         @Named(FlashSaleConstant.NAMED_REQUEST_SELLER_STATUS)
                                                         private val sellerStatusUseCase: GraphqlUseCase<SellerStatus.Response>,
-                                                        val getFlashSaleTnCUseCase: GetFlashSaleTnCUseCase,
+                                                        val getFlashSaleTncUseCase: GetFlashSaleTncUseCase,
+                                                        val submitProductUseCase: SubmitProductUseCase,
                                                         val userSession: UserSession) {
 
-    protected var parentJob: Job = Job()
+    protected var getProductListJob: Job = Job()
 
     fun getEligibleProductList(campaignId: Int, campaignSlug: String, offset: Int, rows: Int, q: String,
                                filterId: Int,
                                onSuccess: (FlashSaleProductHeader) -> Unit, onError: (Throwable) -> Unit) {
-        parentJob.cancel()
-        parentJob = Job()
-        GlobalScope.launch(Dispatchers.Main + parentJob) {
-            try {
-                val shopId = userSession.shopId.toInt()
-                getFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
-                        shopId, filterId)
-                val flashSaleProductJob = GlobalScope.async(Dispatchers.Default) {
-                    try {
-                        getFlashSaleProductUseCase.executeOnBackground()
-                    } catch (e: Throwable) {
-                        onError(e)
-                        parentJob.cancel()
-                    }
-                }
-
-                getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
-                val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default) {
-                    try {
-                        getFlashSaleCategoryListUseCase.executeOnBackground()
-                    } catch (e: Throwable) {
-                        onError(e)
-                        parentJob.cancel()
-                    }
-                }
-                onSuccess(mergeResult(flashSaleProductJob.await() as FlashSaleProductGQL,
-                        flashSaleCategoryJob.await() as FlashSaleCategoryListGQL))
-            } catch (throwable: Throwable) {
-                onError(throwable)
+        getProductListJob.cancel()
+        getProductListJob = Job()
+        val handler = CoroutineExceptionHandler { _, ex ->
+            GlobalScope.launch(Dispatchers.Main) {
+                onError(ex)
             }
+        }
+        GlobalScope.launch(Dispatchers.Main + getProductListJob + handler) {
+            val shopId = userSession.shopId.toInt()
+            getFlashSaleProductUseCase.setParams(campaignId, offset, rows, q,
+                    shopId, filterId)
+            val flashSaleProductJob = GlobalScope.async(Dispatchers.Default + handler) {
+                getFlashSaleProductUseCase.executeOnBackground()
+            }
+
+            getFlashSaleCategoryListUseCase.setParams(campaignSlug, shopId)
+            val flashSaleCategoryJob = GlobalScope.async(Dispatchers.Default + handler) {
+                getFlashSaleCategoryListUseCase.executeOnBackground()
+            }
+            onSuccess(mergeResult(flashSaleProductJob.await(), flashSaleCategoryJob.await()))
         }
     }
 
@@ -101,10 +94,23 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         sellerStatusUseCase.execute({ onSuccess(it.getMojitoSellerStatus.sellerStatus) }, onError)
     }
 
+    fun submitSubmission(campaignId: Int, onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
+        //TODO send the correct message
+        submitProductUseCase.setParams(campaignId, userSession.shopId.toInt())
+        submitProductUseCase.execute(
+                {
+                    if ( it.flashSaleSubmitProduct.isSuccess()) {
+                        onSuccess(it.flashSaleSubmitProduct.message)
+                    } else {
+                        onError(MessageErrorException(it.flashSaleSubmitProduct.message))
+                    }
+                }, onError)
+    }
+
     fun getFlashSaleTnc(campaignSlug: String,
                         onSuccess: (String) -> Unit, onError: (Throwable) -> Unit) {
-        getFlashSaleTnCUseCase.setParams(campaignSlug, userSession.shopId.toInt())
-        getFlashSaleTnCUseCase.execute(
+        getFlashSaleTncUseCase.setParams(campaignSlug, userSession.shopId.toInt())
+        getFlashSaleTncUseCase.execute(
                 {
                     val tnc = it.flashSaleTncGQLData.flashSaleTncContent.tnc
                     if (tnc.isEmpty()) {
@@ -120,7 +126,8 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
     }
 
     fun detachView() {
-        parentJob.cancel()
+        getProductListJob.cancel()
         sellerStatusUseCase.unsubscribe()
+        getFlashSaleTncUseCase.unsubscribe()
     }
 }

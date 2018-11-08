@@ -11,7 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetFlashSaleTnCUseCase @Inject
+class GetFlashSaleTncUseCase @Inject
 constructor(@Named(FlashSaleConstant.NAMED_REQUEST_TNC) private val gqlRawString: String,
             graphqlRepository: GraphqlRepository) : GraphqlUseCase<FlashSaleTncGQL>(graphqlRepository) {
 

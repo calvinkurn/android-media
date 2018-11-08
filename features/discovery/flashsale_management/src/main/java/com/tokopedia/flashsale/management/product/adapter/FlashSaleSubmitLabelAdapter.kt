@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import com.tokopedia.flashsale.management.R
 import kotlinx.android.synthetic.main.item_campaign_status.view.*
 
-class SellerStatusListAdapter(var selectedIndex:Int = -1,
-                              var submittedCount:Int = 0,
-                              var pendingCount: Int = 0,
-                              val onSellerStatusListAdapterListener: OnSellerStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FlashSaleSubmitLabelAdapter(var selectedIndex:Int = -1,
+                                  var submittedCount:Int = 0,
+                                  var pendingCount: Int = 0,
+                                  val onSellerStatusListAdapterListener: OnSellerStatusListAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface OnSellerStatusListAdapterListener {
         fun onStatusSelected(position: Int)

@@ -40,5 +40,5 @@
     <string name="flash_sale_request_product">Ajukan Produk</string>
     <string name="x_percent_off">%1$s%% OFF</string>
     <string name="flash_sale_canceled">Dibatalkan</string>
-    <string name="flash_sale_update_request">Perbarui Pengajuan</string>
+    <string name="flash_sale_update_submission">Perbarui Pengajuan</string>
 </resources>
