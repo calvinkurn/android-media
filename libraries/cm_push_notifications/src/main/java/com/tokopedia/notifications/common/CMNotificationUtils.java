@@ -1,6 +1,9 @@
 package com.tokopedia.notifications.common;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -10,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Created by Ashwani Tyagi on 24/10/18.
@@ -53,6 +57,16 @@ public class CMNotificationUtils {
         return true;
     }
 
+    public static String getUniqueAppId(Context context) {
+        CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
+        String appId = cacheHandler.getStringValue(context, CMConstant.UNIQUE_APP_ID_CACHE_KEY);
+        if (TextUtils.isEmpty(appId)) {
+            appId = UUID.randomUUID().toString();
+            cacheHandler.saveStringValue(context, CMConstant.UNIQUE_APP_ID_CACHE_KEY, appId);
+        }
+        return appId;
+    }
+
     public static void saveToken(Context context, String token) {
         CMNotificationCacheHandler cacheHandler = new CMNotificationCacheHandler();
         cacheHandler.saveStringValue(context, CMConstant.FCM_TOKEN_CACHE_KEY, token);
@@ -70,5 +84,20 @@ public class CMNotificationUtils {
 
     public static String getCurrentLocalTimeStamp() {
         return String.valueOf(System.currentTimeMillis());
+    }
+
+    public static int getSdkVersion() {
+        return Build.VERSION.SDK_INT;
+    }
+
+    public static int getCurrentAppVersion(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

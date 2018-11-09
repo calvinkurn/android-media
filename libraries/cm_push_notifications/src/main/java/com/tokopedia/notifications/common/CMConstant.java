@@ -15,6 +15,7 @@ public interface CMConstant {
     String FCM_TOKEN_CACHE_KEY = "fcm_token_cache";
     String USERID_CACHE_KEY = "userid_cache";
     String GADSID_CACHE_KEY = "gadsid_cache";
+    String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
 
     interface NotificationId {
         int GENERAL = 501;

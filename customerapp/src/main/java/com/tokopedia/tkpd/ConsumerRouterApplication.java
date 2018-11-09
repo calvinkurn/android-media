@@ -52,6 +52,7 @@ import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -192,6 +193,7 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
@@ -523,6 +525,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initializeDagger();
         initDaggerInjector();
         initRemoteConfig();
+        GraphqlClient.init(getApplicationContext());
+        NetworkClient.init(getApplicationContext());
         initCMPushNotification();
     }
 

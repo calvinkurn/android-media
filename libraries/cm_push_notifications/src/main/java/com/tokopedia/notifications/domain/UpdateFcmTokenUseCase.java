@@ -20,12 +20,17 @@ public class UpdateFcmTokenUseCase extends RestRequestUseCase {
     public UpdateFcmTokenUseCase() {
     }
 
-    public void createRequestParams(String userId, String accessToken, String gAdsId, String token) {
+    public void createRequestParams(String userId, String token, int sdkVersion, String appId ,int appVersion) {
         requestParams.putString("userid", userId);
-        requestParams.putString("authtoken", accessToken);
-        requestParams.putString("device", "ANDROID");
+       // requestParams.putString("authtoken", accessToken);
+        requestParams.putString("source", "ANDROID");
         requestParams.putString("fcm_token", token);
-        requestParams.putString("identifier", gAdsId);
+        requestParams.putString("appId", appId);
+       // requestParams.putString("identifier", gAdsId);
+        requestParams.putInt("sdkVersion", sdkVersion);
+        requestParams.putInt("appVersion", appVersion);
+       // requestParams.putString("state", appId);
+
         requestParams.putString("requesttimestamp", CMNotificationUtils.getCurrentLocalTimeStamp());
     }
 

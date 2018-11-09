@@ -173,8 +173,6 @@ public class CMPushNotificationManager {
             notifyGeneral(model, CMConstant.NotificationId.GENERAL, notificationManagerCompat);
         } else if (CMConstant.NotificationType.BIG_IMAGE.equals(notificationType)) {
 
-        } else {
-
         }
     }
 
@@ -188,7 +186,7 @@ public class CMPushNotificationManager {
         } catch (Exception e) {
             Log.e(LOG, "CMPushNotificationManager: ", e);
         }
-        return "";
+        return CMConstant.EXTRA_NOTIFICATION_TYPE;
     }
 
     private JSONObject getCustomValues(Bundle extras) {
@@ -225,44 +223,39 @@ public class CMPushNotificationManager {
         String accessToken = ((CMRouter) mContext).getAccessToken();
         String gAdId = getGoogleAdId();
         updateFcmTokenUseCase = new UpdateFcmTokenUseCase();
-        updateFcmTokenUseCase.createRequestParams(userId, accessToken, gAdId, token);
-        new Handler().postDelayed(new Runnable() {
+        updateFcmTokenUseCase.createRequestParams(userId, token, CMNotificationUtils.getSdkVersion(), CMNotificationUtils.getUniqueAppId(mContext),
+                CMNotificationUtils.getCurrentAppVersion(mContext));
+
+        updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
-            public void run() {
-                updateFcmTokenUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.e(LOG, "onCompleted: sendFcmTokenToServer ");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(LOG, "CMPushNotificationManager: sendFcmTokenToServer " + e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                        RestResponse res1 = typeRestResponseMap.get(String.class);
-                        Log.e("code", "" + res1.getCode());
-                        Log.e("data", "" + res1.getData());
-                        Log.e("error", "" + res1.getErrorBody());
-
-                        if (true) {
-                            CMNotificationUtils.saveToken(mContext, token);
-                            CMNotificationUtils.saveUserId(mContext, userId);
-                            CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
-                        }
-                    }
-                });
+            public void onCompleted() {
+                Log.e(LOG, "onCompleted: sendFcmTokenToServer ");
             }
-        }, 1000);
 
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG, "CMPushNotificationManager: sendFcmTokenToServer " + e.getMessage());
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                RestResponse res1 = typeRestResponseMap.get(String.class);
+                Log.e("code", "" + res1.getCode());
+                Log.e("data", "" + res1.getData());
+                Log.e("error", "" + res1.getErrorBody());
+
+                if (true) {
+                    CMNotificationUtils.saveToken(mContext, token);
+                    CMNotificationUtils.saveUserId(mContext, userId);
+                    CMNotificationUtils.saveGAdsIdId(mContext, gAdId);
+                }
+            }
+        });
     }
 
 
     private String getGoogleAdId() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(mContext, TkpdCache.ADVERTISINGID);
-
         String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
         if (adsId != null && !TextUtils.isEmpty(adsId.trim())) {
             return adsId;
