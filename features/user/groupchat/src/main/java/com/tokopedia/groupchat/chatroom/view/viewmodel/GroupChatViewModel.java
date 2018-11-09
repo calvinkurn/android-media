@@ -12,12 +12,14 @@ public class GroupChatViewModel implements Parcelable {
     private String channelUuid;
     private ChannelInfoViewModel channelInfoViewModel;
     private long timeStampBeforePause = 0;
+    private long timeStampAfterResume = 0;
     private int channelPosition;
 
     public GroupChatViewModel(String channelUuid, int channelPosition) {
         this.channelUuid = channelUuid;
         this.channelInfoViewModel = null;
         this.timeStampBeforePause = 0;
+        this.timeStampAfterResume = 0;
         this.channelPosition = channelPosition;
     }
 
@@ -25,6 +27,7 @@ public class GroupChatViewModel implements Parcelable {
         channelUuid = in.readString();
         channelInfoViewModel = in.readParcelable(ChannelInfoViewModel.class.getClassLoader());
         timeStampBeforePause = in.readLong();
+        timeStampAfterResume = in.readLong();
         channelPosition = in.readInt();
     }
 
@@ -102,6 +105,15 @@ public class GroupChatViewModel implements Parcelable {
         dest.writeString(channelUuid);
         dest.writeParcelable(channelInfoViewModel, flags);
         dest.writeLong(timeStampBeforePause);
+        dest.writeLong(timeStampAfterResume);
         dest.writeInt(channelPosition);
+    }
+
+    public void setTimeStampAfterResume(long timeStampAfterResume) {
+        this.timeStampAfterResume = timeStampAfterResume;
+    }
+
+    public long getTimeStampAfterResume() {
+        return timeStampAfterResume;
     }
 }
