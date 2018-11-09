@@ -16,11 +16,10 @@ import android.widget.Toast
 
 import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Context
+import android.content.SharedPreferences
 import com.appsflyer.AppsFlyerLib
-import com.tokopedia.kelontongapp.APPSFLYER_SET_USER
-import com.tokopedia.kelontongapp.APPSFLYER_URL_SCHEME
-import com.tokopedia.kelontongapp.EVENT_NAME
-import com.tokopedia.kelontongapp.EVENT_VALUE
+import com.tokopedia.kelontongapp.*
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONArray
@@ -29,6 +28,7 @@ import org.json.JSONArray
  * Created by meta on 12/10/18.
  */
 class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
+    private val sharedPref: SharedPreferences = activity.getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
 
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         val uri = Uri.parse(url)
@@ -117,9 +117,12 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
 
     private fun handleAppsFlyer(uri: Uri) {
         if(uri.host == APPSFLYER_SET_USER) {
-            if(uri.getQueryParameter("id") != null) {
-                // save to shared preference
-                AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter("id"))
+            if(uri.getQueryParameter(ID) != null) {
+                with (sharedPref.edit()) {
+                    putString(USER_ID, uri.getQueryParameter(ID))
+                    apply()
+                }
+                AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter(ID))
             }
         } else {
             val urlParts = uri.toString().split("\\?")

@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
@@ -21,8 +22,11 @@ class KelontongMainApplication : Application() {
     val NOTIFICATION_CHANNEL_DESC = "mitra_tkpd_notification_channel_desc"
     val AF_KEY = "SdSopxGtYr9yK8QEjFVHXL"
 
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onCreate() {
         super.onCreate()
+        sharedPref = getSharedPreferences(USER_DATA, Context.MODE_PRIVATE)
         initAppsflyer()
         initCrashlytics()
         createNotificationChannel()
@@ -48,10 +52,9 @@ class KelontongMainApplication : Application() {
 
     private fun initAppsflyer() {
         AppsFlyerLib.getInstance().init(AF_KEY, appsflyerConversionListener(), this)
-        val addData = HashMap<String, Any>()
+        AppsFlyerLib.getInstance().setCustomerUserId(sharedPref.getString(USER_ID, ""))
+        val addData = HashMap<String, Any?>()
         addData[KEY_INSTALL_SOURCE] = getInstallSource()
-        // get customer id from shared preferences
-        AppsFlyerLib.getInstance().setCustomerUserId("")
         AppsFlyerLib.getInstance().setAdditionalData(addData)
         AppsFlyerLib.getInstance().startTracking(this)
     }
@@ -74,7 +77,7 @@ class KelontongMainApplication : Application() {
         }
     }
 
-    private fun getInstallSource(): String {
+    private fun getInstallSource(): String? {
         return packageManager.getInstallerPackageName(packageName)
     }
 
