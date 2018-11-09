@@ -242,6 +242,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("NIS", "onCreate Start ");
 
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
@@ -280,6 +281,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
+        Log.d("NIS", "onCreate End");
+
     }
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
@@ -1242,7 +1245,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
+        Log.d("NIS", "canPause " + canResume() );
         if (canResume()) {
+            Log.d("NIS", "onResume ");
 
             kickIfIdleForTooLong();
 
@@ -1286,7 +1291,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private boolean canPause() {
         return viewModel != null
-                && (viewModel.getTimeStampAfterPause() == 0 || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME));
+                && (viewModel.getTimeStampAfterPause() == 0 || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME
+                && canResume()));
     }
 
     @Override
@@ -1303,6 +1309,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onStart() {
         super.onStart();
         analytics.sendScreen(this, getScreenName());
+        Log.d("NIS", "onStart");
+
     }
 
     private void refreshTab() {
@@ -1359,8 +1367,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("NIS", "canPause " + canPause() );
 
         if (canPause()) {
+            Log.d("NIS", "onPause");
 
             if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                     && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getTitle())) {
@@ -1384,7 +1394,16 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("NIS", "onStop");
+
+    }
+
+    @Override
     protected void onDestroy() {
+        Log.d("NIS", "onDestroy");
+
         if (youTubePlayer != null) {
             youTubePlayer.release();
         }
