@@ -49,7 +49,6 @@ import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChatroomPresenter;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
@@ -686,7 +685,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private boolean canPause() {
         return timeStampAfterPause == 0 || (timeStampAfterPause > 0 && System.currentTimeMillis()
-                - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME);
+                - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
+                && canResume());
     }
 
     @Override
