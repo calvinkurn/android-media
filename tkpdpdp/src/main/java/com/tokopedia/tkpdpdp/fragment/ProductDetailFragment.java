@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.perf.metrics.Trace;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -47,6 +48,7 @@ import com.tokopedia.affiliatecommon.domain.GetProductAffiliateGqlUseCase;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
@@ -271,6 +273,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public static final String STATE_APP_BAR_COLLAPSED = "STATE_APP_BAR_COLLAPSED";
     public static final String TAG_SHOWCASE_VARIANT = "-SHOWCASE_VARIANT";
     private static final String STATIC_VALUE_ENHANCE_NONE_OTHER = "none / other";
+    private static final String PDP_TRACE = "pdp_trace";
     public static final int TYPE_BUTTON_BUY_CART = 10;
     public static final int TYPE_BUTTON_BUY_BELI = 20;
     public static final int TYPE_BUTTON_OPEN_VARIANT = 30;
@@ -318,6 +321,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private ReportProductDialogFragment fragment;
     private Bundle recentBundle;
     private com.tokopedia.abstraction.common.utils.LocalCacheHandler localCacheHandler;
+    private Trace trace;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -381,6 +385,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        trace = TrackingUtils.startTrace(PDP_TRACE);
         initInjector();
         super.onCreate(savedInstanceState);
         MerchantVoucherComponent merchantVoucherComponent = DaggerMerchantVoucherComponent.builder()
@@ -735,7 +740,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             } else {
                 onClickBuyWhileRequestingVariant = true;
                 lastStateOnClickBuyWhileRequestVariant = source;
-                buttonBuyView.changeToLoading();
+                if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP)) {
+                    buttonBuyView.showLoadingBuyNow();
+                } else if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP)) {
+                    buttonBuyView.showLoadingAddToCart();
+                }
             }
         } else {
             openProductModalActivity(generateStateVariant(source));
@@ -910,7 +919,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onCourierClicked(@NonNull String productId,
                                  @Nullable ArrayList<CourierViewData> arrayList) {
-        startActivity(CourierActivity.createIntent(getActivity(), arrayList));
+        startActivity(CourierActivity.createIntent(getActivity(), productId, arrayList));
         getActivity().overridePendingTransition(0, 0);
 
     }
@@ -1002,8 +1011,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void onProductBuySessionLogin(@NonNull ProductCartPass data) {
-        buttonBuyView.changeToLoading();
+    public void onProductBuySessionLogin(@NonNull ProductCartPass data, String source) {
+        if (source.equals(ProductDetailView.SOURCE_BUTTON_CART_PDP) || source.equals(ProductDetailView.SOURCE_BUTTON_CART_VARIANT)) {
+            buttonBuyView.showLoadingAddToCart();
+        } else if (source.equals(ProductDetailView.SOURCE_BUTTON_BUY_PDP) || source.equals(ProductDetailView.SOURCE_BUTTON_BUY_VARIANT)) {
+            buttonBuyView.showLoadingBuyNow();
+        }
         presenter.processToCart(getActivity(), data);
     }
 
@@ -1051,10 +1064,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void renderAffiliateButton(AffiliateInfoViewModel affiliate) {
         if (isFromExploreAffiliate()) {
             buttonAffiliate.renderView(affiliate);
+            buttonBuyView.setBuyNowLabelFull(true);
         } else {
             if (affiliate != null) {
                 buttonBuyView.showByMeButton(true);
                 buttonBuyView.setByMeButtonListener(affiliate);
+                buttonBuyView.setBuyNowLabelFull(false);
+            } else {
+                buttonBuyView.setBuyNowLabelFull(true);
             }
         }
     }
@@ -1067,7 +1084,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showErrorAffiliate(String message) {
         if (getActivity() != null && isFromExploreAffiliate()) {
-            if (TextUtils.isEmpty(message)) message = getActivity().getString(R.string.error_no_connection2);
+            if (TextUtils.isEmpty(message))
+                message = getActivity().getString(R.string.error_no_connection2);
             Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_LONG)
                     .setAction(
                             getString(R.string.title_try_again),
@@ -1102,6 +1120,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         this.productData = successResult;
         this.viewData = viewData;
         this.headerInfoView.renderData(successResult);
+        this.headerInfoView.renderProductCampaign(successResult);
         this.pictureView.renderData(successResult);
         if (!isFromExploreAffiliate()) {
             this.buttonBuyView.renderData(successResult);
@@ -1180,7 +1199,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void finishLoadingWishList() {
-        loading.dismiss();
+        if (getActivity() != null && getView() != null) {
+            loading.dismiss();
+        }
     }
 
     @Override
@@ -1373,7 +1394,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void hideProgressLoading() {
-
+        if (trace != null)
+            trace.stop();
     }
 
     @Override
@@ -1551,12 +1573,14 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                     switch (data.getIntExtra(ARGS_STATE_RESULT_PDP_MODAL, 0)) {
                         case ConstantKey.SELECTED_VARIANT_RESULT_SKIP_TO_CART:
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_PDP));
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_PDP),
+                                        SOURCE_BUTTON_BUY_PDP);
                             }
                             break;
                         case ConstantKey.SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                             if (getActivity() != null && SessionHandler.isV4Login(getActivity())) {
-                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP));
+                                onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_PDP),
+                                        SOURCE_BUTTON_CART_PDP);
                             }
                             break;
                         case ConstantKey.KILL_PDP_BACKGROUND:
@@ -1588,6 +1612,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         if (productVariant != null) {
                             pictureView.renderData(productData);
                             headerInfoView.renderData(productData);
+                            headerInfoView.renderProductCampaign(productData);
                             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                                     productData.getInfo());
                             shopInfoView.renderData(productData);
@@ -1605,7 +1630,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                         switch (data.getIntExtra(KEY_STATE_RESULT_VARIANT, 0)) {
                             case SELECTED_VARIANT_RESULT_SKIP_TO_CART:
                                 if (SessionHandler.isV4Login(getActivity())) {
-                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT));
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_BUY_VARIANT),
+                                            SOURCE_BUTTON_BUY_VARIANT);
                                 } else {
                                     ProductPageTracking.eventClickBuyInVariantNotLogin(
                                             getActivity(),
@@ -1616,7 +1642,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                                 break;
                             case SELECTED_VARIANT_RESULT_STAY_IN_PDP:
                                 if (SessionHandler.isV4Login(getActivity())) {
-                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT));
+                                    onProductBuySessionLogin(createProductCartPass(SOURCE_BUTTON_CART_VARIANT),
+                                            SOURCE_BUTTON_CART_VARIANT);
                                 } else {
                                     ProductPageTracking.eventClickAtcInVariantNotLogin(
                                             getActivity(),
@@ -1681,6 +1708,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onResume() {
         super.onResume();
+
         if (productData != null) {
             presenter.startIndexingApp(appIndexHandler, productData);
             this.newShopView.renderData(productData);
@@ -1847,7 +1875,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void showProductCampaign() {
         if (headerInfoView != null && productData != null) {
-            headerInfoView.renderProductCampaign(productData.getCampaign());
+            headerInfoView.renderProductCampaign(productData);
         }
     }
 
@@ -2223,7 +2251,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     }
 
     @Override
-    public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
+    public void renderAddToCartSuccessOpenCheckout(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
         String productName = "";
         if (productData.getInfo() != null) {
@@ -2242,7 +2270,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         enhanceEcommerceAtc(addToCartResult);
         if (getActivity() != null && getActivity().getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) getActivity().getApplicationContext())
-                    .getCartIntent(getActivity());
+                    .getCheckoutIntent(getActivity());
             startActivity(intent);
         }
     }
@@ -2263,11 +2291,23 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
-        showSnackbarSuccessAtc(addToCartResult.getMessage());
+        showSnackbarSuccessAtc(addToCartResult.getMessage(), String.valueOf(productData.getInfo().getProductId()));
     }
 
-    private void showSnackbarSuccessAtc(String message) {
-        ToasterNormal.make(getView(), message, ToasterNormal.LENGTH_LONG).show();
+    private void showSnackbarSuccessAtc(String message, String productId) {
+        if (getActivity() != null && getView() != null) {
+            if (TextUtils.isEmpty(message)) {
+                message = getString(R.string.default_request_error_unknown_short);
+            }
+            ToasterNormal.make(getView(), message.replace("\n", " "), BaseToaster.LENGTH_LONG)
+                    .setAction(getActivity().getString(R.string.label_atc_open_cart), v -> {
+                        checkoutAnalyticsAddToCart.eventAtcClickLihat(productId);
+                        Intent intent = ((PdpRouter) getActivity().getApplicationContext())
+                                .getCartIntent(getActivity());
+                        startActivity(intent);
+                    })
+                    .show();
+        }
     }
 
     private void enhanceEcommerceAtc(AddToCartResult addToCartResult) {
@@ -2380,7 +2420,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(
-                buttonBuyView.btnCart,
+                buttonBuyView.tvAddToCart,
                 getResources().getString(R.string.title_show_case_pdp),
                 getResources().getString(R.string.desc_show_case_pdp),
                 ShowCaseContentPosition.TOP,
@@ -2545,7 +2585,6 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             icon.setDrawableByLayerId(R.id.ic_cart_count, badge);
         }
     }
-
     private String getUserId(){
         return userSession.getUserId();
     }

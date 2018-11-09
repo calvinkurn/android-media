@@ -2,7 +2,6 @@ package com.tokopedia.tkpdpdp.customview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -37,12 +36,12 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     private LinearLayout containerButtonBuy;
     private ProgressBar variantProgressBar;
     public View containerNewButtonBuy;
-    public View btnCart;
     public View btnChat;
     public View btnByMe;
-    public View btnNewBuy;
-    private ProgressBar progressBarVariant;
-    private TextView tvNewBuy;
+    private TextView tvBuyNow;
+    public TextView tvAddToCart;
+    private ProgressBar pbBuyNow;
+    private ProgressBar pbAddToCart;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -78,15 +77,19 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         tvBuy = findViewById(R.id.tv_buy);
         tvPromoTopAds = findViewById(R.id.tv_promote_topads);
         tvpPromoHour = findViewById(R.id.tv_promo_hour);
-        containerButtonBuy =  findViewById(R.id.container_btn_buy);
+        containerButtonBuy = findViewById(R.id.container_btn_buy);
         variantProgressBar = findViewById(R.id.variant_progress_bar);
         containerNewButtonBuy = findViewById(R.id.container_new_checkout_flow);
-        btnCart = findViewById(R.id.action_button_cart);
         btnChat = findViewById(R.id.action_button_chat);
-        btnNewBuy = findViewById(R.id.container_new_button_buy);
-        progressBarVariant = findViewById(R.id.new_variant_progress_bar);
-        tvNewBuy = findViewById(R.id.tv_new_buy);
         btnByMe = findViewById(R.id.action_button_by_me);
+        tvBuyNow = findViewById(R.id.tv_buy_now);
+        tvAddToCart = findViewById(R.id.tv_add_to_cart);
+        pbBuyNow = findViewById(R.id.pb_buy_now);
+        pbAddToCart = findViewById(R.id.pb_add_to_cart);
+        pbBuyNow.getIndeterminateDrawable()
+                .setColorFilter(ContextCompat.getColor(getContext(), R.color.orange_red), PorterDuff.Mode.SRC_IN);
+        pbAddToCart.getIndeterminateDrawable()
+                .setColorFilter(ContextCompat.getColor(getContext(), R.color.white), PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -94,7 +97,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         if (data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE)) {
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_warehouse));
             tvBuy.setEnabled(false);
             containerButtonBuy.setEnabled(false);
@@ -127,11 +130,11 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+                tvBuyNow.setText(getContext().getString(R.string.title_pre_order));
             } else {
-                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+                tvBuyNow.setText(getContext().getString(R.string.title_buy));
             }
-            btnNewBuy.setOnClickListener(new OnClickListener() {
+            tvBuyNow.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -151,7 +154,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
-            btnCart.setOnClickListener(new OnClickListener() {
+            tvAddToCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -196,17 +199,29 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    public void changeToLoading() {
-        progressBarVariant.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-        progressBarVariant.setVisibility(VISIBLE);
-        btnNewBuy.setEnabled(false);
-        btnCart.setEnabled(false);
+    public void showLoadingBuyNow() {
+        removeLoading();
+        pbBuyNow.setVisibility(VISIBLE);
+        tvBuyNow.setVisibility(GONE);
+        tvBuyNow.setClickable(false);
+        tvAddToCart.setClickable(false);
+    }
+
+    public void showLoadingAddToCart() {
+        removeLoading();
+        pbAddToCart.setVisibility(VISIBLE);
+        tvAddToCart.setVisibility(GONE);
+        tvAddToCart.setClickable(false);
+        tvBuyNow.setClickable(false);
     }
 
     public void removeLoading() {
-        progressBarVariant.setVisibility(GONE);
-        btnNewBuy.setEnabled(true);
-        btnCart.setEnabled(true);
+        pbAddToCart.setVisibility(GONE);
+        tvAddToCart.setVisibility(VISIBLE);
+        pbBuyNow.setVisibility(GONE);
+        tvBuyNow.setVisibility(VISIBLE);
+        tvBuyNow.setClickable(true);
+        tvAddToCart.setClickable(true);
     }
 
     public void updateButtonForVariantProduct(boolean isBuyable, ProductDetailData data) {
@@ -216,11 +231,11 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
                     && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-                tvNewBuy.setText(getContext().getString(R.string.title_pre_order));
+                tvBuyNow.setText(getContext().getString(R.string.title_pre_order));
             } else {
-                tvNewBuy.setText(getContext().getString(R.string.title_buy));
+                setBuyNowLabelFull(btnByMe.getVisibility() != View.VISIBLE);
             }
-            btnNewBuy.setOnClickListener(new OnClickListener() {
+            tvBuyNow.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -240,7 +255,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
-            btnCart.setOnClickListener(new OnClickListener() {
+            tvAddToCart.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (SessionHandler.isV4Login(getContext())) {
@@ -266,7 +281,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             containerButtonBuy.setVisibility(VISIBLE);
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             tvBuy.setText(getContext().getString(R.string.title_warehouse));
             tvBuy.setEnabled(false);
             containerButtonBuy.setEnabled(false);
@@ -276,7 +291,7 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             containerButtonBuy.setVisibility(VISIBLE);
             tvBuy.setBackgroundResource(R.drawable.btn_buy_grey);
             containerButtonBuy.setBackgroundResource(R.drawable.btn_buy_grey);
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(),R.color.black_38));
+            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -305,15 +320,23 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    public void showByMeButton(boolean show){
-        if (show){
+    public void showByMeButton(boolean show) {
+        if (show) {
             btnByMe.setVisibility(VISIBLE);
-        } else{
+        } else {
             btnByMe.setVisibility(GONE);
         }
     }
 
-    public void setByMeButtonListener(AffiliateInfoViewModel affiliate){
+    public void setBuyNowLabelFull(boolean isFullLabel) {
+        if (isFullLabel) {
+            tvBuyNow.setText(getContext().getString(R.string.title_buy_now));
+        } else {
+            tvBuyNow.setText(getContext().getString(R.string.title_buy_now_simple));
+        }
+    }
+
+    public void setByMeButtonListener(AffiliateInfoViewModel affiliate) {
         btnByMe.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

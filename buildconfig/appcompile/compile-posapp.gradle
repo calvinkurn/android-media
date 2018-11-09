@@ -53,6 +53,8 @@ include "features:user:changepassword"
 include "features:user:otp"
 include "features:user:logout"
 include "features:user:updateinactivephone"
+include "features:user:changephonenumber"
+include "features:user:phoneverification"
 
 include 'tkpdcore'
 include 'tkpdinbox'

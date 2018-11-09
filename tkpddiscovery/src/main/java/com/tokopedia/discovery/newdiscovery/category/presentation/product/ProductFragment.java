@@ -30,7 +30,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
@@ -61,6 +60,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -97,8 +97,9 @@ public class ProductFragment extends BrowseSectionFragment
     protected SwipeRefreshLayout refreshLayout;
     @Inject
     ProductPresenter presenter;
+    @Inject
+    UserSessionInterface userSession;
 
-    private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private CategoryProductListAdapter adapter;
@@ -137,7 +138,6 @@ public class ProductFragment extends BrowseSectionFragment
         } else {
             loadDataFromArguments();
         }
-        sessionHandler = new SessionHandler(getContext());
         gcmHandler = new GCMHandler(getContext());
         trackerProductCache = new LocalCacheHandler(getActivity(), CATEGORY_ENHANCE_ANALYTIC);
         clearLastProductTracker(true);
@@ -185,7 +185,7 @@ public class ProductFragment extends BrowseSectionFragment
     private void initTopAdsConfig() {
         topAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
     }
@@ -402,12 +402,12 @@ public class ProductFragment extends BrowseSectionFragment
     }
 
     private String generateUserId() {
-        return sessionHandler.isV4Login() ? sessionHandler.getLoginID() : null;
+        return userSession.isLoggedIn() ? userSession.getUserId() : null;
     }
 
     private String generateUniqueId() {
-        return sessionHandler.isV4Login() ?
-                AuthUtil.md5(sessionHandler.getLoginID()) :
+        return userSession.isLoggedIn() ?
+                AuthUtil.md5(userSession.getUserId()) :
                 AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
@@ -608,12 +608,12 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public boolean isUserHasLogin() {
-        return SessionHandler.isV4Login(getContext());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getUserId() {
-        return SessionHandler.getLoginID(getContext());
+        return userSession.getUserId();
     }
 
     @Override

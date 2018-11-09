@@ -72,6 +72,8 @@
 /features/user/notifcenter/             @tokopedia/minion-kevin
 /features/user/attachproduct/           @tokopedia/minion-kevin
 /features/user/talk/                    @tokopedia/minion-kevin
+/features/user/changephonenumber        @tokopedia/minion-kevin
+/features/user/phoneverification        @tokopedia/minion-kevin
 /features/content/affiliate/            @tokopedia/minion-kevin
 /features/content/affiliate_common/     @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin

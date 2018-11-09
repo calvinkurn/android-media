@@ -30,7 +30,7 @@ public class GetNextDealPageUseCase extends RestRequestUseCase {
     }
 
     @Override
-    protected List<RestRequest> buildRequest() {
+    protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest=new ArrayList<>();
         HashMap<String, Object> map = params.getParameters();
         String nextUrl= String.valueOf(map.get(Utils.NEXT_URL));
