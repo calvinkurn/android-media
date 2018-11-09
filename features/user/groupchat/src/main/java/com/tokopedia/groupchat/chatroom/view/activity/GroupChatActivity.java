@@ -829,7 +829,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             GroupChatActivity.super.onBackPressed();
             return;
         }
-        exitDialog.show();
+
+        if (exitDialog != null) {
+            exitDialog.show();
+        } else {
+            finish();
+            GroupChatActivity.super.onBackPressed();
+        }
     }
 
     private String getDurationWatchVideo() {
