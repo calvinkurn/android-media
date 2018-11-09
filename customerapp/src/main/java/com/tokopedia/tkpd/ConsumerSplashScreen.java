@@ -55,7 +55,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void startWarmStart() {
-        trace = TrackingUtils.startTrace(SPLASH_TRACE);
+        trace = TrackingUtils.startTrace(this, SPLASH_TRACE);
     }
 
     private void finishWarmStart() {

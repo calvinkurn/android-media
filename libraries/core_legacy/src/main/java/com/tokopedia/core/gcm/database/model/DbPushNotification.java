@@ -5,12 +5,12 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 
 /**
  * Created by alvarisi on 2/22/17.
  */
-@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
+@Table(database = CoreLegacyDbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class DbPushNotification extends BaseModel {
 
     @Column

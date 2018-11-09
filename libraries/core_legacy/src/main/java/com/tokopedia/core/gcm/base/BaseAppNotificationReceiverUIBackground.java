@@ -80,6 +80,20 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         return getCode(data) != 101 && (getCode(data) < 1000 || getCode(data) >= 1100);
     }
 
+    protected void resetNotificationStatus(Bundle data) {
+//        switch (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE, "0"))) {
+//            case TkpdState.GCMServiceState.GCM_DRAWER_UPDATE:
+//                MainApplication.resetDrawerStatus(true);
+//                break;
+//            case TkpdState.GCMServiceState.GCM_CART_UPDATE:
+//                MainApplication.resetCartStatus(true);
+//                break;
+//            default:
+//                MainApplication.resetNotificationStatus(true);
+//                break;
+//        }
+    }
+
     public abstract void handleDedicatedNotification(Bundle data);
 
     public abstract void handlePromotionNotification(Bundle data);

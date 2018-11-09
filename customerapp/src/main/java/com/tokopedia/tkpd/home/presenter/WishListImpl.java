@@ -529,7 +529,7 @@ public class WishListImpl implements WishList {
             for (int i = 0; i < dataWishlist.size(); i++) {
                 if (dataWishlist.get(i) != null) {
                     if (productId.equals(dataWishlist.get(i).getId())) {
-                        TrackingUtils.sendMoEngageRemoveWishlist(dataWishlist.get(i));
+                        TrackingUtils.sendMoEngageRemoveWishlist(context, dataWishlist.get(i));
                         break;
                     }
                 }

@@ -80,7 +80,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        trace = TrackingUtils.startTrace("favorite_trace");
+        trace = TrackingUtils.startTrace(getActivity(), "favorite_trace");
         super.onCreate(savedInstanceState);
     }
 
@@ -162,7 +162,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 } else {
                     favoritePresenter.loadInitialData();
                 }
-                ScreenTracking.screen(getScreenName());
+                ScreenTracking.screen(getActivity(), getScreenName());
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -234,7 +234,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
-        TrackingUtils.sendMoEngageOpenFavoriteEvent(dataFavorite.size());
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(getActivity(), dataFavorite.size());
     }
 
     @Override

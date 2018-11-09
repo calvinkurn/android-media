@@ -152,7 +152,7 @@ public class LoginActivityTest {
 
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core2.R.id.web_oauth);
         if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
@@ -222,7 +222,7 @@ public class LoginActivityTest {
 
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core2.R.id.web_oauth);
         if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
@@ -284,7 +284,7 @@ public class LoginActivityTest {
 
         // waiting all url to be finished
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        final WebView webview = dialog.getView().findViewById(com.tokopedia.core2.R.id.web_oauth);
         if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
@@ -332,7 +332,7 @@ public class LoginActivityTest {
 
         // waiting all url to be finished
         dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        final WebView webview2 = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+        final WebView webview2 = dialog.getView().findViewById(com.tokopedia.core2.R.id.web_oauth);
         if (webview != null) {
             try {
                 mIntentsRule.getActivity().runOnUiThread(new Runnable() {
@@ -397,7 +397,7 @@ public class LoginActivityTest {
         DialogFragment dialog = (DialogFragment) mIntentsRule.getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
 
         if (isFirstTime) {
-            final WebView webview = dialog.getView().findViewById(com.tokopedia.core.R.id.web_oauth);
+            final WebView webview = dialog.getView().findViewById(com.tokopedia.core2.R.id.web_oauth);
             if (webview != null) {
                 try {
                     mIntentsRule.getActivity().runOnUiThread(new Runnable() {
@@ -551,7 +551,7 @@ public class LoginActivityTest {
 
         assertFalse(mIntentsRule.getActivity().isDestroyed());
 
-        onView(withText(com.tokopedia.core.R.string.title_personal_id)).check(matches(isDisplayed()));
+        onView(withText(com.tokopedia.core2.R.string.title_personal_id)).check(matches(isDisplayed()));
     }
 
     /**

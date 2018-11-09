@@ -246,7 +246,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 if (bundle.getBoolean(Constants.EXTRA_PUSH_PERSONALIZATION, false)) {
-                    UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                    UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
@@ -311,7 +311,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     private void initBranchSession() {
         Branch branch = Branch.getInstance();
         if (branch != null) {
-            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
+            branch.setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID(this));
             branch.initSession(new Branch.BranchReferralInitListener() {
                 @Override
                 public void onInitFinished(JSONObject referringParams, BranchError error) {
