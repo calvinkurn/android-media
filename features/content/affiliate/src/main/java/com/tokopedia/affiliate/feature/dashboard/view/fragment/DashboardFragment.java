@@ -234,8 +234,10 @@ public class DashboardFragment
 
     @Override
     public void onErrorGetDashboardItem(String error) {
+        adapter.clearAllElements();
+        cvRecommendation.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView().getRootView(),
+                getView(),
                 error,
                 () -> {
                     presenter.loadDashboardItem(false);
@@ -277,7 +279,7 @@ public class DashboardFragment
     @Override
     public void onErrorCheckAffiliate(String error) {
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView().getRootView(),
+                getView(),
                 error,
                 () -> {
                     presenter.checkAffiliate();

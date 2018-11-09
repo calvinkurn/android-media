@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,6 +84,7 @@ public class ExploreFragment
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
     private AbstractionRouter abstractionRouter;
+    private FrameLayout layoutEmpty;
 
     private boolean isCanDoAction;
 
@@ -114,6 +116,7 @@ public class ExploreFragment
         ivBantuan = view.findViewById(R.id.action_bantuan);
         autoCompleteLayout = view.findViewById(R.id.layout_auto_complete);
         rvAutoComplete = view.findViewById(R.id.rv_search_auto_complete);
+        layoutEmpty = view.findViewById(R.id.layout_empty);
         adapter = new ExploreAdapter(new ExploreTypeFactoryImpl(this), new ArrayList<>());
         return view;
     }
@@ -135,6 +138,7 @@ public class ExploreFragment
     }
 
     private void initView() {
+        layoutEmpty.setVisibility(View.GONE);
         dropKeyboard();
         initEmptyResultModel();
         autoCompleteLayout.setVisibility(View.GONE);
@@ -325,6 +329,7 @@ public class ExploreFragment
 
     @Override
     public void onSuccessGetFirstData(List<Visitable> itemList, String cursor) {
+        layoutEmpty.setVisibility(View.GONE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         if (itemList.size() == 0) {
@@ -345,12 +350,16 @@ public class ExploreFragment
 
     @Override
     public void onErrorGetFirstData(String error) {
+        layoutEmpty.setVisibility(View.VISIBLE);
         exploreParams.setLoading(false);
         if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView(),
+                layoutEmpty,
                 error,
-                () -> presenter.getFirstData(exploreParams, false)
+                () -> {
+                    layoutEmpty.setVisibility(View.GONE);
+                    presenter.getFirstData(exploreParams, false);
+                }
         );
     }
 
