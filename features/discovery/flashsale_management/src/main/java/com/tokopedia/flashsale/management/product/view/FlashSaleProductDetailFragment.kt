@@ -77,8 +77,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_flash_sale_product_detail, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_flash_sale_product_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -227,7 +226,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         getComponent(CampaignComponent::class.java).inject(this)
     }
 
-    fun onBtnRequestProductClicked() {
+    private fun onBtnRequestProductClicked() {
         if (!canEdit) {
             return
         }

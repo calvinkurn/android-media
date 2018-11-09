@@ -19,6 +19,11 @@
             android:label="@string/flash_sale_reserve_product"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".product.view.FlashSaleTncActivity"
+            android:label="@string/flash_sale_term_and_condition"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>

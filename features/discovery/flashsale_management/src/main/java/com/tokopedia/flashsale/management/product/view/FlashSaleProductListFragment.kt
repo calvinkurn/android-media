@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
@@ -213,8 +214,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                         spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         val clickableSpan = object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                //TODO will change page
-                                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                                val intent = FlashSaleTncActivity.createIntent(context!!, it)
+                                startActivity(intent)
                             }
 
                             override fun updateDrawState(ds: TextPaint) {
@@ -311,11 +312,12 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun renderBottom() {
-        if (needShowBottom()) {
+        //TODO remove comment
+//        if (needShowBottom()) {
             vgBottom.visibility = View.VISIBLE
-        } else {
-            vgBottom.visibility = View.GONE
-        }
+//        } else {
+//            vgBottom.visibility = View.GONE
+//        }
     }
 
     private fun hideChipLabel() {
@@ -379,7 +381,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         when (requestCode) {
             REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                 activity?.setResult(Activity.RESULT_OK)
-                if (data!= null && data.hasExtra(FlashSaleProductDetailFragment.RESULT_IS_CATEGORY_FULL)) {
+                if (data != null && data.hasExtra(FlashSaleProductDetailFragment.RESULT_IS_CATEGORY_FULL)) {
                     needLoadAllPage = true
                 } else {
                     needLoadCurrentPage = true
