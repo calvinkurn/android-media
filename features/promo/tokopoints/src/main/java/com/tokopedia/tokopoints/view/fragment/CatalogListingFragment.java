@@ -303,6 +303,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                         AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
                         "");
             }
+        } else if (source.getId() == R.id.text_membership_label
+                || source.getId() == R.id.text_membership_value_bottom) {
+            openWebView(CommonConstant.WebLink.MEMBERSHIP);
+        } else if (source.getId() == R.id.view_point_saya
+                || source.getId() == R.id.text_my_points_value_bottom) {
+            openWebView(CommonConstant.WebLink.HISTORY);
         }
 
     }
@@ -313,20 +319,20 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type);
         mTabSortType = view.findViewById(R.id.tabs_sort_type);
         mTextPoints = view.findViewById(R.id.text_point_value);
-        bottomViewMembership=view.findViewById(R.id.bottom_view_membership);
-        containerPointDetail=view.findViewById(R.id.container_point_detail);
-        containerEgg=view.findViewById(R.id.container_fab_egg_token);
-        mTextMembershipValueBottom= view.findViewById(R.id.text_membership_value_bottom);
+        bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
+        containerPointDetail = view.findViewById(R.id.container_point_detail);
+        containerEgg = view.findViewById(R.id.container_fab_egg_token);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
-        AppBarLayout appBarHeader= view.findViewById(R.id.app_bar_header);
+        AppBarLayout appBarHeader = view.findViewById(R.id.app_bar_header);
         appBarHeader.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 verticalOffset = Math.abs(verticalOffset);
-                if(verticalOffset>=containerPointDetail.getHeight()){
+                if (verticalOffset >= containerPointDetail.getHeight()) {
                     slideUp();
-                }else{
+                } else {
                     slideDown();
                 }
             }
@@ -338,8 +344,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     private void slideUp() {
-        if(bottomViewMembership.getVisibility()!=View.VISIBLE) {
-            CoordinatorLayout.LayoutParams layoutParams= (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+        if (bottomViewMembership.getVisibility() != View.VISIBLE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.animator.tp_bottom_up);
@@ -350,8 +356,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     private void slideDown() {
-        if(bottomViewMembership.getVisibility()!=View.GONE) {
-            CoordinatorLayout.LayoutParams layoutParams= (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+        if (bottomViewMembership.getVisibility() != View.GONE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.animator.tp_bottom_down);
@@ -369,6 +375,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.text_token_title).setOnClickListener(this);
         getView().findViewById(R.id.img_token).setOnClickListener(this);
+        mTextMembershipValueBottom.setOnClickListener(this);
+        mTextPointsBottom.findViewById(R.id.img_token).setOnClickListener(this);
 
         mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -422,18 +430,20 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
-                textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 this.mLobDetails = lobDetails;
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
-                if (tokenDetail.getSumToken() == 0) {
-                    getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
-                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_xlarge),
+                if (mSumToken == 0) {
+                    textCount.setVisibility(View.GONE);
+                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
                             getResources().getDimensionPixelSize(R.dimen.dp_10),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
+                            0,
                             getResources().getDimensionPixelSize(R.dimen.dp_10));
+                } else {
+                    textCount.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

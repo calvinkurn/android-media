@@ -96,9 +96,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 verticalOffset = Math.abs(verticalOffset);
-                if(verticalOffset>=appBarLayout.getTotalScrollRange()-tickerContainer.getHeight()){
+                if (verticalOffset >= appBarLayout.getTotalScrollRange() - tickerContainer.getHeight()) {
                     slideUp();
-                }else{
+                } else {
                     slideDown();
                 }
             }
@@ -107,8 +107,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void slideUp() {
-        if(bottomViewMembership.getVisibility()!=View.VISIBLE) {
-            CoordinatorLayout.LayoutParams layoutParams= (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+        if (bottomViewMembership.getVisibility() != View.VISIBLE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_xxxlarge));
             Animation bottomUp = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.animator.tp_bottom_up);
@@ -119,8 +119,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     }
 
     private void slideDown() {
-        if(bottomViewMembership.getVisibility()!=View.GONE) {
-            CoordinatorLayout.LayoutParams layoutParams= (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
+        if (bottomViewMembership.getVisibility() != View.GONE) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) containerEgg.getLayoutParams();
             layoutParams.setMargins(0, 0, 0, getResources().getDimensionPixelOffset(R.dimen.tp_margin_large));
             Animation slideDown = AnimationUtils.loadAnimation(bottomViewMembership.getContext(),
                     R.animator.tp_bottom_down);
@@ -192,7 +192,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     @Override
     public void onClick(View source) {
-        if (source.getId() == R.id.text_membership_label) {
+        if (source.getId() == R.id.text_membership_label
+                || source.getId() == R.id.text_membership_value_bottom) {
             openWebView(CommonConstant.WebLink.MEMBERSHIP);
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -200,7 +201,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
-        } else if (source.getId() == R.id.view_point_saya) {
+        } else if (source.getId() == R.id.view_point_saya
+                || source.getId() == R.id.text_my_points_value_bottom) {
             openWebView(CommonConstant.WebLink.HISTORY);
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -229,13 +231,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mImgEgg = view.findViewById(R.id.img_egg);
         mTabLayoutPromo = view.findViewById(R.id.tab_layout_promos);
         mPagerPromos = view.findViewById(R.id.view_pager_promos);
-        mTextMembershipValueBottom= view.findViewById(R.id.text_membership_value_bottom);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
         mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
-        appBarHeader=view.findViewById(R.id.app_bar);
-        bottomViewMembership=view.findViewById(R.id.bottom_view_membership);
-        tickerContainer=view.findViewById(R.id.cons_ticker_container);
-        containerEgg=view.findViewById(R.id.container_fab_egg_token);
+        appBarHeader = view.findViewById(R.id.app_bar);
+        bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
+        tickerContainer = view.findViewById(R.id.cons_ticker_container);
+        containerEgg = view.findViewById(R.id.container_fab_egg_token);
     }
 
     private void initListener() {
@@ -247,6 +249,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
         getView().findViewById(R.id.view_point_saya).setOnClickListener(this);
         getView().findViewById(R.id.view_loyalty_saya).setOnClickListener(this);
+        mTextMembershipValueBottom.setOnClickListener(this);
+        mTextPointsBottom.setOnClickListener(this);
     }
 
     @Override
@@ -331,17 +335,19 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                 TextView textCount = getView().findViewById(R.id.text_token_count);
                 TextView textMessage = getView().findViewById(R.id.text_token_title);
                 ImageView imgToken = getView().findViewById(R.id.img_token);
-                textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                textCount.setText(tokenDetail.getSumTokenStr());
                 this.mSumToken = tokenDetail.getSumToken();
                 textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
                 ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
 
-                if (tokenDetail.getSumToken() == 0) {
-                    getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
-                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_xlarge),
+                if (mSumToken == 0) {
+                    textCount.setVisibility(View.GONE);
+                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
                             getResources().getDimensionPixelSize(R.dimen.dp_10),
-                            getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
+                            0,
                             getResources().getDimensionPixelSize(R.dimen.dp_10));
+                } else {
+                    textCount.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -590,6 +596,25 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPagerPromos.setAdapter(homepagePagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));
         mTabLayoutPromo.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPagerPromos));
+
+        mPagerPromos.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    slideDown();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void decorateDialog(AlertDialog dialog) {
@@ -623,7 +648,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_CEK,
                     AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_ON_BOARDING_LABEL);
-        mToolTip.cancel();
+            mToolTip.cancel();
         });
 
     }

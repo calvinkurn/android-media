@@ -1,51 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#ffffd5"
+    app:cardCornerRadius="@dimen/dp_20"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/text_token_title"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="28dp"
-        android:layout_marginStart="28dp"
-        android:background="@drawable/bg_tp_token_detail_text"
-        android:gravity="center_horizontal"
-        android:paddingBottom="10dp"
-        android:paddingEnd="@dimen/tp_margin_medium"
-        android:paddingLeft="50dp"
-        android:paddingRight="@dimen/tp_margin_medium"
-        android:paddingStart="50dp"
-        android:paddingTop="10dp"
-        android:shadowColor="@color/red_error"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/tp_text_size_small"
-        app:layout_constraintBottom_toBottomOf="@+id/img_token"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_token" />
+        android:paddingStart="@dimen/dp_12"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingEnd="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_2">
 
-    <ImageView
-        android:id="@+id/img_token"
-        android:layout_width="52dp"
-        android:layout_height="60dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        <TextView
+            android:id="@+id/text_token_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:gravity="center_horizontal"
+            android:paddingStart="32dp"
+            android:paddingLeft="32dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:shadowColor="@color/red_error"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/tp_text_size_small"
+            app:layout_constraintBottom_toBottomOf="@+id/img_token"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_token"
+            tool:text="Lucky egg habish" />
 
-    <TextView
-        android:id="@+id/text_token_count"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/circle_red"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        app:layout_constraintBottom_toBottomOf="@+id/text_token_title"
-        app:layout_constraintStart_toStartOf="@id/text_token_title"
-        app:layout_constraintTop_toTopOf="@+id/text_token_title" />
+        <ImageView
+            android:id="@+id/img_token"
+            android:layout_width="36dp"
+            android:layout_height="42dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
 
+        <TextView
+            android:id="@+id/text_token_count"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:background="@drawable/circle_red"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/tp_text_size_xxsmall"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/text_token_title"
+            app:layout_constraintStart_toStartOf="@id/text_token_title"
+            app:layout_constraintTop_toTopOf="@+id/text_token_title"
+            tool:text="10" />
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

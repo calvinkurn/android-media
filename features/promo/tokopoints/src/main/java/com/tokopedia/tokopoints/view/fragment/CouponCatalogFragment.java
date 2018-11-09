@@ -699,7 +699,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
         ImageView imgLabel = getView().findViewById(R.id.img_time);
-        TextView textMinExchange = getView().findViewById(R.id.text_min_exchange);
         TextView textMinExchangeValue = getView().findViewById(R.id.text_min_exchange_value);
         TextView textMinExchangeLavel = getView().findViewById(R.id.text_min_exchange);
         ImageView imgMinExchange = getView().findViewById(R.id.img_min_exchange);
@@ -731,17 +730,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         if (TextUtils.isEmpty(data.getMinimumUsageLabel())) {
             textMinExchangeLavel.setVisibility(View.GONE);
+            imgMinExchange.setVisibility(View.GONE);
         } else {
+            imgMinExchange.setVisibility(View.VISIBLE);
             textMinExchangeLavel.setVisibility(View.VISIBLE);
             textMinExchangeLavel.setText(data.getMinimumUsageLabel());
         }
 
         if (TextUtils.isEmpty(data.getMinimumUsage())) {
             textMinExchangeValue.setVisibility(View.GONE);
-            imgMinExchange.setVisibility(View.GONE);
         } else {
             textMinExchangeValue.setVisibility(View.VISIBLE);
-            imgMinExchange.setVisibility(View.VISIBLE);
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
 

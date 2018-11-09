@@ -208,17 +208,20 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
         if (TextUtils.isEmpty(item.getMinimumUsageLabel())) {
             holder.tvMinTxnLabel.setVisibility(View.GONE);
+            holder.ivMinTxn.setVisibility(View.GONE);
         } else {
+            holder.ivMinTxn.setVisibility(View.VISIBLE);
             holder.tvMinTxnLabel.setVisibility(View.VISIBLE);
             holder.tvMinTxnLabel.setText(item.getMinimumUsageLabel());
+
         }
 
         if (TextUtils.isEmpty(item.getMinimumUsage())) {
             holder.tvMinTxnValue.setVisibility(View.GONE);
-            holder.ivMinTxn.setVisibility(View.GONE);
+            holder.tvMinTxnLabel.setPadding(0,(int)holder.tvMinTxnLabel.getResources().getDimension(R.dimen.dp_13),0,0);
         } else {
+            holder.tvMinTxnLabel.setPadding(0,0,0,0);
             holder.tvMinTxnValue.setVisibility(View.VISIBLE);
-            holder.ivMinTxn.setVisibility(View.VISIBLE);
             holder.tvMinTxnValue.setText(item.getMinimumUsage());
         }
 
@@ -253,7 +256,8 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                         int seconds = (int) (l / 1000) % 60;
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds))  ;
+                        holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
                         holder.progressTimer.setProgress((int) l / 1000);
                         holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
                                 holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
@@ -269,9 +273,11 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             } else {
                 holder.progressTimer.setVisibility(View.GONE);
                 holder.value.setPadding(0, 0, 0, 0);
+                holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
             }
         } else {
             holder.progressTimer.setVisibility(View.GONE);
+            holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
         }
     }
 }
