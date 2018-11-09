@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.onboarding.di.DaggerOnboardingComponent;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
@@ -50,9 +51,6 @@ public class UsernameInputFragment extends BaseDaggerFragment
     private static final Integer USERNAME_MIN_LENGTH = 3;
     private static final Integer SHOW_SUGGESTION_LENGTH = 1;
     private static final String PARAM_USER_ID = "{user_id}";
-    //TODO milhamj change to real url
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia" +
-            ".com/bantuan/pembeli/";
 
     private View mainView;
     private ImageView avatar;
@@ -210,7 +208,11 @@ public class UsernameInputFragment extends BaseDaggerFragment
         termsAndCondition.setOnClickListener(v ->
                 RouteManager.route(
                         getContext(),
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                        String.format(
+                                "%s?url=%s",
+                                ApplinkConst.WEBVIEW,
+                                AffiliateConstant.TERMS_AND_CONDITIONS_URL
+                        )
                 )
         );
     }
