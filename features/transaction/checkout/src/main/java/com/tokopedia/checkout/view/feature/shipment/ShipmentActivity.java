@@ -24,6 +24,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
     public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
+    public static final String EXTRA_IS_FROM_PDP = "EXTRA_IS_FROM_PDP";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
@@ -42,6 +43,14 @@ public class ShipmentActivity extends BaseCheckoutActivity {
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
         intent.putExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
+        return intent;
+    }
+
+    public static Intent createInstanceFromPdp(Context context) {
+        Intent intent = new Intent(context, ShipmentActivity.class);
+        intent.putExtra(ShipmentActivity.EXTRA_IS_FROM_PDP, true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         return intent;
     }
 
@@ -94,7 +103,8 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                 getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
                 getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
-                getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false)
+                getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
+                getIntent().getBooleanExtra(EXTRA_IS_FROM_PDP, false)
         );
 
         return shipmentFragment;

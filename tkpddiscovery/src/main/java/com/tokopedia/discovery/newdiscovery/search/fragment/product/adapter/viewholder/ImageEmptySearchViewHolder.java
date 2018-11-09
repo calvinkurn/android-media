@@ -14,10 +14,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -45,18 +44,18 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
     private TextView emptyTitleTextView;
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
-    private final ItemClickListener clickListener;
+    private final ProductListener productListener;
     private TopAdsBannerView topAdsBannerView;
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_image_search_product;
 
-    public ImageEmptySearchViewHolder(View view, ItemClickListener clickListener, Config topAdsConfig) {
+    public ImageEmptySearchViewHolder(View view, ProductListener productListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
-        this.clickListener = clickListener;
+        this.productListener = productListener;
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
@@ -68,7 +67,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
     private void loadProductAds() {
         Config productAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(productListener.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(params)
                 .setEndpoint(Endpoint.PRODUCT)
@@ -83,7 +82,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
     private void loadBannerAds() {
         Config bannerAdsConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setUserId(productListener.getUserId())
                 .withMerlinCategory()
                 .topAdsParams(params)
                 .setEndpoint(Endpoint.CPM)
@@ -92,7 +91,7 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
             public void onBannerAdsClicked(String appLink) {
-                clickListener.onBannerAdsClicked(appLink);
+                productListener.onBannerAdsClicked(appLink);
             }
         });
         topAdsBannerView.setAdsListener(new TopAdsListener() {
@@ -158,8 +157,8 @@ public class ImageEmptySearchViewHolder extends AbstractViewHolder<EmptySearchMo
             emptyButtonItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (clickListener != null) {
-                        clickListener.onEmptyButtonClicked();
+                    if (productListener != null) {
+                        productListener.onEmptyButtonClicked();
                     }
                 }
             });

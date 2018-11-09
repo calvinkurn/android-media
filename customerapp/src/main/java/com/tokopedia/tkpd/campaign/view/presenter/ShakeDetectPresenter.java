@@ -117,6 +117,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 @Override
                 public void onError(Throwable e) {
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
+                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
 
                     intent.putExtra("isSuccess", false);
 
@@ -144,9 +145,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     }
 
 
-                    CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
-                    getView().sendBroadcast(intent);
-                    getView().finish();
+                     getView().sendBroadcast(intent);
+                     getView().finish();
 
                 }
 
@@ -154,12 +154,14 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                 public void onNext(final CampaignResponseEntity s) {
                     if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
                             s.getUrl() != null && s.getUrl().isEmpty()) {
+                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         getView().showMessage(s.getMessage());
                         return;
                     }
                     ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
                         getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
+                        CampaignTracking.eventShakeShake("fail", ShakeDetectManager.sTopActivity, "", "");
                         return;
                     }
                     Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);

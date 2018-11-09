@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -496,7 +497,11 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+        super.onSaveInstanceState(bundle);
+        if (!TooLargeTool.isPotentialCrash(bundle)) {
+            outState.putAll(bundle);
+        }
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
