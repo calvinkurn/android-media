@@ -195,7 +195,6 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
-            holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
             holder.label.setVisibility(View.VISIBLE);
             holder.value.setVisibility(View.VISIBLE);
             holder.imgLabel.setVisibility(View.VISIBLE);
