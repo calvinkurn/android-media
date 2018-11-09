@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 
@@ -158,6 +159,18 @@ data class FlashSaleProductItemCampaign(
             FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> context.getString(R.string.flash_sale_reserve_product)
             FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> context.getString(R.string.flash_sale_reserve_product)
             else -> context.getString(R.string.flash_sale_resubmit_product)
+        }
+    }
+
+    fun getProductStatusAction(): Int {
+        return when (productStatus) {
+            FlashSaleProductStatusTypeDef.NOTHING -> FlashSaleProductActionTypeDef.RESERVE
+            FlashSaleProductStatusTypeDef.SUBMITTED -> FlashSaleProductActionTypeDef.CANCEL
+            FlashSaleProductStatusTypeDef.REJECTED -> FlashSaleProductActionTypeDef.NO_ACTION
+            FlashSaleProductStatusTypeDef.RESERVE -> FlashSaleProductActionTypeDef.CANCEL
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> FlashSaleProductActionTypeDef.UNDO_CANCEL
+            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> FlashSaleProductActionTypeDef.RESERVE
+            else -> FlashSaleProductActionTypeDef.RE_RESERVE
         }
     }
 

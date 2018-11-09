@@ -65,8 +65,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
         //TODO test, will replaced later
-        campaignId = 44
-        campaignSlug = "flash-sale-kamis"
+        campaignId = 411
+        campaignSlug = "4-god-seller"
 //        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
 //        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
         if (savedInstanceState != null) {
@@ -276,12 +276,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         } else {
             showSearchInputView()
         }
-        if (currentPage <= 1) {
-            pendingCount = flashSaleProductHeader.pendingCount
-            submittedCount = flashSaleProductHeader.submittedCount
-            renderUILabel()
-            renderBottom()
-        }
+
+        pendingCount = flashSaleProductHeader.pendingCount
+        submittedCount = flashSaleProductHeader.submittedCount
+        renderUILabel()
+        renderBottom()
     }
 
     private fun needShowChip() = submitStatus && ((pendingCount + submittedCount) > 0)

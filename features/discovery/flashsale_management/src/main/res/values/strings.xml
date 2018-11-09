@@ -59,6 +59,11 @@
     <string name="flash_sale_rp">Rp\u00A0</string>
     <string name="price_criteria_above_x">Kisaran harga di atas %1$s</string>
     <string name="price_criteria_between_x_and_x">Kisaran harga %1$s - %2$s</string>
+    <string name="price_discount_above_x">Kisaran diskon di atas %1$s%%</string>
+    <string name="price_discount_below_x">Kisaran diskon di bawah %1$s%%</string>
+    <string name="price_discount_between_x_and_x">Kisaran diskon %1$s%% - %2$s%%</string>
     <string name="price_criteria_below_x">Kisaran harga di bawah %1$s</string>
     <string name="flash_sale_no_discount">-%</string>
+    <string name="flash_sale_x_percent">%1$s%%</string>
+    <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
 </resources>

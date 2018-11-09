@@ -41,7 +41,7 @@ abstract class UseCase<out T : Any> {
         }
     }
 
-    fun unsubscribe() {
+    fun cancelJobs() {
         parentJob.cancel()
     }
 }

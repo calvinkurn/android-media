@@ -3,7 +3,7 @@
 package com.tokopedia.flashsale.management.product.domain.usecase
 
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
-import com.tokopedia.flashsale.management.product.data.FlashSaleMutationResponseGQL
+import com.tokopedia.flashsale.management.product.data.FlashSaleMutationSubmitResponseGQL
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
@@ -11,10 +11,10 @@ import javax.inject.Named
 
 class SubmitProductUseCase @Inject
 constructor(@Named(FlashSaleConstant.NAMED_REQUEST_SUBMIT_PRODUCT) private val gqlRawString: String,
-            graphqlRepository: GraphqlRepository) : GraphqlUseCase<FlashSaleMutationResponseGQL>(graphqlRepository) {
+            graphqlRepository: GraphqlRepository) : GraphqlUseCase<FlashSaleMutationSubmitResponseGQL>(graphqlRepository) {
 
     init {
-        setTypeClass(FlashSaleMutationResponseGQL::class.java)
+        setTypeClass(FlashSaleMutationSubmitResponseGQL::class.java)
         setGraphqlQuery(gqlRawString)
     }
 

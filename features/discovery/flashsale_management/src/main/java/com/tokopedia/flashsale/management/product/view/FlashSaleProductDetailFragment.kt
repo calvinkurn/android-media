@@ -2,7 +2,6 @@ package com.tokopedia.flashsale.management.product.view
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,7 +11,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.design.intdef.CurrencyEnum
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher
+import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.data.FlashSaleProductActionTypeDef
 import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.data.FlashSaleProductItem
@@ -29,6 +30,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     var progressDialog: ProgressDialog? = null
     var canEdit: Boolean = false
+    var campaignId: Int = 0
     var currencyTextWatcher: CurrencyTextWatcher? = null
 
     @Inject
@@ -59,6 +61,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         //TODO just for test
 //        canEdit = arguments!!.getBoolean(EXTRA_CAN_EDIT)
         canEdit = true
+        campaignId = arguments!!.getInt(EXTRA_PARAM_CAMPAIGN_ID)
         super.onCreate(savedInstanceState)
     }
 
@@ -74,11 +77,11 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
         tvCategoryText.text = flashSaleProductItem.getDepartmentNameString()
 
-        renderPrice(flashSaleProductItem)
-        renderDiscount(flashSaleProductItem)
-        renderStock(flashSaleProductItem)
+        renderPrice(savedInstanceState, flashSaleProductItem)
+        renderDiscount(savedInstanceState, flashSaleProductItem)
+        renderStock(savedInstanceState, flashSaleProductItem)
 
-        if (canEdit) {
+        if (canEdit && flashSaleProductItem.campaign.getProductStatusAction() == FlashSaleProductStatusTypeDef.NOTHING) {
             context?.run {
                 btnRequestProduct.text = flashSaleProductItem.campaign.getProductStatusActionString(this)
                 btnRequestProduct.setOnClickListener {
@@ -92,13 +95,15 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderPrice(flashSaleProductItem: FlashSaleProductItem){
+    private fun renderPrice(savedInstanceState: Bundle?, flashSaleProductItem: FlashSaleProductItem) {
         currencyTextWatcher = CurrencyTextWatcher(etPrice, CurrencyEnum.RPwithSpace)
         etPrice.addTextChangedListener(currencyTextWatcher)
-        if (flashSaleProductItem.campaign.discountedPrice > 0) {
-            etPrice.setText(flashSaleProductItem.campaign.discountedPrice.toString())
-        } else {
-            etPrice.setText("0")
+        if (savedInstanceState == null) {
+            if (flashSaleProductItem.campaign.discountedPrice > 0) {
+                etPrice.setText(flashSaleProductItem.campaign.discountedPrice.toString())
+            } else {
+                etPrice.setText("0")
+            }
         }
         if (flashSaleProductItem.campaign.criteria.priceMin > 0) {
             if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
@@ -126,12 +131,64 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderDiscount(flashSaleProductItem: FlashSaleProductItem){
+    private fun renderDiscount(savedInstanceState: Bundle?, flashSaleProductItem: FlashSaleProductItem) {
         etDiscount.background = null
+        if (savedInstanceState == null) {
+            val discount: Double = if (canEdit) {
+                (flashSaleProductItem.price - getFinalPrice()) * 100 / flashSaleProductItem.price
+            } else {
+                flashSaleProductItem.campaign.discountedPercentage.toDouble()
+            }
+            if (discount > 0 && discount < 100) {
+                etDiscount.setText(getString(R.string.flash_sale_x_percent,
+                        KMNumbers.formatDouble2PCheckRound(discount, true)))
+            } else {
+                etDiscount.setText(getString(R.string.flash_sale_no_discount))
+            }
+        }
+        if (flashSaleProductItem.campaign.criteria.discountPercentageMin > 0) {
+            if (flashSaleProductItem.campaign.criteria.discountPercentageMax <= 0) {
+                tilDiscount.setHelper(context!!.getString(R.string.price_discount_above_x,
+                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
+                                true)))
+            } else {
+                tilDiscount.setHelper(context!!.getString(R.string.price_discount_between_x_and_x,
+                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMin.toDouble(),
+                                true),
+                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
+                                true)))
+            }
+        } else {
+            if (flashSaleProductItem.campaign.criteria.priceMax <= 0) {
+                tilDiscount.setHelper(null)
+            } else {
+                tilDiscount.setHelper(context!!.getString(R.string.price_discount_below_x,
+                        KMNumbers.formatDouble2PCheckRound(flashSaleProductItem.campaign.criteria.discountPercentageMax.toDouble(),
+                                true)))
+            }
+        }
     }
 
-    private fun renderStock(flashSaleProductItem: FlashSaleProductItem){
+    private fun getFinalPrice() =
+            StringUtils.convertToNumeric(etPrice.text.toString(), false);
 
+
+    private fun renderStock(savedInstanceState: Bundle?, flashSaleProductItem: FlashSaleProductItem) {
+        if (savedInstanceState == null) {
+            val stock = flashSaleProductItem.campaign.stock
+            if (stock > 0) {
+                etStock.setText(stock.toString())
+            } else {
+                etStock.text = null
+            }
+        }
+
+        if (flashSaleProductItem.campaign.criteria.stockMin > 0) {
+            tilStock.setHelper(context!!.getString(R.string.flash_sale_min_stock_x,
+                    flashSaleProductItem.campaign.criteria.stockMin))
+        } else {
+            tilStock.setHelper(null)
+        }
     }
 
     override fun initInjector() {
@@ -140,15 +197,47 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     fun onBtnRequestProductClicked() {
         //TODO
+        if (!canEdit) {
+            return
+        }
         val flashSaleProductItem = onFlashSaleProductDetailFragmentListener.getProduct()
-        when (flashSaleProductItem.campaign.productStatus) {
-            FlashSaleProductStatusTypeDef.NOTHING -> getString(R.string.flash_sale_reserve_product)
-            FlashSaleProductStatusTypeDef.SUBMITTED -> getString(R.string.flash_sale_cancel_reserve)
-            FlashSaleProductStatusTypeDef.REJECTED -> getString(R.string.flash_sale_resubmit_product)
-            FlashSaleProductStatusTypeDef.RESERVE -> getString(R.string.flash_sale_cancel_reserve)
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL -> getString(R.string.flash_sale_reserve_product)
-            FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT -> getString(R.string.flash_sale_reserve_product)
-            else -> getString(R.string.flash_sale_resubmit_product)
+        when (flashSaleProductItem.campaign.getProductStatusAction()) {
+            FlashSaleProductActionTypeDef.NO_ACTION -> { /*no-op*/ }
+            FlashSaleProductActionTypeDef.RESERVE -> {
+                showProgressDialog()
+                presenter.reserveProduct(campaignId, flashSaleProductItem.campaign.criteria.criteriaId,
+                        flashSaleProductItem.id, getFinalPrice().toInt(),  0 , etStock.text.toString().toInt(),
+                        onSuccess = {
+                            hideProgressDialog()
+                            //TODO show message, activity Result
+                            /*activity?.run {
+                                ToasterNormal.showClose(this, it)
+                            }
+                            loadInitialData()*/
+                        },
+                        onError = {
+                            hideProgressDialog()
+                            //TODO show error
+                            /*ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
+                                    .setAction(R.string.retry_label) {
+                                        onClickToUpdateSubmission()
+                                    }.show()*/
+                        })
+            }
+            FlashSaleProductActionTypeDef.CANCEL -> {
+                showProgressDialog()
+                // cancel reserve
+
+            }
+            FlashSaleProductActionTypeDef.UNDO_CANCEL -> {
+                showProgressDialog()
+                // submit api
+            }
+            FlashSaleProductActionTypeDef.RE_RESERVE -> {
+                showProgressDialog()
+                // re-reserve
+            }
+            else -> { /*no-op*/ }
         }
     }
 
@@ -174,37 +263,9 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         return ""
     }
 
-//    private fun loadFlashSaleProductDetail() {
-////        if (merchantVoucherViewModel == null) {
-//        showLoading()
-//        presenter.getFlashSaleDetail(
-//                onSuccess = {
-//                    onSuccessGetFlashSaleProductDetail()
-//                },
-//                onError = {
-//                    hideLoading()
-//                    NetworkErrorHelper.showEmptyState(context, view,
-//                            ErrorHandler.getErrorMessage(context, it)) { loadFlashSaleProductDetail() }
-//                }
-//        )
-////        } else {
-////            onSuccessGetMerchantVoucherDetail(merchantVoucherViewModel!!)
-////        }
-//    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        when (requestCode) {
-//            MerchantVoucherListFragment.REQUEST_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
-//                // no op
-//            }
-//            else ->
-        super.onActivityResult(requestCode, resultCode, data)
-//        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        presenter.detachView()
+        presenter.cancelJob()
     }
 
     override fun onAttachActivity(context: Context?) {

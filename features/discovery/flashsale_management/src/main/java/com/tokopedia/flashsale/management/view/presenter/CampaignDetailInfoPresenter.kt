@@ -1,9 +1,6 @@
 package com.tokopedia.flashsale.management.view.presenter
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.data.model.session.UserSession
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.FlashSaleConstant
 import com.tokopedia.flashsale.management.data.campaignlist.Campaign
 import com.tokopedia.flashsale.management.ekstension.toListCampaignInfoViewModel
@@ -21,7 +18,7 @@ constructor(private val userSession: UserSession,
     private val useCases = mutableListOf<UseCase<Any>>()
 
     fun detachView() {
-        useCases.map { it.unsubscribe() }
+        useCases.map { it.cancelJobs() }
     }
 
     fun getCampaignInfo(rawQuery: String, campaignUrl: String, onSuccess: (List<CampaignInfoViewModel>)->Unit,

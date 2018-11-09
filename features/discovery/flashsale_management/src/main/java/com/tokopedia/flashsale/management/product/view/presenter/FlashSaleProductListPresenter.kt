@@ -99,10 +99,10 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
         submitProductUseCase.setParams(campaignId, userSession.shopId.toInt())
         submitProductUseCase.execute(
                 {
-                    if ( it.flashSaleSubmitProduct.isSuccess()) {
-                        onSuccess(it.flashSaleSubmitProduct.message)
+                    if ( it.flashSaleDataContainer.isSuccess()) {
+                        onSuccess(it.flashSaleDataContainer.message)
                     } else {
-                        onError(MessageErrorException(it.flashSaleSubmitProduct.message))
+                        onError(MessageErrorException(it.flashSaleDataContainer.message))
                     }
                 }, onError)
     }
@@ -127,7 +127,7 @@ class FlashSaleProductListPresenter @Inject constructor(val getFlashSaleProductU
 
     fun detachView() {
         getProductListJob.cancel()
-        sellerStatusUseCase.unsubscribe()
-        getFlashSaleTncUseCase.unsubscribe()
+        sellerStatusUseCase.cancelJobs()
+        getFlashSaleTncUseCase.cancelJobs()
     }
 }

@@ -46,7 +46,13 @@ class CampaignModule {
     @Named(FlashSaleConstant.NAMED_REQUEST_SUBMIT_PRODUCT)
     @Provides
     fun provideGqlRawStringRequestSubmitProduct(@ApplicationContext context: Context) =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_campaign_info_submit_product)
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_submit_product)
+
+    @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_RESERVE_PRODUCT)
+    @Provides
+    fun provideGqlRawStringRequestReserveProduct(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_reserve_product)
 
     @CampaignScope
     @Provides

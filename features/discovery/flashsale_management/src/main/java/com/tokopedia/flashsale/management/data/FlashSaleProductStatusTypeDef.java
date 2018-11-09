@@ -12,9 +12,6 @@ import static com.tokopedia.flashsale.management.data.FlashSaleProductStatusType
 import static com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef.SUBMIT_CANCEL;
 import static com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef.SUBMIT_CANCEL_SUBMIT;
 
-/**
- * @author normansyahputa on 4/25/17.
- */
 @Retention(RetentionPolicy.SOURCE)
 @IntDef({NOTHING, SUBMITTED, REJECTED, RESERVE, SUBMIT_CANCEL, SUBMIT_CANCEL_SUBMIT})
 public @interface FlashSaleProductStatusTypeDef {
