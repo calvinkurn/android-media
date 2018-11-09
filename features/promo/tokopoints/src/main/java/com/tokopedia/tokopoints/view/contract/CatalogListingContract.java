@@ -51,7 +51,7 @@ public interface CatalogListingContract {
 
         void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
 
-        void onSuccessPoints(String rewardStr, int rewardValue);
+        void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
