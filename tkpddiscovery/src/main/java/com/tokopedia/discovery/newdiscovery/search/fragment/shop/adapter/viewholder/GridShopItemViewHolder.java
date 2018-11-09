@@ -11,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.listener.ShopListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
 
 /**
@@ -36,9 +36,9 @@ public class GridShopItemViewHolder extends AbstractViewHolder<ShopViewModel.Sho
     private TextView favoriteButtonText;
     private ImageView favoriteButtonIcon;
     private Context context;
-    private final ItemClickListener itemClickListener;
+    private final ShopListener itemClickListener;
 
-    public GridShopItemViewHolder(View itemView, ItemClickListener itemClickListener) {
+    public GridShopItemViewHolder(View itemView, ShopListener itemClickListener) {
         super(itemView);
         mainContent = (LinearLayout) itemView.findViewById(R.id.shop_1);
         itemShopImage = (SquareImageView) itemView.findViewById(R.id.item_shop_image);

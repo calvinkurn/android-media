@@ -4,17 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.events.view.activity.EventBaseActivity;
 
 /**
  * Created by pranaymohapatra on 07/07/18.
  */
 
 public class FinishActivityReceiver extends BroadcastReceiver {
-    TActivity mActivity;
+    EventBaseActivity mActivity;
 
-    public FinishActivityReceiver(TActivity activity) {
+    public FinishActivityReceiver(EventBaseActivity activity) {
         mActivity = activity;
     }
 

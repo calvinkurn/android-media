@@ -77,7 +77,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
                     && ((FlightModuleRouter) getApplication())
                     .getDefaultContactUsIntent(this) != null) {
                 startActivity(((FlightModuleRouter) getApplication())
-                        .getWebviewActivity(this, CONTACT_US_FLIGHT));
+                        .getDefaultContactUsIntent(this, CONTACT_US_FLIGHT));
             }
 
             return true;

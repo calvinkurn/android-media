@@ -12,7 +12,6 @@ import com.tokopedia.feedplus.data.pojo.Wholesale;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.SingleFeedDetailViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -75,41 +74,10 @@ public class FeedDetailSubscriber extends Subscriber<GraphqlResponse> {
                 feedDetail.getCreateTime(),
                 feedDetail.getSource().getShop(),
                 feedDetail.getContent().getStatusActivity());
-
-        if (page == 1
-                && feedList.get(0).getContent().getProducts().size() == 1) {
-            viewListener.onSuccessGetSingleFeedDetail(
-                    headerViewModel,
-                    convertToSingleViewModel(feedDetail)
-            );
-        } else {
-            viewListener.onSuccessGetFeedDetail(
-                    headerViewModel,
-                    convertToViewModel(feedDetail),
-                    checkHasNextPage(feedQuery)
-            );
-        }
-    }
-
-    private SingleFeedDetailViewModel convertToSingleViewModel(Feed feedDetail) {
-        ProductFeedType productFeed = feedDetail.getContent().getProducts().get(0);
-        return createSingleProductViewModel(productFeed);
-    }
-
-    private SingleFeedDetailViewModel createSingleProductViewModel(ProductFeedType productFeed) {
-        return new SingleFeedDetailViewModel(
-                productFeed.getId(),
-                productFeed.getName(),
-                productFeed.getPrice(),
-                productFeed.getImage(),
-                productFeed.getProductLink(),
-                productFeed.getCashback(),
-                getIsWholesale(productFeed.getWholesale()),
-                productFeed.getPreorder(),
-                productFeed.getFreereturns(),
-                productFeed.getWishlist(),
-                getRating(productFeed.getRating())
-        );
+        viewListener.onSuccessGetFeedDetail(
+                headerViewModel,
+                convertToViewModel(feedDetail),
+                checkHasNextPage(feedQuery));
     }
     
     private Double getRating(Float rating) {

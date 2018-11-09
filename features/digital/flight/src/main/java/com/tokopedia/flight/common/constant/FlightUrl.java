@@ -28,6 +28,7 @@ public class FlightUrl {
     public static final String FLIGHT_PROMO = FLIGHT_PATH + "promo/banner";
     public static final String PROMO_PATH =  "promo/";
     public static final String CONTACT_US_PATH = "contact-us";
+    public static final String CONTACT_US_FLIGHT_HOME_PREFIX = "?pid=97&flag_app=1&device=android&utm_source=android";
     public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
     public static final String CATEGORY_ID = "27";
     public static final String TNC_LINK = "https://www.tokopedia.com/bantuan/pengembalian-dana-dan-penggantian-jadwal";
@@ -35,7 +36,7 @@ public class FlightUrl {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
     public static String CONTACT_US = WEB_DOMAIN + "contact-us";
-    public static String CONTACT_US_FLIGHT = WEB_DOMAIN + "contact-us?pid=97#step1";
+    public static String CONTACT_US_FLIGHT = WEB_DOMAIN + CONTACT_US_FLIGHT_HOME_PREFIX;
     public static String CONTACT_US_FLIGHT_PREFIX_GLOBAL = WEB_DOMAIN + "contact-us?pid=46&ivtype=4";
     public static String AIRLINES_CONTACT_URL = WEB_DOMAIN + "bantuan/kontak-maskapai-penerbangan/";
 

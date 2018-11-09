@@ -2,8 +2,8 @@ package com.tokopedia.discovery.similarsearch;
 
 import android.content.Context;
 
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;

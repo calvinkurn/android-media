@@ -441,7 +441,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
+        startActivity(flightModuleRouter
+                .getDefaultContactUsIntent(getActivity(), url));
     }
 
     @Override

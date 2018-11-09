@@ -18,9 +18,9 @@ import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**

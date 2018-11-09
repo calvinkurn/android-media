@@ -335,7 +335,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void goToKolPostDetail(KolPostViewModel kolPostViewModel) {
         Intent intent = KolPostDetailActivity.getInstance(
                 getContext(),
-                String.valueOf(kolPostViewModel.getKolId())
+                String.valueOf(kolPostViewModel.getContentId())
         );
         startActivity(intent);
         abstractionRouter.getAnalyticTracker().sendEventTracking(
@@ -345,7 +345,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
                 String.format(
                         ContentExloreEventTracking.EventLabel.CLICK_GRID_CONTENT_LABEL,
                         kolPostViewModel.getName(),
-                        kolPostViewModel.getKolId()
+                        kolPostViewModel.getContentId()
                 )
         );
     }

@@ -2,8 +2,8 @@ package com.tokopedia.flight.searchV2.data.repository.mapper
 
 import android.text.TextUtils
 import com.google.gson.Gson
-import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB
-import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB
+import com.tokopedia.flight_dbflow.FlightAirlineDB
+import com.tokopedia.flight_dbflow.FlightAirportDB
 import com.tokopedia.flight.search.data.cloud.model.response.Attributes
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
 import com.tokopedia.flight.search.data.cloud.model.response.Route
@@ -81,6 +81,7 @@ class FlightSearchMapper @Inject constructor() {
                     0,
                     false,
                     beforeTotal,
+                    fare.adult,
                     fare.adultNumeric,
                     isReturn,
                     isRefundable,
@@ -136,7 +137,8 @@ class FlightSearchMapper @Inject constructor() {
             journey.infantNumericCombo = infantPriceNumeric
             journey.isBestPairing = isBestPairing
             journey.comboId = comboId
-            journey.sortPrice = adultPriceNumeric
+            journey.sortPrice = adultPrice
+            journey.sortPriceNumeric = adultPriceNumeric
         }
         return journey
     }

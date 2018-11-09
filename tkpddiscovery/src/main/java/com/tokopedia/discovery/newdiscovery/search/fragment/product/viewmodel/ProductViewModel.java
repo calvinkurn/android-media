@@ -5,14 +5,10 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Sort;
-import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
-import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.List;
@@ -38,6 +34,7 @@ public class ProductViewModel implements Parcelable {
     private DataValue quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
+    private RelatedSearchModel relatedSearchModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -171,6 +168,14 @@ public class ProductViewModel implements Parcelable {
         this.forceSearch = forceSearch;
     }
 
+    public RelatedSearchModel getRelatedSearchModel() {
+        return relatedSearchModel;
+    }
+
+    public void setRelatedSearchModel(RelatedSearchModel relatedSearchModel) {
+        this.relatedSearchModel = relatedSearchModel;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -194,6 +199,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.quickFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
+        dest.writeParcelable(this.relatedSearchModel, flags);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -213,6 +219,7 @@ public class ProductViewModel implements Parcelable {
         this.quickFilterModel = in.readParcelable(DataValue.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
+        this.relatedSearchModel = in.readParcelable(RelatedSearchModel.class.getClassLoader());
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

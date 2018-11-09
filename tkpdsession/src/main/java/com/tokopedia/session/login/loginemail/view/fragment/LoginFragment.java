@@ -61,7 +61,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
@@ -76,7 +76,8 @@ import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumb
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.register.view.subscriber.registerinitial
+        .GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
 

@@ -127,5 +127,7 @@ public interface ProductDetailPresenter {
 
     void saveSource(String source);
 
+    void requestAffiliateProductData(ProductDetailData productDetailData);
+
     void getPromoWidget(final @NonNull Context context, @NonNull ProductDetailData productDetailData);
 }
