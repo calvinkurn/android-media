@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
+import com.tokopedia.flashsale.management.ekstension.gone
 import com.tokopedia.flashsale.management.ekstension.visible
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.adapter.CampaignStatusListAdapter
@@ -35,13 +36,15 @@ class MyCampaignFragment : BaseCampaignFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chips.visible()
+
         chips.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val itemDecoration = DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL)
         val dividerDrawable = context?.let {  ContextCompat.getDrawable(it, R.drawable.horizontal_divider_8dp) }
         dividerDrawable?.let { itemDecoration.setDrawable(it)
             chips.addItemDecoration(itemDecoration)}
         chips.adapter = campaignStatusListAdapter
+
+        showFilterInput()
 
         presenter.getCampaignLabel(GraphqlHelper.loadRawString(resources, R.raw.gql_get_campaign_label),
                 this::onSuccessGetCampaignLabel,this::onErrorGetCampaignLabel)
@@ -59,10 +62,17 @@ class MyCampaignFragment : BaseCampaignFragment(){
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val searchText = searchInputView.searchText
-        return if (searchText.isEmpty()) {
+        return if (searchText.isEmpty() && selectedStatusIds.isEmpty()) {
             hideSearchInputView()
+            hideFilterInput()
             EmptyMyCampaignViewModel()
         } else {
+            if (selectedStatusIds.isEmpty()){
+                showSearchInputView()
+            } else {
+                hideSearchInputView()
+            }
+            showFilterInput()
             EmptyModel().apply {
                 title = getString(R.string.fm_campaign_list_search_empty_title)
                 description = getString(R.string.fm_campaign_list_search_empty_content)
@@ -70,11 +80,15 @@ class MyCampaignFragment : BaseCampaignFragment(){
                 callback = object : BaseEmptyViewHolder.Callback{
                     override fun onEmptyContentItemTextClicked() {
                         searchInputView.searchText = ""
+                        selectedStatusIds = ""
+                        campaignStatusListAdapter.resetFilter()
                         loadInitialData()
                     }
 
                     override fun onEmptyButtonClicked() {
                         searchInputView.searchText = ""
+                        selectedStatusIds = ""
+                        campaignStatusListAdapter.resetFilter()
                         loadInitialData()
                     }
 
@@ -83,7 +97,16 @@ class MyCampaignFragment : BaseCampaignFragment(){
         }
     }
 
+    private fun hideFilterInput() {
+        chips.gone()
+    }
+
+    private fun showFilterInput(){
+        chips.visible()
+    }
+
     override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
+        showSearchInputView()
         campaignStatusListAdapter.replaceData(data.data)
     }
 

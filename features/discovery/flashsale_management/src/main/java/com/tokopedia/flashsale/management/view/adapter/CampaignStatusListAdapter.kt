@@ -33,6 +33,11 @@ class CampaignStatusListAdapter(val campaignStatusList: MutableList<CampaignStat
         notifyDataSetChanged()
     }
 
+    fun resetFilter(){
+        selectedCampaignStatusId = ""
+        notifyDataSetChanged()
+    }
+
 
     inner class CampaignStatusViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 

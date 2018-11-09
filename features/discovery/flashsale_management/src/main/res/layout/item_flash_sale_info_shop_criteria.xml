@@ -89,7 +89,7 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_16"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             tools:ignore="contentDescription"
             app:layout_constraintLeft_toRightOf="@+id/label_shop_reputation_min"
             app:layout_constraintStart_toEndOf="@+id/label_shop_reputation_min"

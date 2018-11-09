@@ -52,4 +52,11 @@
     <string name="label_min_transaction">Minimum Transaksi</string>
     <string name="tnc_title"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="label_see_full">Lihat Selengkapnya</string>
+    <string name="have_not_joined_flashsale_title">Anda belum pernah mengikuti Flash Sale</string>
+    <string name="join_flashsale_title">Ikuti Flash Sale dan Nikmati Banyak Keuntungan</string>
+    <string name="benefit_flashsale_1">Tokomu akan dilirik oleh lebih banyak pembeli</string>
+    <string name="benefit_flashsale_2">Meningkatkan skor produk dan reputasi toko</string>
+    <string name="benefit_flashsale_3">Mempercepat peningkatan penjualan</string>
+    <string name="benefit_flashsale_4">Efektif untuk mempromosikan produk terbaik dari toko Anda</string>
+    <string name="benefit_flashsale_5">Produk tampil di halaman khusus yang banyak dikunjungi</string>
 </resources>
