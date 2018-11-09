@@ -17,6 +17,7 @@ import android.widget.Toast
 import android.Manifest.permission.CAMERA
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import com.appsflyer.AppsFlyerLib
+import com.tokopedia.kelontongapp.APPSFLYER_SET_USER
 import com.tokopedia.kelontongapp.APPSFLYER_URL_SCHEME
 import com.tokopedia.kelontongapp.EVENT_NAME
 import com.tokopedia.kelontongapp.EVENT_VALUE
@@ -41,41 +42,12 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     private fun handleUri(view: WebView, uri: Uri): Boolean {
-        if (uri.host.startsWith(APPSFLYER_URL_SCHEME)) {
-            val urlParts = uri.toString().split("\\?")
-            if (urlParts.size > 1) {
-                val query = urlParts[1]
-                var eventName: String? = null
-                val eventValue: MutableMap<String, Any> = HashMap()
-
-                for (param in query.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                    val pair = param.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    val key = pair[0]
-                    if (pair.size > 1) {
-                        if (EVENT_NAME == key) {
-                            eventName = pair[1]
-                        } else if (EVENT_VALUE == key) {
-                            val event: JSONObject
-                            val keys: JSONArray
-                            try {
-                                event = JSONObject(pair[1])
-                                keys = event.names()
-                                for (i in 0 until keys.length()) {
-                                    eventValue[keys.getString(i)] = event.getString(keys.getString(i))
-                                }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                            }
-
-                        }
-                    }
-                }
-                AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
-            }
-            return false
+        return if (uri.host.startsWith(APPSFLYER_URL_SCHEME)) {
+            handleAppsFlyer(uri)
+            false
         } else {
             view.loadUrl(uri.toString())
-            return true
+            true
         }
     }
 
@@ -141,5 +113,45 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     companion object {
 
         private val PERMISSION_REQUEST_CODE = 2312
+    }
+
+    private fun handleAppsFlyer(uri: Uri) {
+        if(uri.host == APPSFLYER_SET_USER) {
+            if(uri.getQueryParameter("id") != null) {
+                // save to shared preference
+                AppsFlyerLib.getInstance().setCustomerUserId(uri.getQueryParameter("id"))
+            }
+        } else {
+            val urlParts = uri.toString().split("\\?")
+            if (urlParts.size > 1) {
+                val query = urlParts[1]
+                var eventName: String? = null
+                val eventValue: MutableMap<String, Any> = HashMap()
+
+                for (param in query.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                    val pair = param.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    val key = pair[0]
+                    if (pair.size > 1) {
+                        if (EVENT_NAME == key) {
+                            eventName = pair[1]
+                        } else if (EVENT_VALUE == key) {
+                            val event: JSONObject
+                            val keys: JSONArray
+                            try {
+                                event = JSONObject(pair[1])
+                                keys = event.names()
+                                for (i in 0 until keys.length()) {
+                                    eventValue[keys.getString(i)] = event.getString(keys.getString(i))
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+
+                        }
+                    }
+                }
+                AppsFlyerLib.getInstance().trackEvent(activity.applicationContext, eventName, eventValue)
+            }
+        }
     }
 }

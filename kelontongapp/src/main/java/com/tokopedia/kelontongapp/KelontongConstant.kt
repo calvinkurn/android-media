@@ -31,3 +31,5 @@ object KelontongConstant {
 const val EVENT_NAME = "eventName"
 const val EVENT_VALUE = "eventValue"
 const val APPSFLYER_URL_SCHEME = "af-event"
+const val APPSFLYER_SET_USER = "setUser"
+const val KEY_INSTALL_SOURCE = "install_source"

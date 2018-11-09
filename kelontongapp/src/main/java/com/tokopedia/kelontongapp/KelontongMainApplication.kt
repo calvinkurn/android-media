@@ -28,8 +28,31 @@ class KelontongMainApplication : Application() {
         createNotificationChannel()
     }
 
+    private fun initCrashlytics() {
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, Crashlytics())
+            Crashlytics.setUserIdentifier(getString(R.string.app_name))
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val mChannel = NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+            mChannel.description = NOTIFICATION_CHANNEL_DESC
+            val notificationManager = getSystemService(
+                    Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+        }
+    }
+
     private fun initAppsflyer() {
         AppsFlyerLib.getInstance().init(AF_KEY, appsflyerConversionListener(), this)
+        val addData = HashMap<String, Any>()
+        addData[KEY_INSTALL_SOURCE] = getInstallSource()
+        // get customer id from shared preferences
+        AppsFlyerLib.getInstance().setCustomerUserId("")
+        AppsFlyerLib.getInstance().setAdditionalData(addData)
         AppsFlyerLib.getInstance().startTracking(this)
     }
 
@@ -51,22 +74,8 @@ class KelontongMainApplication : Application() {
         }
     }
 
-    private fun initCrashlytics() {
-        if (!BuildConfig.DEBUG) {
-            Fabric.with(this, Crashlytics())
-            Crashlytics.setUserIdentifier(getString(R.string.app_name))
-        }
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val mChannel = NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                    NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
-            mChannel.description = NOTIFICATION_CHANNEL_DESC
-            val notificationManager = getSystemService(
-                    Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(mChannel)
-        }
+    private fun getInstallSource(): String {
+        return packageManager.getInstallerPackageName(packageName)
     }
 
     companion object {
