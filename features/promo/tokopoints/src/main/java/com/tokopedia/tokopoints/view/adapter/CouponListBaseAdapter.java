@@ -193,7 +193,6 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
     private void setData(ViewHolder holder, CouponValueEntity item) {
         ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
-        holder.imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
 
         if (item.getUsage() != null) {
             holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
