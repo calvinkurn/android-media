@@ -120,7 +120,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                  return rating == null || rating <= MIN_RATING;
             }
         }
-        return false;
+        return true; // default false
     }
 
     @Override
