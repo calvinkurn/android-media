@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -700,6 +701,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         ImageView imgLabel = getView().findViewById(R.id.img_time);
         TextView textMinExchange = getView().findViewById(R.id.text_min_exchange);
         TextView textMinExchangeValue = getView().findViewById(R.id.text_min_exchange_value);
+        TextView textMinExchangeLavel = getView().findViewById(R.id.text_min_exchange);
         ImageView imgMinExchange = getView().findViewById(R.id.img_min_exchange);
         ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
         ViewFlipper actionContainer = getView().findViewById(R.id.lin_container_button);
@@ -727,16 +729,20 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             }
         }
 
-        if (data.getMinimumUsage() != null && !data.getMinimumUsage().isEmpty()) {
-            imgMinExchange.setVisibility(View.VISIBLE);
-            textMinExchange.setVisibility(View.VISIBLE);
+        if (TextUtils.isEmpty(data.getMinimumUsageLabel())) {
+            textMinExchangeLavel.setVisibility(View.GONE);
+        } else {
+            textMinExchangeLavel.setVisibility(View.VISIBLE);
+            textMinExchangeLavel.setText(data.getMinimumUsageLabel());
+        }
 
-            if (CommonConstant.TEXT_NO_MIN_TRANS.equalsIgnoreCase(data.getMinimumUsage())) {
-                textMinExchange.setText(data.getMinimumUsage());
-            } else {
-                textMinExchangeValue.setVisibility(View.VISIBLE);
-                textMinExchangeValue.setText(data.getMinimumUsage());
-            }
+        if (TextUtils.isEmpty(data.getMinimumUsage())) {
+            textMinExchangeValue.setVisibility(View.GONE);
+            imgMinExchange.setVisibility(View.GONE);
+        } else {
+            textMinExchangeValue.setVisibility(View.VISIBLE);
+            imgMinExchange.setVisibility(View.VISIBLE);
+            textMinExchangeValue.setText(data.getMinimumUsage());
         }
 
         imgLabel.setVisibility(View.VISIBLE);
