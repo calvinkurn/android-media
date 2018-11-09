@@ -182,7 +182,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setHistoryView(TrackingViewModel model) {
-        if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
+        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
                 model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
             trackingHistory.setVisibility(View.GONE);
         } else {
