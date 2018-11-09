@@ -1,11 +1,7 @@
 package com.tokopedia.events.view.contractor;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.widget.EditText;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 

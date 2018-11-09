@@ -11,7 +11,7 @@
         android:id="@+id/ll_insurance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?selectableItemBackground"
+        android:background="?selectableItemBackground"
         android:paddingBottom="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_9"
         android:paddingRight="@dimen/dp_16"

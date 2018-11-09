@@ -20,7 +20,7 @@ public interface IPromoCouponPresenter {
     void processGetEventCouponList(int categoryId, int productId);
 
     void processCheckMarketPlaceCartListPromoCode(Activity activity, CouponData couponData,
-                                                  String paramUpdateCart);
+                                                  String paramUpdateCart, boolean isOneClickShipment);
 
     void submitDigitalVoucher(CouponData couponData, String categoryId);
 

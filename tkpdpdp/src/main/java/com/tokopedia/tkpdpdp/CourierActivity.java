@@ -18,13 +18,17 @@ import java.util.ArrayList;
 public class CourierActivity extends BaseSimpleActivity {
 
     private static final String ARGS_LIST = "ARGS_LIST";
+    private static final String ARGS_PRODUCT_ID = "ARGS_PRODUCT_ID";
+    private String productId;
     private ArrayList<CourierViewData> list;
 
     public static Intent createIntent(Context context,
+                                      String productId,
                                       ArrayList<CourierViewData> list) {
         Intent intent = new Intent(context, CourierActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARGS_LIST, list);
+        bundle.putString(ARGS_PRODUCT_ID, productId);
         intent.putExtras(bundle);
         return intent;
     }
@@ -34,6 +38,7 @@ public class CourierActivity extends BaseSimpleActivity {
         if (getIntent() != null
                 && getIntent().getExtras() != null
                 && getIntent().getExtras().getParcelableArrayList(ARGS_LIST) != null) {
+            productId = getIntent().getExtras().getString(ARGS_PRODUCT_ID);
             list = getIntent().getExtras().getParcelableArrayList(ARGS_LIST);
             super.setupFragment(savedInstance);
         }
@@ -41,6 +46,6 @@ public class CourierActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return CourierFragment.Companion.newInstance(list);
+        return CourierFragment.Companion.newInstance(productId, list);
     }
 }

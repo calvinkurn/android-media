@@ -24,6 +24,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.saldodetails.R;
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics;
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -58,6 +59,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     GqlMerchantSaldoDetailsResponse.Details sellerDetails;
     private Context context;
+
+    @Inject
+    SaldoDetailsAnalytics saldoDetailsAnalytics;
 
     @Inject
     SaldoDetailsPresenter saldoDetailsPresenter;
@@ -262,9 +266,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             }
 
             int finalI = i;
-            anchorLabel.setOnClickListener(v -> RouteManager.route(context, String.format("%s?url=%s",
-                    ApplinkConst.WEBVIEW,
-                    anchorList.get(finalI).getUrl())));
+            anchorLabel.setOnClickListener(v -> {
+                saldoDetailsAnalytics.eventAnchorLabelClick(anchorLabel.getText().toString());
+                RouteManager.route(context, String.format("%s?url=%s",
+                        ApplinkConst.WEBVIEW,
+                        anchorList.get(finalI).getUrl()));
+            });
 
             spActionListLinearLayout.addView(view);
         }
