@@ -181,7 +181,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
-    private static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
+    public static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
 
     private static final long TOOLTIP_DELAY = 1500L;
 
@@ -1245,7 +1245,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        Log.d("NIS", "canPause " + canResume() );
+        Log.d("NIS", "canPause " + canResume());
         if (canResume()) {
             Log.d("NIS", "onResume ");
 
@@ -1367,7 +1367,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("NIS", "canPause " + canPause() );
+        Log.d("NIS", "canPause " + canPause());
 
         if (canPause()) {
             Log.d("NIS", "onPause");
