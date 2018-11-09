@@ -238,7 +238,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             Toast.makeText(getActivity(), R.string.text_full_affiliate_title, Toast.LENGTH_LONG)
                     .show();
             getActivity().finish();
-            affiliateAnalytics.onJatahRekomendasiHabisDialogShow();
+            affiliateAnalytics.onJatahRekomendasiHabisPdp();
         }
     }
 

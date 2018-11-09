@@ -13,6 +13,7 @@ public interface AffiliateEventTracking {
         String BYME_CREATE_POST = "create post tokopedia by.me";
         String BYME_USER_PROFILE = "user profile page";
         String BYME_MY_PROFILE = "my profile page";
+        String BYME_PDP = "product detail page";
     }
 
     interface Event {

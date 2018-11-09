@@ -127,6 +127,18 @@ public class AffiliateAnalytics {
         );
     }
 
+    public void onJatahRekomendasiHabisPdp() {
+        abstractionRouter.getAnalyticTracker().sendEventTracking(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_PDP,
+                        AffiliateEventTracking.Event.AFFILIATE_VIEW,
+                        AffiliateEventTracking.Category.BYME_DISCOVERY_PAGE,
+                        AffiliateEventTracking.Action.IMPRESSION_JATAH_HABIS,
+                        ""
+                )
+        );
+    }
+
     public void onCobaSekarangButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
