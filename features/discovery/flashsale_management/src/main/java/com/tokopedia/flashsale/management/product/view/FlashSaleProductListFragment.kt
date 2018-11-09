@@ -47,6 +47,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var allowEditProducts: Boolean = false
 
     var progressDialog: ProgressDialog? = null
+    var needLoadCurrentPage: Boolean = false
+    var needLoadAllPage: Boolean = false
 
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
@@ -194,7 +196,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun onClickFlashSaleList() {
-
+        //TODO
     }
 
     private fun loadTnC() {
@@ -283,6 +285,19 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         renderBottom()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (needLoadAllPage) {
+            loadInitialData()
+            needLoadAllPage = false
+        }
+        if (needLoadCurrentPage) {
+            //TODO currently load all data again
+            loadInitialData()
+            needLoadCurrentPage = false
+        }
+    }
+
     private fun needShowChip() = submitStatus && ((pendingCount + submittedCount) > 0)
     private fun needShowBottom() = submitStatus && pendingCount > 0
 
@@ -364,7 +379,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         when (requestCode) {
             REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                 activity?.setResult(Activity.RESULT_OK)
-                //TODO refresh data
+                if (data!= null && data.hasExtra(FlashSaleProductDetailFragment.RESULT_IS_CATEGORY_FULL)) {
+                    needLoadAllPage = true
+                } else {
+                    needLoadCurrentPage = true
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

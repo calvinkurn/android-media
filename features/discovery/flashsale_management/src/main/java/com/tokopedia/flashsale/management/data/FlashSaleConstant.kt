@@ -25,6 +25,7 @@ object FlashSaleConstant {
     const val NAMED_REQUEST_TNC = "request_tnc"
     const val NAMED_REQUEST_SUBMIT_PRODUCT = "request_submit_product"
     const val NAMED_REQUEST_RESERVE_PRODUCT = "request_reserve_product"
+    const val NAMED_REQUEST_DERESERVE_PRODUCT = "request_dereserve_product"
 
     const val NAMED_REQUEST_CAMPAIGN_LABEL = "request_campaign_label"
     const val NAMED_REQUEST_CAMPAIGN_LIST = "request_campaign_list"

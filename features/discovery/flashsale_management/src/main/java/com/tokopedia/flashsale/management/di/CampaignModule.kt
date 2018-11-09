@@ -55,6 +55,12 @@ class CampaignModule {
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_reserve_product)
 
     @CampaignScope
+    @Named(FlashSaleConstant.NAMED_REQUEST_DERESERVE_PRODUCT)
+    @Provides
+    fun provideGqlRawStringRequestDereserveProduct(@ApplicationContext context: Context) =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_dereserve_product)
+
+    @CampaignScope
     @Provides
     fun provideGqlRepository(): GraphqlRepository =
             GraphqlInteractor.getInstance().graphqlRepository
