@@ -40,8 +40,6 @@ public interface KolEventTracking {
         String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
         String SHOP_ITEM_IMPRESSION = "impression-singletag-merchant-all-merchant_post";
         String SHOP_ITEM_CLICK = "click-singletag-merchant-all-merchant_post-tag";
-        String SHOP_ITEM_IMPRESSION_DYNAMIC = "impression-{count}-user-all-{type}";
-        String SHOP_ITEM_CLICK_DYNAMIC = "click-{count}-{content_source}-all-{type}-tag";
         String CLICK_PROMPT = "click prompt";
         String CLICK_YOUTUBE_VIDEO = "click youtube video";
     }
