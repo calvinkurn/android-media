@@ -133,8 +133,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         buyerName.setText(model.getBuyerName());
         buyerLocation.setText(model.getBuyerAddress());
         currentStatus.setText(model.getStatus());
-        trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-        trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        initialHistoryView();
+        setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
         sendAnalyticsOnViewTrackingRendered();
@@ -158,7 +158,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void closeMainLoadingPage() {
         loadingScreen.dismiss();
         rootView.setVisibility(View.VISIBLE);
-
     }
 
     @Override
@@ -177,17 +176,39 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
     }
 
+
+    private void initialHistoryView() {
+        trackingHistory.setVisibility(View.GONE);
+        emptyUpdateNotification.setVisibility(View.GONE);
+        liveTrackingButton.setVisibility(View.GONE);
+    }
+
+    private void setHistoryView(TrackingViewModel model) {
+        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
+                model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
+            trackingHistory.setVisibility(View.GONE);
+        } else {
+            trackingHistory.setVisibility(View.VISIBLE);
+            trackingHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+            trackingHistory.setAdapter(new TrackingHistoryAdapter(model.getHistoryList(), dateUtil));
+        }
+    }
+
     private void setEmptyHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatus().toLowerCase().contains(INVALID_REFERENCE_STATUS)) {
+        if (model.isInvalid()) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
             notificationText.setText(getString(R.string.warning_courier_invalid));
             notificationHelpStep.setVisibility(View.VISIBLE);
             notificationHelpStep.setLayoutManager(new LinearLayoutManager(getActivity()));
             notificationHelpStep.setAdapter(new EmptyTrackingNotesAdapter());
-        } else if (model.getChange() == 0 || model.getHistoryList().size() == 0) {
+        } else if (model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+                || model.getChange() == 0 || model.getHistoryList().size() == 0) {
             emptyUpdateNotification.setVisibility(View.VISIBLE);
+            notificationText.setText(getString(R.string.warning_no_courier_change));
+            notificationHelpStep.setVisibility(View.GONE);
         } else {
-            trackingHistory.setVisibility(View.VISIBLE);
+            emptyUpdateNotification.setVisibility(View.GONE);
+            notificationHelpStep.setVisibility(View.GONE);
         }
     }
 
@@ -220,12 +241,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private View.OnClickListener onFurtherInformationClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
-            }
-        };
+        return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
 
     private View.OnClickListener onLiveTrackingClickedListener() {
