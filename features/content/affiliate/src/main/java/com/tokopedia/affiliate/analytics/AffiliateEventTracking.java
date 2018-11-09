@@ -49,7 +49,7 @@ public interface AffiliateEventTracking {
         String SEARCH_NOT_FOUND = "search not found";
         String CLICK_LIHAT_CONTOH = "click lihat contoh";
         String CLICK_SELESAI = "click selesai";
-        String CLICK_TAMBAH_GAMBAR = "click selesai";
+        String CLICK_TAMBAH_GAMBAR = "click tambah gambar";
         String CLICK_TOKOPEDIA_SALDO = "cta tokopedia saldo";
         String OTHERS = "others";
     }
