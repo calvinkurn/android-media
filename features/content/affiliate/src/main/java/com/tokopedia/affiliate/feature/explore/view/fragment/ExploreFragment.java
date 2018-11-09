@@ -331,6 +331,9 @@ public class ExploreFragment
             itemList = new ArrayList<>();
             itemList.add(emptyResultModel);
             exploreParams.disableLoadMore();
+            if (!TextUtils.isEmpty(exploreParams.getKeyword())) {
+                affiliateAnalytics.onSearchNotFound(exploreParams.getKeyword());
+            }
         } else {
             exploreParams.setCursorForLoadMore(cursor);
         }
