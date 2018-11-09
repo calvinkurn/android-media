@@ -1359,6 +1359,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (viewModel != null) {
             viewModel.setTimeStampBeforePause(System.currentTimeMillis());
         }
@@ -1373,9 +1374,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             if (tooltipHandler != null && runnable != null) {
                 tooltipHandler.removeCallbacks(runnable);
             }
-
-            super.onPause();
-
 
             if (notifReceiver != null) {
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
