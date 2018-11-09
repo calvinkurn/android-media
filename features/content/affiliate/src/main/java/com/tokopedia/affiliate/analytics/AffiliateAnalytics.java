@@ -238,9 +238,9 @@ public class AffiliateAnalytics {
     public void onDirectRecommProdukLainButtonClicked() {
         abstractionRouter.getAnalyticTracker().sendEventTracking(
                 setDefaultDataWithUserId(
-                        AffiliateEventTracking.Screen.BYME_CREATE_POST,
+                        AffiliateEventTracking.Screen.BYME_ADD_RECOMMENDATION,
                         AffiliateEventTracking.Event.AFFILIATE_CLICK,
-                        AffiliateEventTracking.Category.BYME_CREATE_POST,
+                        AffiliateEventTracking.Category.BYME_DIRECT_RECOMM,
                         AffiliateEventTracking.Action.CLICK_LIHAT_PRODUK_LAINNYA,
                         ""
                 )
