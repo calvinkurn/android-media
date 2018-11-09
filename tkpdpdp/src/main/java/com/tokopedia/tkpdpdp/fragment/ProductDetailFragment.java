@@ -778,6 +778,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
                 .setOrderQuantity(selectedQuantity)
                 .setSkipToCart(source.equals(SOURCE_BUTTON_BUY_VARIANT) || source.equals(SOURCE_BUTTON_BUY_PDP))
                 .setSourceAtc(source)
+                .setBigPromo(productData.isBigPromo())
                 .build();
 
         if (!productData.getBreadcrumb().isEmpty()) {
