@@ -33,6 +33,7 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
             data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity, unread));
+            data.setHaveNewFeed(entity.getFeed().isNewFeeds());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

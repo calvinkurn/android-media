@@ -445,7 +445,8 @@ public class MainParentActivity extends BaseActivity implements
         this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-
+        if (notification.getHaveNewFeed())
+            bottomNavigation.setNotification(0, FEED_MENU);
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }

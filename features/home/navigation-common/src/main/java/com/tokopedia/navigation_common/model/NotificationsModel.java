@@ -39,6 +39,10 @@ public class NotificationsModel {
     @Expose
     private ChatModel chat;
 
+    @SerializedName("feed")
+    @Expose
+    private FeedModel feed;
+
     public NotificationResolutionModel getResolution() {
         return resolution;
     }
@@ -109,5 +113,13 @@ public class NotificationsModel {
 
     public void setChat(ChatModel chat) {
         this.chat = chat;
+    }
+
+    public FeedModel getFeed() {
+        return feed;
+    }
+
+    public void setFeed(FeedModel feed) {
+        this.feed = feed;
     }
 }
