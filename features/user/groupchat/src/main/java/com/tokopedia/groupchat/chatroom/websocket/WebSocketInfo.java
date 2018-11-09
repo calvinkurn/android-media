@@ -456,18 +456,18 @@ public class WebSocketInfo {
 
     public boolean shouldHideMessage(Visitable mappedMessage) {
         if (mappedMessage instanceof VoteAnnouncementViewModel
-                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals(
+                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equalsIgnoreCase(
                 VoteAnnouncementViewModel.POLLING_CANCEL)) {
             return true;
         } else if (mappedMessage instanceof VoteAnnouncementViewModel
-                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equals
+                && ((VoteAnnouncementViewModel) mappedMessage).getVoteType().equalsIgnoreCase
                 (VoteAnnouncementViewModel.POLLING_UPDATE)) {
             return true;
         } else if (mappedMessage instanceof VibrateViewModel) {
             return true;
         } else if (mappedMessage instanceof SprintSaleAnnouncementViewModel
-                && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equals
-                (SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
+                && ((SprintSaleAnnouncementViewModel) mappedMessage).getSprintSaleType().equalsIgnoreCase(
+                SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING)) {
             return true;
         } else if (mappedMessage instanceof PinnedMessageViewModel) {
             return true;

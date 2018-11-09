@@ -538,18 +538,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                                                       sprintSaleViewModel,
                                               @Nullable final ChannelInfoViewModel channelInfoViewModel) {
 
-        Log.d("NISUE", "sprintSaleViewModel != null " + String.valueOf(sprintSaleViewModel != null));
-        Log.d("NISUE", "isValidSprintSale(sprintSaleViewModel) " + String.valueOf
-                (isValidSprintSale(sprintSaleViewModel)));
-        Log.d("NISUE", "sprintSaleViewModel.getSprintSaleType() != null " + String.valueOf
-                (sprintSaleViewModel.getSprintSaleType() != null));
-        Log.d("NISUE", "!sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING) " + String.valueOf
-                (!sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)));
-        Log.d("NISUE", "!sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED) " + String.valueOf
-                (!sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_FINISHED)));
-        Log.d("NISUE", "channelInfoViewModel != null " + String.valueOf
-                (channelInfoViewModel != null));
-
         if (sprintSaleViewModel != null
                 && isValidSprintSale(sprintSaleViewModel)
                 && sprintSaleViewModel.getSprintSaleType() != null
@@ -580,12 +568,6 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                             sprintSaleViewModel.getEndDate(),
                             sprintSaleViewModel.getSprintSaleType()
                     );
-
-                    Log.d("NISUE", "adapter.getList().size() == 0  " + String.valueOf(adapter.getList().size() == 0));
-                    Log.d("NISUE", "adapter.getItemAt(0) != null " + String.valueOf
-                            (adapter.getItemAt(0) != null));
-                    Log.d("NISUE", " !(adapter.getItemAt(0) instanceof SprintSaleAnnouncementViewModel)) " + String.valueOf
-                            (!(adapter.getItemAt(0) instanceof SprintSaleAnnouncementViewModel)));
 
                     if (adapter.getList().size() == 0 ||
                             (adapter.getItemAt(0) != null
