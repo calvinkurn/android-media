@@ -10,6 +10,8 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -35,7 +37,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     private AppCompatTextView tvPassengerName;
     private HorizontalProgressBar progressBar;
     private AppCompatTextView tvPercentageUpload;
-    private AppCompatTextView tvChangeImage;
+    private RelativeLayout imageContainer;
+    private LinearLayout tvChangeImage;
 
     private boolean showChangeButton;
     private Context context;
@@ -97,6 +100,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                     }
                 }
             });
+
+//            imageContainer.setBackground();
         } else {
             ivAttachment.setOnClickListener(new View.OnClickListener() {
                 @Override

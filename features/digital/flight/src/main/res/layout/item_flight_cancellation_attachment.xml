@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_4"
@@ -13,13 +15,14 @@
         android:id="@+id/image_container"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/bg_flight_gray_rounded_dashed">
+        android:background="@drawable/bg_flight_gray_rounded_dashed"
+        android:gravity="center">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_attachment"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            app:srcCompat="@drawable/ic_flight_camera" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_upload_photo" />
 
     </RelativeLayout>
 
@@ -39,6 +42,8 @@
             style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
             tools:text="Nama Penumpang" />
 
         <android.support.v7.widget.AppCompatTextView
@@ -49,7 +54,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:visibility="gone"
-            tools:text="3341aaaa3asdfa12313143413.JPG"
+            tools:text="3341aaaa3asdfa123asdf13143413.JPG"
             tools:visibility="visible" />
 
         <com.tokopedia.flight.common.view.HorizontalProgressBar
@@ -71,13 +76,20 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatTextView
+    <LinearLayout
         android:id="@+id/tv_change_image"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="@string/flight_booking_passenger_change_label"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible">
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/TextView.Micro.Green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/flight_booking_passenger_change_label" />
+    </LinearLayout>
 </LinearLayout>

@@ -6,6 +6,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassen
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author by furqan on 21/03/18.
@@ -21,6 +22,8 @@ public interface FlightCancellationContract {
 
         void setSelectedCancellationViewModel(List<FlightCancellationViewModel> flightCancellationViewModelList);
 
+        void setPassengerRelations(Map<String, FlightCancellationPassengerViewModel> passengerRelations);
+
         String getInvoiceId();
 
         String getString(int resId);
@@ -31,7 +34,7 @@ public interface FlightCancellationContract {
 
         List<FlightCancellationViewModel> getSelectedCancellationViewModel();
 
-        void navigateToRefundCancellationPage();
+        Map<String, FlightCancellationPassengerViewModel> getPassengerRelations();
 
         void navigateToReasonAndProofPage();
 
@@ -53,5 +56,7 @@ public interface FlightCancellationContract {
         void checkPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
 
         void uncheckPassenger(FlightCancellationPassengerViewModel passengerViewModel, int position);
+
+        boolean isPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel);
     }
 }

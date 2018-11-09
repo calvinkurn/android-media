@@ -358,7 +358,7 @@
     <string name="flight_search_discount_tag">HARGA KHUSUS</string>
     <string name="flight_search_filter_special_price">Harga Khusus</string>
     <string name="flight_label_show_detail_order">Lihat Order Detail</string>
-    <string name="activity_label_flight_cancellation">Pembatalan Pesanan</string>
+    <string name="activity_label_flight_cancellation">Isi Data Pembatalan</string>
     <string name="flight_cancellation_subtitle_order_id" formatted="false">Order ID Tokopedia: %s</string>
     <string name="flight_cancellation_choose_to_cancel_hint">1. Pilih Penerbangan dan Penumpang</string>
     <string name="flight_cancellation_next_button">Selanjutnya</string>
@@ -377,7 +377,7 @@
     <string name="flight_cancellation_review_description"><![CDATA[Saya telah menyetujui <b>Syarat dan Ketentuan Pembatalan Pesanan</b> untuk tiket dengan nama di atas dan mengerti bahwa tiket yang telah diterbitkan oleh Tokopedia akan dibatalkan atas kehendak saya dan saya menyetujui bahwa pengajuan pembatalan pesanan tidak dapat dibatalkan.]]></string>
     <string name="flight_cancellation_review_button">Ajukan Pembatalan</string>
     <string name="flight_cancellation_dialog_title">Batalkan Pesanan</string>
-    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Tiket pesawat yang dibatalkan kemungkinan <b>tidak dapat dikembalikan</b>. Segala ketentuan pembatalan tiket pesawat akan disesuaikan dengan kebijakan maskapai.]]></string>
+    <string name="flight_cancellation_dialog_non_refundable_description"><![CDATA[Dana dari tiket pesawat yang dibatalkan kemungkinan tidak dapat dikembalikan sesuai dengan ketentuan dari maskapai terkait.]]></string>
     <string name="flight_cancellation_dialog_back_button_text">Kembali</string>
     <string name="flight_cancellation_dialog_refundable_description"><![CDATA[Dengan melakukan pembatalan tiket pesawat, nominal dana yang dikembalikan akan disesuaikan dengan kebijakan maskapai.]]></string>
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
@@ -388,8 +388,8 @@
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>
     <string name="flight_cancellation_terms_and_condition_title">Syarat dan Ketentuan</string>
-    <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai. Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan TokoCash untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke saldo TokoCash. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke saldo Tokopedia ataupun saldo TokoCash Anda berdasarkan ketersediaan Limit di akun TokoCash.</p>]]></string>
-    <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui TokoCash atau kartu kredit. Pelajari lebih lanjut.</string>
+    <string name="flight_cancellation_terms_and_cancellation_text"><![CDATA[<p align=\'justify\'>Refund, pembatalan, penggantian jadwal, ketentuan boarding, bagasi yang diperbolehkan, pengembalian dana serta hal-hal lain yang berhubungan dengan penggunaan layanan transportasi pesawat merupakan kebijakan dan tanggung jawab dari maskapai dengan merujuk kepada Syarat dan Ketentuan yang ditetapkan oleh maskapai.<br /><br />Setelah kami menerima pembatalan tiket pesawat Anda dari mitra kami, jika metode pembayaran yang Anda pilih adalah metode kartu kredit maka pengembalian dana akan dilakukan ke limit kartu kredit Anda. Jika Anda menggunakan OVO Points untuk melakukan pembayaran tiket penerbangan Anda, dana tersebut akan dikembalikan ke OVO Points. Jika Anda menggunakan metode pembayaran lain, dana akan dikembalikan ke Saldo Tokopedia.</p>]]></string>
+    <string name="flight_cancellation_refund_description">Pengembalian dana dapat melalui Saldo Tokopedia, OVO Points atau Kartu Kredit. Pelajari lebih lanjut.</string>
     <string name="flight_cancellation_min_dimension_error">Ukuran Dimensi Gambar Minimal Lebar 300px dan Tinggi 100px</string>
     <string name="flight_cancellation_max_error">Ukuran gambar maksimal 15Mb</string>
     <string name="flight_cancellation_upload_attachment_title">Bagaimana Anda ingin mengatur gambar Anda ?</string>
@@ -469,4 +469,9 @@
     <string name="flight_cancellation_upload_percentage_label">sedang diupload %s</string>
     <string name="flight_cancellation_review_refund_to_email_detail">Estimasi refund akan dikirim ke e-mail Anda hingga 1 jam ke depan.</string>
     <string name="flight_cancellation_review_no_refund_detail">Refund tidak tersedia pada penerbangan ini.</string>
+    <string name="flight_cancellation_data_penumpang_label">DATA PENUMPANG</string>
+    <string name="flight_cancellation_review_passenger_id_label">Identitas Penumpang</string>
+    <string name="flight_cancellation_asterisks">*</string>
+    <string name="flight_cancellation_estimate_note_cashback">Nilai estimasi refund yang Anda terima dapat berubah jika sebelumnya Anda menggunakan promo Cashback</string>
+    <string name="flight_cancellation_estimate_note_additional">Estimasi refund tidak termasuk biaya asuransi penerbangan, makanan, biaya bagasi, dan fasilitas lainnya.</string>
 </resources>

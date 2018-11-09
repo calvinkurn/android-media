@@ -67,6 +67,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatTextView tvDescription;
     private AppCompatTextView tvRefundDetail;
     private LinearLayout containerEstimateRefund;
+    private LinearLayout containerEstimateNotes;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
@@ -100,6 +101,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         tvDescription = view.findViewById(R.id.tv_description_refund);
         tvRefundDetail = view.findViewById(R.id.tv_refund_detail);
         containerEstimateRefund = view.findViewById(R.id.container_estimate_refund);
+        containerEstimateNotes = view.findViewById(R.id.container_estimate_notes);
 
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -188,11 +190,13 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     @Override
     public void showEstimateValue() {
         containerEstimateRefund.setVisibility(View.VISIBLE);
+        containerEstimateNotes.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideEstimateValue() {
         containerEstimateRefund.setVisibility(View.GONE);
+        containerEstimateNotes.setVisibility(View.GONE);
     }
 
     @Override
@@ -315,7 +319,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(color);
-                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
             }
         };
         description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -43,6 +44,11 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
     }
 
     private void setupToolbar() {

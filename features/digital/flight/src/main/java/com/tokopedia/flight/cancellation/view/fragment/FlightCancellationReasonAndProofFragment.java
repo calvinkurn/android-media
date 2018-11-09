@@ -389,19 +389,8 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         if (selectedReason != null && selectedReason.getRequiredDocs() != null &&
                 selectedReason.getRequiredDocs().size() > 0) {
             showAttachmentContainer();
-            attachmentDescription.setText(getReasonDescription());
         } else {
             hideAttachmentContainer();
         }
-    }
-
-    private String getReasonDescription() {
-        String description = "";
-
-        for (String item : selectedReason.getRequiredDocs()) {
-            description = description.concat(item + ", ");
-        }
-
-        return description;
     }
 }

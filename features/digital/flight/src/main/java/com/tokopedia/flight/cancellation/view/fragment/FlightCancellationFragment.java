@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
-import com.tokopedia.flight.cancellation.view.activity.FlightCancellationRefundDetailActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
@@ -30,7 +30,9 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewMo
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,7 +48,6 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
-    private static final int REFUND_STEPS_NUMBER = 2;
     public static final int REQUEST_REFUND_CANCELLATION = 1;
     public static final int REQUEST_REASON_AND_PROOF_CANCELLATION = 2;
 
@@ -54,6 +55,8 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private List<FlightCancellationViewModel> flightCancellationViewModelList;
     private FlightCancellationWrapperViewModel flightCancellationWrapperViewModel;
     List<FlightCancellationJourney> flightCancellationJourneyList;
+    private Map<String, FlightCancellationPassengerViewModel> passengerRelationMap;
+    private RecyclerView recyclerView;
 
     @Inject
     FlightCancellationPresenter flightCancellationPresenter;
@@ -76,6 +79,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation, container, false);
 
+        recyclerView = getRecyclerView(view);
         btnContainer = view.findViewById(R.id.btn_container);
         btnSubmit = view.findViewById(R.id.button_submit);
 
@@ -115,6 +119,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         flightCancellationWrapperViewModel = new FlightCancellationWrapperViewModel();
         flightCancellationWrapperViewModel.setInvoice(invoiceId);
         flightCancellationWrapperViewModel.setCancellationReasonAndAttachment(new FlightCancellationReasonAndAttachmentViewModel());
+        passengerRelationMap = new HashMap<>();
     }
 
     @Override
@@ -168,6 +173,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     }
 
     @Override
+    public void setPassengerRelations(Map<String, FlightCancellationPassengerViewModel> passengerRelations) {
+        this.passengerRelationMap = passengerRelations;
+    }
+
+    @Override
     public String getInvoiceId() {
         return invoiceId;
     }
@@ -185,6 +195,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public List<FlightCancellationViewModel> getSelectedCancellationViewModel() {
         return flightCancellationWrapperViewModel.getGetCancellations();
+    }
+
+    @Override
+    public Map<String, FlightCancellationPassengerViewModel> getPassengerRelations() {
+        return passengerRelationMap;
     }
 
     @Override
@@ -213,11 +228,13 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void onPassengerChecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.checkPassenger(passengerViewModel, position);
+        notifyChanges();
     }
 
     @Override
     public void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position) {
         flightCancellationPresenter.uncheckPassenger(passengerViewModel, position);
+        notifyChanges();
     }
 
     @Override
@@ -228,16 +245,11 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
         } else {
             return false;
         }
-
     }
 
     @Override
-    public void navigateToRefundCancellationPage() {
-        startActivityForResult(
-                FlightCancellationRefundDetailActivity.getCallingIntent(getActivity(),
-                        flightCancellationWrapperViewModel, REFUND_STEPS_NUMBER),
-                REQUEST_REFUND_CANCELLATION
-        );
+    public boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel) {
+        return flightCancellationPresenter.isPassengerChecked(passengerViewModel);
     }
 
     @Override
@@ -277,5 +289,14 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     private void closeCancellationPage() {
         getActivity().setResult(RESULT_OK);
         getActivity().finish();
+    }
+
+    private void notifyChanges() {
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                getAdapter().notifyDataSetChanged();
+            }
+        });
     }
 }
