@@ -46,6 +46,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
     private static final String PARAM_TYPE = "{type}";
+    private static final int COUNT_SINGLE = 1;
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
@@ -346,7 +347,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
                     KolEventTracking.Action.SHOP_ITEM_CLICK_DYNAMIC
-                            .replace(PARAM_COUNT, element.getImageList().size() == 1 ? SINGLE : MULTIPLE)
+                            .replace(PARAM_COUNT, element.getImageList().size() == COUNT_SINGLE ? SINGLE : MULTIPLE)
                             .replace(PARAM_TYPE, element.getTagsType()),
                     String.valueOf(element.getContentId())
             );
