@@ -88,6 +88,8 @@ public interface GroupChatContract {
         void reportWebSocket(String url, String error);
 
         void initVideoFragment();
+
+        void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {
