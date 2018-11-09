@@ -1242,9 +1242,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        if (viewModel != null) {
-            viewModel.setTimeStampAfterResume(System.currentTimeMillis());
-        }
         if (canResume()) {
 
             kickIfIdleForTooLong();
@@ -1275,19 +1272,21 @@ public class GroupChatActivity extends BaseSimpleActivity
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            if (viewModel != null) {
+                viewModel.setTimeStampAfterResume(System.currentTimeMillis());
+            }
         }
     }
 
     private boolean canResume() {
         return viewModel != null
-                && viewModel.getTimeStampAfterResume() > 0
-                && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME;
+                && (viewModel.getTimeStampAfterResume() == 0 || (viewModel.getTimeStampAfterResume() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterResume() > PAUSE_RESUME_TRESHOLD_TIME));
     }
 
     private boolean canPause() {
         return viewModel != null
-                && viewModel.getTimeStampBeforePause() > 0
-                && System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > PAUSE_RESUME_TRESHOLD_TIME;
+                && (viewModel.getTimeStampAfterPause() == 0 || (viewModel.getTimeStampAfterPause() > 0 && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > PAUSE_RESUME_TRESHOLD_TIME));
     }
 
     @Override
@@ -1360,9 +1359,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onPause() {
         super.onPause();
-        if (viewModel != null) {
-            viewModel.setTimeStampBeforePause(System.currentTimeMillis());
-        }
 
         if (canPause()) {
 
@@ -1380,6 +1376,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
 
             presenter.destroyWebSocket();
+
+            if (viewModel != null) {
+                viewModel.setTimeStampAfterPause(System.currentTimeMillis());
+            }
         }
     }
 
@@ -1402,8 +1402,8 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void kickIfIdleForTooLong() {
 
-        if (viewModel.getTimeStampBeforePause() > 0
-                && System.currentTimeMillis() - viewModel.getTimeStampBeforePause() > KICK_TRESHOLD_TIME) {
+        if (viewModel.getTimeStampAfterPause() > 0
+                && System.currentTimeMillis() - viewModel.getTimeStampAfterPause() > KICK_TRESHOLD_TIME) {
             onUserIdleTooLong();
         }
 
