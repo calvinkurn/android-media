@@ -51,10 +51,12 @@ public class AppRatingView extends FrameLayout {
     }
 
     private RatingBar.OnRatingBarChangeListener getRatingBarListener() {
-        return new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                onRatingChange(rating);
+        return (ratingBar, rating, fromUser) -> {
+            if(rating < 1.0f) {
+                ratingBar.setRating(1.0f);
+            } else {
+                if (fromUser)
+                    onRatingChange(rating);
             }
         };
     }
