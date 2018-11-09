@@ -178,7 +178,7 @@ public class ProductDetailData implements Parcelable{
     }
 
     public boolean isBigPromo() {
-        return false;
+        return isBigPromo;
     }
 
     public void setBigPromo(boolean bigPromo) {
