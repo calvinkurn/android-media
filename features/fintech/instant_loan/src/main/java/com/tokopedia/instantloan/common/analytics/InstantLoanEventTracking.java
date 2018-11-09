@@ -3,6 +3,7 @@ package com.tokopedia.instantloan.common.analytics;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public class InstantLoanEventTracking extends UnifyTracking {
 
@@ -12,7 +13,7 @@ public class InstantLoanEventTracking extends UnifyTracking {
                         InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                         InstantLoanEventConstants.Action.PL_BANNER_IMPRESSION,
                         eventLabel
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -22,7 +23,7 @@ public class InstantLoanEventTracking extends UnifyTracking {
                         InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                         InstantLoanEventConstants.Action.PL_BANNER_CLICK,
                         eventLabel
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -32,7 +33,7 @@ public class InstantLoanEventTracking extends UnifyTracking {
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_CARI_PINJAMAN_CLICK,
                 eventLabel
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventLoanPopupClick(String eventLabel) {
@@ -41,7 +42,7 @@ public class InstantLoanEventTracking extends UnifyTracking {
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
                 eventLabel
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventIntroSliderScrollEvent(String eventLabel) {
@@ -50,7 +51,7 @@ public class InstantLoanEventTracking extends UnifyTracking {
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
                 eventLabel
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventInstantLoanPermissionStatus(String eventLabel) {
@@ -59,6 +60,6 @@ public class InstantLoanEventTracking extends UnifyTracking {
                 InstantLoanEventConstants.Category.FINTECH_HOMEPAGE,
                 InstantLoanEventConstants.Action.PL_POP_UP_CLICK,
                 eventLabel
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(MainApplication.getAppContext()).legacySessionHandler().getUserId()).getEvent());
     }
 }

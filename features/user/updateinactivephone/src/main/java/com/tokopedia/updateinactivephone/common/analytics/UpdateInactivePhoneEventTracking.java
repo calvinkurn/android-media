@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public class UpdateInactivePhoneEventTracking extends UnifyTracking {
 
@@ -13,7 +14,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.INACTIVE_PHONE_PAGE,
                         UpdateInactivePhoneEventConstants.Action.CLICK_SELUNJANTYA,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -23,7 +24,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.CHANGE_NOT_ACTIVE_PHONE,
                         UpdateInactivePhoneEventConstants.Action.CLICK_MASUK,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -33,7 +34,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.INACTIVE_PHONE_PAGE,
                         UpdateInactivePhoneEventConstants.Action.CLICK_BATAL,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -43,7 +44,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.WAITING_CONFIRMATION_PAGE,
                         UpdateInactivePhoneEventConstants.Action.VIEW_ON_WAITING_CONFIRMATION_APGE,
                         UpdateInactivePhoneEventConstants.EventLabel.CHANGE_NOT_ACTIVE_PHONE
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -53,7 +54,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.SUBMIT_SUCCESS_PAGE,
                         UpdateInactivePhoneEventConstants.Action.VIEW_ON_SUBMIT_SUCCESS_PAGE,
                         UpdateInactivePhoneEventConstants.EventLabel.CHANGE_NOT_ACTIVE_PHONE
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -63,7 +64,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.CHANGE_NOT_ACTIVE_PHONE,
                         UpdateInactivePhoneEventConstants.Action.CLICK_KIRIM_PENGAJUAN,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -73,7 +74,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
                         UpdateInactivePhoneEventConstants.Action.VIEW_KIRIM_PENGAJUAN,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -83,7 +84,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
                         UpdateInactivePhoneEventConstants.Action.VIEW_ON_LANJUTKAN,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 
@@ -93,7 +94,7 @@ public class UpdateInactivePhoneEventTracking extends UnifyTracking {
                         UpdateInactivePhoneEventConstants.Category.INPUT_ID_AND_BANK_ACCOUNT,
                         UpdateInactivePhoneEventConstants.Action.CLICK_ON_LANJUTKAN,
                         ""
-                ).setUserId().getEvent()
+                ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent()
         );
     }
 }

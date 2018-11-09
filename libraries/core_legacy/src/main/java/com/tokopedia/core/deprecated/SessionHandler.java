@@ -13,36 +13,19 @@ import com.tokopedia.core.var.TkpdCache;
 /**
  * most of the codes is no-op that need to defined at the application.
  */
-public class SessionHandler implements UserSession {
-    private final GCMHandler gcmHandler;
+public abstract class SessionHandler implements UserSession {
     protected Context context;
-    private final SessionHandler sessionHandler;
 
     public SessionHandler(Context context) {
         this.context = context;
 
-        /**
-         * get implementation here using router
-         */
-        sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
-        gcmHandler = RouterUtils.getRouterFromContext(context).legacyGCMHandler();
     }
 
-    public String getLoginName(){
-        return sessionHandler.getLoginName();
-    }
-    public String getGTMLoginID(){
-        return sessionHandler.getGTMLoginID();
-    }
-    public String getShopID(){
-        return sessionHandler.getShopID();
-    }
-    public String getLoginID(){
-        return sessionHandler.getLoginID();
-    }
-    public boolean isUserHasShop(){
-        return sessionHandler.isUserHasShop();
-    }
+    public abstract String getLoginName();
+    public abstract String getGTMLoginID();
+    public abstract String getShopID();
+    public abstract String getLoginID();
+    public abstract boolean isUserHasShop();
 
     public String getAdsId(){
         final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
@@ -70,40 +53,24 @@ public class SessionHandler implements UserSession {
         }
     }
 
-    public boolean isV4Login(){
-        return sessionHandler.isV4Login();
-    }
+    public abstract boolean isV4Login();
 
-    public String getPhoneNumber() {
-        return sessionHandler.getPhoneNumber();
-    }
+    public abstract String getPhoneNumber();
 
-    public String getEmail() {
-        return sessionHandler.getEmail();
-    }
+    public abstract String getEmail();
 
-    public String getRefreshToken() {
-        return sessionHandler.getRefreshToken();
-    }
+    public abstract String getRefreshToken();
 
-    public String getAccessToken() {
-        return sessionHandler.getAccessToken();
-    }
+    public abstract String getAccessToken();
 
     @Override
-    public String getFreshToken() {
-        return sessionHandler.getFreshToken();
-    }
+    public abstract String getFreshToken();
 
     @Override
-    public String getUserId() {
-        return getLoginID();
-    }
+    public abstract String getUserId();
 
     @Override
-    public String getDeviceId() {
-        return gcmHandler.getRegistrationId();
-    }
+    public abstract String getDeviceId();
 
     @Override
     public boolean isLoggedIn() {
@@ -126,17 +93,11 @@ public class SessionHandler implements UserSession {
     }
 
     @Override
-    public String getProfilePicture() {
-        return sessionHandler.getProfilePicture();
-    }
+    public abstract String getProfilePicture();
 
     @Override
-    public boolean isMsisdnVerified() {
-        return sessionHandler.isMsisdnVerified();
-    }
+    public abstract boolean isMsisdnVerified();
 
     @Override
-    public boolean isHasPassword() {
-        return sessionHandler.isHasPassword();
-    }
+    public abstract boolean isHasPassword() ;
 }

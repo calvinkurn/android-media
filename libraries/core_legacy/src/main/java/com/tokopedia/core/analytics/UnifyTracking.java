@@ -11,6 +11,7 @@ import com.tkpd.library.utils.legacy.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
@@ -728,7 +729,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.R3USER,
                 action,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -742,7 +743,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -756,7 +757,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
@@ -770,7 +771,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -784,7 +785,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 action,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -798,7 +799,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW_RECENT,
                 AppEventTracking.EventLabel.VIEW_ALL_RECENT)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -812,7 +813,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -826,7 +827,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                 AppEventTracking.EventLabel.HOME.toLowerCase() + " - " + label + " " + AppEventTracking.Action.CLICK_VIEW_ALL,
                 "")
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -840,7 +841,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, productId)
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, "0")
@@ -854,7 +855,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.CLICK,
                 label)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .setCustomEvent(AppEventTracking.CustomDimension.PRODUCT_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.PROMO_ID, "0")
                 .setCustomEvent(AppEventTracking.CustomDimension.SHOP_ID, shopId)
@@ -2462,7 +2463,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.DASHBOARD,
                 AppEventTracking.Action.CLICK + " " + main,
                 item)
-                .setUserId()
+                .setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId())
                 .getEvent());
     }
 
@@ -2820,7 +2821,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_VIEW_ALL_KOL_RECOMMENDATION,
                 AppEventTracking.EventLabel.FEED_KOL_RECOMMENDATION_VIEW_ALL
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventKolRecommendationGoToProfileClick(Context context, String kolCategory, String kolName) {
@@ -2829,7 +2830,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventKolRecommendationUnfollowClick(Context context, String kolCategory, String kolName) {
@@ -2838,7 +2839,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNFOLLOW_KOL_RECOMMENDATION,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventKolRecommendationFollowClick(Context context, String kolCategory, String kolName) {
@@ -2847,7 +2848,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_FOLLOW_KOL_RECOMMENDATION,
                 generateKolRecommendationEventLabel(kolCategory, kolName)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     private static String generateKolRecommendationEventLabel(String kolCategory, String kolName) {
@@ -3047,7 +3048,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_WISHLIST,
                 generateWishlistClickEventLabel(isWishlisted, keyword)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
@@ -3062,7 +3063,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.SORT_BY,
                 AppEventTracking.Action.SORT_BY + " - " + screenName,
                 sortByValue
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventSearchResultQuickFilter(Context context, String filterName, String filterValue, boolean isSelected) {
@@ -3071,7 +3072,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.QUICK_FILTER,
                 filterName + " - " + filterValue + " - " + Boolean.toString(isSelected)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
@@ -3088,7 +3089,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_BELI,
                 AppEventTracking.EventLabel.PRODUCT_SEARCH
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventReferralLongClick(Context context) {
@@ -3097,7 +3098,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_REFERRAL,
                 AppEventTracking.EventLabel.LONG_PRESS_SHORTCUT_REFERRAL
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventBayarLongClick(Context context) {
@@ -3106,7 +3107,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_BAYAR,
                 AppEventTracking.EventLabel.DIGITAL
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventJualLongClick(Context context) {
@@ -3115,7 +3116,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_JUAL,
                 AppEventTracking.EventLabel.TAKE_TO_SHOP
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventDigitalEventTracking(Context context, String action, String label) {
@@ -3125,6 +3126,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.DIGITAL_EVENT,
                 action,
                 label
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 }

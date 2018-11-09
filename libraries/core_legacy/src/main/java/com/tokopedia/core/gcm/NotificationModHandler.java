@@ -20,6 +20,7 @@ import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.usecase.RequestParams;
 
@@ -193,7 +194,7 @@ public class NotificationModHandler {
     }
 
     public static void showDialogNotificationIfNotShowing(final Activity context, Intent intent) {
-        if (!FCMCacheManager.isDialogNotificationSettingShowed(context) && new SessionHandler(context).isV4Login()) {
+        if (!FCMCacheManager.isDialogNotificationSettingShowed(context) && RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login()) {
             if (GlobalConfig.isSellerApp()) {
                 if (appInstalledOrNot(PACKAGE_CONSUMER_APP, context)) {
                     new AlertDialog.Builder(context)

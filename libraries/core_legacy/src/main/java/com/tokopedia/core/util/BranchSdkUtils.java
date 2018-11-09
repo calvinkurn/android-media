@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.Constants;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -76,7 +77,7 @@ public class BranchSdkUtils {
                 ShareContentsCreateListener.onCreateShareContents(data.getTextContentForBranch(""), data.getTextContentForBranch(""), data.getshareUrl());
             } else {
                 BranchUniversalObject branchUniversalObject = createBranchUniversalObject(data);
-                LinkProperties linkProperties = createLinkProperties(new SessionHandler(activity).getLoginName(), data, data.getSource(), activity);
+                LinkProperties linkProperties = createLinkProperties(RouterUtils.getRouterFromContext(activity).legacySessionHandler().getLoginName(), data, data.getSource(), activity);
                 branchUniversalObject.generateShortUrl(activity, linkProperties, new Branch.BranchLinkCreateListener() {
                     @Override
                     public void onLinkCreate(String url, BranchError error) {
@@ -227,7 +228,7 @@ public class BranchSdkUtils {
     public static void sendCommerceEvent(Context context, BranchIOPayment branchIOPayment) {
         try {
             List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
-            SessionHandler sessionHandler = new SessionHandler(context);
+            SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
 
             for (HashMap<String, String> product : branchIOPayment.getProducts()) {
                 BranchUniversalObject buo = new BranchUniversalObject()
@@ -286,7 +287,7 @@ public class BranchSdkUtils {
 
     public static void sendLoginEvent(Context context) {
 
-        SessionHandler sessionHandler = new SessionHandler(context);
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         new BranchEvent(AppEventTracking.EventBranch.EVENT_LOGIN)
                 .addCustomDataProperty(AppEventTracking.Branch.EMAIL, sessionHandler.getEmail())
                 .addCustomDataProperty(AppEventTracking.Branch.PHONE, normalizePhoneNumber(sessionHandler.getPhoneNumber()))

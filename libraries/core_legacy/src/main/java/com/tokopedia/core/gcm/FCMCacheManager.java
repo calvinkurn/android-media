@@ -19,6 +19,7 @@ import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
@@ -287,7 +288,7 @@ public class FCMCacheManager {
      * Only call this method when you need to update GCM Id.
      * Do not change this method**/
     public static void updateGcmId(Context context) {
-        SessionHandler sessionHandler = new SessionHandler(context);
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         if (sessionHandler.isV4Login()) {
             IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
             FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();

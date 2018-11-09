@@ -14,15 +14,9 @@ import java.util.Map;
  */
 public class EventTracking {
     protected Map<String, Object> eventTracking = new HashMap<>();
-    private SessionHandler sessionHandler;
-
-    public EventTracking(SessionHandler sessionHandler) {
-        this.sessionHandler = sessionHandler;
-    }
 
     public EventTracking(String event, String category, String action, String label) {
-        Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label
-                + " " + sessionHandler.getLoginID());
+        Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label);
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
         this.eventTracking.put("eventAction", action);
@@ -32,9 +26,8 @@ public class EventTracking {
     public EventTracking(String screenName, String event, String category, String action,
                          String label) {
         Log.d("GAv4", String.format("EventTracking: screenName=%s | event=%s | category=%s " +
-                        "| action=%s | label=%s | userId=%s",
-                screenName, event, category, action, label,
-                sessionHandler.getLoginID()));
+                        "| action=%s | label=%s",
+                screenName, event, category, action, label));
         this.eventTracking.put("screenName", screenName);
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
@@ -63,9 +56,9 @@ public class EventTracking {
         return this.eventTracking;
     }
 
-    public EventTracking setUserId() {
+    public EventTracking setUserId(String userId) {
         this.eventTracking.put(AppEventTracking.CustomDimension.USER_ID, TextUtils.isEmpty
-                (sessionHandler.getLoginID()) ? "0" : sessionHandler.getLoginID());
+                (userId) ? "0" : userId);
         return this;
     }
 

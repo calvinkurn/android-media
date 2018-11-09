@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class GTMContainer implements IGTMContainer {
 
     public GTMContainer(Context context) {
         this.context = context;
-        this.sessionHandler = new SessionHandler(context);
+        this.sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
     }
 
     @Override

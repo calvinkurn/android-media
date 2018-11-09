@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class HotlistPageTracking extends TrackingUtils {
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click sort",
                 sortValue
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventHotlistFilter(Context context, Map<String, String> selectedFilter) {
@@ -35,7 +36,7 @@ public class HotlistPageTracking extends TrackingUtils {
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click filter",
                 generateFilterEventLabel(selectedFilter)
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
@@ -79,7 +80,7 @@ public class HotlistPageTracking extends TrackingUtils {
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click social share",
                 channel
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 
     public static void eventHotlistDisplay(Context context, String display) {
@@ -88,6 +89,6 @@ public class HotlistPageTracking extends TrackingUtils {
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click display",
                 display
-        ).setUserId().getEvent());
+        ).setUserId(RouterUtils.getRouterFromContext(context).legacySessionHandler().getUserId()).getEvent());
     }
 }

@@ -68,76 +68,93 @@ public abstract class MainRouterApplication extends BaseMainApplication implemen
 
     @Override
     public SessionHandler legacySessionHandler() {
-        if(sessionHandler == null)
-        return sessionHandler = new SessionHandler(this){
-            com.tokopedia.core.util.SessionHandler sessionHandler
-                    = new com.tokopedia.core.util.SessionHandler(MainRouterApplication.this);
-            @Override
-            public String getAccessToken() {
-                return sessionHandler.getAccessToken(context);
-            }
+        if(sessionHandler == null) {
+            final com.tokopedia.core.util.SessionHandler mSessionHandler
+                    = new com.tokopedia.core.util.SessionHandler(this);
+            return sessionHandler = new SessionHandler(this) {
 
-            @Override
-            public String getLoginName() {
-                return sessionHandler.getLoginName();
-            }
 
-            @Override
-            public String getGTMLoginID() {
-                return sessionHandler.getGTMLoginID(context);
-            }
+                @Override
+                public String getAccessToken() {
+                    return mSessionHandler.getAccessToken(MainRouterApplication.this);
+                }
 
-            @Override
-            public String getShopID() {
-                return sessionHandler.getShopID();
-            }
+                @Override
+                public String getFreshToken() {
+                    return mSessionHandler.getAuthRefreshToken();
+                }
 
-            @Override
-            public String getLoginID() {
-                return sessionHandler.getLoginID();
-            }
+                @Override
+                public String getUserId() {
+                    return mSessionHandler.getLoginID();
+                }
 
-            @Override
-            public boolean isUserHasShop() {
-                return sessionHandler.isUserHasShop();
-            }
+                @Override
+                public String getLoginName() {
+                    return mSessionHandler.getLoginName();
+                }
 
-            @Override
-            public boolean isV4Login() {
-                return sessionHandler.isV4Login();
-            }
+                @Override
+                public String getGTMLoginID() {
+                    return mSessionHandler.getGTMLoginID(context);
+                }
 
-            @Override
-            public String getPhoneNumber() {
-                return sessionHandler.getPhoneNumber();
-            }
+                @Override
+                public String getShopID() {
+                    return mSessionHandler.getShopID();
+                }
 
-            @Override
-            public String getEmail() {
-                return sessionHandler.getEmail();
-            }
+                @Override
+                public String getLoginID() {
+                    return mSessionHandler.getLoginID();
+                }
 
-            @Override
-            public String getDeviceId() {
-                return legacyGCMHandler().getRegistrationId();
-            }
+                @Override
+                public boolean isUserHasShop() {
+                    return mSessionHandler.isUserHasShop();
+                }
 
-            @Override
-            public String getProfilePicture() {
-                return sessionHandler.getProfilePicture();
-            }
+                @Override
+                public boolean isV4Login() {
+                    return mSessionHandler.isV4Login();
+                }
 
-            @Override
-            public boolean isMsisdnVerified() {
-                return sessionHandler.isMsisdnVerified();
-            }
+                @Override
+                public String getPhoneNumber() {
+                    return mSessionHandler.getPhoneNumber();
+                }
 
-            @Override
-            public boolean isHasPassword() {
-                return sessionHandler.isHasPassword();
-            }
-        };
-        else{
+                @Override
+                public String getEmail() {
+                    return mSessionHandler.getEmail();
+                }
+
+                @Override
+                public String getRefreshToken() {
+                    return mSessionHandler.getAuthRefreshToken();
+                }
+
+                @Override
+                public String getDeviceId() {
+                    return legacyGCMHandler().getRegistrationId();
+                }
+
+                @Override
+                public String getProfilePicture() {
+                    return mSessionHandler.getProfilePicture();
+                }
+
+                @Override
+                public boolean isMsisdnVerified() {
+                    return mSessionHandler.isMsisdnVerified();
+                }
+
+                @Override
+                public boolean isHasPassword() {
+                    return mSessionHandler.isHasPassword();
+                }
+            };
+        }else{
             return sessionHandler;
         }
     }

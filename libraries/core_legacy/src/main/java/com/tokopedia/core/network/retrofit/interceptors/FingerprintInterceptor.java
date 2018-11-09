@@ -17,6 +17,7 @@ import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerpri
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.GetFingerprintUseCase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -63,7 +64,7 @@ public class FingerprintInterceptor implements Interceptor {
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
         String json = getFingerPrintJson();
 
-        SessionHandler session = new SessionHandler(context);
+        SessionHandler session = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(context));
         if (session.isV4Login()) {
             newRequest.addHeader(KEY_USER_ID, session.getLoginID());

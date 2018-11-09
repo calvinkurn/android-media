@@ -21,6 +21,7 @@ import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -154,7 +155,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void sendMoEngageCreateShopEvent(Context context, String screenName){
         PayloadBuilder builder = new PayloadBuilder();
-        SessionHandler sessionHandler = new SessionHandler(context);
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
         builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
         builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, sessionHandler.getLoginID());
         builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, sessionHandler.getEmail());
@@ -166,20 +167,21 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void sendMoEngageOpenHomeEvent(Context context) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, new SessionHandler(context).isV4Login());
+
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
     public static void sendMoEngageOpenFeedEvent(Context context, int feedSize) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, new SessionHandler(context).isV4Login());
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FEED_EMPTY, feedSize == 0);
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FEED);
     }
 
     public static void sendMoEngageOpenFavoriteEvent(Context context, int favoriteSize) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, new SessionHandler(context).isV4Login());
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_FAVORITE_EMPTY, favoriteSize == 0);
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_FAVORITE);
     }
@@ -228,14 +230,14 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void sendMoEngageClickHotListEvent(Context context, HotListModel hotListModel) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, new SessionHandler(context).isV4Login());
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         builder.putAttrString(AppEventTracking.MOENGAGE.HOTLIST_NAME, hotListModel.getHotListName());
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICK_HOTLIST);
     }
 
     public static void sendMoEngageOpenHotListEvent(Context context) {
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, new SessionHandler(context).isV4Login());
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, RouterUtils.getRouterFromContext(context).legacySessionHandler().isV4Login());
         getMoEngine(context).sendEvent(builder.build(), AppEventTracking.EventMoEngage.OPEN_HOTLIST);
     }
 

@@ -8,6 +8,7 @@ import com.moengage.push.PushManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -41,7 +42,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             CommonUtils.dumper(TAG + " RefreshedToken: " + token + ", localToken: " + localToken);
             if (!localToken.equals(token)) {
-                SessionHandler sessionHandler = new SessionHandler(getApplicationContext());
+                SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
                 if (sessionHandler.isV4Login()) {
                     IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
                     FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deprecated.SessionHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 public class ScreenTrackingBuilder {
     private static final String AF_UNAVAILABLE_VALUE = "none";
@@ -27,7 +28,7 @@ public class ScreenTrackingBuilder {
         this.mOpenScreenAnalytics = openScreenAnalytics;
         this.mActivity = activity;
         authEvent = new Authenticated();
-        sessionHandler = new SessionHandler(activity);
+        sessionHandler = RouterUtils.getRouterFromContext(activity).legacySessionHandler();
 
         authEvent.setUserFullName(sessionHandler.getLoginName());
         authEvent.setUserID(sessionHandler.getGTMLoginID());

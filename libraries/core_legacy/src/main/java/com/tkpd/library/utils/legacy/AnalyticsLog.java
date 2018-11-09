@@ -5,8 +5,10 @@ import android.os.Build;
 
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
@@ -130,8 +132,9 @@ public class AnalyticsLog {
     }
 
     public static void printNOTPLog(Context context, String msg) {
-        getAndroidNOTPLogger(context).log(msg + " - Phone Number:-" + new SessionHandler(context).getPhoneNumber()
-                + " - LoginID - " + new SessionHandler(context).getLoginID());
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
+        getAndroidNOTPLogger(context).log(msg + " - Phone Number:-" +  sessionHandler.getPhoneNumber()
+                + " - LoginID - " + sessionHandler.getLoginID());
     }
 
     private static void log(Context context, String message) {

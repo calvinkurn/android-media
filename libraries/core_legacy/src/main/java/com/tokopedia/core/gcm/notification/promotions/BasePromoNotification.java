@@ -8,6 +8,7 @@ import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.base.BaseNotification;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 
@@ -21,7 +22,7 @@ public abstract class BasePromoNotification extends BaseNotification {
     protected BasePromoNotification(Context context) {
         super(context);
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
-        sessionHandler = new SessionHandler(context);
+        sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.router.home.HomeRouter;
 
 import io.hansel.hanselsdk.Hansel;
@@ -34,7 +35,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         mContext = getApplicationContext();
-        sessionHandler = new SessionHandler(mContext);
+        sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
         gcmHandler = new GCMHandler(mContext);
 
         Bundle data = convertMap(remoteMessage);
