@@ -55,6 +55,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
     private void setupView(View view) {
         context = view.getContext();
+        imageContainer = view.findViewById(R.id.image_container);
         ivAttachment = view.findViewById(R.id.iv_attachment);
         tvFilename = view.findViewById(R.id.tv_filename);
         tvPassengerName = view.findViewById(R.id.tv_passenger_name);
@@ -86,6 +87,10 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
             });
 
+            ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+            ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+            ivAttachment.requestLayout();
+
             if (showChangeButton) {
                 tvChangeImage.setVisibility(View.VISIBLE);
             } else {
@@ -101,7 +106,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
                 }
             });
 
-//            imageContainer.setBackground();
+            imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_stroke);
+
         } else {
             ivAttachment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,6 +119,12 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
             });
 
             tvChangeImage.setVisibility(View.GONE);
+            imageContainer.setBackgroundResource(R.drawable.bg_flight_gray_rounded_dashed);
+
+
+            ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+            ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.dp_60);
+            ivAttachment.requestLayout();
         }
 
         if (element.getFilename() != null && element.getFilename().length() > 0) {

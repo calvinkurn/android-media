@@ -6,8 +6,8 @@ import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult;
 import com.tokopedia.digital_deals.view.model.response.LikeUpdateModel;
+import com.tokopedia.digital_deals.view.model.response.LikeUpdateResult;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
