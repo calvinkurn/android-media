@@ -1981,7 +1981,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (currentFragmentIsChat()) {
             showPushNotif(model);
         } else {
-            viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
+            if(viewModel != null && viewModel.getChannelInfoViewModel() != null) {
+                viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
+            }
         }
     }
 

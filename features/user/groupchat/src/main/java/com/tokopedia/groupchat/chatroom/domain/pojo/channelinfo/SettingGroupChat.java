@@ -13,6 +13,7 @@ public class SettingGroupChat implements Parcelable{
 
     public static final int DEFAULT_PING = 10000;
     public static final int DEFAULT_MAX_RETRIES = 3;
+    public static final int DEFAULT_MAX_CHAR = 200;
     public static final int DEFAULT_DELAY = 5000;
 
     @SerializedName("ping_interval")
@@ -32,6 +33,7 @@ public class SettingGroupChat implements Parcelable{
         pingInterval = DEFAULT_PING;
         maxRetries = DEFAULT_MAX_RETRIES;
         delay = DEFAULT_DELAY;
+        maxChar = DEFAULT_MAX_CHAR;
     }
 
     public int getPingInterval() {
@@ -55,6 +57,21 @@ public class SettingGroupChat implements Parcelable{
         maxChar = in.readInt();
         maxRetries = in.readInt();
         delay = in.readInt();
+
+        if(pingInterval == 0){
+            pingInterval = DEFAULT_PING;
+        }
+        if(maxRetries == 0){
+            maxRetries = DEFAULT_MAX_RETRIES;
+        }
+        if(delay == 0){
+            delay = DEFAULT_DELAY;
+        }
+        if(maxChar == 0){
+            maxChar = DEFAULT_MAX_CHAR;
+        }
+
+
     }
 
     public static final Creator<SettingGroupChat> CREATOR = new Creator<SettingGroupChat>() {
