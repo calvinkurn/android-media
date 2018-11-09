@@ -559,9 +559,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                     );
 
                     if (adapter.getList().size() == 0 ||
-                            (adapter.getItemAt(adapter.getItemCount() - 1) != null
-                                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
-                                    SprintSaleAnnouncementViewModel))) {
+                            (adapter.getItemAt(0) != null
+                                    && !(adapter.getItemAt(0) instanceof SprintSaleAnnouncementViewModel))) {
                         addIncomingMessage(sprintSaleAnnouncementViewModel);
                         if (getActivity() != null) {
                             ((GroupChatContract.View) getActivity()).vibratePhone();
@@ -621,10 +620,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     public void autoAddGroupChatPoints(@Nullable final GroupChatPointsViewModel
                                                groupChatPointsViewModel) {
         if (groupChatPointsViewModel != null) {
-            if (adapter.getList().size() == 0 || (adapter.getItemAt(adapter.getItemCount() - 1) !=
-                    null
-                    && !(adapter.getItemAt(adapter.getItemCount() - 1) instanceof
-                    GroupChatPointsViewModel))) {
+            if (adapter.getList().size() == 0 || (adapter.getItemAt(0) != null
+                    && !(adapter.getItemAt(0) instanceof GroupChatPointsViewModel))) {
                 addIncomingMessage(groupChatPointsViewModel);
                 ((GroupChatContract.View) getActivity()).removeGroupChatPoints();
                 ((GroupChatContract.View) getActivity()).vibratePhone();
