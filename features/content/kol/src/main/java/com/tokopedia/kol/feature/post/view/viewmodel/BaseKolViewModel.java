@@ -22,16 +22,20 @@ public class BaseKolViewModel {
     private int totalComment;
     private int page;
     private boolean temporarilyFollowed;
-    private int kolId;
-    private boolean reviewExpanded;
+    private int contentId;
     private String time;
+    private boolean reviewExpanded;
     private boolean isShowComment;
     private boolean isShowLike;
+    private boolean editable;
+    private boolean deletable;
+    private boolean isKol = true;
 
     public BaseKolViewModel(int userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,
-                            boolean liked, int totalLike, int totalComment, int page, int kolId,
-                            String time, boolean isShowComment, boolean isShowLike) {
+                            boolean liked, int totalLike, int totalComment, int page, int contentId,
+                            String time, boolean isShowComment, boolean isShowLike,
+                            boolean editable, boolean deletable) {
         this.userId = userId;
         this.cardType = cardType;
         this.title = title;
@@ -45,10 +49,12 @@ public class BaseKolViewModel {
         this.totalLike = totalLike;
         this.totalComment = totalComment;
         this.page = page;
-        this.kolId = kolId;
+        this.contentId = contentId;
         this.time = time;
         this.isShowComment = isShowComment;
         this.isShowLike = isShowLike;
+        this.editable = editable;
+        this.deletable = deletable;
     }
 
     public int getUserId() {
@@ -163,12 +169,12 @@ public class BaseKolViewModel {
         this.temporarilyFollowed = temporarilyFollowed;
     }
 
-    public int getKolId() {
-        return kolId;
+    public int getContentId() {
+        return contentId;
     }
 
-    public void setKolId(int kolId) {
-        this.kolId = kolId;
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
 
     public boolean isReviewExpanded() {
@@ -201,5 +207,29 @@ public class BaseKolViewModel {
 
     public void setShowLike(boolean showLike) {
         isShowLike = showLike;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(boolean deletable) {
+        this.deletable = deletable;
+    }
+
+    public boolean isKol() {
+        return isKol;
+    }
+
+    public void setKol(boolean kol) {
+        isKol = kol;
     }
 }

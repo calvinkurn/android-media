@@ -2,6 +2,8 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
+import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,12 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("promo_suggestion")
+    @Expose
+    private PromoSuggestion promoSuggestion;
+    @SerializedName("autoapply")
+    @Expose
+    private AutoApply autoApply;
 
     public List<String> getErrors() {
         return errors;
@@ -73,5 +81,13 @@ public class ShipmentAddressFormDataResponse {
 
     public int getIsRobinhood() {
         return isRobinhood;
+    }
+
+    public PromoSuggestion getPromoSuggestion() {
+        return promoSuggestion;
+    }
+
+    public AutoApply getAutoApply() {
+        return autoApply;
     }
 }

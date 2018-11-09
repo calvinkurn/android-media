@@ -4,7 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 
 /**
@@ -16,8 +16,8 @@ public class ListCatalogViewHolder extends GridCatalogViewHolder {
     @LayoutRes
     public static final int LAYOUT = R.layout.listview_browse_catalog;
 
-    public ListCatalogViewHolder(View itemView, ItemClickListener mItemClickListener) {
-        super(itemView, mItemClickListener);
+    public ListCatalogViewHolder(View itemView, CatalogListener mCatalogListener) {
+        super(itemView, mCatalogListener);
     }
 
     @Override

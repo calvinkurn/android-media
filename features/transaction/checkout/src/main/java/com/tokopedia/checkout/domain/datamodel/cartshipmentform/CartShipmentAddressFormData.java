@@ -3,6 +3,9 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class CartShipmentAddressFormData implements Parcelable {
     private int keroUnixTime;
     private Donation donation;
     private boolean useCourierRecommendation;
+    private CartPromoSuggestion cartPromoSuggestion;
+    private AutoApplyData autoApplyData;
 
     public boolean isHasError() {
         return hasError;
@@ -112,6 +117,22 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.useCourierRecommendation = useCourierRecommendation;
     }
 
+    public CartPromoSuggestion getCartPromoSuggestion() {
+        return cartPromoSuggestion;
+    }
+
+    public void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion) {
+        this.cartPromoSuggestion = cartPromoSuggestion;
+    }
+
+    public AutoApplyData getAutoApplyData() {
+        return autoApplyData;
+    }
+
+    public void setAutoApplyData(AutoApplyData autoApplyData) {
+        this.autoApplyData = autoApplyData;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -127,6 +148,8 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
+        autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
     }
 
     @Override
@@ -142,6 +165,8 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeParcelable(cartPromoSuggestion, flags);
+        dest.writeParcelable(autoApplyData, flags);
     }
 
     @Override

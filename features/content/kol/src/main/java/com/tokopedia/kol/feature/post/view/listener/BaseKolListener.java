@@ -18,4 +18,6 @@ public interface BaseKolListener {
     void onLikeButtonClickListener(BaseKolViewModel element);
 
     void onCommentClickListener(BaseKolViewModel element);
+
+    void onMenuClickListener(BaseKolViewModel element);
 }

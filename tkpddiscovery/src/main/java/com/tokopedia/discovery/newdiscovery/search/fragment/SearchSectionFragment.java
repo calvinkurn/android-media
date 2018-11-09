@@ -22,17 +22,13 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.ShareBottomSheet;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
@@ -41,6 +37,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListF
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -174,7 +171,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(
-                TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
+                RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
                 true) && (this instanceof ProductListFragment);
     }
 

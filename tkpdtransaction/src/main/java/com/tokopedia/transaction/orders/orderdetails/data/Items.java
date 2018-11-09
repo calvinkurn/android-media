@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Items {
+    @SerializedName("categoryID")
+    @Expose
+    private int categoryID;
     @SerializedName("title")
     @Expose
     private String title;
@@ -46,6 +49,12 @@ public class Items {
 
     private boolean isActionButtonLoaded;
 
+    public int getCategoryID() {
+        return categoryID;
+    }
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
 
     public String getTitle() {
         return title;

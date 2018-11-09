@@ -50,7 +50,7 @@ public interface ShipmentContract {
 
         void renderErrorPage(String message);
 
-        void renderCheckoutPage(boolean isInitialRender);
+        void renderCheckoutPage(boolean isInitialRender, boolean isFromPdp);
 
         void renderCheckShipmentPrepareCheckoutSuccess();
 
@@ -192,26 +192,27 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress);
+        void processInitialLoadCheckoutPage(boolean isFromMultipleAddress, boolean isOneClickShipment);
 
         void processReloadCheckoutPageFromMultipleAddress(CartItemPromoHolderData cartItemPromoHolderData,
                                                           CartPromoSuggestion cartPromoSuggestion,
                                                           RecipientAddressModel recipientAddressModel,
                                                           ArrayList<ShipmentCartItemModel> shipmentCartItemModels,
                                                           ShipmentCostModel shipmentCostModel,
-                                                          ShipmentDonationModel shipmentDonationModel);
+                                                          ShipmentDonationModel shipmentDonationModel,
+                                                          boolean isOneClickShipment);
 
-        void processReloadCheckoutPageBecauseOfError();
+        void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment);
 
-        void processCheckShipmentPrepareCheckout();
+        void processCheckShipmentPrepareCheckout(boolean isOneClickShipment);
 
-        void processCheckout();
+        void processCheckout(boolean isOneClickShipment);
 
         void processVerifyPayment(String transactionId);
 
-        void checkPromoShipment();
+        void checkPromoShipment(boolean isOneClickShipment);
 
-        void processCheckPromoCodeFromSuggestedPromo(String promoCode);
+        void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isOneClickShipment);
 
         void processCheckPromoCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
@@ -264,7 +265,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon();
 
-        void changeShippingAddress(RecipientAddressModel recipientAddressModel);
+        void changeShippingAddress(RecipientAddressModel recipientAddressModel, boolean isOneClickShipment);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
