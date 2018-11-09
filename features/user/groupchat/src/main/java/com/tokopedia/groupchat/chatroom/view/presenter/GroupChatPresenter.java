@@ -82,7 +82,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
-                       onErrorGetChannelInfo(e);
+                        onErrorGetChannelInfo(e);
                     }
 
                     @Override
@@ -119,7 +119,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
-                       onErrorGetChannelInfo(e);
+                        onErrorGetChannelInfo(e);
                     }
 
                     @Override
@@ -143,6 +143,11 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     private void connect(String userId, String deviceId, String accessToken
             , SettingGroupChat settingGroupChat) {
+        if (mSubscription != null && mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+
+        }
+
         if (mSubscription == null || mSubscription.isUnsubscribed()) {
             mSubscription = new CompositeSubscription();
         }
