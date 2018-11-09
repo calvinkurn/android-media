@@ -236,7 +236,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         sendAppsFlyerCheckout(context, data);
         boolean skipToCart = data.isSkipToCart();
         Subscriber subscriber = skipToCart ? getBuySubscriber(data.getSourceAtc()) : getCartSubscriber(data.getSourceAtc());
-        boolean isOneClickShipment = skipToCart && !data.isBigPromo();
+//        boolean isOneClickShipment = skipToCart && !data.isBigPromo();
+        boolean isOneClickShipment = false;
         routeToNewCheckout(context, data, subscriber, isOneClickShipment);
         UnifyTracking.eventPDPCart();
     }
