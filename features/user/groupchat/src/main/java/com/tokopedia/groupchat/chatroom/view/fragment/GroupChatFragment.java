@@ -640,7 +640,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-    private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+    private boolean isValidSprintSale(@Nullable SprintSaleViewModel sprintSaleViewModel) {
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
