@@ -10,16 +10,17 @@ import rx.Observable;
 public final class RxWebSocket {
 
     public static Observable<WebSocketInfo> get(String channelUrl, String accessToken
-                                                , int delay, int maxRetries, int pingInterval) {
-        return RxWebSocketUtil.getInstance(delay, maxRetries, pingInterval).getWebSocketInfo(channelUrl, accessToken);
+            , int delay, int maxRetries, int pingInterval, String groupChatToken) {
+        return RxWebSocketUtil.getInstance(delay, maxRetries, pingInterval).getWebSocketInfo
+                (channelUrl, accessToken, groupChatToken);
     }
 
     public static void send(String url, String msg) {
         RxWebSocketUtil.getInstance().send(url, msg);
     }
 
-    public static void asyncSend(String url, String msg) {
-        RxWebSocketUtil.getInstance().asyncSend(url, msg);
+    public static void asyncSend(String url, String msg, String groupChatToken) {
+        RxWebSocketUtil.getInstance().asyncSend(url, msg, groupChatToken);
     }
 
 }

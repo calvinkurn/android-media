@@ -59,11 +59,14 @@ public class RxWebSocketUtil {
         return getInstance(DEFAULT_DELAY, DEFAULT_MAX_RETRIES, DEFAULT_PING);
     }
 
-    public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken) {
+    public Observable<WebSocketInfo> getWebSocketInfo(final String url, String accessToken, String groupChatToken) {
+        String urlWithGCToken = String.format("%s%s%s", url, "&token=", groupChatToken);
         Observable<WebSocketInfo> observable = observableMap.get(url);
-        if (observable == null) {
+        if (observable == null && observableMap.isEmpty()) {
             RetryObservable retryObservable = new RetryObservable(maxRetries, delay);
-            observable = Observable.create(new WebSocketOnSubscribe(client, url, accessToken, webSocketMap))
+            observable = Observable.create(new WebSocketOnSubscribe(client, urlWithGCToken,
+                    accessToken,
+                    webSocketMap))
                     .retryWhen(retryObservable)
                     .doOnUnsubscribe(new Action0() {
                         @Override
@@ -97,8 +100,8 @@ public class RxWebSocketUtil {
         return observable;
     }
 
-    public Observable<WebSocket> getWebSocket(String url, String accessToken) {
-        return getWebSocketInfo(url, accessToken)
+    public Observable<WebSocket> getWebSocket(String url, String accessToken, String groupChatToken) {
+        return getWebSocketInfo(url, accessToken, groupChatToken)
                 .map(new Func1<WebSocketInfo, WebSocket>() {
                     @Override
                     public WebSocket call(WebSocketInfo webSocketInfo) {
@@ -112,12 +115,12 @@ public class RxWebSocketUtil {
         if (webSocket != null) {
             webSocket.send(msg);
         } else {
-             throw new WebSocketException("The WebSokcet not open");
+            throw new WebSocketException("The WebSokcet not open");
         }
     }
 
-    public void asyncSend(String url, final String msg) {
-        getWebSocket(url, "")
+    public void asyncSend(String url, final String msg, String groupChatToken) {
+        getWebSocket(url, "", groupChatToken)
                 .first()
                 .subscribe(new Action1<WebSocket>() {
                     @Override

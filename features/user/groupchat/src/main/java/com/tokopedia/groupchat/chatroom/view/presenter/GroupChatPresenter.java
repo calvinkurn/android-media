@@ -41,6 +41,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final GetChannelInfoUseCase getChannelInfoUseCase;
     private CompositeSubscription mSubscription;
     private String webSocketUrl;
+    private String webSocketUrlWithToken;
     private LocalCacheHandler localCacheHandler;
     private String channelId;
 
@@ -61,9 +62,12 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         String magicString = TkpdBaseURL.GROUP_CHAT_WEBSOCKET_DOMAIN;
         magicString = localCacheHandler.getString("ip_groupchat", magicString);
 
-        this.webSocketUrl = (String.format("%s%s%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId, "&token=", groupChatToken));
+        this.webSocketUrlWithToken = (String.format("%s%s%s%s%s", magicString, ChatroomUrl
+                .PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId, "&token=", groupChatToken));
+        this.webSocketUrl = (String.format("%s%s%s", magicString, ChatroomUrl.PATH_WEB_SOCKET_GROUP_CHAT_URL, channelId));
         this.channelId = channelId;
-        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(), settingGroupChat);
+        connect(userSession.getUserId(), userSession.getDeviceId(), userSession.getAccessToken(),
+                settingGroupChat, groupChatToken);
     }
 
     @Override
@@ -142,7 +146,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
 
     private void connect(String userId, String deviceId, String accessToken
-            , SettingGroupChat settingGroupChat) {
+            , SettingGroupChat settingGroupChat, String groupChatToken) {
         if (mSubscription != null && mSubscription.isUnsubscribed()) {
             mSubscription.unsubscribe();
 
@@ -164,7 +168,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
             protected void onOpen(@NonNull WebSocket webSocket) {
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open");
-                    showDummy("onOpened ".concat(webSocketUrl), "logger open");
+                    showDummy("onOpened ".concat(webSocketUrlWithToken), "logger open");
                 }
                 getView().onOpenWebSocket();
                 setReportWebSocket(false);
@@ -210,7 +214,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
                 }
                 destroyWebSocket();
                 //TODO Why is this connecting again?
-                connect(userId, deviceId, accessToken, finalSettingGroupChat);
+                connect(userId, deviceId, accessToken, finalSettingGroupChat, groupChatToken);
             }
 
             @Override
@@ -226,7 +230,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         };
         Subscription subscription = RxWebSocket.get(webSocketUrl, accessToken,
                 settingGroupChat.getDelay(), settingGroupChat.getMaxRetries()
-                , settingGroupChat.getPingInterval()).subscribe(subscriber);
+                , settingGroupChat.getPingInterval(), groupChatToken).subscribe(subscriber);
 
 
         mSubscription.add(subscription);
