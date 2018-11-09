@@ -27,7 +27,7 @@ class FlashSaleTncFragment : BaseDaggerFragment() {
     }
 
     fun processWebViewHtmlStyle(html_string: String): String {
-        return getString(R.string.html_process_web_view, html_string)
+        return getString(R.string.flash_sale_html_process_web_view, html_string)
     }
 
     override fun getScreenName(): String {

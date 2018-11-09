@@ -6,18 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
@@ -67,11 +68,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
-        //TODO test, will replaced later
-        campaignId = 411
-        campaignSlug = "4-god-seller"
-//        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
-//        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
+        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
+        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
         if (savedInstanceState != null) {
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
@@ -197,7 +195,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun onClickFlashSaleList() {
-        //TODO
+        // TODO
     }
 
     private fun loadTnC() {
@@ -312,12 +310,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     }
 
     private fun renderBottom() {
-        //TODO remove comment
-//        if (needShowBottom()) {
+        if (needShowBottom()) {
             vgBottom.visibility = View.VISIBLE
-//        } else {
-//            vgBottom.visibility = View.GONE
-//        }
+        } else {
+            vgBottom.visibility = View.GONE
+        }
     }
 
     private fun hideChipLabel() {

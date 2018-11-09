@@ -69,9 +69,7 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
-        //TODO just for test
-//        canEdit = arguments!!.getBoolean(EXTRA_CAN_EDIT)
-        canEdit = true
+        canEdit = arguments!!.getBoolean(EXTRA_CAN_EDIT)
         campaignId = arguments!!.getInt(EXTRA_PARAM_CAMPAIGN_ID)
         super.onCreate(savedInstanceState)
     }
