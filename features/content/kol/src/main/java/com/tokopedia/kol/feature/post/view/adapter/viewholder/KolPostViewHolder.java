@@ -42,6 +42,10 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     public static final int PAYLOAD_FOLLOW = 15;
 
     private static final String DASH = "-";
+    private static final String PARAM_COUNT = "{count}";
+    private static final String SINGLE = "single";
+    private static final String MULTIPLE = "multiple";
+    private static final String PARAM_TYPE = "{type}";
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
@@ -341,7 +345,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             analyticTracker.sendEventTracking(
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
-                    KolEventTracking.Action.SHOP_ITEM_CLICK,
+                    KolEventTracking.Action.SHOP_ITEM_CLICK_DYNAMIC
+                            .replace(PARAM_COUNT, element.getImageList().size() == 1 ? SINGLE : MULTIPLE)
+                            .replace(PARAM_TYPE, element.getTagsType()),
                     String.valueOf(element.getContentId())
             );
         }
