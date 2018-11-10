@@ -376,7 +376,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         getView().findViewById(R.id.text_token_title).setOnClickListener(this);
         getView().findViewById(R.id.img_token).setOnClickListener(this);
         mTextMembershipValueBottom.setOnClickListener(this);
-        mTextPointsBottom.findViewById(R.id.img_token).setOnClickListener(this);
+        mTextPointsBottom.setOnClickListener(this);
 
         mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
