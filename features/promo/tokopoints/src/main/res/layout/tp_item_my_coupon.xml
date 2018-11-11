@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/white_three">
+    app:cardBackgroundColor="@color/white">
 
     <FrameLayout
         android:id="@+id/fl_banner"
@@ -21,7 +21,7 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|left"
             android:layout_marginLeft="-12dp"
-            app:cardBackgroundColor="@color/white_three"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/dp_12"
             app:cardElevation="@dimen/dp_4" />
 
@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_vertical|right"
             android:layout_marginRight="-12dp"
-            app:cardBackgroundColor="@color/white_three"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/dp_12"
             app:cardElevation="@dimen/dp_4" />
 
@@ -45,10 +45,9 @@
 
             <ImageView
                 android:id="@+id/img_banner"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:background="@color/medium_green"
                 android:scaleType="fitCenter" />
         </android.support.v7.widget.CardView>
 
@@ -89,7 +88,7 @@
                         android:layout_marginTop="@dimen/tp_padding_regular"
                         android:text="@string/tp_label_valid_for"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/tp_text_size_xsmall"
+                        android:textSize="@dimen/tp_text_size_xxsmall"
                         android:visibility="visible"
                         app:layout_constraintStart_toEndOf="@+id/img_time"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -112,8 +111,8 @@
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:indeterminate="false"
-                        android:visibility="gone"
                         android:progressDrawable="@drawable/bg_tp_timer_bg"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
                         app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
                         app:layout_constraintRight_toRightOf="@+id/text_time_value"
@@ -136,9 +135,8 @@
                         android:id="@+id/iv_rp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/tp_margin_large"
-                        android:layout_marginLeft="@dimen/tp_margin_large"
-                        android:visibility="visible"
+                        android:layout_marginStart="@dimen/dp_110"
+                        android:layout_marginLeft="@dimen/dp_110"
                         app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -147,17 +145,19 @@
 
                     <TextView
                         android:id="@+id/tv_min_txn_label"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/tp_margin_small"
-                        android:layout_marginLeft="@dimen/tp_margin_small"
                         android:layout_marginTop="@dimen/tp_padding_regular"
-                        android:text="@string/tp_label_min_exchange_sort"
+                        android:layout_marginEnd="@dimen/dp_8"
+                        android:layout_marginRight="@dimen/dp_8"
                         android:textColor="@color/black_38"
-                        android:textSize="@dimen/tp_text_size_xsmall"
+                        android:textSize="@dimen/tp_text_size_xxsmall"
                         android:visibility="visible"
-                        app:layout_constraintStart_toEndOf="@+id/iv_rp"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tv_min_txn_value"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tool:text="tanpa minimum transaksi" />
 
                     <TextView
                         android:id="@+id/tv_min_txn_value"
@@ -171,7 +171,8 @@
                         android:visibility="gone"
                         app:layout_constraintStart_toEndOf="@+id/iv_rp"
                         app:layout_constraintTop_toBottomOf="@+id/tv_min_txn_label"
-                        tool:text="Rp 3000000" />
+                        tool:text="Rp 3000000"
+                        tool:visibility="visible" />
 
 
                 </android.support.constraint.ConstraintLayout>

@@ -438,10 +438,10 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
                 if (mSumToken == 0) {
                     textCount.setVisibility(View.GONE);
-                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
-                            getResources().getDimensionPixelSize(R.dimen.dp_10),
+                    textMessage.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_30),
                             0,
-                            getResources().getDimensionPixelSize(R.dimen.dp_10));
+                            0,
+                            0);
                 } else {
                     textCount.setVisibility(View.VISIBLE);
                 }

@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="@dimen/tp_margin_large"
+                android:layout_marginBottom="@dimen/dp_40"
                 android:background="@color/transparent"
                 android:visibility="gone"
                 app:layout_behavior="com.tokopedia.tokopoints.view.util.QuickReturnFloaterBehavior">
