@@ -138,9 +138,24 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 return createEmptySearch(viewGroup);
             case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
                 return createEmptyState(viewGroup);
+            case TkpdState.RecyclerView.VIEW_TOP_ADS:
+                return createTopAds(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
+    }
+
+    public static class WishListTopAdsViewHolder extends RecyclerView.ViewHolder {
+
+        public WishListTopAdsViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private RecyclerView.ViewHolder createTopAds(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_empty_state, null);
+        return new WishListTopAdsViewHolder(view);
     }
 
     public static class EmptyStateItem extends RecyclerViewItem {
@@ -152,6 +167,12 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     public static class EmptySearchItem extends RecyclerViewItem {
         public EmptySearchItem() {
             setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
+        }
+    }
+
+    public static class TopAdsItem extends RecyclerViewItem {
+        public TopAdsItem() {
+            setType(TkpdState.RecyclerView.VIEW_TOP_ADS);
         }
     }
 
@@ -275,7 +296,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void bindProductViewHolder(ViewHolder viewHolder, int position) {
-        if (data.get(position) !=null && data.get(position) instanceof ProductItem) {
+        if (data.get(position) != null && data.get(position) instanceof ProductItem) {
             ProductItem product = (ProductItem) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
@@ -291,7 +312,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-        } else if (data.get(position) !=null && data.get(position) instanceof RecentView) {
+        } else if (data.get(position) != null && data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
@@ -344,7 +365,7 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     ProductItem product = (ProductItem) data.get(position);
 
                     UnifyTracking.eventWishlistView(product.getName());
-                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
+                    wishlistAnalytics.trackEventClickOnProductWishlist(String.valueOf(position + 1), product.getProductAsObjectDataLayerForWishlistClick(position + 1));
 
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
@@ -457,6 +478,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
         if (data.get(position) instanceof EmptyStateItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
         }
+        if (data.get(position) instanceof EmptyStateItem) {
+            return TkpdState.RecyclerView.VIEW_TOP_ADS;
+        }
         return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
 
@@ -469,7 +493,8 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
             @Override
             public void onClick(View v) {
-                if (wishlistView != null) wishlistView.displayDeleteWishlistDialog(productId, position);
+                if (wishlistView != null)
+                    wishlistView.displayDeleteWishlistDialog(productId, position);
             }
         };
     }

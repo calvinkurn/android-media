@@ -41,7 +41,7 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
         xparams.setSource_shop_id(415979);
 
         TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, "cart");
+        params.getParam().put(TopAdsParams.KEY_SRC, "pdp");
         params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
         params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
@@ -80,11 +80,11 @@ public class CartTopAdsViewHolder extends RecyclerView.ViewHolder implements Top
 
     @Override
     public void onTopAdsLoaded(List<Item> list) {
-
+        topAdsCarouselView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
-
+        topAdsCarouselView.setVisibility(View.GONE);
     }
 }

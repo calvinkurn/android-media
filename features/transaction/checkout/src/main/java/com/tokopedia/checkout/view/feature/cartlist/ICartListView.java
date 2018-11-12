@@ -21,8 +21,6 @@ public interface ICartListView extends IBaseView {
 
     void renderInitialGetCartListDataSuccess(CartListData cartListData);
 
-    void renderTopAds();
-
     void renderErrorInitialGetCartListData(String message);
 
     void renderErrorHttpInitialGetCartListData(String message);

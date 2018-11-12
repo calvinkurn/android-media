@@ -58,22 +58,14 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.Xparams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -89,8 +81,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -98,7 +88,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
-        ToolbarRemoveView.OnToolbarRemoveAllCartListener, TopAdsListener {
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
@@ -845,41 +835,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 getActivity().invalidateOptionsMenu();
             }
         }
-    }
-
-    @Override
-    public void renderTopAds() {
-        Xparams xparams = new Xparams();
-        xparams.setProduct_id(12007464);
-        xparams.setProduct_name("Original Baterai Samsung Galaxy Mini GT-S5570 1200mAh");
-        xparams.setSource_shop_id(415979);
-
-        TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, "cart");
-        params.getParam().put(TopAdsParams.KEY_EP, DEFAULT_KEY_EP);
-        params.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(5));
-        params.getParam().put(TopAdsParams.KEY_XPARAMS, new Gson().toJson(xparams));
-
-        Config config = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(userSession.getUserId())
-                .topAdsParams(params)
-                .build();
-
-        topAdsCarouselView.setAdsItemClickListener(this);
-        topAdsCarouselView.setAdsListener(this);
-        topAdsCarouselView.setConfig(config);
-        topAdsCarouselView.loadTopAds();
-    }
-
-    @Override
-    public void onTopAdsLoaded(List<Item> list) {
-        topAdsCarouselView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        topAdsCarouselView.setVisibility(View.GONE);
     }
 
     private void showErrorLayout(String message) {
