@@ -181,7 +181,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private static final long VIBRATE_LENGTH = TimeUnit.SECONDS.toMillis(1);
     private static final long KICK_TRESHOLD_TIME = TimeUnit.MINUTES.toMillis(15);
-    private static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
+    public static final long PAUSE_RESUME_TRESHOLD_TIME = TimeUnit.SECONDS.toMillis(2);
 
     private static final long TOOLTIP_DELAY = 1500L;
 
@@ -280,7 +280,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         initInjector();
         initData();
         initPreference();
-
     }
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
@@ -827,7 +826,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             GroupChatActivity.super.onBackPressed();
             return;
         }
-        exitDialog.show();
+
+        if (exitDialog != null) {
+            exitDialog.show();
+        } else {
+            finish();
+            GroupChatActivity.super.onBackPressed();
+        }
     }
 
     private String getDurationWatchVideo() {
@@ -1242,9 +1247,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onResume() {
         super.onResume();
-
         if (canResume()) {
-
             kickIfIdleForTooLong();
 
             if (viewModel != null && viewModel.getChannelInfoViewModel() != null
@@ -1305,7 +1308,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onStart() {
         super.onStart();
         analytics.sendScreen(this, getScreenName());
-
     }
 
     private void refreshTab() {
@@ -1362,7 +1364,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onPause() {
         super.onPause();
-
         if (canPause()) {
             if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                     && !TextUtils.isEmpty(viewModel.getChannelInfoViewModel().getTitle())) {
@@ -1392,7 +1393,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     protected void onDestroy() {
-
         if (youTubePlayer != null) {
             youTubePlayer.release();
         }

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
@@ -74,6 +75,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity.PAUSE_RESUME_TRESHOLD_TIME;
+
 /**
  * @author by nisie on 2/6/18.
  */
@@ -88,6 +91,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private static final int REQUEST_LOGIN = 111;
     private static final String NO_USER_ID = "anonymous";
     private static final int KEYBOARD_TRESHOLD = 100;
+
+    private long timeStampAfterPause = 0;
+    private long timeStampAfterResume = 0;
 
     @Inject
     ChatroomPresenter presenter;
@@ -388,10 +394,13 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onResume() {
         super.onResume();
+        if (canResume()) {
+            timeStampAfterResume = System.currentTimeMillis();
+        }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
@@ -630,7 +639,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
     }
 
-    private boolean isValidSprintSale(SprintSaleViewModel sprintSaleViewModel) {
+    private boolean isValidSprintSale(@Nullable SprintSaleViewModel sprintSaleViewModel) {
         return sprintSaleViewModel != null
                 && sprintSaleViewModel.getStartDate() != 0
                 && sprintSaleViewModel.getEndDate() != 0
@@ -640,9 +649,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     @Override
     public void onPause() {
         super.onPause();
-        if (sprintSaleHandler != null && sprintSaleRunnable != null) {
-            sprintSaleHandler.removeCallbacks(sprintSaleRunnable);
+        if (canPause()) {
+            if (sprintSaleHandler != null && sprintSaleRunnable != null) {
+                sprintSaleHandler.removeCallbacks(sprintSaleRunnable);
+            }
+
+            timeStampAfterPause = System.currentTimeMillis();
+
         }
+    }
+
+    private boolean canResume() {
+        return timeStampAfterResume == 0 || (timeStampAfterResume > 0 && System.currentTimeMillis()
+                - timeStampAfterResume > PAUSE_RESUME_TRESHOLD_TIME);
+    }
+
+    private boolean canPause() {
+        return timeStampAfterPause == 0 || (timeStampAfterPause > 0 && System.currentTimeMillis()
+                - timeStampAfterPause > PAUSE_RESUME_TRESHOLD_TIME
+                && canResume());
     }
 
     @Override
