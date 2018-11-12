@@ -14,7 +14,9 @@ import dagger.Component;
 @FeedbackScope
 @Component(modules = FeedbackModule.class)
 public interface FeedbackComponent {
+
     void inject(FeedbackActivity activity);
+
     void inject(AppRatingDialog dialog);
 
     Context context();
