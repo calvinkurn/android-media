@@ -2,16 +2,23 @@ package com.tokopedia.kol.feature.report.view.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
+import com.tokopedia.kol.feature.report.view.adapter.ReportReasonAdapter
+import com.tokopedia.kol.feature.report.view.model.ReportReasonViewModel
+import kotlinx.android.synthetic.main.fragment_content_report.*
 
 /**
  * @author by milhamj on 08/11/18.
  */
 class ContentReportFragment : BaseDaggerFragment() {
 
-    var contentId = 0
+    private var contentId = 0
+    private lateinit var adapter: ReportReasonAdapter
 
     companion object {
         fun createInstance(contentId: Int): Fragment {
@@ -29,14 +36,57 @@ class ContentReportFragment : BaseDaggerFragment() {
     override fun initInjector() {
     }
 
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_content_report, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVar()
+        initView()
     }
 
     private fun initVar() {
         arguments?.run {
-            contentId = getInt(ContentReportActivity.PARAM_CONTENT_ID, 0)
+             contentId = getInt(ContentReportActivity.PARAM_CONTENT_ID, 0)
         }
+        adapter = ReportReasonAdapter()
+    }
+
+    private fun initView() {
+        reasonRv.adapter = adapter
+        adapter.addAll(getReasonList())
+    }
+
+    private fun getReasonList(): MutableList<ReportReasonViewModel> {
+        val reasonList = ArrayList<ReportReasonViewModel>()
+
+        val reasonSpam = ReportReasonViewModel(
+                type = getString(R.string.kol_reason_type_spam),
+                description = getString(R.string.kol_reason_desc_spam)
+        )
+        reasonList.add(reasonSpam)
+
+        val reasonAbuse = ReportReasonViewModel(
+                type = getString(R.string.kol_reason_type_abuse),
+                description = getString(R.string.kol_reason_desc_abuse)
+        )
+        reasonList.add(reasonAbuse)
+
+        val reasonInappropriate = ReportReasonViewModel(
+                type = getString(R.string.kol_reason_type_inappropriate),
+                description = getString(R.string.kol_reason_desc_inappropriate)
+        )
+        reasonList.add(reasonInappropriate)
+
+        val reasonOthers = ReportReasonViewModel(
+                type = getString(R.string.kol_reason_type_others),
+                description = getString(R.string.kol_reason_desc_others)
+        )
+        reasonList.add(reasonOthers)
+
+        return reasonList
     }
 }
