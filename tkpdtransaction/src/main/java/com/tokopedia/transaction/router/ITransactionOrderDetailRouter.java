@@ -8,4 +8,7 @@ import android.content.Intent;
 public interface ITransactionOrderDetailRouter {
 
     Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
+
+    void sendEventTracking(String event, String category, String action, String label);
+
 }

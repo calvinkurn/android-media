@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.home.account.R;
@@ -81,7 +82,7 @@ public class ShopCardView extends BaseCustomView {
     }
 
     public void setShopName(String shopName) {
-        textShopName.setText(shopName);
+        textShopName.setText(MethodChecker.fromHtml(shopName));
     }
 
     public void setBalance(String balance) {

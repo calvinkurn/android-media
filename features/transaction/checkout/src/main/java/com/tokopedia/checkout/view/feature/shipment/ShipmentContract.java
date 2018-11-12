@@ -10,6 +10,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
@@ -17,6 +19,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -81,6 +84,10 @@ public interface ShipmentContract {
 
         void renderCancelAutoApplyCouponSuccess();
 
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition);
+
+        void renderCourierStateFailed(int itemPosition);
+
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
         List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
@@ -100,7 +107,7 @@ public interface ShipmentContract {
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
-        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap);
+        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
@@ -185,6 +192,16 @@ public interface ShipmentContract {
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
+        void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
+
+        void processSaveShipmentState();
+
+        void processGetRates(int shipperId, int spId, int itemPosition,
+                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+
+        void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
+                                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+
         RecipientAddressModel getRecipientAddressModel();
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
@@ -230,6 +247,11 @@ public interface ShipmentContract {
         void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData);
 
         CartItemPromoHolderData getCartItemPromoHolderData();
+
+        void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+                                               int itemPosition);
+
+        List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition);
 
     }
 

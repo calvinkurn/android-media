@@ -7,9 +7,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;

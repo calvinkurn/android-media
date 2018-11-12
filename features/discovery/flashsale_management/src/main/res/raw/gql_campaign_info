@@ -17,6 +17,10 @@ query getCampaignInfo($slug: String!, $shop_id: Int!){
             minimum_transaction
             min_seller_reputation_badge
             max_seller_reputation_badge
+            seller_type {
+                title
+                image_url
+            }
             criteria{
                 criteria_id
                 min_price

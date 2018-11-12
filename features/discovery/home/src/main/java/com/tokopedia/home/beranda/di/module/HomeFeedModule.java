@@ -75,7 +75,7 @@ public class HomeFeedModule {
     @Provides
     GetHomeFeedsUseCase provideGetHomeFeedsUseCase(
             HomeFeedRepository feedRepository) {
-        return new GetHomeFeedsUseCase(new JobExecutor(), new UIThread(), feedRepository);
+        return new GetHomeFeedsUseCase(feedRepository);
     }
 
     @DefaultAuthWithErrorHandler

@@ -59,7 +59,7 @@ public class ProductData implements Parcelable {
     private ProductTextData texts;
     @SerializedName("error")
     @Expose
-    private ErrorData error;
+    private ErrorProductData error;
 
     public ProductData() {
     }
@@ -80,7 +80,7 @@ public class ProductData implements Parcelable {
         etd = in.readParcelable(EstimatedTimeDeliveryData.class.getClassLoader());
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
-        error = in.readParcelable(ErrorData.class.getClassLoader());
+        error = in.readParcelable(ErrorProductData.class.getClassLoader());
     }
 
     @Override
@@ -240,11 +240,11 @@ public class ProductData implements Parcelable {
         this.texts = texts;
     }
 
-    public ErrorData getError() {
+    public ErrorProductData getError() {
         return error;
     }
 
-    public void setError(ErrorData error) {
+    public void setError(ErrorProductData error) {
         this.error = error;
     }
 }

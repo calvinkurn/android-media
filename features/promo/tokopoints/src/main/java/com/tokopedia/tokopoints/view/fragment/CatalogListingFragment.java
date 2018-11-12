@@ -13,11 +13,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.gamification.applink.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
@@ -30,6 +34,8 @@ import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
+import com.tokopedia.tokopoints.view.model.LobDetails;
+import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -52,6 +58,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     private CatalogChipAdapter mChipAdapter;
     private CatalogSortTypePagerAdapter mViewPagerAdapter;
     private int mSelectedCategory = CommonConstant.DEFAULT_CATEGORY_TYPE;
+    private int mSumToken;
+    private LobDetails mLobDetails;
 
     @Inject
     public CatalogListingPresenter mPresenter;
@@ -259,6 +267,28 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         } else if (source.getId() == R.id.text_failed_action) {
             mPresenter.getHomePageData();
             mPresenter.getPointData();
+        } else if (source.getId() == R.id.text_token_title
+                || source.getId() == R.id.img_token) {
+            if (mSumToken <= 0) {
+                StartPurchaseBottomSheet startPurchaseBottomSheet = new StartPurchaseBottomSheet();
+                startPurchaseBottomSheet.setData(mLobDetails);
+                startPurchaseBottomSheet.show(getChildFragmentManager(), mLobDetails.getTitle());
+                AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG_EMPTY,
+                        "");
+            } else {
+                if (getActivity() != null) {
+                    RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
+                }
+
+                AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_LUCKY_EGG,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_EGG,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_EGG,
+                        "");
+            }
         }
 
     }
@@ -276,8 +306,14 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     }
 
     private void initListener() {
+        if (getView() == null) {
+            return;
+        }
+
         getView().findViewById(R.id.text_my_coupon).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
+        getView().findViewById(R.id.text_token_title).setOnClickListener(this);
+        getView().findViewById(R.id.img_token).setOnClickListener(this);
 
         mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -321,5 +357,33 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         }
 
         return CommonConstant.DEFAULT_CATEGORY_TYPE;
+    }
+
+    @Override
+    public void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails) {
+        if (tokenDetail != null) {
+            try {
+                getView().findViewById(R.id.container_fab_egg_token).setVisibility(View.VISIBLE);
+                TextView textCount = getView().findViewById(R.id.text_token_count);
+                TextView textMessage = getView().findViewById(R.id.text_token_title);
+                ImageView imgToken = getView().findViewById(R.id.img_token);
+                textCount.setText(String.valueOf(tokenDetail.getSumToken()));
+                this.mSumToken = tokenDetail.getSumToken();
+                this.mLobDetails = lobDetails;
+                textMessage.setText(tokenDetail.getFloating().getTokenClaimText());
+                ImageHandler.loadImageFitCenter(getContext(), imgToken, tokenDetail.getFloating().getTokenAsset().getFloatingImgUrl());
+
+                if (tokenDetail.getSumToken() == 0) {
+                    getView().findViewById(R.id.text_token_count).setVisibility(View.GONE);
+                    getView().findViewById(R.id.text_token_title).setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_xlarge),
+                            getResources().getDimensionPixelSize(R.dimen.dp_10),
+                            getResources().getDimensionPixelSize(R.dimen.tp_padding_medium),
+                            getResources().getDimensionPixelSize(R.dimen.dp_10));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                //to avoid any accidental crash in order to prevent homepage error
+            }
+        }
     }
 }

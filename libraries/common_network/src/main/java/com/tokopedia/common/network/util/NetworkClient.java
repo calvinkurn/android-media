@@ -58,6 +58,7 @@ public class NetworkClient {
         return sRestApi;
     }
 
+
     public static synchronized FingerprintManager getFingerPrintManager() {
         if (sFingerprintManager == null) {
             throw new RuntimeException("Please call NetworkClient.init() to start the network library.");

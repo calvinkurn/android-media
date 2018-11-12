@@ -43,15 +43,21 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
     @Override
     public void onNext(List<RecentViewProductDomain> recentViewProductDomains) {
         if (!recentViewProductDomains.isEmpty()) {
-            viewListener.onSuccessGetRecentView(convertToViewModel(recentViewProductDomains));
+            ArrayList<RecentViewDetailProductViewModel> recentsViewModel = convertToViewModel(recentViewProductDomains);
+            ArrayList<Visitable> visitableList = new ArrayList<>(recentsViewModel);
+
+            viewListener.onSuccessGetRecentView(visitableList);
+            viewListener.sendRecentViewImpressionTracking(recentsViewModel);
         } else {
             viewListener.onEmptyGetRecentView()
             ;
         }
     }
 
-    private ArrayList<Visitable> convertToViewModel(List<RecentViewProductDomain> recentViewProductDomains) {
-        ArrayList<Visitable> listProduct = new ArrayList<>();
+    private ArrayList<RecentViewDetailProductViewModel> convertToViewModel(List<RecentViewProductDomain> recentViewProductDomains) {
+        ArrayList<RecentViewDetailProductViewModel> listProduct = new ArrayList<>();
+
+        int position = 1;
         for (RecentViewProductDomain domain : recentViewProductDomains) {
             listProduct.add(new RecentViewDetailProductViewModel(
                     Integer.parseInt(domain.getId()),
@@ -65,8 +71,10 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
                     domain.getIsGold() != null && domain.getIsGold().equals("1"),
                     convertToIsOfficial(domain.getBadges()),
                     domain.getShop().getName(),
-                    domain.getShop().getLocation()
+                    domain.getShop().getLocation(),
+                    position
             ));
+            position++;
         }
         return listProduct;
     }

@@ -68,4 +68,11 @@
     <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
     <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
 
+    <string name="have_not_joined_flashsale_title">Anda belum pernah mengikuti Flash Sale</string>
+    <string name="join_flashsale_title">Ikuti Flash Sale dan Nikmati Banyak Keuntungan</string>
+    <string name="benefit_flashsale_1">Tokomu akan dilirik oleh lebih banyak pembeli</string>
+    <string name="benefit_flashsale_2">Meningkatkan skor produk dan reputasi toko</string>
+    <string name="benefit_flashsale_3">Mempercepat peningkatan penjualan</string>
+    <string name="benefit_flashsale_4">Efektif untuk mempromosikan produk terbaik dari toko Anda</string>
+    <string name="benefit_flashsale_5">Produk tampil di halaman khusus yang banyak dikunjungi</string>
 </resources>

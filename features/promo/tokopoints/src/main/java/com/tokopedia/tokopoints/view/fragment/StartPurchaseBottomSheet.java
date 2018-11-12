@@ -4,12 +4,10 @@ import android.app.Dialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.R;

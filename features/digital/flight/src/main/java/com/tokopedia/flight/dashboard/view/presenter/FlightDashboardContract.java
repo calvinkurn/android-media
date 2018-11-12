@@ -90,6 +90,10 @@ public interface FlightDashboardContract {
         void showFormContainer();
 
         void startAirportSyncInBackground(long airportVersion);
+
+        void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date time);
+
+        void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {

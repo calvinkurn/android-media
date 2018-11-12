@@ -17,11 +17,13 @@ public interface ItemClickListener extends EmptyStateClickListener {
     void onLongClick(ProductItem item, int adapterPosition);
 
 
-    void onWishlistButtonClicked(ProductItem productItem);
+    void onWishlistButtonClicked(final ProductItem productItem);
 
     void onSuggestionClicked(String suggestedQuery);
 
     void onSearchGuideClicked(String keyword);
+
+    void onRelatedSearchClicked(String keyword);
 
     void onQuickFilterSelected(Option option);
 }

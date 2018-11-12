@@ -37,7 +37,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
 
     private var shopDomain: String = ""
     private var productWeightUnit: String = ""
-    private var productWeight = 0f
+    private var productWeight: String = ""
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -57,7 +57,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         arguments?.let {
             shopDomain = it.getString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, "")
             productWeightUnit = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, "")
-            productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
+            productWeight = it.getString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, "")
+            productWeight
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -65,15 +66,25 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         recycler_view.addItemDecoration(DividerItemDecoration(activity))
         recycler_view.isNestedScrollingEnabled = false
 
-        shipping_weight.text = DecimalFormat("#.####").format(productWeight) + " " + if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit
+        shipping_weight.text = "$productWeight ${if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit}"
 
         getCostEstimation()
     }
 
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
-        val weightInKg: Float = if (productWeightUnit.toLowerCase() == "gr") (productWeight/1000) else productWeight
+        val unformatedWeight = getUnformattedWeight(productWeight)
+        val weightInKg: Float = if (productWeightUnit.toLowerCase() == "gr") (unformatedWeight/1000) else unformatedWeight
         presenter.getCostEstimation(GraphqlHelper.loadRawString(resources, R.raw.gql_pdp_estimasi_ongkir), weightInKg, shopDomain)
+    }
+
+    private fun getUnformattedWeight(productWeight: String): Float {
+        return try {
+            productWeight.replace(".", "").toFloat()
+        } catch (e: Exception){
+            0f
+        }
+
     }
 
     private fun setViewState(viewLoading: Int) {
@@ -123,10 +134,10 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
+        fun createInstance(shopDomain: String, productWeight: String, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
             arguments = Bundle().apply {
                 putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
+                putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                 putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
             }
         }

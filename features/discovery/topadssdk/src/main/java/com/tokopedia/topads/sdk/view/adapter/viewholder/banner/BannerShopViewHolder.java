@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Badge;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
@@ -60,7 +60,7 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
 
     @Override
     public void bind(final BannerShopViewModel element) {
-        final CpmData.Cpm cpm = element.getCpm();
+        final Cpm cpm = element.getCpm();
         if(cpm!=null) {
             Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override

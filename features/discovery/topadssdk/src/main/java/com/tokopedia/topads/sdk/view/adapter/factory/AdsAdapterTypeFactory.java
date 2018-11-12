@@ -35,9 +35,10 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
     private TopAdsItemImpressionListener itemImpressionListener;
+    private boolean enableWishlist;
 
     public AdsAdapterTypeFactory(Context context) {
-        this(context, 0);
+        this(context, -1);
     }
 
     public AdsAdapterTypeFactory(Context context, int clickPosition) {
@@ -47,6 +48,10 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+    }
+
+    public void setEnableWishlist(boolean enableWishlist) {
+        this.enableWishlist = enableWishlist;
     }
 
     public void setClickPosition(int adapterPosition) {
@@ -97,11 +102,11 @@ public class AdsAdapterTypeFactory implements AdsTypeFactory {
     public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
-            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ProductGridViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
         } else if (viewType == ProductListViewHolder.LAYOUT) {
-            holder = new ProductListViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ProductListViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
         } else if (viewType == ProductBigViewHolder.LAYOUT) {
-            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener, clickPosition);
+            holder = new ProductBigViewHolder(view, imageLoader, itemClickListener, clickPosition, enableWishlist);
         } else if (viewType == ShopGridViewHolder.LAYOUT) {
             holder = new ShopGridViewHolder(view, imageLoader, itemClickListener);
         } else if (viewType == ShopListViewHolder.LAYOUT) {

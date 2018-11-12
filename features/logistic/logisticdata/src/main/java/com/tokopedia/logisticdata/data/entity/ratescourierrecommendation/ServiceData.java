@@ -29,6 +29,9 @@ public class ServiceData implements Parcelable {
     @SerializedName("texts")
     @Expose
     private ServiceTextData texts;
+    @SerializedName("error")
+    @Expose
+    private ErrorServiceData error;
     @SerializedName("products")
     @Expose
     private List<ProductData> products;
@@ -42,6 +45,7 @@ public class ServiceData implements Parcelable {
         status = in.readInt();
         rangePrice = in.readParcelable(RangePriceData.class.getClassLoader());
         texts = in.readParcelable(ServiceTextData.class.getClassLoader());
+        error = in.readParcelable(ErrorServiceData.class.getClassLoader());
         products = in.createTypedArrayList(ProductData.CREATOR);
     }
 
@@ -52,6 +56,7 @@ public class ServiceData implements Parcelable {
         dest.writeInt(status);
         dest.writeParcelable(rangePrice, flags);
         dest.writeParcelable(texts, flags);
+        dest.writeParcelable(error, flags);
         dest.writeTypedList(products);
     }
 
@@ -118,5 +123,13 @@ public class ServiceData implements Parcelable {
 
     public void setProducts(List<ProductData> products) {
         this.products = products;
+    }
+
+    public ErrorServiceData getError() {
+        return error;
+    }
+
+    public void setError(ErrorServiceData error) {
+        this.error = error;
     }
 }

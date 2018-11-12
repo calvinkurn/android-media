@@ -33,6 +33,10 @@ import java.io.File;
  * Created by nisie on 10/28/16.
  */
 
+@Deprecated
+/**
+ * Use from Abstraction instead.
+ */
 public class MethodChecker {
 
 

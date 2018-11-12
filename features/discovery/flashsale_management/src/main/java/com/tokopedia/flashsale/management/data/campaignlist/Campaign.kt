@@ -78,6 +78,12 @@ data class Campaign(
         @SerializedName("max_seller_reputation_badge")
         @Expose val maxSellerReputation: String = "",
 
+        @SerializedName("min_cancellation_rate")
+        @Expose val minCancellationRate: String = "",
+
+        @SerializedName("max_cancellation_rate")
+        @Expose val maxCancellationRate: String = "",
+
         @SerializedName("is_joined")
         @Expose
         val isJoined: Boolean = false,
@@ -91,6 +97,9 @@ data class Campaign(
 
         @SerializedName("logistics")
         @Expose val logistics: List<Logistic> = listOf(),
+
+        @SerializedName("seller_type")
+        @Expose val sellerTypes: List<SellerType> = listOf(),
 
         @SerializedName("criteria")
         @Expose
@@ -106,4 +115,10 @@ data class Campaign(
 
     data class Response(@SerializedName("getCampaignInfo")
                         @Expose val result: GetCampaignInfo)
+
+    data class SellerType(@SerializedName("title")
+                          @Expose val title: String,
+
+                          @SerializedName("image_url")
+                          @Expose val imageUrl: String)
 }

@@ -1,5 +1,8 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
+import com.tokopedia.SessionRouter;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -64,6 +67,11 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     .getGetUserInfoDomainData());
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
+            if(registerSosmedDomain.getMakeLoginModel() != null) {
+                if(viewListener.getContext().getApplicationContext() instanceof SessionRouter) {
+                    ((SessionRouter) viewListener.getContext().getApplicationContext()).sendAFCompleteRegistrationEvent(registerSosmedDomain.getMakeLoginModel().getUserId(), LoginAnalytics.Label.PHONE_NUMBER);
+                }
+            }
             viewListener.onSuccessRegisterSosmed(methodName);
             sendRegisterEventToBranch(registerSosmedDomain.getInfo());
         } else if (isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {

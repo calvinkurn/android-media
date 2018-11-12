@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
@@ -23,10 +25,10 @@ public class NewDiscussionNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
+        if(MainApplication.getAppContext() instanceof TkpdCoreRouter)
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                InboxRouter.getInboxTalkActivityIntent(mContext)
+                ((TkpdCoreRouter) MainApplication.getAppContext()).getInboxTalkCallingIntent(mContext)
         );
-        mNotificationPass.classParentStack = InboxRouter.getInboxTalkActivityClass();
         mNotificationPass.title = String.format(
                 "%s %s",
                 incomingMessage.getString("counter"),

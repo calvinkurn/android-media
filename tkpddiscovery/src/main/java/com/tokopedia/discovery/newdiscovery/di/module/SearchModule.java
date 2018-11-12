@@ -55,8 +55,8 @@ public class SearchModule {
 
     @SearchScope
     @Provides
-    SearchPresenter provideSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        return new SearchPresenter(getProductUseCase, getImageSearchUseCase);
+    SearchPresenter provideSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new SearchPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 
 }

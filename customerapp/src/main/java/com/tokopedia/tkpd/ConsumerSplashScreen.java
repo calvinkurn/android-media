@@ -15,7 +15,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -27,12 +29,18 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class ConsumerSplashScreen extends SplashScreen {
 
+    public static final String SPLASH_TRACE = "warm_start";
+
     private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
+
+    private Trace trace;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startWarmStart();
 
         mainLayout = findViewById(R.id.layout_splash);
         renderDynamicImage();
@@ -42,7 +50,18 @@ public class ConsumerSplashScreen extends SplashScreen {
     public void finishSplashScreen() {
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
+        finishWarmStart();
         finish();
+    }
+
+    private void startWarmStart() {
+        trace = TrackingUtils.startTrace(SPLASH_TRACE);
+    }
+
+    private void finishWarmStart() {
+        if (trace != null) {
+            trace.stop();
+        }
     }
 
     private void renderDynamicImage() {

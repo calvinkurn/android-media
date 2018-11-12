@@ -19,7 +19,7 @@ import rx.Observable;
  *         - mode : use static parameter from RequestOtpUseCase
  *         - otp_type : use static parameter from RequestOtpUseCase
  */
-
+@Deprecated
 public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     protected static final String PARAM_MODE = "mode";

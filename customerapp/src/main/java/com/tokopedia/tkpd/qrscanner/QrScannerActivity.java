@@ -46,6 +46,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private CampaignComponent campaignComponent;
     private boolean isTorchOn;
     private ProgressBar progressBar;
+    private static String QR_NEED_RESULT = "qr_need_result";
 
     @Inject
     QrScannerPresenter presenter;
@@ -60,8 +61,9 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         return R.layout.layout_scanner_qr;
     }
 
-    public static Intent newInstance(Context context) {
+    public static Intent newInstance(Context context,boolean needResult) {
         Intent intent = new Intent(context, QrScannerActivity.class);
+        intent.putExtra(QR_NEED_RESULT,needResult);
         return intent;
     }
 
@@ -153,9 +155,16 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected void findResult(BarcodeResult barcodeResult) {
-        decoratedBarcodeView.pause();
-        hideAnimation();
-        presenter.onBarCodeScanComplete(barcodeResult.getText());
+        if (getIntent().getBooleanExtra(QR_NEED_RESULT,false)) {
+            Intent intent = new Intent();
+            intent.putExtra("scanResult", barcodeResult.getText());
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            decoratedBarcodeView.pause();
+            hideAnimation();
+            presenter.onBarCodeScanComplete(barcodeResult.getText());
+        }
     }
 
     @Override

@@ -17,15 +17,12 @@ public interface ProductListPresenter extends SearchSectionFragmentPresenter<Pro
 
     void loadData(SearchParameter searchParameter, boolean isForceSearch, HashMap<String, String> additionalParams);
 
-    void handleWishlistButtonClicked(ProductItem productItem);
+    void handleWishlistButtonClicked(final ProductItem productItem);
 
     void attachView(ProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
-    void loadGuidedSearch(String keyword);
-
-    void requestQuickFilter(HashMap<String, String> paramMap);
-
     void setIsUsingFilterV4(boolean isUsingFilterV4);
+
 }
 
 

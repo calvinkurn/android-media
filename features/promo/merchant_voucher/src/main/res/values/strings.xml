@@ -1,0 +1,28 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">@string/merchant_voucher</string>
+    <string name="merchant_voucher">Voucher Toko</string>
+    <string name="merchant_voucher_x">Voucher Toko %1$s</string>
+    <string name="merchant_voucher_detail">Detail Voucher</string>
+    <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
+    <string name="min_transaction_colon">Minimal transaksi:</string>
+    <string name="valid_thru_colon">Berlaku hingga:</string>
+    <string name="status_colon">Status:</string>
+    <string name="see">Lihat</string>
+    <string name="terms_and_conditions">Syarat &amp; Ketentuan</string>
+    <string name="voucher_title_x_x">%1$s %2$s</string>
+    <string name="title_cashback">Cashback</string>
+    <string name="discount">Diskon</string>
+    <string name="free_ongkir">Gratis Ongkir</string>
+    <string name="min_spend_x">*Min. Pembelian %1$s</string>
+    <string name="run_out">Habis</string>
+    <string name="in_use">Diterapkan</string>
+    <string name="no_min_spend" tools:ignore="ExtraTranslation">Tidak ada minimum pembelian</string>
+    <string name="available">Tersedia</string>
+    <string name="retry">Ulangi</string>
+    <string name="voucher_use_in_cart">Voucher otomatis diterapkan pada keranjang</string>
+    <string name="no_voucher">Voucher tidak tersedia atau habis</string>
+    <string name="copy_to_clipboard">Salin</string>
+    <string name="title_voucher_code_copied">Kode Voucher berhasil disalin</string>
+    <string name="html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:0; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:15px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
+
+</resources>
