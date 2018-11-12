@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.autocomplete.repository;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryCache;
 import com.tokopedia.discovery.newdiscovery.network.BrowseApi;
 import com.tokopedia.discovery.search.domain.interactor.SearchMapper;
 import com.tokopedia.discovery.search.domain.model.SearchData;
@@ -20,11 +20,14 @@ public class AutoCompleteDataSource {
 
     private final BrowseApi browseApi;
     private final SearchMapper autoCompleteMapper;
+    private final CacheManager cacheManager;
 
     public AutoCompleteDataSource(BrowseApi browseApi,
-                                  SearchMapper autoCompleteMapper) {
+                                  SearchMapper autoCompleteMapper,
+                                  CacheManager cacheManager) {
         this.browseApi = browseApi;
         this.autoCompleteMapper = autoCompleteMapper;
+        this.cacheManager = cacheManager;
     }
 
     public Observable<List<SearchData>> getUniverseAutoComplete(HashMap<String, Object> param) {
@@ -35,11 +38,11 @@ public class AutoCompleteDataSource {
                     public void call(Response<SearchResponse> response) {
                         int tenMinute = 600000;
                         Gson gson = new Gson();
-                        new GlobalCacheManager()
-                                .setKey(TkpdCache.Key.UNIVERSEARCH)
-                                .setCacheDuration(tenMinute)
-                                .setValue(gson.toJson(response.body()))
-                                .store();
+                        cacheManager.save(
+                                DiscoveryCache.Key.UNIVERSEARCH,
+                                gson.toJson(response.body()),
+                                tenMinute
+                        );
                     }
 
                 })

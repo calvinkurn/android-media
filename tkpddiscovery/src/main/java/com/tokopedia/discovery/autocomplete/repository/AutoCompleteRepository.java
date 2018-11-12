@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.autocomplete.repository;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 
 import java.util.HashMap;

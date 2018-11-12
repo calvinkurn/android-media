@@ -2,9 +2,9 @@ package com.tokopedia.discovery.autocomplete.usecase;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.search.domain.model.SearchData;
+import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

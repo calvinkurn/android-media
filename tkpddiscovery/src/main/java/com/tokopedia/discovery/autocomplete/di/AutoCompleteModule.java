@@ -3,6 +3,7 @@ package com.tokopedia.discovery.autocomplete.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.discovery.newdiscovery.di.module.net.DiscoveryNetModule;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteDataSource;
@@ -37,10 +38,11 @@ public class AutoCompleteModule {
     @Provides
     AutoCompleteRepository provideAutoCompleteRepository(
         @AutoCompleteQualifier BrowseApi browseApi,
-        SearchMapper autoCompleteMapper
+        SearchMapper autoCompleteMapper,
+        CacheManager cacheManager
     ) {
         return new AutoCompleteRepositoryImpl(
-            new AutoCompleteDataSource(browseApi, autoCompleteMapper)
+            new AutoCompleteDataSource(browseApi, autoCompleteMapper, cacheManager)
         );
     }
 
