@@ -379,7 +379,6 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         tvChooseReason.setText(selectedReason.getDetail());
         buildAttachmentReasonView();
 
-        attachments = presenter.buildAttachmentList();
         deleteAllAttachments();
         addAttachments(attachments);
         renderAttachment();
