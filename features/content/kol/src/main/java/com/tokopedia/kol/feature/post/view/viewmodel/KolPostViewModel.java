@@ -28,9 +28,9 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
                             String time, boolean isShowComment, boolean isShowLike,
                             List<String> imageList, int tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink) {
-        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
-                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike,
-                false, false);
+        super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
+                review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
+                isShowLike, false, false, imageList.size() > 1);
         this.imageList = imageList;
         this.tagsId = tagsId;
         this.contentName = contentName;
@@ -46,9 +46,9 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
                             boolean editable, boolean deletable, List<String> imageList,
                             int tagsId, String contentName, String tagsType,
                             String tagsCaption, String tagsLink, String trackingId, String info) {
-        super(userId, cardType, title, name, avatar, label, kolProfileUrl, followed, review,
-                liked, totalLike, totalComment, page, kolId, time, isShowComment, isShowLike,
-                editable, deletable);
+        super(userId, tagsType, cardType, title, name, avatar, label, kolProfileUrl, followed,
+                review, liked, totalLike, totalComment, page, kolId, time, isShowComment,
+                isShowLike, editable, deletable, imageList.size() > 1);
         this.imageList = imageList;
         this.tagsId = tagsId;
         this.contentName = contentName;

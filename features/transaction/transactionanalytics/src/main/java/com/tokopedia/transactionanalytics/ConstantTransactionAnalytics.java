@@ -153,7 +153,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_NAMA_PADA_TAMBAH_ADDRESS = "click nama pada + address";
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
-        String CLICK_CEK_KERANJANG = "click cek keranjang";
+        String CLICK_CEK_KERANJANG = "click - cek keranjang";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
