@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -83,7 +82,6 @@ public class ExploreFragment
     private EmptyModel emptyResultModel;
     private FrameLayout autoCompleteLayout;
     private AutoCompleteSearchAdapter autoCompleteAdapter;
-    private AbstractionRouter abstractionRouter;
     private FrameLayout layoutEmpty;
 
     private boolean isCanDoAction;
@@ -125,12 +123,6 @@ public class ExploreFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of " +
-                    "AbstractionRouter!");
-        }
         initView();
         initListener();
         exploreParams.setLoading(true);
