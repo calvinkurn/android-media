@@ -66,6 +66,7 @@ public class ChooseVerificationPresenter extends BaseDaggerPresenter<SelectVerif
                 getView().dismissLoading();
                 if (listVerificationMethod.getList().isEmpty()) {
                     getView().onErrorGetList("");
+                    getView().logUnknownError(new Throwable("mode list is empty"));
                 } else {
                     getView().onSuccessGetList(listVerificationMethod);
                 }
