@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.firebase.perf.metrics.Trace;
@@ -110,6 +112,11 @@ import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.referral.ReferralActivity;
+import com.tokopedia.nps.NpsRouter;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
+import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -136,6 +143,9 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.ShareSocmedHandler;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
@@ -219,6 +229,12 @@ import com.tokopedia.logisticaddaddress.router.IAddressRouter;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticgeolocation.pinpoint.GeolocationActivity;
+import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
+import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
+import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressActivity;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -300,8 +316,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -487,7 +501,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdAppsFlyerRouter,
         ScanQrCodeRouter,
         UnifiedOrderListRouter,
-        MerchantVoucherModuleRouter {
+        MerchantVoucherModuleRouter,
+        LoginRegisterRouter,
+        LoginPhoneNumberRouter,
+        NpsRouter {
 
     private static final String EXTRA = "extra";
 
@@ -2357,6 +2374,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendAnalyticsGroupChat(String url, String error) {
+        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+            AnalyticsLog.logGroupChatWebSocketError(url, error);
+        }
+    }
+
+    @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
         if (!isEventOMS) {
@@ -2673,8 +2697,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId);
+    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
+        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
 
     @Override
@@ -3192,5 +3216,61 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendMoEngageFavoriteEvent(String shopName, String shopID, String shopDomain, String shopLocation, boolean isShopOfficaial, boolean isFollowed) {
         TrackingUtils.sendMoEngageFavoriteEvent(shopName, shopID, shopDomain, shopLocation, isShopOfficaial, isFollowed);
+    }
+
+    @Override
+    public void setTrackingUserId(String userId, Context applicationContext) {
+        onAppsFlyerInit();
+        TrackingUtils.eventPushUserID();
+        if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
+            Crashlytics.setUserIdentifier(userId);
+        BranchSdkUtils.sendIdentityEvent(userId);
+        BranchSdkUtils.sendLoginEvent(applicationContext);
+    }
+
+    @Override
+    public void setMoEUserAttributesLogin(String userId, String name, String email,
+                                          String phoneNumber, boolean isGoldMerchant,
+                                          String shopName, String shopId, boolean hasShop,
+                                          String loginMethod) {
+        TrackingUtils.setMoEUserAttributesLogin(
+                userId,
+                name,
+                email,
+                phoneNumber,
+                isGoldMerchant,
+                shopName,
+                shopId,
+                hasShop,
+                loginMethod
+        );
+    }
+
+    @Override
+    public void eventMoRegistrationStart(String label) {
+        UnifyTracking.eventMoRegistrationStart(label);
+    }
+
+    @Override
+    public void eventMoRegister(String name, String phone) {
+        UnifyTracking.eventMoRegister(name, phone);
+    }
+
+    @Override
+    public void sendBranchRegisterEvent(String email, String phone) {
+        BranchSdkUtils.sendRegisterEvent(email, phone);
+    }
+
+    /**
+     * App Rating - Nps
+     */
+    @Override
+    public void showAdvancedAppRatingDialog(Activity activity, DialogInterface.OnDismissListener dismissListener) {
+        AdvancedAppRatingDialog.show(activity, dismissListener);
+    }
+
+    @Override
+    public void showSimpleAppRatingDialog(Activity activity) {
+        SimpleAppRatingDialog.show(activity);
     }
 }

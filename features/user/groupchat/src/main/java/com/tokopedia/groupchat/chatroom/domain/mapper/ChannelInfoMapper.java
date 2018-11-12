@@ -1,10 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.groupchat.chatroom.domain.pojo.ExitMessage;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
@@ -64,7 +61,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getAdsName() != null ? pojo.getChannel().getAdsName() : "",
                 pojo.getChannel().getAdsId() != null ? pojo.getChannel().getAdsId() : "",
                 pojo.getChannel().getBannerName() != null ? pojo.getChannel().getBannerName() : "",
-                pojo.getChannel().getSendBirdToken() != null ? pojo.getChannel().getSendBirdToken() : "",
+                pojo.getChannel().getGcToken() != null ? pojo.getChannel().getGcToken() : "",
                 pojo.getChannel().getModeratorName() != null ? pojo.getChannel().getModeratorName() : "",
                 pojo.getChannel().getCoverUrl() != null ? pojo.getChannel().getCoverUrl() : "",
                 pojo.getChannel().getModeratorProfileUrl() != null ? pojo.getChannel().getModeratorProfileUrl() : "",
@@ -79,7 +76,8 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 mapToPinnedMessageViewModel(pojo.getChannel().getPinnedMessage()),
                 pojo.getChannel().getExitMessage(),
                 convertChannelQuickReply(pojo.getChannel()),
-                pojo.getChannel().getVideoId()
+                pojo.getChannel().getVideoId(),
+                pojo.getChannel().getSettingGroupChat()
         );
     }
 

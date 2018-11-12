@@ -11,7 +11,7 @@ import com.tokopedia.otp.cotp.view.subscriber.ValidateOtpLoginSubscriber;
 import com.tokopedia.otp.cotp.view.subscriber.VerifyOtpSubscriber;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -25,10 +25,10 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     private final RequestOtpUseCase requestOtpUseCase;
     private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final ValidateOtpUseCase validateOtpUseCase;
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public VerificationPresenter(UserSession userSession,
+    public VerificationPresenter(UserSessionInterface userSession,
                                  RequestOtpUseCase requestOtpUseCase,
                                  ValidateOtpLoginUseCase validateOtpLoginUseCase,
                                  ValidateOtpUseCase validateOtpUseCase) {

@@ -1160,7 +1160,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             CourierViewData items = new CourierViewData();
             items.setCourierId(shopShipment.getShippingId());
             items.setLogo(shopShipment.getLogo());
-            items.setPackageName(shopShipment.getPackageNames());
+            if (shopShipment.getPackageNames() != null) {
+                items.setPackageName(shopShipment.getPackageNames());
+            } else {
+                items.setPackageName(new ArrayList<>());
+            }
             items.setCourierName(shopShipment.getShippingName());
             list.add(items);
         }

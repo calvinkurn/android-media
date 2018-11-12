@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -361,7 +362,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(labelPositive, (dialogInterface, i) -> {
             switch (resCode) {
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
-                    startActivity(((TokopointRouter)getAppContext()).getHomeIntent(getActivityContext()));
+                    startActivity(((TokopointRouter) getAppContext()).getHomeIntent(getActivityContext()));
 
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
@@ -703,8 +704,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
         ImageView imgLabel = getView().findViewById(R.id.img_time);
-        TextView textMinExchange = getView().findViewById(R.id.text_min_exchange);
         TextView textMinExchangeValue = getView().findViewById(R.id.text_min_exchange_value);
+        TextView textMinExchangeLavel = getView().findViewById(R.id.text_min_exchange);
         ImageView imgMinExchange = getView().findViewById(R.id.img_min_exchange);
         ProgressBar progressBar = getView().findViewById(R.id.progress_refetch_code);
         ViewFlipper actionContainer = getView().findViewById(R.id.lin_container_button);
@@ -732,9 +733,18 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             }
         }
 
-        if (data.getMinimumUsage() != null && !data.getMinimumUsage().isEmpty()) {
+        if (TextUtils.isEmpty(data.getMinimumUsageLabel())) {
+            textMinExchangeLavel.setVisibility(View.GONE);
+            imgMinExchange.setVisibility(View.GONE);
+        } else {
             imgMinExchange.setVisibility(View.VISIBLE);
-            textMinExchange.setVisibility(View.VISIBLE);
+            textMinExchangeLavel.setVisibility(View.VISIBLE);
+            textMinExchangeLavel.setText(data.getMinimumUsageLabel());
+        }
+
+        if (TextUtils.isEmpty(data.getMinimumUsage())) {
+            textMinExchangeValue.setVisibility(View.GONE);
+        } else {
             textMinExchangeValue.setVisibility(View.VISIBLE);
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
