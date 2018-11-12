@@ -260,7 +260,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     private void goToRequestChangePhoneNumberUploadKTP() {
         if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
             Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getChangePhoneNumberRequestIntent(getActivity(), userSession.getUserId());
+                    .getChangePhoneNumberRequestIntent(getActivity(), userSession.getTemporaryUserId());
             startActivity(intent);
         }
     }
