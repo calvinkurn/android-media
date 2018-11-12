@@ -2663,8 +2663,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePhoneNumberRequestIntent(Context context, String userId) {
-        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId);
+    public Intent getChangePhoneNumberRequestIntent(Context context, String userId, String oldPhoneNumber) {
+        return ChangeInactiveFormRequestActivity.createIntentWithUserId(context, userId, oldPhoneNumber);
     }
 
     @Override
