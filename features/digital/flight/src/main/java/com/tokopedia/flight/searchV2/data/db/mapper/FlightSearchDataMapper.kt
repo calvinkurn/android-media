@@ -4,6 +4,8 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum
+import com.tokopedia.flight_dbflow.FlightSearchReturnRouteDB
+import com.tokopedia.flight_dbflow.FlightSearchSingleRouteDB
 
 /**
  * Created by Rizky on 25/10/18.
