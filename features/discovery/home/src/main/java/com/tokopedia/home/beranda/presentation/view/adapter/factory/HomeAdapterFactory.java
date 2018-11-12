@@ -104,7 +104,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(DynamicChannelViewModel dynamicChannelViewModel) {
         if (DynamicHomeChannel.Channels.LAYOUT_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())
-                || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelSprintViewHolder.LAYOUT;
         } else if (DynamicHomeChannel.Channels.LAYOUT_HERO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
             return DynamicChannelHeroViewHolder.LAYOUT;

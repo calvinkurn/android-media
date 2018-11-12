@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/channel_before_disc_price_1"
-        style="@style/TextView.Nano.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_below="@id/channel_image_1"
         android:layout_marginTop="@dimen/dp_5"
         tools:text="Rp 2.799.000" />
