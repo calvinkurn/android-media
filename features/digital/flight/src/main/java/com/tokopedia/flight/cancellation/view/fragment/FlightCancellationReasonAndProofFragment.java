@@ -107,7 +107,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_CANCELLATION_VIEW_MODEL, flightCancellationViewModel);
         outState.putString(EXTRA_IMAGE_LOCAL, fileFromCameraLocTemp);
-        outState.putParcelableArrayList(EXTRA_ATTACHMENT_VIEW_MODEL, (ArrayList<? extends Parcelable>) getAttachments());
+        outState.putParcelableArrayList(EXTRA_ATTACHMENT_VIEW_MODEL, (ArrayList<? extends Parcelable>) attachments);
         outState.putParcelable(EXTRA_CANCELLATION_REASON, selectedReason);
         outState.putInt(EXTRA_CHANGED_IMAGE_INDEX, positionChangedImage);
     }

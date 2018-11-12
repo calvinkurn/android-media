@@ -21,8 +21,10 @@ public class FlightCancellationReasonsViewModelMapper {
     public List<FlightCancellationReasonViewModel> transform(List<Reason> reasonList) {
         List<FlightCancellationReasonViewModel> data = new ArrayList<>();
 
-        for (Reason reason : reasonList) {
-            data.add(transform(reason));
+        if (reasonList != null) {
+            for (Reason reason : reasonList) {
+                data.add(transform(reason));
+            }
         }
 
         return data;

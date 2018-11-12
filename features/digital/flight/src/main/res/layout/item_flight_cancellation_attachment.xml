@@ -16,6 +16,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/bg_flight_gray_rounded_dashed"
+        android:padding="@dimen/dp_1"
         android:gravity="center">
 
         <android.support.v7.widget.AppCompatImageView
