@@ -794,12 +794,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
-                            getActivity().getString(R.string.alert_payment_canceled_or_failed_digital_module)
+                            getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
                     presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
-                    showToastMessage(getActivity().getString(R.string.alert_payment_canceled_digital_module));
+                    showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     presenter.processGetCartDataAfterCheckout(passData.getCategoryId());
                     break;
                 default:
