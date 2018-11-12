@@ -12,6 +12,7 @@ public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
     private String productName;
     private String productPrice;
     private String productCashback;
+    private String productClickUrl;
     private ProductImage productImage;
 
     @Override
@@ -54,5 +55,13 @@ public class ProductDynamicChannelViewModel implements Item<AdsTypeFactory> {
 
     public void setProductCashback(String productCashback) {
         this.productCashback = productCashback;
+    }
+
+    public String getProductClickUrl() {
+        return productClickUrl;
+    }
+
+    public void setProductClickUrl(String productClickUrl) {
+        this.productClickUrl = productClickUrl;
     }
 }

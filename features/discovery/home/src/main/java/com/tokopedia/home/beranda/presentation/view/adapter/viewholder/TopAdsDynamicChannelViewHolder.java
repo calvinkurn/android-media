@@ -52,6 +52,7 @@ public class TopAdsDynamicChannelViewHolder extends AbstractViewHolder<DynamicCh
                 productImage.setM_url(grid.getImpression());
                 productImage.setM_ecs(grid.getImageUrl());
                 model.setProductImage(productImage);
+                model.setProductClickUrl(grid.getProductClickUrl());
                 items.add(model);
             }
         }

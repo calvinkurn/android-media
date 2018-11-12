@@ -557,6 +557,18 @@ public class DynamicHomeChannel {
         @SerializedName("cashback")
         private String cashback;
 
+        @Expose
+        @SerializedName("productClickUrl")
+        private String productClickUrl;
+
+        public String getProductClickUrl() {
+            return productClickUrl;
+        }
+
+        public void setProductClickUrl(String productClickUrl) {
+            this.productClickUrl = productClickUrl;
+        }
+
         public String getImpression() {
             return impression;
         }
