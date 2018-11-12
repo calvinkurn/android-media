@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
@@ -16,6 +17,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -881,10 +883,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if (isVisible()) {
+        if (getUserVisibleHint()) {
             presenter.hitBannerImpression(bannerSlidesModel);
         }
     }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -920,6 +923,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public boolean isMainViewVisible() {
         return getUserVisibleHint();
+    }
+
+    @Override
+    public boolean isHomeFragment() {
+        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
+        return (fragment instanceof HomeFragment);
     }
 
     @Override
@@ -1030,4 +1039,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getString(R.string.sc_wishlist_desc)));
         return list;
     }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        setUserVisibleHint(!hidden);
+    }
+
 }

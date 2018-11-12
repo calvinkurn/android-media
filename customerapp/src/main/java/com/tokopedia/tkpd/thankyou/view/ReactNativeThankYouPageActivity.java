@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
-import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
@@ -153,12 +152,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     @Override
     public void onBackPressed() {
         if (isDigital()) {
-            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-                @Override
-                public void onDismiss() {
-                    closeThankyouPage();
-                }
-            });
+            AdvancedAppRatingDialog.show(this, dialog -> closeThankyouPage());
         } else {
             closeThankyouPage();
         }

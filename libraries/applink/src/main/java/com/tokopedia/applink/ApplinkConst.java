@@ -23,7 +23,7 @@ public interface ApplinkConst {
     String RIDE_DETAIL = "tokopedia://ride/uber/{request_id}";
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
-    String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_TALK = "tokopedia://shop/{shop_id}Ω/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
@@ -172,6 +172,11 @@ public interface ApplinkConst {
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
 
     String CHALLENGE = "tokopedia://challenges";
+    String ADD_NAME_REGISTER = "tokopedia://addnameregister/{phone}";
+    String ADD_NAME_PROFILE = "tokopedia://addname";
+    String CREATE_PASSWORD = "tokopedia://createpassword";
+    String PHONE_VERIFICATION = "tokopedia://phoneverification";
+    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

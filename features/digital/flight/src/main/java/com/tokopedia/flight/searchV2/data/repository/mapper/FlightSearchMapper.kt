@@ -81,6 +81,7 @@ class FlightSearchMapper @Inject constructor() {
                     0,
                     false,
                     beforeTotal,
+                    fare.adult,
                     fare.adultNumeric,
                     isReturn,
                     isRefundable,
@@ -136,7 +137,8 @@ class FlightSearchMapper @Inject constructor() {
             journey.infantNumericCombo = infantPriceNumeric
             journey.isBestPairing = isBestPairing
             journey.comboId = comboId
-            journey.sortPrice = adultPriceNumeric
+            journey.sortPrice = adultPrice
+            journey.sortPriceNumeric = adultPriceNumeric
         }
         return journey
     }

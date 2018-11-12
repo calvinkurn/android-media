@@ -29,6 +29,7 @@ public class UsernameInputPresenter extends BaseDaggerPresenter<UsernameInputCon
     public void detachView() {
         super.detachView();
         getUsernameSuggestionUseCase.unsubscribe();
+        registerUsernameUseCase.unsubscribe();
     }
 
     @Override
