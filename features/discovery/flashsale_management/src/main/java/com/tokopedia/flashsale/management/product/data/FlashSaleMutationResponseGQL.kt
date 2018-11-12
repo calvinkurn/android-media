@@ -1,26 +1,26 @@
 package com.tokopedia.flashsale.management.product.data
 
-import android.content.Context
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.FlashSaleProductStatusTypeDef
-import com.tokopedia.flashsale.management.data.campaignlist.Criteria
-import com.tokopedia.flashsale.management.product.adapter.FlashSaleProductAdapterTypeFactory
 
 /**
  * Created by hendry on 25/10/18.
  */
-data class FlashSaleMutationResponseGQL(
+data class FlashSaleMutationSubmitResponseGQL(
         @SerializedName("mojito_submit_product")
-        @Expose val flashSaleSubmitProduct: FlashSaleSubmitProduct)
+        @Expose val flashSaleDataContainer: FlashSaleDataContainer)
 
-class FlashSaleSubmitProduct(
+data class FlashSaleMutationReserveResponseGQL(
+        @SerializedName("mojito_reserve_product")
+        @Expose val flashSaleDataContainer: FlashSaleDataContainer)
+
+data class FlashSaleMutationDeReserveResponseGQL(
+        @SerializedName("mojito_dereserve_product")
+        @Expose val flashSaleDataContainer: FlashSaleDataContainer)
+
+class FlashSaleDataContainer(
         @SerializedName("data")
-        @Expose val flashSaleSubmitProductData: FlashSaleSubmitProductData,
+        @Expose val flashSaleCriteriaResponseData: List<FlashSaleCriteriaResponseData>,
 
         @SerializedName("message")
         @Expose val message: String) {
@@ -31,7 +31,7 @@ class FlashSaleSubmitProduct(
     fun isSuccess() = SUCCESS.equals(message, true)
 }
 
-data class FlashSaleSubmitProductData(
+data class FlashSaleCriteriaResponseData(
         @SerializedName("criteria_id")
         @Expose val criteriaId: Int,
         @SerializedName("is_available")

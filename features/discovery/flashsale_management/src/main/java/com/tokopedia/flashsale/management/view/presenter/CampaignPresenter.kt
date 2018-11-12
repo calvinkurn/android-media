@@ -44,6 +44,6 @@ constructor(private val userSession: UserSession,
     }
 
     fun detachView() {
-        useCases.map { it.unsubscribe() }
+        useCases.map { it.cancelJobs() }
     }
 }

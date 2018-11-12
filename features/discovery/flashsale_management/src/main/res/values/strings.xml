@@ -37,7 +37,9 @@
     <string name="flash_sale_list">Daftar Flash Sale</string>
     <string name="with_click_button_you_agree_with_tnc"><![CDATA[Dengan klik tombol, Anda telah menyetujui Syarat & Ketentuan]]></string>
     <string name="flash_sale_term_and_condition"><![CDATA[Syarat & Ketentuan]]></string>
-    <string name="flash_sale_request_product">Ajukan Produk</string>
+    <string name="flash_sale_reserve_product">Ajukan Produk</string>
+    <string name="flash_sale_cancel_reserve">Batalkan Pengajuan</string>
+    <string name="flash_sale_resubmit_product">Daftarkan Kembali</string>
     <string name="x_percent_off">%1$s%% OFF</string>
     <string name="flash_sale_canceled">Dibatalkan</string>
     <string name="flash_sale_update_submission">Perbarui Pengajuan</string>
@@ -52,6 +54,20 @@
     <string name="label_min_transaction">Minimum Transaksi</string>
     <string name="tnc_title"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="label_see_full">Lihat Selengkapnya</string>
+    <string name="flash_sale_register_for_category">Pendaftaran untuk kategori</string>
+    <string name="final_price">Harga Akhir</string>
+    <string name="flash_sale_rp">Rp\u00A0</string>
+    <string name="price_criteria_above_x">Kisaran harga di atas %1$s</string>
+    <string name="price_criteria_between_x_and_x">Kisaran harga %1$s - %2$s</string>
+    <string name="price_discount_above_x">Kisaran diskon di atas %1$s%%</string>
+    <string name="price_discount_below_x">Kisaran diskon di bawah %1$s%%</string>
+    <string name="price_discount_between_x_and_x">Kisaran diskon %1$s%% - %2$s%%</string>
+    <string name="price_criteria_below_x">Kisaran harga di bawah %1$s</string>
+    <string name="flash_sale_no_discount">-%</string>
+    <string name="flash_sale_x_percent">%1$s%%</string>
+    <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
+    <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
+
     <string name="have_not_joined_flashsale_title">Anda belum pernah mengikuti Flash Sale</string>
     <string name="join_flashsale_title">Ikuti Flash Sale dan Nikmati Banyak Keuntungan</string>
     <string name="benefit_flashsale_1">Tokomu akan dilirik oleh lebih banyak pembeli</string>

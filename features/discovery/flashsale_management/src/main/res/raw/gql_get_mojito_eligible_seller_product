@@ -17,62 +17,13 @@ query getMojitoEligibleSellerProduct($camp_id: Int!,
             pending_count
             products{
                 id
-                shop_id
-                pacman_time_unix
                 status
-                condition
-                flag
-                price_level
-                star_rating
-                returnable
-                city_id
-                count_view
-                count_review
-                count_talk
-                count_transaction
-                server_id
-                child_category_id
-                currency_id
-                menu_id
-                position
-                cluster_id
                 price
                 rating
-                review_score
-                product_score
-                bestmatch_score4
-                bestmatch_score4_fixed
-                bestmatch_score5
-                bestmatch_score5_fixed
-                bestmatch_score6
-                bestmatch_score6_fixed
                 original_price
                 discounted_price
                 name
-                name_sort
-                keyword
-                city_name
-                url_path
-                update_time
-                create_time
-                location
-                image_path
-                image_name
                 department_id
-                shipping
-                brand {
-                  ID
-                }
-                shop {
-                  id
-                  name
-                  domain
-                  gold_merchant_expired
-                  shop_score
-                  shop_reputation
-                  is_official
-                  rate_cancel
-                }
                 campaign {
                   campaign_id
                   start_date

@@ -47,10 +47,10 @@ class FlashSaleProductWidget @JvmOverloads constructor(
             visibility = View.GONE
         } else {
             if (item.campaign.message.isEmpty()) {
-                vgMessageContainer.visibility = View.GONE
+                vgBlackMessage.visibility = View.GONE
             } else {
                 tvMessage.text = item.campaign.message
-                vgMessageContainer.visibility = View.VISIBLE
+                vgBlackMessage.visibility = View.VISIBLE
             }
             if (hideDetail || item.campaign.discountedPercentage <= 0) {
                 tvPercentOff.visibility = View.GONE
@@ -59,8 +59,8 @@ class FlashSaleProductWidget @JvmOverloads constructor(
                         KMNumbers.formatToPercentString(item.campaign.discountedPercentage.toDouble() / 100))
                 tvPercentOff.visibility = View.VISIBLE
             }
-            ivProduct.loadUrl(item.campaign.imageUrl, context.resources.getDimension(R.dimen.dp_4))
-            tvDepartmentName.text = item.departmentName.map { it }.joinToString(" > ")
+            ImageHandler.LoadImage(ivProduct, item.campaign.imageUrl)
+            tvDepartmentName.text = item.getDepartmentNameString()
             if (item.campaign.productStatus == FlashSaleProductStatusTypeDef.RESERVE) {
                 // show mark
                 ivCheckMark.visibility = View.VISIBLE

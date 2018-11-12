@@ -9,14 +9,16 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SimpleItemAnimator
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
@@ -47,6 +49,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var allowEditProducts: Boolean = false
 
     var progressDialog: ProgressDialog? = null
+    var needLoadCurrentPage: Boolean = false
+    var needLoadAllPage: Boolean = false
 
     @Inject
     lateinit var presenter: FlashSaleProductListPresenter
@@ -54,17 +58,18 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     var hasVisibleOnce = false
     var needLoadData = true
 
+    var submitStatus: Boolean = false
+    var pendingCount: Int = 0
+    var submittedCount: Int = 0
+
     var flashSaleSubmitLabelAdapter: FlashSaleSubmitLabelAdapter? = null
 
     override fun getAdapterTypeFactory() = FlashSaleProductAdapterTypeFactory()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let { GraphqlClient.init(it) }
-        //TODO test, will replaced later
-        campaignId = 44
-        campaignSlug = "flash-sale-kamis"
-//        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
-//        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
+        campaignId = arguments?.getInt(EXTRA_PARAM_CAMPAIGN_ID, 0) ?: 0
+        campaignSlug = arguments?.getString(EXTRA_PARAM_CAMPAIGN_SLUG, "") ?: ""
         if (savedInstanceState != null) {
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
@@ -130,7 +135,9 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 campaignSlug,
                 onSuccess = {
                     context?.run {
-                        if (it.submitStatus) {
+                        submitStatus = it.submitStatus
+                        renderUILabel()
+                        if (submitStatus) {
                             btnSubmit.text = getString(R.string.flash_sale_update_submission)
                             btnSubmit.setOnClickListener {
                                 onClickToUpdateSubmission()
@@ -143,7 +150,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                         }
                     }
                     allowEditProducts = it.isEligible && it.isShopActive && !it.isGodSeller
-                    vgBottom.visibility = View.VISIBLE
+                    renderBottom()
                 },
                 onError = {
                     vgBottom.visibility = View.GONE
@@ -180,15 +187,15 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                 },
                 onError = {
                     hideProgressDialog()
-                    ToasterError.make(view, ErrorHandler.getErrorMessage(context,it), BaseToaster.LENGTH_INDEFINITE)
+                    ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
                             .setAction(R.string.retry_label) {
                                 onClickToUpdateSubmission()
-                            }
+                            }.show()
                 })
     }
 
     private fun onClickFlashSaleList() {
-
+        // TODO
     }
 
     private fun loadTnC() {
@@ -205,8 +212,8 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
                         spannable.setSpan(ForegroundColorSpan(color), indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         val clickableSpan = object : ClickableSpan() {
                             override fun onClick(widget: View) {
-                                //TODO will change page
-                                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                                val intent = FlashSaleTncActivity.createIntent(context!!, it)
+                                startActivity(intent)
                             }
 
                             override fun updateDrawState(ds: TextPaint) {
@@ -270,18 +277,48 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         } else {
             showSearchInputView()
         }
-        if (currentPage <= 1) {
-            renderUILabel(flashSaleProductHeader.submittedCount, flashSaleProductHeader.pendingCount)
+
+        pendingCount = flashSaleProductHeader.pendingCount
+        submittedCount = flashSaleProductHeader.submittedCount
+        renderUILabel()
+        renderBottom()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (needLoadAllPage) {
+            loadInitialData()
+            needLoadAllPage = false
+        }
+        if (needLoadCurrentPage) {
+            //TODO currently load all data again
+            loadInitialData()
+            needLoadCurrentPage = false
         }
     }
 
-    private fun renderUILabel(submittedCount: Int, pendingCount: Int) {
-        if (submittedCount + pendingCount == 0) {
-            recyclerViewLabel.visibility = View.GONE
-        } else {
+    private fun needShowChip() = submitStatus && ((pendingCount + submittedCount) > 0)
+    private fun needShowBottom() = submitStatus && pendingCount > 0
+
+    private fun renderUILabel() {
+        if (needShowChip()) {
             flashSaleSubmitLabelAdapter?.setData(submittedCount, pendingCount)
             recyclerViewLabel.visibility = View.VISIBLE
+        } else {
+            hideChipLabel()
         }
+    }
+
+    private fun renderBottom() {
+        if (needShowBottom()) {
+            vgBottom.visibility = View.VISIBLE
+        } else {
+            vgBottom.visibility = View.GONE
+        }
+    }
+
+    private fun hideChipLabel() {
+        recyclerViewLabel.visibility = View.GONE
     }
 
     private fun hasNextPage(list: List<Any>): Boolean {
@@ -311,7 +348,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
     override fun onItemClicked(flashSaleProductItem: FlashSaleProductItem) {
         context?.let {
             val intent = FlashSaleProductDetailActivity.createIntent(it, campaignId,
-                    flashSaleProductItem, allowEditProducts)
+                    flashSaleProductItem, allowEditProducts && flashSaleProductItem.campaign.isEligible)
             startActivityForResult(intent, REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL)
         }
     }
@@ -341,7 +378,11 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         when (requestCode) {
             REQUEST_CODE_FLASH_SALE_PRODUCT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
                 activity?.setResult(Activity.RESULT_OK)
-                //TODO refresh data
+                if (data != null && data.hasExtra(FlashSaleProductDetailFragment.RESULT_IS_CATEGORY_FULL)) {
+                    needLoadAllPage = true
+                } else {
+                    needLoadCurrentPage = true
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

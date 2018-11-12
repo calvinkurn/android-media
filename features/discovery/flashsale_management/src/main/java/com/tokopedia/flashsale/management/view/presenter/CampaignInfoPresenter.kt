@@ -22,6 +22,6 @@ class CampaignInfoPresenter @Inject
     }
 
     fun detachView(){
-        useCase.unsubscribe()
+        useCase.cancelJobs()
     }
 }

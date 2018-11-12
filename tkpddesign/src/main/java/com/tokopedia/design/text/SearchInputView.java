@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class SearchInputView extends BaseCustomView {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(0);
+    protected View view;
 
     public interface Listener {
 
@@ -94,8 +95,8 @@ public class SearchInputView extends BaseCustomView {
         init();
     }
 
-    private void init() {
-        View view = inflate(getContext(), getLayout(), this);
+    protected void init() {
+        view = inflate(getContext(), getLayout(), this);
         searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
