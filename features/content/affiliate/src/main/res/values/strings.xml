@@ -15,11 +15,10 @@
     <string name="text_af_click">Klik</string>
     <string name="text_af_buy">Dibeli</string>
     <string name="text_af_default_saldo">Rp. 0</string>
-    <string name="text_af_recommendation_left">Jatah Rekomendasi Tersisa</string>
-    <string name="text_empty_start_recommendation_string">Mulai Rekomendasi, Yuk!</string>
-    <string name="text_empty_start_recommendation_btn">Mulai Rekomendasi</string>
-    <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah rekomendasi yang bisa diambil.</string>
-    <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah rekomendasi yang bisa diambil.</string>
+    <string name="text_empty_start_recommendation_string">Mulai Kurasi, Yuk!</string>
+    <string name="text_empty_start_recommendation_btn">Mulai Kurasi</string>
+    <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah kurasi yang bisa diambil.</string>
+    <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di By Me</string>
