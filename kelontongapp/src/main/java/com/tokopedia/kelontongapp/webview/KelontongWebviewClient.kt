@@ -42,7 +42,7 @@ class KelontongWebviewClient(private val activity: Activity) : WebViewClient() {
     }
 
     private fun handleUri(view: WebView, uri: Uri): Boolean {
-        return if (uri.host.startsWith(APPSFLYER_URL_SCHEME)) {
+        return if (uri.scheme.startsWith(APPSFLYER_URL_SCHEME)) {
             handleAppsFlyer(uri)
             false
         } else {
