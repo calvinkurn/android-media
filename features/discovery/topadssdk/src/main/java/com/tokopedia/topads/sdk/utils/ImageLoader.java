@@ -1,15 +1,15 @@
 package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Rect;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -17,12 +17,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.imageutils.ImageCache;
 import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.imageutils.ImageWorker;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
-
-import android.graphics.Bitmap;
 
 import java.util.List;
 
@@ -130,6 +125,12 @@ public class ImageLoader {
                     }
                 }, true);
             }
+        }
+    }
+
+    public static void clearImage(final ImageView imageView) {
+        if (imageView != null) {
+            Glide.clear(imageView);
         }
     }
 
