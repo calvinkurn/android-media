@@ -39,4 +39,9 @@ query {
   notifcenter_unread {
     notif_unread
   }
+  feed_last_feeds{
+      error
+      content
+      newFeeds
+    }
 }

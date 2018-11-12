@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * @author by yfsx on 09/11/18.
  */
 public class FeedModel {
-    @SerializedName("new_feeds")
+    @SerializedName("newFeeds")
     @Expose
     private boolean newFeeds;
 

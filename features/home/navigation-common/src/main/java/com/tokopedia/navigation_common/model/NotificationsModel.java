@@ -39,7 +39,7 @@ public class NotificationsModel {
     @Expose
     private ChatModel chat;
 
-    @SerializedName("feed")
+    @SerializedName("feed_last_feeds")
     @Expose
     private FeedModel feed;
 
