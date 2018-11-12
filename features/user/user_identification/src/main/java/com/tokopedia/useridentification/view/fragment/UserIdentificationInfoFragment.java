@@ -135,6 +135,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment implement
             public void onClick(View v) {
 
             }
-        }
+        };
     }
 }

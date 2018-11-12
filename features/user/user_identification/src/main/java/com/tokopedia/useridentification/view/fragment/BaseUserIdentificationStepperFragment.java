@@ -1,0 +1,61 @@
+package com.tokopedia.useridentification.view.fragment;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.base.view.listener.StepperListener;
+import com.tokopedia.useridentification.R;
+import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
+
+/**
+ * @author by alvinatin on 12/11/18.
+ */
+
+public abstract class BaseUserIdentificationStepperFragment<T extends UserIdentificationStepperModel> extends TkpdBaseV4Fragment {
+
+    protected ImageView correctImage;
+    protected ImageView wrongImage;
+    protected TextView title;
+    protected TextView subtitle;
+    protected TextView button;
+
+    protected T stepperModel;
+
+    protected StepperListener stepperListener;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments()!= null && savedInstanceState == null) {
+            stepperModel = getArguments().getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA);
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_user_identification_form, container, false);
+        initView(view);
+        return view;
+    }
+
+    private void initView(View view) {
+        correctImage = view.findViewById(R.id.correct_image);
+        wrongImage = view.findViewById(R.id.wrong_image);
+        title = view.findViewById(R.id.title);
+        subtitle = view.findViewById(R.id.subtitle);
+        button = view.findViewById(R.id.button);
+        setContentView();
+    }
+
+    protected abstract void setContentView();
+}
