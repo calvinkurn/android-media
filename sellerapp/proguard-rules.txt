@@ -313,7 +313,6 @@
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
 
 -dontwarn com.appsflyer.**
--dontwarn com.moengage.firebase.**
 -keep public class com.google.firebase.iid.FirebaseInstanceId {
     public *;
 }
