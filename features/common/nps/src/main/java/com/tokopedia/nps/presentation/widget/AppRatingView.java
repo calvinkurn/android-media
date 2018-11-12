@@ -54,10 +54,10 @@ public class AppRatingView extends FrameLayout {
         return (ratingBar, rating, fromUser) -> {
             if(rating < 1.0f) {
                 ratingBar.setRating(1.0f);
-            } else {
-                if (fromUser)
-                    onRatingChange(rating);
+                rating = 1;
             }
+            if (fromUser)
+                onRatingChange(rating);
         };
     }
 

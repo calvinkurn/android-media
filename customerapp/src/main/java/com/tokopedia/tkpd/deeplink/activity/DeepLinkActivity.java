@@ -41,6 +41,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
@@ -88,6 +89,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         startAnalytics().subscribe(getObserver());
         isAllowFetchDepartmentView = true;
+
+        AdvancedAppRatingDialog.show(this);
     }
 
     @Override
