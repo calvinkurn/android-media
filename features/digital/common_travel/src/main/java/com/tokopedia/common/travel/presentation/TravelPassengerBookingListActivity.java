@@ -1,11 +1,9 @@
 package com.tokopedia.common.travel.presentation;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,29 +14,24 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.common.travel.R;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 
-import java.io.Serializable;
-import java.util.List;
-
 public class TravelPassengerBookingListActivity extends BaseSimpleActivity implements TravelPassengerBookingListFragment.ActionListener {
 
     public static final String PASSENGER_DATA = "passenger_data";
-    public static final String PASSENGER_LIST = "passenger_list";
+    public static final String RESET_PASSENGER_LIST_SELECTED = "reset_passenger_list";
     private TravelPassenger travelPassenger;
-    private List<String> currentPassengerList;
 
-    public static Intent callingIntent(Context context,  TravelPassenger trainPassengerViewModel,
-                                       List<String> currentPassengerList) {
+    public static Intent callingIntent(Context context, TravelPassenger trainPassengerViewModel, boolean resetPassengerListSelected) {
         Intent intent = new Intent(context, TravelPassengerBookingListActivity.class);
         intent.putExtra(PASSENGER_DATA, trainPassengerViewModel);
-        intent.putExtra(PASSENGER_LIST, (Serializable) currentPassengerList);
+        intent.putExtra(RESET_PASSENGER_LIST_SELECTED, resetPassengerListSelected);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
         travelPassenger = getIntent().getParcelableExtra(PASSENGER_DATA);
-        currentPassengerList = getIntent().getStringArrayListExtra(PASSENGER_LIST);
-        return TravelPassengerBookingListFragment.newInstance(travelPassenger, currentPassengerList);
+        boolean resetPassengerList = getIntent().getBooleanExtra(RESET_PASSENGER_LIST_SELECTED, false);
+        return TravelPassengerBookingListFragment.newInstance(travelPassenger, resetPassengerList);
     }
 
     @Override

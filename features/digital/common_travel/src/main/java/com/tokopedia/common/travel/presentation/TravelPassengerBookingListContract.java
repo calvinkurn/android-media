@@ -29,7 +29,9 @@ public interface TravelPassengerBookingListContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getPassengerList();
+        void getPassengerList(boolean resetPassengerListSelected);
+
+        void updatePassenger(String travelIdPassenger, boolean isSelected);
 
         void onDestroyView();
     }

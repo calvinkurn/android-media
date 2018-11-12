@@ -84,6 +84,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatButton submitButton, chooseSeatButton;
     private LinearLayout containerLayout;
     private RelativeLayout progressBar;
+    private boolean resetPassengerListSelected;
 
     private List<TrainPassengerRequest> trainPassengerRequestList;
     private TrainBuyerRequest trainBuyerRequest;
@@ -170,7 +171,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 );
             }
 
-
             trainAnalytics.eventClickNextOnCustomersPage();
 
             presenter.onSubmitButtonClicked();
@@ -230,9 +230,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
                 // TODO clean this code
                 TravelPassenger travelPassenger = new TravelPassenger();
-                travelPassenger.setPassengerId(trainPassengerViewModel.getPassengerId());
+                travelPassenger.setIdPassenger(trainPassengerViewModel.getIdPassenger());
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
-                startActivityForResult(TravelPassengerBookingListActivity.callingIntent(getActivity(), travelPassenger, getCurrentPassengerListName()), PASSENGER_LIST_REQUEST_CODE);
+                travelPassenger.setIdLocal(trainPassengerViewModel.getIdLocal());
+                startActivityForResult(TravelPassengerBookingListActivity.callingIntent(getActivity(), travelPassenger, resetPassengerListSelected), PASSENGER_LIST_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -244,6 +245,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     private void initializedDataPassenger() {
+        resetPassengerListSelected = true;
         presenter.processInitPassengers(trainScheduleBookingPassData.getAdultPassenger(),
                 trainScheduleBookingPassData.getInfantPassenger());
     }
@@ -273,14 +275,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public List<TrainPassengerViewModel> getCurrentPassengerList() {
         return trainParamPassenger.getTrainPassengerViewModelList();
-    }
-
-    public List<String> getCurrentPassengerListName() {
-        List<String> passengerListName = new ArrayList<>();
-        for (TrainPassengerViewModel trainPassengerViewModel:getCurrentPassengerList()) {
-            passengerListName.add(trainPassengerViewModel.getName());
-        }
-        return passengerListName;
     }
 
     @Override
@@ -438,13 +432,15 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         switch (requestCode) {
             case PASSENGER_LIST_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
+                    resetPassengerListSelected = false;
                     TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerBookingListActivity.PASSENGER_DATA);
                     //TODO clean this code
                     TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
+                    trainPassengerViewModel.setIdLocal(travelPassenger.getIdLocal());
+                    trainPassengerViewModel.setIdPassenger(travelPassenger.getIdPassenger());
                     trainPassengerViewModel.setName(travelPassenger.getName());
                     trainPassengerViewModel.setHeaderTitle(travelPassenger.getHeaderTitle());
                     trainPassengerViewModel.setIdentityNumber(travelPassenger.getIdNumber());
-                    trainPassengerViewModel.setPassengerId(travelPassenger.getPassengerId());
                     trainPassengerViewModel.setPaxType(travelPassenger.getPaxType());
                     trainPassengerViewModel.setSalutationId(travelPassenger.getTitle());
                     trainPassengerViewModel.setSalutationTitle(getSalutationString(travelPassenger.getTitle()));

@@ -1,5 +1,6 @@
 package com.tokopedia.common.travel.presentation.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
@@ -22,14 +23,14 @@ import java.util.List;
 public class TravelPassengerListAdapter extends RecyclerView.Adapter {
 
     private List<TravelPassenger> travelPassengerList;
-    private String namePassengerSelected;
+    private TravelPassenger passengerSelected;
     private ActionListener listener;
-    private int paxTypeSelected;
+    private Context context;
+    private boolean showCheckbox;
 
-    public TravelPassengerListAdapter(String namePassengerSelected, int paxTypeSelected) {
+    public TravelPassengerListAdapter(TravelPassenger passengerSelected) {
         this.travelPassengerList = new ArrayList<>();
-        this.namePassengerSelected = namePassengerSelected;
-        this.paxTypeSelected = paxTypeSelected;
+        this.passengerSelected = passengerSelected;
     }
 
     public void setListener(ActionListener listener) {
@@ -39,7 +40,8 @@ public class TravelPassengerListAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        this.context = parent.getContext();
+        View view = LayoutInflater.from(context)
                 .inflate(R.layout.item_travel_passenger_list, null);
         return new ItemViewHolder(view);
     }
@@ -48,23 +50,21 @@ public class TravelPassengerListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         TravelPassenger travelPassenger = travelPassengerList.get(position);
-        if (travelPassenger.getName().equals(namePassengerSelected)) {
-            travelPassenger.setSelected(true);
+        showCheckbox = false;
+        if (travelPassenger.getIdPassenger().equals(passengerSelected.getIdPassenger())) {
+            showCheckbox = true;
+            itemViewHolder.passengerName.setTextColor(context.getResources().getColor(R.color.black));
         }
 
         itemViewHolder.passengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (travelPassenger.getPaxType() == paxTypeSelected) {
-                    for (TravelPassenger travelPassengerItem : travelPassengerList) {
-                        if (travelPassengerItem.isSelected()) {
-                            travelPassengerItem.setSelected(false);
-                        }
-                    }
-                    travelPassenger.setSelected(true);
-                    notifyDataSetChanged();
+                if (travelPassenger.getPaxType() == passengerSelected.getPaxType()) {
+                    showCheckbox = true;
 
-                    listener.onClickSortLabel(travelPassenger);
+                    listener.onClickChoosePassenger(travelPassenger);
+                    listener.onUpdatePassenger(passengerSelected.getIdPassenger(), false);
+                    listener.onUpdatePassenger(travelPassenger.getIdPassenger(), true);
                 } else {
                     listener.onShowErrorCantPickPassenger();
                 }
@@ -73,7 +73,8 @@ public class TravelPassengerListAdapter extends RecyclerView.Adapter {
         itemViewHolder.passengerStatus.setVisibility(travelPassenger.isBuyer() == 1 ? View.VISIBLE : View.GONE);
         String salutationString = getSalutationString(travelPassenger.getTitle());
         itemViewHolder.passengerName.setText(salutationString + ". " + travelPassenger.getName());
-        itemViewHolder.checkboxImg.setVisibility(travelPassenger.isSelected() ? View.VISIBLE : View.GONE);
+        itemViewHolder.checkboxImg.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+        itemViewHolder.passengerName.setTextColor(travelPassenger.isSelected() && !showCheckbox ? context.getResources().getColor(R.color.red_30): context.getResources().getColor(R.color.black));
     }
 
     private String getSalutationString(int title) {
@@ -103,7 +104,6 @@ public class TravelPassengerListAdapter extends RecyclerView.Adapter {
         }
     }
 
-
     @Override
     public int getItemCount() {
         return travelPassengerList.size();
@@ -116,7 +116,9 @@ public class TravelPassengerListAdapter extends RecyclerView.Adapter {
     }
 
     public interface ActionListener {
-        void onClickSortLabel(TravelPassenger travelPassenger);
+        void onClickChoosePassenger(TravelPassenger travelPassenger);
+
+        void onUpdatePassenger(String idPassenger, boolean isSelected);
 
         void onShowErrorCantPickPassenger();
     }

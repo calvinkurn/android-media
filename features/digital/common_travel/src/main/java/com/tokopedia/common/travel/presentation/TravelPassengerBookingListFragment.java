@@ -23,7 +23,6 @@ import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.common.travel.utils.CommonTravelUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,10 +37,10 @@ public class TravelPassengerBookingListFragment extends BaseDaggerFragment
     private RecyclerView passengerListRecyclerView;
     private TravelPassengerListAdapter adapter;
     private ActionListener listener;
-    private TravelPassenger travelPassengerSelected;
+    private TravelPassenger passengerSelected;
     private ProgressBar progressBar;
     private LinearLayout layoutPassngerList;
-    private List<String> passengerListName;
+    private boolean resetPassengerListSelected;
 
     @Inject
     TravelPassengerBookingListPresenter presenter;
@@ -59,11 +58,11 @@ public class TravelPassengerBookingListFragment extends BaseDaggerFragment
         return null;
     }
 
-    public static Fragment newInstance(TravelPassenger travelPassenger, List<String> currentPassengerList) {
+    public static Fragment newInstance(TravelPassenger travelPassenger, boolean resetPassengerListSelected) {
         Fragment fragment = new TravelPassengerBookingListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TravelPassengerBookingListActivity.PASSENGER_DATA, travelPassenger);
-        bundle.putStringArrayList(TravelPassengerBookingListActivity.PASSENGER_LIST, (ArrayList<String>) currentPassengerList);
+        bundle.putBoolean(TravelPassengerBookingListActivity.RESET_PASSENGER_LIST_SELECTED, resetPassengerListSelected);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -83,11 +82,11 @@ public class TravelPassengerBookingListFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        travelPassengerSelected = getArguments().getParcelable(TravelPassengerBookingListActivity.PASSENGER_DATA);
-        passengerListName = getArguments().getStringArrayList(TravelPassengerBookingListActivity.PASSENGER_LIST);
+        passengerSelected = getArguments().getParcelable(TravelPassengerBookingListActivity.PASSENGER_DATA);
+        resetPassengerListSelected = getArguments().getBoolean(TravelPassengerBookingListActivity.RESET_PASSENGER_LIST_SELECTED);
 
         initRecyclerView();
-        presenter.getPassengerList();
+        presenter.getPassengerList(resetPassengerListSelected);
 
         addNewPassengerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,16 +97,20 @@ public class TravelPassengerBookingListFragment extends BaseDaggerFragment
     }
 
     private void initRecyclerView() {
-        adapter = new TravelPassengerListAdapter(travelPassengerSelected.getName(),
-                travelPassengerSelected.getPaxType());
+        adapter = new TravelPassengerListAdapter(passengerSelected);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(passengerListRecyclerView.getContext());
         dividerItemDecoration.setUsePaddingLeft(true);
         passengerListRecyclerView.addItemDecoration(dividerItemDecoration);
         adapter.setListener(new TravelPassengerListAdapter.ActionListener() {
             @Override
-            public void onClickSortLabel(TravelPassenger travelPassenger) {
-                travelPassenger.setPassengerId(travelPassengerSelected.getPassengerId());
+            public void onClickChoosePassenger(TravelPassenger travelPassenger) {
+                travelPassenger.setIdLocal(passengerSelected.getIdLocal());
                 listener.onClickPassenger(travelPassenger);
+            }
+
+            @Override
+            public void onUpdatePassenger(String idPassenger, boolean isSelected) {
+                presenter.updatePassenger(idPassenger, isSelected);
             }
 
             @Override
@@ -138,15 +141,6 @@ public class TravelPassengerBookingListFragment extends BaseDaggerFragment
 
     @Override
     public void renderPassengerList(List<TravelPassenger> travelPassengerList) {
-        for (int i = travelPassengerList.size() - 1; i >= 0; i--) {
-            travelPassengerList.get(i).setSelected(false);
-//            for (String namePassenger : passengerListName) {
-//                if (travelPassengerList.get(i).getName().equals(namePassenger) &&
-//                        travelPassengerList.get(i).getName().equals(travelPassengerSelected.getName())) {
-//                    travelPassengerList.remove(travelPassengerList.get(i));
-//                }
-//            }
-        }
         adapter.addAll(travelPassengerList);
     }
 
