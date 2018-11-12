@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.autocomplete.di;
+package com.tokopedia.discovery.newdiscovery.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,5 +7,5 @@ import javax.inject.Scope;
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface AutoCompleteScope {
+public @interface DiscoveryScope {
 }

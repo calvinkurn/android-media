@@ -39,7 +39,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 @Module
 public class InterceptorModule {
-
     @ApplicationScope
     @Provides
     public CacheApiInterceptor provideApiCacheInterceptor() {
