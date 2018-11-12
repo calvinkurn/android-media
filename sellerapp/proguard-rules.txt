@@ -346,8 +346,9 @@
 -dontwarn com.segment.analytics.**
 
 # -- Coroutines --
--keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+
+-keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
