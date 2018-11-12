@@ -100,6 +100,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
+    public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
 
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
@@ -445,8 +447,12 @@ public class MainParentActivity extends BaseActivity implements
         this.notification = notification;
         bottomNavigation.setNotification(notification.getTotalInbox(), INBOX_MENU);
         bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-        if (notification.getHaveNewFeed())
+        if (notification.getHaveNewFeed()) {
             bottomNavigation.setNotification(0, FEED_MENU);
+            Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+            LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }

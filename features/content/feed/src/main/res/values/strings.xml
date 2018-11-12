@@ -37,6 +37,7 @@
     <string name="return_to_feed">Kembali ke Feed</string>
     <string name="recent_view">Terakhir Dilihat</string>
     <string name="you_have_new_feed">Feed baru</string>
+    <string name="you_have_new_feed_v2">Post Terbaru</string>
     <string name="share_gplus">Google+</string>
     <string name="share_fb">Facebook</string>
     <string name="share_twitter">Twitter</string>

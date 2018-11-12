@@ -2,11 +2,14 @@ package com.tokopedia.feedplus.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,6 +107,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ROW_NUMBER = "row_number";
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
+    public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -111,6 +116,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private View newFeed;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
+    private BroadcastReceiver newFeedReceiver;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -201,6 +207,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         String loginIdString = getUserSession().getUserId();
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
+
+        newFeedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false);
+                    if (isHaveNewFeed) {
+                        onShowNewFeed("");
+                    }
+                }
+            }
+        };
     }
 
     public boolean isMainViewVisible() {
@@ -1211,6 +1229,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
         analytics.eventTrackingEnhancedEcommerce(
                 FeedEnhancedTracking.getClickTracking(list, loginIdInt));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (getActivity().isFinishing()) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(newFeedReceiver);
+        }
     }
 
     @Override
