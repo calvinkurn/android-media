@@ -1,0 +1,19 @@
+{
+  get_approval_status(){
+    kycStatus{
+     Message
+     is_success
+      info{
+            is_success
+            user_id
+            project_id
+            status
+            status_name
+            create_time
+            create_by
+            update_time
+          }
+    }
+    error
+  }
+}
