@@ -11,6 +11,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -19,8 +20,6 @@ import com.tokopedia.applink.RouteManager;
  * @author by yfsx on 13/09/18.
  */
 public class DashboardActivity extends BaseSimpleActivity {
-
-    private static final String TERMS_AND_CONDITION_URL = "https://www.tokopedia.com/bantuan/pembeli/";
 
     @DeepLink(ApplinkConst.AFFILIATE_DASHBOARD)
     public static Intent getInstance(Context context) {
@@ -56,7 +55,7 @@ public class DashboardActivity extends BaseSimpleActivity {
     private void navigateToHelp() {
         RouteManager.route(
                 this,
-                String.format("%s?url=%s", ApplinkConst.WEBVIEW, TERMS_AND_CONDITION_URL)
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, AffiliateConstant.FAQ_URL)
         );
     }
 }

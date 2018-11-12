@@ -8,12 +8,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight_dbflow.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.searchV2.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight_dbflow.FlightAirlineDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,15 +138,11 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
 
     private void setSavingPrice(FlightJourneyViewModel flightJourneyViewModel) {
 
-        if (flightJourneyViewModel.getBeforeTotal() != null) {
+        if (flightJourneyViewModel.getBeforeTotal() != null &&
+                flightJourneyViewModel.getBeforeTotal().length() > 0) {
             savingPrice.setVisibility(View.VISIBLE);
             discountTag.setVisibility(View.VISIBLE);
             savingPrice.setText(flightJourneyViewModel.getBeforeTotal());
-        } else if (flightJourneyViewModel.isBestPairing() ||
-                flightJourneyViewModel.getFare().getAdultNumericCombo() != 0) {
-            savingPrice.setVisibility(View.VISIBLE);
-            discountTag.setVisibility(View.GONE);
-            savingPrice.setText(flightJourneyViewModel.getTotal());
         } else {
             discountTag.setVisibility(View.GONE);
             savingPrice.setVisibility(View.GONE);

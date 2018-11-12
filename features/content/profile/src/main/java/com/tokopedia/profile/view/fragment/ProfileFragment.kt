@@ -221,7 +221,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isAffiliate = firstPageViewModel.profileHeaderViewModel.isAffiliate
         affiliatePostQuota = firstPageViewModel.affiliatePostQuota
 
-        setHasOptionsMenu(firstPageViewModel.profileHeaderViewModel.isShowAffiliateContent)
+        val shouldShowDashboard = userSession.userId == userId.toString()
+                && firstPageViewModel.profileHeaderViewModel.isAffiliate
+        setHasOptionsMenu(shouldShowDashboard)
 
         if (firstPageViewModel.profileHeaderViewModel.isAffiliate) {
             setToolbarTitle(firstPageViewModel.profileHeaderViewModel.affiliateName)
@@ -659,8 +661,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private fun getEmptyModel(isShowAffiliateContent: Boolean,
                               isOwner: Boolean,
                               isAffiliate: Boolean): Visitable<*> {
-        return if (isShowAffiliateContent) getEmptyResultModel(isOwner, isAffiliate)
-        else ProfileEmptyViewModel()
+        return if (!isShowAffiliateContent && isOwner && !isAffiliate) ProfileEmptyViewModel()
+        else getEmptyResultModel(isOwner, isAffiliate)
     }
 
     private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {

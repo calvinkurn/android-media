@@ -379,6 +379,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void updateSetMainView() {
         if (viewModel.getMainImageIndex() == tabLayout.getSelectedTabPosition()) {
+            setMain.setText(R.string.af_main_image);
             setMain.setTextColor(MethodChecker.getColor(getContext(), R.color.black_38));
             setMain.setCompoundDrawablesWithIntrinsicBounds(
                     null,
@@ -387,6 +388,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                     null
             );
         } else {
+            setMain.setText(R.string.af_set_main_image);
             setMain.setTextColor(MethodChecker.getColor(getContext(), R.color.medium_green));
             setMain.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
