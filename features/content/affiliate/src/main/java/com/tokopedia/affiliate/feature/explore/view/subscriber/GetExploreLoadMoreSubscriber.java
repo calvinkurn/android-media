@@ -39,7 +39,7 @@ public class GetExploreLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
         ExploreData query = response.getData(ExploreData.class);
 
         mainView.onSuccessGetMoreData(
-                GetExploreFirstSubscriber.mappingProducts(query.getExploreProduct().getProducts()),
+                GetExploreFirstSubscriber.mappingProducts(query.getExploreProduct().getProducts(), mainView),
                 query.getExploreProduct().getPagination().getNextCursor()
         );
     }

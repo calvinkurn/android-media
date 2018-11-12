@@ -123,6 +123,7 @@ ext {
             kol                         : ":features:content:kol",
             kolCommon                   : ":features:content:kol_common",
             affiliate                   : ":features:content:affiliate",
+//            affiliate                   : ":features:content:affiliate_no_op",
             affiliateCommon             : ":features:content:affiliate_common",
             profile                     : ":features:content:profile",
 

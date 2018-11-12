@@ -2,6 +2,7 @@
 include "features:common:nps"
 
 include "features:content:affiliate"
+//include "features:content:affiliate_no_op"
 include "features:content:affiliate_common"
 include "features:content:feed"
 include "features:content:explore"
