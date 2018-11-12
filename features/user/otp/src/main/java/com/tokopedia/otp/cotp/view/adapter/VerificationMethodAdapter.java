@@ -1,6 +1,7 @@
 package com.tokopedia.otp.cotp.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,15 +59,16 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        ImageHandler.LoadImage(holder.icon, list.get(position)
-                .getImageUrl());
+        if (list.get(position).getIconResId() != 0) {
+            ImageHandler.loadImageWithId(holder.icon, list.get(position)
+                    .getIconResId());
+        } else {
+            ImageHandler.LoadImage(holder.icon, list.get(position)
+                    .getImageUrl());
+        }
+
         holder.methodText.setText(MethodChecker.fromHtml(list.get(position).getMethodText()));
-        holder.mainView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onMethodSelected(list.get(position));
-            }
-        });
+        holder.mainView.setOnClickListener(v -> viewListener.onMethodSelected(list.get(position)));
     }
 
 

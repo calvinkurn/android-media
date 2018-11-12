@@ -178,6 +178,9 @@ public class BranchSdkUtils {
                 renderedUrl = uri.toString();
             }
 
+            String temp = String.format("utm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s",
+                    linkProperties.getChannel(), linkProperties.getFeature(), linkProperties.getCampaign(), tags);
+            linkProperties.addControlParameter(BRANCH_DESKTOP_URL_KEY, String.format("%s%s", desktopUrl, temp));
             linkProperties.addControlParameter(BRANCH_ANDROID_DEEPLINK_PATH_KEY, renderedUrl);
             linkProperties.addControlParameter(BRANCH_IOS_DEEPLINK_PATH_KEY, renderedUrl);
         }

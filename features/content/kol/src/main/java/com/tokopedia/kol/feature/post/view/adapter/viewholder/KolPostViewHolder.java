@@ -213,7 +213,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                 );
             }
 
-            viewListener.onUnlikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onUnlikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         } else {
             if (type == Type.FEED) {
                 analyticTracker.sendEventTracking(
@@ -223,8 +228,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                         generateKolEventLabel(element.isFollowed(), element.getCardType())
                 );
             }
-
-            viewListener.onLikeKolClicked(getAdapterPosition(), element.getContentId());
+            viewListener.onLikeKolClicked(
+                    getAdapterPosition(),
+                    element.getContentId(),
+                    element.isMultipleContent(),
+                    element.getActivityType()
+            );
         }
     }
 
@@ -239,7 +248,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         }
 
-        viewListener.onGoToKolComment(getAdapterPosition(), element.getContentId());
+        viewListener.onGoToKolComment(
+                getAdapterPosition(),
+                element.getContentId(),
+                element.isMultipleContent(),
+                element.getActivityType()
+        );
     }
 
     @Override
@@ -257,17 +271,33 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     }
 
     private void setListener(final KolPostViewModel element) {
-        tooltip.setOnClickListener(v -> tooltipAreaClicked(element));
+        tooltip.setOnClickListener(v -> {
+            tooltipAreaClicked(element);
+            viewListener.trackTooltipClick(
+                    element.isMultipleContent(),
+                    String.valueOf(element.getContentId()),
+                    element.getActivityType(),
+                    String.valueOf(getAdapterPosition())
+            );
+        });
 
-        adapter.setClickListener(
-                position -> {
-                    if (tooltip.getVisibility() == View.VISIBLE) {
-                        tooltipAreaClicked(element);
-                    }
-                }
-        );
+        adapter.setClickListener(position -> {
+            if (tooltip.getVisibility() == View.VISIBLE) {
+                tooltipAreaClicked(element);
+                viewListener.trackContentClick(
+                        element.isMultipleContent(),
+                        String.valueOf(element.getContentId()),
+                        element.getActivityType(),
+                        String.valueOf(getAdapterPosition())
+                );
+            }
+        });
 
-        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(element.getContentId()));
+        addImageBtn.setOnClickListener(v -> viewListener.onEditClicked(
+                element.isMultipleContent(),
+                String.valueOf(element.getContentId()),
+                element.getActivityType()
+        ));
     }
 
     private void goToProfile(final BaseKolViewModel element) {
@@ -322,26 +352,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
-        } else if (type == Type.PROFILE) {
-            promotionList.add(new KolEnhancedTracking.Promotion(
-                    element.getContentId(),
-                    KolEnhancedTracking.Promotion.createContentNameKolPost(
-                            element.getTagsType()),
-                    TextUtils.isEmpty(element.getName()) ? DASH :
-                            element.getName(),
-                    getAdapterPosition(),
-                    TextUtils.isEmpty(element.getLabel()) ? DASH :
-                            element.getLabel(),
-                    element.getTagsId(),
-                    TextUtils.isEmpty(element.getTagsLink()) ? DASH :
-                            element.getTagsLink(),
-                    Integer.valueOf(!TextUtils.isEmpty(viewListener.getUserSession().getUserId()) ?
-                            viewListener.getUserSession().getUserId() : "0")
-            ));
-
-            analyticTracker.sendEnhancedEcommerce(
-                    KolEnhancedTracking.getKolClickTracking(promotionList)
-            );
         } else if (type == Type.SHOP_PAGE) {
             analyticTracker.sendEventTracking(
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
