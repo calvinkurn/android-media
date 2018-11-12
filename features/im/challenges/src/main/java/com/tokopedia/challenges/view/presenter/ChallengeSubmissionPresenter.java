@@ -73,6 +73,9 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         getSubmissionChallengesUseCase.unsubscribe();
         getTermsNConditionUseCase.unsubscribe();
         getChallengeDetailsUseCase.unsubscribe();
+        getChallengeSettingUseCase.unsubscribe();
+        getWinnersUseCase.unsubscribe();
+        getSubmissionInChallengeUseCase.unsubscribe();
     }
 
     @Override

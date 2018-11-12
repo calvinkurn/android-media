@@ -252,4 +252,13 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         }
         return Utils.checkIsPastChallenge(collection.getEndDate());
     }
+
+    @Override
+    public void onDestroy() {
+        postSubmissionLikeUseCase.unsubscribe();
+        postBuzzPointEventUseCase.unsubscribe();
+        getDetailsSubmissionsUseCase.unsubscribe();
+        getChallengeDetailsAndSttingsUseCase.unsubscribe();
+        postDeleteSubmissionUseCase.unsubscribe();
+    }
 }

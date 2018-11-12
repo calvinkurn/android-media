@@ -100,4 +100,9 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         });
     }
 
+    @Override
+    public void onDestroy() {
+        getActiveChallengesUseCase.unsubscribe();
+        getPastChallengesUseCase.unsubscribe();
+    }
 }

@@ -128,4 +128,10 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        getMySubmissionsListUseCase.unsubscribe();
+        postSubmissionLikeUseCase.unsubscribe();
+    }
 }

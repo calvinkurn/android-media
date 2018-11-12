@@ -121,7 +121,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
                 postId = fingerprints.getNewPostId();
-                IntentFilter intentFilter =new IntentFilter();
+                IntentFilter intentFilter = new IntentFilter();
                 intentFilter.addAction(ACTION_UPLOAD_COMPLETE);
                 intentFilter.addAction(ACTION_UPLOAD_FAIL);
                 getView().getContext().registerReceiver(receiver, intentFilter);
@@ -263,5 +263,13 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_video));
             getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_video));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        mGetChallengeSettingUseCase.unsubscribe();
+        mGetChallegeTermsUseCase.unsubscribe();
+        mIntializeMultiPartUseCase.unsubscribe();
+        getDetailsSubmissionsUseCase.unsubscribe();
     }
 }
