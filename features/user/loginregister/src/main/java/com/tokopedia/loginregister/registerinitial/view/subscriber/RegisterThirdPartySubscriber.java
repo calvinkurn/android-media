@@ -42,6 +42,7 @@ public class RegisterThirdPartySubscriber extends LoginCommonSubscriber<LoginEma
             } else {
                 view.onErrorRegisterSosmed(methodName, ErrorHandlerSession.getDefaultErrorCodeMessage
                         (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+                router.logUnknownError(new Throwable("Login Result is null"));
             }
         }
 

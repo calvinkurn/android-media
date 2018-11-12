@@ -44,6 +44,7 @@ public class LoginThirdPartySubscriber extends LoginCommonSubscriber<LoginEmailD
                 view.dismissLoadingLogin();
                 view.onErrorLoginSosmed(loginMethodName, ErrorHandlerSession.getDefaultErrorCodeMessage
                         (ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, view.getContext()));
+                router.logUnknownError(new Throwable("Login Result is null"));
             }
 
         }

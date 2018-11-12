@@ -57,7 +57,7 @@ public class ChooseVerificationPresenter extends BaseDaggerPresenter<SelectVerif
                 if (!TextUtils.isEmpty(e.getMessage())
                         && errorMessage.contains(getView().getContext().getString(R.string
                         .default_request_error_unknown))) {
-                    getView().logUnknownError(e.getMessage());
+                    getView().logUnknownError(e);
                 }
             }
 

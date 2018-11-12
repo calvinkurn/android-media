@@ -25,7 +25,8 @@ public class RequestOtpMapper implements Func1<Response<WsResponse<RequestOtpPoj
     public RequestOtpViewModel call(Response<WsResponse<RequestOtpPojo>> response) {
         if (response.isSuccessful()
                 && response.body() != null
-                && response.body().getMessageError() == null) {
+                && response.body().getMessageError() == null
+                && response.body().getMessageStatus() != null) {
 
             RequestOtpPojo pojo = response.body().getData();
 

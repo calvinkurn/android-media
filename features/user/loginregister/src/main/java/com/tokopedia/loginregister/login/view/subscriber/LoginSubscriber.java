@@ -49,6 +49,8 @@ public class LoginSubscriber extends LoginCommonSubscriber<LoginEmailDomain> {
             } else {
                 view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode
                         .UNSUPPORTED_FLOW, context));
+                router.logUnknownError(new Throwable("Login Result is null"));
+
             }
 
         }
