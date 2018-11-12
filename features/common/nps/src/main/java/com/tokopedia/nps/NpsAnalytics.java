@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
+import javax.inject.Inject;
+
 import static com.tokopedia.nps.NpsConstant.Analytic.*;
 
 /**
@@ -14,8 +16,8 @@ public class NpsAnalytics {
 
     private AnalyticTracker analyticTracker;
 
-    public NpsAnalytics(Context context) {
-        this.analyticTracker = ((AbstractionRouter)context.getApplicationContext()).getAnalyticTracker();
+    public NpsAnalytics(AnalyticTracker analyticTracker) {
+        this.analyticTracker = analyticTracker;
     }
 
     public void eventAppRatingImpression(String label) {
