@@ -2,6 +2,9 @@ package com.tokopedia.topads.sdk.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -131,6 +134,20 @@ public class ImageLoader {
     public static void clearImage(final ImageView imageView) {
         if (imageView != null) {
             Glide.clear(imageView);
+            imageView.setImageDrawable(
+                    getDrawable(imageView.getContext(), R.drawable.ic_loading_image)
+            );
+        }
+    }
+
+    private static Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return context.getResources().getDrawable(
+                    resId,
+                    context.getApplicationContext().getTheme()
+            );
+        } else {
+            return AppCompatResources.getDrawable(context, resId);
         }
     }
 

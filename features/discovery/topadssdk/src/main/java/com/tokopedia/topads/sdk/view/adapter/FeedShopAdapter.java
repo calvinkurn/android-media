@@ -32,14 +32,14 @@ public class FeedShopAdapter extends RecyclerView.Adapter<FeedShopAdapter.ViewHo
     }
 
     @Override
-    public FeedShopAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FeedShopAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.topads_shop_product_image_feed, parent, false);
         return new FeedShopAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final FeedShopAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final FeedShopAdapter.ViewHolder holder, int position) {
         if (imageLoader == null) {
             imageLoader = new ImageLoader(holder.imageView.getContext());
         }
