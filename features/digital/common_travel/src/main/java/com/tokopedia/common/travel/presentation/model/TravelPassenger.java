@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 public class TravelPassenger implements Parcelable {
 
-    private int id;
+    private String idPassenger;
+    private String id;
     private int userId;
     private int title;
     private int paxType;
@@ -23,14 +24,15 @@ public class TravelPassenger implements Parcelable {
     private int isBuyer;
     private String salutationTitle;
     private boolean isSelected;
-    private int passengerId;
+    private int idLocal;
 
     public TravelPassenger() {
     }
 
 
     protected TravelPassenger(Parcel in) {
-        id = in.readInt();
+        idPassenger = in.readString();
+        id = in.readString();
         userId = in.readInt();
         title = in.readInt();
         paxType = in.readInt();
@@ -48,12 +50,13 @@ public class TravelPassenger implements Parcelable {
         isBuyer = in.readInt();
         salutationTitle = in.readString();
         isSelected = in.readByte() != 0;
-        passengerId = in.readInt();
+        idLocal = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(idPassenger);
+        dest.writeString(id);
         dest.writeInt(userId);
         dest.writeInt(title);
         dest.writeInt(paxType);
@@ -71,7 +74,7 @@ public class TravelPassenger implements Parcelable {
         dest.writeInt(isBuyer);
         dest.writeString(salutationTitle);
         dest.writeByte((byte) (isSelected ? 1 : 0));
-        dest.writeInt(passengerId);
+        dest.writeInt(idLocal);
     }
 
     @Override
@@ -91,11 +94,19 @@ public class TravelPassenger implements Parcelable {
         }
     };
 
-    public int getId() {
+    public String getIdPassenger() {
+        return idPassenger;
+    }
+
+    public void setIdPassenger(String idPassenger) {
+        this.idPassenger = idPassenger;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -235,12 +246,12 @@ public class TravelPassenger implements Parcelable {
         isSelected = selected;
     }
 
-    public int getPassengerId() {
-        return passengerId;
+    public int getIdLocal() {
+        return idLocal;
     }
 
-    public void setPassengerId(int passengerId) {
-        this.passengerId = passengerId;
+    public void setIdLocal(int idLocal) {
+        this.idLocal = idLocal;
     }
 
     @Override
@@ -252,7 +263,7 @@ public class TravelPassenger implements Parcelable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result *= prime * travelId;
+        result *= prime * idLocal;
         return result;
     }
 }
