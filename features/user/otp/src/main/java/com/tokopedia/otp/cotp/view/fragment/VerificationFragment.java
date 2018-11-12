@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -326,7 +326,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initData();
-       requestOtp();
+        requestOtp();
     }
 
     protected void requestOtp() {
@@ -388,6 +388,15 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         tvLimitOtp.setText(errorMessage);
         limitOtp.setVisibility(View.VISIBLE);
         setLimitReachedCountdownText();
+    }
+
+    @Override
+    public void logError(String className, String message) {
+        try {
+            Crashlytics.log(0, className, message);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

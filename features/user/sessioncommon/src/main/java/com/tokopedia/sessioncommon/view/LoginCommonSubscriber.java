@@ -9,6 +9,7 @@ import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.LoginEmailDomain;
 import com.tokopedia.sessioncommon.data.model.MakeLoginPojo;
 import com.tokopedia.sessioncommon.network.TokenErrorException;
+import com.tokopedia.sessioncommon.R;
 
 import rx.Subscriber;
 
@@ -52,6 +53,12 @@ public abstract class LoginCommonSubscriber<T> extends Subscriber<T> {
                 @Override
                 public void onError(String errorMessage) {
                     onErrorLogin(errorMessage);
+
+                    if (!TextUtils.isEmpty(e.getMessage())
+                            && errorMessage.contains(context.getString(R.string
+                            .default_request_error_unknown))) {
+                        router.logUnknownError(e.getMessage());
+                    }
                 }
             }, e, context);
         }

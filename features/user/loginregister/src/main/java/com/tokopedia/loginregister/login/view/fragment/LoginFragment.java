@@ -32,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -792,6 +793,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             @Override
             public void onErrorLogin(String errorMessage) {
                 LoginFragment.this.onErrorLogin(errorMessage);
+            }
+
+            @Override
+            public void logUnknownError(String message) {
+                Crashlytics.log(0, LoginFragment.class.getSimpleName(), message);
             }
         };
     }

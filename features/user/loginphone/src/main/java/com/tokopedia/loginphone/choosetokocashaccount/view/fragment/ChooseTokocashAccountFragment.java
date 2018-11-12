@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -259,6 +260,15 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
                     intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
                     getActivity().finish();
+                }
+            }
+
+            @Override
+            public void logUnknownError(String message) {
+                try {
+                    Crashlytics.log(0, ChooseTokocashAccountFragment.class.getSimpleName(), message);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
                 }
             }
         };

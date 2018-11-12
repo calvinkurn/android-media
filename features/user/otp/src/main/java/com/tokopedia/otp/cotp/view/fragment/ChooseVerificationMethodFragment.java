@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -280,6 +281,15 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         } else {
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
                     () -> presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType()));
+        }
+    }
+
+    @Override
+    public void logUnknownError(String message) {
+        try {
+            Crashlytics.log(0, ChooseVerificationMethodFragment.class.getSimpleName(), message);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 

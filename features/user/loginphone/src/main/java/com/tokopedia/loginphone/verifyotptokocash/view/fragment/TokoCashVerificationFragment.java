@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -228,6 +229,15 @@ public class TokoCashVerificationFragment extends VerificationFragment implement
                     intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
                     getActivity().finish();
+                }
+            }
+
+            @Override
+            public void logUnknownError(String message) {
+                try {
+                    Crashlytics.log(0, TokoCashVerificationFragment.class.getSimpleName(), message);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
                 }
             }
         };

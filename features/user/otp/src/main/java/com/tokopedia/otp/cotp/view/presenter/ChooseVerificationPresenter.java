@@ -1,11 +1,14 @@
 package com.tokopedia.otp.cotp.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.otp.R;
 
 import javax.inject.Inject;
 
@@ -47,9 +50,15 @@ public class ChooseVerificationPresenter extends BaseDaggerPresenter<SelectVerif
             @Override
             public void onError(Throwable e) {
                 getView().dismissLoading();
-                getView().onErrorGetList(OtpErrorHandler.getErrorMessage(e,
-                        getView().getContext(),
-                        false));
+                String errorMessage = OtpErrorHandler.getErrorMessage(e,
+                        getView().getContext(), false);
+                getView().onErrorGetList(errorMessage);
+
+                if (!TextUtils.isEmpty(e.getMessage())
+                        && errorMessage.contains(getView().getContext().getString(R.string
+                        .default_request_error_unknown))) {
+                    getView().logUnknownError(e.getMessage());
+                }
             }
 
             @Override

@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -665,6 +666,15 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                         getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+            }
+
+            @Override
+            public void logUnknownError(String message) {
+                try {
+                    Crashlytics.log(0, RegisterInitialFragment.class.getSimpleName(), message);
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }
