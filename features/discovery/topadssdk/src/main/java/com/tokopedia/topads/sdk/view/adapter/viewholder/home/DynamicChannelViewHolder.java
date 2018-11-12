@@ -4,17 +4,19 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
 
-public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicChannelViewModel>
-        implements View.OnClickListener {
+public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicChannelViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_dynamic_channel_item;
@@ -23,6 +25,7 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
     private TextView cashbackTxt;
     private TextView priceTxt;
     private TextView productTxt;
+    private LinearLayout container;
     private LocalAdsClickListener itemClickListener;
 
     public DynamicChannelViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
@@ -32,14 +35,7 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
         productTxt = itemView.findViewById(R.id.product_name);
         cashbackTxt = itemView.findViewById(R.id.bottom_label);
         priceTxt = itemView.findViewById(R.id.product_price);
-        itemView.findViewById(R.id.container).setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(itemClickListener!=null){
-            itemClickListener.onProductItemClicked(getAdapterPosition(), null);
-        }
+        container = itemView.findViewById(R.id.container);
     }
 
     @Override
@@ -58,5 +54,22 @@ public class DynamicChannelViewHolder extends AbstractViewHolder<ProductDynamicC
         } else {
             cashbackTxt.setVisibility(View.GONE);
         }
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(itemClickListener!=null){
+                    Data data = new Data();
+                    data.setProductClickUrl(element.getProductClickUrl());
+                    Product product = new Product();
+                    product.setId(element.getProductId());
+                    product.setName(element.getProductName());
+                    product.setPriceFormat(element.getProductPrice());
+                    product.setProductCashbackRate(element.getProductCashback());
+                    product.setImage(element.getProductImage());
+                    data.setProduct(product);
+                    itemClickListener.onProductItemClicked(getAdapterPosition(), data);
+                }
+            }
+        });
     }
 }
