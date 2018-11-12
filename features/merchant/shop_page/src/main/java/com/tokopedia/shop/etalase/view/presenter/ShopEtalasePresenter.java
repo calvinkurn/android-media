@@ -1,5 +1,7 @@
 package com.tokopedia.shop.etalase.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
@@ -31,6 +33,9 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
     public void getShopEtalase(String shopId) {
+        if (TextUtils.isEmpty(shopId)) {
+            return;
+        }
         RequestParams params = GetShopEtalaseByShopUseCase.createRequestParams(
                 shopId, true, false, shopId.equalsIgnoreCase(userSession.getShopId()));
         getShopEtalaseByShopUseCase.execute(params, new Subscriber<ArrayList<ShopEtalaseModel>>() {
