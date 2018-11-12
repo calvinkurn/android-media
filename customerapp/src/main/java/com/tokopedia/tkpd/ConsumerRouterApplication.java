@@ -2358,6 +2358,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void sendAnalyticsGroupChat(String url, String error) {
+        if(remoteConfig.getBoolean("groupchat_analytics", false)){
+            AnalyticsLog.logGroupChatWebSocketError(url, error);
+        }
+    }
+
+    @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
         if (!isEventOMS) {
